@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Myapp</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<%= yield %>
+    <div class="modal fade" id="orcamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Solicite um orçamento.</h4>
+          </div>
+          <div class="modal-body">
+            <form role="form" action="http://www.sharespot.com.br/email" method="post" enctype="plain"> 
+              <div class="form-group">
+                <label for="name">Nome</label>
+                <input type="name" name="name" class="form-control" id="name" required>
+
+              </div>
+              <div class="form-group">
+                <label for="email">Email para contato</label>
+                <input type="email" name="email" class="form-control" id="email" placeholder='ex. abc@gmail.com' required>
+              </div>
+              <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="text" name="telefone" class="form-control" id="telefone" placeholder='ex. (19) 1234-5678' required="">
+
+              </div>
+              <div class="form-group">
+                <label for="email">O que podemos fazer por você?</label>
+                <textarea class="form-control" name="coment" rows="3"></textarea>
+              </div>   
+
+              <input type="submit" value='Enviar' class="btn-large btn-warning"></input>
+              <br/>
+              <div class='row' style="margin-left: 1px;"> <h5>Entraremos em contato em no máximo 24 horas. <br/>Se preferir, entre em contato conosco diretamente pelos telefones:</h5></div><div class="row"><div class="col-lg-6">Campinas <br/> +55 (19) 3396-6923<br>
+              +55 (19) 98108-8801 (Guilherme)<br>
+              +55 (19) 98825-3196 (André)<br></div><div class="col-lg-6">Rio de Janeiro <br/> +55 (21) 3066-3530<br>
+              +55 (21) 99798-1640 (Vinicius)<br></div></div>
+
+            </form>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</body>
+</html>
+
+
+
+
+
