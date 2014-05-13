@@ -79,7 +79,7 @@ background-color: transparent;
 
 #page-welcome{
     width: 100%;
-    height: 100%;
+    height: 70%;
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -93,7 +93,7 @@ background-color: transparent;
 
 #page-welcome header{
     color:#fff;
-    padding-top:20%;
+    padding-top:5%;
 
 }
 
@@ -119,7 +119,7 @@ background-color: transparent;
 
 
 #page-profile{
-    padding: 75px 0;
+    padding: 15px 0;
     background:#fff;
 }
 
@@ -133,30 +133,30 @@ background-color: transparent;
 
 
 #page-skills{
-    padding: 75px 0;
+    padding: 15px 0;
     background:#eeeeee;
     text-align: center;
 }
 
 #page-education{
-    padding: 75px 0;
+    padding: 15px 0;
     background:#fff;
 }
 
 
 #page-experience{
-     padding: 75px 0;
+     padding: 15px 0;
     background:#eeeeee;
 }
 
 #page-portfolio{
-    padding: 75px 0;
+    padding: 15px 0;
     background:#fff;
 
 }
 
 #page-contact{
-    padding: 75px 0;
+    padding: 15px 0;
 }
 
 #page-contact .contact-info p{
@@ -364,7 +364,7 @@ background-color: transparent;
     text-align: center;
     color: #555555;
     text-transform: uppercase;
-    padding:20px 0;
+    padding:0px 0;
 }
 
 .spacer {
