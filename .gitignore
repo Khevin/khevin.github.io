@@ -2,6 +2,12 @@
 ## Eclipse
 #################
 
+* Flags
+.DS_Store
+node_modules
+update
+
+
 *.pydevproject
 .project
 .metadata
