@@ -58,6 +58,20 @@ $.extend($.fn, {
 					// prevent form submit to be able to see console output
 					event.preventDefault();
 				}
+
+// KHEVIN ADICIONADO 
+				// Send the request
+                $.post('contact.php', {
+                    name: $('#name').val(),
+                    email: $('#email').val(),
+                    message: $('#message').val(),
+                }, function(d){
+                    // Here we handle the response from the script
+                    // We are just going to alert the result for now
+                    alert(d);
+                });
+
+
 				function handle() {
 					var hidden;
 					if ( validator.settings.submitHandler ) {

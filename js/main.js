@@ -140,22 +140,3 @@ $('.chart').waypoint(function() {
 
 });
 
-/* Submit form (ADICIONADO) */
-        $(function(){
-            $('#contact-form').submit(function(e){
-
-                // Stop the form actually posting
-                e.preventDefault();
-
-                // Send the request
-                $.post('/contact.php', {
-                    name: $('#name').val(),
-                    email: $('#email').val(),
-                    message: $('#message').val(),
-                }, function(d){
-                    // Here we handle the response from the script
-                    // We are just going to alert the result for now
-                    alert(d);
-                });
-            });
-        });
