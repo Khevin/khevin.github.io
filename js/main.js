@@ -140,3 +140,24 @@ $('.chart').waypoint(function() {
 
 });
 
+/*Khevin adicionado - contact-form.submit
+
+$('#contact-form').submit( function( event ){
+                        if ( validator.settings.debug ) {
+                                  // prevent form submit to be able to see console output
+                                  event.preventDefault();
+                                }
+
+                        // Send the request
+                        $.post('contact.php', {
+                        name: $('#name').val(),
+                        email: $('#email').val(),
+                        message: $('#message').val(),
+                    }, function(d){
+                        // Here we handle the response from the script
+                        // We are just going to alert the result for now
+                        alert(d);
+                    });
+                });
+
+*/
