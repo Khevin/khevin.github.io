@@ -1,8 +1,11 @@
-flag-icon-css
+Khevin Mituti, Designer
 =============
 
-CSS for vector based country flags. See the
-[demo](http://lipis.github.io/flag-icon-css/).
+Portfolio e currículo em boostrap 3. 
+[Link](http://khevin.com) para o site.
+
+Abaixo segue o uso do flag-icon-css instalado.
+
 
 Usage
 -----
