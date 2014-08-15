@@ -68,6 +68,11 @@ h1,h2,h3,h4,h5,h6{
 background-color: transparent;
 }
 
+.navbar-default .navbar-nav>ul>a:hover, 
+.navbar-default .navbar-nav>ul>a:focus {
+background-color: transparent;
+}
+
 .navbar-default .navbar-nav>.active>a, 
 .navbar-default .navbar-nav>.active>a:hover, 
 .navbar-default .navbar-nav>.active>a:focus {
@@ -76,6 +81,22 @@ background-color: transparent;
 /* ==========================================================================
   Layout 
    ========================================================================== */
+
+
+/* Adicionado pelo Khevin */
+
+#main-menu ul {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+#main-menu li {
+    display: inline;
+    list-style: none;
+}
+
+/* Terminou o adicionado pelo Khevin */
 
 #page-welcome{
     width: 100%;

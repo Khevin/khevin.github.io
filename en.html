@@ -23,6 +23,8 @@
         <link rel="stylesheet" href="css/main.css">
         <!-- ELUSIVE FONTS ADICIONADO -->
         <link rel="stylesheet" href="css/elusive-webfont.css">
+        <!-- FLAGS ADICIONADO -->
+        <link href="./css/flag-icon.css" rel="stylesheet">
 
         <!-- Color styles -->
         <link rel="stylesheet" href="css/colors/blue.css">
@@ -43,19 +45,24 @@
           <script src="js/plugins/html5shiv.js"></script>
           <script src="js/plugins/respond.min.js"></script>
         <![endif]-->
+
+
+
+<!-- End form script KHEVIN ADICIONADO -->
+
     </head>
     <body>
-  <div class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="navbar navbar-default navbar-static-top" >
       <div class="container">
-        <div class="navbar-header">
+        <!-- <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-        </div>
-        <div class="navbar-collapse collapse">
+        </div> -->
+        <div>
           <ul class="nav navbar-nav" id="main-menu">
             <li><a href="#page-welcome">Home</a></li>
             <li><a href="#page-profile">Profile</a></li>
@@ -64,6 +71,8 @@
             <li><a href="#page-experience">Experience</a></li>
             <li><a href="#page-portfolio">Portfolio</a></li>
             <li><a href="#page-contact">Contact</a></li>
+            <li onclick="location.href='index.html'"><a href="/Clique para mudar o idioma para Português do Brasil." target="_self"><span class="flag-icon flag-icon-br"></span></a></li> 
+            <li onclick="location.href='en.html'"><a href="/Click to change language to American English." target="_self" ><span class="flag-icon flag-icon-us"></span></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -75,7 +84,7 @@
               <li><a id="vegas-next" class="next" href="#"></a></li>
               <li><a id="vegas-prev" class="prev" href="#"></a></li>
           </ul>
-        </div>
+      </div>
         <div class="container">
             <div class="row">
                 <header class="centered">
@@ -86,7 +95,7 @@
                         <!--<a href="https://twitter.com/" class="btn btn-round btn-clear btn-twitter"><i class="fa fa-twitter"></i></a>-->
                         <a href="https://www.facebook.com/khevin.mituti" class="btn btn-round btn-clear btn-facebook" target="_blank"><i class="fa fa-facebook"></i></a>
                         <!--<a href="https://www.instagram.com/" class="btn btn-round btn-clear btn-instagram"><i class="fa fa-instagram"></i></a>-->
-                        <a href="https://www.behance.net/khev" class="btn btn-round btn-clear btn-twitter" target="_blank"><i class="el el-icon-behance"></i></a>
+                        <a href="https://www.behance.net/khev" class="btn btn-round btn-clear btn-twitter" target="_blank"><i class="el-icon-behance"></i></a>
                         <a href="https://www.linkedin.com/in/khevin" class="btn btn-round btn-clear btn-linkedin" target="_blank"><i class="fa fa-linkedin-square"></i></a>
                         <!--<a href="https://www.pinterest.com/" class="btn btn-round btn-clear btn-pinterest"><i class="fa fa-pinterest"></i></a>-->
                         <!--<a href="https://www.google.com/" class="btn btn-round btn-clear btn-google"><i class="fa fa-google-plus"></i></a>-->
@@ -94,7 +103,7 @@
                 </div>
                 
 
-                <a href="#page-contact" class="btn btn-default hire-me">Solicite um orçamento</a>
+                <a href="#page-contact" class="btn btn-default hire-me">Contact Me</a>
                 
                 </div>
             </div>
@@ -104,16 +113,16 @@
     <section id="page-profile" class="page-profile">
       <div class="container">
                 <header class="section-header">
-                    <h2 class="section-title">Personal Profile</h2>
+                    <h2 class="section-title">Personal Information</h2>
                     <div class="spacer"></div>
-                    <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>
+                    <p class="section-subtitle">Inspire, Create, Deliver.</p>
                 </header>
             <div class="row">
               <div class="col-md-3">
-                 <div class="profile"><img src="img/profile.png" alt="profile"/></div> 
+                 <img src="img/profile.png" class="img-circle" alt="profile"/>
               </div>
                <div class="col-md-9">
-                <p style="font-size: x-large;"><em>  Dez anos de experiência com programas de Design da Adobe além de conhecimento em branding e mídias sociais em geral. Inglês fluente, espanhol intermediário, francês e alemão básicos. Forte interesse nas áreas de economia e marketing. Voluntariado com pessoas de baixa renda desde 2010.</p></em>
+                <p style="font-size: x-large;"><em> Ten years of experience with Adobe Design Softwares in addition to experience with branding and social media in general. Fluent English and Portuguese, intermediate spanish and basic french and german. Strong interest in Economy and Marketing. Have done volunteer work for low-income communities since 2010. </p></em>
               </div>
             </div>
       </div> 
@@ -123,13 +132,13 @@
        <div class="container">
            
                  <header class="section-header">
-                    <h2 class="section-title"><span>Habilidades</span></h2>
+                    <h2 class="section-title"><span>Skills</span></h2>
                       <div class="spacer"></div>
-                    <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>
+                     <!-- <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>-->
                 </header>
             <div class="row">
               <div class="col-md-2 col-md-offset-1">
-               <span class="chart" data-percent="95">
+               <span class="chart" data-percent="90">
                       <span class="percent"></span>
                       <h3>Photoshop</h3>
                </span>
@@ -137,25 +146,25 @@
                <div class="col-md-2 ">
                <span class="chart" data-percent="80">
                       <span class="percent"></span>
-                      <h3>Branding e Mídias Sociais</h3>
+                      <h3>Branding and Social Media</h3>
                </span>
             </div>
                <div class="col-md-2">
                <span class="chart" data-percent="70">
                       <span class="percent"></span>
-                       <h3>Illustrator</h3>
+                       <h3>Bootstrap</h3>
                </span>
             </div>
                <div class="col-md-2">
                <span class="chart" data-percent="70">
                       <span class="percent"></span>
-                      <h3>Design UI/UX</h3>
+                      <h3>UI/UX Design</h3>
                </span>
             </div>
                <div class="col-md-2">
-               <span class="chart" data-percent="50">
+               <span class="chart" data-percent="60">
                       <span class="percent"></span>
-                      <h3>Bootstrap</h3>
+                      <h3>Illustrator</h3>
                </span>
             </div>
             
@@ -166,18 +175,18 @@
      <section id="page-education" class="page-education">
        <div class="container">
                 <header class="section-header">
-                    <h2 class="section-title"><span>Educação</span></h2>
+                    <h2 class="section-title"><span>Education</span></h2>
                      <div class="spacer"></div>
-                    <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>
+                     <!-- <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>-->
                 </header>
                 <div class="row">
                  <div class="col-md-6 col-md-offset-3">
                   <article class="education">
                     <header>
-                      <h3>Universidade Estadual de Campinas</h3>
-                      <p>Engenharia de Computação - <strong>Est: </strong> Dez 2015</p>
+                      <h3>Campinas State University</h3>
+                      <p>Bachelor in Computer Engineering - <strong>Est: </strong> Dec 2015</p>
                     </header>
-                      <p> Estudante de Engenharia de Computação na UNICAMP desde o ano de 2010, fiz o máximo para aproveitar tudo que a Universidade tinha a me oferecer. Até o fim de 2012 já tinha participado da Atlética, Empresa Jr e ajudado na fundação da Semana Acadêmica da Computação, a Secomp. Hoje, participo apenas do Grupo de Mercado Financeiro do Instituto de Economia.</p>
+                      <p> Studying Computer Engineering at UNICAMP since 2010, I did my best to fully avail everything the University had to offer. By the end of 2012 I had already been a member of the Athletic Association and Junior Enterprise staffs and had helped establishing the Academic Week, Secomp. </p>
                   </article>
                 </div>
             </div>
@@ -187,36 +196,36 @@
      <section id="page-experience" class="page-experience">
        <div class="container">
                 <header class="section-header">
-                    <h2 class="section-title"><span>Experiência</span></h2>
+                    <h2 class="section-title"><span>Experience</span></h2>
                      <div class="spacer"></div>
-                    <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>
+                     <!-- <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>-->
                 </header>
                 <div class="row">
                  <div class="col-md-4">
                   <article class="experience">
                     <header>
                       <h3><b>Freelancer</b></h3>
-                      <p>Design Gráfico / São Paulo, SP / 2008 - Atual</p>
+                      <p>Grapic Design / São Paulo, Brazil / 2008 - Atual</p>
                     </header>
-                      <p>Mais de 20 projetos realizados nos últimos anos dentre a criação de logomarcas, material de divulgação e geração de materiais gráficos diversos.</p>
+                      <p>More than 20 projects finished over the last 6 years, among logo creations, communication material and generation of lots of graphic material.</p>
                   </article>
                 </div>
                   <div class="col-md-4">
                   <article class="experience">
                     <header>
                       <h3>Sharespot</h3>
-                       <p>Design Gráfico / Campinas, SP / 2014</p>
+                       <p>Graphic Designer / Campinas, Brazil / 2014</p>
                     </header>
-                      <p>Designer em 2014, trabalhei na área de interface UI/UX de totens interativos, além da preparação de apresentações estilizadas. Aqui fui apresentado à programação frontend.</p>
+                      <p>As a designer in 2014, I worked with UI/UX Design with interactive screens with touch interface. I Also gathered consistent knowledge in presentation and slideshow design. Lastly I was presented to frontend design with Bootstrap framework.</p>
                   </article>
                 </div>
                 <div class="col-md-4">
                 <article class="experience">
                   <header>
-                    <h3>Atlética Computação Unicamp</h3>
+                    <h3>UNICAMP Athelic Association</h3>
                      <p>Vice-Presidente / Diretor de Marketing / Campinas, SP / 2010 - 2012</p>
                   </header>
-                    <p>Diretor de Marketing em 2011, auxiliei na adaptação da entidade às mídias sociais, também trabalhando essencialmente com design gráfico na área de comunicação. Fui da comissão fundadora da Semana da Computação onde também atuei em comunicações por dois anos. Em 2012 tornei-me Vice-Presidente e Diretor Administrativo, cuidando de setores mais gerenciais da entidade.</p>
+                    <p>Chief Marketing Officer in 2011, I helped adapting the entity to modern social media, also working with communication design and advertising. This inserted me into the founding committee of the academic week, Secomp, in which I worked with communication and advertising for 2 years. By 2012 I had become Vice-President, handling the entitys management issues.</p>
                 </article>
                 </div>
             </div>
@@ -227,17 +236,17 @@
           <div class="container">
             <div class="row">
                 <header class="section-header">
-                    <h2 class="section-title"><span>Portfólio</span></h2>
+                    <h2 class="section-title"><span>Portfolio</span></h2>
                       <div class="spacer"></div>
-                    <p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>
+                    <p class="section-subtitle"> </p>
                 </header>
            
                 <div id="grid-controls-wrapper">
                 <ul class="nav nav-pills center-pills grid-controls">
-                  <li class="active filter"><a href="javascript:void(0)" data-filter="*">Todos</a></li>
+                  <li class="active filter"><a href="javascript:void(0)" data-filter="*">All</a></li>
                   <li class="filter" ><a href="javascript:void(0)" data-filter=".design">Design</a></li>
                   <li class="filter" ><a href="javascript:void(0)" data-filter=".branding">Branding</a></li>   
-                  <li class="filter"><a href="javascript:void(0)"  data-filter=".logo">Logomarcas</a></li>
+                  <li class="filter"><a href="javascript:void(0)"  data-filter=".logo">UI/UX</a></li>
                   <!--<li class="filter" ><a href="javascript:void(0)" data-filter=".web">Website</a></li>-->
                 </ul>
               </div>
@@ -248,31 +257,79 @@
                        <a href="img/portfolio/large/chapeu-frente.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/chapeu-frente.jpg"  alt="" >
                       </a> </li>
                       <li class="mix design">
-                       <a href="img/portfolio/large/chapeu-tras.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/chapeu-tras.jpg" alt="" ></a></li>
+                       <a href="img/portfolio/large/chapeu-tras.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/chapeu-tras.jpg" alt="" >
+                      </a></li>
+                      <li class="mix design">
+                       <a href="img/portfolio/large/Restaurante-2.png"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/Restaurante-2.png" alt="" >
+                      </a></li>
+                      <li class="mix design">
+                       <a href="img/portfolio/large/Restaurante-3.png"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/Restaurante-3.png" alt="" >
+                      </a></li>
+                      <li class="mix logo">
+                       <a href="img/portfolio/large/app-1.png"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/app-1.png" alt="" >
+                      </a></li>
+                      <li class="mix logo">
+                       <a href="img/portfolio/large/app-2.png"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/app-2.png" alt="" >
+                      </a></li>
+                      <li class="mix branding">
+                       <a href="img/portfolio/large/logo-eva.png"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/logo-eva.png" alt="" >
+                      </a></li>
+                      <li class="mix design">
+                       <a href="img/portfolio/large/caco-aaab.png"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/caco-aaab.png" alt="" >
+                      </a></li>
+                      <li class="mix branding">
+                       <a href="img/portfolio/large/interanos-logo.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/interanos-logo.png" alt="" >
+                      </a></li>
+                      <li class="mix design">
+                       <a href="img/portfolio/large/interanos.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/interanos.png" alt="" >
+                      </a></li>
+                      <li class="mix design">
+                       <a href="img/portfolio/large/interanos-cs.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/interanos-cs.png" alt="" >
+                      </a></li>
+                      <li class="mix branding">
+                       <a href="img/portfolio/large/100Nossao.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/nossao.png" alt="" >
+                      </a></li>
+                      <li class="mix design">
+                       <a href="img/portfolio/large/valorosa.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/valorosa.png" alt="" >
+                      </a></li>
+                      <li class="mix branding">
+                       <a href="img/portfolio/large/secomp-logo.png"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/secomp-logo.png" alt="" >
+                      </a></li>
+                      <li class="mix design">
+                       <a href="img/portfolio/large/garrafa-pdbtice.jpg"><div class="overlay"><i class="fa fa-search"></i></div><img src="img/portfolio/small/garrafa-pdbtice.png" alt="" >
+                      </a></li>
                   </ul>
                 </div>
             </div>
         </div>
     </section><!-- portfolio ends -->
+
+
+
+
+
+
+
     <!-- contact begins -->
      <section id="page-contact" class="page-contact">
           <div class="container">
               <header class="section-header">
-                  <h2 class="section-title"><span>Contato</span></h2>
+                  <h2 class="section-title"><span>Contact</span></h2>
                     <div class="spacer"></div>
                        <!--<p class="section-subtitle">Lorem ipsum dolor sit amet, id iusto oportere mel. </p>-->
               </header>
         <div class="row">
           <div class="col-sm-5 contact-info">
-            <h3>Informações de Contato</h3>
+            <h3>Contact Information</h3>
             <p><i class="fa fa-map-marker"></i>  Rua Dr. Shigeo Mori, 349 - Campinas, SP, Brazil </p>
             <p><i class="fa fa-phone"></i>  +55 11 971-816-091 | +55 19 3342-5249</p>
             <p><i class="fa fa-envelope-o"></i>  khevin@khevin.com</p>
           </div>
           
           <div class="col-sm-7">
-          <h3>Entre em contato!</h3>
-              <form  class="form-horizontal" id="contact-form">
+          <h3>Contact me!</h3>
+              <form id="contact-form">
+              <!-- ANTIGO <form method="post" action="contact.php" id="contact-form"> -->
         <div class="control-group">
             <label class="control-label" for="name">Nome</label>
             <div class="controls">
@@ -280,19 +337,20 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="email">Endereço de Email</label>
+            <label class="control-label" for="email">Email Address</label>
             <div class="controls">
                 <input type="text" name="email" id="email" placeholder="Seu endereço de email" class="form-control input-lg">
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="message">Mensagem</label>
+            <label class="control-label" for="message">Message</label>
             <div class="controls">
                 <textarea name="message" id="message" placeholder="Insira aqui sua mensagem" rows="6" class="form-control input-lg"></textarea>
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn btn-default btn-lg btn-block">Submeter Mensagem</button>
+            <input type="submit" value="Submeter Mensagem" class="btn btn-default btn-lg btn-block"></input>
+            <!-- ANTIGO <button type="submit" value="post" class="btn btn-default btn-lg btn-block">Submeter Mensagem</button> -->
         </div>
     </form><!-- End contact-form -->
           </div>
@@ -300,7 +358,6 @@
 
         </div>
     </section> <!-- contact ends -->
-
 
         <script src="js/jquery-1.10.2.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
