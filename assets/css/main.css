@@ -7,9 +7,7 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-.red-text {
-	color: #ff3333 !important;
-}
+
 
 /* Reset */
 
@@ -2577,12 +2575,38 @@
 
 /* Post */
 
+
+
+
+.post-2 {
+		background-image: url("../../images/pic00-2.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		padding: 3em 3em 1em 3em ;
+		/*background: #ffffff;*/
+		border: solid 1px rgba(160, 160, 160, 0.3);
+		margin: 0 -3em 3em -3em;
+		position: relative;
+		
+	}
+
+	@media screen and (min-width: 1281px) {
+
+			.post-2 {
+				margin: 0 0 3em 0;
+			}
+
+	}
+
+
 	.post {
 		padding: 3em 3em 1em 3em ;
 		background: #ffffff;
 		border: solid 1px rgba(160, 160, 160, 0.3);
 		margin: 0 0 3em 0;
 		position: relative;
+		
 	}
 
 		.post > header {
@@ -2590,7 +2614,7 @@
 			display: -webkit-flex;
 			display: -ms-flex;
 			display: flex;
-			border-bottom: solid 1px rgba(160, 160, 160, 0.3);
+			/*border-bottom: solid 1px rgba(160, 160, 160, 0.3);*/
 			left: -3em;
 			margin: -3em 0 3em 0;
 			position: relative;
@@ -2645,6 +2669,9 @@
 
 		.post > a.image.featured {
 			overflow: hidden;
+			padding: 0;
+			margin: 0 !important;
+			width: 100% !important;
 		}
 
 			.post > a.image.featured img {
@@ -2842,7 +2869,7 @@
 			.post > .image.featured {
 				margin-left: -1.5em;
 				margin-top: calc(-1.5em - 1px);
-				width: calc(100% + 3em);
+				width: 100%;/*width: calc(100% + 3em);*/
 			}
 
 			.post > footer {
