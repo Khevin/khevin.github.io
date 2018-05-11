@@ -213,7 +213,7 @@
 								</header>
 									<!-- Form -->
 								<div>	
-										<form name="contactform" action="mailto:comercial@nelri.com.br" method="post" id="email_form">
+										<form name="contactform" action="email_submit.php" method="post" id="email_form">
 									
 										<div>
 											<label for="inputName">Nome</label>
@@ -236,7 +236,7 @@
 										</div>
 								
 										<div>
-											<button type="submit" value="Send" class="btn btn-form" id="submit_form">Enviar mensagem</button>
+											<button name="submit" type="submit" value="Submit" class="btn btn-form" id="submit_form">Enviar mensagem</button>
 										</div>
 								
 
@@ -282,7 +282,8 @@
 									<br><h2 style="color: #ff3333">Contato</h2><p><strong><i class="fa fa-phone" aria-hidden="true"></i> (19) 3295-3007 &bull; (19) 3295-0132 <br>	<i class="fa fa-envelope" aria-hidden="true"></i> comercial@nelri.com.br &bull; administrativo@nelri.com.br</strong></p><h2 style="color: #ff3333">Endereço</h2><p><i class="fa fa-map-marker" aria-hidden="true"></i> <strong>Rua Dr. Alberto Cerqueira de
 Lima, 636 – Taquaral. Campinas- SP. Próximo ao
 Balão do Kennedy.</strong><br><br>Nossa sede conta com localização privilegiada de fácil acesso e estacionamento próprio. Uma estrutura completa para bem atender nosso clientes e parceiros.
-                                Horário de Atendimento de segunda a sexta-feira das 08:00 às 18:00.</p>
+                                <br><h2 style="color: #ff3333">Horário de Atendimento</h2>
+                                <strong>Segunda a Sexta-feira das 08:00 às 18:00.</strong></p>
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.8687642782056!2d-47.056272485498994!3d-22.881305842713758!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c8c5fc6ff05cef%3A0xe623dbbdf728b305!2sNelri+Com%C3%A9rcio+e+Servi%C3%A7os+de+Inform%C3%A1tica!5e0!3m2!1sen!2sbr!4v1511454678376" width="100%" height="320" frameborder="0" style="border:0" allowfullscreen></iframe>
 								
 							</section>
