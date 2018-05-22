@@ -214,15 +214,21 @@
 									<!-- Form -->
 								<div>	
 										<form name="contactform" action="email_submit.php" method="post" id="email_form">
+                                            
+<!--
+                                        <div>
+                                            <span id="success_message" class="form-success"></span>    
+                                        </div>
+-->
 									
 										<div>
 											<label for="inputName">Nome</label>
-											<input name="name" type="text" id="inputName" placeholder="Daniel Exemplo" style="width: 100%">
+											<input name="name" type="text" id="inputName" placeholder="Daniel Exemplo" style="width: 100%" required>
 										</div>
 									
 										<div>
 											<label for="inputName">Endereço de Email</label>
-											<input name="email" type="email" id="inputEmail"  placeholder="daniel@exemplo.org" style="width: 100%">
+											<input name="email" type="email" id="inputEmail"  placeholder="daniel@exemplo.org" style="width: 100%" required>
 										</div>
 
 										<div>
@@ -232,7 +238,7 @@
 									
 										<div>
 											<label for="inputMessage">Mensagem</label>
-											<textarea name="message" rows="3" id="inputMessage"  placeholder="Deixe aqui sua mensagem." style="width: 100%"></textarea>
+											<textarea name="message" rows="3" id="inputMessage"  placeholder="Deixe aqui sua mensagem." style="width: 100%" required></textarea>
 										</div>
 								
 										<div>
@@ -304,6 +310,8 @@ Balão do Kennedy.</strong><br><br>Nossa sede conta com localização privilegia
 			<script src="assets/js/util.js"></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
+            <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 		
 
@@ -347,7 +355,56 @@ Balão do Kennedy.</strong><br><br>Nossa sede conta com localização privilegia
 			    }
 			  });
 			</script>
+    
+    
+<!-- Previne botao de submissao de ser pressionado mais de uma vez -->
+<!--
+<script>
+    var submitButton = document.getElementById("email_form");
+    var form = document.getElementById("email_form");
+    form.addEventListener("submit", function (e) {
+        setTimeout(function() {
+            submitButton.value = "Sending...";
+            submitButton.disabled = true;
+        }, 1);
+    });
+</script> 
+-->
+
+<!-- Fade Out na submissao de mensagem -->
+
+<!--
+<script>
+$("#email_form").submit(function(e) {
+	//e.preventDefault();
+	// var name = $("#name").val();
+	// var comment = $("#comment").val();
+	
+	// if(name == "" || comment == "" ) {
+	// 	$("#error_message").show().html("Preencha os campos obrigatorios.");
+	// } else {
+	// 	$("#error_message").html("").hide();
+		$.ajax({
+			// type: "POST",
+			// url: "post-form.php",
+			// data: "name="+name+"&comment="+comment,
+			success: function(data){
+				setTimeout(function() {
+					$('#success_message').hide().html("Email enviado!").fadeIn("slow");
+				}, 800 );
+				
+				setTimeout(function() {
+					$('#success_message').fadeOut("slow");
+				}, 6400 );
+
+			}
+		});
+	//}
+})
+</script>
+-->
 
 
-	</body>
+
+</body>
 </html>
