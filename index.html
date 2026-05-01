@@ -3,491 +3,310 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>khev-tools / design-expert — design fluency for Claude Code</title>
+<title>khevin-mituti / portfolio — Designer. Fifteen years on the bar.</title>
+<meta name="description" content="Khevin Mituti is a designer who has spent fifteen years leading product, brand, and experience work for global companies and startups." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png" />
+<link rel="shortcut icon" href="./assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="./assets/favicon/site.webmanifest" />
 </head>
-<body data-theme="ink" data-density="default">
+<body>
 
 <!-- ============= NAV ============= -->
 <nav class="top">
   <div class="inner">
-    <a href="#top" class="brand"><span>khev-tools</span><span class="slash">/</span><span class="child">design-expert</span></a>
-    <ul>
-      <li><a href="#language">Commands</a></li>
-      <li><a href="#library">Library</a></li>
-      <li><a href="#pantheon">Pantheon</a></li>
-      <li><a href="#install">Install</a></li>
-      <li><a href="#faq">FAQ</a></li>
-      <li><a href="#changelog">Changelog</a></li>
+    <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="chev" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="false" data-href="./design-expert.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
+        </span>
+        <span class="ns-desc">the plugin — what khevin makes for designers</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="./index.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">✓</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work — what khevin ships for clients</span>
+      </li>
+    </ul>
+
+    <ul class="primary">
+      <li><a href="#top">home</a></li>
+      <li><a href="#clients">work</a></li>
+      <li><a href="./process.html">process</a></li>
+      <li><a href="./notes.html">blog</a></li>
+      <li><a href="./about-me.html">about</a></li>
     </ul>
   </div>
 </nav>
 
 <main id="top">
 
-<!-- ============= HERO ============= -->
-<section class="hero">
-  <div class="shell">
-    <div class="hero-title">
-      <svg class="hero-grid" viewBox="0 0 1200 480" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <pattern id="hgridSq" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" stroke-width="1"/>
-          </pattern>
-        </defs>
-        <rect width="1200" height="480" fill="url(#hgridSq)"/>
-      </svg>
-      <h1 class="display fade-in">
-        <span class="l1">The <em>design-expert</em>,</span>
-        <span class="l2" style="font-size: 103px; letter-spacing: -3.7px; line-height: 0.75; text-align: left; padding: 0px 0px 0px 80px">at your <span class="under">service</span>.</span>
+<!-- ============= HERO · V5 EDITORIAL DISPATCHES ============= -->
+<section class="hero v5">
+  <div class="h-block">
+    <div class="left">
+      <h1 class="hx-display">
+        <span class="a">Design that</span>
+        <span class="b">solves &amp; ships.</span>
       </h1>
     </div>
-
-    <div class="row" style="margin-top: 24px;">
-      <div style="grid-column: span 6;">
-        <p class="body-lg">Most AI ships the same UI because it learned from the same slop.<br /> <em style="color:var(--accent); font-style:italic;">design-expert</em> teaches it taste.</p>
-        <p class="hero-copy" style="margin-top: 14px; color: rgb(84, 84, 84)">A complete design discipline — manifesto, craft, references, reviewer — installed into Claude Code as a single command.</p>
-      </div>
-      <div style="grid-column: 8 / span 5;">
-        <div class="hero-art" data-cap="four verbs" aria-hidden="true">
-          <svg class="commands-art" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-            <rect class="term-frame" x="16" y="20" width="168" height="160" rx="2" />
-            <line class="term-frame" x1="16" y1="34" x2="184" y2="34" />
-            <circle cx="24" cy="27" r="1.6" fill="var(--ink-faint)" />
-            <circle cx="30" cy="27" r="1.6" fill="var(--ink-faint)" />
-            <circle cx="36" cy="27" r="1.6" fill="var(--ink-faint)" />
-            <text x="178" y="29" text-anchor="end" font-family="var(--mono)" font-size="6" fill="var(--ink-faint)" letter-spacing="0.1em">DESIGN-EXPERT</text>
-            <g class="line-row r1">
-              <text class="prompt" x="24" y="58">$</text>
-              <text class="slash" x="34" y="58">/</text>
-              <text class="verb" x="40" y="58">design-expert:plan</text>
-            </g>
-            <g class="line-row r2">
-              <text class="prompt" x="24" y="82">$</text>
-              <text class="slash" x="34" y="82">/</text>
-              <text class="verb" x="40" y="82">design-expert:build</text>
-            </g>
-            <g class="line-row r3">
-              <text class="prompt" x="24" y="106">$</text>
-              <text class="slash" x="34" y="106">/</text>
-              <text class="verb" x="40" y="106">design-expert:write</text>
-            </g>
-            <g class="line-row r4">
-              <text class="prompt" x="24" y="130">$</text>
-              <text class="slash" x="34" y="130">/</text>
-              <text class="verb" x="40" y="130">design-expert:review</text>
-            </g>
-            <rect class="cursor" x="24" y="152" width="5" height="9" />
-            <text class="prompt" x="32" y="160" opacity="0.5">_</text>
-          </svg>
-        </div>
-      </div>
+    <div class="right">
+      <p>I&rsquo;m <a href="./about-me.html" class="name-link">Khevin Mituti</a> — fifteen years of product, brand and experience work for global companies and the startups out to replace them. The bar: things that work, in the world, for the people they were drawn for.</p>
     </div>
-
-    <div class="compat">
-      <span class="label">Built for</span>
-      <span class="chip primary" style="border-style: none; opacity: 1; background-color: rgb(26, 24, 21)"><span class="glyph">◆</span>Claude Code</span>
-      <span class="chip muted"><span class="glyph">◇</span>Cursor · soon</span>
-      <span class="chip muted"><span class="glyph">◇</span>Codex · soon</span>
-    </div>
-
-    <nav class="index">
-      <a href="#language"><span class="num">01</span><span>Commands</span></a>
-      <a href="#library"><span class="num">02</span><span>Library</span></a>
-      <a href="#pantheon"><span class="num">03</span><span>Pantheon</span></a>
-      <a href="#install"><span class="num">04</span><span>Install</span></a>
-      <a href="#faq"><span class="num">05</span><span>FAQ</span></a>
-    </nav>
+  </div>
+  <div class="dispatches manifesto">
+    <article class="d" data-transition-after="Build the right thing">
+      <div class="n">Right Problem</div>
+      <h4>Start with the <em>real</em> problem.</h4>
+      <p>Talk to the people you&rsquo;re designing for. Quantify what&rsquo;s not working. Every decision after this one depends on this one being right.</p>
+    </article>
+    <article class="d" data-transition-after="Build the thing right">
+      <div class="n">Right Solution</div>
+      <h4>Mitigate <em>risks</em>.</h4>
+      <p>Will customers use it? Can we build it? Does it work for the business? Value, feasibility, and viability — three checks, all required before anything ships.</p>
+    </article>
+    <article class="d">
+      <div class="n">Done Right</div>
+      <h4>Ship, then <em>improve</em>.</h4>
+      <p>Mitigate usability risk through testing and iteration. Measure and monitor the in-market experience. Continuously improve — design doesn&rsquo;t end at launch.</p>
+    </article>
   </div>
 </section>
 
-<!-- ============= 01 COMMANDS ============= -->
-<section class="section" id="language">
+<!-- ============= 01 · ABOUT ============= -->
+<section class="section" id="about">
+  <div class="shell">
+    <div class="s-head s-head--with-art">
+      <div>
+        <h2 class="section-title">A designer<br />who has worn<br /><em>many hats</em>.</h2>
+      </div>
+      <div class="hats-art hats-art--inline" aria-hidden="true">
+        <img src="./assets/hats.png" alt="" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="about-grid">
+      <p class="lead">Throughout a fifteen-year career, I&rsquo;ve had the chance to lead over a hundred projects — across UX, product management, interaction, brand, DesignOps, front-end development and communications.</p>
+      <div class="hats-art" aria-hidden="true">
+        <img src="./assets/hats.png" alt="" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="disciplines">
+      <div class="d">
+        <h4>Product design</h4>
+        <p>User-centered products that meet real user needs and business objectives — research, iterative design, strategic decisions, team collaboration.</p>
+      </div>
+      <div class="d">
+        <h4>Brand <em>management</em></h4>
+        <p>Product–market fit. Identity and positioning that match what the market actually wants. Competitive analysis, market research, brand development.</p>
+      </div>
+      <div class="d">
+        <h4>Art <em>direction</em></h4>
+        <p>Creative direction for visually compelling communication systems. Visual design, systemic design, storytelling.</p>
+      </div>
+      <div class="d">
+        <h4><em>DesignOps</em></h4>
+        <p>ProductOps and process. Streamlining design and product operations. Process optimization, team coordination, tool integration, workflow automation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= 02 · CLIENTS ============= -->
+<section class="section" id="clients">
   <div class="shell">
     <div class="s-head">
-      <div class="num">01 — Commands</div>
       <div>
-        <h2 class="section-title">Four verbs.<br />A shared <em style="font-style:italic; color:var(--accent);">vocabulary</em>.</h2>
-        <p class="body-lg">design-expert exposes itself through four commands. Each one points at a different mode of design work — the same modes a senior designer moves through every day. Type any of them in Claude Code with a target.</p>
+        <h2 class="section-title with-glass">Big rooms.<br />Small rooms.<br /><em>Same bar.</em><span class="glass-art" aria-hidden="true"><svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <ellipse cx="60" cy="186" rx="44" ry="5" fill="#1E1338" opacity="0.18"/>
+          <ellipse cx="60" cy="180" rx="34" ry="4" fill="#2E1F4D"/>
+          <ellipse cx="60" cy="178" rx="34" ry="4" fill="#49317A"/>
+          <rect x="58" y="100" width="4" height="78" fill="#49317A"/>
+          <rect x="58" y="100" width="1.5" height="78" fill="#7E56C9" opacity="0.7"/>
+          <path d="M 22 36 Q 22 100 60 100 Q 98 100 98 36 Z" fill="#1A1815"/>
+          <path d="M 26 50 Q 28 96 60 96 Q 92 96 94 50 Q 60 60 26 50 Z" fill="#9F3829"/>
+          <path d="M 26 50 Q 60 60 94 50 Q 60 56 26 50 Z" fill="#C44536"/>
+          <ellipse cx="60" cy="50" rx="32" ry="3" fill="#D45B4C" opacity="0.85"/>
+          <path d="M 30 44 Q 28 70 38 92" fill="none" stroke="#F8F5EE" stroke-width="2" stroke-linecap="round" opacity="0.45"/>
+          <ellipse cx="60" cy="36" rx="38" ry="5" fill="none" stroke="#1A1815" stroke-width="2"/>
+          <ellipse cx="60" cy="36" rx="38" ry="5" fill="#2E1F4D" opacity="0.4"/>
+        </svg></span></h2>
+        <p class="body-lg">A partial list. Some I led teams inside, some I consulted from the outside, some I designed end to end.</p>
       </div>
     </div>
 
-    <div class="cmd-grid">
-      <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 01</span>
-          <span class="num">discovery</span>
-        </div>
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>plan</span>
-        <h4>Plan the design first.</h4>
-        <p>Discovery before pixels. Audience, register, brand voice, anti-references — captured as a brief the rest of the work reads. Stops the model from one-shotting a generic mock.</p>
-        <span class="ex">$ /design-expert:plan checkout flow for a calm clinical SaaS</span>
-      </a>
-      <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 02</span>
-          <span class="num">execution</span>
-        </div>
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>build</span>
-        <h4>Build it on the bar.</h4>
-        <p>From brief to real screens, real components, real type. Reads your tokens, respects your system, ships code — not a Figma mock the model can't render.</p>
-        <span class="ex">$ /design-expert:build pricing page from PLAN.md</span>
-      </a>
-      <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 03</span>
-          <span class="num">voice</span>
-        </div>
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>write</span>
-        <h4>Write copy that holds.</h4>
-        <p>Display lines, microcopy, error states, empty states — written in the voice the brief committed to, not in default-AI breeziness.</p>
-        <span class="ex">$ /design-expert:write hero for a calm clinical SaaS</span>
-      </a>
-      <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 04</span>
-          <span class="num">judgment</span>
-        </div>
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>review</span>
-        <h4>Review with a real reviewer.</h4>
-        <p>The work gets walked, scored against the foundations, and graded. The reviewer cites the principle behind every note — no vibes-based feedback, no "looks great, ship it."</p>
-        <span class="ex">$ /design-expert:review src/pages/pricing.tsx</span>
-      </a>
+    <div class="clients-strip">
+      <div class="col-l">
+        <h3>Global brands<br /><em>I&rsquo;ve worked with.</em></h3>
+      </div>
+      <div class="col-r">
+        <picture class="client-strip-img">
+          <source media="(max-width: 600px)" srcset="./clients/client-logos-vertical2.png" />
+          <img src="./clients/client-logos-horizontal2.png" alt="Global brands worked with: Emiliano, Estée Lauder, Favo, TriStar, 2W, Amway, Unilever, Cargill" loading="lazy" />
+        </picture>
+      </div>
     </div>
 
-    <p class="note" style="margin-top:18px; text-align:right;">All four commands read the same skill files. Edits to <span class="mono">SKILL.md</span> propagate everywhere.</p>
+    <div class="clients-strip clients-strip--next">
+      <div class="col-l">
+        <h3>Brands &amp; products<br /><em>given life to.</em></h3>
+      </div>
+      <div class="col-r">
+        <picture class="client-strip-img">
+          <source media="(max-width: 600px)" srcset="./clients/client-logos-vertical.png" />
+          <img src="./clients/client-logos-horizontal.png" alt="Brands and products given life to: Bitcapital, Bluebee, Ícaro, Join-T, Korner, Lynx, Spaces, Z Money" loading="lazy" />
+        </picture>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ============= 02 LIBRARY ============= -->
-<section class="section" id="library">
+<!-- ============= 03 · WORK ============= -->
+<section class="section" id="work">
   <div class="shell">
     <div class="s-head">
-      <div class="num">02 — The Library</div>
       <div>
-        <h2 class="section-title">A small library<br />of <em style="font-style:italic; color:var(--accent);">skills</em>.</h2>
-        <p class="body-lg">design-expert is markdown all the way down. Every file is a discipline. Every discipline is editable. You can read it, fork it, override a section in <span class="mono">PROJECT.md</span>, or hand the whole library to a junior on day one.</p>
+        <h2 class="section-title">Three, <em>worth telling</em>.</h2>
+        <p class="body-lg">Some of my work is protected. Some of it is old. Some of it is interesting enough that I want to share it with you in detail.</p>
       </div>
     </div>
 
-    <div class="library">
-      <div class="row-item">
-        <span class="n">S · 01</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M15 12 L 45 12 L 45 48 L 15 48 Z M 22 22 L 38 22 M 22 30 L 38 30 M 22 38 L 32 38"/><path class="pulse" d="M30 6 L 30 54"/></svg></span>
-        <span class="name">SKILL.md</span>
-        <span class="desc">The manifesto + index. Loaded on every command. The "why" before the "how."</span>
-        <span class="tag">root · 1.4k lines</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 02</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 50 L 30 10 L 50 50 Z M 18 38 L 42 38"/></svg></span>
-        <span class="name">foundations.md</span>
-        <span class="desc">Perception, hierarchy, contrast, gestalt. Nielsen's 10 + UD7 + the 10-lens review framework.</span>
-        <span class="tag">core</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 03</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M14 14 L 46 14 M 30 14 L 30 46 M 24 46 L 36 46"/><path class="draw" d="M40 26 C 50 26 50 38 40 38 L 38 38 L 38 26 Z"/></svg></span>
-        <span class="name">typography.md</span>
-        <span class="desc">Pairings, scales, optical sizing, the impeccable type interface. Reflex-reject lists for overused fonts.</span>
-        <span class="tag">core</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 04</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 18 L 26 18 L 26 50 L 10 50 Z M 30 10 L 50 10 L 50 30 L 30 30 Z M 30 36 L 50 36 L 50 50 L 30 50 Z"/></svg></span>
-        <span class="name">craft.md</span>
-        <span class="desc">Composition, layering, layout tests, the visual rhetoric of editorial work.</span>
-        <span class="tag">core</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 05</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 22 L 26 22 L 26 38 L 10 38 Z M 34 22 L 50 22 L 50 38 L 34 38 Z M 22 30 L 34 30"/><circle class="draw" cx="30" cy="12" r="4"/><circle class="draw" cx="30" cy="48" r="4"/></svg></span>
-        <span class="name">components.md</span>
-        <span class="desc">Carbon cells, icons, data-viz primitives. The pieces that recur across product UI.</span>
-        <span class="tag">core</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 06</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M8 30 Q 18 14 30 30 T 52 30"/><circle class="pulse" cx="15" cy="30" r="3"/></svg></span>
-        <span class="name">interaction.md</span>
-        <span class="desc">States, motion, responsive, onboarding. How a screen behaves once a human touches it.</span>
-        <span class="tag">core</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 07</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><circle class="draw" cx="30" cy="30" r="20"/><path class="draw" d="M16 16 L 44 44"/></svg></span>
-        <span class="name">anti-slop.md</span>
-        <span class="desc">The named patterns the model reaches for by default — and what to reach for instead.</span>
-        <span class="tag">discipline</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 08</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 14 L 50 14 M 10 24 L 40 24 M 10 34 L 50 34 M 10 44 L 35 44"/><path class="pulse" d="M44 42 L 50 48 L 56 38"/></svg></span>
-        <span class="name">output-format.md</span>
-        <span class="desc">Review template, confidence, scoring. The reviewer's rubric in machine-readable form.</span>
-        <span class="tag">discipline</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 09</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><circle class="draw" cx="30" cy="30" r="4"/><circle class="draw" cx="30" cy="30" r="14"/><circle class="draw" cx="30" cy="30" r="24"/></svg></span>
-        <span class="name">design-gods/</span>
-        <span class="desc">Per-designer files: Rams, Vignelli, Ive, Norman, Nielsen, Bret Victor, Kare, Rand, Eames, Corum, Tufte, Cooper, Frere-Jones.</span>
-        <span class="tag">canon · 13 files</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 10</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 14 L 26 14 L 26 30 L 10 30 Z M 34 14 L 50 14 L 50 30 L 34 30 Z M 10 36 L 26 36 L 26 50 L 10 50 Z M 34 36 L 50 36 L 50 50 L 34 50 Z"/><path class="pulse" d="M14 22 L 22 22 M 38 22 L 46 22"/></svg></span>
-        <span class="name">library/</span>
-        <span class="desc">Worked examples. Annotated screens. The skill's own portfolio of what good looks like.</span>
-        <span class="tag">canon</span>
-      </div>
-      <div class="row-item">
-        <span class="n">S · 12</span>
-        <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 18 L 22 30 L 10 42 M 26 44 L 50 44"/></svg></span>
-        <span class="name">commands/*.md</span>
-        <span class="desc">build · review · plan · write. Each command's own behavior, written in plain markdown.</span>
-        <span class="tag">commands</span>
-      </div>
+    <div class="work-list">
+      <a class="item" href="./projects/favo.html">
+        <span class="n">01</span>
+        <span class="title"><em>FAVO</em></span>
+        <span class="desc">Rebranded a community-grocery startup from Aiyu to Favo and shipped the product that carried the new identity to 1.2 million customers across Brazil and Peru.</span>
+        <span class="meta-tags"><span>Brand · Product</span><span>~1.5 years</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="item" href="./projects/spaces.html">
+        <span class="n">02</span>
+        <span class="title"><em>Spaces</em> Parking</span>
+        <span class="desc">Untangled an undocumented operator portal from a blank slate — research, component library, V2.0 redesign. Operators stopped fighting the tool.</span>
+        <span class="meta-tags"><span>Product · Systems</span><span>NYC · TX · West Coast</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="item" href="./projects/amway.html">
+        <span class="n">03</span>
+        <span class="title"><em>Amway</em></span>
+        <span class="desc">From a single Product Recommender to a suite of six tools. Saved millions in licensing, drove 24% of platform sales through the recommender we shipped.</span>
+        <span class="meta-tags"><span>Product · DesignOps</span><span>Global</span></span>
+        <span class="arrow">→</span>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ============= 03 PANTHEON ============= -->
-<section class="section" id="pantheon">
+<!-- ============= 04 · SNIPPETS ============= -->
+<section class="section" id="snippets">
   <div class="shell">
     <div class="s-head">
-      <div class="num">03 — The Pantheon</div>
       <div>
-        <h2 class="section-title">The <em style="font-style:italic; color:var(--accent);">designers</em><br />the skill listens to.</h2>
-        <p class="body-lg">A small canon, deliberately curated. Each name has a file in <span class="mono">design-gods/</span> with their work, their rules, and the moments when their judgment overrides the skill's defaults. This is the bar.</p>
+        <h2 class="section-title">A few more,<br /><em>briefly.</em></h2>
+        <p class="body-lg">Public-facing pieces that didn&rsquo;t warrant a full case study but earned a paragraph.</p>
       </div>
     </div>
 
-    <div class="pantheon">
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M40 170 C 25 150 28 110 60 95 C 95 80 130 90 145 70 C 158 50 140 30 110 35 C 80 40 70 60 80 80 C 90 100 120 105 130 125 C 140 145 130 165 105 168"/></svg></div>
-        <div class="top"><span class="num">01</span><span class="disc">Industrial</span></div>
-        <h4><span class="first">Dieter</span>Rams</h4>
-        <p class="credo">Less, but better. Honest, unobtrusive, and as little design as possible.</p>
+    <div class="snip-grid">
+      <div class="snip">
+        <div class="thumb"><span class="mark">B</span></div>
+        <div class="info">
+          <span class="n">Snippet · 01 · Fintech</span>
+          <h4>Bitcapital</h4>
+          <p>Art direction, credit-card design, web collateral and a UX review for an open-banking fintech.</p>
+          <div class="tags"><span>Brand</span><span>Web</span><span>UX review</span></div>
+        </div>
       </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 100 L 70 60 L 110 100 L 70 140 L 30 100 M 90 60 L 130 60 L 130 140 L 90 140 Z M 150 60 C 175 60 175 100 150 100 C 175 100 175 140 150 140"/></svg></div>
-        <div class="top"><span class="num">02</span><span class="disc">Graphic</span></div>
-        <h4><span class="first">Massimo</span>Vignelli</h4>
-        <p class="credo">The life of a designer is a life of fight against ugliness.</p>
+      <div class="snip">
+        <div class="thumb"><span class="mark">v3</span></div>
+        <div class="info">
+          <span class="n">Snippet · 02 · Hospitality</span>
+          <h4>Emiliano presents v3rso</h4>
+          <p>Art direction, pre-project work and design oversight for a hotel-stay app with a tailored experience.</p>
+          <div class="tags"><span>App</span><span>Art direction</span></div>
+        </div>
       </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M40 100 C 40 50 90 30 130 50 C 170 70 175 130 140 160 C 100 185 50 170 40 130 C 35 110 50 95 75 95 C 100 95 115 110 115 130 C 115 145 100 155 90 150"/></svg></div>
-        <div class="top"><span class="num">03</span><span class="disc">Product</span></div>
-        <h4><span class="first">Jony</span>Ive</h4>
-        <p class="credo">Care shows. So does its absence.</p>
+      <div class="snip">
+        <div class="thumb"><span class="mark">Z</span></div>
+        <div class="info">
+          <span class="n">Snippet · 03 · Fintech</span>
+          <h4>Z Money</h4>
+          <p>Website and physical collateral for a teen-focused financial-account startup. Voice and visuals, end to end.</p>
+          <div class="tags"><span>Web</span><span>Identity</span></div>
+        </div>
       </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 60 C 60 40 100 50 110 80 C 115 100 100 110 90 100 C 80 90 95 75 110 80 M 90 75 C 100 60 130 55 145 75 C 160 95 145 115 130 105 C 115 95 130 80 140 90 M 50 130 Q 100 170 160 140 M 75 155 Q 100 165 125 155"/></svg></div>
-        <div class="top"><span class="num">04</span><span class="disc">Cognitive</span></div>
-        <h4><span class="first">Don</span>Norman</h4>
-        <p class="credo">If a design fails, it is the design's fault, not the user's.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 50 L 50 50 L 50 70 L 70 70 L 70 50 L 90 50 M 110 50 L 130 50 L 130 70 M 30 90 L 60 90 M 80 90 L 110 90 M 130 90 L 170 90 M 30 130 L 80 130 M 100 130 L 170 130 M 30 170 L 50 170 L 50 150 L 130 150 L 130 170 L 170 170"/></svg></div>
-        <div class="top"><span class="num">05</span><span class="disc">Usability</span></div>
-        <h4><span class="first">Jakob</span>Nielsen</h4>
-        <p class="credo">Heuristics are how you find the bug before the user does.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 100 Q 50 60 70 100 T 110 100 T 150 100 T 190 100 M 40 140 C 60 110 80 170 100 140 C 120 110 140 170 160 140 M 50 60 L 70 40 L 90 60 L 110 40 L 130 60 L 150 40"/></svg></div>
-        <div class="top"><span class="num">06</span><span class="disc">Interaction</span></div>
-        <h4><span class="first">Bret</span>Victor</h4>
-        <p class="credo">Creators need an immediate connection to what they create.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" shape-rendering="crispEdges"><path d="M40 40 L 60 40 L 60 60 L 80 60 L 80 80 L 100 80 L 100 60 L 120 60 L 120 40 L 140 40 L 140 80 L 160 80 L 160 100 L 140 100 L 140 140 L 100 140 L 100 160 L 80 160 L 80 140 L 40 140 L 40 100 L 60 100 L 60 80 L 40 80 Z"/></svg></div>
-        <div class="top"><span class="num">07</span><span class="disc">Iconography</span></div>
-        <h4><span class="first">Susan</span>Kare</h4>
-        <p class="credo">Good icons are more like road signs than illustrations.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M50 50 C 80 30 120 30 150 50 L 150 80 L 100 100 L 50 80 Z M 70 110 L 130 110 M 70 130 L 130 130 M 90 150 L 110 150"/></svg></div>
-        <div class="top"><span class="num">08</span><span class="disc">Identity</span></div>
-        <h4><span class="first">Paul</span>Rand</h4>
-        <p class="credo">Design is the silent ambassador of your brand.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M40 130 C 40 80 90 70 90 110 C 90 140 50 140 40 130 M 110 130 C 110 80 160 70 160 110 C 160 140 120 140 110 130 M 60 130 L 60 170 M 90 130 L 90 170 M 130 130 L 130 170 M 160 130 L 160 170 M 50 170 L 80 170 M 120 170 L 150 170"/></svg></div>
-        <div class="top"><span class="num">09</span><span class="disc">Multidisciplinary</span></div>
-        <h4><span class="first">Charles &amp; Ray</span>Eames</h4>
-        <p class="credo">The details are not the details. They make the design.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 100 L 60 100 L 75 70 L 95 130 L 115 60 L 135 140 L 155 100 L 180 100 M 40 50 L 170 50 M 40 50 L 40 60 M 70 50 L 70 60 M 100 50 L 100 60 M 130 50 L 130 60 M 160 50 L 160 60 M 40 150 L 170 150 M 40 150 L 40 160 M 100 150 L 100 160 M 160 150 L 160 160"/></svg></div>
-        <div class="top"><span class="num">10</span><span class="disc">Diagrams</span></div>
-        <h4><span class="first">Jonathan</span>Corum</h4>
-        <p class="credo">A diagram is an argument. Make it a good one.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 160 L 30 40 L 180 40 M 30 160 L 180 160 M 50 160 L 50 130 L 70 130 L 70 160 M 80 160 L 80 100 L 100 100 L 100 160 M 110 160 L 110 70 L 130 70 L 130 160 M 140 160 L 140 110 L 160 110 L 160 160"/></svg></div>
-        <div class="top"><span class="num">11</span><span class="disc">Information</span></div>
-        <h4><span class="first">Edward</span>Tufte</h4>
-        <p class="credo">Clutter and confusion are failures of design, not attributes of information.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 100 C 30 60 80 60 80 100 C 80 140 30 140 30 100 M 50 80 L 70 80 M 50 100 L 70 100 M 50 120 L 70 120 M 100 60 L 180 60 M 100 80 L 160 80 M 100 100 L 170 100 M 100 120 L 150 120 M 100 140 L 165 140"/></svg></div>
-        <div class="top"><span class="num">12</span><span class="disc">Software UX</span></div>
-        <h4><span class="first">Alan</span>Cooper</h4>
-        <p class="credo">No matter how cool your interface is, less of it would be better.</p>
-      </div>
-      <div class="figure">
-        <div class="squiggle"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><path d="M30 160 L 70 40 L 110 160 M 50 110 L 90 110 M 130 80 C 110 80 105 100 130 100 C 155 100 155 130 135 140 C 110 150 100 130 110 120 M 100 175 L 165 175"/></svg></div>
-        <div class="top"><span class="num">13</span><span class="disc">Type</span></div>
-        <h4><span class="first">Tobias</span>Frere‑Jones</h4>
-        <p class="credo">A typeface is the voice you use when you can't be there in person.</p>
+      <div class="snip">
+        <div class="thumb"><span class="mark">Bb</span></div>
+        <div class="info">
+          <span class="n">Snippet · 04 · Multi-channel</span>
+          <h4>awarelog · Bluebee</h4>
+          <p>Art direction, brand identity, positioning, collateral and product design for a multi-channel application.</p>
+          <div class="tags"><span>Brand</span><span>Product</span><span>System</span></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============= 04 INSTALL ============= -->
-<section class="section" id="install">
+<!-- ============= 05 · PROCESS ============= -->
+<section class="section" id="process">
   <div class="shell">
     <div class="s-head">
-      <div class="num">04 — Install</div>
       <div>
-        <h2 class="section-title"><em style="font-style:italic; color:var(--accent);">2 minute</em> install</h2>
-        <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Add the marketplace once, install the plugin, restart your session — the four commands appear in your <span class="mono">/</span> menu.</p>
+        <h2 class="section-title">Realistic iterative <em>design</em>.</h2>
+        <p class="body-lg">The further into a project we get, the more the early steps pay off — and the cheaper the late ones become.</p>
       </div>
     </div>
 
-    <div class="install-grid">
-
-      <div class="install-card">
-        <div class="step">Step · 01</div>
-        <h4>Add the khev‑tools marketplace.</h4>
-        <p>From inside Claude Code, open the Customize tab and add a plugin marketplace. Or run the command directly:</p>
-        <div class="terminal">
-          <div class="head-bar"><span></span><span></span><span></span></div>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">khev/khev-tools</span><br/>
-          <span class="comment"># registers the marketplace · contains: design-expert</span><br/>
-          <span class="ok">✓</span> <span class="cmd-text">marketplace added · 1 plugin available</span>
-        </div>
+    <div class="process">
+      <div class="step">
+        <div class="top"><span class="big">01</span><span>Problem</span></div>
+        <h4>Start with the real problem.</h4>
+        <p>Before anything is sketched, we go deep on the user&rsquo;s actual job — interviews, behavior, pain points, business analysis. The point is to be sure we&rsquo;re solving the right thing.</p>
       </div>
-
-      <div class="install-card">
-        <div class="step">Step · 02</div>
-        <h4>Install design‑expert.</h4>
-        <p>Open the plugin browser and install the plugin. Restart Claude Code so the commands register.</p>
-        <div class="terminal">
-          <div class="head-bar"><span></span><span></span><span></span></div>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin install</span> <span class="accent-c">design-expert@khev-tools</span><br/>
-          <span class="comment"># SKILL.md loaded · 12 markdown files · 13 design-gods</span><br/>
-          <span class="ok">✓</span> <span class="cmd-text">design-expert installed</span><br/>
-          <span class="ok">✓</span> <span class="cmd-text">/design-expert:plan · :build · :write · :review</span>
-        </div>
+      <div class="step">
+        <div class="top"><span class="big">02</span><span>Frame</span></div>
+        <h4>Figure out what&rsquo;s possible.</h4>
+        <p>Stakeholders, engineers, project leads — same room. Tech feasibility, budget, timeline, the real edges of the box. Innovative <em>and</em> doable.</p>
       </div>
-
-      <div class="install-card" style="grid-column: span 2;">
-        <div class="step">Step · 03 · First run</div>
-        <h4>Now plan something. Then build it. </h4>
-        <p>The healthiest first session is a brief, then a build, then a review. Each command writes its output to disk, so you can read what the skill thinks before it ships code.</p>
-        <div class="terminal">
-          <div class="head-bar"><span></span><span></span><span></span></div>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/design-expert:plan</span> <span class="accent-c">a calm onboarding for SREs on call</span><br/>
-          <span class="comment"># writes PLAN.md · audience, register, brand voice, anti-references</span><br/>
-          <br/>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/design-expert:build</span> <span class="accent-c">onboarding from PLAN.md</span><br/>
-          <span class="comment"># reads SKILL.md + PLAN.md · ships components in src/onboarding/</span><br/>
-          <br/>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/design-expert:review</span> <span class="accent-c">src/onboarding/</span><br/>
-          <span class="ok">✓</span> <span class="cmd-text">scored against 10-lens framework · 4 notes · 0 blockers</span>
-        </div>
+      <div class="step">
+        <div class="top"><span class="big">03</span><span>Make</span></div>
+        <h4>Explore, iterate, narrow.</h4>
+        <p>Concepts in the open, critiqued early, refined fast. The team is the first review. We commit to the strongest options before they leave the studio.</p>
       </div>
-
+      <div class="step">
+        <div class="top"><span class="big">04</span><span>Test</span></div>
+        <h4>Test with real people.</h4>
+        <p>Prototypes in the hands of users. Usability tests, interviews, surveys. We measure, learn, adjust — close the loop until the work meets what it promised.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============= 05 FAQ ============= -->
-<section class="section" id="faq">
+<!-- ============= 06 · CONTACT ============= -->
+<section class="section" id="contact">
   <div class="shell">
-    <div class="s-head sm">
-      <div class="num">05 — FAQ</div>
-      <div>
-        <h3 class="section-title-sm" style="font-family: &quot;Berkeley Mono&quot;; font-size: 40px">Questions &amp; Answers.</h3>
+    <div class="contact-block">
+      <div class="l">
+        <h2>Feel like<br />we&rsquo;re a <em>fit?</em></h2>
+        <p>If you&rsquo;ve got a real problem, real users and a real team that wants to ship — let&rsquo;s talk. I take a small number of projects each year and I&rsquo;d rather do good work than busy work.</p>
       </div>
-    </div>
-
-    <div class="faq">
-      <details open>
-        <summary>Is design-expert just a system prompt?</summary>
-        <p>No. It's a plugin: a manifest, a skill file, four commands, a 12-file markdown library, and a per-designer reference set. The skill files are loaded by the commands at the right moments — the reviewer doesn't need <span class="mono">typography.md</span>; the writer doesn't need <span class="mono">output-format.md</span>. Every byte of context earns its place.</p>
-      </details>
-      <details>
-        <summary>Does it work with my design system?</summary>
-        <p>Yes — that's the point. The build command reads your tokens, components, and existing screens before it generates anything. design-expert grows with your system rather than around it. Ship a <span class="mono">PROJECT.md</span> with your conventions and the skill respects them.</p>
-      </details>
-      <details>
-        <summary>Will there be other khev-tools plugins?</summary>
-        <p>Yes. design-expert is the first; the marketplace is built to host more. Until then, this is the entire shelf.</p>
-      </details>
-      <details>
-        <summary>What does it cost?</summary>
-        <p>Nothing. Open source. Fork the markdown, override what you disagree with, send pull requests. The skill improves when more designers argue with it.</p>
-      </details>
-      <details>
-        <summary>Cursor? Codex? Other harnesses?</summary>
-        <p>Coming. The skill files are pure markdown and portable; the wrapper is Claude-Code-shaped today. A universal package follows once the four commands stabilize.</p>
-      </details>
-      <details>
-        <summary>Why "design-expert" and not something fancier?</summary>
-        <p>Because it does what it says. The plugin is what you reach for when you want a designer in the loop and there isn't one in the room. The name is the contract.</p>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- ============= 06 CHANGELOG ============= -->
-<section class="section" id="changelog">
-  <div class="shell">
-    <div class="s-head sm">
-      <div class="num">06 — What's New</div>
-      <div>
-        <h3 class="section-title-sm">Recent updates.</h3>
-        <p class="body">design-expert is the first plugin in the khev-tools marketplace. The skill itself is the product, and it ships small.</p>
-      </div>
-    </div>
-
-    <div class="changelog">
-      <div class="entry">
-        <div class="meta">
-          <span class="ver" style="color: var(--accent);">v1.0.0</span>
-          April 30, 2026
-        </div>
-        <ul>
-          <li><strong>Initial release.</strong> Four commands — <span class="mono">plan</span>, <span class="mono">build</span>, <span class="mono">write</span>, <span class="mono">review</span> — backed by a 12-file markdown library and 13 designer-specific reference files in <span class="mono">design-gods/</span>.</li>
-          <li><strong>Reviewer scores against ten lenses.</strong> Foundations, hierarchy, type, color, composition, motion, copy, accessibility, anti-slop, brand fit. Each note cites the principle behind it.</li>
-          <li><strong>PROJECT.md awareness.</strong> Per-project overrides — audience, brand voice, anti-references — read on every command. Drop one in your repo root.</li>
-        </ul>
-      </div>
-      <div class="entry">
-        <div class="meta">
-          <span class="ver">v0.9 · beta</span>
-          April 22, 2026
-        </div>
-        <ul>
-          <li><strong>anti-slop.md graduates.</strong> 30+ named patterns the reviewer now flags on sight, each with a recommended replacement.</li>
-          <li><strong>Brand vs product registers.</strong> The skill picks before it generates — landing pages stop being critiqued for breaking dashboard conventions and vice versa.</li>
-        </ul>
-      </div>
-      <div class="entry">
-        <div class="meta">
-          <span class="ver">v0.5 · alpha</span>
-          April 8, 2026
-        </div>
-        <ul>
-          <li><strong>First public alpha.</strong> SKILL.md + foundations + craft + a single review command. The reviewer was the seed; everything else grew around it.</li>
-        </ul>
+      <div class="r">
+        <div class="contact-links" data-contact-links></div>
       </div>
     </div>
   </div>
@@ -499,44 +318,13 @@
 <footer class="foot">
   <div class="shell">
     <div class="colophon">
-      <span>© 2026 khev-tools</span>
+      <div class="l">
+        <span>© 2026 khevin mituti</span>
+      </div>
     </div>
   </div>
 </footer>
 
-<!-- React + Tweaks -->
-<!-- smooth scroll for in-page links -->
-<script>
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const id = a.getAttribute('href').slice(1);
-    if (!id) return;
-    const t = document.getElementById(id);
-    if (!t) return;
-    e.preventDefault();
-    window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 60, behavior: 'smooth' });
-  });
-});
-
-// Animate library icons when scrolled into view
-const libRows = document.querySelectorAll('.library .row-item');
-if ('IntersectionObserver' in window && libRows.length) {
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('in-view');
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.35, rootMargin: '0px 0px -10% 0px' });
-  libRows.forEach((row, i) => {
-    // stagger the draw start for a cascade
-    setTimeout(() => io.observe(row), i * 30);
-  });
-} else {
-  libRows.forEach(r => r.classList.add('in-view'));
-}
-</script>
-
+<script src="./script.js" defer></script>
 </body>
 </html>

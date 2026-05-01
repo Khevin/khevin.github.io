@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spaces Parking — Khevin Mituti</title>
+<meta name="description" content="Untangling Spaces Parking's admin and operator portals from a blank slate — research, component library, V2.0 redesign, 20% more support tickets resolved per day." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16x16.png" />
+<link rel="shortcut icon" href="../assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="../assets/favicon/site.webmanifest" />
+</head>
+<body data-project="spaces">
+
+<nav class="top">
+  <div class="inner">
+    <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="chev" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="false" data-href="../design-expert.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
+        </span>
+        <span class="ns-desc">the plugin — what khevin makes for designers</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="../index.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">✓</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work — what khevin ships for clients</span>
+      </li>
+    </ul>
+
+    <ul class="primary">
+      <li><a href="../index.html#top">home</a></li>
+      <li><a href="../index.html#clients">work</a></li>
+      <li><a href="../process.html">process</a></li>
+      <li><a href="../notes.html">blog</a></li>
+      <li><a href="../about-me.html">about</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+<section class="case-hero">
+  <div class="shell">
+    <div class="crumbs">
+      <a href="../index.html">Home</a><span class="sep">/</span>
+      <a href="../index.html#work">Work</a><span class="sep">/</span>
+      <span>Case · 02 — Spaces Parking</span>
+    </div>
+
+    <div class="title-grid">
+      <div class="l">
+        <h1><em>Spaces.</em><br />A blank slate,<br />almost.</h1>
+        <p class="sub">Reimagining the contactless parking experience for an operator that reaches from New York City to Texas to the West Coast — and the admin tools that kept the whole operation running.</p>
+      </div>
+      <div class="r">
+        <div class="meta-table">
+          <div class="row"><span class="k">Role</span><span class="v">Senior Designer · Design Manager · Lead Product</span></div>
+          <div class="row"><span class="k">Team</span><span class="v">3 designers (2 reports)</span></div>
+          <div class="row"><span class="k">Industry</span><span class="v">Private parking · operations</span></div>
+          <div class="row"><span class="k">Region</span><span class="v">NYC · Texas · West Coast</span></div>
+          <div class="row"><span class="k">Surfaces</span><span class="v">Admin Portal · Operator Portal · Parker App</span></div>
+          <div class="row"><span class="k">Status</span><span class="v">Shipped · in production · expanded to Europe</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 01 · BACKGROUND -->
+<section class="case-section" id="background">
+  <div class="shell">
+    <div class="case-grid">
+      <div class="lab"><span class="n">01</span>Background</div>
+      <div class="body-block">
+        <h2>Three surfaces, <em>one operation</em>, no design system.</h2>
+        <p>SPACES Parking redefines the parking experience with contactless solutions — bridging the gap between physical and digital so users can access, pay for, and exit a facility from their phone. By the time I joined as Senior Designer and design manager, the operation reached from New York City to Texas to the West Coast and was expanding fast. The technology suite worked. The design layer didn&rsquo;t.</p>
+        <p>I led design across multiple surfaces with two designers (Felipe and Iara) under my direction: the <em>Admin Portal</em> the call center used to manage operations, the <em>Operator Portal</em> garage staff used in real time during shifts, and the <em>Parker App</em> end-users tapped to pay. Different stakeholders, different jobs, all pulling on the same broken foundation.</p>
+        <figure class="case-figure">
+          <div class="frame bare">
+            <img src="./assets/spaces/mockups/mock6.png" alt="The Spaces admin surface, post-V2.0 — the operator's daily view." loading="lazy" />
+          </div>
+          <figcaption class="cap"><span class="num">FIG · 01</span><span>The admin surface, post-redesign — the one operators stopped fighting.</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 · ROLE & CHALLENGES -->
+<section class="case-section" id="approach">
+  <div class="shell">
+    <div class="case-grid">
+      <div class="lab"><span class="n">02</span>Role &amp; Challenges</div>
+      <div class="body-block">
+        <h2>The portals were built <em>without design</em>. We had to start by un-building them.</h2>
+        <p>The original Admin and Operator Portals had been developed without design expertise. There was no documentation, no UX flows, no structured designs — just a collection of screenshots patched together in basic tools. Earlier applications were disjointed, the workflows were convoluted, and the call-center staff who lived in these tools all day were getting nothing back from the interface.</p>
+        <p class="pull">&ldquo;The challenge was reimagining the portal from scratch — addressing key usability issues and integrating modern design principles, while minimizing change to the existing workflow, delivering value to developers and the client within tight deadlines.&rdquo;</p>
+        <p>I led the effort across three fronts at once. <em>Documentation</em> — reverse-engineering the existing flows so we knew what was actually shipping. <em>Component library</em> — establishing the foundational set of primitives that would evolve into a system. <em>Stakeholder alignment</em> — sitting with call-center support, operations, and the business analysis team until we agreed on which features were load-bearing and which had grown out of accident.</p>
+        <figure class="case-figure">
+          <div class="clutter-strip">
+            <div class="item">
+              <span class="label">Before · 01 · Customer</span>
+              <img src="./assets/spaces/mockups/clutter1-customerdetails.png" alt="Inherited customer details screen — disorganized, undocumented." loading="lazy" />
+            </div>
+            <div class="item">
+              <span class="label">Before · 02 · Garage</span>
+              <img src="./assets/spaces/mockups/clutter2-garagedetails.png" alt="Inherited garage details screen — convoluted workflow, no system." loading="lazy" />
+            </div>
+            <div class="item">
+              <span class="label">Before · 03 · Web app</span>
+              <img src="./assets/spaces/mockups/clutter3-webapp.png" alt="Inherited web app — fragmented patterns across pages." loading="lazy" />
+            </div>
+          </div>
+          <figcaption class="cap"><span class="num">FIG · 02</span><span>Three slices of the inherited portal. No documentation, no system, no shared language between screens.</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · SYSTEMS THINKING -->
+<section class="case-section" id="systems">
+  <div class="shell">
+    <div class="case-grid">
+      <div class="lab"><span class="n">03</span>Systems Thinking</div>
+      <div class="body-block">
+        <h2>One library, <em>fluently shared</em>, before any redesign.</h2>
+        <p>I led the team in building an initial library of components that would evolve into a full design system. The work involved mapping and analyzing the core problems, developing standardized components, and establishing consistent visual and interaction language across every surface. Building this foundation was how we earned the right to redesign the portals — without it, every fix would have been local, every regression inevitable.</p>
+        <p>The shift from no-formal-design to a structured, design-centric approach was transformative. Process started with extensive research and dozens of interviews with call-center support and operations agents. They needed better ways to manage core tasks: <em>opening lanes, issuing refunds, verifying payments</em>. Operators needed real-time support during shifts. The component library had to account for both the desk-bound flow and the on-the-ground one.</p>
+        <p class="pull">&ldquo;One of the key factors in our success was the strong collaboration between design and business analysis. Bruno&rsquo;s insights into the operational requirements and Accalia&rsquo;s perspective on call-center support helped us prioritize features and decisions that would have the most impact.&rdquo;</p>
+        <figure class="case-figure">
+          <div class="frame bare">
+            <img src="./assets/spaces/comp-library.png" alt="The Spaces component library — atoms, tokens, and patterns that became the system." loading="lazy" />
+          </div>
+          <figcaption class="cap"><span class="num">FIG · 03</span><span>The component library — the foundation every later screen was rebuilt against.</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · ADMIN PORTAL V2.0 -->
+<section class="case-section" id="v2">
+  <div class="shell">
+    <div class="case-grid">
+      <div class="lab"><span class="n">04</span>Admin Portal · 2.0</div>
+      <div class="body-block">
+        <h2>Version 2.0 was a <em>re-conceptualization</em>, not a redesign.</h2>
+        <p>After laying the groundwork with initial iterations, certain aspects of the Admin Portal needed more than incremental updates. Existing flows were deeply integrated into the system; minor tweaks couldn&rsquo;t reach the level of usability we wanted. We went back to first principles and rebuilt.</p>
+        <p>Workflows were deconstructed and redesigned to align with the evolving needs of call-center staff and the broader business goals. The redesign integrated <em>features that weren&rsquo;t possible within the original constraints</em> — user and garage notes, historic parking sessions, special refunds — alongside more intuitive navigation, better reporting, and more efficient task management. Every choice was informed by the people doing the work, not by a wishlist.</p>
+        <figure class="case-figure">
+          <div class="frame bare">
+            <img src="./assets/spaces/mockups/mock1.png" alt="Admin Portal V2.0 — the redesigned daily view with new navigation, reporting, and task management." loading="lazy" />
+          </div>
+          <figcaption class="cap"><span class="num">FIG · 04</span><span>The Admin Portal V2.0 — what call-center staff actually open every shift.</span></figcaption>
+        </figure>
+
+        <div class="case-figure-grid">
+          <figure class="case-figure">
+            <div class="frame bare">
+              <img src="./assets/spaces/mockups/mock2.png" alt="Garage details — the operator's surface for managing a single facility post-redesign." loading="lazy" />
+            </div>
+            <figcaption class="cap"><span class="num">FIG · 05 · GARAGE</span><span>Garage details — V2.0 of the operator's daily view.</span></figcaption>
+          </figure>
+          <figure class="case-figure">
+            <div class="frame bare">
+              <img src="./assets/spaces/mockups/mock3.png" alt="User details — the call-center's primary task surface, with sessions, payments, and notes." loading="lazy" />
+            </div>
+            <figcaption class="cap"><span class="num">FIG · 06 · USER</span><span>User details — the call-center's primary task surface.</span></figcaption>
+          </figure>
+        </div>
+
+        <aside class="feature-highlight">
+          <div class="content">
+            <p class="lab">Feature highlight</p>
+            <h3>Notes — <em>context that traveled</em>.</h3>
+            <p>One feature stuck out: a notes panel that let operators leave context on a user, a garage, or a session — and have it surface anywhere related entities were viewed. The kind of small infrastructure that compounds over time.</p>
+          </div>
+          <div class="art">
+            <img src="./assets/spaces/mockups/notes.png" alt="The Notes feature — sticky-note style cross-references between users, garages, and sessions." loading="lazy" />
+          </div>
+        </aside>
+
+        <figure class="case-figure">
+          <div class="frame bare">
+            <img src="./assets/spaces/mockups/mock4.png" alt="Multi-region admin view — same system, regional data, consistent surface." loading="lazy" />
+          </div>
+          <figcaption class="cap"><span class="num">FIG · 07</span><span>Multi-region rollout — same component library, regional data, one shared surface.</span></figcaption>
+        </figure>
+
+        <p style="margin-top: 24px;">The transition to 2.0 was the milestone. More than a redesign; a transformation that laid the foundation for sustained efficiency, user satisfaction, and the company&rsquo;s next round of growth.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 · OUTCOME -->
+<section class="case-section" id="outcome">
+  <div class="shell">
+    <div class="case-grid">
+      <div class="lab"><span class="n">05</span>Outcome</div>
+      <div class="body-block">
+        <h2>Operators stopped fighting the tool. The <em>support load shifted</em>.</h2>
+        <p>The Admin Portal saw significant improvements in task completion times and user satisfaction. The Operator Portal gave garage staff the tools they actually needed for daily operations. The biggest measurable shift: the call center resolved <em>20% more support tickets per day</em>, freeing the team to handle the cases that had been sitting in the queue. Beyond the metrics, the redesigned applications played a key role in the client&rsquo;s expansion — first across the United States, then to Europe.</p>
+        <div class="kpi-row">
+          <div class="k"><div class="v">+20%</div><div class="l">Support tickets resolved per day</div></div>
+          <div class="k"><div class="v">3</div><div class="l">Surfaces unified, one library</div></div>
+          <div class="k"><div class="v">US → EU</div><div class="l">Expansion enabled by the rebuild</div></div>
+          <div class="k"><div class="v">0 → 1</div><div class="l">Documented design systems</div></div>
+        </div>
+        <p style="margin-top: 32px;">The groundwork is what made it durable. By taking the time to clean things up, document the flows, and build the component library, we laid the foundation for the redesigns and the systems work that came after. Thorough documentation and a systematic approach: lessons that guided us through, and continue to.</p>
+
+        <aside class="side-quest">
+          <p class="lab">Side quest</p>
+          <figure>
+            <img src="./assets/spaces/mockups/screen3-websiteconcepts.png" alt="Spaces website concepts — public-facing site built on the same component library as the portals." loading="lazy" />
+            <figcaption>The marketing site got the same treatment — same component library, repurposed for a public-facing audience. Sometimes the best brand work is what the design system can already do.</figcaption>
+          </figure>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="next-case">
+  <div class="shell">
+    <div class="lab">Next · Case 03</div>
+    <a href="./amway.html">
+      <div class="l">
+        <h3><em>Amway</em></h3>
+        <p>Six products, one design system, a global rollout</p>
+      </div>
+      <div class="r"><span class="arrow">→</span></div>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell">
+    <div class="colophon">
+      <div class="l"><span>© 2026 khevin mituti</span></div>
+      <div class="r"><a href="../index.html">↩ All work</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js" defer></script>
+</body>
+</html>
