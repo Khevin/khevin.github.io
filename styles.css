@@ -412,6 +412,7 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   word-break: break-word;
 }
 .cmd .slug .slash { color: var(--accent); }
+.cmd .slug .colon { color: var(--accent); }
 .cmd h4 {
   font-family: var(--serif);
   font-style: italic;
