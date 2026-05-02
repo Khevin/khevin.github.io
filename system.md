@@ -175,6 +175,14 @@ The grid for a figure block follows the dimensions and intent of the image, not 
 
 ---
 
+## Pattern: per-surface PRODUCT.md / DESIGN.md naming
+
+Project briefs and design specs live next to the surface they describe, named `<surface>.PRODUCT.md` and `<surface>.DESIGN.md`. Examples on this site: `projects/spaces2.PRODUCT.md` + `projects/spaces2.DESIGN.md` for the spaces case-study redesign. When future case studies land (`favo`, `amway`, `bitcapital`, etc.), they get their own pair at `projects/<slug>.PRODUCT.md` + `projects/<slug>.DESIGN.md`. The portfolio root may earn a portfolio-wide brief later (`PRODUCT.md` + `DESIGN.md` at the repo root) for cross-surface voice and token decisions, but per-surface briefs are the canonical scope for individual case studies.
+
+The naming convention is set per `commands/plan.md` Gate 6. Stick to it for every new surface.
+
+---
+
 ## Pattern: editorial register for case studies
 
 > **Canonical reference:** `design-expert/styles/editorial.md` (in the `khev-tools/design-expert` plugin). This system.md retains the project-specific contract for `projects/{spaces,favo,amway}.html`; the canonical discipline lives in the plugin. When the two diverge, the plugin file is authoritative — this section is the project-side mirror.

@@ -2694,6 +2694,11 @@ nav.top ul.primary a:hover { color: var(--ink); }
 body[data-project] {
   --case-accent: var(--ink);
   --case-accent-soft: color-mix(in oklch, var(--ink) 8%, transparent);
+  /* Inside case studies the brand accent (terracotta) does not work — case
+     studies are editorial and want monochrome chrome. Override --accent
+     itself so any rule that reaches for it inside body[data-project]
+     resolves to ink, not red. */
+  --accent: var(--ink);
 }
 
 body[data-project] .case-hero h1 em,
@@ -3293,11 +3298,12 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
 /* The rail — chapter number + small kicker label sit together. */
 .chapter__rail { position: relative; }
 .chapter__num {
-  font-family: var(--sans);
-  font-weight: 700;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
   font-size: clamp(56px, 8vw, 96px);
   line-height: 0.9;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   color: var(--ink);
   display: block;
   margin: 0 0 20px;
@@ -3322,18 +3328,17 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
   gap: 28px;
 }
 .chapter__body > h2 {
-  font-family: var(--sans);
-  font-weight: 600;
+  font-family: var(--serif);
+  font-weight: 400;
   font-size: clamp(32px, 4vw, 56px);
   line-height: 1.05;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
   color: var(--ink);
   margin: 0;
   text-wrap: balance;
-  max-width: 22ch;
+  max-width: 26ch;
 }
 .chapter__body > h2 em {
-  font-family: var(--serif);
   font-style: italic;
   font-weight: 400;
 }
@@ -3450,26 +3455,28 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
   display: grid;
   grid-template-columns: minmax(180px, 1fr) minmax(0, 1.2fr);
   gap: 24px;
-  align-items: baseline;
+  align-items: center;
   padding: 32px 0;
   border-bottom: 1px solid var(--ink-faintest);
 }
 .kpi-editorial .num {
-  font-family: var(--sans);
-  font-weight: 700;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
   font-size: clamp(56px, 8vw, 104px);
   line-height: 0.9;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.kpi-editorial .num .unit { font-size: 0.55em; letter-spacing: -0.02em; font-weight: 600; }
+.kpi-editorial .num .unit { font-size: 0.55em; letter-spacing: -0.02em; font-weight: 400; }
 .kpi-editorial .num .arr {
   color: var(--ink-faint);
   padding: 0 6px;
   font-size: 0.55em;
   vertical-align: 0.18em;
-  font-weight: 500;
+  font-style: normal;
+  font-weight: 400;
 }
 .kpi-editorial .lab {
   font-family: var(--serif);
@@ -3493,4 +3500,203 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
   .chapter__kicker { max-width: none; }
   .takeaways__head { padding-top: 0; }
   .kpi-editorial .row { grid-template-columns: 1fr; gap: 8px; padding: 24px 0; }
+}
+
+/* =========================================================
+   SPACES2 · HYBRID LAYOUT EXTENSIONS
+   New components for the v2 case study scoped to data-project="spaces2":
+   vertical-split, square-highlight, cinematic-break, multi-shape-grid.
+   Per spaces2.DESIGN.md.
+   ========================================================= */
+
+body[data-project="spaces"] .case-hero.case-hero--wide .case-title {
+  font-size: clamp(56px, 8vw, 88px);
+  line-height: 1;
+}
+
+/* Drop all the rule lines bracketing the hero key visual — case-hero
+   loses its bottom border (the line above the image), fact-ribbon
+   loses both top and bottom borders, case-key loses its bottom border.
+   The composition reads cleaner with whitespace doing the separation. */
+body[data-project="spaces"] .case-hero {
+  border-bottom: 0;
+}
+body[data-project="spaces"] .fact-ribbon {
+  border-top: 0;
+  border-bottom: 0;
+}
+body[data-project="spaces"] .case-key {
+  border-bottom: 0;
+}
+
+/* 5-col fact ribbon — Surfaces removed for spaces2 */
+body[data-project="spaces"] .fact-ribbon {
+  grid-template-columns: repeat(5, 1fr);
+}
+@media (max-width: 900px) {
+  body[data-project="spaces"] .fact-ribbon {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  body[data-project="spaces"] .fact-ribbon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Chapter 1 clutter figure: full-width inside chapter body, bare image
+   showing one of the inherited admin screenshots. Replaces the earlier
+   vertical-split (which assumed a vertical mock; chapter 1 now uses a
+   wide horizontal admin clutter shot instead). */
+body[data-project="spaces"] .ch1-clutter {
+  margin: 40px 0;
+}
+body[data-project="spaces"] .ch1-clutter img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  border: 1px solid var(--ink-faintest);
+}
+body[data-project="spaces"] .ch1-clutter figcaption {
+  margin-top: 16px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+body[data-project="spaces"] .ch1-clutter__tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--paper-warm);
+  border: 1px solid var(--ink-faintest);
+  padding: 3px 8px;
+  margin-right: 10px;
+  vertical-align: 2px;
+}
+
+/* Vertical-split: chapter 1's vertical mockup alongside prose */
+body[data-project="spaces"] .vertical-split {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: clamp(32px, 5vw, 56px);
+  margin: 40px 0;
+  align-items: start;
+}
+body[data-project="spaces"] .vertical-split .vs-fig { margin: 0; }
+body[data-project="spaces"] .vertical-split .vs-fig img {
+  width: 100%; height: auto; display: block; border-radius: 4px;
+}
+body[data-project="spaces"] .vertical-split .vs-prose p {
+  font-family: var(--serif);
+  font-size: 18px; line-height: 1.55; color: var(--ink-2);
+  margin: 0 0 16px;
+}
+body[data-project="spaces"] .vertical-split .vs-prose p:last-child { margin-bottom: 0; }
+@media (max-width: 760px) {
+  body[data-project="spaces"] .vertical-split {
+    grid-template-columns: 1fr; gap: 24px;
+  }
+  body[data-project="spaces"] .vertical-split .vs-fig img { max-width: 320px; }
+}
+
+/* Square-highlight: chapter 2's balanced detail callout, paper-warm */
+body[data-project="spaces"] .square-highlight {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: clamp(32px, 5vw, 48px);
+  align-items: center;
+  padding: clamp(28px, 4vw, 40px);
+  background: var(--paper-warm);
+  border: 1px solid var(--ink-faintest);
+  margin: 40px 0;
+}
+body[data-project="spaces"] .square-highlight .sq-fig {
+  margin: 0; aspect-ratio: 1/1; overflow: hidden;
+}
+body[data-project="spaces"] .square-highlight .sq-fig img {
+  width: 100%; height: 100%; object-fit: contain; display: block;
+}
+body[data-project="spaces"] .square-highlight h3 {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.4vw, 28px); line-height: 1.15;
+  font-weight: 400; margin: 0 0 12px;
+}
+body[data-project="spaces"] .square-highlight h3 em {
+  font-style: italic; color: var(--case-accent);
+}
+body[data-project="spaces"] .square-highlight p {
+  font-family: var(--serif);
+  font-size: 17px; line-height: 1.5; color: var(--ink-2); margin: 0;
+}
+@media (max-width: 760px) {
+  body[data-project="spaces"] .square-highlight {
+    grid-template-columns: 1fr; gap: 24px;
+  }
+}
+
+/* Cinematic-break: ultra-wide V2.0 reveal between chapters 2 and 3 */
+body[data-project="spaces"] .cinematic-break {
+  margin: clamp(64px, 8vw, 112px) calc(50% - 50vw);
+  padding: clamp(64px, 8vw, 112px) clamp(32px, 5vw, 56px);
+  background: var(--paper-warm);
+}
+body[data-project="spaces"] .cinematic-break .cb-label {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-soft); text-align: center; margin: 0 0 24px;
+}
+body[data-project="spaces"] .cinematic-break .cb-fig {
+  max-width: 1600px; margin: 0 auto;
+  aspect-ratio: auto;
+  border-radius: 4px;
+  overflow: visible;
+}
+body[data-project="spaces"] .cinematic-break .cb-fig img {
+  width: 100%; height: auto;
+  object-fit: contain; display: block;
+  background: transparent;
+}
+body[data-project="spaces"] .cinematic-break .cb-caption {
+  font-family: var(--serif);
+  font-style: italic; font-size: 17px; line-height: 1.5;
+  color: var(--ink-2); text-align: center; max-width: 56ch; margin: 24px auto 0;
+}
+@media (max-width: 760px) {
+  body[data-project="spaces"] .cinematic-break {
+    padding: 48px 16px; margin: 56px 0;
+  }
+  body[data-project="spaces"] .cinematic-break .cb-fig { aspect-ratio: 16/9; }
+}
+
+/* Multi-shape-grid: chapter 3's varied-aspect figure rhythm */
+body[data-project="spaces"] .multi-shape-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.7fr 1.3fr;
+  gap: 16px;
+  margin: 40px 0;
+  align-items: end;
+}
+body[data-project="spaces"] .multi-shape-grid .msg-fig { margin: 0; }
+body[data-project="spaces"] .multi-shape-grid .msg-fig img {
+  width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 4px;
+}
+body[data-project="spaces"] .multi-shape-grid .msg-fig.square { aspect-ratio: 1/1; }
+body[data-project="spaces"] .multi-shape-grid .msg-fig.vertical { aspect-ratio: 4/5; }
+body[data-project="spaces"] .multi-shape-grid .msg-fig.horizontal { aspect-ratio: 3/2; }
+@media (max-width: 760px) {
+  body[data-project="spaces"] .multi-shape-grid {
+    grid-template-columns: 1fr; gap: 12px;
+  }
+  body[data-project="spaces"] .multi-shape-grid .msg-fig.vertical img {
+    max-height: 480px; object-fit: contain;
+  }
 }
