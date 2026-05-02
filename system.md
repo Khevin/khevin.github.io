@@ -175,6 +175,28 @@ The grid for a figure block follows the dimensions and intent of the image, not 
 
 ---
 
+## Pattern: editorial register for case studies
+
+Case-study pages on this site (`projects/{spaces,favo,amway}.html`) sit in the **editorial register**, not the brand register and not the product register. Treat them as long-form magazine pieces. The shape is borrowed from Work & Co's client work, Pentagram's project pages, and the wider editorial-design tradition.
+
+**The two-column rail.** A narrow left rail (200–280px) holds section labels and chapter eyebrows. A wider right column (700–900px, capped at 65–75 ch for readability) holds body prose, KPI numerals, and figures. The rail is fixed-width; the body breathes. On a 12-col grid this is a 3/9 or 4/8 split.
+
+**Three type roles.** Display sans-serif for KPI numerals and chapter headers (80–130px, bold), body serif for narrative prose (Source Serif on this site), small sans-serif for rail labels and figure captions (12–14px, ink-mute). Three distinct voices, one for each job. One font doing all three jobs is the templated-case-study tell.
+
+**Hairlines and bars.** Hairline rules (1px ink-faintest) separate sub-sections. A heavy bar (3–5px solid ink) marks major chapter breaks. Most sub-sections within a chapter use no divider at all — whitespace alone. The contrast IS the hierarchy.
+
+**Numbered chapter anchors.** "01." in the rail at the same scale as the chapter title — both 80–100px sans-serif. The number lands first; the title reads as the chapter. Optional pre-summary block ("Three big takeaways" / 01–02–03) before the chapters begin, as a courtesy table-of-contents.
+
+**Asymmetric image rhythm.** No symmetric grids of equally-sized screenshots. Images anchor right with whitespace left, anchor left with whitespace right, or sit full-width inside a tinted band. Bare imagery — no shadows, no card frames, no rounded mounting. The image is the artwork; let it sit. Generous vertical padding around every image moment.
+
+**Monochrome chrome, color in the work.** The page chrome reads in ink, paper, mid-grey. Brand color appears only inside the artwork (hero band, screenshots, illustrations). Italic emphasis, pull-quote rules, and KPI numerals tint to ink, not accent. The principle: "the work has color, the layout doesn't."
+
+**Rule.** When in doubt about whether a surface is editorial, brand, or product, ask: how long is the user on this page? If twenty minutes of attention is the contract, the register is editorial — the rail-and-body grid, the three type roles, the hairlines-and-bars hierarchy, and the monochrome chrome all apply. If the user is in-and-out in under a minute, it's brand. If they live in it for hours, it's product.
+
+See `craft.md` § Editorial layouts for the full pattern, `grids.md` § Brand vs. product vs. editorial for the grid mechanics, and `typography.md` § Brand vs. product register for type for the three-role pairing.
+
+---
+
 ## Closing
 
 This file is small on purpose. Each pattern is a contract for the next build to honor — adding a new pattern means the system has a real new surface to support, not a one-off being smuggled in. If a build introduces a pattern not described here, either it should not exist (use the closest existing pattern instead) or it earns its place and gets documented before it ships.
