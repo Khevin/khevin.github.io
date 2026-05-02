@@ -468,39 +468,64 @@
 <!-- ============= 05 FAQ ============= -->
 <section class="section" id="faq">
   <div class="shell">
-    <div class="s-head sm">
+    <div class="s-head">
       <div class="num">05 — FAQ</div>
       <div>
-        <h3 class="section-title-sm" style="font-family: &quot;Berkeley Mono&quot;; font-size: 40px">Questions &amp; Answers.</h3>
+        <h2 class="section-title">Six things you might be <em>wondering</em>.</h2>
+        <p class="body-lg">Most of what a designer or engineer asks before installing. Short answers here — the long ones are in the markdown.</p>
       </div>
     </div>
 
-    <div class="faq">
-      <details open>
-        <summary>Is design-expert just a system prompt?</summary>
-        <p>No. It's a plugin: a manifest, a skill file, four commands, a 12-file markdown library, and a per-designer reference set. The skill files are loaded by the commands at the right moments — the reviewer doesn't need <span class="mono">typography.md</span>; the writer doesn't need <span class="mono">output-format.md</span>. Every byte of context earns its place.</p>
-      </details>
-      <details>
-        <summary>Does it work with my design system?</summary>
-        <p>Yes — that's the point. The build command reads your tokens, components, and existing screens before it generates anything. design-expert grows with your system rather than around it. Ship a <span class="mono">PROJECT.md</span> with your conventions and the skill respects them.</p>
-      </details>
-      <details>
-        <summary>Will there be other khev-tools plugins?</summary>
-        <p>Yes. design-expert is the first; the marketplace is built to host more. Until then, this is the entire shelf.</p>
-      </details>
-      <details>
-        <summary>What does it cost?</summary>
-        <p>Nothing. Open source. Fork the markdown, override what you disagree with, send pull requests. The skill improves when more designers argue with it.</p>
-      </details>
-      <details>
-        <summary>Cursor? Codex? Other harnesses?</summary>
-        <p>Coming. The skill files are pure markdown and portable; the wrapper is Claude-Code-shaped today. A universal package follows once the four commands stabilize.</p>
-      </details>
-      <details>
-        <summary>Why "design-expert" and not something fancier?</summary>
-        <p>Because it does what it says. The plugin is what you reach for when you want a designer in the loop and there isn't one in the room. The name is the contract.</p>
-      </details>
-    </div>
+    <ol class="faq-list">
+      <li class="faq-entry">
+        <div class="faq-entry__num">Q · 01</div>
+        <div class="faq-entry__body">
+          <div class="faq-entry__cat">What it is</div>
+          <h4 class="faq-entry__q">Is design-expert just a system prompt?</h4>
+          <p class="faq-entry__a">No. It's a plugin: a manifest, a skill file, four commands, a 12-file markdown library, and a per-designer reference set. The skill files are loaded by the commands at the right moments — the reviewer doesn't need <span class="mono">typography.md</span>; the writer doesn't need <span class="mono">output-format.md</span>. Every byte of context earns its place.</p>
+        </div>
+      </li>
+      <li class="faq-entry">
+        <div class="faq-entry__num">Q · 02</div>
+        <div class="faq-entry__body">
+          <div class="faq-entry__cat">Cost</div>
+          <h4 class="faq-entry__q">What does it cost?</h4>
+          <p class="faq-entry__a">Nothing. Open source. Fork the markdown, override what you disagree with, send pull requests. The skill improves when more designers argue with it.</p>
+        </div>
+      </li>
+      <li class="faq-entry">
+        <div class="faq-entry__num">Q · 03</div>
+        <div class="faq-entry__body">
+          <div class="faq-entry__cat">Compatibility</div>
+          <h4 class="faq-entry__q">Does it work with my design system?</h4>
+          <p class="faq-entry__a">Yes — that's the point. The build command reads your tokens, components, and existing screens before it generates anything. design-expert grows with your system rather than around it. Ship a <span class="mono">PROJECT.md</span> with your conventions and the skill respects them.</p>
+        </div>
+      </li>
+      <li class="faq-entry">
+        <div class="faq-entry__num">Q · 04</div>
+        <div class="faq-entry__body">
+          <div class="faq-entry__cat">Compatibility</div>
+          <h4 class="faq-entry__q">Cursor? Codex? Other harnesses?</h4>
+          <p class="faq-entry__a">Coming. The skill files are pure markdown and portable; the wrapper is Claude-Code-shaped today. A universal package follows once the four commands stabilize.</p>
+        </div>
+      </li>
+      <li class="faq-entry">
+        <div class="faq-entry__num">Q · 05</div>
+        <div class="faq-entry__body">
+          <div class="faq-entry__cat">Future</div>
+          <h4 class="faq-entry__q">Will there be other khev-tools plugins?</h4>
+          <p class="faq-entry__a">Yes. design-expert is the first; the marketplace is built to host more. Until then, this is the entire shelf.</p>
+        </div>
+      </li>
+      <li class="faq-entry">
+        <div class="faq-entry__num">Q · 06</div>
+        <div class="faq-entry__body">
+          <div class="faq-entry__cat">Naming</div>
+          <h4 class="faq-entry__q">Why "design-expert" and not something fancier?</h4>
+          <p class="faq-entry__a">Because it does what it says. The plugin is what you reach for when you want a designer in the loop and there isn't one in the room. The name is the contract.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -518,11 +543,26 @@
     <div class="changelog">
       <div class="entry">
         <div class="meta">
-          <span class="ver" style="color: var(--accent);">v1.0.0</span>
+          <span class="ver" style="color: var(--accent);">v1.1.0</span>
+          May 2, 2026
+        </div>
+        <ul>
+          <li><strong>Portfolio merged into the site.</strong> <span class="mono">khevin-mituti/portfolio</span> and <span class="mono">khev-tools/design-expert</span> now live side-by-side under the same root, switched from the namespace dropdown in the nav.</li>
+          <li><strong>Library popover.</strong> Click any <span class="mono">S · NN</span> row in <span class="mono">02 — The Library</span> for a paper-card dialog with the file's icon, name, description, and an editorial excerpt of its punchiest paragraph.</li>
+          <li><strong>Pantheon popover, seventeen designers.</strong> Click any face in <span class="mono">03 — The Pantheon</span> for a sepia portrait, lifespan, movement, summary, and quote. Added Muriel Cooper, Paula Scher, Josef Müller-Brockmann, and Jan Tschichold to the original thirteen.</li>
+          <li><strong><span class="mono">grids.md</span>.</strong> New depth file — the Swiss school, Tschichold's asymmetric register, types of grids, spacing systems, common failures, the grid in code. The reviewer now runs a dedicated grid audit step.</li>
+          <li><strong>Two pantheon voices minimum on medium work.</strong> SKILL.md now requires designers to consult at least two pantheon files before building past trivial, with consultations logged to <span class="mono">~/.claude/design-expert/usage-log.jsonl</span> for measurement.</li>
+          <li><strong>Mobile pass across the site.</strong> Hamburger nav on every page, full-width hero copy, compact library and pantheon cards, uniform-grey client logos, and an editorial process CTA on the homepage.</li>
+          <li><strong>FAQ rebuilt.</strong> Out: identical accordion rows. In: numbered editorial entries with category captions, full-width questions, indented answers — six concerns at a glance instead of click-and-disclose.</li>
+        </ul>
+      </div>
+      <div class="entry">
+        <div class="meta">
+          <span class="ver">v1.0.0</span>
           April 30, 2026
         </div>
         <ul>
-          <li><strong>Initial release.</strong> Four commands — <span class="mono">plan</span>, <span class="mono">build</span>, <span class="mono">write</span>, <span class="mono">review</span> — backed by a 12-file markdown library and 13 designer-specific reference files in <span class="mono">design-gods/</span>.</li>
+          <li><strong>Initial plugin release.</strong> Four commands — <span class="mono">plan</span>, <span class="mono">build</span>, <span class="mono">write</span>, <span class="mono">review</span> — backed by a 12-file markdown library and 13 designer-specific reference files in <span class="mono">design-gods/</span>.</li>
           <li><strong>Reviewer scores against ten lenses.</strong> Foundations, hierarchy, type, color, composition, motion, copy, accessibility, anti-slop, brand fit. Each note cites the principle behind it.</li>
           <li><strong>PROJECT.md awareness.</strong> Per-project overrides — audience, brand voice, anti-references — read on every command. Drop one in your repo root.</li>
         </ul>
