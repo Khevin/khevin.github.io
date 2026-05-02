@@ -192,14 +192,15 @@ nav.top .inner {
 .brand-switch .slash { color: var(--accent); margin: 0 1px; }
 .brand-switch .child { color: var(--ink-mute); }
 .brand-switch .chev {
-  font-size: 10px;
-  color: var(--ink-faint);
-  margin-left: 4px;
-  transition: transform 150ms cubic-bezier(0.16,1,0.3,1);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-left: 6px;
+  transition: transform 150ms cubic-bezier(0.16,1,0.3,1), color 150ms;
 }
+.brand-switch:hover .chev { color: var(--ink); }
 .brand-switch[aria-expanded="true"] .chev {
   transform: rotate(180deg);
-  color: var(--ink-mute);
+  color: var(--ink);
 }
 
 /* `nav.top` qualifier raises specificity (0,2,2) over the generic

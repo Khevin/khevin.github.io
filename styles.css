@@ -130,14 +130,15 @@ nav.top .inner {
 .brand-switch .slash { color: var(--ink-faint); margin: 0 1px; }
 .brand-switch .child { color: var(--accent); }
 .brand-switch .chev {
-  font-size: 10px;
-  color: var(--ink-faint);
-  margin-left: 4px;
-  transition: transform var(--m-fast) var(--ease-out);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-left: 6px;
+  transition: transform var(--m-fast) var(--ease-out), color var(--m-fast);
 }
+.brand-switch:hover .chev { color: var(--ink); }
 .brand-switch[aria-expanded="true"] .chev {
   transform: rotate(180deg);
-  color: var(--ink-soft);
+  color: var(--ink);
 }
 
 .ns-panel {
@@ -863,6 +864,10 @@ nav.top ul.primary a:hover { color: var(--ink); }
   width: 80%;
   height: auto;
   margin: 0 auto;
+  /* Tint every logo into the same dark grey so the strip reads as a
+     single uniform row regardless of each brand's source colors. */
+  filter: brightness(0);
+  opacity: 0.7;
 }
 /* Inter-strip rhythm. Compensates for the 20% width drop on desktop
    so the gap between section titles stays the same. */
@@ -1139,6 +1144,61 @@ nav.top ul.primary a:hover { color: var(--ink); }
   margin: 0;
 }
 
+/* CTA after the four process cards on the homepage. Picks up the
+   same red left-border vocabulary as the steps so it reads as the
+   continuation rather than a new section. */
+.process-more {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 24px;
+  margin-top: 40px;
+  padding: 24px 24px 24px 1em;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+  background: var(--paper);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background var(--m-base) var(--ease-out);
+}
+.process-more:hover { background: var(--paper-warm); }
+.process-more:focus { outline: none; }
+.process-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.process-more .kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.process-more .lead {
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.process-more .lead em { color: var(--accent); font-style: italic; font-weight: 400; }
+.process-more .arrow {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--ink-faint);
+  transition: transform var(--m-base) var(--ease-out), color var(--m-base);
+}
+.process-more:hover .arrow { transform: translateX(6px); color: var(--accent); }
+
+@media (max-width: 900px) {
+  .process-more {
+    grid-template-columns: 1fr auto;
+    gap: 12px 16px;
+    padding: 20px 18px 20px 14px;
+  }
+  .process-more .kicker { grid-column: 1 / -1; }
+  .process-more .lead { font-size: 19px; }
+  .process-more .arrow { font-size: 24px; align-self: center; }
+}
+
 /* ---------- 05 snippets ---------- */
 .snip-grid {
   display: grid;
@@ -1371,7 +1431,11 @@ nav.top ul.primary a:hover { color: var(--ink); }
     align-items: end;
     gap: 24px;
   }
-  .hats-art--inline { display: block; width: clamp(120px, 22vw, 220px); }
+  .hats-art--inline {
+    display: block;
+    width: clamp(180px, 33vw, 330px);
+    margin-right: -12px;  /* let the brim of the rightmost hat kiss past the column edge — charming, intentional */
+  }
   .disciplines, .process, .clients-strip, .client-list, .snip-grid { grid-template-columns: 1fr; }
   .disciplines .d,
   .disciplines .d:last-child { border-right: 2px solid var(--accent); }
@@ -1397,9 +1461,9 @@ nav.top ul.primary a:hover { color: var(--ink); }
   .contact-block .l, .contact-block .r { grid-column: span 12; }
 }
 
-/* Phone — vertical asset takes the full column. */
+/* Phone — vertical asset takes most of the column, slightly inset. */
 @media (max-width: 600px) {
-  .client-strip-img img { width: 100%; }
+  .client-strip-img img { width: 90%; }
 }
 
 /* =========================================================
