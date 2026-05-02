@@ -755,6 +755,7 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   border-top: 1px solid var(--rule);
 }
 .pantheon .figure {
+  border: 0;
   border-right: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
   padding: 28px 26px;
@@ -765,8 +766,18 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   transition: background .15s;
   overflow: hidden;
   isolation: isolate;
+  /* button reset — these cards are <button> for accessibility */
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  width: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
 }
 .pantheon .figure:hover { background: var(--paper-warm); }
+.pantheon .figure:focus { outline: none; }
+.pantheon .figure:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .pantheon .figure:nth-child(3n) { border-right: 0; }
 .pantheon .figure > .squiggle {
   position: absolute;
@@ -1465,4 +1476,135 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 
 @media (prefers-reduced-motion: reduce) {
   .lib-pop__icon svg .pulse { animation: none; opacity: 1; }
+}
+
+/* ——— Pantheon popover (extends .lib-pop) ———
+   Adds a portrait slot rendered with a warm sepia treatment so a
+   B&W or color photograph harmonizes with the page's ink-on-paper
+   palette. A typographic monogram is the placeholder until photos
+   are dropped into assets/design-gods/{key}.jpg. */
+.lib-pop--god .lib-pop__card { max-width: min(680px, 92vw); }
+.god-pop__layout {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 24px;
+  align-items: start;
+  padding: 0 0 22px;
+  border-bottom: 1px solid var(--rule);
+}
+.god-pop__portrait {
+  width: 140px;
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  background: #2c1f12;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.god-pop__portrait img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: grayscale(1) sepia(0.55) brightness(0.92) contrast(1.05);
+}
+.god-pop__portrait .monogram {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 56px;
+  letter-spacing: -0.02em;
+  color: #d8c2a3;
+  background: linear-gradient(180deg, #4a3826 0%, #2c1f12 100%);
+  user-select: none;
+}
+.god-pop__meta {
+  padding-right: 44px; /* clear close button */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.lib-pop--god .lib-pop__name {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  line-height: 1.05;
+  margin: 0;
+}
+.god-pop__lifespan {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-mute);
+  letter-spacing: 0.02em;
+  margin: 4px 0 4px;
+}
+.god-pop__movement {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+.god-pop__movement strong {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  display: block;
+  margin-bottom: 1px;
+}
+.god-pop__tags {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin: 8px 0 0;
+}
+.god-pop__summary {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 22px 4px 18px;
+  text-wrap: pretty;
+}
+.god-pop__quote {
+  margin: 0 4px 22px;
+  padding: 4px 0 4px 16px;
+  border-left: 2px solid var(--accent);
+}
+.god-pop__quote p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+.god-pop__quote cite {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .god-pop__layout { grid-template-columns: 96px 1fr; gap: 16px; }
+  .god-pop__portrait { width: 96px; }
+  .god-pop__portrait .monogram { font-size: 38px; }
+  .lib-pop--god .lib-pop__name { font-size: 22px; }
+  .god-pop__summary { font-size: 15px; margin: 18px 0 16px; }
+  .god-pop__quote p { font-size: 15.5px; }
 }
