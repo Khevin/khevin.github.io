@@ -2184,6 +2184,10 @@ nav.top ul.primary a:hover { color: var(--ink); }
   padding: 56px 0 64px;
   border-bottom: 1px solid var(--rule);
 }
+/* Flush variant — drops the rule beneath the hero so the next section
+   reads as continuous with the title block. Used on the process page
+   where the principles array sits directly under the title. */
+.page-hero.page-hero--flush { border-bottom: 0; }
 .page-hero .crumbs {
   font-family: var(--mono);
   font-size: 11px;
