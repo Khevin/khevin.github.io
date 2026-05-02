@@ -917,7 +917,6 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
 
 /* ——— Changelog ——— */
 .changelog {
-  border-top: 1px solid var(--rule);
   margin-top: 40px;
 }
 .changelog .entry {
@@ -959,6 +958,7 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
   padding: 36px 0 36px;
   border-bottom: 1px solid var(--rule);
 }
+.faq-entry:last-child { border-bottom: 0; }
 .faq-entry__num {
   font-family: var(--mono);
   font-size: 13px;
