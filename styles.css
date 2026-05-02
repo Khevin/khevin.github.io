@@ -3153,19 +3153,15 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
   .evidence-wall .ev-caption { grid-column: 1; }
 }
 
-/* — Case figure system — single artifact figure for the systems
-   section. Anchored left at cols 1-7 to leave breathing room. */
-.case-figure.case-figure--system {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  margin: 56px 0 0;
-}
-.case-figure.case-figure--system > .frame { grid-column: 1 / span 7; }
-@media (max-width: 900px) {
-  .case-figure.case-figure--system > .frame { grid-column: 1 / span 9; }
-}
-@media (max-width: 600px) {
-  .case-figure.case-figure--system > .frame { grid-column: 1 / -1; }
+/* — Bare images — case-key and side-quest figures dropped their
+   paper-frame wrappers; the bare img needs to render full-width
+   with a small radius so the bitmap doesn't sit naked-edged. */
+.case-key__fig > img,
+.side-quest figure > img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
 }
 
 /* — V2 figures — three distinct anchors so the V2 section reads
