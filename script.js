@@ -91,6 +91,44 @@
     });
   })();
 
+  /* ——— Mobile nav toggle (hamburger) ———
+     Mirrors the design-expert pattern documented in system.md. */
+  (() => {
+    const toggle = document.getElementById('nav-toggle');
+    const panel = document.getElementById('nav-primary');
+    if (!toggle || !panel) return;
+
+    const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+    const setOpen = (state) => {
+      toggle.setAttribute('aria-expanded', String(state));
+      toggle.setAttribute('aria-label', state ? 'Close menu' : 'Open menu');
+      if (state) panel.setAttribute('data-open', 'true');
+      else panel.removeAttribute('data-open');
+    };
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(!isOpen());
+    });
+
+    panel.addEventListener('click', (e) => {
+      if (e.target.closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!isOpen()) return;
+      if (e.target.closest('#nav-toggle') || e.target.closest('#nav-primary')) return;
+      setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) { setOpen(false); toggle.focus(); }
+    });
+
+    const mql = matchMedia('(min-width: 801px)');
+    mql.addEventListener('change', (e) => { if (e.matches && isOpen()) setOpen(false); });
+  })();
+
   /* ——— Smooth in-page scroll ——— */
   $$('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
