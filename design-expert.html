@@ -36,7 +36,12 @@
       </li>
     </ul>
 
-    <ul>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-haspopup="menu" aria-controls="nav-primary" aria-expanded="false" aria-label="Open menu">
+      <svg class="nav-toggle__open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7 H20 M4 12 H20 M4 17 H20"/></svg>
+      <svg class="nav-toggle__close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5 L19 19 M5 19 L19 5"/></svg>
+    </button>
+
+    <ul class="nav-primary" id="nav-primary">
       <li><a href="#language">Commands</a></li>
       <li><a href="#library">Library</a></li>
       <li><a href="#pantheon">Pantheon</a></li>
@@ -67,12 +72,12 @@
       </h1>
     </div>
 
-    <div class="row" style="margin-top: 24px;">
-      <div style="grid-column: span 6;">
+    <div class="row hero-row" style="margin-top: 24px;">
+      <div class="hero-col-text">
         <p class="body-lg">Most AI ships the same UI because it learned from the same slop.<br /> <em style="color:var(--accent); font-style:italic;">design-expert</em> teaches it taste.</p>
-        <p class="hero-copy" style="margin-top: 14px; color: rgb(84, 84, 84)">A complete design discipline — manifesto, craft, references, reviewer — installed into Claude Code as a single command.</p>
+        <p class="hero-copy">A complete design discipline — manifesto, craft, references, reviewer — installed into Claude Code as a single command.</p>
       </div>
-      <div style="grid-column: 8 / span 5;">
+      <div class="hero-col-art">
         <div class="hero-art" data-cap="four verbs" aria-hidden="true">
           <svg class="commands-art" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
             <rect class="term-frame" x="16" y="20" width="168" height="160" rx="2" />
@@ -110,7 +115,7 @@
 
     <div class="compat">
       <span class="label">Built for</span>
-      <span class="chip primary"><span class="glyph clawd"><img src="./assets/clawd.png" alt="" /></span>Claude Code</span>
+      <a class="chip primary" href="#install"><span class="glyph clawd"><img src="./assets/clawd.png" alt="" /></span>Claude Code<span class="chip-arrow" aria-hidden="true">↗</span></a>
       <span class="chip muted"><span class="glyph">◇</span>Cursor · soon</span>
       <span class="chip muted"><span class="glyph">◇</span>Codex · soon</span>
     </div>
@@ -654,6 +659,47 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
   });
+})();
+
+// Mobile nav toggle — hamburger reveals the primary nav as a panel.
+(() => {
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('nav-primary');
+  if (!toggle || !panel) return;
+
+  const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+  const setOpen = (state) => {
+    toggle.setAttribute('aria-expanded', String(state));
+    toggle.setAttribute('aria-label', state ? 'Close menu' : 'Open menu');
+    if (state) panel.setAttribute('data-open', 'true');
+    else panel.removeAttribute('data-open');
+  };
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setOpen(!isOpen());
+  });
+
+  // Close on link click — navigating shouldn't leave the menu open.
+  panel.addEventListener('click', (e) => {
+    if (e.target.closest('a')) setOpen(false);
+  });
+
+  // Close on outside click.
+  document.addEventListener('click', (e) => {
+    if (!isOpen()) return;
+    if (!e.target.closest('#nav-toggle') && !e.target.closest('#nav-primary')) setOpen(false);
+  });
+
+  // Close on Escape.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); toggle.focus(); }
+  });
+
+  // Close when crossing back to desktop width — the menu becomes the
+  // inline nav again and an open data-open state is no longer relevant.
+  const mql = window.matchMedia('(min-width: 761px)');
+  mql.addEventListener('change', (e) => { if (e.matches && isOpen()) setOpen(false); });
 })();
 
 // Animate library icons when scrolled into view

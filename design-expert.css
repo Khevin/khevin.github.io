@@ -1612,3 +1612,134 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
   .god-pop__summary { font-size: 15px; margin: 18px 0 16px; }
   .god-pop__quote p { font-size: 15.5px; }
 }
+
+/* ——— Hero row layout (desktop default) ———
+   Replaces the previous inline grid-column styles so a media query
+   can collapse the hero copy to full width on mobile. */
+.hero-row .hero-col-text { grid-column: span 6; }
+.hero-row .hero-col-art  { grid-column: 8 / span 5; }
+.hero-copy {
+  margin-top: 14px;
+  color: var(--ink-soft);
+}
+
+/* ——— Install chip (Claude Code) as a real link ———
+   Editorial register: typography stays, plus a small ↗ glyph hinting
+   the chip navigates rather than just labels. */
+.compat a.chip.primary {
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s, transform .15s;
+}
+.compat a.chip.primary:hover {
+  background: color-mix(in oklch, var(--paper-warm) 70%, var(--accent) 12%);
+}
+.compat a.chip.primary:focus { outline: none; }
+.compat a.chip.primary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.compat a.chip.primary .chip-arrow {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-faint);
+  margin-left: 2px;
+  transition: transform .15s, color .15s;
+}
+.compat a.chip.primary:hover .chip-arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+/* ——— Mobile nav toggle (hamburger) ———
+   Hidden on desktop; shown on mobile to expand the nav into a panel. */
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background .15s;
+}
+.nav-toggle:hover { background: var(--rule-soft); }
+.nav-toggle:focus { outline: none; }
+.nav-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.nav-toggle .nav-toggle__close { display: none; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__open { display: none; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__close { display: block; }
+
+/* ——— Mobile breakpoint (≤760px) ———
+   Hero copy spans full width; nav collapses behind a hamburger that
+   reveals a panel; library descriptions hide; pantheon cards halve. */
+@media (max-width: 760px) {
+  /* Hero row collapses; both children span the full width. */
+  .hero-row { grid-template-columns: 1fr; gap: 28px; }
+  .hero-row .hero-col-text,
+  .hero-row .hero-col-art { grid-column: 1 / -1; }
+
+  /* Nav: hide the inline list, show the hamburger.
+     When toggled open, render the list as an absolute dropdown panel
+     anchored to the right edge of the nav, matching the namespace switcher. */
+  .nav-toggle { display: inline-flex; }
+  nav.top ul.nav-primary {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: var(--gutter);
+    margin: 0;
+    padding: 8px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(20,18,14,0.06), 0 12px 32px rgba(20,18,14,0.10);
+    flex-direction: column;
+    gap: 0;
+    min-width: 180px;
+  }
+  nav.top ul.nav-primary[data-open="true"] { display: flex; }
+  nav.top ul.nav-primary li { width: 100%; }
+  nav.top ul.nav-primary a {
+    display: block;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-mute);
+    border-radius: 4px;
+    min-height: 44px;
+    line-height: 1.6;
+  }
+  nav.top ul.nav-primary a:hover { color: var(--ink); background: var(--rule-soft); }
+
+  /* Library: drop the description column to recover vertical space. */
+  .library .row-item {
+    grid-template-columns: 44px 44px 1fr auto;
+    gap: 14px;
+    padding: 16px 0;
+  }
+  .library .row-item .desc { display: none; }
+
+  /* Pantheon: compact card — no credo, halved min-height. */
+  .pantheon .figure {
+    min-height: 120px;
+    padding: 18px 18px;
+    gap: 8px;
+  }
+  .pantheon .figure .credo { display: none; }
+  .pantheon .figure h4 { font-size: 22px; }
+  .pantheon .figure h4 .first { font-size: 14px; }
+  /* Squiggle shrinks so the compact card stays balanced. */
+  .pantheon .figure > .squiggle {
+    width: 50%;
+    height: 80%;
+    right: -10px;
+  }
+}
