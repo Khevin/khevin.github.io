@@ -896,7 +896,7 @@ if ('IntersectionObserver' in window && libRows.length) {
     // Try a real portrait; fall back to typographic monogram on error.
     const img = new Image();
     img.alt = g.name;
-    img.src = `./assets/design-gods/${key}.png`;
+    img.src = `./assets/design-gods/${key}.jpg`;
     img.onload = () => elPortrait.replaceChildren(img);
     img.onerror = () => renderMonogram(g.monogram);
     // Render monogram immediately so there's no empty flash while img loads
