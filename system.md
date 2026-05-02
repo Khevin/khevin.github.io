@@ -135,6 +135,46 @@ Used by the pantheon popover (`.god-pop__portrait`). When a designer's photo doe
 
 ---
 
+## Pattern: case-study editorial layout
+
+Case-study pages (`projects/{spaces,favo,amway}.html`) use a thin set of conventions so each one is recognizably part of the same series while the per-section composition varies according to the work being shown.
+
+**Markup contract.**
+
+- `body[data-project="<slug>"]` enables the case-study CSS overrides.
+- Hero: `.case-hero.case-hero--wide` with full-width title, subtitle below, and a `.fact-ribbon` of six fact cells.
+- Each section is `<section class="case-section" id="<slug>">` whose `.shell` directly contains a `.case-prose` block (text) and any number of figure blocks (free to use the full container width).
+- No section eyebrow kicker (no `<div class="lab"><span class="n">01</span>Background</div>`). The h2 carries the section. The number was theatre.
+- No mono "FIG · NN · LABEL" caption prefixes on figures. Captions are plain serif italic prose where they add information; removed entirely where the surrounding body explains the figure.
+- No section dividers inside case studies (`body[data-project] .case-section { border-bottom: 0 }`). The composition does the work; the rules were redundant and visually noisy.
+
+**Reading column.**
+
+`.case-prose` constrains body text to `max-width: 65ch`, centered. Figures live as siblings of `.case-prose` inside the same `.shell`, free to use their own grid arrangements at the full container width. This separation is what lets prose stay readable while figures vary.
+
+`.case-prose.case-caption` is the prose caption that follows a figure block — serif italic, smaller, left-aligned (no `margin: 0 auto`).
+
+**Color rule.** All accents inside case studies tint to `--ink` (dark grey), not the page accent (terracotta). Italic ems, pull-quote rules, and KPI numerals all use `var(--case-accent)` which is set to `var(--ink)` for every `body[data-project]`. The result reads as an editorial spread — hierarchy through weight and italics, not through color shifts.
+
+---
+
+## Pattern: image-driven asymmetric grid
+
+The grid for a figure block follows the dimensions and intent of the image, not a fixed template. The case-study patterns below are the four shapes in current use; new image groupings should pick from these or earn a new one.
+
+| Pattern | When to use | Span |
+|---|---|---|
+| `.case-figure--offset` | Lead image break that nudges off the symmetric center line | cols 2 / -1 (offset right) |
+| `.case-figure--system` | Single artifact (component library, system map) anchored left | cols 1 / span 7 (right third = breathing room) |
+| `.case-figure--wide` | Full-bleed moment within the shell | cols 1 / -1 |
+| `.v2-fig--{lead,hands,right}` | Three figures at three distinct anchors so a multi-image section reads as varied composition | cols 2 / span 9 → 1 / span 8 → 4 / span 9 |
+
+**Rule.** When two figures sit in a pair (`.system-pair` style), their split should follow image dimensions: portrait + landscape → 5/7. Two similar landscapes → 7/5 if one is denser, 6/6 if they're equally weighted. Symmetric splits are the default to avoid; pick one only when the images genuinely warrant equal billing.
+
+**Evidence-wall variant** (`.evidence-wall`): a left-anchored trio packed in the left two-thirds of the 12-col grid (3-col cells at cols 1-3 / 4-6 / 7-9). The right third stays empty as deliberate breathing room. Caption sits below at cols 1-9, also left-anchored. Used for "what we inherited" sections where three before-images are shown together.
+
+---
+
 ## Closing
 
-This file is small on purpose. Each pattern is a contract for the next build to honor — adding a sixth pattern means the system has a real new surface to support, not a one-off being smuggled in. If a build introduces a pattern not described here, either it should not exist (use the closest existing pattern instead) or it earns its place and gets documented before it ships.
+This file is small on purpose. Each pattern is a contract for the next build to honor — adding a new pattern means the system has a real new surface to support, not a one-off being smuggled in. If a build introduces a pattern not described here, either it should not exist (use the closest existing pattern instead) or it earns its place and gets documented before it ships.
