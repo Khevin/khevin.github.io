@@ -2973,14 +2973,15 @@ body[data-project] .case-hero {
 
 /* =========================================================
    SPACES CASE-STUDY EXTENSIONS
-   Editorial layout overlays on top of the shared .case-* scaffolding.
-   New patterns: wide hero with fact-ribbon, key-visual hero break,
-   asymmetric evidence wall, system pair, V2 image stack with diptych
-   and wide bleed, oversized typographic KPI stack, paper-frame, PS
-   side-quest, and inline marginalia.
+   The shared .case-* scaffolding stays available for favo/amway.
+   This file replaces the right-rail meta-table with a horizontal
+   fact ribbon, drops section eyebrow labels in favor of h2 alone,
+   and lets each section pick its own grid based on the images it
+   carries — symmetric where the images are paired, asymmetric where
+   one image dominates, full-bleed where the moment earns it.
    ========================================================= */
 
-/* — Wide hero — title spans full width, subtitle 8 cols, fact ribbon below */
+/* — Hero — title 12-col, subtitle below capped at reading width — */
 .case-hero.case-hero--wide .case-title {
   font-family: var(--serif);
   font-weight: 400;
@@ -3001,19 +3002,16 @@ body[data-project] .case-hero {
   text-wrap: pretty;
 }
 
-/* — Fact ribbon — replaces the right-rail meta-table; horizontal six-cell strip */
+/* — Fact ribbon — six cells, no inter-cell rules. Spacing alone. — */
 .fact-ribbon {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 0;
+  gap: 28px;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
+  padding: 22px 0;
 }
-.fact-ribbon > div {
-  padding: 18px 18px 18px 0;
-  border-right: 1px dashed var(--ink-faintest);
-}
-.fact-ribbon > div:last-child { border-right: 0; padding-right: 0; }
+.fact-ribbon > div { padding: 0; }
 .fact-ribbon .k {
   display: block;
   font-family: var(--mono);
@@ -3032,23 +3030,13 @@ body[data-project] .case-hero {
   text-wrap: balance;
 }
 @media (max-width: 900px) {
-  .fact-ribbon { grid-template-columns: repeat(3, 1fr); }
-  .fact-ribbon > div:nth-child(3n) { border-right: 0; }
-  .fact-ribbon > div:nth-child(n+4) { border-top: 1px dashed var(--ink-faintest); padding-top: 18px; }
-  .fact-ribbon > div { padding-left: 0; }
-  .fact-ribbon > div + div { padding-left: 18px; border-left: 1px dashed var(--ink-faintest); }
-  .fact-ribbon > div:nth-child(3n+1) { padding-left: 0; border-left: 0; }
+  .fact-ribbon { grid-template-columns: repeat(3, 1fr); gap: 22px 28px; }
 }
 @media (max-width: 560px) {
-  .fact-ribbon { grid-template-columns: repeat(2, 1fr); }
-  .fact-ribbon > div:nth-child(2n) { border-right: 0; }
-  .fact-ribbon > div:nth-child(n) { border-right: 1px dashed var(--ink-faintest); padding-left: 18px; border-left: 0; }
-  .fact-ribbon > div:nth-child(2n) { border-right: 0; padding-left: 18px; border-left: 1px dashed var(--ink-faintest); }
-  .fact-ribbon > div:nth-child(2n+1) { padding-left: 0; border-left: 0; }
-  .fact-ribbon > div:nth-child(n+3) { border-top: 1px dashed var(--ink-faintest); padding-top: 16px; }
+  .fact-ribbon { grid-template-columns: repeat(2, 1fr); gap: 20px 28px; }
 }
 
-/* — Key visual — full-bleed-feeling result image directly under the hero */
+/* — Key visual — first impression image directly under the hero — */
 .case-key {
   padding: 64px 0 72px;
   border-bottom: 1px solid var(--rule);
@@ -3056,20 +3044,17 @@ body[data-project] .case-hero {
 }
 .case-key__fig { margin: 0; }
 .case-key__fig figcaption {
-  display: flex;
-  gap: 14px;
-  align-items: baseline;
-  margin-top: 18px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  flex-wrap: wrap;
+  margin-top: 16px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 60ch;
+  text-wrap: pretty;
 }
-.case-key__fig figcaption .num { color: var(--accent); flex-shrink: 0; }
 
-/* — Paper-frame — soft mounted look for hero-quality screens */
+/* — Paper-frame — soft mount for hero-quality screens — */
 .frame.paper {
   background: var(--paper);
   border: 1px solid var(--ink-faintest);
@@ -3080,139 +3065,119 @@ body[data-project] .case-hero {
 }
 .frame.paper img { width: 100%; display: block; border-radius: 2px; }
 
-/* — Evidence wall — asymmetric "before" triptych pinned at varying heights */
+/* — Reading column — body prose constrained for readability —
+   Figures live as siblings of .case-prose inside the shell, free to
+   use their own grid arrangements at the full container width. */
+.case-prose {
+  max-width: 65ch;
+  margin: 0 auto;
+}
+.case-prose h2 {
+  margin: 0 0 24px;
+  text-wrap: balance;
+}
+.case-prose p { margin: 0 0 18px; }
+.case-prose p:last-child { margin-bottom: 0; }
+.case-prose .pull {
+  margin: 32px 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--accent);
+  font-style: italic;
+  color: var(--ink-2);
+}
+.case-prose.case-caption {
+  margin-top: 18px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 62ch;
+}
+
+/* — Evidence wall — three before-shots staggered across the 12-col grid.
+   ev-1 anchors top-left wide; ev-2 sits down-and-right narrower; ev-3
+   bridges the middle wider with a downward Y offset. Asymmetric on
+   purpose — what we inherited was not arranged. */
 .evidence-wall {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 24px;
-  margin: 32px 0 16px;
-  position: relative;
-}
-.evidence-wall .ev-overline {
-  grid-column: 1 / -1;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: -8px;
+  margin: 56px 0 16px;
 }
 .evidence-wall .ev-item { margin: 0; }
-.evidence-wall .ev-item .tag {
-  display: block;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-bottom: 8px;
-}
 .evidence-wall .ev-item .frame {
   border: 1px solid var(--ink-faintest);
   background: var(--paper-warm);
   padding: 8px;
 }
 .evidence-wall .ev-item .frame img { width: 100%; display: block; }
-.evidence-wall .ev-1 { grid-column: 1 / span 6; transform: translateY(0); }
+.evidence-wall .ev-1 { grid-column: 1 / span 6; }
 .evidence-wall .ev-2 { grid-column: 8 / span 5; transform: translateY(48px); }
 .evidence-wall .ev-3 { grid-column: 3 / span 7; transform: translateY(24px); margin-top: 24px; }
-.evidence-wall .ev-cap {
-  grid-column: 1 / -1;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin: 80px 0 0;
-}
-.evidence-wall .ev-cap .num { color: var(--accent); }
 @media (max-width: 760px) {
-  .evidence-wall { grid-template-columns: 1fr; gap: 24px; }
+  .evidence-wall { grid-template-columns: 1fr; gap: 20px; margin-top: 36px; }
   .evidence-wall .ev-1,
   .evidence-wall .ev-2,
   .evidence-wall .ev-3 { grid-column: 1; transform: none; margin-top: 0; }
-  .evidence-wall .ev-cap { margin-top: 16px; }
 }
 
-/* — System pair — two artifacts side by side (library + flow) */
+/* — System pair — 5/7 asymmetric split. The component library tends
+   toward portrait; the UX flow toward landscape. The grid follows. */
 .system-pair {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 28px;
-  margin: 36px 0 12px;
+  align-items: start;
+  margin: 56px 0 0;
 }
-.system-pair .sp-item { margin: 0; }
-.system-pair .sp-item .tag {
-  display: block;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 10px;
-}
-.system-pair .sp-item figcaption {
-  font-family: var(--serif);
-  font-size: 14.5px;
-  line-height: 1.5;
-  color: var(--ink-soft);
-  margin-top: 12px;
-  text-wrap: pretty;
-}
-.system-pair .sp-cap {
-  grid-column: 1 / -1;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-top: 12px;
-}
-.system-pair .sp-cap .num { color: var(--accent); }
+.system-pair figure { margin: 0; }
+.system-pair .sp-1 { grid-column: 1 / span 5; }
+.system-pair .sp-2 { grid-column: 6 / span 7; }
 @media (max-width: 760px) {
-  .system-pair { grid-template-columns: 1fr; gap: 32px; }
+  .system-pair { grid-template-columns: 1fr; gap: 24px; }
+  .system-pair .sp-1, .system-pair .sp-2 { grid-column: 1; }
 }
 
-/* — V2 stack — lead image, then a diptych of supporting screens */
-.v2-stack { margin: 32px 0; }
-.v2-lead { margin: 0 0 32px; }
-.v2-lead figcaption,
-.v2-diptych figcaption {
-  display: flex;
-  gap: 14px;
-  align-items: baseline;
-  margin-top: 14px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  flex-wrap: wrap;
+/* — Offset figure — lead-image break that nudges off the symmetric
+   center line. Cols 2-12 on desktop; full-bleed on mobile. */
+.case-figure.case-figure--offset {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  margin: 56px 0;
 }
-.v2-lead figcaption .num,
-.v2-diptych figcaption .num { color: var(--accent); flex-shrink: 0; }
+.case-figure.case-figure--offset > .frame { grid-column: 2 / -1; }
+@media (max-width: 760px) {
+  .case-figure.case-figure--offset > .frame { grid-column: 1 / -1; }
+}
+
+/* — V2 diptych — 7/5 asymmetric. The garage screen leads (denser),
+   the user-detail screen plays second (more whitespace). */
 .v2-diptych {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 24px;
+  margin: 32px 0;
 }
 .v2-diptych figure { margin: 0; }
+.v2-diptych .d-1 { grid-column: 1 / span 7; }
+.v2-diptych .d-2 { grid-column: 8 / span 5; align-self: end; }
 @media (max-width: 760px) {
   .v2-diptych { grid-template-columns: 1fr; gap: 28px; }
+  .v2-diptych .d-1, .v2-diptych .d-2 { grid-column: 1; }
 }
 
-/* — Wide figure — bleeds beyond the body column slightly for emphasis */
+/* — Wide figure — full container width, generous vertical breathing — */
 .case-figure.case-figure--wide {
-  margin: 40px 0;
+  margin: 56px 0;
 }
 .case-figure.case-figure--wide .frame.paper { padding: 12px; }
-.case-figure.case-figure--wide .cap { margin-top: 16px; }
 
-/* — KPI stack — oversized italic serif numerals, one per row */
+/* — KPI stack — oversized italic serif numerals, one per row — */
 .kpi-stack {
   display: grid;
   grid-template-columns: 1fr;
-  margin: 40px 0 16px;
+  margin: 56px 0 16px;
   border-top: 1px solid var(--rule);
 }
 .kpi-stack .k {
@@ -3254,60 +3219,24 @@ body[data-project] .case-hero {
   .kpi-stack .lab { justify-self: start; max-width: none; }
 }
 
-/* — PS side quest — smaller, conversational closer */
-.side-quest--ps {
+/* — Side quest — small closer for the marketing-site companion piece —
+   no eyebrow label; the figure and a serif italic caption are enough. */
+.side-quest {
   margin-top: 56px;
   padding-top: 32px;
   border-top: 1px dashed var(--ink-faintest);
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
-.side-quest--ps .lab {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 16px;
-}
-.side-quest--ps figure { margin: 0; }
-.side-quest--ps figure figcaption {
+.side-quest figure { margin: 0; }
+.side-quest figure figcaption {
   font-family: var(--serif);
-  font-size: 15px;
+  font-style: italic;
+  font-size: 15.5px;
   line-height: 1.5;
   color: var(--ink-soft);
   margin-top: 14px;
   max-width: 60ch;
   text-wrap: pretty;
-}
-
-/* — Marginalia — small editorial annotation that floats right on desktop */
-.m-note {
-  margin: 28px 0;
-  padding: 14px 16px 14px 14px;
-  background: var(--paper-warm);
-  border-left: 2px solid var(--accent);
-  max-width: 38ch;
-}
-.m-note .lab {
-  display: block;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 6px;
-}
-.m-note p {
-  font-family: var(--serif);
-  font-size: 14.5px;
-  line-height: 1.45;
-  color: var(--ink-2);
-  margin: 0;
-  text-wrap: pretty;
-}
-@media (min-width: 1100px) {
-  .m-note {
-    float: right;
-    margin: 4px 0 12px 28px;
-    width: 38ch;
-  }
 }
