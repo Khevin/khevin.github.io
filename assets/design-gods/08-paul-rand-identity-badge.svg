@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Paul Rand identity badge line</title>
+  <desc id="desc">Transparent SVG line-art asset in warm copper orange.</desc>
+  <g stroke="#D98A43" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <path d="M190 410 L190 270 Q512 100 834 270 L834 410 L512 596 Z"/>
+    <line x1="300" y1="715" x2="724" y2="715"/>
+    <line x1="360" y1="805" x2="664" y2="805"/>
+  </g>
+</svg>

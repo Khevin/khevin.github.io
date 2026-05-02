@@ -801,12 +801,16 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
 .pantheon .figure > .squiggle svg {
   width: 100%; height: 100%; display: block;
 }
-.pantheon .figure > .squiggle path {
+.pantheon .figure > .squiggle path,
+.pantheon .figure > .squiggle line,
+.pantheon .figure > .squiggle circle,
+.pantheon .figure > .squiggle rect {
   fill: none;
   stroke: var(--accent);
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 body[data-theme="ink"] .pantheon .figure > .squiggle {
   mix-blend-mode: screen;

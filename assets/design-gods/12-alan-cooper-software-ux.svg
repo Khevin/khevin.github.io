@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Alan Cooper software UX line</title>
+  <desc id="desc">Transparent SVG line-art asset in warm copper orange.</desc>
+  <g stroke="#D98A43" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <circle cx="330" cy="555" r="160"/>
+    <line x1="250" y1="520" x2="410" y2="520"/>
+    <line x1="250" y1="590" x2="410" y2="590"/>
+    <line x1="560" y1="460" x2="850" y2="460"/>
+    <line x1="560" y1="555" x2="850" y2="555"/>
+    <line x1="560" y1="650" x2="850" y2="650"/>
+  </g>
+</svg>

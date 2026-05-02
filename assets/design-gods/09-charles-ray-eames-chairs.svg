@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Charles and Ray Eames chair line</title>
+  <desc id="desc">Transparent SVG line-art asset in warm copper orange.</desc>
+  <g stroke="#D98A43" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <path d="M256 482 C292 330 428 232 544 322 C666 416 612 590 462 630 C344 662 194 612 206 552 C210 520 232 500 256 482"/>
+    <line x1="350" y1="630" x2="262" y2="850"/>
+    <line x1="460" y1="630" x2="548" y2="850"/>
+    <line x1="350" y1="630" x2="548" y2="850"/>
+    <line x1="460" y1="630" x2="262" y2="850"/>
+    <line x1="252" y1="850" x2="292" y2="850"/>
+    <line x1="530" y1="850" x2="570" y2="850"/>
+    <path d="M626 560 C680 516 662 372 812 292 C862 266 902 268 884 372 C866 496 878 598 744 626 C680 640 600 604 626 560"/>
+    <line x1="710" y1="626" x2="626" y2="850"/>
+    <line x1="818" y1="626" x2="884" y2="850"/>
+    <line x1="710" y1="626" x2="884" y2="850"/>
+    <line x1="818" y1="626" x2="626" y2="850"/>
+    <line x1="610" y1="850" x2="652" y2="850"/>
+    <line x1="864" y1="850" x2="906" y2="850"/>
+  </g>
+</svg>

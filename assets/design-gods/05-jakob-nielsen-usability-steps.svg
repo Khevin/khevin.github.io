@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Jakob Nielsen usability step lines</title>
+  <desc id="desc">Transparent SVG line-art asset in warm copper orange.</desc>
+  <g stroke="#D98A43" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <path d="M300 250 H424 V342 H552 V250 H746 V342"/>
+    <path d="M205 502 H330 V408 H506 V506 H682 V424 H846"/>
+    <path d="M300 820 H470 V720 H604 V615 H848"/>
+    <path d="M330 710 H470" stroke-dasharray="1 18"/>
+    <path d="M604 506 V615" stroke-dasharray="1 18"/>
+  </g>
+</svg>
