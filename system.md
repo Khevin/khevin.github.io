@@ -177,6 +177,8 @@ The grid for a figure block follows the dimensions and intent of the image, not 
 
 ## Pattern: editorial register for case studies
 
+> **Canonical reference:** `design-expert/styles/editorial.md` (in the `khev-tools/design-expert` plugin). This system.md retains the project-specific contract for `projects/{spaces,favo,amway}.html`; the canonical discipline lives in the plugin. When the two diverge, the plugin file is authoritative — this section is the project-side mirror.
+
 Case-study pages on this site (`projects/{spaces,favo,amway}.html`) sit in the **editorial register**, not the brand register and not the product register. Treat them as long-form magazine pieces. The shape is borrowed from Work & Co's client work, Pentagram's project pages, and the wider editorial-design tradition.
 
 **The two-column rail.** A narrow left rail (200–280px) holds section labels and chapter eyebrows. A wider right column (700–900px, capped at 65–75 ch for readability) holds body prose, KPI numerals, and figures. The rail is fixed-width; the body breathes. On a 12-col grid this is a 3/9 or 4/8 split.
