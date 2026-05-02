@@ -702,7 +702,6 @@ if ('IntersectionObserver' in window && libRows.length) {
   const elName    = dialog.querySelector('[data-pop-name]');
   const elDesc    = dialog.querySelector('[data-pop-desc]');
   const elSnippet = dialog.querySelector('[data-pop-snippet]');
-  const elSource  = dialog.querySelector('[data-pop-source]');
 
   let lastTrigger = null;
 
@@ -714,7 +713,6 @@ if ('IntersectionObserver' in window && libRows.length) {
     elName.textContent  = row.querySelector('.name')?.textContent || '';
     elDesc.textContent  = row.querySelector('.desc')?.textContent || '';
     elSnippet.textContent = data.text;
-    elSource.textContent  = data.from;
     lastTrigger = row;
     dialog.showModal();
   };
