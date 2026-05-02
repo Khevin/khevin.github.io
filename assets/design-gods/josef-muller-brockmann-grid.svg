@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 1400 1400" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Josef Müller-Brockmann grid motif</title>
+  <desc id="desc">A transparent SVG monoline motif inspired by Josef Müller-Brockmann, featuring a precise Swiss-style modular grid with MB initials constructed on top.</desc>
+  <defs>
+    <style>
+      .line{fill:none;stroke:#E3892D;stroke-width:8;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}
+      .guide{fill:none;stroke:#E3892D;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke;opacity:.9}
+    </style>
+  </defs>
+
+  <!-- grid frame -->
+  <path class="guide" d="M180 160 H1220 V1240 H180 Z"/>
+
+  <!-- vertical grid columns -->
+  <path class="guide" d="M266.67 160 V1240"/>
+  <path class="guide" d="M353.33 160 V1240"/>
+  <path class="guide" d="M440 160 V1240"/>
+  <path class="guide" d="M526.67 160 V1240"/>
+  <path class="guide" d="M613.33 160 V1240"/>
+  <path class="guide" d="M700 160 V1240"/>
+  <path class="guide" d="M786.67 160 V1240"/>
+  <path class="guide" d="M873.33 160 V1240"/>
+  <path class="guide" d="M960 160 V1240"/>
+  <path class="guide" d="M1046.67 160 V1240"/>
+  <path class="guide" d="M1133.33 160 V1240"/>
+
+  <!-- horizontal grid rows -->
+  <path class="guide" d="M180 280 H1220"/>
+  <path class="guide" d="M180 400 H1220"/>
+  <path class="guide" d="M180 520 H1220"/>
+  <path class="guide" d="M180 640 H1220"/>
+  <path class="guide" d="M180 760 H1220"/>
+  <path class="guide" d="M180 880 H1220"/>
+  <path class="guide" d="M180 1000 H1220"/>
+  <path class="guide" d="M180 1120 H1220"/>
+
+  <!-- M built on the grid -->
+  <path class="line" d="M266.67 1120 V280"/>
+  <path class="line" d="M266.67 280 L440 640 L613.33 280"/>
+  <path class="line" d="M613.33 280 V1120"/>
+
+  <!-- B built on the grid -->
+  <path class="line" d="M786.67 1120 V280"/>
+  <path class="line" d="M786.67 280 H960
+                         C1055 280 1120 340 1120 430
+                         C1120 520 1055 580 960 580
+                         H786.67"/>
+  <path class="line" d="M786.67 580 H982
+                         C1090 580 1160 650 1160 760
+                         C1160 870 1090 940 982 940
+                         H786.67"/>
+  <path class="line" d="M786.67 940 H1000
+                         C1100 940 1166.67 1005 1166.67 1120
+                         H786.67" opacity="0"/>
+
+  <!-- alignment accents -->
+  <path class="line" d="M960 580 V580"/>
+  <path class="line" d="M960 940 V940"/>
+  <path class="line" d="M180 1240 H440"/>
+  <path class="line" d="M960 160 H1220"/>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 1400 1400" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Jan Tschichold new typography motif</title>
+  <desc id="desc">A transparent SVG monoline motif inspired by Jan Tschichold, combining a constructed J and T with asymmetric typographic layout lines in warm orange.</desc>
+  <defs>
+    <style>
+      .line{fill:none;stroke:#E3892D;stroke-width:10;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}
+    </style>
+  </defs>
+
+  <!-- Asymmetric layout bars / typographic system -->
+  <path class="line" d="M160 250 H630"/>
+  <path class="line" d="M160 418 H500"/>
+  <path class="line" d="M160 586 H390"/>
+
+  <!-- Constructed J -->
+  <path class="line" d="M345 360 V940
+                         C345 1062 430 1138 555 1138
+                         C675 1138 760 1068 760 960"/>
+  <path class="line" d="M650 960
+                         C650 1015 614 1055 558 1055
+                         C500 1055 455 1019 455 948"/>
+
+  <!-- Constructed T -->
+  <path class="line" d="M590 250 H1195"/>
+  <path class="line" d="M892 250 V1140"/>
+
+  <!-- Counterbalancing baseline and small anchor -->
+  <path class="line" d="M892 1140 H1132"/>
+  <path class="line" d="M1030 420 H1195"/>
+  <path class="line" d="M1030 590 H1150"/>
+  <path class="line" d="M1030 760 H1100"/>
+</svg>
