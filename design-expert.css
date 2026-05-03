@@ -979,6 +979,29 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
   border-color: rgba(125, 200, 130, 0.3);
 }
 
+/* Terminal output — sits BELOW the .terminal block, on page paper.
+   Reads as "what happened after you ran the command", separated from
+   the copy-able input so a visitor sees the command they're copying
+   distinctly from the system response. Mono font, ink-soft labels,
+   green checkmark stays the active accent. */
+.terminal-output {
+  margin-top: 12px;
+  padding: 12px 18px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  background: var(--paper-warm);
+  border-left: 2px solid oklch(75% 0.14 145);
+  border-radius: 4px;
+}
+.terminal-output .ok {
+  color: oklch(60% 0.16 145);
+  font-weight: 500;
+  margin-right: 6px;
+}
+.terminal-output .output-line { color: var(--ink-2); }
+
 .placeholder {
   border: 1px dashed var(--rule);
   border-radius: 8px;
