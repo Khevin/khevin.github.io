@@ -426,8 +426,15 @@
         <div class="step">Step · 01</div>
         <h4>Add the khev‑tools marketplace.</h4>
         <p>Adds the GitHub repo as a Claude Code plugin marketplace. The marketplace is a manifest pointing at the plugins it hosts — running this command once registers it and lets the plugin browser see <span class="mono">design-expert</span>. Use the full HTTPS URL (the <span class="mono">owner/repo</span> shorthand resolves to SSH and fails for users without GitHub SSH keys configured).</p>
-        <div class="terminal">
+        <div class="terminal" data-cmd="/plugin marketplace add https://github.com/Khevin/khev-tools">
           <div class="head-bar"><span></span><span></span><span></span></div>
+          <button class="terminal-copy" type="button" aria-label="Copy command to clipboard">
+            <svg class="terminal-copy__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="5" y="2.5" width="8.5" height="10" rx="1.2"/>
+              <path d="M3.5 5.5 H2.5 V13.5 H10.5 V12.5"/>
+            </svg>
+            <span class="terminal-copy__label">Copy</span>
+          </button>
           <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">https://github.com/Khevin/khev-tools</span><br/>
           <span class="comment"># clones over HTTPS · no SSH key required</span><br/>
           <span class="ok">✓</span> <span class="cmd-text">marketplace added · 1 plugin available</span>
@@ -438,8 +445,15 @@
         <div class="step">Step · 02</div>
         <h4>Install design‑expert.</h4>
         <p>The <span class="mono">@khev-tools</span> suffix tells Claude which marketplace to install from. Restart the session (or just reload the slash-command menu) so the four commands register.</p>
-        <div class="terminal">
+        <div class="terminal" data-cmd="/plugin install design-expert@khev-tools">
           <div class="head-bar"><span></span><span></span><span></span></div>
+          <button class="terminal-copy" type="button" aria-label="Copy command to clipboard">
+            <svg class="terminal-copy__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="5" y="2.5" width="8.5" height="10" rx="1.2"/>
+              <path d="M3.5 5.5 H2.5 V13.5 H10.5 V12.5"/>
+            </svg>
+            <span class="terminal-copy__label">Copy</span>
+          </button>
           <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin install</span> <span class="accent-c">design-expert@khev-tools</span><br/>
           <span class="comment"># SKILL.md loaded · 14 markdown files · 17 design-gods</span><br/>
           <span class="ok">✓</span> <span class="cmd-text">design-expert installed</span><br/>
@@ -1087,6 +1101,57 @@ if ('IntersectionObserver' in window && libRows.length) {
   dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
   dialog.addEventListener('close', () => {
     if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+  });
+})();
+
+/* Terminal copy-to-clipboard — every .terminal[data-cmd] gets a button
+   that writes its data-cmd value to the system clipboard with a
+   "Copied" feedback state for 1.5s. Falls back to a hidden textarea +
+   document.execCommand('copy') for environments where the async
+   Clipboard API is missing or denied. */
+(() => {
+  const buttons = document.querySelectorAll('.terminal-copy');
+  if (!buttons.length) return;
+
+  const writeToClipboard = async (text) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) { /* fall through to legacy path */ }
+    // Legacy fallback
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (_) { return false; }
+  };
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const term = btn.closest('.terminal');
+      const cmd = term?.dataset.cmd;
+      if (!cmd) return;
+      const ok = await writeToClipboard(cmd);
+      const label = btn.querySelector('.terminal-copy__label');
+      if (!label) return;
+      const original = label.textContent;
+      label.textContent = ok ? 'Copied' : 'Copy failed';
+      btn.classList.toggle('is-copied', ok);
+      setTimeout(() => {
+        label.textContent = original || 'Copy';
+        btn.classList.remove('is-copied');
+      }, 1500);
+    });
   });
 })();
 </script>
