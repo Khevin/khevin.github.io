@@ -227,9 +227,9 @@ Every screenshot, diagram, photo. Image fills the body width (or the full grid, 
 
 Bottom of every case study. Anatomy: a horizontal rule, then a single line: *"Continue to the next project →"*, with the next project's name in serif italic, set in the destination's brand color. Click anywhere on the row navigates. Hover: the row floods with a 4% tint of the destination color, the cursor picks up the mark.
 
-### 5.11 · Footer / contact line
+### 5.11 · Footer / colophon line
 
-A single full-width band at parchment with a single line of editorial body: *"Currently leading product design at Lastro. Email me at khevin.mituti@lastro.co or read the next thing on Medium."* The links are inline, underlined with `--rule`, and follow the verb-plus-object discipline (`Email me`, `read the next thing`). Below: small print with the year and a one-line credit (`set in Source Serif 4 + Inter Tight`).
+A single full-width band at parchment carrying the standing colophon: a left-aligned copyright line (`© 2026 khevin mituti`) and a right-aligned "All work" return link back to the homepage. Links are inline, underlined with `--rule`. The footer carries no contact prose, no "currently at" status line — those live on `about-me.html`, not on every page.
 
 ### 5.12 · Custom cursor mark
 

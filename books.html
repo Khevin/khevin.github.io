@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Library · khevin/mituti</title>
+<meta name="description" content="A small, curated reading shelf. Some books I like, others I love. Some teach me something new every new read." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png" />
+<link rel="shortcut icon" href="./assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="./assets/favicon/site.webmanifest" />
+</head>
+<body data-page="library">
+
+<!-- ============= NAV ============= -->
+<nav class="top">
+  <div class="inner">
+    <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="chev" aria-hidden="true">&#9662;</span>
+    </button>
+
+    <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="false" data-href="./design-expert.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
+        </span>
+        <span class="ns-desc">the plugin &mdash; what khevin makes for designers</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="./index.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">&#10003;</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work &mdash; what khevin ships for clients</span>
+      </li>
+    </ul>
+
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-haspopup="menu" aria-controls="nav-primary" aria-expanded="false" aria-label="Open menu">
+      <svg class="nav-toggle__open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7 H20 M4 12 H20 M4 17 H20"/></svg>
+      <svg class="nav-toggle__close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5 L19 19 M5 19 L19 5"/></svg>
+    </button>
+
+    <ul class="primary" id="nav-primary">
+      <li><a href="./index.html#top">home</a></li>
+      <li><a href="./index.html#clients">work</a></li>
+      <li><a href="./process.html">process</a></li>
+      <li><a href="./blog.html">blog</a></li>
+      <li><a href="./books.html" aria-current="page">library</a></li>
+      <li><a href="./about-me.html">about</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="top" class="library-page">
+
+<!-- ============= MASTHEAD ============= -->
+<header class="library-head">
+  <div class="shell">
+    <div class="library-crumbs">
+      <a href="./index.html">Home</a>
+      <span class="sep">/</span>
+      <span aria-current="page">Library</span>
+    </div>
+
+    <div class="library-title-grid">
+      <h1 class="library-h1">
+        Books I&rsquo;ve <em>read &amp; re-read.</em>
+      </h1>
+      <p class="library-blurb">
+        A small, curated reading shelf. Some books I like, others I love. Some teach me something new every new read. <em>Enjoy.</em>
+      </p>
+    </div>
+
+  </div>
+</header>
+
+<!-- ============= SHELVES ============= -->
+<div id="library-shelves"></div>
+
+<!-- ============= DETAIL DIALOG ============= -->
+<dialog id="book-dialog" class="book-dialog" aria-labelledby="book-dialog-title">
+  <form method="dialog" class="book-dialog-form">
+    <button type="submit" class="book-dialog-close" aria-label="Close" value="cancel">&times;</button>
+    <div class="book-dialog-grid">
+      <div class="book-dialog-pic">
+        <img id="book-dialog-img" src="" alt="" />
+      </div>
+      <div class="book-dialog-body">
+        <h2 class="book-dialog-title" id="book-dialog-title"></h2>
+        <p class="book-dialog-author" id="book-dialog-author"></p>
+        <p class="book-dialog-blurb" id="book-dialog-blurb"></p>
+        <div class="book-dialog-why">
+          <strong>Why it&rsquo;s on the shelf</strong>
+          <span id="book-dialog-why"></span>
+        </div>
+        <p class="book-dialog-meta" id="book-dialog-meta"></p>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+</main>
+
+<!-- ============= FOOTER ============= -->
+<footer class="foot">
+  <div class="shell">
+    <div class="colophon">
+      <div class="l">
+        <span>© 2026 khevin mituti</span>
+      </div>
+      <div class="r"><a href="./index.html">&#8629; All work</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   khevin-mituti / library
+   Inline IIFE: data, render, dialog, focus management.
+   No framework. No build step. Pairs with .library-* + .book-*
+   styles in styles.css.
+   ========================================================= */
+(function () {
+  'use strict';
+
+  /* -------- data --------
+     Each entry maps to a file in assets/books/. The `file` field carries
+     the full filename including extension, so dropping a new JPG / WEBP /
+     JFIF (or replacing one) just works — no JS edits needed for cover
+     swaps. Cover dimensions are read from the image at runtime; spine
+     thickness is uniform; only blurb / why are author-edited prose. */
+  var BOOKS = {
+    craft: {
+      label: 'Craft &amp; creativity',
+      sub: 'For when the work needs a kick.',
+      items: [
+        { id:'arden-whatever',              file:'arden-whatever.jpg',              title:"It&rsquo;s Not How Good You Are, It&rsquo;s How Good You Want to Be", author:'Paul Arden',             year:'2003', blurb:'A pocket-sized cattle-prod from Saatchi&rsquo;s creative director. Two hundred pages of provocations that read as if shouted across a studio at 3pm.', why:'Re-read every January. Sets a higher floor for what counts as &ldquo;trying.&rdquo;' },
+        { id:'arden-want',                  file:'arden-want.jpg',                  title:'Whatever You Think, Think the Opposite',                              author:'Paul Arden',             year:'2006', blurb:'Companion to <em>It&rsquo;s Not How Good</em>. The same blunt voice, this time aimed at the part of you that wants to play it safe.', why:'Useful when a brief is too obvious to be interesting yet.' },
+        { id:'lois-damn',                   file:'lois-damn.jpg',                   title:'Damn Good Advice (For People with Talent!)',                          author:'George Lois',            year:'2012', blurb:'A 120-rule manual from the man behind the Esquire covers. Half memoir, half Brooklyn beat-down. Funny, uncompromising, full of work that still wins arguments.', why:'Lesson 27 &mdash; &ldquo;creativity can solve almost any problem&rdquo; &mdash; sat on a Post-it on my monitor for two years.' },
+        { id:'creative-act-rick-rubin',     file:'creative-act-rick-rubin.jpg',     title:'The Creative Act: A Way of Being',                                    author:'Rick Rubin',             year:'2023', blurb:'Rubin on creativity as a way of being &mdash; reflections from forty years producing across genres, written as 78 short chapters that read like a notebook.', why:'' },
+        { id:'kleon-steal',                 file:'kleon-steal.jpg',                 title:'Steal Like an Artist',                                                author:'Austin Kleon',           year:'2012', blurb:'Ten things nobody told you about being creative &mdash; short, illustrated, finished in a sitting and remembered for years. Kleon&rsquo;s argument: nothing is original; collect the right influences and remix.', why:'I gave away three copies of this in 2014 and never bought it back for myself.' },
+        { id:'kleon-share',                 file:'kleon-share.jpg',                 title:'Show Your Work!',                                                     author:'Austin Kleon',           year:'2014', blurb:'A field manual for sharing process in public. The right argument for designers who think the deliverable is the product.', why:'The chapter on &ldquo;teach what you know&rdquo; reset how I write case studies.' }
+      ]
+    },
+    design: {
+      label: 'Design &amp; systems',
+      sub: 'Refining the design craft.',
+      items: [
+        { id:'norman-doet',                 file:'norman-doet.jpg',                 title:'The Design of Everyday Things',                                       author:'Don Norman',             year:'2013 ed.', blurb:'The book that named affordances, signifiers, and the &ldquo;Norman door.&rdquo; Still the cleanest argument for putting users at the center, with examples from teapots to nuclear reactors.', why:'I quote chapter four (&ldquo;knowledge in the head, knowledge in the world&rdquo;) in nearly every kickoff.' },
+        { id:'norman-emotional',            file:'norman-emotional.jpg',            title:'Emotional Design',                                                    author:'Don Norman',             year:'2004', blurb:'Visceral, behavioral, reflective &mdash; three layers of how people feel about objects, and how design works on each. The companion to <em>Everyday Things</em> for anyone arguing the case for craft.', why:'Kept me from cargo-culting Bauhaus minimalism on a brand that needed warmth.' },
+        { id:'tufte-vdqi',                  file:'tufte-vdqi.jpg',                  title:'The Visual Display of Quantitative Information',                      author:'Edward Tufte',           year:'2001 ed.', blurb:'The bible of data graphics. The data-ink ratio. Sparklines. The Minard map. Tufte&rsquo;s argument is moral, not just aesthetic: chart-junk lies to people.', why:'Required reading before any dashboard project. Saves arguments later.' },
+        { id:'tufte-envis',                 file:'tufte-envis.jpg',                 title:'Envisioning Information',                                             author:'Edward Tufte',           year:'1990', blurb:'Tufte goes 3D. Layering, color, small multiples, the eye&rsquo;s appetite for density done well. The most beautifully made argument for letting the data breathe.', why:'Where I learned that small-multiples almost always beat &ldquo;let me show you a fancier chart.&rdquo;' },
+        { id:'tufte-fresheyes',             file:'tufte-fresheyes.jpg',             title:'Seeing with Fresh Eyes',                                              author:'Edward Tufte',           year:'2020', blurb:'Tufte&rsquo;s most recent on observation, evidence and the discipline of looking again at what you thought you already understood.', why:'' },
+        { id:'paulrand-thoughts',           file:'paulrand-thoughts.jpg',           title:'Thoughts on Design',                                                  author:'Paul Rand',              year:'1947', blurb:'The slim 1947 essay that helped shape modern graphic design&rsquo;s working vocabulary &mdash; symbol, contrast, humor, restraint.', why:'' },
+        { id:'paulrand-designersart',       file:'paulrand-designersart.jpg',       title:'A Designer&rsquo;s Art',                                              author:'Paul Rand',              year:'1985', blurb:'Rand on the art and craft of graphic design, illustrated with his own work for IBM, Westinghouse, ABC, and the rest of the postwar American identity canon.', why:'' },
+        { id:'bierut-howto',                file:'bierut-howto.jpg',                title:'How To',                                                              author:'Michael Bierut',         year:'2015', blurb:'A retrospective monograph from one of the most-cited working graphic designers &mdash; the New York Times redesign, the Hillary logo, Saks, and dozens more, with the thinking behind each.', why:'' },
+        { id:'grid-systems',                file:'grid-systems.jpg',                title:'Grid Systems in Graphic Design',                                      author:'Josef M&uuml;ller-Brockmann', year:'1981', blurb:'The 1981 manual on grid composition that every editorial designer either reads or ignores at their peril. Bilingual German/English, set in Akzidenz on a 4-column grid.', why:'' },
+        { id:'dot-line-shape',              file:'dot-line-shape.jpg',              title:'Dot, Line, Shape',                                                    author:'',                       year:'',     blurb:'A primer on the fundamental visual elements of design &mdash; dot, line, shape &mdash; and how they combine into composition.', why:'' },
+        { id:'spiekermann-typestealingsheep', file:'spiekermann-typestealingsheep.jpg', title:'Stop Stealing Sheep &amp; Find Out How Type Works',             author:'Erik Spiekermann',       year:'1993', blurb:'A primer on typography, accessible and opinionated, by one of the field&rsquo;s most articulate working practitioners. The title is from a Frederic Goudy line.', why:'' },
+        { id:'krug-dontmakemethink',        file:'krug-dontmakemethink.jpg',        title:'Don&rsquo;t Make Me Think',                                           author:'Steve Krug',             year:'2000', blurb:'The foundational text on web usability. Krug&rsquo;s argument: a good interface doesn&rsquo;t ask the user to figure out how it works.', why:'' },
+        { id:'yablonski-lawsofux',          file:'yablonski-lawsofux.jpg',          title:'Laws of UX',                                                          author:'Jon Yablonski',          year:'2020', blurb:'Ten psychological principles applied to interface design (Hick&rsquo;s, Fitts&rsquo;, Jakob&rsquo;s, Miller&rsquo;s, others), with examples and counter-examples.', why:'' },
+        { id:'greever-articulating',        file:'greever-articulating.jpg',        title:'Articulating Design Decisions',                                       author:'Tom Greever',            year:'2015', blurb:'How to talk about design with people who aren&rsquo;t designers &mdash; and have them listen. A practical book on framing, response, and the difficult meeting.', why:'' },
+        { id:'user-centered-design-oreilly', file:'user-centered-design-oreilly.jpg', title:'User-Centered Design',                                              author:'Travis Lowdermilk',      year:'2013', blurb:'A working manual for engineering teams shipping user-centered software &mdash; research, prototyping, and validation under deadline pressure.', why:'' },
+        { id:'ux-strategy-oreilly',         file:'ux-strategy-oreilly.jpg',         title:'UX Strategy',                                                         author:'Jaime Levy',             year:'2015', blurb:'Levy&rsquo;s framework for connecting business strategy to UX practice &mdash; value innovation, lean validation, and a strategy doc that survives stakeholder review.', why:'' },
+        { id:'podmajersky-strategicwriting', file:'podmajersky-strategicwriting.jfif', title:'Strategic Writing for UX',                                          author:'Torrey Podmajersky',     year:'2019', blurb:'Voice, tone, and content strategy applied to product interfaces &mdash; a working method for shipping the words a product makes the user read.', why:'' }
+      ]
+    },
+    marketing: {
+      label: 'Marketing',
+      sub: 'For arguing the value of the work.',
+      items: [
+        { id:'brand-gap',                   file:'brand-gap.jpg',                   title:'The Brand Gap',                                                       author:'Marty Neumeier',         year:'2003', blurb:'Closing the distance between business strategy and customer experience, in 158 pages and a lot of hand-drawn diagrams.', why:'' },
+        { id:'zag',                         file:'zag.jpg',                         title:'Zag',                                                                 author:'Marty Neumeier',         year:'2007', blurb:'When everyone zigs, zag &mdash; Neumeier&rsquo;s short manual on radical differentiation, paired with a 17-step working method.', why:'' },
+        { id:'sethgodin-purplecow',         file:'sethgodin-purplecow.jpg',         title:'Purple Cow',                                                          author:'Seth Godin',             year:'2003', blurb:'Godin&rsquo;s argument that &ldquo;remarkable&rdquo; is the only marketing left that works &mdash; everything else has already been said louder.', why:'' },
+        { id:'sethgodin-marketing',         file:'sethgodin-marketing.jpg',         title:'This Is Marketing',                                                   author:'Seth Godin',             year:'2018', blurb:'Godin on marketing as service: the smallest viable audience, permission, and the discipline of showing up consistently for the people you want to serve.', why:'' },
+        { id:'crossing-the-chasm-moore',    file:'crossing-the-chasm-moore.jpg',    title:'Crossing the Chasm',                                                  author:'Geoffrey Moore',         year:'1991', blurb:'Moore&rsquo;s tech-adoption framework: innovators, early adopters, the mainstream majority, and the &ldquo;chasm&rdquo; between them &mdash; with the marketing strategy required to cross it.', why:'' },
+        { id:'ogilvy-advertising-digital',  file:'ogilvy-advertising-digital.jpg',  title:'Ogilvy on Advertising',                                               author:'David Ogilvy',           year:'1983', blurb:'Ogilvy&rsquo;s working manual on advertising as a craft, drawn from his decades running the agency that became Ogilvy &amp; Mather. Illustrated, opinionated, still cited.', why:'' },
+        { id:'marketing-management-kotler', file:'marketing-management-kotler.webp', title:'Marketing Management',                                                author:'Philip Kotler',          year:'',     blurb:'The textbook on marketing strategy and operations, used worldwide for fifty years and across many editions.', why:'' }
+      ]
+    },
+    strategy: {
+      label: 'Strategy &amp; people',
+      sub: 'For working with the people who build and decide.',
+      items: [
+        { id:'oster-bmg',                   file:'oster-bmg.jpg',                   title:'Business Model Generation',                                           author:'Osterwalder &amp; Pigneur', year:'2010', blurb:'The book that made the Business Model Canvas a lingua franca. Visually generous, structurally clear, useful in workshops with everyone from CEOs to interns.', why:'My go-to for aligning product, brand and ops on what we&rsquo;re actually building.' },
+        { id:'oster-vp',                    file:'oster-vp.jpg',                    title:'Value Proposition Design',                                            author:'Osterwalder &amp; Pigneur', year:'2014', blurb:'The companion canvas &mdash; jobs, pains, gains, fits. Where the abstract &ldquo;value prop&rdquo; turns into something a designer can actually shape.', why:'The first 30 minutes of nearly every product redesign live in this canvas.' },
+        { id:'raydalio-principles',         file:'raydalio-principles.jpg',         title:'Principles',                                                          author:'Ray Dalio',              year:'2017', blurb:'Dalio&rsquo;s life and management principles from running Bridgewater &mdash; radical transparency and a believability-weighted decision system, in long form.', why:'' },
+        { id:'jamesclear-atomichabits',     file:'jamesclear-atomichabits.jpg',     title:'Atomic Habits',                                                       author:'James Clear',            year:'2018', blurb:'Small habits compounding into large outcomes, with practical mechanics for designing them: cue, craving, response, reward.', why:'' },
+        { id:'duhigg-powerofhabit',         file:'duhigg-powerofhabit.jpg',         title:'The Power of Habit',                                                  author:'Charles Duhigg',         year:'2012', blurb:'How habits work and how individuals, companies and societies change them. Reads as journalism, lands as a working method.', why:'' },
+        { id:'douglas-davis-creative-strategy', file:'douglas-davis-creative-strategy.jpg', title:'Creative Strategy and the Business of Design',          author:'Douglas Davis',          year:'2016', blurb:'The strategy half of design school they don&rsquo;t teach &mdash; frameworks for selling and shipping creative work inside an actual business.', why:'' },
+        { id:'minto-pyramid',               file:'minto-pyramid.jpg',               title:'The Pyramid Principle',                                               author:'Barbara Minto',          year:'1987', blurb:'McKinsey&rsquo;s structured-thinking method for writing executive memos and arguing positions clearly &mdash; the upside-down pyramid you&rsquo;ve probably already half-internalized.', why:'' },
+        { id:'almanack-naval-ravikant',     file:'almanack-naval-ravikant.jpg',     title:'The Almanack of Naval Ravikant',                                      author:'Eric Jorgenson',         year:'2020', blurb:'A compilation of Naval&rsquo;s tweets, podcasts and essays on wealth, leverage, and the practice of clear thinking &mdash; assembled and annotated by Eric Jorgenson.', why:'' }
+      ]
+    },
+    misc: {
+      label: 'Misc.',
+      sub: 'Adjacent reading &mdash; cognition, stoicism, chess.',
+      items: [
+        { id:'godel-escher-bach',           file:'godel-escher-bach.jpg',           title:'G&ouml;del, Escher, Bach',                                            author:'Douglas Hofstadter',     year:'1979', blurb:'An eternal golden braid through math, art, music and mind &mdash; on strange loops, self-reference, and what it might mean for matter to think.', why:'' },
+        { id:'polya-howtosolveit',          file:'polya-howtosolveit.jpg',          title:'How to Solve It',                                                     author:'George P&oacute;lya',    year:'1945', blurb:'A short, durable manual on mathematical problem-solving that reads as a manual for any kind of structured thinking.', why:'' },
+        { id:'kahneman-fast-slow',          file:'kahneman-fast-slow.jpg',          title:'Thinking, Fast and Slow',                                             author:'Daniel Kahneman',        year:'2011', blurb:'Kahneman&rsquo;s synthesis of decades of cognitive research: the two systems of thinking, the biases each one introduces, and the hard work of catching yourself in the middle.', why:'' },
+        { id:'barbara-oakley-mindfornumbers', file:'barbara-oakley-mindfornumbers.jpg', title:'A Mind for Numbers',                                                author:'Barbara Oakley',         year:'2014', blurb:'Oakley on how to think mathematically without being a &ldquo;math person&rdquo; &mdash; chunking, focused vs diffuse thinking, and the practice of getting unstuck.', why:'' },
+        { id:'barbara-oakley-learninghowtolearn', file:'barbara-oakley-learninghowtolearn.jpg', title:'Learning How to Learn',                                       author:'Barbara Oakley',         year:'2018', blurb:'A working manual on the science of learning, adapted from Oakley&rsquo;s widely-followed Coursera course of the same name.', why:'' },
+        { id:'sheldrake-entangledlife',     file:'sheldrake-entangledlife.jpg',     title:'Entangled Life',                                                      author:'Merlin Sheldrake',       year:'2020', blurb:'A field-trip into the world of fungi &mdash; networks, intelligence, symbiosis &mdash; and what they reveal about the rest of life.', why:'' },
+        { id:'steven-johnson-goodideas',    file:'steven-johnson-goodideas.jpg',    title:'Where Good Ideas Come From',                                          author:'Steven Johnson',         year:'2010', blurb:'A natural history of innovation: slow hunches, the adjacent possible, liquid networks, and the spaces where ideas find each other.', why:'' },
+        { id:'temple-thinkingpictures',     file:'temple-thinkingpictures.jpg',     title:'Thinking in Pictures',                                                author:'Temple Grandin',         year:'1995', blurb:'Grandin on her own visual cognition, animal behavior, and what design owes to the people whose minds work differently.', why:'' },
+        { id:'temple-visualthinking',       file:'temple-visualthinking.jpg',       title:'Visual Thinking',                                                     author:'Temple Grandin',         year:'2022', blurb:'Grandin&rsquo;s follow-up to <em>Thinking in Pictures</em>, expanded to argue for picture-thinkers and pattern-thinkers as distinct cognitive types worth designing for.', why:'' },
+        { id:'vaclav-smil-numbersdontlie',  file:'vaclav-smil-numbersdontlie.jpg',  title:'Numbers Don&rsquo;t Lie',                                             author:'Vaclav Smil',            year:'2020', blurb:'Seventy-one short essays from one of the world&rsquo;s most-cited energy and infrastructure scholars, each anchored on a specific number that reframes a familiar story.', why:'' },
+        { id:'holiday-the-obstacle-is-the-way', file:'holiday-the-obstacle-is-the-way.jpg', title:'The Obstacle Is the Way',                                  author:'Ryan Holiday',           year:'2014', blurb:'Stoic philosophy turned into a working manual: the impediment to action advances action; what stands in the way becomes the way.', why:'' },
+        { id:'holiday-dailystoic',          file:'holiday-dailystoic.webp',         title:'The Daily Stoic',                                                     author:'Ryan Holiday',           year:'2016', blurb:'Three hundred sixty-six daily meditations drawn from Marcus Aurelius, Epictetus and Seneca, each paired with a short modern reading.', why:'' },
+        { id:'marcus-aurelius-meditations', file:'marcus-aurelius-meditations.jpg', title:'Meditations',                                                         author:'Marcus Aurelius',        year:'c.180', blurb:'The private notebook of a Roman emperor working through Stoic doctrine in his own words. Written for himself; preserved by accident.', why:'' },
+        { id:'alquimista-paulo-coelho',     file:'alquimista-paulo-coelho.jpg',     title:'O Alquimista',                                                        author:'Paulo Coelho',           year:'1988', blurb:'Coelho&rsquo;s bestselling parable of an Andalusian shepherd&rsquo;s journey to Egypt &mdash; a fable about destiny, signs, and the language of the world.', why:'' },
+        { id:'nimzovich-mysystem',          file:'nimzovich-mysystem.jpg',          title:'My System',                                                           author:'Aron Nimzowitsch',       year:'1925', blurb:'Nimzowitsch&rsquo;s systematization of positional chess &mdash; blockade, prophylaxis, the centralization principle. The book that argued chess was theory, not just intuition.', why:'' },
+        { id:'mikhail-tal',                 file:'mikhail-tal.jpg',                 title:'The Life and Games of Mikhail Tal',                                   author:'Mikhail Tal',            year:'1976', blurb:'The Magician of Riga&rsquo;s autobiographical account of his rise to the world title, woven through annotated games and a self-deprecating humor rare in chess literature.', why:'' },
+        { id:'my-60-memorable-games-bobbyfischer', file:'my-60-memorable-games-bobbyfischer.jpg', title:'My 60 Memorable Games',                            author:'Bobby Fischer',          year:'1969', blurb:'Fischer&rsquo;s own annotations of his sixty most-memorable games, with the candor and precision he brought to the board.', why:'' }
+      ]
+    }
+  };
+
+  /* runtime aspect-ratio detection.
+     A new cover dropped into assets/books/ should "just work" — no
+     hardcoded dimensions. After each <img> loads, this fn reads the
+     natural width/height and writes --cw + --bh on the cell. The 33%
+     cap rule prevents a landscape cover from running over its grid
+     space: width is capped at 1.33× a normal portrait; for wider
+     covers, height shrinks proportionally to keep aspect. */
+  var PORTRAIT_AR = 0.667;            // 2:3 normal portrait reference
+  var CAP_AR = PORTRAIT_AR * 1.33;    // ≈ 0.887, the user's 33% cap
+  var BASE_H = 280;                   // target book height in px
+  function setBookDims(cell, naturalW, naturalH) {
+    if (!naturalW || !naturalH) return;
+    var ar = naturalW / naturalH;
+    var cw, bh;
+    if (ar <= CAP_AR) {
+      bh = BASE_H;
+      cw = Math.round(BASE_H * ar);
+    } else {
+      cw = Math.round(BASE_H * CAP_AR);
+      bh = Math.round(cw / ar);
+    }
+    cell.style.setProperty('--cw', cw + 'px');
+    cell.style.setProperty('--bh', bh + 'px');
+  }
+
+  /* -------- render -------- */
+  var root = document.getElementById('library-shelves');
+  var html = '';
+  Object.keys(BOOKS).forEach(function (catKey) {
+    var cat = BOOKS[catKey];
+    var gridId = 'shelf-grid-' + catKey;
+    html += '<section class="shelf" data-cat="' + catKey + '" data-state="expanded" aria-labelledby="shelf-' + catKey + '-h">';
+    html +=   '<div class="shell shelf-head">';
+    html +=     '<div class="shelf-rule" aria-hidden="true"></div>';
+    html +=     '<h2 class="shelf-title" id="shelf-' + catKey + '-h">' + cat.label + '</h2>';
+    html +=     '<div class="shelf-meta">';
+    html +=       '<span class="shelf-meta-volumes"><span class="v">' + cat.items.length + '</span> volumes</span>';
+    html +=       '<span class="shelf-meta-sub">' + cat.sub + '</span>';
+    html +=     '</div>';
+    html +=     '<button class="shelf-toggle" type="button" '
+            +     'aria-expanded="true" aria-controls="' + gridId + '" '
+            +     'aria-label="Collapse ' + stripTags(cat.label) + ' to a horizontal row"></button>';
+    html +=   '</div>';
+
+    html +=   '<div class="shell shelf-grid-wrap">';
+    html +=     '<div class="shelf-grid" id="' + gridId + '">';
+    html +=       '<div class="embla__container">';
+    cat.items.forEach(function (b) {
+      /* DOM structure mirrors realvjy / KKEdXOa "3D Book Flip Cover" so
+         the same visual vocabulary applies — main-book-wrap > book-cover
+         > [book-inside, book-image > img + effect + light]. The CSS below
+         is our own implementation of that visual language. */
+      html += '<button class="book-items embla__slide" type="button" '
+           +    'data-cat="' + catKey + '" data-book-id="' + b.id + '" '
+           +    'aria-label="' + stripTags(b.title) + ' by ' + stripTags(b.author) + '">';
+      html +=   '<div class="main-book-wrap" aria-hidden="true">';
+      html +=     '<div class="book-cover">';
+      html +=       '<div class="book-inside"></div>';
+      html +=       '<div class="book-image">';
+      html +=         '<img src="assets/books/' + b.file + '" alt="" loading="lazy" decoding="async" />';
+      html +=         '<div class="effect"></div>';
+      html +=         '<div class="light"></div>';
+      html +=       '</div>';
+      html +=     '</div>';
+      html +=   '</div>';
+      html += '</button>';
+    });
+    html +=       '</div>';   /* /.embla__container */
+    html +=     '</div>';     /* /.shelf-grid (embla viewport) */
+    html +=   '</div>';       /* /.shell */
+    html += '</section>';
+  });
+  root.innerHTML = html;
+
+  /* after render, attach aspect-ratio detection per cover image */
+  Array.prototype.forEach.call(root.querySelectorAll('.book-image img'), function (img) {
+    var cell = img.closest('.book-items');
+    if (!cell) return;
+    if (img.complete && img.naturalWidth) {
+      setBookDims(cell, img.naturalWidth, img.naturalHeight);
+    } else {
+      img.addEventListener('load', function () {
+        setBookDims(cell, img.naturalWidth, img.naturalHeight);
+      }, { once: true });
+    }
+  });
+
+  function stripTags(s) {
+    return String(s)
+      .replace(/&amp;/g, '&')      // decode ampersand so aria-labels read "Craft & creativity" not "Craft  creativity"
+      .replace(/&rsquo;/g, "'")    // typographic apostrophe → ASCII for screen readers
+      .replace(/&[a-z]+;/g, '')    // strip remaining entity refs
+      .replace(/<[^>]+>/g, '')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* set innerHTML if non-empty, otherwise hide the element. Used so
+     the dialog gracefully omits blurb / why / year when an entry has
+     none — important now that several new books on the shelf don't
+     yet have hand-written prose. */
+  function setOrHide(el, content) {
+    if (!el) return;
+    if (content && String(content).trim()) {
+      el.innerHTML = content;
+      el.style.display = '';
+    } else {
+      el.innerHTML = '';
+      el.style.display = 'none';
+    }
+  }
+
+  /* -------- dialog -------- */
+  var dlg       = document.getElementById('book-dialog');
+  var dlgImg    = document.getElementById('book-dialog-img');
+  var dlgTitle  = document.getElementById('book-dialog-title');
+  var dlgAuthor = document.getElementById('book-dialog-author');
+  var dlgBlurb  = document.getElementById('book-dialog-blurb');
+  var dlgWhy    = document.getElementById('book-dialog-why');
+  var dlgMeta   = document.getElementById('book-dialog-meta');
+
+  var lastTrigger = null;
+
+  root.addEventListener('click', function (e) {
+    var btn = e.target.closest('.book-items');
+    if (!btn) return;
+    var catKey = btn.getAttribute('data-cat');
+    var id     = btn.getAttribute('data-book-id');
+    var cat    = BOOKS[catKey];
+    if (!cat) return;
+    var book = cat.items.find(function (b) { return b.id === id; });
+    if (!book) return;
+
+    lastTrigger = btn;
+    dlgImg.src = 'assets/books/' + book.file;
+    dlgImg.alt = stripTags(book.title) + ' cover';
+    dlgTitle.innerHTML = book.title;
+    setOrHide(dlgAuthor, book.author ? 'by ' + book.author : '');
+    setOrHide(dlgBlurb, book.blurb);
+    setOrHide(dlgWhy, book.why);
+    var whyContainer = document.querySelector('.book-dialog-why');
+    if (whyContainer) whyContainer.style.display = (book.why && book.why.trim()) ? '' : 'none';
+    setOrHide(dlgMeta, book.year);
+
+    if (typeof dlg.showModal === 'function') {
+      dlg.showModal();
+    } else {
+      dlg.setAttribute('open', '');
+    }
+  });
+
+  /* click on backdrop closes (click outside the form/card area) */
+  dlg.addEventListener('click', function (e) {
+    if (e.target === dlg) dlg.close();
+  });
+
+  /* return focus to the triggering book when dialog closes */
+  dlg.addEventListener('close', function () {
+    if (lastTrigger && document.contains(lastTrigger)) {
+      lastTrigger.focus();
+    }
+    lastTrigger = null;
+  });
+
+  /* drag-to-scroll handled by Embla Carousel below — see the
+     ES-module <script> after this IIFE. We expose the click handler
+     for Embla to consult via emblaApi.clickAllowed(). */
+  window.__bookClickGuard = function (e) {
+    var btn = e.target.closest('.book-items');
+    if (!btn) return;
+    var grid = btn.closest('.shelf-grid');
+    var api = grid && grid.__emblaApi;
+    if (api && typeof api.clickAllowed === 'function' && !api.clickAllowed()) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }
+  };
+  document.addEventListener('click', window.__bookClickGuard, true);
+})();
+</script>
+
+<!-- Re-use the global namespace switcher + nav-toggle behavior from the rest
+     of the portfolio. The script is included on every page; if it lives in a
+     separate file in the future, swap this `defer`-loaded inline IIFE for the
+     shared file. For now, the switcher / nav-toggle behavior is wired into
+     the global script that the other pages also include. -->
+<script src="./script.js" defer onerror="this.remove()"></script>
+
+<!-- Embla Carousel + accordion behavior. Each shelf has two states
+     (data-state on the .shelf section):
+
+       collapsed (default) — single horizontal-scroll row, Embla active
+                             with dragFree momentum physics.
+       expanded            — books wrap into a multi-row grid; Embla is
+                             destroyed so the container respects normal
+                             flex-wrap layout.
+
+     The +/− toggle button in each shelf-head flips data-state and
+     hands off control between Embla (collapsed) and CSS layout
+     (expanded). A ResizeObserver re-measures the carousel whenever
+     any slide's width changes — fixes the "first drag jumps" bug
+     where covers load AFTER Embla's initial measurement. -->
+<script type="module">
+  import EmblaCarousel from 'https://cdn.jsdelivr.net/npm/embla-carousel@8/+esm';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const EMBLA_OPTIONS = {
+    axis: 'x',
+    loop: false,
+    dragFree: true,
+    containScroll: 'trimSnaps',
+    watchDrag: !reducedMotion,
+    align: 'start',
+    duration: 25,
+  };
+
+  /* per-grid bookkeeping: ResizeObserver and pending reinit timer
+     attached to the grid node so destroy/reinit cycles stay clean. */
+  function initEmbla(grid) {
+    if (grid.__emblaApi) return grid.__emblaApi;     // already initialized
+    const api = EmblaCarousel(grid, EMBLA_OPTIONS);
+    grid.__emblaApi = api;
+
+    let reinitTimer = null;
+    const scheduleReinit = () => {
+      clearTimeout(reinitTimer);
+      reinitTimer = setTimeout(() => {
+        if (grid.__emblaApi === api) api.reInit();
+      }, 60);
+    };
+    if (typeof ResizeObserver === 'function') {
+      const ro = new ResizeObserver(scheduleReinit);
+      grid.querySelectorAll('.embla__slide').forEach((s) => ro.observe(s));
+      grid.__emblaResizeObserver = ro;
+    }
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', scheduleReinit, { once: true });
+    }
+    return api;
+  }
+
+  function destroyEmbla(grid) {
+    const api = grid.__emblaApi;
+    if (api) {
+      api.destroy();
+      delete grid.__emblaApi;
+    }
+    const ro = grid.__emblaResizeObserver;
+    if (ro) {
+      ro.disconnect();
+      delete grid.__emblaResizeObserver;
+    }
+  }
+
+  /* boot: every shelf starts in expanded state (multi-row wrapped grid),
+     so Embla is not initialized on load. Embla spins up the first time
+     a user clicks the − toggle to collapse a shelf into a single row. */
+
+  /* toggle: each shelf-head button flips its section between
+     collapsed (Embla) and expanded (wrapped grid, no Embla). */
+  document.querySelectorAll('.shelf-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const section = btn.closest('.shelf');
+      const grid = section.querySelector('.shelf-grid');
+      if (!section || !grid) return;
+      const isExpanded = section.dataset.state === 'expanded';
+      const label = section.querySelector('.shelf-title')?.textContent?.trim() || 'category';
+
+      if (isExpanded) {
+        /* expanded → collapsed: switch CSS first, then init Embla */
+        section.dataset.state = 'collapsed';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-label', 'Expand ' + label + ' to a multi-row grid');
+        initEmbla(grid);
+      } else {
+        /* collapsed → expanded: destroy Embla first, then switch CSS */
+        destroyEmbla(grid);
+        section.dataset.state = 'expanded';
+        btn.setAttribute('aria-expanded', 'true');
+        btn.setAttribute('aria-label', 'Collapse ' + label + ' to a horizontal row');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

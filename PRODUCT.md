@@ -111,7 +111,7 @@ The dropdown itself is a load-bearing component. Its UX is specified in `DESIGN.
 - Real-time content. No live blog feed, no Twitter embed, no Substack integration.
 - Light-mode / dark-mode toggle. The page is one tone, considered, not two flipped.
 - I18n / Portuguese variant of the site at v1. Khevin's working audience is global-English by default. A `/pt` localization can come later but is not load-bearing.
-- A "now" page in the Derek Sivers sense. Folded into the homepage footer as a single line ("Currently leading product design at Lastro") — does not earn a route.
+- A "now" page in the Derek Sivers sense. Current-status prose lives on `about-me.html` (where the reader has already opted in to learning about Khevin), not on every page footer.
 - A blog as a first-class feature. The Writing/Notes page is an *index* of links out, not a publishing CMS.
 
 ---
