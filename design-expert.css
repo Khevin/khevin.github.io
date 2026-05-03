@@ -896,7 +896,6 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
   display: flex;
   flex-direction: column;
   margin-top: 40px;
-  border-top: 1px solid var(--rule);
 }
 .install-card {
   padding: clamp(28px, 4vw, 44px) 0;
@@ -909,6 +908,9 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
      a comfortable reading width and the right column dwarfs the left
      rail. 960px keeps the rail-to-body proportion balanced. */
   max-width: 960px;
+}
+.install-card:last-child {
+  border-bottom: none;
 }
 .install-card__head {
   /* Left rail — step label + h4 + description */
