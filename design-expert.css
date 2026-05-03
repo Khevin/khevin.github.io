@@ -902,9 +902,13 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
   padding: clamp(28px, 4vw, 44px) 0;
   border-bottom: 1px solid var(--rule);
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: clamp(32px, 4vw, 64px);
+  grid-template-columns: 240px 1fr;
+  gap: clamp(32px, 4vw, 56px);
   align-items: start;
+  /* Cap line length — at very wide viewports the card stretches past
+     a comfortable reading width and the right column dwarfs the left
+     rail. 960px keeps the rail-to-body proportion balanced. */
+  max-width: 960px;
 }
 .install-card__head {
   /* Left rail — step label + h4 + description */
@@ -945,10 +949,15 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
   overflow: hidden;
 }
 .terminal .prompt { color: oklch(75% 0.10 55); }
-.terminal .cmd-text { color: #f1ede4; }
+/* Color inversion vs. the prior version: the slash-command itself
+   (.cmd-text — `/plugin install`, `/design-expert:plan`) carries the
+   orange accent so the reader's eye lands on the verb first; the
+   following argument or URL (.accent-c) reads in plain terminal-white
+   so the variable part feels neutral against the named command. */
+.terminal .cmd-text { color: oklch(80% 0.17 55); }
+.terminal .accent-c { color: #f1ede4; }
 .terminal .comment { color: #8a8275; font-style: italic; }
 .terminal .ok { color: oklch(75% 0.14 145); }
-.terminal .accent-c { color: oklch(80% 0.17 55); }
 .terminal .head-bar {
   display: flex; gap: 6px; margin-bottom: 12px; opacity: 0.5;
 }
