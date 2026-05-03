@@ -416,7 +416,7 @@
       <div class="num">04 — Install</div>
       <div>
         <h2 class="section-title"><em style="font-style:italic; color:var(--accent);">2 minute</em> install</h2>
-        <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Two slash commands — one to add the marketplace via its HTTPS GitHub URL, one to install the plugin — and the four <span class="mono">/design-expert</span> commands appear in your <span class="mono">/</span> menu. If you'd rather click than type, run <span class="mono">/plugin</span> by itself for an interactive Discover &amp; Install panel. Requires a current Claude Code build (run <span class="mono">claude --version</span>; update via Homebrew, npm, or the native installer if <span class="mono">/plugin</span> isn't recognized).</p>
+        <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Requires a current Claude Code build (run <span class="mono">claude --version</span>; update via Homebrew, npm, or the native installer if <span class="mono">/plugin</span> isn't recognized).</p>
       </div>
     </div>
 
@@ -424,19 +424,18 @@
 
       <div class="install-card">
         <div class="install-card__head">
-          <div class="step">Step 01 · Install</div>
           <h4>Add the marketplace, install the plugin.</h4>
           <p>Two slash commands, run in sequence. The first registers the khev‑tools marketplace. The second installs design‑expert. Restart the session so the four <span class="mono">/design-expert</span> commands register.</p>
         </div>
         <div class="install-card__body">
         <div class="terminal" data-cmd="/plugin marketplace add https://github.com/Khevin/khev-tools&#10;/plugin install design-expert@khev-tools">
           <div class="head-bar"><span></span><span></span><span></span></div>
-          <button class="terminal-copy" type="button" aria-label="Copy both commands to clipboard">
+          <button class="terminal-copy" type="button" aria-label="Copy commands to clipboard">
             <svg class="terminal-copy__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="5" y="2.5" width="8.5" height="10" rx="1.2"/>
               <path d="M3.5 5.5 H2.5 V13.5 H10.5 V12.5"/>
             </svg>
-            <span class="terminal-copy__label">Copy both</span>
+            <span class="terminal-copy__label">Copy</span>
           </button>
           <span class="prompt">$</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">https://github.com/Khevin/khev-tools</span><br/>
           <span class="comment"># clones over HTTPS · no SSH key required</span><br/>
@@ -454,7 +453,6 @@
 
       <div class="install-card">
         <div class="install-card__head">
-          <div class="step">Step 02 · First run</div>
           <h4>Plan something. Then build it.</h4>
           <p>A brief, then a build, then a review. Each command writes to disk — <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> from <span class="mono">/plan</span>, source files from <span class="mono">/build</span>, scored notes from <span class="mono">/review</span>.</p>
         </div>
