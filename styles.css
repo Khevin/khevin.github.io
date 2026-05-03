@@ -1004,10 +1004,12 @@ nav.top ul.primary a:hover { color: var(--ink); }
 .work-list { border-top: 1px solid var(--rule); }
 .work-list .item {
   display: grid;
-  grid-template-columns: 60px 1fr auto 60px;
+  grid-template-columns: 1fr auto 60px;
+  /* Title + desc stack on the left; meta and arrow each span both rows
+     so they can vertical-center against the combined title+desc block. */
   grid-template-areas:
-    "num title meta arrow"
-    ".   desc  desc desc";
+    "title meta arrow"
+    "desc  meta arrow";
   column-gap: 32px;
   row-gap: 14px;
   padding: 32px 0;
@@ -1017,22 +1019,15 @@ nav.top ul.primary a:hover { color: var(--ink); }
   cursor: pointer;
   transition: background var(--m-base) var(--ease-out);
 }
-.work-list .item .n { grid-area: num; }
 .work-list .item .title { grid-area: title; }
 .work-list .item .desc { grid-area: desc; }
-.work-list .item .meta-tags { grid-area: meta; }
-.work-list .item .arrow { grid-area: arrow; }
+.work-list .item .meta-tags { grid-area: meta; align-self: center; }
+.work-list .item .arrow { grid-area: arrow; align-self: center; }
 .work-list .item:hover { background: var(--paper-warm); }
-.work-list .item:hover .title em { color: var(--accent-deep); }
+.work-list .item:hover .title em { color: var(--accent); }
 .work-list .item:hover .arrow {
   transform: translateX(4px);
   color: var(--accent);
-}
-.work-list .item .n {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-faint);
-  letter-spacing: 0.06em;
 }
 .work-list .item .title {
   font-family: var(--serif);
@@ -1042,7 +1037,10 @@ nav.top ul.primary a:hover { color: var(--ink); }
   font-weight: 400;
 }
 .work-list .item .title em {
-  color: var(--accent);
+  /* Project name reads in ink by default; the accent only ignites on
+     row hover (see :hover rule above). Keeps the work list quiet
+     until the visitor reaches in to engage. */
+  color: var(--ink);
   font-style: italic;
   transition: color var(--m-base);
 }
@@ -1190,57 +1188,135 @@ nav.top ul.primary a:hover { color: var(--ink); }
   .process-more .arrow { font-size: 24px; align-self: center; }
 }
 
-/* ---------- 05 snippets ---------- */
+/* ---------- 05 snippets ----------
+   Two-column invisible grid. Each snippet is a tappable <button> that
+   opens a paper-card popover. The thumbnail is masked: it lives at
+   width 0 by default and reveals left-to-right on hover with a soft
+   ease-out, then collapses back with a faster ease-in on hover-out.
+   The image inside the thumb is fixed-width so it appears to slide
+   into view from the left edge rather than stretch. */
+/* The grid breaks out of .shell to span full viewport — horizontal
+   hairlines extend edge-to-edge of the screen. Each cell uses
+   asymmetric outer padding to push content back into the shell width
+   so titles align with the section heading above. */
 .snip-grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0;
-  border-top: 1px solid var(--rule);
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  /* Top hairline only — bottom is open so the vertical centre line
+     can extend down to the section's --rule divider unimpeded. */
+  border-top: 1px solid var(--ink-faintest);
+}
+.snip-grid::before {
+  /* Vertical centre hairline — extends from the grid top to the
+     section's bottom border (96px below grid bottom, matching the
+     .section padding-bottom). */
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: -96px;
+  left: 50%;
+  width: 1px;
+  background: var(--ink-faintest);
+  pointer-events: none;
 }
 .snip {
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 24px;
-  padding: 32px 24px 32px 0;
-  border-bottom: 1px solid var(--rule);
-  border-right: 1px solid var(--ink-faintest);
-  align-items: start;
+  /* Reset native <button> chrome so the trigger reads like a div */
+  background: transparent;
+  border: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* Internal breathing room — vertical pad shared across cells; the
+     outer (viewport-side) horizontal pad uses the gutter formula so
+     content aligns with the shell's content area at any viewport. */
+  padding: 40px 32px;
+  border-bottom: 1px solid var(--ink-faintest);
+  display: flex;
+  align-items: flex-start;
   position: relative;
-  transition: background var(--m-base);
 }
-.snip:nth-child(2n) { border-right: 0; padding-right: 0; padding-left: 24px; }
-.snip:nth-last-child(-n+2) { border-bottom: 0; }
-.snip:hover { background: var(--paper-warm); }
+/* Outer-side padding lines content up with the shell content edge.
+   Inner-side padding clears the vertical centre line by 32px. */
+.snip:nth-child(2n+1) {
+  padding-left: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+  padding-right: 32px;
+}
+.snip:nth-child(2n) {
+  padding-left: 32px;
+  padding-right: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+}
+/* Last row drops its border-bottom so the grid ends without a
+   horizontal line — the vertical centre hairline carries down into
+   the section's bottom rule on its own. */
+.snip:nth-last-child(-n+2) {
+  border-bottom: 0;
+}
+.snip:focus { outline: none; }
+.snip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 2px;
+}
 .snip .thumb {
-  width: 110px; aspect-ratio: 1;
-  background: var(--paper-deep);
-  border: 1px solid var(--ink-faintest);
+  width: 0;
+  height: 154px;
+  margin-right: 0;
+  flex-shrink: 0;
+  background: var(--paper-warm);
   position: relative;
   overflow: hidden;
+  /* Default = leaving hover. Faster, slight ease-in so the thumb
+     collapses cleanly without lingering. */
+  transition:
+    width 380ms cubic-bezier(0.7, 0, 0.84, 0),
+    margin-right 380ms cubic-bezier(0.7, 0, 0.84, 0);
 }
-.snip .thumb .mark {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--serif);
-  font-size: 56px;
-  font-style: italic;
-  color: var(--ink);
-  letter-spacing: -0.04em;
+.snip:hover .thumb,
+.snip:focus-visible .thumb {
+  width: 154px;
+  margin-right: 28px;
+  /* On enter: longer, expressive ease-out (anticipate-ease) so the
+     thumb feels confidently revealed rather than sliding mechanically. */
+  transition:
+    width 720ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin-right 720ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.snip:nth-child(1) .thumb { background: var(--accent-soft); }
-.snip:nth-child(2) .thumb { background: var(--ink); }
-.snip:nth-child(2) .thumb .mark { color: var(--paper); }
-.snip:nth-child(3) .thumb { background: var(--paper-warm); }
-.snip:nth-child(3) .thumb .mark { color: var(--accent); }
-.snip:nth-child(4) .thumb { background: var(--paper-deep); }
-.snip .info .n {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-bottom: 8px;
+.snip .thumb img {
+  /* Image stays at full 154x154 anchored to the left edge of the
+     thumb. As the thumb's width animates 0 -> 154, the image is
+     progressively revealed from left-to-right (the right portion
+     of the image is clipped by the thumb's overflow:hidden until
+     the thumb reaches full width). No stretch, no skew. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 154px;
+  height: 154px;
+  object-fit: cover;
   display: block;
+  /* High-quality scaling — force a GPU compositing layer so Chromium
+     uses its high-quality image filter when downsampling these large
+     PNGs to thumbnail size, rather than falling back to a sharp
+     bilinear that exposes aliasing in fine type / device chrome. */
+  image-rendering: auto;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* iOS / Android touch hardening — block long-press preview menus */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.snip .info {
+  flex: 1 1 0;
+  min-width: 0;
 }
 .snip .info h4 {
   font-family: var(--serif);
@@ -1249,27 +1325,218 @@ nav.top ul.primary a:hover { color: var(--ink); }
   line-height: 1.05;
   letter-spacing: -0.015em;
   margin: 0 0 8px;
+  transition: color var(--m-base);
 }
+.snip:hover .info h4 { color: var(--accent); }
 .snip .info p {
   font-family: var(--sans);
   font-size: 13.5px;
   line-height: 1.55;
   color: var(--ink-soft);
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   text-wrap: pretty;
 }
-.snip .info .tags {
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
-.snip .info .tags span {
+.snip .info .meta-tags {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  border: 1px solid var(--ink-faintest);
-  padding: 3px 8px;
-  border-radius: 999px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Reduced-motion users get an instant on/off swap, no slide. */
+@media (prefers-reduced-motion: reduce) {
+  .snip .thumb,
+  .snip:hover .thumb,
+  .snip:focus-visible .thumb {
+    transition: none;
+  }
+}
+
+/* ——— Snippet popover (native <dialog>) ———
+   Click any item in "A few more, briefly" → modal with project image,
+   name, scope, duration, and a fuller summary. Two-column layout on
+   desktop (image glued edge-to-edge on the left, content panel on the
+   right with the same paper-card register as design-expert's lib-pop).
+   Stacks vertically on mobile — image on top, content below. */
+.snip-pop {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  /* Hug content — width is driven by the inner card (visual + body
+     together). max-content forces the dialog to size to its children
+     instead of filling viewport like the default <dialog> behavior.
+     Safety cap at 96vw for narrow viewports. */
+  width: max-content;
+  max-width: 96vw;
+  max-height: calc(100vh - 4rem);
+  margin: auto;
+  overflow: visible;
+}
+.snip-pop::backdrop {
+  background: rgba(26, 24, 21, 0.55);
+  backdrop-filter: blur(2px);
+}
+.snip-pop__card {
+  position: relative;
+  /* Hug-content layout: body width is clamped to a comfortable reading
+     column, body's natural content height drives the row, visual
+     stretches to that height and uses an inline aspect-ratio (set by
+     JS per image) to derive its width. Card width = visual + body. */
+  display: flex;
+  align-items: stretch;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden; /* keep the image flush with the rounded corner on the left */
+  box-shadow: 0 1px 2px rgba(20,18,14,0.06), 0 12px 32px rgba(20,18,14,0.10);
+}
+/* Image panel — glued to the left edge of the card, no padding/border.
+   The body column drives the card height (its content's natural size).
+   JS measures body's height after open and sets the visual's height
+   inline; the image then sits at width: auto / height: 100% of the
+   visual, rendering at its natural aspect. */
+.snip-pop__visual {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  position: relative;
+  flex: 0 0 auto;
+  /* height set inline by JS in pixels; default fallback for first paint */
+  height: 320px;
+  display: flex;
+  align-items: stretch;
+}
+.snip-pop__visual img {
+  display: block;
+  width: auto;
+  height: 100%;
+  /* High-quality scaling on the large popover image too — keeps fine
+     type and device chrome smooth at the downsampled size. */
+  image-rendering: auto;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* Match the touch hardening from snippet thumbnails — no iOS preview menu. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+/* Content panel — keeps the original padding so type breathes.
+   Width clamped to a comfortable reading column at clamp(320px, 36vw, 460px)
+   so the body doesn't sprawl when the visual hugs the image. */
+.snip-pop__body {
+  position: relative;
+  padding: 32px 36px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: clamp(320px, 36vw, 460px);
+  min-width: 0;
+}
+.snip-pop__close-form { margin: 0; }
+.snip-pop__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--ink-faint);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+.snip-pop__close:hover {
+  color: var(--ink);
+  background: color-mix(in oklch, var(--paper-warm) 70%, transparent);
+}
+.snip-pop__close:focus { outline: none; }
+.snip-pop__close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.snip-pop__head {
+  padding-right: 44px; /* clear of close button */
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.snip-pop__name {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(28px, 3.2vw, 36px);
+  line-height: 1.05;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  margin: 0 0 16px;
+}
+.snip-pop__meta {
+  display: grid;
+  gap: 6px;
+}
+.snip-pop__row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.snip-pop__k { color: var(--ink-faint); }
+.snip-pop__v { color: var(--ink-soft); }
+.snip-pop__summary {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 22px 0 24px;
+  text-wrap: pretty;
+}
+.snip-pop__foot {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+.snip-pop__brand { color: var(--ink-soft); }
+.snip-pop__brand .slash {
+  color: var(--accent);
+  margin: 0 1px;
+}
+
+@media (max-width: 720px) {
+  /* Stack vertically — image on top, content below. The flex layout
+     switches to column; visual goes full-width-auto-height since the
+     "image hugs the body height" idea doesn't apply at narrow widths. */
+  .snip-pop { width: auto; max-width: 96vw; }
+  .snip-pop__card { flex-direction: column; }
+  .snip-pop__visual { aspect-ratio: 16/10; flex: 0 0 auto; }
+  .snip-pop__visual img { width: 100%; height: 100%; object-fit: cover; }
+  .snip-pop__body { width: auto; padding: 24px 22px 18px; }
+  .snip-pop__name { font-size: 24px; }
+  .snip-pop__row { grid-template-columns: 70px 1fr; }
+  .snip-pop__summary { font-size: 15.5px; }
+  .snip-pop__foot { flex-wrap: wrap; gap: 8px; }
 }
 
 /* ---------- 06 contact ---------- */
@@ -1446,7 +1713,7 @@ nav.top ul.primary a:hover { color: var(--ink); }
   .clients-strip .col-l, .clients-strip .col-r { grid-column: span 12; }
   .client-list .c.right { padding-left: 0; border-left: 0; }
   .clients-strip--next { margin-top: 56px; }
-  .work-list .item { grid-template-columns: 40px 1fr 60px; }
+  .work-list .item { grid-template-columns: 1fr 60px; grid-template-areas: "title arrow" "desc arrow"; }
   .work-list .item .desc, .work-list .item .meta-tags { display: none; }
   .work-feature .visual, .work-feature .info { grid-column: span 12; }
   .contact-block .l, .contact-block .r { grid-column: span 12; }
@@ -2372,7 +2639,11 @@ nav.top ul.primary a:hover { color: var(--ink); }
   flex-direction: column;
   gap: 16px;
 }
-.principle .p-head {
+/* Eyebrow labels (Discovery / Framing / Subtraction / etc.) and the
+   hairline beneath them are hidden — the principle's own h2 carries
+   the identity, and the card reads cleaner without the chrome. */
+.principle .p-head { display: none; }
+.principle .p-head--legacy {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -2414,8 +2685,10 @@ nav.top ul.primary a:hover { color: var(--ink); }
   letter-spacing: 0.04em;
   color: var(--ink-mute);
   text-transform: none;
-  border-left: 2px solid var(--accent);
-  padding: 4px 0 4px 16px;
+  /* Red rule-bar removed — the italic mono caption stands on its own,
+     no chrome around it, just whitespace. */
+  border-left: 0;
+  padding: 4px 0;
   margin-top: 8px;
   font-style: italic;
 }
@@ -3380,7 +3653,9 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
 .chapter__body > .evidence-wall,
 .chapter__body > .v2-fig,
 .chapter__body > .feature-highlight,
-.chapter__body > .takeaways {
+.chapter__body > .takeaways,
+.chapter__body > .suite-carousel,
+.chapter__body > .amway-status-table {
   max-width: none;
   margin: 0;
 }
@@ -3509,7 +3784,7 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
    Per spaces2.DESIGN.md.
    ========================================================= */
 
-body[data-project="spaces"] .case-hero.case-hero--wide .case-title {
+body[data-project] .case-hero.case-hero--wide .case-title {
   font-size: clamp(56px, 8vw, 88px);
   line-height: 1;
 }
@@ -3518,18 +3793,466 @@ body[data-project="spaces"] .case-hero.case-hero--wide .case-title {
    loses its bottom border (the line above the image), fact-ribbon
    loses both top and bottom borders, case-key loses its bottom border.
    The composition reads cleaner with whitespace doing the separation. */
-body[data-project="spaces"] .case-hero {
+body[data-project] .case-hero {
   border-bottom: 0;
 }
-body[data-project="spaces"] .fact-ribbon {
+body[data-project] .fact-ribbon {
   border-top: 0;
   border-bottom: 0;
 }
-body[data-project="spaces"] .case-key {
+body[data-project] .case-key {
   border-bottom: 0;
 }
 
-/* 5-col fact ribbon — Surfaces removed for spaces2 */
+/* =========================================================
+   AMWAY · SUITE CAROUSEL
+   Card-stack with peek effect for the five complementary tools.
+   Two-column: stack on the left, content on the right with arrow
+   controls. Arrow / click cycles which card is on top; cards behind
+   peek out at increasing offsets, scaled down, beige-tinted.
+   ========================================================= */
+
+/* Hide chapter kicker label below the chapter numeral — the chapter title
+   carries the narrative, the numeral carries the rhythm, the kicker is redundant. */
+body[data-project="amway"] .chapter__kicker {
+  display: none;
+}
+
+body[data-project="amway"] .suite-carousel {
+  display: grid;
+  /* 1.7fr : 1fr — stack column is ~20% wider than the original 1.1fr : 1fr,
+     scaling every card up by 20% in width while preserving the equalized
+     area ratios between cards. */
+  grid-template-columns: 1.7fr 1fr;
+  /* Tighter gap so cards and text read as one composition rather than
+     two distant blocks separated by an editorial dead-zone. */
+  gap: clamp(48px, 6vw, 96px);
+  /* Top-anchor: cards' top and the text column's top (now starting with
+     the controls bar) line up at the same baseline. */
+  align-items: start;
+  margin: clamp(40px, 6vw, 72px) 0;
+}
+
+/* Chapter 1's lead figure sits flush-left with the body text instead of
+   the default centre-offset (col 2 / span 9). Reads as a documentary
+   photograph alongside the prose, not a hero set apart from it. */
+body[data-project="amway"] .v2-fig--lead img { grid-column: 1 / span 9; }
+
+/* Closing iPad / tablet mocks in both amway and spaces case studies
+   align flush-left with the body text instead of the default --right
+   offset. Keeps the colored device shots reading as evidence inline
+   with the prose rather than floating to the right margin. */
+body[data-project="amway"] .v2-fig--right img,
+body[data-project="spaces"] .v2-fig--right img { grid-column: 1 / span 9; }
+
+/* Pull quotes lose the rule-bar — the italic display type and the
+   whitespace around it carry the emphasis on their own. */
+body[data-project="amway"] .chapter__body > .pull {
+  border-left: 0;
+  padding-left: 0;
+}
+
+/* Tighten the bottom padding of every section by ~20% so chapters,
+   hero, key visual, and the next-case CTA all sit closer to the
+   following block. The composition reads denser without losing
+   editorial breathing room at the top. */
+body[data-project="amway"] .case-hero    { padding-bottom: 58px; }
+body[data-project="amway"] .case-key     { padding-bottom: 58px; }
+body[data-project="amway"] .case-section { padding-bottom: 51px; }
+body[data-project="amway"] .chapter      { padding-bottom: clamp(51px, 6.4vw, 90px); }
+body[data-project="amway"] .next-case    { padding-bottom: 77px; }
+
+/* Controls sit at the TOP of the text column (above the title), visually
+   aligned with the top edge of the card stack thanks to align-items:start.
+   This anchors the arrows to the cards' top — they're now part of the
+   carousel composition rather than floating in the rail. */
+body[data-project="amway"] .suite-carousel .carousel-controls {
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ink-faintest);
+  gap: 4px;
+}
+body[data-project="amway"] .carousel-controls button {
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+}
+body[data-project="amway"] .carousel-counter {
+  margin-left: auto;
+}
+
+body[data-project="amway"] .carousel-stack {
+  display: grid;
+  width: 100%;
+  position: relative;
+  perspective: 1200px;
+  justify-items: center;
+  align-items: center;
+}
+
+body[data-project="amway"] .carousel-card {
+  /* All cards stack in the same grid cell; cell sizes to the largest card.
+     Per-card width set via --card-w (inline) so card areas equalise — width
+     scales with sqrt(aspect-ratio) to compensate for the height set by the
+     image aspect-ratio. Same display area for every card, regardless of
+     whether the source asset is portrait or landscape. */
+  grid-column: 1;
+  grid-row: 1;
+  width: var(--card-w, 100%);
+  position: relative;
+  /* aspect-ratio set inline per-card so each card sizes to its own image */
+  border: 1px solid var(--ink-faintest);
+  background: #fff;
+  cursor: pointer;
+  transform-origin: center center;
+  transition: transform 500ms cubic-bezier(0.32, 0.72, 0, 1),
+              box-shadow 500ms cubic-bezier(0.32, 0.72, 0, 1);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(20,18,14,0.08), 0 1px 2px rgba(20,18,14,0.04);
+  padding: 0;
+}
+body[data-project="amway"] .carousel-card:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+body[data-project="amway"] .carousel-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #fff;
+}
+
+/* Cards behind the active one are opaque-tinted with a darker-beige overlay,
+   progressively darker as they go further back. Active card has no overlay. */
+body[data-project="amway"] .carousel-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: transparent;
+  transition: background 500ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Stack positions: 0 = front; higher = further back */
+body[data-project="amway"] .carousel-card[data-pos="0"] {
+  transform: translate(0, 0) scale(1) rotate(0deg);
+  z-index: 10;
+  opacity: 1;
+}
+body[data-project="amway"] .carousel-card[data-pos="0"]::after {
+  background: transparent;
+}
+
+/* Progressive beige tint — hand-picked hex values that hold the warm
+   yellow hue all the way down. (oklch-mixing with black gave an
+   achromatic-gray that read as red-brown against the page.) Each step
+   is ~6-8% darker than the one in front of it; the page bg is
+   #F8F5EE (--paper) and pos=1 is the first noticeable step beneath it. */
+body[data-project="amway"] .carousel-card[data-pos="1"] {
+  transform: translate(18px, 12px) scale(0.97) rotate(1.5deg);
+  z-index: 9;
+  opacity: 1;
+}
+body[data-project="amway"] .carousel-card[data-pos="1"]::after {
+  background: #E8DEC6;
+}
+
+body[data-project="amway"] .carousel-card[data-pos="2"] {
+  transform: translate(36px, 24px) scale(0.94) rotate(3deg);
+  z-index: 8;
+  opacity: 1;
+}
+body[data-project="amway"] .carousel-card[data-pos="2"]::after {
+  background: #DAC9A8;
+}
+
+body[data-project="amway"] .carousel-card[data-pos="3"] {
+  transform: translate(54px, 36px) scale(0.91) rotate(4.5deg);
+  z-index: 7;
+  opacity: 1;
+}
+body[data-project="amway"] .carousel-card[data-pos="3"]::after {
+  background: #CAB58A;
+}
+
+body[data-project="amway"] .carousel-card[data-pos="4"] {
+  transform: translate(72px, 48px) scale(0.88) rotate(6deg);
+  z-index: 6;
+  opacity: 1;
+}
+body[data-project="amway"] .carousel-card[data-pos="4"]::after {
+  background: #B79F6D;
+}
+
+/* Sixth card in the stack — was missing before, leaving its image
+   showing through with no tint. Now sits as the deepest beige. */
+body[data-project="amway"] .carousel-card[data-pos="5"] {
+  transform: translate(90px, 60px) scale(0.85) rotate(7.5deg);
+  z-index: 5;
+  opacity: 1;
+}
+body[data-project="amway"] .carousel-card[data-pos="5"]::after {
+  background: #A28851;
+}
+
+body[data-project="amway"] .carousel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+body[data-project="amway"] .carousel-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+body[data-project="amway"] .carousel-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+  color: var(--ink);
+  max-width: 22ch;
+}
+body[data-project="amway"] .carousel-desc {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 50ch;
+  margin: 0;
+}
+
+body[data-project="amway"] .carousel-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+body[data-project="amway"] .carousel-controls button {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms, transform 150ms;
+  padding: 0;
+}
+body[data-project="amway"] .carousel-controls button:hover {
+  color: var(--ink-soft);
+  transform: translateY(-1px);
+}
+body[data-project="amway"] .carousel-controls button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+body[data-project="amway"] .carousel-counter {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-left: 6px;
+}
+
+@media (max-width: 760px) {
+  body[data-project="amway"] .suite-carousel {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  body[data-project="amway"] .carousel-card[data-pos="1"] { transform: translate(16px, 10px) scale(0.96) rotate(2deg); }
+  body[data-project="amway"] .carousel-card[data-pos="2"] { transform: translate(32px, 20px) scale(0.92) rotate(4deg); }
+  body[data-project="amway"] .carousel-card[data-pos="3"] { transform: translate(48px, 30px) scale(0.88) rotate(6deg); }
+  body[data-project="amway"] .carousel-card[data-pos="4"] { transform: translate(64px, 40px) scale(0.84) rotate(8deg); }
+  body[data-project="amway"] .carousel-card[data-pos="5"] { transform: translate(80px, 50px) scale(0.80) rotate(10deg); }
+}
+
+/* =========================================================
+   AMWAY · STATUS TABLE (Carbon Design System inspired)
+   Replaces the inline figure in chapter 3 ("Data-heavy by design").
+   Shows recommendation models with Carbon-style status pills.
+   ========================================================= */
+
+body[data-project="amway"] .amway-status-table {
+  margin: 40px 0;
+  border: 1px solid var(--ink-faintest);
+  overflow: hidden;
+}
+body[data-project="amway"] .status-table-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ink-faintest);
+  background: var(--paper-warm);
+}
+body[data-project="amway"] .status-table-title {
+  font-weight: 500;
+}
+body[data-project="amway"] .status-table-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--ink-2);
+}
+body[data-project="amway"] .filter-glyph {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: var(--ink-soft);
+}
+body[data-project="amway"] .amway-status-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-feature-settings: "tnum" 1;
+}
+body[data-project="amway"] .amway-status-table thead {
+  background: color-mix(in oklch, var(--paper-warm) 60%, transparent);
+  border-bottom: 1px solid var(--ink-faintest);
+}
+body[data-project="amway"] .amway-status-table th {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 12px 16px;
+  text-align: left;
+  white-space: nowrap;
+}
+body[data-project="amway"] .amway-status-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--ink-faintest);
+  vertical-align: middle;
+}
+body[data-project="amway"] .amway-status-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+body[data-project="amway"] .amway-status-table tbody tr:hover {
+  background: color-mix(in oklch, var(--paper-warm) 40%, transparent);
+}
+body[data-project="amway"] .amway-status-table td strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Header sort + filter affordances */
+body[data-project="amway"] .header-glyph {
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  vertical-align: middle;
+  color: var(--ink-soft);
+  opacity: 0.45;
+  transition: opacity 120ms ease;
+}
+body[data-project="amway"] .amway-status-table th:hover .header-glyph {
+  opacity: 0.85;
+}
+body[data-project="amway"] .header-glyph.header-sort-active {
+  opacity: 1;
+  color: var(--ink);
+}
+
+/* Status indicator — icon + label, no chip background (Carbon-inspired) */
+body[data-project="amway"] .status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+  line-height: 1.2;
+  background: transparent;
+}
+body[data-project="amway"] .status-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: block;
+}
+/* Status variants — text reads in ink, icon carries the semantic color */
+body[data-project="amway"] .status-active,
+body[data-project="amway"] .status-testing,
+body[data-project="amway"] .status-paused,
+body[data-project="amway"] .status-failed,
+body[data-project="amway"] .status-archived {
+  color: var(--ink-2);
+}
+body[data-project="amway"] .status-active .status-icon { color: #24a148; }
+body[data-project="amway"] .status-testing .status-icon { color: #0f62fe; }
+body[data-project="amway"] .status-paused .status-icon { color: #f1c21b; }
+body[data-project="amway"] .status-failed .status-icon { color: #da1e28; }
+body[data-project="amway"] .status-archived .status-icon { color: var(--ink-soft); }
+
+@media (max-width: 760px) {
+  body[data-project="amway"] .amway-status-table {
+    overflow-x: auto;
+  }
+  body[data-project="amway"] .amway-status-table table {
+    min-width: 640px;
+  }
+}
+
+/* Product list — used in chapter 2 to enumerate the suite of tools */
+body[data-project="amway"] .product-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 16px;
+  border-top: 1px solid var(--ink-faintest);
+}
+body[data-project="amway"] .product-list li {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ink-faintest);
+}
+body[data-project="amway"] .product-list li strong {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* 5-col fact ribbon for spaces specifically (Surfaces cell removed; 5 cells total) */
 body[data-project="spaces"] .fact-ribbon {
   grid-template-columns: repeat(5, 1fr);
 }
@@ -3548,17 +4271,17 @@ body[data-project="spaces"] .fact-ribbon {
    showing one of the inherited admin screenshots. Replaces the earlier
    vertical-split (which assumed a vertical mock; chapter 1 now uses a
    wide horizontal admin clutter shot instead). */
-body[data-project="spaces"] .ch1-clutter {
+body[data-project] .ch1-clutter {
   margin: 40px 0;
 }
-body[data-project="spaces"] .ch1-clutter img {
+body[data-project] .ch1-clutter img {
   width: 100%;
   height: auto;
   display: block;
   border-radius: 4px;
   border: 1px solid var(--ink-faintest);
 }
-body[data-project="spaces"] .ch1-clutter figcaption {
+body[data-project] .ch1-clutter figcaption {
   margin-top: 16px;
   font-family: var(--serif);
   font-style: italic;
@@ -3568,7 +4291,7 @@ body[data-project="spaces"] .ch1-clutter figcaption {
   max-width: 60ch;
   text-wrap: pretty;
 }
-body[data-project="spaces"] .ch1-clutter__tag {
+body[data-project] .ch1-clutter__tag {
   display: inline-block;
   font-family: var(--mono);
   font-style: normal;
@@ -3584,119 +4307,353 @@ body[data-project="spaces"] .ch1-clutter__tag {
 }
 
 /* Vertical-split: chapter 1's vertical mockup alongside prose */
-body[data-project="spaces"] .vertical-split {
+body[data-project] .vertical-split {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: clamp(32px, 5vw, 56px);
   margin: 40px 0;
   align-items: start;
 }
-body[data-project="spaces"] .vertical-split .vs-fig { margin: 0; }
-body[data-project="spaces"] .vertical-split .vs-fig img {
+body[data-project] .vertical-split .vs-fig { margin: 0; }
+body[data-project] .vertical-split .vs-fig img {
   width: 100%; height: auto; display: block; border-radius: 4px;
 }
-body[data-project="spaces"] .vertical-split .vs-prose p {
+body[data-project] .vertical-split .vs-prose p {
   font-family: var(--serif);
   font-size: 18px; line-height: 1.55; color: var(--ink-2);
   margin: 0 0 16px;
 }
-body[data-project="spaces"] .vertical-split .vs-prose p:last-child { margin-bottom: 0; }
+body[data-project] .vertical-split .vs-prose p:last-child { margin-bottom: 0; }
 @media (max-width: 760px) {
-  body[data-project="spaces"] .vertical-split {
+  body[data-project] .vertical-split {
     grid-template-columns: 1fr; gap: 24px;
   }
-  body[data-project="spaces"] .vertical-split .vs-fig img { max-width: 320px; }
+  body[data-project] .vertical-split .vs-fig img { max-width: 320px; }
 }
 
-/* Square-highlight: chapter 2's balanced detail callout, paper-warm */
-body[data-project="spaces"] .square-highlight {
+/* Square-highlight: chapter 2's balanced detail callout. No background or
+   border — image and text float in the prose flow, structure carried by
+   the grid alone. */
+body[data-project] .square-highlight {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: clamp(32px, 5vw, 48px);
   align-items: center;
-  padding: clamp(28px, 4vw, 40px);
-  background: var(--paper-warm);
-  border: 1px solid var(--ink-faintest);
+  padding: clamp(28px, 4vw, 40px) 0;
+  background: transparent;
+  border: 0;
   margin: 40px 0;
 }
-body[data-project="spaces"] .square-highlight .sq-fig {
+body[data-project] .square-highlight .sq-fig {
   margin: 0; aspect-ratio: 1/1; overflow: hidden;
 }
-body[data-project="spaces"] .square-highlight .sq-fig img {
+body[data-project] .square-highlight .sq-fig img {
   width: 100%; height: 100%; object-fit: contain; display: block;
 }
-body[data-project="spaces"] .square-highlight h3 {
+body[data-project] .square-highlight h3 {
   font-family: var(--serif);
   font-size: clamp(22px, 2.4vw, 28px); line-height: 1.15;
   font-weight: 400; margin: 0 0 12px;
 }
-body[data-project="spaces"] .square-highlight h3 em {
+body[data-project] .square-highlight h3 em {
   font-style: italic; color: var(--case-accent);
 }
-body[data-project="spaces"] .square-highlight p {
+body[data-project] .square-highlight p {
   font-family: var(--serif);
   font-size: 17px; line-height: 1.5; color: var(--ink-2); margin: 0;
 }
 @media (max-width: 760px) {
-  body[data-project="spaces"] .square-highlight {
+  body[data-project] .square-highlight {
     grid-template-columns: 1fr; gap: 24px;
   }
 }
 
-/* Cinematic-break: ultra-wide V2.0 reveal between chapters 2 and 3 */
-body[data-project="spaces"] .cinematic-break {
+/* Cinematic-break: ultra-wide V2.0 reveal between chapters 2 and 3.
+   No dark band, no eyebrow label — just the picture and the caption,
+   so the photograph carries the moment on its own. */
+body[data-project] .cinematic-break {
   margin: clamp(64px, 8vw, 112px) calc(50% - 50vw);
-  padding: clamp(64px, 8vw, 112px) clamp(32px, 5vw, 56px);
-  background: var(--paper-warm);
+  padding: 0 clamp(32px, 5vw, 56px);
+  background: transparent;
 }
-body[data-project="spaces"] .cinematic-break .cb-label {
+body[data-project] .cinematic-break .cb-label {
   font-family: var(--mono);
   font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-soft); text-align: center; margin: 0 0 24px;
 }
-body[data-project="spaces"] .cinematic-break .cb-fig {
+body[data-project] .cinematic-break .cb-fig {
   max-width: 1600px; margin: 0 auto;
   aspect-ratio: auto;
   border-radius: 4px;
   overflow: visible;
 }
-body[data-project="spaces"] .cinematic-break .cb-fig img {
+body[data-project] .cinematic-break .cb-fig img {
   width: 100%; height: auto;
   object-fit: contain; display: block;
   background: transparent;
 }
-body[data-project="spaces"] .cinematic-break .cb-caption {
+body[data-project] .cinematic-break .cb-caption {
   font-family: var(--serif);
   font-style: italic; font-size: 17px; line-height: 1.5;
   color: var(--ink-2); text-align: center; max-width: 56ch; margin: 24px auto 0;
 }
 @media (max-width: 760px) {
-  body[data-project="spaces"] .cinematic-break {
+  body[data-project] .cinematic-break {
     padding: 48px 16px; margin: 56px 0;
   }
-  body[data-project="spaces"] .cinematic-break .cb-fig { aspect-ratio: 16/9; }
+  body[data-project] .cinematic-break .cb-fig { aspect-ratio: 16/9; }
 }
 
 /* Multi-shape-grid: chapter 3's varied-aspect figure rhythm */
-body[data-project="spaces"] .multi-shape-grid {
+body[data-project] .multi-shape-grid {
   display: grid;
   grid-template-columns: 1fr 0.7fr 1.3fr;
   gap: 16px;
   margin: 40px 0;
   align-items: end;
 }
-body[data-project="spaces"] .multi-shape-grid .msg-fig { margin: 0; }
-body[data-project="spaces"] .multi-shape-grid .msg-fig img {
+body[data-project] .multi-shape-grid .msg-fig { margin: 0; }
+body[data-project] .multi-shape-grid .msg-fig img {
   width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 4px;
 }
-body[data-project="spaces"] .multi-shape-grid .msg-fig.square { aspect-ratio: 1/1; }
-body[data-project="spaces"] .multi-shape-grid .msg-fig.vertical { aspect-ratio: 4/5; }
-body[data-project="spaces"] .multi-shape-grid .msg-fig.horizontal { aspect-ratio: 3/2; }
+body[data-project] .multi-shape-grid .msg-fig.square { aspect-ratio: 1/1; }
+body[data-project] .multi-shape-grid .msg-fig.vertical { aspect-ratio: 4/5; }
+body[data-project] .multi-shape-grid .msg-fig.horizontal { aspect-ratio: 3/2; }
 @media (max-width: 760px) {
-  body[data-project="spaces"] .multi-shape-grid {
+  body[data-project] .multi-shape-grid {
     grid-template-columns: 1fr; gap: 12px;
   }
-  body[data-project="spaces"] .multi-shape-grid .msg-fig.vertical img {
+  body[data-project] .multi-shape-grid .msg-fig.vertical img {
     max-height: 480px; object-fit: contain;
   }
 }
+
+/* =========================================================
+   FAVO · SIGNATURE COMPOSITIONS — chapter 2 brand-comparison
+   pair (the wordmark side-by-side, A-treatment) + the Aiyu
+   archive strip (4-up retired-artifacts grid, D-treatment).
+   Both are scoped to body[data-project="favo"] only. Per
+   favo.DESIGN.md § Components.
+   ========================================================= */
+
+/* 5-col fact-ribbon for favo (matches spaces — Stack row removed) */
+body[data-project="favo"] .fact-ribbon {
+  grid-template-columns: repeat(5, 1fr);
+}
+@media (max-width: 900px) {
+  body[data-project="favo"] .fact-ribbon { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+  body[data-project="favo"] .fact-ribbon { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Brand-comparison — wordmark pair, static, with a small connector
+   between them so the relationship reads as "Aiyu became Favo" rather
+   than as two unrelated marks placed near each other. The Aiyu mark
+   anchors toward the centre (right-aligned within its column), the
+   connector sits in the middle, the Favo mark anchors toward the
+   centre from the other side (left-aligned within its column). */
+body[data-project="favo"] .brand-comparison {
+  display: grid;
+  /* auto-sized columns — each cell hugs its content. The single `gap`
+     value becomes the only visual separator between the three blocks,
+     so the Aiyu→arrow distance and the arrow→Favo distance are equal
+     by construction (no asymmetry from oversized parent columns). */
+  grid-template-columns: auto auto auto;
+  gap: clamp(24px, 3vw, 40px);
+  padding: clamp(40px, 5vw, 72px) 0;
+  align-items: center;
+  /* Block sits naturally at the left edge of the chapter body —
+     matches the figure below without needing an explicit width %. */
+  justify-content: start;
+  margin: 24px 0;
+}
+body[data-project="favo"] .brand-comparison .bc-side {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Pull quote loses the left rule-bar — the italic display type and
+   the whitespace around it carry the emphasis on their own (matches
+   the discipline used in amway). */
+body[data-project="favo"] .chapter__body > .pull {
+  border-left: 0;
+  padding-left: 0;
+}
+
+/* Hide chapter kicker label below the chapter numeral — the chapter
+   title carries the narrative, the numeral carries the rhythm, the
+   kicker is redundant. (Matches the discipline used in amway.) */
+body[data-project="favo"] .chapter__kicker,
+body[data-project="spaces"] .chapter__kicker {
+  display: none;
+}
+body[data-project="favo"] .brand-comparison .bc-mark {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 96px;
+  max-height: 200px;
+}
+body[data-project="favo"] .brand-comparison .bc-mark img {
+  max-height: 128px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+/* Aiyu and Favo logo files have very different content-to-frame ratios:
+   the Aiyu circle nearly fills its 278x278 frame, while the Favo hexagon
+   sits with substantial padding inside the same frame. To balance visual
+   weight, scale Favo's render larger so its hexagon reads at roughly the
+   same on-page size as the Aiyu circle. */
+body[data-project="favo"] .brand-comparison .bc-side--from .bc-mark img {
+  max-height: 112px;
+}
+body[data-project="favo"] .brand-comparison .bc-side--to .bc-mark img {
+  max-height: 192px;
+}
+/* Arrow + caption between the two marks. Quiet ink-faint colour, mono
+   caption in the editorial timestamp register — same vocabulary the
+   page uses for archival markers. */
+body[data-project="favo"] .brand-comparison .bc-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-faint);
+}
+body[data-project="favo"] .brand-comparison .bc-arrow__svg {
+  width: clamp(48px, 6vw, 72px);
+  height: auto;
+  display: block;
+  color: var(--ink-faint);
+}
+body[data-project="favo"] .brand-comparison .bc-arrow__label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  /* Stack vertically on mobile; the arrow rotates to point down. */
+  body[data-project="favo"] .brand-comparison {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  body[data-project="favo"] .brand-comparison .bc-side--from,
+  body[data-project="favo"] .brand-comparison .bc-side--to {
+    align-items: center;
+  }
+  body[data-project="favo"] .brand-comparison .bc-side--from .bc-mark,
+  body[data-project="favo"] .brand-comparison .bc-side--to .bc-mark {
+    justify-content: center;
+  }
+  body[data-project="favo"] .brand-comparison .bc-arrow__svg {
+    transform: rotate(90deg);
+    width: 48px;
+  }
+}
+
+/* Bleed-aside — a 2-column block where the image sits to the left
+   (bleeding -4rem toward the rail column for visual continuity with
+   the chapter rail) and a single accompanying paragraph sits to the
+   right, vertically centered. The block is sandwiched between
+   full-width prose paragraphs above and below — paragraph, image+P,
+   paragraph again. Used in chapter 1 (me-aiyu) and chapter 3
+   (favo-lider). */
+body[data-project="favo"] .bleed-aside {
+  display: grid;
+  grid-template-columns: clamp(220px, 32%, 340px) 1fr;
+  gap: 32px;
+  align-items: center;
+  margin: 8px 0;
+}
+body[data-project="favo"] .bleed-aside .bleed-aside__img {
+  margin-left: -4rem;
+}
+body[data-project="favo"] .bleed-aside img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  /* iOS / Android touch hardening — no image preview menu */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+body[data-project="favo"] .bleed-aside p {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 44ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+@media (max-width: 760px) {
+  body[data-project="favo"] .bleed-aside {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  body[data-project="favo"] .bleed-aside .bleed-aside__img {
+    margin-left: 0;
+  }
+}
+
+/* Aiyu archive — 4-up grid of retired Aiyu artifacts. Each tile
+   is a paper-warm square with a hairline border, the artifact image
+   contained inside with padding so the image floats off the tile bg,
+   and a small mono RETIRED · 2020 caption below. */
+body[data-project="favo"] .aiyu-archive {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 32px 0 40px;
+}
+body[data-project="favo"] .aiyu-archive .aa-tile {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+body[data-project="favo"] .aiyu-archive .aa-tile img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+  background: var(--paper-warm);
+  border: 1px solid var(--ink-faintest);
+  padding: 16px;
+  /* iOS / Android touch hardening — no image preview menu */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+body[data-project="favo"] .aiyu-archive .aa-tile figcaption {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-align: center;
+}
+@media (max-width: 960px) {
+  body[data-project="favo"] .aiyu-archive { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  body[data-project="favo"] .aiyu-archive { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* Favo's chapter-3 lead figure aligns flush-left with the body text
+   (matches the pattern set in amway). The --right variant also
+   left-aligns for the in-hand internal-tools shot. */
+body[data-project="favo"] .v2-fig--lead img,
+body[data-project="favo"] .v2-fig--right img { grid-column: 1 / span 9; }
