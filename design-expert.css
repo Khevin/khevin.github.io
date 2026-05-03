@@ -889,27 +889,49 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
 }
 
 /* ——— Install ——— */
+/* Install grid — single column. Each step is a hairline-divided
+   sub-section, not a bordered card. Vertical reading, consistent
+   shape across all three steps. */
 .install-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  display: flex;
+  flex-direction: column;
   margin-top: 40px;
+  border-top: 1px solid var(--rule);
 }
 .install-card {
-  border: 1px solid var(--rule);
-  border-radius: 14px;
-  padding: 28px;
-  background: var(--paper);
+  padding: clamp(28px, 4vw, 44px) 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: clamp(32px, 4vw, 64px);
+  align-items: start;
+}
+.install-card__head {
+  /* Left rail — step label + h4 + description */
+  position: relative;
 }
 .install-card .step {
-  font-family: var(--mono); font-size: 11px; color: var(--accent);
-  letter-spacing: 0.12em; text-transform: uppercase;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
 }
 .install-card h4 {
-  font-family: var(--serif); font-weight: 400; font-size: 26px;
-  letter-spacing: -0.012em; margin: 8px 0 16px; line-height: 1.05;
+  font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.4vw, 32px);
+  letter-spacing: -0.014em; margin: 0 0 14px; line-height: 1.1;
+  text-wrap: balance;
 }
-.install-card p { color: var(--ink-mute); font-size: 14.5px; margin: 0 0 18px; }
+.install-card__head p {
+  color: var(--ink-mute);
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin: 0;
+  text-wrap: pretty;
+}
+.install-card__body {
+  /* Right column — the terminal lives here, no extra wrapping chrome */
+  min-width: 0;
+}
 .terminal {
   background: #0e0c0a;
   color: #f1ede4;
@@ -979,28 +1001,37 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
   border-color: rgba(125, 200, 130, 0.3);
 }
 
-/* Terminal output — sits BELOW the .terminal block, on page paper.
-   Reads as "what happened after you ran the command", separated from
-   the copy-able input so a visitor sees the command they're copying
-   distinctly from the system response. Mono font, ink-soft labels,
-   green checkmark stays the active accent. */
+/* Terminal output — visually fused with the .terminal above it.
+   Same dark surface, hairline separator at top to mark "this is the
+   system response, not your input", muted body color so the eye reads
+   the command as the primary surface. The green ✓ stays as the
+   semantic accent.
+   Implementation: round the terminal's bottom corners to 0 and the
+   output's top corners to 0 so the two blocks read as one. */
+.terminal {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 0;
+}
 .terminal-output {
-  margin-top: 12px;
+  margin-top: 0;
   padding: 12px 18px;
   font-family: var(--mono);
   font-size: 12.5px;
   line-height: 1.7;
-  color: var(--ink-soft);
-  background: var(--paper-warm);
-  border-left: 2px solid oklch(75% 0.14 145);
-  border-radius: 4px;
+  color: rgba(241, 237, 228, 0.55);
+  background: #0e0c0a;
+  border: 1px solid #2d2922;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .terminal-output .ok {
-  color: oklch(60% 0.16 145);
+  color: oklch(75% 0.14 145);
   font-weight: 500;
   margin-right: 6px;
 }
-.terminal-output .output-line { color: var(--ink-2); }
+.terminal-output .output-line { color: rgba(241, 237, 228, 0.55); }
 
 .placeholder {
   border: 1px dashed var(--rule);

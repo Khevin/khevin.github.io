@@ -423,9 +423,12 @@
     <div class="install-grid">
 
       <div class="install-card">
-        <div class="step">Step 01</div>
-        <h4>Add the khev‑tools marketplace.</h4>
-        <p>Adds the GitHub repo as a Claude Code plugin marketplace. The marketplace is a manifest pointing at the plugins it hosts — running this command once registers it and lets the plugin browser see <span class="mono">design-expert</span>. Use the full HTTPS URL (the <span class="mono">owner/repo</span> shorthand resolves to SSH and fails for users without GitHub SSH keys configured).</p>
+        <div class="install-card__head">
+          <div class="step">Step 01</div>
+          <h4>Add the khev‑tools marketplace.</h4>
+          <p>Registers the GitHub repo as a Claude Code marketplace. Use the full HTTPS URL — the <span class="mono">owner/repo</span> shorthand resolves to SSH and fails without GitHub keys configured.</p>
+        </div>
+        <div class="install-card__body">
         <div class="terminal" data-cmd="/plugin marketplace add https://github.com/Khevin/khev-tools">
           <div class="head-bar"><span></span><span></span><span></span></div>
           <button class="terminal-copy" type="button" aria-label="Copy command to clipboard">
@@ -441,12 +444,16 @@
         <div class="terminal-output">
           <span class="ok">✓</span> <span class="output-line">marketplace added · 1 plugin available</span>
         </div>
+        </div>
       </div>
 
       <div class="install-card">
-        <div class="step">Step 02</div>
-        <h4>Install design‑expert.</h4>
-        <p>The <span class="mono">@khev-tools</span> suffix tells Claude which marketplace to install from. Restart the session (or just reload the slash-command menu) so the four commands register.</p>
+        <div class="install-card__head">
+          <div class="step">Step 02</div>
+          <h4>Install design‑expert.</h4>
+          <p>The <span class="mono">@khev-tools</span> suffix tells Claude which marketplace to install from. Restart the session so the four commands register.</p>
+        </div>
+        <div class="install-card__body">
         <div class="terminal" data-cmd="/plugin install design-expert@khev-tools">
           <div class="head-bar"><span></span><span></span><span></span></div>
           <button class="terminal-copy" type="button" aria-label="Copy command to clipboard">
@@ -463,12 +470,16 @@
           <span class="ok">✓</span> <span class="output-line">design-expert installed</span><br/>
           <span class="ok">✓</span> <span class="output-line">/design-expert:plan · :build · :write · :review</span>
         </div>
+        </div>
       </div>
 
-      <div class="install-card" style="grid-column: span 2;">
-        <div class="step">Step 03 · First run</div>
-        <h4>Now plan something. Then build it. </h4>
-        <p>The healthiest first session is a brief, then a build, then a review. Each command writes its output to disk — <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> from <span class="mono">/plan</span>, source files from <span class="mono">/build</span>, scored notes from <span class="mono">/review</span> — so you can read what the skill thinks before it ships code.</p>
+      <div class="install-card">
+        <div class="install-card__head">
+          <div class="step">Step 03 · First run</div>
+          <h4>Plan something. Then build it.</h4>
+          <p>A brief, then a build, then a review. Each command writes to disk — <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> from <span class="mono">/plan</span>, source files from <span class="mono">/build</span>, scored notes from <span class="mono">/review</span>.</p>
+        </div>
+        <div class="install-card__body">
         <div class="terminal">
           <div class="head-bar"><span></span><span></span><span></span></div>
           <span class="prompt">$</span> <span class="cmd-text">/design-expert:plan</span> <span class="accent-c">a calm onboarding for SREs on call</span><br/>
@@ -481,6 +492,7 @@
         </div>
         <div class="terminal-output">
           <span class="ok">✓</span> <span class="output-line">scored against 10-lens framework · 4 notes · 0 blockers</span>
+        </div>
         </div>
       </div>
 
