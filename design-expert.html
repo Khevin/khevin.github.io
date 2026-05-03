@@ -424,49 +424,28 @@
 
       <div class="install-card">
         <div class="install-card__head">
-          <div class="step">Step 01</div>
-          <h4>Add the khev‑tools marketplace.</h4>
-          <p>Registers the GitHub repo as a Claude Code marketplace. Use the full HTTPS URL — the <span class="mono">owner/repo</span> shorthand resolves to SSH and fails without GitHub keys configured.</p>
+          <div class="step">Step 01 · Install</div>
+          <h4>Add the marketplace, install the plugin.</h4>
+          <p>Two slash commands, run in sequence. The first registers the khev‑tools marketplace via its HTTPS GitHub URL (the <span class="mono">owner/repo</span> shorthand resolves to SSH and fails without keys). The second installs design‑expert from that marketplace. Restart the session afterwards so the four <span class="mono">/design-expert</span> commands register.</p>
         </div>
         <div class="install-card__body">
-        <div class="terminal" data-cmd="/plugin marketplace add https://github.com/Khevin/khev-tools">
+        <div class="terminal" data-cmd="/plugin marketplace add https://github.com/Khevin/khev-tools&#10;/plugin install design-expert@khev-tools">
           <div class="head-bar"><span></span><span></span><span></span></div>
-          <button class="terminal-copy" type="button" aria-label="Copy command to clipboard">
+          <button class="terminal-copy" type="button" aria-label="Copy both commands to clipboard">
             <svg class="terminal-copy__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="5" y="2.5" width="8.5" height="10" rx="1.2"/>
               <path d="M3.5 5.5 H2.5 V13.5 H10.5 V12.5"/>
             </svg>
-            <span class="terminal-copy__label">Copy</span>
+            <span class="terminal-copy__label">Copy both</span>
           </button>
           <span class="prompt">$</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">https://github.com/Khevin/khev-tools</span><br/>
-          <span class="comment"># clones over HTTPS · no SSH key required</span>
-        </div>
-        <div class="terminal-output">
-          <span class="ok">✓</span> <span class="output-line">marketplace added · 1 plugin available</span>
-        </div>
-        </div>
-      </div>
-
-      <div class="install-card">
-        <div class="install-card__head">
-          <div class="step">Step 02</div>
-          <h4>Install design‑expert.</h4>
-          <p>The <span class="mono">@khev-tools</span> suffix tells Claude which marketplace to install from. Restart the session so the four commands register.</p>
-        </div>
-        <div class="install-card__body">
-        <div class="terminal" data-cmd="/plugin install design-expert@khev-tools">
-          <div class="head-bar"><span></span><span></span><span></span></div>
-          <button class="terminal-copy" type="button" aria-label="Copy command to clipboard">
-            <svg class="terminal-copy__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="5" y="2.5" width="8.5" height="10" rx="1.2"/>
-              <path d="M3.5 5.5 H2.5 V13.5 H10.5 V12.5"/>
-            </svg>
-            <span class="terminal-copy__label">Copy</span>
-          </button>
+          <span class="comment"># clones over HTTPS · no SSH key required</span><br/>
+          <br/>
           <span class="prompt">$</span> <span class="cmd-text">/plugin install</span> <span class="accent-c">design-expert@khev-tools</span><br/>
           <span class="comment"># SKILL.md loaded · 14 markdown files · 17 design-gods</span>
         </div>
         <div class="terminal-output">
+          <span class="ok">✓</span> <span class="output-line">marketplace added · 1 plugin available</span><br/>
           <span class="ok">✓</span> <span class="output-line">design-expert installed</span><br/>
           <span class="ok">✓</span> <span class="output-line">/design-expert:plan · :build · :write · :review</span>
         </div>
@@ -475,7 +454,7 @@
 
       <div class="install-card">
         <div class="install-card__head">
-          <div class="step">Step 03 · First run</div>
+          <div class="step">Step 02 · First run</div>
           <h4>Plan something. Then build it.</h4>
           <p>A brief, then a build, then a review. Each command writes to disk — <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> from <span class="mono">/plan</span>, source files from <span class="mono">/build</span>, scored notes from <span class="mono">/review</span>.</p>
         </div>
