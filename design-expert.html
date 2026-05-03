@@ -143,40 +143,24 @@
 
     <div class="cmd-grid">
       <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 01</span>
-          <span class="num">discovery</span>
-        </div>
         <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>plan</span>
         <h4>Plan the design first.</h4>
         <p>Discovery before pixels. Audience, register, brand voice, anti-references — captured as a brief the rest of the work reads. Stops the model from one-shotting a generic mock.</p>
         <span class="ex">$ /design-expert:plan checkout flow for a calm clinical SaaS</span>
       </a>
       <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 02</span>
-          <span class="num">execution</span>
-        </div>
         <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>build</span>
         <h4>Build it on the bar.</h4>
         <p>From brief to real screens, real components, real type. Reads your tokens, respects your system, ships code — not a Figma mock the model can't render.</p>
         <span class="ex">$ /design-expert:build pricing page from PLAN.md</span>
       </a>
       <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 03</span>
-          <span class="num">voice</span>
-        </div>
         <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>write</span>
         <h4>Write copy that holds.</h4>
         <p>Display lines, microcopy, error states, empty states — written in the voice the brief committed to, not in default-AI breeziness.</p>
         <span class="ex">$ /design-expert:write hero for a calm clinical SaaS</span>
       </a>
       <a class="cmd" href="#install">
-        <div class="head">
-          <span class="kicker">Cmd · 04</span>
-          <span class="num">judgment</span>
-        </div>
         <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>review</span>
         <h4>Review with a real reviewer.</h4>
         <p>The work gets walked, scored against the foundations, and graded. The reviewer cites the principle behind every note — no vibes-based feedback, no "looks great, ship it."</p>
@@ -432,7 +416,7 @@
       <div class="num">04 — Install</div>
       <div>
         <h2 class="section-title"><em style="font-style:italic; color:var(--accent);">2 minute</em> install</h2>
-        <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Add the marketplace once, install the plugin, restart your session — the four commands appear in your <span class="mono">/</span> menu.</p>
+        <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Two slash commands — one to add the marketplace from GitHub, one to install the plugin — and the four <span class="mono">/design-expert</span> commands appear in your <span class="mono">/</span> menu. If you'd rather click than type, run <span class="mono">/plugin</span> by itself for an interactive Discover &amp; Install panel. Requires a current Claude Code build (run <span class="mono">claude --version</span>; update via Homebrew, npm, or the native installer if <span class="mono">/plugin</span> isn't recognized).</p>
       </div>
     </div>
 
@@ -441,11 +425,11 @@
       <div class="install-card">
         <div class="step">Step · 01</div>
         <h4>Add the khev‑tools marketplace.</h4>
-        <p>From inside Claude Code, open the Customize tab and add a plugin marketplace. Or run the command directly:</p>
+        <p>Adds the GitHub repo as a Claude Code plugin marketplace. The marketplace is a manifest pointing at the plugins it hosts — running this command once registers it and lets the plugin browser see <span class="mono">design-expert</span>.</p>
         <div class="terminal">
           <div class="head-bar"><span></span><span></span><span></span></div>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">khev/khev-tools</span><br/>
-          <span class="comment"># registers the marketplace · contains: design-expert</span><br/>
+          <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">Khevin/khev-tools</span><br/>
+          <span class="comment"># resolves to https://github.com/Khevin/khev-tools</span><br/>
           <span class="ok">✓</span> <span class="cmd-text">marketplace added · 1 plugin available</span>
         </div>
       </div>
@@ -453,11 +437,11 @@
       <div class="install-card">
         <div class="step">Step · 02</div>
         <h4>Install design‑expert.</h4>
-        <p>Open the plugin browser and install the plugin. Restart Claude Code so the commands register.</p>
+        <p>The <span class="mono">@khev-tools</span> suffix tells Claude which marketplace to install from. Restart the session (or just reload the slash-command menu) so the four commands register.</p>
         <div class="terminal">
           <div class="head-bar"><span></span><span></span><span></span></div>
           <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin install</span> <span class="accent-c">design-expert@khev-tools</span><br/>
-          <span class="comment"># SKILL.md loaded · 11 markdown files · 13 design-gods</span><br/>
+          <span class="comment"># SKILL.md loaded · 14 markdown files · 17 design-gods</span><br/>
           <span class="ok">✓</span> <span class="cmd-text">design-expert installed</span><br/>
           <span class="ok">✓</span> <span class="cmd-text">/design-expert:plan · :build · :write · :review</span>
         </div>
@@ -466,14 +450,14 @@
       <div class="install-card" style="grid-column: span 2;">
         <div class="step">Step · 03 · First run</div>
         <h4>Now plan something. Then build it. </h4>
-        <p>The healthiest first session is a brief, then a build, then a review. Each command writes its output to disk, so you can read what the skill thinks before it ships code.</p>
+        <p>The healthiest first session is a brief, then a build, then a review. Each command writes its output to disk — <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> from <span class="mono">/plan</span>, source files from <span class="mono">/build</span>, scored notes from <span class="mono">/review</span> — so you can read what the skill thinks before it ships code.</p>
         <div class="terminal">
           <div class="head-bar"><span></span><span></span><span></span></div>
           <span class="prompt">~/your-project $</span> <span class="cmd-text">/design-expert:plan</span> <span class="accent-c">a calm onboarding for SREs on call</span><br/>
-          <span class="comment"># writes PLAN.md · audience, register, brand voice, anti-references</span><br/>
+          <span class="comment"># writes PRODUCT.md + DESIGN.md · audience, register, tokens, restrictions</span><br/>
           <br/>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/design-expert:build</span> <span class="accent-c">onboarding from PLAN.md</span><br/>
-          <span class="comment"># reads SKILL.md + PLAN.md · ships components in src/onboarding/</span><br/>
+          <span class="prompt">~/your-project $</span> <span class="cmd-text">/design-expert:build</span> <span class="accent-c">onboarding from PRODUCT.md + DESIGN.md</span><br/>
+          <span class="comment"># reads SKILL.md + the two briefs · ships components in src/onboarding/</span><br/>
           <br/>
           <span class="prompt">~/your-project $</span> <span class="cmd-text">/design-expert:review</span> <span class="accent-c">src/onboarding/</span><br/>
           <span class="ok">✓</span> <span class="cmd-text">scored against 10-lens framework · 4 notes · 0 blockers</span>
@@ -501,7 +485,7 @@
         <div class="faq-entry__body">
           <div class="faq-entry__cat">What it is</div>
           <h4 class="faq-entry__q">Is design-expert just a system prompt?</h4>
-          <p class="faq-entry__a">No. It's a plugin: a manifest, a skill file, four commands, a 12-file markdown library, and a per-designer reference set. The skill files are loaded by the commands at the right moments — the reviewer doesn't need <span class="mono">typography.md</span>; the writer doesn't need <span class="mono">output-format.md</span>. Every byte of context earns its place.</p>
+          <p class="faq-entry__a">No. It's a plugin: a manifest, a SKILL.md, four sub-commands, a 14-file markdown library, a 17-designer pantheon, and the curated <span class="mono">references/</span>, <span class="mono">styles/</span>, <span class="mono">voices/</span>, and <span class="mono">layouts.md</span> taxonomies the commands load on demand. The reviewer doesn't pull <span class="mono">typography.md</span>; the writer doesn't pull <span class="mono">output-format.md</span>. Context loads when context is needed, every byte earning its place.</p>
         </div>
       </li>
       <li class="faq-entry">
@@ -517,7 +501,7 @@
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Compatibility</div>
           <h4 class="faq-entry__q">Does it work with my design system?</h4>
-          <p class="faq-entry__a">Yes — that's the point. The build command reads your tokens, components, and existing screens before it generates anything. design-expert grows with your system rather than around it. Ship a <span class="mono">PROJECT.md</span> with your conventions and the skill respects them.</p>
+          <p class="faq-entry__a">Yes — that's the point. The build command reads your tokens, components, and existing screens before it generates anything. design-expert grows with your system rather than around it. Ship a per-surface <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> pair with your conventions and the skill treats them as the contract.</p>
         </div>
       </li>
       <li class="faq-entry">
@@ -525,7 +509,7 @@
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Compatibility</div>
           <h4 class="faq-entry__q">Cursor? Codex? Other harnesses?</h4>
-          <p class="faq-entry__a">Coming. The skill files are pure markdown and portable; the wrapper is Claude-Code-shaped today. A universal package follows once the four commands stabilize.</p>
+          <p class="faq-entry__a">The skill files are pure markdown and portable. Anywhere you can drop a system prompt, you can paste the contents of <span class="mono">SKILL.md</span> + the foundationals and get most of the value. The Claude-Code-shaped wrapper — slash commands, gate-driven workflows, marketplace install — is what's idiomatic today; a universal package will follow once the agent-skill protocol stabilizes across harnesses.</p>
         </div>
       </li>
       <li class="faq-entry">
