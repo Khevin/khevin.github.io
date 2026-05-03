@@ -416,7 +416,7 @@
       <div class="num">04 — Install</div>
       <div>
         <h2 class="section-title"><em style="font-style:italic; color:var(--accent);">2 minute</em> install</h2>
-        <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Two slash commands — one to add the marketplace from GitHub, one to install the plugin — and the four <span class="mono">/design-expert</span> commands appear in your <span class="mono">/</span> menu. If you'd rather click than type, run <span class="mono">/plugin</span> by itself for an interactive Discover &amp; Install panel. Requires a current Claude Code build (run <span class="mono">claude --version</span>; update via Homebrew, npm, or the native installer if <span class="mono">/plugin</span> isn't recognized).</p>
+        <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Two slash commands — one to add the marketplace via its HTTPS GitHub URL, one to install the plugin — and the four <span class="mono">/design-expert</span> commands appear in your <span class="mono">/</span> menu. If you'd rather click than type, run <span class="mono">/plugin</span> by itself for an interactive Discover &amp; Install panel. Requires a current Claude Code build (run <span class="mono">claude --version</span>; update via Homebrew, npm, or the native installer if <span class="mono">/plugin</span> isn't recognized).</p>
       </div>
     </div>
 
@@ -425,11 +425,11 @@
       <div class="install-card">
         <div class="step">Step · 01</div>
         <h4>Add the khev‑tools marketplace.</h4>
-        <p>Adds the GitHub repo as a Claude Code plugin marketplace. The marketplace is a manifest pointing at the plugins it hosts — running this command once registers it and lets the plugin browser see <span class="mono">design-expert</span>.</p>
+        <p>Adds the GitHub repo as a Claude Code plugin marketplace. The marketplace is a manifest pointing at the plugins it hosts — running this command once registers it and lets the plugin browser see <span class="mono">design-expert</span>. Use the full HTTPS URL (the <span class="mono">owner/repo</span> shorthand resolves to SSH and fails for users without GitHub SSH keys configured).</p>
         <div class="terminal">
           <div class="head-bar"><span></span><span></span><span></span></div>
-          <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">Khevin/khev-tools</span><br/>
-          <span class="comment"># resolves to https://github.com/Khevin/khev-tools</span><br/>
+          <span class="prompt">~/your-project $</span> <span class="cmd-text">/plugin marketplace add</span> <span class="accent-c">https://github.com/Khevin/khev-tools</span><br/>
+          <span class="comment"># clones over HTTPS · no SSH key required</span><br/>
           <span class="ok">✓</span> <span class="cmd-text">marketplace added · 1 plugin available</span>
         </div>
       </div>
