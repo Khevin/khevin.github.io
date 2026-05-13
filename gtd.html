@@ -1,0 +1,2353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GTD · khevin/mituti</title>
+<meta name="description" content="A weekly notebook spread for getting things done — notes, reminders, a bucket list, habits, and the days of the week. Hand-drawn." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&family=Shadows+Into+Light&family=Architects+Daughter&family=Patrick+Hand&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@400;500;600&family=Newsreader:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png" />
+<link rel="shortcut icon" href="./assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="./assets/favicon/site.webmanifest" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" defer></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- ============= GTD-SCOPED STYLES =============
+     All notebook tokens and rules are scoped under `.gtd-stage` so they
+     don't leak into the rest of the portfolio. The global --paper/--ink
+     from styles.css stay untouched for the nav and footer; the cream
+     notebook palette lives only inside the stage. -->
+<style>
+body[data-page="gtd"] { overflow: hidden; }
+body[data-page="gtd"] .foot { display: none; }
+
+.gtd-main {
+  position: relative;
+  width: 100%;
+  /* nav height ~ 50px; subtract so the stage fills the rest exactly */
+  height: calc(100dvh - 50px);
+  background: radial-gradient(ellipse at center, #3b3122 0%, #1c1610 80%);
+  overflow: hidden;
+}
+
+.gtd-stage {
+  /* notebook palette — cream paper + blue ink */
+  --paper: #f1e8d0;
+  --paper-2: #ece2c4;
+  --paper-edge: #d9cda7;
+
+  --ink: #16161b;
+  --ink-soft: rgba(22, 22, 27, 0.72);
+  --ink-faint: rgba(22, 22, 27, 0.38);
+  --rule: rgba(80, 124, 168, 0.32);
+  --rule-strong: rgba(80, 124, 168, 0.5);
+  --margin: #c98a8a;
+  --margin-soft: rgba(201, 138, 138, 0.7);
+
+  --partial: #b3812a;
+  --expected: #16161b;
+  --excellent: #c8901c;
+  --red-ink: #9b2828;
+  --wine: #7a2128;
+
+  --line-h: 28px;
+  --pad-x: 56px;
+
+  --font-hand: "Caveat", "Bradley Hand", cursive;
+  --font-serif-n: "Crimson Pro", "Iowan Old Style", Georgia, serif;
+  --font-mono-n: "IBM Plex Mono", ui-monospace, monospace;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--font-serif-n);
+}
+
+/* paper variants */
+.gtd-stage[data-paper="cream"] { --paper:#f1e8d0; --paper-2:#ece2c4; --paper-edge:#d9cda7; }
+.gtd-stage[data-paper="bone"]  { --paper:#faf6ea; --paper-2:#f5efde; --paper-edge:#e6dec6; }
+.gtd-stage[data-paper="sepia"] { --paper:#e8dcba; --paper-2:#e0d2a8; --paper-edge:#c8b683; --rule:rgba(102,128,90,.35); --rule-strong:rgba(102,128,90,.55); --margin:#b27a7a; }
+.gtd-stage[data-paper="white"] { --paper:#ffffff; --paper-2:#fafaf6; --paper-edge:#e8e6df; --rule:rgba(120,150,180,.32); }
+
+/* font pairings */
+.gtd-stage[data-font="caveat-crimson"]      { --font-hand:"Caveat",cursive; --font-serif-n:"Crimson Pro",Georgia,serif; }
+.gtd-stage[data-font="kalam-lora"]          { --font-hand:"Kalam",cursive; --font-serif-n:"Lora",Georgia,serif; }
+.gtd-stage[data-font="shadows-source"]      { --font-hand:"Shadows Into Light",cursive; --font-serif-n:"Source Serif 4",Georgia,serif; }
+.gtd-stage[data-font="architects-playfair"] { --font-hand:"Architects Daughter",cursive; --font-serif-n:"Playfair Display",Georgia,serif; }
+.gtd-stage[data-font="patrick-newsreader"]  { --font-hand:"Patrick Hand",cursive; --font-serif-n:"Newsreader",Georgia,serif; }
+
+/* density */
+.gtd-stage[data-density="compact"]  { --line-h:24px; --pad-x:44px; }
+.gtd-stage[data-density="regular"]  { --line-h:28px; --pad-x:56px; }
+.gtd-stage[data-density="spacious"] { --line-h:32px; --pad-x:64px; }
+
+/* ─────────────────────── stage / scaling ─────────────────────── */
+.gtd-stage .spread-wrap {
+  width: 1680px;
+  height: 1080px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 0 0;
+}
+
+.gtd-stage .spread {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--paper);
+  border-radius: 4px 4px 8px 8px;
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.6),
+    0 8px 20px rgba(0,0,0,.4),
+    inset 0 0 80px rgba(120,90,40,.08);
+  overflow: hidden;
+}
+.gtd-stage .spread::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at top left, rgba(0,0,0,.05), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(0,0,0,.04), transparent 60%);
+  mix-blend-mode: multiply;
+}
+.gtd-stage .spread::after {
+  content: ""; position: absolute; top:0; bottom:0; left:50%;
+  width: 64px; transform: translateX(-50%);
+  background: linear-gradient(to right, transparent 0%, rgba(60,40,10,.12) 30%, rgba(80,50,10,.32) 50%, rgba(60,40,10,.12) 70%, transparent 100%);
+  pointer-events: none; z-index: 2;
+}
+
+.gtd-stage .page {
+  position: relative;
+  padding: 60px var(--pad-x) 36px 88px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.gtd-stage .page.right { padding-right: 56px; }
+.gtd-stage .page::before {
+  content: ""; position: absolute; left: 64px; top: 0; bottom: 0;
+  border-left: 1px solid var(--margin-soft); opacity: .7;
+}
+
+/* ─────────────────────── section labels ─────────────────────── */
+.gtd-stage .label {
+  font-family: var(--font-serif-n); font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase;
+  font-size: 13px; color: var(--ink);
+  position: relative; display: inline-block; padding-bottom: 1px;
+}
+.gtd-stage .label::after {
+  content: ""; position: absolute; left:-2px; right:-2px; bottom:-2px;
+  height: 1px; background: var(--ink); opacity: .85;
+}
+.gtd-stage .label-row { display: flex; align-items: baseline; gap: 12px; }
+.gtd-stage .label-row .small { font-size: 12px; color: var(--ink-soft); letter-spacing:.04em; }
+
+/* ─────────────────────── header ─────────────────────── */
+.gtd-stage .spread-header {
+  position: relative; display: flex; align-items: center;
+  gap: 14px; padding-bottom: 6px; margin-bottom: 8px;
+  line-height: 1; flex-wrap: nowrap; min-height: 36px;
+}
+.gtd-stage .spread-header .nav {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-mono-n); font-size: 11px;
+  color: var(--ink-soft); flex-shrink: 0;
+}
+.gtd-stage .spread-header .nav button {
+  appearance: none; border: 1px solid var(--ink-faint);
+  background: transparent; color: var(--ink); font: inherit;
+  width: 22px; height: 22px; border-radius: 3px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.gtd-stage .spread-header .nav button.today {
+  width: auto; padding: 0 8px; font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  font-family: var(--font-serif-n); font-weight: 600;
+}
+.gtd-stage .spread-header .nav button:hover { background: rgba(22,22,27,.08); }
+.gtd-stage .spread-header .date {
+  font-family: var(--font-hand); font-size: 28px;
+  color: var(--ink); letter-spacing: .01em; line-height: 1; flex-shrink: 0;
+}
+.gtd-stage .spread-header .title {
+  font-family: var(--font-hand); font-size: 32px; color: var(--ink);
+  flex: 1; outline: none; min-width: 0; line-height: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gtd-stage .spread-header .title:focus { background: rgba(255,230,150,.25); border-radius: 2px; }
+.gtd-stage .spread-header .now-chip {
+  font-family: var(--font-mono-n); font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--red-ink); padding: 2px 6px 2px 4px;
+  border: 1px solid rgba(155,40,40,.35); border-radius: 3px;
+  display: inline-flex; align-items: center; gap: 4px;
+  position: relative; top: -3px; flex-shrink: 0; line-height: 1;
+}
+.gtd-stage .spread-header .now-chip::before {
+  content: ""; width: 5px; height: 5px;
+  background: var(--red-ink); border-radius: 50%;
+  display: inline-block;
+}
+.gtd-stage .spread-header .week-tag {
+  font-family: var(--font-mono-n); font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-faint); flex-shrink: 0;
+  position: relative; top: -3px;
+}
+.gtd-stage .squiggle {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='6'><path d='M0 3 Q5 0 10 3 T20 3 T30 3 T40 3' fill='none' stroke='%2316161b' stroke-width='1' opacity='0.7'/></svg>");
+  background-repeat: repeat-x; background-position: 0 100%; padding-bottom: 4px;
+}
+
+/* ─────────────────────── entries ─────────────────────── */
+.gtd-stage .entries {
+  display: flex; flex-direction: column;
+  /* Reserve at least 4 item-lines of vertical space in Notes,
+     Reminders, and Bucket so the sections keep a stable rhythm even
+     when they have one or two entries. Add-row affordance sits inside
+     this minimum so an empty section still feels claimable, not
+     vestigial. */
+  min-height: calc(var(--line-h) * 4);
+}
+.gtd-stage .entry {
+  position: relative; font-family: var(--font-hand); font-size: 24px;
+  line-height: var(--line-h); color: var(--ink);
+  padding: 0 4px 0 24px; outline: none; cursor: text;
+  border-radius: 2px; min-height: var(--line-h);
+  white-space: pre-wrap; word-break: break-word;
+}
+.gtd-stage .entry .editable:focus, .gtd-stage [contenteditable]:focus { outline: none; }
+.gtd-stage .entry .editable:focus { background: rgba(255,230,150,.25); }
+.gtd-stage .entry .editable.empty::before {
+  content: attr(data-placeholder); color: var(--ink-faint);
+  font-style: italic; font-size: 20px; pointer-events: none;
+}
+.gtd-stage .entry .bullet { position: absolute; left: 4px; top: 0; font-size: 26px; color: var(--ink); }
+.gtd-stage .entry .delete {
+  position: absolute; right: -4px; top: 2px;
+  width: 18px; height: 18px; border-radius: 4px; border: 0;
+  background: transparent; color: var(--ink-faint); cursor: pointer;
+  font-size: 12px; font-family: var(--font-mono-n);
+  display: none; align-items: center; justify-content: center;
+}
+.gtd-stage .entry:hover .delete { display: flex; }
+.gtd-stage .entry .delete:hover { color: var(--red-ink); background: rgba(155,40,40,.08); }
+.gtd-stage .entry .meta {
+  display: inline-flex; align-items: baseline; gap: 6px; margin-left: 8px;
+  font-family: var(--font-mono-n); font-size: 11px; color: var(--ink-soft);
+  vertical-align: middle; position: relative; top: -3px;
+}
+.gtd-stage .entry .meta .pill {
+  border: 0; background: transparent; padding: 0;
+  font-family: var(--font-mono-n); font-size: 11px;
+  letter-spacing: .02em; color: var(--ink-soft);
+}
+.gtd-stage .entry .meta .pill + .pill::before { content: "·"; margin-right: 6px; opacity: .5; }
+.gtd-stage .entry .meta a.pill { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 2px; color: var(--ink); }
+
+.gtd-stage .entry .hover-actions {
+  display: none; position: absolute; right: -2px; top: 50%;
+  transform: translateY(-50%); align-items: center; gap: 2px;
+  background: linear-gradient(to right, transparent, var(--paper) 30%);
+  padding: 0 4px 0 14px;
+}
+.gtd-stage .entry:hover .hover-actions { display: inline-flex; }
+.gtd-stage .entry .hover-actions .edit {
+  appearance: none; border: 0; background: transparent;
+  color: var(--ink-faint); width: 20px; height: 20px;
+  border-radius: 4px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.gtd-stage .entry .hover-actions .edit:hover { color: var(--ink); background: rgba(22,22,27,.08); }
+.gtd-stage .entry .hover-actions .delete { position: static; display: inline-flex; }
+
+.gtd-stage .add-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 4px 0 24px; font-family: var(--font-hand);
+  font-size: 22px; color: var(--ink-faint); cursor: text;
+  height: var(--line-h); line-height: var(--line-h);
+  border-radius: 2px; opacity: 0; transition: opacity .18s ease;
+}
+.gtd-stage .add-row:hover { color: var(--ink-soft); }
+.gtd-stage .add-row .plus { font-family: var(--font-mono-n); font-size: 12px; width: 18px; text-align: center; }
+.gtd-stage .entries:hover .add-row,
+.gtd-stage .reminders-col:hover .add-row,
+.gtd-stage .bucket-col:hover .add-row,
+.gtd-stage .add-row:focus-within { opacity: 1; }
+
+/* ─────────────────────── bucket ─────────────────────── */
+.gtd-stage .tabs {
+  display: flex; gap: 14px; font-family: var(--font-mono-n);
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-soft); margin-bottom: 4px;
+}
+.gtd-stage .tabs button {
+  appearance: none; border: 0; background: transparent; font: inherit;
+  color: inherit; cursor: pointer; padding: 2px 0;
+}
+.gtd-stage .tabs button.active { color: var(--ink); border-bottom: 1.5px solid var(--ink); }
+.gtd-stage .tabs button:hover { color: var(--ink); }
+.gtd-stage .tabs .count { opacity: .55; margin-left: 4px; font-size: 10px; }
+
+/* Bucket: same en-dash bullet as the other lists; strike-through alone
+   marks "done." The bullet stays clickable to toggle, with a soft hover. */
+.gtd-stage .bucket-entry .bullet { cursor: pointer; transition: color .12s ease; }
+.gtd-stage .bucket-entry .bullet:hover { color: var(--red-ink); }
+.gtd-stage .bucket-entry.checked .editable {
+  text-decoration: line-through; text-decoration-thickness: 1px; opacity: .5;
+}
+.gtd-stage .bucket-entry.checked .bullet { opacity: .5; }
+.gtd-stage .bucket-cat-icon {
+  display: inline-block; vertical-align: middle;
+  margin: 0 6px 0 2px; position: relative; top: -3px; color: var(--ink);
+}
+.gtd-stage .bucket-entry.checked .bucket-cat-icon { opacity: .4; }
+
+.gtd-stage .two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--margin-soft);
+}
+.gtd-stage .two-col > div { min-width: 0; }
+.gtd-stage .two-col > div + div { border-left: 1px solid var(--margin-soft); padding-left: 14px; }
+
+/* ─────────────────────── habits ─────────────────────── */
+.gtd-stage .habits-wrap {
+  margin-top: 6px; padding-top: 6px;
+  border-top: 1px solid var(--margin-soft);
+  flex: 1; display: flex; flex-direction: column; min-height: 0;
+}
+.gtd-stage .habits {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--font-hand); font-size: 22px; color: var(--ink);
+  table-layout: fixed;
+}
+.gtd-stage .habits th, .gtd-stage .habits td {
+  border: 1px solid var(--rule-strong);
+  height: var(--line-h); vertical-align: middle;
+  text-align: center; padding: 0;
+}
+.gtd-stage .habits th {
+  font-family: var(--font-serif-n); font-weight: 600;
+  font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink); background: rgba(255,255,255,.18);
+  height: calc(var(--line-h) + 2px);
+}
+.gtd-stage .habits th.habit-name { text-align: left; padding-left: 8px; }
+.gtd-stage .habits td.habit-name {
+  font-family: var(--font-hand); font-size: 22px;
+  text-align: left; padding-left: 8px; position: relative;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gtd-stage .habits td.habit-name .editable {
+  outline: none; cursor: text; display: inline-block;
+  min-width: 40px; max-width: calc(100% - 24px);
+  overflow: hidden; text-overflow: ellipsis; vertical-align: middle;
+}
+.gtd-stage .habits td.habit-name .row-del {
+  display: none; position: absolute; right: 4px; top: 50%;
+  transform: translateY(-50%); width: 18px; height: 18px;
+  border-radius: 4px; border: 0; background: transparent;
+  color: var(--ink-faint); cursor: pointer;
+  font-family: var(--font-mono-n); font-size: 12px;
+}
+.gtd-stage .habits tr:hover td.habit-name .row-del { display: inline-flex; align-items: center; justify-content: center; }
+.gtd-stage .habits td.habit-name .row-del:hover { color: var(--red-ink); background: rgba(155,40,40,.08); }
+.gtd-stage .habits td.cell { cursor: pointer; position: relative; }
+.gtd-stage .habits th.habit-icon, .gtd-stage .habits td.habit-icon {
+  text-align: center; vertical-align: middle; padding: 0;
+}
+.gtd-stage .habits td.habit-icon { cursor: pointer; }
+.gtd-stage .habits td.habit-icon:hover { background: rgba(255,230,150,.3); }
+.gtd-stage .habit-icon-svg { width: 18px; height: 18px; display: inline-block; vertical-align: middle; }
+.gtd-stage .habit-icon-text { font-family: var(--font-hand); font-size: 20px; color: var(--ink); display: inline-block; line-height: 1; }
+.gtd-stage .habits td.cell.scheduled {
+  background: repeating-linear-gradient(135deg, transparent 0 6px, rgba(22,22,27,.05) 6px 7px);
+}
+.gtd-stage .habits td.cell:hover { background: rgba(255,230,150,.3); }
+.gtd-stage .habits tr.totals td {
+  border: 0; border-top: 1.5px solid var(--ink);
+  font-family: var(--font-hand); font-size: 26px;
+  color: var(--ink); font-weight: 600;
+  height: calc(var(--line-h) + 4px);
+}
+.gtd-stage .habits tr.totals td.totals-label {
+  text-align: left; padding-left: 8px;
+  font-family: var(--font-serif-n); font-weight: 600;
+  font-size: 13px; letter-spacing: .06em; text-transform: uppercase;
+}
+.gtd-stage .habits tr.add-habit td {
+  border-style: dashed; color: var(--ink-faint);
+  font-family: var(--font-hand); font-size: 22px;
+  text-align: left; padding-left: 8px; cursor: pointer;
+  opacity: 0; transition: opacity .18s ease;
+}
+.gtd-stage .habits-wrap:hover tr.add-habit td { opacity: 1; }
+.gtd-stage .habits tr.add-habit td:hover { background: rgba(255,230,150,.2); color: var(--ink-soft); }
+
+/* ─────────────────────── marks (SVG) ─────────────────────── */
+.gtd-stage .mark-wrap { width: 100%; height: 100%; display: grid; place-items: center; pointer-events: none; }
+.gtd-stage .mark-wrap svg { width: 55%; height: 55%; }
+.gtd-stage .mark-wrap.partial path { stroke: var(--partial); }
+.gtd-stage .mark-wrap.expected path { stroke: var(--expected); }
+.gtd-stage .mark-wrap.excellent path { stroke: var(--excellent); fill: none; }
+
+/* ─────────────────────── days (right page) ─────────────────────── */
+.gtd-stage .day-list { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.gtd-stage .day {
+  position: relative; padding: 4px;
+  flex: 1 1 0; display: flex; flex-direction: column; min-height: 0;
+}
+.gtd-stage .day + .day { border-top: 1px solid var(--margin-soft); }
+.gtd-stage .day.weekend-row {
+  flex: 1.1 1 0; display: grid;
+  grid-template-columns: 1fr 1px 1fr; padding: 0;
+}
+.gtd-stage .day.weekend-row .weekend-sep { background: var(--margin-soft); }
+.gtd-stage .day.weekend-row .weekend-half {
+  display: flex; flex-direction: column; padding: 4px 8px; min-height: 0;
+}
+.gtd-stage .day-head {
+  display: flex; align-items: baseline; gap: 8px;
+  font-family: var(--font-hand); font-size: 22px;
+  line-height: var(--line-h); color: var(--ink); white-space: nowrap;
+}
+.gtd-stage .day-head .dow {
+  font-family: var(--font-serif-n); font-weight: 600;
+  font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  position: relative; top: -2px;
+}
+.gtd-stage .day-head .dow::after {
+  content: ""; display: inline-block; width: 16px; height: 1px;
+  margin: 0 6px 4px 6px; vertical-align: middle;
+  background: var(--ink); opacity: .8;
+}
+.gtd-stage .day-head .date { font-family: var(--font-hand); font-size: 22px; }
+.gtd-stage .day-head.today .dow, .gtd-stage .day-head.today .date { color: var(--red-ink); }
+.gtd-stage .today-marker {
+  position: absolute; left: -52px; top: 0; bottom: 0;
+  width: 28px; display: flex; align-items: center; justify-content: center;
+  pointer-events: none; z-index: 1;
+}
+.gtd-stage .today-marker span {
+  font-family: var(--font-serif-n); font-weight: 800; font-size: 16px;
+  letter-spacing: .14em; color: var(--wine); text-transform: uppercase;
+  white-space: nowrap; transform: rotate(-90deg); transform-origin: center;
+}
+
+/* Bookmark ribbon — wine-colored vertical strip that hangs through the
+   spread when the displayed week is the current ISO week. Positioned
+   slightly off-center past the spine on the right-page side; protrudes
+   above and below the spread edges with a V-notched tail so it reads as
+   a real ribbon, not a colored bar. */
+.gtd-stage .page-ribbon {
+  position: absolute;
+  top: -8px;
+  bottom: -42px;
+  /* Centered on the spine with a subtle 4 px lean to the right —
+     reads as a ribbon dangling between the two pages, off-axis just
+     enough to feel hand-placed rather than mechanical. */
+  left: calc(50% + 4px);
+  width: 8px;
+  background: var(--wine);
+  z-index: 4;
+  pointer-events: none;
+  display: none;
+  clip-path: polygon(0 0, 100% 0, 100% 96%, 50% 100%, 0 96%);
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.18);
+}
+.gtd-stage.is-current-week .page-ribbon { display: block; }
+.gtd-stage .day-events {
+  display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start;
+  margin-left: 8px; min-height: 0; overflow: hidden; max-height: 100%;
+  flex: 1;
+}
+.gtd-stage .event {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  font-family: var(--font-hand); font-size: 22px; color: var(--ink);
+  line-height: var(--line-h); padding: 0 4px 0 0; margin-right: 18px;
+  position: relative; max-width: 100%;
+}
+.gtd-stage .event .src {
+  display: inline-block; width: 12px; font-family: var(--font-mono-n);
+  font-size: 11px; color: var(--ink-soft); text-align: center;
+}
+.gtd-stage .event.calendar .src { color: var(--ink-faint); }
+.gtd-stage .event.calendar .text {
+  border-bottom: 1px dashed var(--ink-faint); padding-bottom: 1px;
+}
+.gtd-stage .event .text {
+  outline: none; cursor: text;
+  overflow-wrap: anywhere; word-break: break-word; white-space: pre-wrap;
+}
+.gtd-stage .event .text:focus { background: rgba(255,230,150,.25); border-radius: 2px; }
+.gtd-stage .event .delete {
+  display: none; width: 16px; height: 16px;
+  border: 0; background: transparent; color: var(--ink-faint);
+  cursor: pointer; font-family: var(--font-mono-n); font-size: 10px;
+}
+.gtd-stage .event:hover .delete { display: inline-flex; align-items: center; justify-content: center; }
+.gtd-stage .day-add {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: 8px; font-family: var(--font-hand); font-size: 20px;
+  color: var(--ink-faint); cursor: text; line-height: var(--line-h);
+  opacity: 0; transition: opacity .18s ease;
+}
+.gtd-stage .day:hover .day-add, .gtd-stage .weekend-row:hover .day-add { opacity: 1; }
+.gtd-stage .day-add:hover { color: var(--ink-soft); }
+.gtd-stage .day-add .plus { font-family: var(--font-mono-n); font-size: 11px; }
+
+/* ─────────────────────── left-page week nav (mirror of .right-head) ─────────────────────── */
+/* Sits in the top-left corner of the left page so it visually mirrors
+   the notebook/calendar/fullcal.js toggle on the right. Pulled out of
+   the inline spread-header so the date underneath can render large
+   and centered like the FullCalendar title. */
+.gtd-stage .left-head {
+  position: absolute; top: 16px; left: 24px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-mono-n); font-size: 11px;
+  color: var(--ink-soft);
+}
+.gtd-stage .left-head button {
+  appearance: none; border: 1px solid var(--ink-faint);
+  background: transparent; color: var(--ink); font: inherit;
+  width: 22px; height: 22px; border-radius: 3px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.gtd-stage .left-head button.today {
+  width: auto; padding: 0 8px; font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  font-family: var(--font-serif-n); font-weight: 600;
+}
+.gtd-stage .left-head button:hover { background: rgba(22,22,27,.08); }
+
+/* ─────────────────────── right-page view toggle + calendar ─────────────────────── */
+/* Toggle as two serif-uppercase labels with a margin-toned underline on
+   the active one — matches the section labels (NOTES, BUCKET, HABITS)
+   instead of looking like a SaaS segmented control. */
+.gtd-stage .right-head {
+  position: absolute; top: 16px; right: 24px; z-index: 3;
+  display: inline-flex; gap: 20px;
+  font-family: var(--font-serif-n); font-weight: 600;
+  font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+}
+.gtd-stage .right-head button {
+  appearance: none; background: transparent; border: 0;
+  padding: 0 0 3px; color: var(--ink-faint);
+  cursor: pointer; font: inherit;
+  border-bottom: 1.5px solid transparent;
+}
+.gtd-stage .right-head button.on {
+  color: var(--ink); border-bottom-color: var(--ink);
+}
+.gtd-stage .right-head button:not(.on):hover { color: var(--ink-soft); }
+
+.gtd-stage .calendar-view {
+  position: relative;
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  background: var(--paper);
+  isolation: isolate;
+}
+.gtd-stage .calendar-view iframe {
+  flex: 1; width: 100%; border: 0;
+  background: transparent;
+  border-radius: 12px;
+  /* darken = min(iframe, paper) per channel. Any pixel in the embed
+     brighter than the paper backdrop (Google's white chrome, the
+     near-white cell bg, faint borders) gets clamped down to --paper.
+     Pixels darker than paper (text, dark event chips) pass through
+     unchanged. No filter chain needed. */
+  mix-blend-mode: darken;
+}
+/* Disconnect → small icon button at the iframe's top-right corner. */
+.gtd-stage .cal-disconnect {
+  position: absolute; top: 44px; right: 6px; z-index: 4;
+  appearance: none; width: 22px; height: 22px;
+  border: 1px solid var(--ink-faint); border-radius: 50%;
+  background: color-mix(in oklch, var(--paper) 92%, transparent);
+  color: var(--ink-soft);
+  font-family: var(--font-mono-n); font-size: 14px; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+}
+.gtd-stage .cal-disconnect:hover {
+  color: var(--red-ink); border-color: rgba(155,40,40,.45);
+  background: var(--paper);
+}
+.gtd-stage .calendar-empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; text-align: center; padding: 20px;
+  font-family: var(--font-serif-n); color: var(--ink-soft);
+  border: 1px dashed var(--margin-soft); border-radius: 4px;
+}
+.gtd-stage .calendar-empty h4 {
+  margin: 0; font-family: var(--font-hand);
+  font-size: 32px; color: var(--ink); font-weight: 600;
+}
+.gtd-stage .calendar-empty p {
+  margin: 0; font-size: 13px; max-width: 360px; line-height: 1.5;
+}
+.gtd-stage .calendar-empty .connect-btn {
+  appearance: none; font: inherit; font-family: var(--font-serif-n);
+  font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  background: var(--ink); color: var(--paper);
+  border: 1px solid var(--ink); padding: 8px 16px;
+  border-radius: 4px; cursor: pointer;
+}
+.gtd-stage .calendar-empty .connect-btn:hover { opacity: .9; }
+.gtd-stage .calendar-empty .small {
+  font-family: var(--font-mono-n); font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-faint); margin-top: 4px;
+}
+
+/* ─────────────────────── fullcal.js tab (sandbox) ─────────────────────── */
+.gtd-stage .fc-toolbar-row {
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--font-mono-n); font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-soft); margin: 36px 2px 8px;
+}
+.gtd-stage .fc-toolbar-row button {
+  appearance: none; border: 0; background: transparent;
+  font: inherit; color: var(--ink-soft); cursor: pointer;
+  padding: 3px 0; border-bottom: 1px dashed transparent;
+}
+.gtd-stage .fc-toolbar-row button:hover {
+  color: var(--ink); border-bottom-color: var(--ink-faint);
+}
+.gtd-stage .fc-toolbar-row .fc-cal-id {
+  margin-left: auto; text-transform: none; letter-spacing: 0;
+  font-style: italic; color: var(--ink-faint);
+  font-family: var(--font-serif-n); font-size: 11px;
+}
+.gtd-stage .fc-toolbar-row .cal-readonly {
+  color: var(--ink-faint);
+}
+
+.gtd-stage .fc-stage {
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
+  /* FullCalendar v6 CSS-variable overrides — map FC's tokens to the
+     notebook palette so the widget reads as part of the page rather
+     than a third-party drop-in. */
+  --fc-border-color: var(--rule);
+  --fc-page-bg-color: var(--paper);
+  --fc-neutral-bg-color: var(--paper-2);
+  --fc-list-event-hover-bg-color: rgba(22,22,27,.06);
+  --fc-today-bg-color: rgba(155,40,40,.05);
+  --fc-now-indicator-color: var(--red-ink);
+  --fc-event-bg-color: rgba(22,22,27,.08);
+  --fc-event-border-color: var(--ink);
+  --fc-event-text-color: var(--ink);
+  --fc-event-selected-overlay-color: rgba(22,22,27,.12);
+  --fc-button-bg-color: transparent;
+  --fc-button-border-color: var(--ink-faint);
+  --fc-button-text-color: var(--ink);
+  --fc-button-hover-bg-color: rgba(22,22,27,.06);
+  --fc-button-hover-border-color: var(--ink-faint);
+  --fc-button-active-bg-color: var(--ink);
+  --fc-button-active-border-color: var(--ink);
+  --fc-button-active-text-color: var(--paper);
+}
+.gtd-stage .fc-stage .fc {
+  font-family: var(--font-serif-n);
+  flex: 1; min-height: 0;
+  color: var(--ink);
+}
+.gtd-stage .fc-stage .fc-scrollgrid {
+  border: 1px solid var(--margin-soft);
+  border-radius: 3px;
+}
+/* FC v6 sizes its table columns to content width by default — on a
+   wider container the 7 day columns cluster on the left and the rest
+   reads as empty paper. Pin every FC table to 100% width with
+   table-layout: fixed so each day gets an equal slice and the grid
+   fills the .fc-stage. */
+.gtd-stage .fc-stage .fc,
+.gtd-stage .fc-stage .fc-view-harness,
+.gtd-stage .fc-stage .fc-scrollgrid {
+  width: 100% !important;
+}
+.gtd-stage .fc-stage table {
+  width: 100% !important;
+}
+.gtd-stage .fc-stage .fc-col-header,
+.gtd-stage .fc-stage .fc-timegrid-cols > table {
+  table-layout: fixed !important;
+}
+.gtd-stage .fc-stage .fc-toolbar.fc-header-toolbar {
+  margin: 0 0 8px;
+}
+.gtd-stage .fc-stage .fc-toolbar-title {
+  font-family: var(--font-hand); font-size: 24px;
+  font-weight: 600; line-height: 1; color: var(--ink);
+}
+.gtd-stage .fc-stage .fc-col-header-cell-cushion {
+  font-family: var(--font-serif-n); font-weight: 600;
+  font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-soft);
+  padding: 6px 4px; text-decoration: none;
+}
+.gtd-stage .fc-stage .fc-day-today .fc-col-header-cell-cushion { color: var(--red-ink); }
+.gtd-stage .fc-stage .fc-timegrid-slot-label-cushion,
+.gtd-stage .fc-stage .fc-timegrid-axis-cushion {
+  font-family: var(--font-mono-n); font-size: 9px;
+  color: var(--ink-faint); letter-spacing: .04em;
+}
+.gtd-stage .fc-stage .fc-event {
+  border-radius: 2px; border-left-width: 2px;
+  cursor: pointer;
+}
+.gtd-stage .fc-stage .fc-event-title { font-family: var(--font-hand); font-size: 13px; font-weight: 500; }
+.gtd-stage .fc-stage .fc-event-time  { font-family: var(--font-mono-n); font-size: 9px; letter-spacing: .04em; }
+.gtd-stage .fc-stage .fc-button {
+  font-family: var(--font-mono-n); font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 3px; font-weight: 600;
+  box-shadow: none !important;
+  color: var(--ink);
+}
+/* FC v6 keeps `color` pointing at --fc-button-text-color when active,
+   so without this override the active button reads dark-ink-on-dark-ink
+   and the label disappears. Force cream text on the dark state. */
+.gtd-stage .fc-stage .fc-button-primary:not(:disabled).fc-button-active,
+.gtd-stage .fc-stage .fc-button-primary:not(:disabled):active {
+  background-color: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.gtd-stage .fc-stage .fc-button:focus,
+.gtd-stage .fc-stage .fc-button:focus-visible {
+  outline: 1px solid var(--ink-faint); box-shadow: none !important;
+}
+
+/* Slot rows pinned compact so the day fits the right-page pane
+   without FC's internal scroller kicking in. expandRows on the
+   FC instance then stretches them to fill any leftover space. */
+.gtd-stage .fc-stage .fc-timegrid-slot { height: 20px; }
+.gtd-stage .fc-stage .fc-timegrid-slot-minor { border-top-style: none; }
+
+/* Thin scrollbars for any FC scroller that still appears (Chromium
+   + Firefox). The default ones add visible bulk on the right edge
+   and break the column rhythm. */
+.gtd-stage .fc-stage .fc-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint) transparent;
+}
+.gtd-stage .fc-stage .fc-scroller::-webkit-scrollbar { width: 6px; height: 6px; }
+.gtd-stage .fc-stage .fc-scroller::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 3px; }
+.gtd-stage .fc-stage .fc-scroller::-webkit-scrollbar-track { background: transparent; }
+
+/* Today highlight — the default red tint felt heavy at column scale;
+   pull it back so it reads as a wash, not an alert. */
+.gtd-stage .fc-stage .fc-day-today { background-color: rgba(155,40,40,.035) !important; }
+
+/* Compact day header — mono date below the weekday so the column
+   doesn't wrap onto three lines at 7-column width. */
+.gtd-stage .fc-stage .fc-col-header-cell {
+  padding: 4px 2px;
+}
+.gtd-stage .fc-stage .fc-col-header-cell-cushion {
+  padding: 4px 2px;
+  line-height: 1.2;
+}
+
+.gtd-stage .fc-stage .fc-list-event-title a,
+.gtd-stage .fc-stage .fc-list-day-cushion a { color: var(--ink); }
+
+/* ─────────────────────── legend (bottom-left) ─────────────────────── */
+.gtd-stage .legend {
+  margin-top: auto; padding-top: 14px;
+  border-top: 1px dashed var(--ink-faint);
+  font-family: var(--font-mono-n); font-size: 10px;
+  color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 14px;
+  align-items: center; text-transform: uppercase; letter-spacing: .06em;
+}
+.gtd-stage .legend .li { display: inline-flex; align-items: center; gap: 4px; }
+.gtd-stage .legend .swatch { width: 18px; height: 18px; }
+
+/* ─────────────────────── modal (popover) ─────────────────────── */
+.gtd-stage .popover-backdrop {
+  position: fixed; inset: 0; background: rgba(20,14,4,.4);
+  z-index: 1000; display: grid; place-items: center;
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+.gtd-stage .popover {
+  width: 420px; max-width: 90vw; background: var(--paper);
+  border-radius: 6px; padding: 22px 26px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  position: relative; font-family: var(--font-serif-n);
+  color: var(--ink); border: 1px solid var(--paper-edge);
+}
+.gtd-stage .popover h3 {
+  margin: 0 0 14px; font-family: var(--font-hand);
+  font-size: 32px; font-weight: 600; line-height: 1;
+}
+.gtd-stage .popover label {
+  display: block; font-size: 11px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-soft); margin: 12px 0 4px;
+}
+.gtd-stage .popover input, .gtd-stage .popover select, .gtd-stage .popover textarea {
+  width: 100%; font-family: var(--font-hand); font-size: 22px;
+  background: transparent; border: 0; border-bottom: 1px solid var(--ink-faint);
+  color: var(--ink); padding: 2px 0; outline: none;
+}
+.gtd-stage .popover input:focus { border-bottom-color: var(--ink); }
+.gtd-stage .popover .dow-pick { display: flex; gap: 6px; }
+.gtd-stage .popover .dow-pick button {
+  appearance: none; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--ink-faint); background: transparent; color: var(--ink);
+  font-family: var(--font-serif-n); font-size: 11px; font-weight: 600;
+  letter-spacing: .04em; cursor: pointer; text-transform: uppercase;
+}
+.gtd-stage .popover .dow-pick button.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.gtd-stage .popover .actions { display: flex; justify-content: space-between; margin-top: 18px; }
+.gtd-stage .popover .actions .right { display: flex; gap: 10px; }
+.gtd-stage .popover .btn {
+  appearance: none; font: inherit; font-family: var(--font-serif-n);
+  font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  background: transparent; border: 1px solid var(--ink-faint); color: var(--ink);
+  padding: 7px 14px; border-radius: 4px; cursor: pointer;
+}
+.gtd-stage .popover .btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.gtd-stage .popover .btn.danger { color: var(--red-ink); border-color: rgba(155,40,40,.4); }
+.gtd-stage .popover .btn:hover { background: rgba(22,22,27,.08); }
+.gtd-stage .popover .btn.primary:hover { opacity: .9; }
+.gtd-stage .popover .seg {
+  display: inline-flex; border: 1px solid var(--ink-faint); border-radius: 4px;
+  overflow: hidden; font-family: var(--font-serif-n); font-size: 12px;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.gtd-stage .popover .seg button {
+  appearance: none; background: transparent; color: var(--ink);
+  border: 0; padding: 6px 10px; cursor: pointer; font: inherit;
+}
+.gtd-stage .popover .seg button + button { border-left: 1px solid var(--ink-faint); }
+.gtd-stage .popover .seg button.on { background: var(--ink); color: var(--paper); }
+
+</style>
+</head>
+<body data-page="gtd">
+
+<!-- ============= NAV ============= -->
+<nav class="top">
+  <div class="inner">
+    <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="chev" aria-hidden="true">&#9662;</span>
+    </button>
+
+    <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="false" data-href="./design-expert.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
+        </span>
+        <span class="ns-desc">the plugin &mdash; what khevin makes for designers</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="./index.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">&#10003;</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work &mdash; what khevin ships for clients</span>
+      </li>
+    </ul>
+
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-haspopup="menu" aria-controls="nav-primary" aria-expanded="false" aria-label="Open menu">
+      <svg class="nav-toggle__open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7 H20 M4 12 H20 M4 17 H20"/></svg>
+      <svg class="nav-toggle__close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5 L19 19 M5 19 L19 5"/></svg>
+    </button>
+
+    <ul class="primary" id="nav-primary">
+      <li><a href="./index.html#top">home</a></li>
+      <li><a href="./index.html#clients">work</a></li>
+      <li><a href="./process.html">process</a></li>
+      <li><a href="./blog.html">blog</a></li>
+      <li><a href="./books.html">library</a></li>
+      <li><a href="./gtd.html" aria-current="page">gtd</a></li>
+      <li><a href="./about-me.html">about</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="gtd-main">
+  <div class="gtd-stage" id="gtd-stage" data-paper="cream" data-density="regular" data-font="kalam-lora">
+    <div class="spread-wrap" id="spread-wrap">
+      <div class="spread">
+        <div class="page left" id="page-left"></div>
+        <div class="page right" id="page-right"></div>
+      </div>
+      <div class="page-ribbon" aria-hidden="true"></div>
+    </div>
+
+    <div id="gtd-modal-root"></div>
+  </div>
+
+</main>
+
+<script src="./script.js" defer></script>
+<script>
+/* =========================================================
+   khevin-mituti / gtd
+   Weekly notebook spread: notes, reminders, bucket, habits,
+   days. Inline IIFE — no framework, vanilla DOM, localStorage.
+   Ported from the Claude Design "JP Habit Tracker" handoff.
+   ========================================================= */
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'gtd-notebook:v1';
+  const STATES = ['none','partial','expected','excellent'];
+  const DOW_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const DOW_LONG  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+  /* ─── date helpers ─── */
+  function uid() { return Math.random().toString(36).slice(2,9); }
+  function mondayOf(d) {
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const dow = (x.getDay() + 6) % 7;
+    x.setDate(x.getDate() - dow);
+    return x;
+  }
+  function weekKeyOf(d) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = (date.getUTCDay() + 6) % 7;
+    date.setUTCDate(date.getUTCDate() - dayNum + 3);
+    const firstThursday = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+    const weekNum = 1 + Math.round(
+      ((date - firstThursday) / 86400000 - 3 + ((firstThursday.getUTCDay() + 6) % 7)) / 7
+    );
+    return date.getUTCFullYear() + '-W' + String(weekNum).padStart(2,'0');
+  }
+  function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function addWeeks(d, n) { return addDays(d, n * 7); }
+  function fmtShort(d) {
+    return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
+  }
+  function fmtLong(d) {
+    return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+  }
+  /* "May 11 – 17, 2026" style — mirrors FullCalendar's default
+     timeGridWeek title format. Collapses to a single month name when
+     the week doesn't cross a month boundary; expands across months /
+     years when it does. */
+  function fmtRange(start) {
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const end = addDays(start, 6);
+    const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+    const sameYear = start.getFullYear() === end.getFullYear();
+    if (sameMonth) {
+      return months[start.getMonth()] + ' ' + start.getDate() + ' – ' + end.getDate() + ', ' + start.getFullYear();
+    }
+    if (sameYear) {
+      return months[start.getMonth()] + ' ' + start.getDate() + ' – ' + months[end.getMonth()] + ' ' + end.getDate() + ', ' + start.getFullYear();
+    }
+    return months[start.getMonth()] + ' ' + start.getDate() + ', ' + start.getFullYear()
+         + ' – ' + months[end.getMonth()] + ' ' + end.getDate() + ', ' + end.getFullYear();
+  }
+  function nextState(s) { return STATES[(STATES.indexOf(s||'none') + 1) % STATES.length]; }
+
+  /* ─── seed ─── */
+  function makeSeed() {
+    const today = new Date();
+    const thisMon = mondayOf(today);
+    const thisKey = weekKeyOf(thisMon);
+    const lastKey = weekKeyOf(addWeeks(thisMon, -1));
+
+    const habits = [
+      { id: uid(), name: 'Anki reviews',       schedule: { type:'days',  days:[0,1,2,3,4,5,6] }, order: 0 },
+      { id: uid(), name: 'Genki ch. 12',       schedule: { type:'count', n: 4 },                  order: 1 },
+      { id: uid(), name: 'NHK Easy listening', schedule: { type:'days',  days:[1,3] },            order: 2 },
+      { id: uid(), name: 'Kanji writing',      schedule: { type:'days',  days:[0,2,4] },          order: 3 },
+      { id: uid(), name: 'Lift',               schedule: { type:'days',  days:[0,2,4] },          order: 4 },
+      { id: uid(), name: 'Run',                schedule: { type:'count', n: 3 },                  order: 5 },
+      { id: uid(), name: 'Mobility',           schedule: { type:'days',  days:[0,1,2,3,4,5,6] }, order: 6 },
+      { id: uid(), name: 'Read 20 min',        schedule: { type:'days',  days:[0,1,2,3,4,5,6] }, order: 7 },
+    ];
+
+    const todayDow = (today.getDay() + 6) % 7;
+    const habitChecks = { [thisKey]: {}, [lastKey]: {} };
+    habits.forEach((h, i) => {
+      habitChecks[thisKey][h.id] = {};
+      habitChecks[lastKey][h.id] = {};
+      for (let d = 0; d <= todayDow; d++) {
+        const scheduled = h.schedule.type === 'days' ? h.schedule.days.includes(d) : true;
+        if (!scheduled && Math.random() > 0.25) continue;
+        const r = Math.random();
+        let s = 'none';
+        if (i === 0)       s = r < 0.85 ? 'expected' : r < 0.95 ? 'excellent' : 'partial';
+        else if (i === 1)  s = r < 0.6 ? 'expected' : r < 0.75 ? 'excellent' : r < 0.85 ? 'partial' : 'none';
+        else if (i === 4)  s = (d === 0 || d === 2) ? (r < 0.5 ? 'expected' : 'excellent') : 'none';
+        else if (i === 5)  s = r < 0.3 ? 'expected' : r < 0.4 ? 'excellent' : 'none';
+        else               s = r < 0.55 ? 'expected' : r < 0.7 ? 'partial' : r < 0.78 ? 'excellent' : 'none';
+        if (s !== 'none') habitChecks[thisKey][h.id][d] = s;
+      }
+      for (let d = 0; d < 7; d++) {
+        const r = Math.random();
+        let s = 'none';
+        if (i < 4) s = r < 0.7 ? 'expected' : r < 0.82 ? 'excellent' : r < 0.92 ? 'partial' : 'none';
+        else       s = r < 0.4 ? 'expected' : r < 0.55 ? 'excellent' : r < 0.65 ? 'partial' : 'none';
+        if (s !== 'none') habitChecks[lastKey][h.id][d] = s;
+      }
+    });
+
+    const notes = {
+      [thisKey]: [
+        { id: uid(), text: 'Started shadowing practice — try 15 min daily before Anki.' },
+        { id: uid(), text: 'Found nice ramen spot near work. Go again with K.' },
+        { id: uid(), text: 'Sleep has been off — push gym to mornings next week?' },
+      ],
+    };
+
+    const reminders = [
+      { id: uid(), text: 'Renew JLPT N4 application',  dueDate: addDays(today, 12).toISOString().slice(0,10) },
+      { id: uid(), text: 'Pay electricity bill',       dueDate: addDays(today, 4).toISOString().slice(0,10), price: 87.40 },
+      { id: uid(), text: 'Tofugu newsletter — kanji',  url: 'https://tofugu.com' },
+      { id: uid(), text: 'Call mom' },
+    ];
+
+    const bucket = [
+      { id: uid(), text: 'Bananas',           cat: 'Groceries',   done: false },
+      { id: uid(), text: 'Oats',              cat: 'Groceries',   done: false },
+      { id: uid(), text: 'Greek yogurt',      cat: 'Groceries',   done: true  },
+      { id: uid(), text: 'Eggs',              cat: 'Groceries',   done: false },
+      { id: uid(), text: 'USB-C cable',       cat: 'Electronics', done: false },
+      { id: uid(), text: 'Mech keyboard mat', cat: 'Electronics', done: false },
+      { id: uid(), text: 'Running shorts',    cat: 'Clothes',     done: false },
+      { id: uid(), text: 'Wool socks',        cat: 'Clothes',     done: false },
+    ];
+
+    const days = { [thisKey]: {} };
+    days[thisKey][todayDow] = [{ id: uid(), text: 'Lesson 7pm', source: 'manual' }];
+    days[thisKey][(todayDow + 1) % 7] = [{ id: uid(), text: 'Dinner w/ M.', source: 'manual' }];
+
+    /* Calendar events come from the Google Calendar API once the user
+       configures an API key — no mocked seed. Shape stays the same:
+       calendar[weekKey][dow] = [{id, text, source: 'calendar'}]. */
+    const calendar = {};
+
+    return {
+      version: 2, habits, habitChecks, notes, reminders, bucket, days, calendar,
+      weekTitles: { [thisKey]: 'Quiet week' },
+      bucketTabs: ['All','Groceries','Electronics','Clothes'],
+      /* default the iframe to Khevin's public Lastro calendar — visitors
+         see a live calendar; API key (optional, for the notebook view)
+         is per-browser via the connect modal. */
+      calendarSrc: 'https://calendar.google.com/calendar/embed?src=khevin.mituti%40lastro.co&ctz=America%2FSao_Paulo',
+      calendarApiKey: undefined,
+      calendarOAuthClientId: undefined,
+      view: 'notebook',
+    };
+  }
+
+  /* ─── state ─── */
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        /* v1 → v2 migration: the v1 seed prepopulated state.calendar
+           with stub events ("Standup 10h", etc.). v2 sources calendar
+           events from the Google Calendar API instead, so wipe any
+           stub data left in existing storage. User edits to habits,
+           notes, reminders, bucket, days, etc. are preserved. */
+        if (!s.version || s.version < 2) {
+          s.calendar = {};
+          s.version = 2;
+        }
+        return s;
+      }
+    } catch (e) {}
+    const seed = makeSeed();
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(seed)); } catch (e) {}
+    return seed;
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  let state = loadState();
+  let weekStart = mondayOf(new Date());
+  let weekKey = weekKeyOf(weekStart);
+  let bucketTab = 'All';
+
+  function update(fn) { fn(state); saveState(); render(); }
+
+  /* ─── escape HTML for text values ─── */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ─── SVG marks ─── */
+  function markSVG(mState) {
+    if (!mState || mState === 'none') return '';
+    if (mState === 'partial') {
+      return '<div class="mark-wrap partial"><svg viewBox="0 0 30 30">'
+        + '<path d="M 5.5 24 C 9 19.5, 16 12, 24.5 5" fill="none" stroke-width="2.4" stroke-linecap="round"/>'
+        + '<path d="M 6.5 23 Q 13 16.5, 23.5 6" fill="none" stroke-width="0.7" stroke-linecap="round" opacity="0.45"/>'
+        + '</svg></div>';
+    }
+    if (mState === 'expected') {
+      return '<div class="mark-wrap expected"><svg viewBox="0 0 30 30">'
+        + '<path d="M 5 5.5 C 9.5 11, 15 15, 25 24.5" fill="none" stroke-width="2.5" stroke-linecap="round"/>'
+        + '<path d="M 25 5 C 20.5 11.5, 15 15, 4.8 24" fill="none" stroke-width="2.5" stroke-linecap="round"/>'
+        + '<path d="M 5.5 6 C 10 11.5, 15 15.5, 24 24" fill="none" stroke-width="0.6" stroke-linecap="round" opacity="0.35"/>'
+        + '</svg></div>';
+    }
+    if (mState === 'excellent') {
+      return '<div class="mark-wrap excellent"><svg viewBox="0 0 30 30">'
+        + '<g transform="rotate(-5 15 15)">'
+        + '<path d="M 15 4 L 23.4 27 L 2.5 12.7 L 27.5 12.7 L 6.6 27 L 15.2 4 L 16.6 2.6"'
+        + ' fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
+        + '</g></svg></div>';
+    }
+    return '';
+  }
+
+  /* ─── habit frequency icon ─── */
+  function freqCat(h) {
+    if (h.schedule.type === 'count') return 'count';
+    const n = h.schedule.days.length;
+    if (n === 7) return 'daily';
+    if (n >= 5) return 'most';
+    if (n >= 3) return 'regular';
+    return 'few';
+  }
+  function scheduleDesc(h) {
+    if (h.schedule.type === 'count') return h.schedule.n + ' times / week';
+    if (h.schedule.days.length === 7) return 'Daily';
+    return h.schedule.days.map(d => DOW_LONG[d]).join(', ');
+  }
+  function habitIconHTML(h) {
+    const cat = freqCat(h);
+    const sw = 1.4;
+    if (cat === 'count') return '<span class="habit-icon-text">' + h.schedule.n + '×</span>';
+    if (cat === 'daily') return '<svg viewBox="0 0 22 22" class="habit-icon-svg"><circle cx="11" cy="11" r="6.5" fill="currentColor" stroke="currentColor" stroke-width="0.5"/></svg>';
+    if (cat === 'most') return '<svg viewBox="0 0 22 22" class="habit-icon-svg"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="' + sw + '"/><path d="M 11 4.5 A 6.5 6.5 0 1 1 4.6 12.3 L 11 11 Z" fill="currentColor"/></svg>';
+    if (cat === 'regular') return '<svg viewBox="0 0 22 22" class="habit-icon-svg"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="' + sw + '"/><path d="M 11 4.5 A 6.5 6.5 0 0 1 11 17.5 Z" fill="currentColor"/></svg>';
+    return '<svg viewBox="0 0 22 22" class="habit-icon-svg"><circle cx="11" cy="11" r="4" fill="none" stroke="currentColor" stroke-width="' + sw + '"/></svg>';
+  }
+
+  /* ─── bucket category icon ─── */
+  function bucketCatIconHTML(cat) {
+    const sw = 1.4;
+    const common = ' width="14" height="14" viewBox="0 0 18 18" class="bucket-cat-icon" aria-label="' + esc(cat) + '"';
+    if (cat === 'Groceries') {
+      return '<svg' + common + '>'
+        + '<path d="M 9 5.5 Q 4 5 3.5 9.5 Q 3 14.5 6.5 15.5 Q 9 16 9 14.5 Q 9 16 11.5 15.5 Q 15 14.5 14.5 9.5 Q 14 5 9 5.5 Z" fill="none" stroke="currentColor" stroke-width="' + sw + '" stroke-linejoin="round"/>'
+        + '<path d="M 9 5.5 L 9.5 3.2" fill="none" stroke="currentColor" stroke-width="' + sw + '" stroke-linecap="round"/>'
+        + '<path d="M 9.5 4 Q 12 3 12.5 5 Q 10.5 5.2 9.7 4.2 Z" fill="none" stroke="currentColor" stroke-width="' + sw + '" stroke-linejoin="round"/>'
+        + '</svg>';
+    }
+    if (cat === 'Electronics') {
+      return '<svg' + common + '>'
+        + '<path d="M 10 2 L 4.5 10 L 8 10 L 6.5 16 L 13.5 7.5 L 10 7.5 L 11 2 Z" fill="currentColor" stroke="currentColor" stroke-width="0.6" stroke-linejoin="round"/>'
+        + '</svg>';
+    }
+    if (cat === 'Clothes') {
+      return '<svg' + common + '>'
+        + '<path d="M 6 3 L 7.5 4.5 L 10.5 4.5 L 12 3 L 13.5 5.5 L 11.5 7 L 11.5 9 L 15 15 L 3 15 L 6.5 9 L 6.5 7 L 4.5 5.5 Z" fill="none" stroke="currentColor" stroke-width="' + sw + '" stroke-linejoin="round"/>'
+        + '<path d="M 6.5 9 L 11.5 9" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>'
+        + '</svg>';
+    }
+    return '<svg' + common + '><rect x="4" y="4" width="10" height="10" fill="none" stroke="currentColor" stroke-width="' + sw + '"/></svg>';
+  }
+
+  /* ─── editable contenteditable span ─── */
+  function editableHTML(value, placeholder, extra) {
+    const empty = !value || !String(value).trim();
+    return '<span class="editable' + (empty ? ' empty' : '') + '"'
+      + ' contenteditable="true" data-placeholder="' + esc(placeholder || '') + '"'
+      + (extra || '') + '>' + esc(value || '') + '</span>';
+  }
+
+  /* ─── render: left page ─── */
+  function renderLeft() {
+    const notes = state.notes[weekKey] || [];
+    const title = state.weekTitles[weekKey] || '';
+    const tabs = state.bucketTabs || ['All'];
+    const visible = state.bucket.filter(b => bucketTab === 'All' ? true : b.cat === bucketTab);
+    const countFor = (t) => t === 'All'
+      ? state.bucket.filter(b => !b.done).length
+      : state.bucket.filter(b => b.cat === t && !b.done).length;
+
+    /* habits table — totals (expected + excellent per column) */
+    const habits = state.habits.slice().sort((a,b) => (a.order||0) - (b.order||0));
+    const checks = state.habitChecks[weekKey] || {};
+    const totals = [0,0,0,0,0,0,0];
+    habits.forEach(h => {
+      const row = checks[h.id] || {};
+      for (let d = 0; d < 7; d++) {
+        const s = row[d];
+        if (s === 'expected' || s === 'excellent') totals[d] += 1;
+      }
+    });
+    const today = new Date();
+    const isThisWeek = weekKey === weekKeyOf(today);
+    const todayDow = isThisWeek ? (today.getDay() + 6) % 7 : -1;
+    const isScheduled = (h, d) =>
+      h.schedule.type === 'days' ? h.schedule.days.includes(d) : true;
+
+    let html = '';
+
+    /* week-nav lives in the top-left corner of the page now (mirror of
+       the right-page tabs), so the spread-header underneath can give the
+       date its full width like the FullCalendar title. */
+    html += '<div class="left-head" role="navigation" aria-label="Week navigation">';
+    html +=   '<button data-act="week-prev" aria-label="previous week">&lsaquo;</button>';
+    html +=   '<button class="today" data-act="week-today">Today</button>';
+    html +=   '<button data-act="week-next" aria-label="next week">&rsaquo;</button>';
+    html += '</div>';
+
+    /* header */
+    html += '<div class="spread-header">';
+    html += '<span class="date">' + esc(fmtRange(weekStart)) + '</span>';
+    /* "now" chip removed — the wine-colored bookmark ribbon down the
+       middle of the spread now signals the current week. Past/future
+       weeks still get a faint relative-week tag (last week / next week
+       / N weeks ago / in N weeks) so the navigator knows where it is. */
+    const todayNow = new Date();
+    const curWeekStart = mondayOf(todayNow);
+    const diffWeeks = Math.round((weekStart - curWeekStart) / (7 * 86400000));
+    if (diffWeeks !== 0) {
+      const rel = diffWeeks === -1 ? 'last week'
+                : diffWeeks === 1  ? 'next week'
+                : diffWeeks  <  0  ? Math.abs(diffWeeks) + ' weeks ago'
+                                   : 'in ' + diffWeeks + ' weeks';
+      html += '<span class="week-tag">' + rel + '</span>';
+    }
+    html += '<span class="title squiggle' + (title ? '' : ' empty') + '" contenteditable="true"'
+         +  ' data-edit="week-title" data-placeholder="week title&hellip;">' + esc(title) + '</span>';
+    html += '</div>';
+
+    /* notes */
+    html += '<div style="margin-top:4px"><div class="label-row"><span class="label">Notes</span></div>';
+    html += '<div class="entries" style="margin-top:2px">';
+    notes.forEach(n => {
+      html += '<div class="entry" data-entry="note" data-id="' + n.id + '">';
+      html += '<span class="bullet">&ndash;</span>';
+      html += editableHTML(n.text, 'note…', ' data-edit="note"');
+      html += '<button class="delete" data-act="del-note" data-id="' + n.id + '">&times;</button>';
+      html += '</div>';
+    });
+    html += '<div class="add-row" data-add="note"><span class="plus">+</span><span>note</span></div>';
+    html += '</div></div>';
+
+    /* reminders + bucket */
+    html += '<div class="two-col">';
+
+    /* reminders */
+    html += '<div class="reminders-col"><div class="label-row"><span class="label">Reminders</span></div>';
+    html += '<div class="entries" style="margin-top:2px">';
+    state.reminders.forEach(r => {
+      html += '<div class="entry" data-entry="reminder" data-id="' + r.id + '">';
+      html += '<span class="bullet">&ndash;</span>';
+      html += editableHTML(r.text, 'reminder…', ' data-edit="reminder"');
+      if (r.dueDate || r.price || r.url) {
+        html += '<span class="meta">';
+        if (r.dueDate) {
+          const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(r.dueDate);
+          html += '<span class="pill">' + (m ? m[3] + '/' + m[2] : esc(r.dueDate)) + '</span>';
+        }
+        if (r.price != null && r.price !== '') html += '<span class="pill">$' + Number(r.price).toFixed(2) + '</span>';
+        if (r.url) html += '<a class="pill" href="' + esc(r.url) + '" target="_blank" rel="noreferrer">link</a>';
+        html += '</span>';
+      }
+      html += '<span class="hover-actions">';
+      html += '<button class="edit" data-act="edit-reminder" data-id="' + r.id + '" aria-label="edit">';
+      html += '<svg viewBox="0 0 16 16" width="12" height="12"><path d="M 2 13 L 2 11 L 11 2 L 13 4 L 4 13 Z M 10 3 L 12 5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+      html += '</button>';
+      html += '<button class="delete" data-act="del-reminder" data-id="' + r.id + '">&times;</button>';
+      html += '</span></div>';
+    });
+    html += '<div class="add-row" data-add="reminder"><span class="plus">+</span><span>reminder</span></div>';
+    html += '</div></div>';
+
+    /* bucket */
+    html += '<div class="bucket-col"><div class="label-row"><span class="label">Bucket</span></div>';
+    html += '<div class="tabs" style="margin-top:4px">';
+    tabs.forEach(t => {
+      html += '<button class="' + (bucketTab === t ? 'active' : '') + '" data-tab="' + esc(t) + '">'
+           +  esc(t) + '<span class="count">' + countFor(t) + '</span></button>';
+    });
+    html += '</div>';
+    html += '<div class="entries">';
+    visible.forEach(b => {
+      html += '<div class="entry bucket-entry' + (b.done ? ' checked' : '') + '" data-entry="bucket" data-id="' + b.id + '">';
+      html += '<span class="bullet" data-act="toggle-bucket" data-id="' + b.id + '" title="' + (b.done ? 'mark not done' : 'mark done') + '">&ndash;</span>';
+      html += bucketCatIconHTML(b.cat);
+      html += editableHTML(b.text, 'item…', ' data-edit="bucket"');
+      html += '<button class="delete" data-act="del-bucket" data-id="' + b.id + '">&times;</button>';
+      html += '</div>';
+    });
+    html += '<div class="add-row" data-add="bucket"><span class="plus">+</span><span>item</span></div>';
+    html += '</div></div>';
+
+    html += '</div>'; /* /two-col */
+
+    /* habits */
+    html += '<div class="habits-wrap">';
+    html += '<div class="label-row" style="margin-bottom:4px">';
+    html += '<span class="label">Habits</span>';
+    html += '<span class="small muted">click to cycle &middot; / partial &middot; &times; expected &middot; ★ excellent</span>';
+    html += '</div>';
+    html += '<table class="habits"><colgroup>';
+    html += '<col style="width:26%"/><col style="width:5%"/>';
+    for (let i = 0; i < 7; i++) html += '<col style="width:' + (69/7) + '%"/>';
+    html += '</colgroup><thead><tr>';
+    html += '<th class="habit-name">Habit</th><th class="habit-icon"></th>';
+    for (let i = 0; i < 7; i++) {
+      html += '<th' + (i === todayDow ? ' style="color:var(--red-ink)"' : '') + '>' + DOW_SHORT[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+    habits.forEach(h => {
+      const row = checks[h.id] || {};
+      html += '<tr data-habit="' + h.id + '">';
+      html += '<td class="habit-name">';
+      html += editableHTML(h.name, 'habit…', ' data-edit="habit-name" data-id="' + h.id + '"');
+      html += '<button class="row-del" data-act="del-habit" data-id="' + h.id + '">&times;</button>';
+      html += '</td>';
+      html += '<td class="habit-icon" data-act="edit-habit" data-id="' + h.id + '" title="' + esc(scheduleDesc(h)) + '">';
+      html += habitIconHTML(h);
+      html += '</td>';
+      for (let d = 0; d < 7; d++) {
+        const s = row[d];
+        html += '<td class="cell' + (isScheduled(h, d) ? ' scheduled' : '') + '"'
+             +  ' data-act="cycle" data-id="' + h.id + '" data-dow="' + d + '">' + markSVG(s) + '</td>';
+      }
+      html += '</tr>';
+    });
+    html += '<tr class="add-habit"><td colspan="9" data-act="new-habit">+ add habit</td></tr>';
+    html += '<tr class="totals"><td class="totals-label">Total</td><td></td>';
+    totals.forEach(t => { html += '<td>' + (t || '') + '</td>'; });
+    html += '</tr>';
+    html += '</tbody></table></div>';
+
+    /* legend */
+    html += '<div class="legend">';
+    html += '<span class="li"><svg viewBox="0 0 30 30" class="swatch">'
+         +  '<path d="M 5.5 24 C 9 19.5, 16 12, 24.5 5" fill="none" stroke="var(--partial)" stroke-width="2.4" stroke-linecap="round"/></svg>partial</span>';
+    html += '<span class="li"><svg viewBox="0 0 30 30" class="swatch">'
+         +  '<path d="M 5 5.5 C 9.5 11, 15 15, 25 24.5" fill="none" stroke="var(--expected)" stroke-width="2.5" stroke-linecap="round"/>'
+         +  '<path d="M 25 5 C 20.5 11.5, 15 15, 4.8 24" fill="none" stroke="var(--expected)" stroke-width="2.5" stroke-linecap="round"/></svg>expected</span>';
+    html += '<span class="li"><svg viewBox="0 0 30 30" class="swatch">'
+         +  '<g transform="rotate(-5 15 15)"><path d="M 15 4 L 23.4 27 L 2.5 12.7 L 27.5 12.7 L 6.6 27 L 15.2 4 L 16.6 2.6"'
+         +  ' fill="none" stroke="var(--excellent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>excellent</span>';
+    html += '</div>';
+
+    document.getElementById('page-left').innerHTML = html;
+  }
+
+  /* ─── render: right page ─── */
+  function renderRight() {
+    const view = state.view || 'notebook';
+    const toggleHTML = ''
+      + '<div class="right-head" role="tablist" aria-label="Right page view">'
+      +   '<button class="' + (view === 'notebook' ? 'on' : '') + '" data-act="view-notebook" role="tab" aria-selected="' + (view === 'notebook') + '">notebook</button>'
+      +   '<button class="' + (view === 'calendar' ? 'on' : '') + '" data-act="view-calendar" role="tab" aria-selected="' + (view === 'calendar') + '">calendar</button>'
+      +   '<button class="' + (view === 'fullcal' ? 'on' : '') + '" data-act="view-fullcal" role="tab" aria-selected="' + (view === 'fullcal') + '">fullcal.js</button>'
+      + '</div>';
+
+    if (view === 'fullcal') {
+      /* Preserve the FC mount node across renders. If it's already in
+         the DOM, only update the toolbar; otherwise build fresh and
+         mount the calendar. */
+      const pageRight = document.getElementById('page-right');
+      if (fcContainer && pageRight.contains(fcContainer)) {
+        const tb = pageRight.querySelector('.fc-toolbar-row');
+        if (tb) tb.innerHTML = fcToolbarHTML();
+        const tg = pageRight.querySelector('.right-head');
+        if (tg) tg.outerHTML = toggleHTML;
+        return;
+      }
+      pageRight.innerHTML = toggleHTML
+        + '<div class="fc-toolbar-row">' + fcToolbarHTML() + '</div>'
+        + '<div class="fc-stage"></div>';
+      fcContainer = pageRight.querySelector('.fc-stage');
+
+      if (!state.calendarSrc || !state.calendarApiKey) {
+        fcContainer.innerHTML = '<div class="calendar-empty" style="margin-top:0">'
+          + '<h4>Connect a calendar with an API key</h4>'
+          + '<p>FullCalendar needs the API key for reads. Add it in Connect Calendar and (optionally) an OAuth Client ID to edit events.</p>'
+          + '<button class="connect-btn" data-act="connect-cal">Connect</button>'
+          + '<span class="small">tab is a sandbox · iframe tab is unaffected</span>'
+          + '</div>';
+        return;
+      }
+      if (typeof FullCalendar === 'undefined') {
+        fcContainer.innerHTML = '<div class="calendar-empty" style="margin-top:0">'
+          + '<p>Loading FullCalendar&hellip;</p></div>';
+        setTimeout(() => { if ((state.view || 'notebook') === 'fullcal') { fcContainer = null; renderRight(); } }, 300);
+        return;
+      }
+      fcInstance = new FullCalendar.Calendar(fcContainer, fcOptions());
+      fcInstance.render();
+      return;
+    }
+
+    /* Tearing down FC on leave releases its event listeners and the
+       internal DOM (keeps the page-right innerHTML reset clean). */
+    if (fcInstance) destroyFc();
+
+    if (view === 'calendar') {
+      const pageRight = document.getElementById('page-right');
+
+      if (state.calendarSrc) {
+        const src = state.calendarSrc;
+        /* Force mode=WEEK regardless of what the stored URL has. */
+        let url;
+        if (/^https?:\/\//.test(src)) {
+          try {
+            const u = new URL(src);
+            u.searchParams.set('mode', 'WEEK');
+            url = u.toString();
+          } catch (e) {
+            url = src;
+          }
+        } else {
+          url = 'https://calendar.google.com/calendar/embed?src=' + encodeURIComponent(src)
+              + '&mode=WEEK&ctz=' + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
+        }
+
+        /* Critical: don't recreate the iframe on every render — that
+           would reload Google's embed any time the user clicks a habit
+           or edits a note. Only re-mount when the URL actually changes
+           (different calendar source, or fresh entry into the tab).
+           Otherwise just refresh the toggle bar so the active-tab
+           highlight stays in sync. The toggle's click handlers are
+           delegated through .gtd-stage so outerHTML replacement
+           keeps wiring intact. */
+        const existing = pageRight.querySelector('.calendar-view iframe');
+        if (existing && existing.src === url) {
+          const tg = pageRight.querySelector('.right-head');
+          if (tg) tg.outerHTML = toggleHTML;
+          return;
+        }
+
+        pageRight.innerHTML = toggleHTML
+          + '<div class="calendar-view">'
+          +   '<button class="cal-disconnect" data-act="cal-disconnect" title="Disconnect calendar" aria-label="Disconnect calendar">&times;</button>'
+          +   '<iframe src="' + esc(url) + '" title="Google Calendar"></iframe>'
+          + '</div>';
+        return;
+      }
+
+      pageRight.innerHTML = toggleHTML
+        + '<div class="calendar-view"><div class="calendar-empty">'
+        + '<h4>Connect a calendar</h4>'
+        + '<p>Paste a Google Calendar share URL &mdash; or just an email if the calendar is public &mdash; and the 7&#8209;day view renders here. Until then, the notebook is your day plan.</p>'
+        + '<button class="connect-btn" data-act="connect-cal">Connect calendar</button>'
+        + '<span class="small">public calendars only &middot; embed iframe</span>'
+        + '</div></div>';
+      return;
+    }
+
+    const today = new Date();
+    const todayStr = today.toDateString();
+    function dayData(dow) {
+      const date = addDays(weekStart, dow);
+      const manual = (state.days[weekKey] && state.days[weekKey][dow]) || [];
+      const cal = (state.calendar[weekKey] && state.calendar[weekKey][dow]) || [];
+      return { date, dow, events: cal.concat(manual) };
+    }
+    function dayInner(d) {
+      const isToday = d.date.toDateString() === todayStr;
+      const label = DOW_SHORT[d.dow].slice(0,3).toUpperCase();
+      let h = '';
+      h += '<div class="day-head' + (isToday ? ' today' : '') + '">';
+      h += '<span class="dow">' + label + '</span>';
+      h += '<span class="date">' + esc(fmtShort(d.date)) + '</span>';
+      h += '</div>';
+      h += '<div class="day-events">';
+      d.events.forEach(e => {
+        h += '<span class="event ' + e.source + '" data-event-id="' + e.id + '">';
+        h += '<span class="src">' + (e.source === 'calendar' ? '○' : '&ndash;') + '</span>';
+        if (e.source === 'calendar') {
+          h += '<span class="text">' + esc(e.text) + '</span>';
+        } else {
+          h += '<span class="text editable" contenteditable="true"'
+             + ' data-edit="day-event" data-dow="' + d.dow + '" data-id="' + e.id + '"'
+             + ' data-placeholder="event…">' + esc(e.text) + '</span>';
+          h += '<button class="delete" data-act="del-day-event" data-dow="' + d.dow + '" data-id="' + e.id + '">&times;</button>';
+        }
+        h += '</span>';
+      });
+      h += '<span class="day-add" data-add="day-event" data-dow="' + d.dow + '"><span class="plus">+</span> add</span>';
+      h += '</div>';
+      return h;
+    }
+
+    let html = toggleHTML + '<div class="day-list">';
+    for (let i = 0; i < 5; i++) {
+      const d = dayData(i);
+      const isToday = d.date.toDateString() === todayStr;
+      html += '<div class="day">';
+      if (isToday) html += '<div class="today-marker" aria-label="today"><span>TODAY</span></div>';
+      html += dayInner(d);
+      html += '</div>';
+    }
+    const sat = dayData(5);
+    const sun = dayData(6);
+    const weekendHasToday = sat.date.toDateString() === todayStr || sun.date.toDateString() === todayStr;
+    html += '<div class="day weekend-row">';
+    if (weekendHasToday) html += '<div class="today-marker" aria-label="today"><span>TODAY</span></div>';
+    html += '<div class="weekend-half">' + dayInner(sat) + '</div>';
+    html += '<div class="weekend-sep"></div>';
+    html += '<div class="weekend-half">' + dayInner(sun) + '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    document.getElementById('page-right').innerHTML = html;
+  }
+
+  function render() {
+    weekKey = weekKeyOf(weekStart);
+    /* Toggle the bookmark ribbon: only show it when the spread is
+       displaying the current ISO week. Lets the user "see" today's
+       page at a glance regardless of which day cell is highlighted. */
+    const stageEl = document.getElementById('gtd-stage');
+    if (stageEl) stageEl.classList.toggle('is-current-week', weekKey === weekKeyOf(new Date()));
+    renderLeft();
+    renderRight();
+    maybeFetchCalendar();
+  }
+
+  /* ─── Google Calendar API (read-only via API key) ─── */
+  const fetchedWeeks = new Set();
+
+  /* OAuth state — in-memory only; never persisted. Used solely by the
+     fullcal.js sandbox tab to make authenticated read/write calls. The
+     notebook tab still uses the API key for read-only fetches. */
+  let gApiToken = null;
+  let gApiTokenExpiry = 0;
+  let gTokenClient = null;
+  let fcInstance = null;       /* FullCalendar.Calendar instance */
+  let fcContainer = null;      /* DOM node we re-attach across renders */
+
+  function isSignedIn() {
+    return !!gApiToken && Date.now() < gApiTokenExpiry;
+  }
+
+  function signInGoogle(onSuccess) {
+    if (!state.calendarOAuthClientId) {
+      alert('Set an OAuth Client ID in Connect Calendar first.');
+      openCalendarModal();
+      return;
+    }
+    if (!(window.google && window.google.accounts && window.google.accounts.oauth2)) {
+      alert('Google Identity Services not loaded yet. Try again in a moment.');
+      return;
+    }
+    /* Recreate the token client if the client id changed since last call */
+    if (!gTokenClient || gTokenClient._gtdClientId !== state.calendarOAuthClientId) {
+      gTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: state.calendarOAuthClientId,
+        scope: 'https://www.googleapis.com/auth/calendar.events',
+        callback: (resp) => {
+          if (resp.access_token) {
+            gApiToken = resp.access_token;
+            gApiTokenExpiry = Date.now() + ((resp.expires_in || 3600) * 1000);
+            updateFcToolbar();
+            if (fcInstance) fcInstance.refetchEvents();
+            if (typeof onSuccess === 'function') onSuccess();
+          } else if (resp.error) {
+            alert('Sign-in failed: ' + resp.error);
+          }
+        },
+      });
+      gTokenClient._gtdClientId = state.calendarOAuthClientId;
+    }
+    gTokenClient.requestAccessToken();
+  }
+
+  function signOutGoogle() {
+    if (gApiToken && window.google && window.google.accounts && window.google.accounts.oauth2) {
+      try { google.accounts.oauth2.revoke(gApiToken, () => {}); } catch (e) {}
+    }
+    gApiToken = null;
+    gApiTokenExpiry = 0;
+    updateFcToolbar();
+    if (fcInstance) fcInstance.refetchEvents();
+  }
+
+  /* Single Calendar-API helper used by fullcal.js — picks Bearer token
+     when signed in, falls back to ?key= when not. */
+  async function gcalAPI(path, method, body) {
+    const calId = extractCalendarId(state.calendarSrc);
+    if (!calId) throw new Error('No calendar connected');
+    let url = 'https://www.googleapis.com/calendar/v3/calendars/'
+            + encodeURIComponent(calId) + path;
+    const headers = { 'Content-Type': 'application/json' };
+    if (isSignedIn()) {
+      headers['Authorization'] = 'Bearer ' + gApiToken;
+    } else if (state.calendarApiKey) {
+      url += (url.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(state.calendarApiKey);
+    } else {
+      throw new Error('No API key or OAuth token');
+    }
+    const res = await fetch(url, {
+      method: method || 'GET',
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error((err.error && err.error.message) || ('Calendar API ' + res.status));
+    }
+    if (res.status === 204) return null;
+    return res.json();
+  }
+
+  /* ─── FullCalendar integration ─── */
+  function gEventToFc(gEv) {
+    return {
+      id: gEv.id,
+      title: gEv.summary || '(untitled)',
+      start: gEv.start.dateTime || gEv.start.date,
+      end: (gEv.end && (gEv.end.dateTime || gEv.end.date)) || undefined,
+      allDay: !!gEv.start.date,
+      extendedProps: { htmlLink: gEv.htmlLink, raw: gEv },
+    };
+  }
+
+  function fcEventsFeed(info, success, failure) {
+    if (!state.calendarSrc || (!state.calendarApiKey && !isSignedIn())) {
+      return success([]);
+    }
+    const params = new URLSearchParams({
+      timeMin: info.start.toISOString(),
+      timeMax: info.end.toISOString(),
+      singleEvents: 'true',
+      orderBy: 'startTime',
+      maxResults: '250',
+    });
+    gcalAPI('/events?' + params)
+      .then(data => success((data.items || []).map(gEventToFc)))
+      .catch(err => { console.warn('FC events feed:', err.message); failure(err); });
+  }
+
+  function toDateOnly(d) {
+    const pad = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function isoLocal(d) {
+    const pad = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+         + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  function fcOptions() {
+    return {
+      initialView: 'timeGridWeek',
+      initialDate: toDateOnly(weekStart),
+      height: '100%',
+      expandRows: true,
+      nowIndicator: true,
+      firstDay: 1,
+      slotMinTime: '07:00:00',
+      slotMaxTime: '22:00:00',
+      allDayText: 'all',
+      dayHeaderFormat: { weekday: 'short', day: 'numeric', month: 'numeric', omitCommas: true },
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'timeGridWeek,timeGridDay,listWeek',
+      },
+      events: fcEventsFeed,
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      eventClick: handleFcEventClick,
+      eventDrop: handleFcEventDrop,
+      eventResize: handleFcEventResize,
+      select: handleFcSelect,
+      datesSet: (arg) => {
+        /* Keep the left-page week in sync when the user pages FC's nav */
+        const monday = mondayOf(arg.view.currentStart);
+        if (mondayOf(weekStart).getTime() !== monday.getTime()) {
+          weekStart = monday;
+          renderLeft();
+        }
+      },
+    };
+  }
+
+  function handleFcEventClick(arg) {
+    arg.jsEvent.preventDefault();
+    if (!isSignedIn()) {
+      /* Read-only fallback — open the event in Google Calendar in a new tab. */
+      const link = arg.event.extendedProps && arg.event.extendedProps.htmlLink;
+      if (link) window.open(link, '_blank', 'noopener,noreferrer');
+      else alert('Sign in to edit events, or set the calendar public to get htmlLink.');
+      return;
+    }
+    openFcEventDialog(arg.event);
+  }
+
+  async function handleFcEventDrop(arg) {
+    if (!isSignedIn()) { arg.revert(); alert('Sign in to reschedule.'); return; }
+    try {
+      await gcalAPI('/events/' + encodeURIComponent(arg.event.id), 'PATCH', eventTimeBody(arg.event));
+    } catch (e) {
+      arg.revert();
+      alert('Reschedule failed: ' + e.message);
+    }
+  }
+
+  async function handleFcEventResize(arg) {
+    if (!isSignedIn()) { arg.revert(); alert('Sign in to resize.'); return; }
+    try {
+      await gcalAPI('/events/' + encodeURIComponent(arg.event.id), 'PATCH', eventTimeBody(arg.event));
+    } catch (e) {
+      arg.revert();
+      alert('Resize failed: ' + e.message);
+    }
+  }
+
+  function handleFcSelect(arg) {
+    if (!isSignedIn()) {
+      if (fcInstance) fcInstance.unselect();
+      alert('Sign in to create events.');
+      return;
+    }
+    openFcEventDialog(null, arg.start, arg.end, arg.allDay);
+  }
+
+  function eventTimeBody(event) {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    if (event.allDay) {
+      const endDate = event.end || new Date(event.start.getTime() + 86400000);
+      return {
+        start: { date: toDateOnly(event.start) },
+        end:   { date: toDateOnly(endDate) },
+      };
+    }
+    const endDate = event.end || new Date(event.start.getTime() + 3600000);
+    return {
+      start: { dateTime: event.start.toISOString(), timeZone: tz },
+      end:   { dateTime: endDate.toISOString(),     timeZone: tz },
+    };
+  }
+
+  function openFcEventDialog(event, defaultStart, defaultEnd, defaultAllDay) {
+    const isEdit = !!event;
+    const title = isEdit ? event.title : '';
+    const startDate = isEdit ? event.start : (defaultStart || new Date());
+    const endDate = isEdit
+      ? (event.end || new Date(startDate.getTime() + 3600000))
+      : (defaultEnd || new Date(startDate.getTime() + 3600000));
+
+    modalRoot.innerHTML = ''
+      + '<div class="popover-backdrop">'
+      +   '<div class="popover" onclick="event.stopPropagation()">'
+      +     '<h3>' + (isEdit ? 'Edit event' : 'New event') + '</h3>'
+      +     '<label>Title</label>'
+      +     '<input type="text" id="fc-title" value="' + esc(title) + '" placeholder="Event title" autofocus/>'
+      +     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">'
+      +       '<div><label>Start</label><input type="datetime-local" id="fc-start" value="' + esc(isoLocal(startDate)) + '"/></div>'
+      +       '<div><label>End</label><input type="datetime-local" id="fc-end" value="' + esc(isoLocal(endDate)) + '"/></div>'
+      +     '</div>'
+      +     '<div class="actions">'
+      +       (isEdit ? '<button class="btn danger" data-act="fc-delete">Delete</button>' : '<span></span>')
+      +       '<div class="right">'
+      +         '<button class="btn" data-act="modal-close">Cancel</button>'
+      +         '<button class="btn primary" data-act="fc-save">Save</button>'
+      +       '</div>'
+      +     '</div>'
+      +   '</div>'
+      + '</div>';
+
+    modalRoot.querySelector('[data-act="fc-save"]').addEventListener('click', async () => {
+      const newTitle = modalRoot.querySelector('#fc-title').value.trim();
+      if (!newTitle) return;
+      const s = new Date(modalRoot.querySelector('#fc-start').value);
+      const e = new Date(modalRoot.querySelector('#fc-end').value);
+      if (e <= s) { alert('End must be after start.'); return; }
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      const body = {
+        summary: newTitle,
+        start: { dateTime: s.toISOString(), timeZone: tz },
+        end:   { dateTime: e.toISOString(), timeZone: tz },
+      };
+      closeModal();
+      try {
+        if (isEdit) await gcalAPI('/events/' + encodeURIComponent(event.id), 'PATCH', body);
+        else        await gcalAPI('/events', 'POST', body);
+        if (fcInstance) fcInstance.refetchEvents();
+      } catch (err) {
+        alert('Save failed: ' + err.message);
+      }
+    });
+    const del = modalRoot.querySelector('[data-act="fc-delete"]');
+    if (del && isEdit) del.addEventListener('click', async () => {
+      if (!confirm('Delete this event?')) return;
+      closeModal();
+      try {
+        await gcalAPI('/events/' + encodeURIComponent(event.id), 'DELETE');
+        if (fcInstance) fcInstance.refetchEvents();
+      } catch (err) {
+        alert('Delete failed: ' + err.message);
+      }
+    });
+  }
+
+  function fcToolbarHTML() {
+    let html = '';
+    if (state.calendarOAuthClientId) {
+      if (isSignedIn()) {
+        html += '<button data-act="fc-signout">signed in · sign out</button>';
+      } else {
+        html += '<button data-act="fc-signin">sign in to edit</button>';
+      }
+    } else {
+      html += '<span class="cal-readonly">read-only · add OAuth Client ID to edit</span>';
+    }
+    html += '<button data-act="connect-cal">settings</button>';
+    const calId = extractCalendarId(state.calendarSrc);
+    if (calId) html += '<span class="fc-cal-id">' + esc(calId) + '</span>';
+    return html;
+  }
+
+  function updateFcToolbar() {
+    const tb = document.querySelector('.fc-toolbar-row');
+    if (tb) tb.innerHTML = fcToolbarHTML();
+  }
+
+  function destroyFc() {
+    if (fcInstance) {
+      try { fcInstance.destroy(); } catch (e) {}
+      fcInstance = null;
+    }
+    fcContainer = null;
+  }
+
+  function extractCalendarId(src) {
+    if (!src) return null;
+    const cidMatch = /[?&]cid=([^&]+)/.exec(src);
+    if (cidMatch) {
+      try { return atob(cidMatch[1]); } catch (e) {}
+    }
+    const srcMatch = /[?&]src=([^&]+)/.exec(src);
+    if (srcMatch) return decodeURIComponent(srcMatch[1]);
+    return src.trim();
+  }
+
+  function calendarEventToEntry(ev, weekStart) {
+    const isAllDay = !!ev.start.date;
+    const dt = isAllDay
+      ? new Date(ev.start.date + 'T00:00:00')
+      : new Date(ev.start.dateTime);
+    const dayDiff = Math.floor((dt - weekStart) / 86400000);
+    if (dayDiff < 0 || dayDiff > 6) return null;
+    let text = (ev.summary || '(untitled)').trim();
+    if (!isAllDay) {
+      const h = dt.getHours();
+      const m = dt.getMinutes();
+      text += ' ' + h + (m ? ':' + String(m).padStart(2,'0') : 'h');
+    }
+    return { dow: dayDiff, entry: { id: 'gcal-' + ev.id, text, source: 'calendar' } };
+  }
+
+  async function maybeFetchCalendar() {
+    if (!state.calendarSrc || !state.calendarApiKey) return;
+    if (fetchedWeeks.has(weekKey)) return;
+    fetchedWeeks.add(weekKey);
+
+    const calId = extractCalendarId(state.calendarSrc);
+    if (!calId) return;
+
+    const start = new Date(weekStart);
+    start.setHours(0,0,0,0);
+    const end = addDays(start, 7);
+
+    const params = new URLSearchParams({
+      key: state.calendarApiKey,
+      timeMin: start.toISOString(),
+      timeMax: end.toISOString(),
+      singleEvents: 'true',
+      orderBy: 'startTime',
+      maxResults: '100',
+    });
+    const url = 'https://www.googleapis.com/calendar/v3/calendars/'
+              + encodeURIComponent(calId) + '/events?' + params;
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error((err.error && err.error.message) || ('Calendar API ' + res.status));
+      }
+      const data = await res.json();
+      const byDow = {};
+      for (const ev of data.items || []) {
+        const mapped = calendarEventToEntry(ev, start);
+        if (!mapped) continue;
+        if (!byDow[mapped.dow]) byDow[mapped.dow] = [];
+        byDow[mapped.dow].push(mapped.entry);
+      }
+      state.calendar = { ...state.calendar, [weekKey]: byDow };
+      saveState();
+      renderRight();
+    } catch (e) {
+      console.warn('Calendar fetch failed:', e.message);
+    }
+  }
+
+  /* ─── modals ─── */
+  const modalRoot = document.getElementById('gtd-modal-root');
+  function closeModal() { modalRoot.innerHTML = ''; }
+  modalRoot.addEventListener('click', (e) => {
+    if (e.target === modalRoot.firstElementChild) closeModal();
+    const close = e.target.closest('[data-act="modal-close"]');
+    if (close) closeModal();
+  });
+
+  function openReminderModal(id) {
+    const r = state.reminders.find(x => x.id === id);
+    if (!r) return;
+    const html = ''
+      + '<div class="popover-backdrop">'
+      +   '<div class="popover" onclick="event.stopPropagation()">'
+      +     '<h3>Edit reminder</h3>'
+      +     '<label>Text</label>'
+      +     '<input type="text" id="rm-text" value="' + esc(r.text || '') + '"/>'
+      +     '<label>Due date</label>'
+      +     '<input type="date" id="rm-date" value="' + esc(r.dueDate || '') + '"/>'
+      +     '<label>Price</label>'
+      +     '<input type="number" step="0.01" id="rm-price" value="' + (r.price != null ? r.price : '') + '"/>'
+      +     '<label>URL</label>'
+      +     '<input type="url" id="rm-url" value="' + esc(r.url || '') + '" placeholder="https://"/>'
+      +     '<div class="actions">'
+      +       '<button class="btn danger" data-act="rm-delete">Delete</button>'
+      +       '<div class="right">'
+      +         '<button class="btn" data-act="modal-close">Cancel</button>'
+      +         '<button class="btn primary" data-act="rm-save">Save</button>'
+      +       '</div>'
+      +     '</div>'
+      +   '</div>'
+      + '</div>';
+    modalRoot.innerHTML = html;
+    modalRoot.querySelector('[data-act="rm-save"]').addEventListener('click', () => {
+      const text = modalRoot.querySelector('#rm-text').value;
+      const dueDate = modalRoot.querySelector('#rm-date').value;
+      const priceRaw = modalRoot.querySelector('#rm-price').value;
+      const url = modalRoot.querySelector('#rm-url').value;
+      update(s => {
+        s.reminders = s.reminders.map(x => x.id === id ? {
+          ...x, text,
+          dueDate: dueDate || undefined,
+          price: priceRaw === '' ? undefined : parseFloat(priceRaw),
+          url: url || undefined,
+        } : x);
+      });
+      closeModal();
+    });
+    modalRoot.querySelector('[data-act="rm-delete"]').addEventListener('click', () => {
+      update(s => { s.reminders = s.reminders.filter(x => x.id !== id); });
+      closeModal();
+    });
+  }
+
+  function openCalendarModal() {
+    const cur = state.calendarSrc || '';
+    const curKey = state.calendarApiKey || '';
+    const curOAuth = state.calendarOAuthClientId || '';
+    modalRoot.innerHTML = ''
+      + '<div class="popover-backdrop">'
+      +   '<div class="popover" onclick="event.stopPropagation()">'
+      +     '<h3>Connect calendar</h3>'
+      +     '<label>Calendar source</label>'
+      +     '<input type="text" id="cal-src" value="' + esc(cur) + '" placeholder="you@gmail.com or full embed URL" autofocus/>'
+      +     '<p style="font-size:11px;color:var(--ink-soft);margin:8px 0 0;line-height:1.55;font-family:var(--font-serif-n)">'
+      +       'Public Google Calendar email or embed URL.'
+      +     '</p>'
+      +     '<label style="margin-top:18px">Google API key <span style="text-transform:none;letter-spacing:0;color:var(--ink-faint)">(reads · live events)</span></label>'
+      +     '<input type="text" id="cal-apikey" value="' + esc(curKey) + '" placeholder="AIza…"/>'
+      +     '<p style="font-size:11px;color:var(--ink-soft);margin:8px 0 0;line-height:1.55;font-family:var(--font-serif-n)">'
+      +       'Powers reads. Cloud Console &rarr; Credentials &rarr; Create API key &rarr; restrict to Calendar API + your domain.'
+      +     '</p>'
+      +     '<label style="margin-top:18px">OAuth Client ID <span style="text-transform:none;letter-spacing:0;color:var(--ink-faint)">(writes · only used by fullcal.js tab)</span></label>'
+      +     '<input type="text" id="cal-oauth" value="' + esc(curOAuth) + '" placeholder="…apps.googleusercontent.com"/>'
+      +     '<p style="font-size:11px;color:var(--ink-soft);margin:8px 0 0;line-height:1.55;font-family:var(--font-serif-n)">'
+      +       'Cloud Console &rarr; Credentials &rarr; Create OAuth Client ID &rarr; Web application &rarr; add your domain to Authorized JavaScript origins. Configure OAuth consent screen first if you haven&rsquo;t.'
+      +     '</p>'
+      +     '<div class="actions">'
+      +       (cur ? '<button class="btn danger" data-act="cal-disconnect">Disconnect</button>' : '<span></span>')
+      +       '<div class="right">'
+      +         '<button class="btn" data-act="modal-close">Cancel</button>'
+      +         '<button class="btn primary" data-act="cal-save">Save</button>'
+      +       '</div>'
+      +     '</div>'
+      +   '</div>'
+      + '</div>';
+    modalRoot.querySelector('[data-act="cal-save"]').addEventListener('click', () => {
+      const v = (modalRoot.querySelector('#cal-src').value || '').trim();
+      const k = (modalRoot.querySelector('#cal-apikey').value || '').trim();
+      const o = (modalRoot.querySelector('#cal-oauth').value || '').trim();
+      /* Clear the fetch cache BEFORE update so the render triggered by
+         update sees an empty set and re-fetches with the new key.
+         (Clearing after was a real bug — second saves silently no-op'd.) */
+      fetchedWeeks.clear();
+      if (state.calendarOAuthClientId !== o) signOutGoogle();
+      update(s => {
+        s.calendarSrc = v || undefined;
+        s.calendarApiKey = k || undefined;
+        s.calendarOAuthClientId = o || undefined;
+      });
+      if (fcInstance) fcInstance.refetchEvents();
+      closeModal();
+    });
+    const dis = modalRoot.querySelector('[data-act="cal-disconnect"]');
+    if (dis) dis.addEventListener('click', () => {
+      fetchedWeeks.clear();
+      signOutGoogle();
+      update(s => {
+        s.calendarSrc = undefined;
+        s.calendarApiKey = undefined;
+        s.calendarOAuthClientId = undefined;
+      });
+      closeModal();
+    });
+    ['#cal-src','#cal-apikey','#cal-oauth'].forEach(sel => {
+      const inp = modalRoot.querySelector(sel);
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); modalRoot.querySelector('[data-act="cal-save"]').click(); }
+      });
+    });
+  }
+
+  function openHabitModal(id) {
+    const isNew = id === '__new__';
+    const h = isNew ? null : state.habits.find(x => x.id === id);
+    let type = h ? h.schedule.type : 'days';
+    let days = h && h.schedule.days ? h.schedule.days.slice() : [0,1,2,3,4];
+    let n = h && h.schedule.n != null ? h.schedule.n : 3;
+    const name = h ? h.name : '';
+
+    function dowButtons() {
+      return DOW_SHORT.map((d, i) =>
+        '<button class="' + (days.includes(i) ? 'on' : '') + '" data-day="' + i + '">' + d.slice(0,2) + '</button>'
+      ).join('');
+    }
+    function bodyHTML() {
+      let bh = '';
+      bh += '<h3>' + (h ? 'Edit habit' : 'New habit') + '</h3>';
+      bh += '<label>Name</label>';
+      bh += '<input type="text" id="ht-name" autofocus value="' + esc(name) + '" placeholder="e.g. Anki reviews"/>';
+      bh += '<label>Schedule</label>';
+      bh += '<div class="seg" style="margin-bottom:6px">';
+      bh += '<button class="' + (type === 'days' ? 'on' : '') + '" data-seg="days">Specific days</button>';
+      bh += '<button class="' + (type === 'count' ? 'on' : '') + '" data-seg="count">X times / week</button>';
+      bh += '</div>';
+      if (type === 'days') {
+        bh += '<div class="dow-pick" style="margin-top:8px">' + dowButtons() + '</div>';
+      } else {
+        bh += '<div style="display:flex;align-items:baseline;gap:8px">';
+        bh += '<input type="number" min="1" max="7" id="ht-n" value="' + n + '" style="width:70px"/>';
+        bh += '<span class="muted">times per week (any day)</span>';
+        bh += '</div>';
+      }
+      bh += '<div class="actions">';
+      bh += h ? '<button class="btn danger" data-act="ht-delete">Delete</button>' : '<span></span>';
+      bh += '<div class="right">';
+      bh += '<button class="btn" data-act="modal-close">Cancel</button>';
+      bh += '<button class="btn primary" data-act="ht-save">Save</button>';
+      bh += '</div></div>';
+      return bh;
+    }
+    function mountPopover() {
+      modalRoot.innerHTML = '<div class="popover-backdrop"><div class="popover" onclick="event.stopPropagation()" id="ht-body">' + bodyHTML() + '</div></div>';
+      bindPopover();
+    }
+    function bindPopover() {
+      modalRoot.querySelectorAll('[data-seg]').forEach(b =>
+        b.addEventListener('click', () => {
+          type = b.getAttribute('data-seg');
+          document.getElementById('ht-body').innerHTML = bodyHTML();
+          bindPopover();
+        })
+      );
+      modalRoot.querySelectorAll('[data-day]').forEach(b =>
+        b.addEventListener('click', () => {
+          const d = +b.getAttribute('data-day');
+          days = days.includes(d) ? days.filter(x => x !== d) : days.concat(d).sort();
+          b.classList.toggle('on');
+        })
+      );
+      const save = modalRoot.querySelector('[data-act="ht-save"]');
+      if (save) save.addEventListener('click', () => {
+        const newName = (modalRoot.querySelector('#ht-name').value || '').trim();
+        if (!newName) return;
+        if (type === 'count') {
+          const ni = modalRoot.querySelector('#ht-n');
+          n = Math.max(1, Math.min(7, parseInt(ni.value, 10) || 1));
+        }
+        const schedule = type === 'days' ? { type:'days', days: days.slice() } : { type:'count', n };
+        update(s => {
+          if (isNew) {
+            s.habits = s.habits.concat({ id: uid(), order: s.habits.length, name: newName, schedule });
+          } else {
+            s.habits = s.habits.map(x => x.id === id ? { ...x, name: newName, schedule } : x);
+          }
+        });
+        closeModal();
+      });
+      const del = modalRoot.querySelector('[data-act="ht-delete"]');
+      if (del) del.addEventListener('click', () => {
+        if (confirm('Delete this habit?')) {
+          update(s => { s.habits = s.habits.filter(x => x.id !== id); });
+          closeModal();
+        }
+      });
+    }
+    mountPopover();
+  }
+
+  /* ─── event delegation ─── */
+  const stage = document.getElementById('gtd-stage');
+
+  /* clicks */
+  stage.addEventListener('click', (e) => {
+    /* swallow clicks inside the modal — they're handled there */
+    if (e.target.closest('#gtd-modal-root')) return;
+
+    const act = e.target.closest('[data-act]');
+    if (act) {
+      const a = act.getAttribute('data-act');
+      const id = act.getAttribute('data-id');
+      const dow = act.getAttribute('data-dow');
+
+      if (a === 'week-prev')  { weekStart = addWeeks(weekStart, -1); render(); return; }
+      if (a === 'week-next')  { weekStart = addWeeks(weekStart,  1); render(); return; }
+      if (a === 'week-today') { weekStart = mondayOf(new Date());     render(); return; }
+
+      if (a === 'cycle') {
+        update(s => {
+          const wk = s.habitChecks[weekKey] || {};
+          const row = wk[id] || {};
+          const nxt = nextState(row[dow] || 'none');
+          if (nxt === 'none') delete row[+dow]; else row[+dow] = nxt;
+          wk[id] = row;
+          s.habitChecks = { ...s.habitChecks, [weekKey]: wk };
+        });
+        return;
+      }
+      if (a === 'del-note')        { update(s => { s.notes[weekKey] = (s.notes[weekKey]||[]).filter(n => n.id !== id); }); return; }
+      if (a === 'del-reminder')    { update(s => { s.reminders = s.reminders.filter(r => r.id !== id); }); return; }
+      if (a === 'del-bucket')      { update(s => { s.bucket = s.bucket.filter(b => b.id !== id); }); return; }
+      if (a === 'toggle-bucket')   { update(s => { s.bucket = s.bucket.map(b => b.id === id ? { ...b, done: !b.done } : b); }); return; }
+      if (a === 'edit-reminder')   { openReminderModal(id); return; }
+      if (a === 'edit-habit')      { openHabitModal(id); return; }
+      if (a === 'new-habit')       { openHabitModal('__new__'); return; }
+      if (a === 'del-habit') {
+        const habit = state.habits.find(h => h.id === id);
+        if (habit && confirm('Delete habit "' + habit.name + '"?')) {
+          update(s => { s.habits = s.habits.filter(h => h.id !== id); });
+        }
+        return;
+      }
+      if (a === 'view-notebook') { update(s => { s.view = 'notebook'; }); return; }
+      if (a === 'view-calendar') { update(s => { s.view = 'calendar'; }); return; }
+      if (a === 'view-fullcal')  { update(s => { s.view = 'fullcal'; });  return; }
+      if (a === 'fc-signin')     { signInGoogle(); return; }
+      if (a === 'fc-signout')    { signOutGoogle(); return; }
+      if (a === 'connect-cal')   { openCalendarModal(); return; }
+      if (a === 'cal-disconnect') {
+        if (confirm('Disconnect this calendar?')) {
+          fetchedWeeks.clear();
+          update(s => {
+            s.calendarSrc = undefined;
+            s.calendarApiKey = undefined;
+          });
+        }
+        return;
+      }
+      if (a === 'del-day-event') {
+        update(s => {
+          const wk = s.days[weekKey] || {};
+          wk[dow] = (wk[dow] || []).filter(e2 => e2.id !== id);
+          s.days = { ...s.days, [weekKey]: wk };
+        });
+        return;
+      }
+    }
+
+    /* bucket tabs */
+    const tab = e.target.closest('[data-tab]');
+    if (tab) {
+      bucketTab = tab.getAttribute('data-tab');
+      render();
+      return;
+    }
+
+    /* add affordances — turn the row into an editable span */
+    const add = e.target.closest('[data-add]');
+    if (add) {
+      const kind = add.getAttribute('data-add');
+      const dow = add.getAttribute('data-dow');
+      makeAddInput(add, kind, dow);
+      return;
+    }
+  });
+
+  /* ─── add-row → live input ─── */
+  function makeAddInput(addEl, kind, dow) {
+    /* replace the add affordance with a temporary editable. On commit
+       the value is added to state and a fresh render restores the
+       affordance for the next entry. */
+    const isDay = kind === 'day-event';
+    const tmp = document.createElement(isDay ? 'span' : 'div');
+    tmp.className = isDay ? 'event manual' : 'entry';
+    tmp.style.minWidth = isDay ? '60px' : '';
+    tmp.contentEditable = 'true';
+    if (!isDay) {
+      tmp.style.paddingLeft = '24px';
+    }
+    addEl.replaceWith(tmp);
+    tmp.focus();
+    function commit() {
+      const v = tmp.textContent.trim();
+      tmp.textContent = '';
+      if (!v) { render(); return; }
+      update(s => {
+        if (kind === 'note') {
+          const cur = s.notes[weekKey] || [];
+          s.notes = { ...s.notes, [weekKey]: cur.concat({ id: uid(), text: v }) };
+        } else if (kind === 'reminder') {
+          s.reminders = s.reminders.concat({ id: uid(), text: v });
+        } else if (kind === 'bucket') {
+          const cat = bucketTab === 'All' ? (s.bucketTabs[1] || 'Groceries') : bucketTab;
+          s.bucket = s.bucket.concat({ id: uid(), text: v, cat, done: false });
+        } else if (kind === 'day-event') {
+          const wk = s.days[weekKey] || {};
+          const arr = (wk[dow] || []).concat({ id: uid(), text: v, source: 'manual' });
+          wk[dow] = arr;
+          s.days = { ...s.days, [weekKey]: wk };
+        }
+      });
+    }
+    tmp.addEventListener('blur', commit, { once: true });
+    tmp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); tmp.blur(); }
+      if (e.key === 'Escape') { tmp.removeEventListener('blur', commit); tmp.blur(); render(); }
+    });
+  }
+
+  /* ─── contenteditable blur → save ─── */
+  stage.addEventListener('blur', (e) => {
+    const el = e.target.closest('[data-edit]');
+    if (!el) return;
+    const kind = el.getAttribute('data-edit');
+    const id = el.getAttribute('data-id');
+    const dow = el.getAttribute('data-dow');
+    const v = (el.textContent || '').trim();
+
+    if (kind === 'week-title') {
+      if (v !== (state.weekTitles[weekKey] || '')) {
+        update(s => { s.weekTitles = { ...s.weekTitles, [weekKey]: v }; });
+      }
+      return;
+    }
+    if (kind === 'note') {
+      const cur = (state.notes[weekKey] || []).find(n => n.id === el.closest('[data-id]')?.getAttribute('data-id'));
+      const entryId = el.closest('[data-entry="note"]')?.getAttribute('data-id');
+      if (!entryId) return;
+      const prev = (state.notes[weekKey] || []).find(n => n.id === entryId);
+      if (!prev) return;
+      if (v === prev.text) return;
+      if (!v) update(s => { s.notes[weekKey] = (s.notes[weekKey]||[]).filter(n => n.id !== entryId); });
+      else    update(s => { s.notes[weekKey] = (s.notes[weekKey]||[]).map(n => n.id === entryId ? { ...n, text: v } : n); });
+      return;
+    }
+    if (kind === 'reminder') {
+      const entryId = el.closest('[data-entry="reminder"]')?.getAttribute('data-id');
+      if (!entryId) return;
+      const prev = state.reminders.find(r => r.id === entryId);
+      if (!prev || v === prev.text) return;
+      if (!v) update(s => { s.reminders = s.reminders.filter(r => r.id !== entryId); });
+      else    update(s => { s.reminders = s.reminders.map(r => r.id === entryId ? { ...r, text: v } : r); });
+      return;
+    }
+    if (kind === 'bucket') {
+      const entryId = el.closest('[data-entry="bucket"]')?.getAttribute('data-id');
+      if (!entryId) return;
+      const prev = state.bucket.find(b => b.id === entryId);
+      if (!prev || v === prev.text) return;
+      if (!v) update(s => { s.bucket = s.bucket.filter(b => b.id !== entryId); });
+      else    update(s => { s.bucket = s.bucket.map(b => b.id === entryId ? { ...b, text: v } : b); });
+      return;
+    }
+    if (kind === 'habit-name') {
+      const prev = state.habits.find(h => h.id === id);
+      if (!prev || !v || v === prev.name) return;
+      update(s => { s.habits = s.habits.map(h => h.id === id ? { ...h, name: v } : h); });
+      return;
+    }
+    if (kind === 'day-event') {
+      const prev = ((state.days[weekKey] || {})[dow] || []).find(x => x.id === id);
+      if (!prev || v === prev.text) return;
+      if (!v) update(s => {
+        const wk = s.days[weekKey] || {};
+        wk[dow] = (wk[dow] || []).filter(e2 => e2.id !== id);
+        s.days = { ...s.days, [weekKey]: wk };
+      });
+      else update(s => {
+        const wk = s.days[weekKey] || {};
+        wk[dow] = (wk[dow] || []).map(e2 => e2.id === id ? { ...e2, text: v } : e2);
+        s.days = { ...s.days, [weekKey]: wk };
+      });
+    }
+  }, true);
+
+  /* Typing into an empty editable must drop the `empty` class — otherwise
+     the ::before placeholder pseudo-element continues to render next to
+     the user's text until the next blur/render cycle. */
+  stage.addEventListener('input', (e) => {
+    const el = e.target;
+    if (el.classList && el.classList.contains('empty')) el.classList.remove('empty');
+  });
+
+  /* Enter on contenteditable commits via blur; Escape reverts */
+  stage.addEventListener('keydown', (e) => {
+    const el = e.target.closest('[contenteditable="true"][data-edit]');
+    if (!el) return;
+    if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      render();
+    }
+  });
+
+  /* ─── stage scaling ─── */
+  function fitStage() {
+    const wrap = document.getElementById('spread-wrap');
+    const W = stage.clientWidth, H = stage.clientHeight;
+    const s = Math.min(W / 1680, H / 1080);
+    wrap.style.transform = 'translate(' + (-1680 * s / 2) + 'px, ' + (-1080 * s / 2) + 'px) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitStage);
+
+  /* ─── boot ─── */
+  render();
+  fitStage();
+})();
+</script>
+
+</body>
+</html>
