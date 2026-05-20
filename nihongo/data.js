@@ -8,7 +8,7 @@
 const HOME_BOOKS = [
   {
     id: 'bathroom',
-    titleJa: 'おふろば',
+    titleJa: 'よくしつ',
     titleEn: 'Bathroom',
     glyph: '浴',
     primaryLevel: 'N5',
