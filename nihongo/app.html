@@ -541,9 +541,9 @@
   .dict-list { display: flex; flex-direction: column; gap: 0; }
   .dict-row {
     display: grid;
-    grid-template-columns: 72px 1fr auto auto;
-    gap: 18px;
-    padding: 14px 8px;
+    grid-template-columns: 130px 1fr auto auto;
+    column-gap: 32px;
+    padding: 16px 8px;
     border-bottom: 1px solid var(--paper-edge);
     align-items: center;
     cursor: pointer;
@@ -551,17 +551,24 @@
   }
   .dict-row:hover { background: rgba(180,138,74,0.08); }
   .dict-row .kanji-cell {
-    font-family: var(--serif-jp); font-weight: 600; font-size: 30px;
-    color: var(--ink); text-align: center; line-height: 1;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; line-height: 1.1;
+    font-family: var(--serif-jp);
   }
-  .dict-row .word-cell .ja {
-    font-family: var(--serif-jp); font-size: 18px; color: var(--ink); margin-bottom: 2px;
+  .dict-row .kanji-cell .furigana {
+    font-size: 22px;
+    color: var(--ink-2);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
   }
-  .dict-row .word-cell .kana {
-    font-family: var(--serif-jp); font-size: 12px; color: var(--ink-3);
+  .dict-row .kanji-cell .kanji {
+    font-weight: 600; font-size: 32px;
+    color: var(--ink); line-height: 1;
   }
-  .dict-row .word-cell .en {
-    font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-2);
+  .dict-row .en {
+    font-family: var(--serif); font-style: italic;
+    font-size: 16px; color: var(--ink);
+    padding-left: 96px;
   }
   .dict-row .meta {
     font-family: var(--serif); font-size: 11px; color: var(--ink-3); text-align: right;
@@ -570,6 +577,13 @@
     background: var(--gold-soft); color: var(--gold-dark);
     padding: 2px 6px; border-radius: 4px;
     font-weight: 600; letter-spacing: 0.04em;
+  }
+  @media (max-width: 640px) {
+    .dict-row { grid-template-columns: 90px 1fr auto; column-gap: 16px; }
+    .dict-row .kanji-cell .furigana { font-size: 16px; }
+    .dict-row .kanji-cell .kanji { font-size: 26px; }
+    .dict-row .en { padding-left: 0; font-size: 14px; }
+    .dict-row .meta:last-child { display: none; }
   }
   .empty-state {
     padding: 60px 20px; text-align: center;
@@ -1783,11 +1797,11 @@ function renderDictionary(container) {
       <div class="dict-list">
         ${entries.map(e => `
           <div class="dict-row">
-            <div class="kanji-cell">${escHTML(e.kanji)}</div>
-            <div class="word-cell">
-              <div class="kana">${escHTML(e.kana)}</div>
-              <div class="en">${escHTML(e.en)}</div>
+            <div class="kanji-cell">
+              <div class="furigana">${escHTML(e.kana)}</div>
+              <div class="kanji">${escHTML(e.kanji)}</div>
             </div>
+            <div class="en">${escHTML(e.en)}</div>
             <div class="meta"><span class="level">${escHTML(e.level)}</span></div>
             <div class="meta" style="min-width:80px">${escHTML((e.tags||[]).slice(0,2).join(' · '))}</div>
           </div>`).join('')}
