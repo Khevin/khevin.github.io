@@ -294,13 +294,12 @@
 
   .sheet-image {
     width: 100%;
-    aspect-ratio: 4/5;
-    max-height: 580px;
     margin: 0 auto 24px;
     border-radius: 4px;
     border: 1px solid var(--paper-edge);
     background: var(--paper-2);
     position: relative;
+    overflow: hidden;
   }
   image-slot {
     border-radius: 4px;
@@ -447,7 +446,7 @@
     transition: transform .35s cubic-bezier(.4,.0,.2,1);
   }
   .flash-image {
-    width: 100%; aspect-ratio: 1;
+    width: 100%;
     margin-bottom: 24px;
     border-radius: 4px;
     overflow: hidden;
@@ -1554,9 +1553,8 @@ function cheatsheetHTML(book, page) {
       <div class="sheet-image">
         <image-slot
           id="vocab-${book.id}-${page.imageSlotId}"
-          shape="rounded" radius="4"
-          placeholder="Drop an illustration"
-          style="width:100%;height:100%"></image-slot>
+          shape="rounded" radius="4" fit="natural"
+          placeholder="Drop an illustration"></image-slot>
       </div>
       <div class="vocab-grid">${items}</div>
     </div>`;
@@ -1669,9 +1667,8 @@ function renderFlashcards(container) {
       <div class="flash-stage">
         <div class="flash-card">
           <div class="flash-image">
-            <image-slot id="flash-${card.id}" shape="rounded" radius="4"
-              placeholder="Drop image for &quot;${escAttr(card.en)}&quot;"
-              style="width:100%;height:100%"></image-slot>
+            <image-slot id="flash-${card.id}" shape="rounded" radius="4" fit="natural"
+              placeholder="Drop image for &quot;${escAttr(card.en)}&quot;"></image-slot>
           </div>
           <div class="flash-kanji">${escHTML(card.kanji)}</div>
           <div class="flash-reading">

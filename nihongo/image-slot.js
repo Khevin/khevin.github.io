@@ -42,26 +42,107 @@
  */
 
 (() => {
-  // 2× a ~600px slot in a 1920-wide deck — retina-sharp without making the
-  // sidecar enormous. A 1200px WebP at q=0.85 is ~150-300KB.
-  const MAX_DIM = 1200;
+  // The display target for our slots is ~400px wide (cheatsheet illustrations,
+  // flashcard images). 2× for retina = 800px cap on the longest side. WebP at
+  // q=0.85 keeps these at ~30-60KB for photos, ~10-20KB for kanji on plain
+  // backgrounds — fine for thousands of slots in IndexedDB.
+  const MAX_DIM = 800;
   // Raster formats only. SVG is excluded (can carry script; createImageBitmap
   // on SVG blobs is inconsistent). GIF is excluded because the canvas
   // re-encode keeps only the first frame, so an animated GIF would silently
   // go still — better to reject than surprise.
   const ACCEPT = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
 
-  // ── Shared store (localStorage) ─────────────────────────────────────────
+  // ── Shared store (IndexedDB) ────────────────────────────────────────────
+  // localStorage caps at ~5MB total, which is ~50 images of average size —
+  // not enough for a 2500-image curriculum. IndexedDB has no such cap (Chrome
+  // typically allows up to 60% of free disk), so we use it as the source of
+  // truth. Reads are async on first load; the element re-renders via the
+  // subscription callback once data lands.
+  const DB_NAME = 'nihongo';
+  const STORE = 'image-slots';
+  const LS_KEY = 'jp:image-slots'; // legacy localStorage key (migrated on first load)
+
   const subs = new Set();
   let slots = {};
+  let loaded = false;
 
-  function load() {
-    try { const raw = localStorage.getItem('jp:image-slots'); if (raw) slots = JSON.parse(raw); } catch {}
-    subs.forEach((fn) => fn());
+  let dbPromise = null;
+  function openDB() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      if (!window.indexedDB) { reject(new Error('no indexedDB')); return; }
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    return dbPromise;
   }
 
-  function save() {
-    try { localStorage.setItem('jp:image-slots', JSON.stringify(slots)); } catch {}
+  function dbReadAll() {
+    return openDB().then(db => new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readonly');
+      const out = {};
+      const cursorReq = tx.objectStore(STORE).openCursor();
+      cursorReq.onsuccess = (e) => {
+        const cur = e.target.result;
+        if (cur) { out[cur.key] = cur.value; cur.continue(); }
+        else resolve(out);
+      };
+      tx.onerror = () => reject(tx.error);
+    }));
+  }
+
+  function dbPut(id, val) {
+    return openDB().then(db => new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).put(val, id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    }));
+  }
+
+  function dbDelete(id) {
+    return openDB().then(db => new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    }));
+  }
+
+  // One-time migration: copy any existing localStorage data into IndexedDB
+  // and clear the LS key. After this, all writes go through IndexedDB only.
+  async function migrateLegacy() {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      await Promise.all(Object.entries(parsed).map(([k, v]) => dbPut(k, v)));
+      localStorage.removeItem(LS_KEY);
+    } catch (err) {
+      console.warn('image-slot: legacy localStorage migration failed', err);
+    }
+  }
+
+  let loadP = null;
+  function load() {
+    if (loadP) return loadP;
+    loadP = (async () => {
+      try {
+        await migrateLegacy();
+        slots = await dbReadAll();
+      } catch {
+        slots = {};
+      }
+      loaded = true;
+      subs.forEach((fn) => fn());
+    })();
+    return loadP;
   }
 
   const S_MAX = 5;
@@ -76,7 +157,10 @@
   function setSlot(id, val) {
     if (!id) return;
     if (val) slots[id] = val; else delete slots[id];
-    save();
+    // Persist in the background. A failure here just means the change won't
+    // survive a reload — the in-memory state is already updated.
+    if (val) dbPut(id, val).catch(err => console.warn('image-slot: dbPut failed', err));
+    else      dbDelete(id).catch(err => console.warn('image-slot: dbDelete failed', err));
     subs.forEach((fn) => fn());
   }
 
@@ -158,7 +242,19 @@
     '  backdrop-filter:blur(6px)}' +
     '.ctl button:hover{background:rgba(0,0,0,.8)}' +
     '.err{position:absolute;left:8px;bottom:8px;right:8px;color:#b3261e;font-size:11px;' +
-    '  background:rgba(255,255,255,.85);padding:4px 6px;border-radius:5px;pointer-events:none}';
+    '  background:rgba(255,255,255,.85);padding:4px 6px;border-radius:5px;pointer-events:none}' +
+    // ── fit="natural" ─────────────────────────────────────────────────────
+    // The slot grows to match the image's natural aspect ratio. Width fills
+    // the container (the host's parent must set width, e.g. `width:100%`);
+    // height is dictated by the image. When empty, the frame keeps a sane
+    // minimum so the drop zone stays visible.
+    ':host([fit="natural"]){display:block;width:100%;height:auto}' +
+    ':host([fit="natural"]) .frame{position:relative;inset:auto;width:100%;height:auto;min-height:200px}' +
+    ':host([fit="natural"]) .frame img{position:static;width:100%;height:auto;max-width:100%;' +
+    '  transform:none;left:auto;top:auto;display:block}' +
+    ':host([fit="natural"]) .empty{position:absolute;inset:0}' +
+    ':host([fit="natural"][data-filled]) .empty{display:none}' +
+    ':host([fit="natural"]) .spill{display:none !important}';
 
   const icon =
     '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
@@ -448,7 +544,7 @@
     }
 
     // Reframing (pan/resize) is only meaningful for fit=cover — contain/fill
-    // keep the old object-fit path and double-click is a no-op.
+    // /natural keep the old object-fit path and double-click is a no-op.
     _reframes() {
       return this.hasAttribute('data-filled') &&
         (this.getAttribute('fit') || 'cover') === 'cover';
@@ -479,6 +575,17 @@
     _applyView() {
       const g = this._geom();
       const fit = this.getAttribute('fit') || 'cover';
+      if (fit === 'natural') {
+        // CSS handles natural layout entirely. Clear any cover-mode inline
+        // styles from a previous render so the stylesheet wins.
+        this._img.style.width = '';
+        this._img.style.height = '';
+        this._img.style.left = '';
+        this._img.style.top = '';
+        this._img.style.objectFit = '';
+        this._img.style.objectPosition = '';
+        return;
+      }
       if (fit !== 'cover' || !g) {
         // Non-cover, or dimensions not known yet (before img load).
         this._img.style.width = '100%';
