@@ -16,7 +16,7 @@ const HOME_BOOKS = [
       {
         id: 'sheet-1',
         type: 'cheatsheet',
-        title: 'おふろば と せんめんしつ の ことば',
+        title: 'よくしつ の ことば',
         subtitle: 'Bathroom & washroom — words for the space',
         // image-slot id; user drops the watercolor cheatsheet here
         imageSlotId: 'sheet-bathroom-1',
