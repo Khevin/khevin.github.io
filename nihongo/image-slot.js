@@ -622,6 +622,11 @@
       else { this._local = v; }
     }
 
+    // Committed assets live alongside the app under ./images/<id>.<ext>.
+    // We try each extension in order; first to load wins. IndexedDB still
+    // takes precedence (a local drop overrides the shipped file).
+    static get _imageExts() { return ['webp', 'png', 'jpg', 'jpeg']; }
+
     _render() {
       // Shape / mask. Presets use border-radius so the dashed ring can
       // follow the rounded outline; clip-path is only applied for an
@@ -645,15 +650,22 @@
       this.toggleAttribute('data-editable', editable);
       this._sub.style.display = editable ? '' : 'none';
 
-      // Content. The sidecar is also writable by the agent's write_file
-      // tool, so its value isn't guaranteed canvas-originated — only accept
-      // data:image/ URLs from it. The `src` attribute is author-controlled
-      // (Claude wrote it into the HTML) so it passes through unchanged.
+      // Resolve content URL in priority order:
+      //   1. IndexedDB store (a local drop — most recent edit wins)
+      //   2. ./images/<id>.<ext> on the server (the shipped/committed asset)
+      //   3. The author-provided `src` attribute
+      // Only `data:image/` URLs are accepted from the store (a tampered or
+      // legacy entry shouldn't load arbitrary URLs).
       let stored = this.id ? getSlot(this.id) : this._local;
       if (stored && stored.u && !/^data:image\//i.test(stored.u)) stored = null;
       const srcAttr = this.getAttribute('src') || '';
       this._userUrl = (stored && stored.u) || null;
-      const url = this._userUrl || srcAttr;
+      // The shipped-asset path. We attempt each known extension on error.
+      const shippedBase = (this.id && !this._userUrl && !srcAttr)
+        ? `./images/${encodeURIComponent(this.id)}.` : null;
+      let url = this._userUrl;
+      if (!url && shippedBase) url = shippedBase + ImageSlot._imageExts[0];
+      if (!url && srcAttr) url = srcAttr;
       // Don't clobber an in-flight reframe with a store-triggered re-render.
       if (!this.hasAttribute('data-reframe')) {
         this._view = {
@@ -669,6 +681,28 @@
         if (this._img.getAttribute('src') !== url) {
           this._img.src = url;
           this._ghost.src = url;
+        }
+        // For the shipped-asset path, fall through extensions on 404. When
+        // all extensions miss, drop to the empty state.
+        if (shippedBase) {
+          let attempt = 0;
+          this._img.onerror = () => {
+            attempt++;
+            if (attempt < ImageSlot._imageExts.length) {
+              const next = shippedBase + ImageSlot._imageExts[attempt];
+              this._img.src = next;
+              this._ghost.src = next;
+            } else {
+              this._img.onerror = null;
+              this._img.style.display = 'none';
+              this._img.removeAttribute('src');
+              this._ghost.removeAttribute('src');
+              this._empty.style.display = 'flex';
+              this.removeAttribute('data-filled');
+            }
+          };
+        } else {
+          this._img.onerror = null;
         }
         this._img.style.display = 'block';
         this._empty.style.display = 'none';
