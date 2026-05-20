@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>日本語 · khevin/mituti</title>
+<meta name="description" content="A personal Japanese study space — vocabulary books, flashcards, and a dictionary built to learn as I go." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png" />
+<link rel="shortcut icon" href="./assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="./assets/favicon/site.webmanifest" />
+<style>
+  /* ── JP accent layer ─────────────────────────────────────────────────
+     Supplements styles.css. Warm paper palette mirroring the study app.   */
+  :root {
+    --jp-paper:     #f6ecd5;
+    --jp-paper-2:   #fbf5e6;
+    --jp-edge:      #ead9b2;
+    --jp-gold:      #b48a4a;
+    --jp-gold-dark: #8d6630;
+    --jp-gold-soft: #d9c191;
+    --jp-ink:       #3a2818;
+    --jp-ink-2:     #6b5740;
+    --jp-ink-3:     #9a8869;
+    --serif-jp:     'Shippori Mincho', 'Noto Serif JP', 'Hiragino Mincho Pro', serif;
+    --sans-jp:      'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+  }
+
+  /* ── page hero override ──────────────────────────────────────────── */
+  .jp-hero {
+    background: var(--jp-paper);
+    border-bottom: 1px solid var(--jp-edge);
+    position: relative;
+    overflow: hidden;
+  }
+  .jp-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 80% 50%, rgba(180,138,74,0.07), transparent 55%),
+      radial-gradient(circle at 20% 80%, rgba(122,143,110,0.05), transparent 50%);
+    pointer-events: none;
+  }
+
+  .jp-eyebrow {
+    font-family: var(--serif-jp);
+    font-size: 13px;
+    color: var(--jp-ink-3);
+    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+    display: block;
+  }
+
+  /* decorative kanji — large, faded, right side */
+  .jp-deco {
+    font-family: var(--serif-jp);
+    font-weight: 800;
+    font-size: clamp(100px, 18vw, 180px);
+    color: var(--jp-gold-soft);
+    line-height: 1;
+    user-select: none;
+    opacity: 0.55;
+    letter-spacing: -0.02em;
+  }
+
+  /* ── enter CTA ───────────────────────────────────────────────────── */
+  .jp-enter {
+    margin: 40px 0 56px;
+  }
+  .jp-enter-link {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 24px;
+    background: var(--jp-paper);
+    border: 1px solid var(--jp-edge);
+    border-left: 4px solid var(--jp-gold);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--jp-ink);
+    max-width: 560px;
+    transition: border-color .15s, box-shadow .15s, transform .15s;
+    box-shadow: 0 2px 8px rgba(100,72,30,0.07);
+  }
+  .jp-enter-link:hover {
+    border-color: var(--jp-gold);
+    border-left-color: var(--jp-gold-dark);
+    box-shadow: 0 4px 18px rgba(100,72,30,0.13);
+    transform: translateY(-1px);
+  }
+  .jp-enter-mark {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--jp-gold-dark);
+    background: var(--jp-paper-2);
+    border: 1px solid var(--jp-edge);
+    border-radius: 6px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .jp-enter-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+  }
+  .jp-enter-label {
+    font-family: var(--serif-jp);
+    font-size: 17px;
+    color: var(--jp-ink);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .jp-enter-sub {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--jp-ink-3);
+  }
+  .jp-enter-arrow {
+    font-size: 20px;
+    color: var(--jp-gold);
+    flex: 0 0 auto;
+    transition: transform .15s;
+  }
+  .jp-enter-link:hover .jp-enter-arrow {
+    transform: translateX(3px);
+  }
+
+  /* ── what's inside grid ──────────────────────────────────────────── */
+  .jp-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .jp-sec {
+    background: var(--jp-paper);
+    border: 1px solid var(--jp-edge);
+    border-radius: 8px;
+    padding: 20px 18px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .jp-sec::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--jp-gold-soft);
+    border-radius: 3px 0 0 3px;
+  }
+  .jp-sec-glyph {
+    display: block;
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--jp-gold-dark);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .jp-sec h4 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--jp-ink);
+    margin: 0 0 6px;
+  }
+  .jp-sec p {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--jp-ink-3);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── section label ───────────────────────────────────────────────── */
+  .jp-section-label {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--jp-ink-3);
+    letter-spacing: 0.06em;
+    margin: 0 0 16px;
+    text-transform: lowercase;
+  }
+</style>
+</head>
+<body data-page="nihongo">
+
+<!-- ============= NAV ============= -->
+<nav class="top">
+  <div class="inner">
+    <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="chev" aria-hidden="true">&#9662;</span>
+    </button>
+
+    <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="false" data-href="./design-expert.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
+        </span>
+        <span class="ns-desc">the plugin &mdash; what khevin makes for designers</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="./index.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">&#10003;</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work &mdash; what khevin ships for clients</span>
+      </li>
+    </ul>
+
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-haspopup="menu" aria-controls="nav-primary" aria-expanded="false" aria-label="Open menu">
+      <svg class="nav-toggle__open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7 H20 M4 12 H20 M4 17 H20"/></svg>
+      <svg class="nav-toggle__close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5 L19 19 M5 19 L19 5"/></svg>
+    </button>
+
+    <ul class="primary" id="nav-primary">
+      <li><a href="./index.html#top">home</a></li>
+      <li><a href="./index.html#clients">work</a></li>
+      <li><a href="./process.html">process</a></li>
+      <li><a href="./blog.html">blog</a></li>
+      <li><a href="./books.html">library</a></li>
+      <li><a href="./nihongo.html" aria-current="page" lang="ja">日本語</a></li>
+      <li><a href="./about-me.html">about</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="top">
+
+<!-- ============= HERO ============= -->
+<section class="page-hero jp-hero">
+  <div class="shell">
+    <div class="crumbs">
+      <a href="./index.html">Home</a>
+      <span class="sep">/</span>
+      <span lang="ja" aria-current="page">日本語</span>
+    </div>
+
+    <div class="page-hero-grid">
+      <div class="l">
+        <span class="jp-eyebrow" lang="ja">日本語の勉強</span>
+        <h1>Learning <em>Japanese.</em></h1>
+        <p class="sub">A personal study space built as I go. Vocabulary books tied to hand-drawn cheatsheets, flashcards, a small dictionary. The tools are mine &mdash; the shelf is open.</p>
+      </div>
+      <aside class="page-hero-aside" aria-hidden="true">
+        <span class="jp-deco" aria-hidden="true">語</span>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============= ENTER + SECTIONS ============= -->
+<section class="section">
+  <div class="shell">
+
+    <div class="jp-enter">
+      <a href="./learn jp/app.html" class="jp-enter-link">
+        <span class="jp-enter-mark" lang="ja" aria-hidden="true">学</span>
+        <span class="jp-enter-body">
+          <span class="jp-enter-label">勉強アプリを開く &mdash; Open the study app</span>
+          <span class="jp-enter-sub">Vocabulary &middot; Flashcards &middot; Dictionary &middot; Sentences</span>
+        </span>
+        <span class="jp-enter-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <p class="jp-section-label">what&rsquo;s inside</p>
+
+    <div class="jp-sections">
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">浴</span>
+        <h4>Vocabulary books</h4>
+        <p>Themed word lists &mdash; bathroom, kitchen, transport &mdash; each paired with a watercolor cheatsheet.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">習</span>
+        <h4>Flashcards</h4>
+        <p>Kanji and vocabulary, front and back. Progress bar moves as you go through the deck.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">辞</span>
+        <h4>Dictionary</h4>
+        <p>Searchable word list with readings, meanings, and JLPT level tags.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">文</span>
+        <h4>Sentences</h4>
+        <p>Real sentences grouped by level. Tap any word to look it up without leaving the page.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ============= FOOTER ============= -->
+<footer class="foot">
+  <div class="shell">
+    <div class="colophon">
+      <div class="l">
+        <span>&copy; 2026 khevin mituti</span>
+      </div>
+      <div class="r"><a href="./index.html">&#8629; All work</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="./script.js" defer></script>
+</body>
+</html>
