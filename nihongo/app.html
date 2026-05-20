@@ -1555,7 +1555,10 @@ function renderVocabPage(book, page) {
 }
 
 function cheatsheetHTML(book, page) {
-  const titleHTML = page.title.replace(/(の|と)/g, '<span class="particle">$1</span>');
+  // Only treat の / と as particles when they're standalone tokens — the
+  // `と` inside ことば (kotoba) is part of the word, not a particle.
+  const titleHTML = page.title.replace(/(^|[\s　])(の|と)(?=[\s　]|$)/g,
+    '$1<span class="particle">$2</span>');
   const items = page.items.map(item => `
     <div class="vocab-row" data-kanji="${escAttr(item.kanji)}" data-kana="${escAttr(item.kana)}" data-en="${escAttr(item.en)}">
       <span class="num">${item.num}.</span>
