@@ -898,11 +898,20 @@ function escAttr(s) {
   return String(s).replace(/"/g,'&quot;');
 }
 
+// Particle colors are keyed to grammatical role so the same color travels
+// with the same function across every sentence. に joins で in the green
+// family because both mark place/time — slightly different shades so the
+// two stay distinguishable side-by-side.
 const PARTICLE_COLORS = {
-  'は':'#8a2538','を':'#5a2e8a','が':'#c97a2c',
-  'と':'#2a5b94','の':'#c43a4a','で':'#2e7a3f',
+  'は':'#8a2538', // topic        — wine
+  'を':'#5a2e8a', // direct object — purple
+  'が':'#c97a2c', // subject       — orange
+  'と':'#2a5b94', // with/and      — blue
+  'の':'#c43a4a', // possessive    — red
+  'で':'#2e7a3f', // place of action / means — forest green
+  'に':'#1f7a5e', // destination / time / indirect object — teal green
 };
-const PARTICLE_CHARS = ['は','を','が','と','の','で'];
+const PARTICLE_CHARS = ['は','を','が','と','の','で','に'];
 
 function _isHiragana(c) { return !!c && /[぀-ゟ]/.test(c); }
 
@@ -971,9 +980,28 @@ function wordChunkHTML(text) {
   return `<span class="word-chunk" data-stem="${escAttr(stem)}" title="click to look up · double-click for dictionary"><span class="wc-stem">${escHTML(stem)}</span>${particleSpans}</span>${escHTML(punct)}`;
 }
 
+// Split a Japanese line into clickable chunks. A chunk boundary is either
+// whitespace OR the position right after a punctuation mark — so "前に、手を"
+// becomes ["前に、", "手を"] and the に particle separates cleanly from the
+// 手 that follows it.
+function splitJaChunks(text) {
+  const chunks = [];
+  let cur = '';
+  for (const c of text) {
+    if (/[\s　]/.test(c)) {
+      if (cur) { chunks.push(cur); cur = ''; }
+    } else {
+      cur += c;
+      if (/[、。！？!?,…]/.test(c)) { chunks.push(cur); cur = ''; }
+    }
+  }
+  if (cur) chunks.push(cur);
+  return chunks;
+}
+
 function jaSentenceHTML(text) {
   if (!text) return '';
-  return text.split(/[\s　]+/).filter(Boolean).map(wordChunkHTML).join('');
+  return splitJaChunks(text).map(wordChunkHTML).join('');
 }
 
 // ── Popover ─────────────────────────────────────────────────────────────
@@ -1007,6 +1035,19 @@ function initPopover() {
     e.preventDefault();
     jumpToDictionary(row.dataset.kanji);
   });
+
+  // Usage cards: the whole card is the click target, not its contents.
+  document.getElementById('main').addEventListener('click', e => {
+    const card = e.target.closest('.usage-card[data-kanji]');
+    if (!card) return;
+    openPopover({ kanji: card.dataset.kanji, kana: card.dataset.kana, en: card.dataset.en }, card.getBoundingClientRect());
+  });
+  document.getElementById('main').addEventListener('dblclick', e => {
+    const card = e.target.closest('.usage-card[data-kanji]');
+    if (!card) return;
+    e.preventDefault();
+    jumpToDictionary(card.dataset.kanji);
+  });
 }
 
 function jumpToDictionary(q) {
@@ -1030,9 +1071,14 @@ function openPopover(item, anchorRect) {
       `).join('')}
     </div>` : '';
 
+  // Glyph font scales down with length so a single kanji stays imposing but
+  // a six-character phrase still fits the popover without wrapping.
+  const glyphLen = [...(item.kanji || '')].length;
+  const glyphSize = glyphLen <= 2 ? 52 : glyphLen <= 4 ? 34 : glyphLen <= 6 ? 26 : 22;
+
   pop.innerHTML = `
     <button class="word-pop-close" id="pop-close" aria-label="close">×</button>
-    <div class="word-pop-glyph">${escHTML(item.kanji || '')}</div>
+    <div class="word-pop-glyph" style="font-size:${glyphSize}px;line-height:1.15">${escHTML(item.kanji || '')}</div>
     <div class="word-pop-kana">${escHTML(item.kana || '')}</div>
     <div class="word-pop-en">${escHTML(item.en || '')}</div>
     ${bdHTML}`;
@@ -1286,8 +1332,8 @@ function cheatsheetHTML(book, page) {
 
 function usageHTML(page) {
   const cards = page.items.map(u => `
-    <div class="usage-card">
-      <div class="ja">${jaSentenceHTML(u.ja)}</div>
+    <div class="usage-card" data-kanji="${escAttr(u.ja)}" data-kana="${escAttr(u.kana||'')}" data-en="${escAttr(u.en||'')}">
+      <div class="ja">${colorParticles(u.ja)}</div>
       <div class="kana">${escHTML(u.kana)}</div>
       <div class="en">${escHTML(u.en)}</div>
     </div>`).join('');

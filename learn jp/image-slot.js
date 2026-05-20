@@ -1,17 +1,12 @@
 /**
  * <image-slot> — user-fillable image placeholder.
  *
- * Drop this into a deck, mockup, or page wherever you want the user to
- * supply an image. You control the slot's shape and size; the user fills it
- * by dragging an image file onto it (or clicking to browse). The dropped
- * image persists across reloads via a .image-slots.state.json sidecar —
- * same read-via-fetch / write-via-window.omelette pattern as
- * design_canvas.jsx, so the filled slot shows on share links, downloaded
- * zips, and PPTX export. Outside the omelette runtime the slot is read-only.
- *
- * The host bridge only allows sidecar writes at the project root, so the
- * HTML that uses this component is assumed to live at the project root too
- * (same constraint as design_canvas.jsx).
+ * Drop this into a page wherever you want the user to supply an image. You
+ * control the slot's shape and size; the user fills it by dragging an image
+ * file onto it (or clicking to browse). The dropped image persists across
+ * reloads in localStorage under the `jp:image-slots` key, so the same
+ * browser sees the same images on next visit. The persistence is per-browser
+ * (not per-deploy), so a fresh device starts empty.
  *
  * Attributes:
  *   id           Persistence key. REQUIRED for the drop to survive reload —
