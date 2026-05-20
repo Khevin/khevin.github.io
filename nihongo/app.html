@@ -427,11 +427,28 @@
   /* ─── flashcards ────────────────────────────────────────────────────── */
   .flash-deck {
     display: grid; grid-template-columns: 1fr; gap: 24px;
-    max-width: 480px; margin: 0 auto;
+    max-width: 580px; margin: 0 auto;
   }
   .flash-stage {
+    display: flex; align-items: center; gap: 14px;
     perspective: 1200px;
     position: relative;
+  }
+  .flash-stage > .flash-card { flex: 1; min-width: 0; }
+  .flash-nav {
+    flex: 0 0 auto;
+    background: transparent;
+    border-color: transparent;
+    color: var(--ink-3);
+  }
+  .flash-nav:hover {
+    background: var(--paper-2);
+    color: var(--ink);
+    border-color: rgba(141,102,48,0.25);
+  }
+  @media (max-width: 520px) {
+    .flash-stage { gap: 6px; }
+    .flash-nav { width: 30px; height: 30px; }
   }
   .flash-card {
     background: var(--paper-2);
@@ -1665,6 +1682,9 @@ function renderFlashcards(container) {
 
     <div class="flash-deck">
       <div class="flash-stage">
+        <button class="icon-btn flash-nav" id="flash-prev" title="previous (←)" aria-label="previous card">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
         <div class="flash-card">
           <div class="flash-image">
             <image-slot id="flash-${card.id}" shape="rounded" radius="4" fit="natural"
@@ -1681,18 +1701,15 @@ function renderFlashcards(container) {
             ${APP.flashShowEn ? escHTML(card.en) : '— —'}
           </div>
         </div>
+        <button class="icon-btn flash-nav" id="flash-next" title="next (→)" aria-label="next card">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
       </div>
 
       <div class="flash-controls">
-        <button class="icon-btn" id="flash-prev" title="previous (←)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
         <div class="flash-progress">
           <div style="width:${((APP.flashIdx + 1) / deck.length) * 100}%"></div>
         </div>
-        <button class="icon-btn" id="flash-next" title="next (→)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </button>
       </div>
 
       <div style="text-align:center;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink-3)">
