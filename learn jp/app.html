@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>learn jp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #f6ecd5;
+    --paper-2:      #fbf5e6;
+    --paper-edge:   #ead9b2;
+    --paper-shadow: rgba(100,72,30,0.10);
+
+    --ink:    #3a2818;
+    --ink-2:  #6b5740;
+    --ink-3:  #9a8869;
+    --ink-4:  #c2b294;
+
+    --gold:       #b48a4a;
+    --gold-dark:  #8d6630;
+    --gold-soft:  #d9c191;
+    --sage:       #7a8f6e;
+    --sage-soft:  #b9c4a6;
+    --rose:       #c08a8a;
+
+    --accent:      var(--gold);
+    --accent-soft: var(--gold-soft);
+
+    --serif-jp:   'Shippori Mincho', 'Noto Serif JP', 'Hiragino Mincho Pro', serif;
+    --sans-jp:    'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+    --serif:      'EB Garamond', Georgia, serif;
+    --hand:       'Caveat', cursive;
+
+    --pad-page: 56px;
+    --content-max: 980px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; min-height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.5;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(180,138,74,0.06), transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(122,143,110,0.05), transparent 60%);
+    background-attachment: fixed;
+  }
+  body {
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(180,138,74,0.06), transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(122,143,110,0.05), transparent 60%);
+  }
+  img { display: block; max-width: 100%; }
+
+  /* ─── layout shell ──────────────────────────────────────────────────── */
+  .app {
+    display: grid;
+    grid-template-columns: 232px 1fr;
+    min-height: 100vh;
+    position: relative; z-index: 1;
+  }
+  .main {
+    padding: var(--pad-page);
+    min-width: 0;
+    overflow-x: hidden;
+  }
+  .main-inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: sticky; top: 0; width: 100%; min-height: 0; padding: 12px; z-index: 20; }
+    .sidebar-inner { flex-direction: row !important; align-items: center; gap: 8px !important; }
+    .brand { display: none; }
+    .nav-list { display: flex !important; flex-direction: row !important; gap: 6px !important; flex: 1; overflow-x: auto; }
+    .nav-list .bookmark { min-width: 96px; flex: 0 0 auto; }
+    .sidebar-foot { display: none; }
+    :root { --pad-page: 24px; }
+  }
+
+  /* ─── sidebar ───────────────────────────────────────────────────────── */
+  .sidebar {
+    background: linear-gradient(180deg, var(--paper-edge) 0%, color-mix(in srgb, var(--paper-edge) 80%, var(--paper) 20%) 100%);
+    border-right: 1px solid rgba(141,102,48,0.22);
+    box-shadow: inset -10px 0 24px -16px rgba(100,72,30,0.18);
+    padding: 24px 14px 24px 18px;
+    position: sticky; top: 0; height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-inner { display: flex; flex-direction: column; height: 100%; gap: 24px; }
+  .brand {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 0 6px 14px;
+    border-bottom: 1px dashed rgba(141,102,48,0.3);
+  }
+  .brand-mark {
+    font-family: var(--serif-jp); font-weight: 800; font-size: 38px;
+    color: var(--gold-dark); letter-spacing: -0.02em; line-height: 1;
+  }
+  .brand-name {
+    font-family: var(--serif); font-style: italic; font-size: 18px;
+    color: var(--ink-2);
+  }
+  .brand-sub {
+    font-family: var(--hand); font-size: 15px; color: var(--ink-3);
+    margin-top: 2px;
+  }
+
+  .nav-list { display: flex; flex-direction: column; gap: 4px; list-style: none; padding: 0; margin: 0; }
+  .nav-section-label {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    color: var(--ink-3); letter-spacing: 0.06em; text-transform: lowercase;
+    padding: 6px 8px 4px;
+  }
+  .bookmark {
+    position: relative; display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px 10px 14px;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--ink-2); width: 100%; text-align: left;
+    font-family: var(--serif); font-size: 15px; line-height: 1.1;
+    border-radius: 0 8px 8px 0;
+    transition: background .15s, color .15s, transform .15s;
+  }
+  .bookmark .glyph {
+    font-family: var(--serif-jp); font-weight: 600; font-size: 18px;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    color: var(--gold-dark);
+    background: var(--paper-2);
+    border-radius: 4px;
+    border: 1px solid rgba(141,102,48,0.22);
+    flex: 0 0 auto;
+  }
+  .bookmark .label {
+    display: flex; flex-direction: column; gap: 2px;
+    flex: 1; min-width: 0;
+  }
+  .bookmark .label .ja {
+    font-family: var(--serif-jp); font-size: 14px; color: var(--ink-2); line-height: 1.1;
+  }
+  .bookmark .label .en {
+    font-family: var(--serif); font-size: 13px; color: var(--ink-3);
+    font-style: italic;
+  }
+  .bookmark:hover { background: rgba(180,138,74,0.10); color: var(--ink); }
+  .bookmark.active {
+    background: var(--paper-2);
+    color: var(--ink);
+    box-shadow:
+      inset 4px 0 0 var(--gold),
+      0 1px 0 rgba(141,102,48,0.18),
+      0 -1px 0 rgba(141,102,48,0.18);
+  }
+  .bookmark.active .glyph { background: var(--gold); color: white; border-color: var(--gold-dark); }
+  .bookmark.active .label .en { color: var(--gold-dark); font-style: normal; }
+
+  .sidebar-foot {
+    margin-top: auto;
+    padding: 12px 10px;
+    border-top: 1px dashed rgba(141,102,48,0.3);
+    font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-3);
+  }
+  .streak {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px;
+  }
+  .streak-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 0 3px rgba(180,138,74,0.20);
+  }
+
+  /* ─── shared page chrome ────────────────────────────────────────────── */
+  .page-head { margin-bottom: 28px; }
+  .page-eyebrow {
+    font-family: var(--serif); font-style: italic; font-size: 13px;
+    color: var(--ink-3); letter-spacing: 0.04em;
+  }
+  .page-title-jp {
+    font-family: var(--serif-jp); font-weight: 600;
+    font-size: clamp(28px, 4vw, 40px);
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    margin: 4px 0 6px;
+    line-height: 1.1;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
+  }
+  .page-title-en {
+    font-family: var(--serif); font-style: italic; font-size: 16px;
+    color: var(--ink-2);
+  }
+  .rule {
+    height: 0; margin: 16px 0 24px;
+    border-top: 1px solid var(--paper-edge);
+    position: relative;
+  }
+  .rule::after {
+    content: ""; position: absolute; left: 0; top: -1px; width: 36px;
+    border-top: 2px solid var(--gold);
+  }
+
+  /* ─── small ui ──────────────────────────────────────────────────────── */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.25);
+    font-family: var(--serif); font-size: 12px; color: var(--ink-2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .pill:hover { background: var(--gold-soft); color: var(--ink); }
+  .pill.active {
+    background: var(--gold); color: white; border-color: var(--gold-dark);
+  }
+  .pill .ja { font-family: var(--serif-jp); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 8px;
+    background: var(--paper-2); color: var(--ink);
+    border: 1px solid rgba(141,102,48,0.25);
+    font-family: var(--serif); font-size: 14px;
+    cursor: pointer; transition: all .15s;
+  }
+  .btn:hover { background: var(--gold-soft); border-color: var(--gold); }
+  .btn.primary { background: var(--gold); color: white; border-color: var(--gold-dark); }
+  .btn.primary:hover { background: var(--gold-dark); }
+  .btn.ghost { background: transparent; border-style: dashed; color: var(--ink-2); }
+
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--paper-2); border: 1px solid rgba(141,102,48,0.25);
+    color: var(--ink-2); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .icon-btn:hover { background: var(--gold-soft); color: var(--ink); }
+  .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ─── card / panel ──────────────────────────────────────────────────── */
+  .panel {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.22);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 4px 14px var(--paper-shadow);
+  }
+
+  /* ─── book / cheatsheet frame ───────────────────────────────────────── */
+  .book-frame {
+    background: var(--paper-2);
+    border: 2px solid var(--gold-soft);
+    box-shadow:
+      0 0 0 6px var(--paper-2),
+      0 0 0 7px var(--gold-soft),
+      0 8px 24px rgba(100,72,30,0.18);
+    border-radius: 4px;
+    padding: 36px clamp(20px, 4vw, 56px) 40px;
+    position: relative;
+  }
+  .book-frame::before, .book-frame::after,
+  .book-frame > .corner-tl, .book-frame > .corner-tr {
+    content: ""; position: absolute; width: 14px; height: 14px;
+    border: 2px solid var(--gold);
+    background: var(--paper-2);
+    border-radius: 50%;
+  }
+  .book-frame::before { top: -8px; left: -8px; }
+  .book-frame::after  { bottom: -8px; right: -8px; }
+  .book-frame > .corner-tl { top: -8px; right: -8px; }
+  .book-frame > .corner-tr { bottom: -8px; left: -8px; }
+
+  .book-title {
+    text-align: center;
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: clamp(22px, 3vw, 32px);
+    color: var(--ink); letter-spacing: 0.06em;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--gold-soft);
+    margin-bottom: 24px;
+    position: relative;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
+  }
+  .book-title .particle { color: var(--ink-3); font-weight: 400; font-size: 0.8em; margin: 0 6px; }
+
+  .sheet-image {
+    width: 100%;
+    aspect-ratio: 4/5;
+    max-height: 580px;
+    margin: 0 auto 24px;
+    border-radius: 4px;
+    border: 1px solid var(--paper-edge);
+    background: var(--paper-2);
+    position: relative;
+  }
+  image-slot {
+    border-radius: 4px;
+  }
+
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 32px;
+  }
+  @media (max-width: 640px) { .vocab-grid { grid-template-columns: 1fr; } }
+  .vocab-row {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    align-items: baseline;
+    gap: 4px 10px;
+    padding: 8px 4px;
+    border-bottom: 1px dashed rgba(141,102,48,0.18);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background .12s;
+  }
+  .vocab-row .body {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 2px 8px;
+    min-width: 0;
+  }
+  .vocab-row:hover { background: rgba(180,138,74,0.10); }
+  .vocab-row .num {
+    font-family: var(--serif); font-size: 14px; color: var(--ink-3);
+    font-weight: 600;
+  }
+  .vocab-row .kanji {
+    font-family: var(--serif-jp); font-size: 18px; color: var(--ink);
+    font-weight: 500;
+  }
+  .vocab-row .kana {
+    font-family: var(--serif-jp); font-size: 13px; color: var(--ink-2);
+  }
+  .vocab-row .en {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    color: var(--ink-3);
+    width: 100%;
+    margin-top: -2px;
+  }
+  body.no-english .vocab-row .en { visibility: hidden; }
+  body.no-english .flash-en { visibility: hidden; }
+  body.no-english .sentence .en { visibility: hidden; }
+  body.no-english .reveal-en::after { content: "(tap to reveal)"; visibility: visible !important; opacity: .5; font-family: var(--serif); font-size: 11px; }
+
+  /* ─── pager / book navigation ───────────────────────────────────────── */
+  .pager {
+    margin-top: 32px;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .pager .dots { display: flex; gap: 8px; }
+  .pager .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--paper-edge); border: 1px solid var(--gold-soft);
+    cursor: pointer; transition: all .15s;
+  }
+  .pager .dot.active { background: var(--gold); border-color: var(--gold-dark); transform: scale(1.3); }
+  .pager .dot:hover { background: var(--gold-soft); }
+
+  /* ─── usage list ────────────────────────────────────────────────────── */
+  .usage-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .usage-card {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.22);
+    border-radius: 8px;
+    padding: 14px 16px;
+    transition: all .15s;
+    cursor: pointer;
+  }
+  .usage-card:hover { border-color: var(--gold); background: var(--paper); transform: translateY(-1px); }
+  .usage-card .ja {
+    font-family: var(--serif-jp); font-size: 19px; color: var(--ink);
+    font-weight: 500;
+  }
+  .usage-card .kana {
+    font-family: var(--serif-jp); font-size: 12px; color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .usage-card .en {
+    font-family: var(--serif); font-style: italic; font-size: 13px;
+    color: var(--ink-2); margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(141,102,48,0.18);
+  }
+
+  /* ─── sentences ─────────────────────────────────────────────────────── */
+  .sentence {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--paper-edge);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+  .sentence:last-child { border-bottom: none; }
+  .sentence .level-tag {
+    font-family: var(--serif); font-size: 11px; color: var(--gold-dark);
+    background: var(--gold-soft);
+    padding: 2px 8px; border-radius: 4px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .sentence .body { min-width: 0; }
+  .sentence .ja {
+    font-family: var(--serif-jp); font-size: 20px; color: var(--ink);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .sentence .en {
+    font-family: var(--serif); font-style: italic; font-size: 14px;
+    color: var(--ink-3);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .sentence .audio { color: var(--ink-3); }
+
+  /* ─── flashcards ────────────────────────────────────────────────────── */
+  .flash-deck {
+    display: grid; grid-template-columns: 1fr; gap: 24px;
+    max-width: 480px; margin: 0 auto;
+  }
+  .flash-stage {
+    perspective: 1200px;
+    position: relative;
+  }
+  .flash-card {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    box-shadow:
+      0 0 0 4px var(--paper-2),
+      0 0 0 5px var(--gold-soft),
+      0 12px 32px rgba(100,72,30,0.18);
+    border-radius: 6px;
+    padding: 32px;
+    display: flex; flex-direction: column;
+    transition: transform .35s cubic-bezier(.4,.0,.2,1);
+  }
+  .flash-image {
+    width: 100%; aspect-ratio: 1;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .flash-kanji {
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: clamp(56px, 10vw, 88px);
+    color: var(--ink);
+    text-align: center;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+  .flash-reading {
+    display: flex; justify-content: center; gap: 14px;
+    margin-top: 12px;
+    font-family: var(--serif-jp); font-size: 18px;
+  }
+  .flash-reading > span { white-space: nowrap; }
+  .flash-reading .label {
+    font-family: var(--serif); font-style: italic; font-size: 11px;
+    color: var(--ink-3); margin-right: 4px; vertical-align: 4px;
+  }
+  .flash-reading .kun { color: var(--ink); }
+  .flash-reading .on  { color: var(--ink-2); }
+  .flash-en {
+    text-align: center;
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(141,102,48,0.25);
+    font-family: var(--serif); font-style: italic; font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  .flash-en .eyebrow {
+    display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-4); margin-bottom: 4px; font-style: normal;
+  }
+  .flash-controls {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .flash-progress {
+    flex: 1; height: 4px; border-radius: 2px;
+    background: var(--paper-edge); position: relative;
+    margin: 0 12px;
+  }
+  .flash-progress > div {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--gold); border-radius: 2px;
+    transition: width .25s;
+  }
+
+  /* ─── dictionary ────────────────────────────────────────────────────── */
+  .search-bar {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.25);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset;
+  }
+  .search-bar input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-family: var(--serif-jp); font-size: 18px; color: var(--ink);
+  }
+  .search-bar input::placeholder { color: var(--ink-3); font-family: var(--serif); font-style: italic; }
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 28px;
+  }
+  .dict-list { display: flex; flex-direction: column; gap: 0; }
+  .dict-row {
+    display: grid;
+    grid-template-columns: 72px 1fr auto auto;
+    gap: 18px;
+    padding: 14px 8px;
+    border-bottom: 1px solid var(--paper-edge);
+    align-items: center;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .dict-row:hover { background: rgba(180,138,74,0.08); }
+  .dict-row .kanji-cell {
+    font-family: var(--serif-jp); font-weight: 600; font-size: 30px;
+    color: var(--ink); text-align: center; line-height: 1;
+  }
+  .dict-row .word-cell .ja {
+    font-family: var(--serif-jp); font-size: 18px; color: var(--ink); margin-bottom: 2px;
+  }
+  .dict-row .word-cell .kana {
+    font-family: var(--serif-jp); font-size: 12px; color: var(--ink-3);
+  }
+  .dict-row .word-cell .en {
+    font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-2);
+  }
+  .dict-row .meta {
+    font-family: var(--serif); font-size: 11px; color: var(--ink-3); text-align: right;
+  }
+  .dict-row .meta .level {
+    background: var(--gold-soft); color: var(--gold-dark);
+    padding: 2px 6px; border-radius: 4px;
+    font-weight: 600; letter-spacing: 0.04em;
+  }
+  .empty-state {
+    padding: 60px 20px; text-align: center;
+    color: var(--ink-3); font-style: italic; font-family: var(--serif);
+  }
+
+  /* ─── book picker ───────────────────────────────────────────────────── */
+  .book-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .book-card {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.22);
+    border-radius: 6px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .book-card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--sage-soft);
+    transition: background .15s;
+  }
+  .book-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+  .book-card:hover::before { background: var(--gold); }
+  .book-card.active { border-color: var(--gold-dark); background: var(--paper); }
+  .book-card.active::before { background: var(--gold); }
+  .book-card .glyph {
+    font-family: var(--serif-jp); font-weight: 700; font-size: 26px;
+    color: var(--gold-dark);
+  }
+  .book-card .ja {
+    font-family: var(--serif-jp); font-size: 15px; color: var(--ink);
+  }
+  .book-card .en {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  /* ─── misc ──────────────────────────────────────────────────────────── */
+  .floating-controls {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 22px; flex-wrap: wrap;
+  }
+  .floating-controls .sep {
+    width: 1px; height: 22px; background: var(--paper-edge);
+    margin: 0 4px;
+  }
+  .small-label {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    color: var(--ink-3); margin-right: 4px;
+  }
+
+  /* ─── word popover ──────────────────────────────────────────────────── */
+  .vocab-row.is-open { background: rgba(180,138,74,0.15); }
+  .vocab-row.is-open .num { color: var(--gold-dark); }
+
+  .word-pop-backdrop {
+    position: fixed; inset: 0; z-index: 80;
+  }
+  .word-pop {
+    position: fixed; z-index: 81;
+    width: 304px;
+    background: var(--paper-2);
+    border: 1px solid var(--gold-soft);
+    border-radius: 6px;
+    box-shadow:
+      0 0 0 4px var(--paper-2),
+      0 0 0 5px var(--gold-soft),
+      0 14px 38px rgba(60,40,20,0.22);
+    padding: 22px 22px 18px;
+  }
+  .word-pop.is-hidden { visibility: hidden; }
+
+  .word-pop-close {
+    position: absolute; top: 10px; right: 10px;
+    width: 22px; height: 22px; border-radius: 50%;
+    border: none; background: transparent;
+    color: var(--ink-3); cursor: pointer;
+    font-family: var(--serif); font-size: 18px; line-height: 1;
+    transition: color .12s, background .12s;
+  }
+  .word-pop-close:hover { color: var(--ink); background: rgba(141,102,48,0.10); }
+
+  .word-pop-glyph {
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: 52px; line-height: 1;
+    color: var(--ink); letter-spacing: 0.01em;
+    margin: 0;
+  }
+  .word-pop-kana {
+    font-family: var(--serif-jp); font-size: 14px;
+    color: var(--ink-2);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+  .word-pop-en {
+    font-family: var(--serif); font-style: italic; font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+
+  .word-pop-breakdown {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 4px 8px;
+    margin-top: 12px;
+    padding: 8px 10px;
+    background: rgba(180,138,74,0.08);
+    border-left: 2px solid var(--gold-soft);
+    border-radius: 0 4px 4px 0;
+    font-family: var(--serif);
+    font-size: 12px;
+  }
+  .word-pop-breakdown .bk-pair {
+    display: inline-flex; align-items: baseline; gap: 4px;
+    white-space: nowrap;
+  }
+  .word-pop-breakdown .bk-kanji {
+    font-family: var(--serif-jp); font-size: 16px;
+    color: var(--ink); font-weight: 600;
+  }
+  .word-pop-breakdown .bk-eq {
+    color: var(--ink-3); font-size: 11px;
+  }
+  .word-pop-breakdown .bk-meaning {
+    color: var(--ink-2); font-style: italic;
+  }
+  .word-pop-breakdown .bk-sep {
+    color: var(--ink-4);
+  }
+
+  body.no-particles .ja-particle {
+    color: inherit !important;
+    margin: 0 !important;
+    font-weight: inherit !important;
+  }
+
+  /* ─── word chunks ───────────────────────────────────────────────────── */
+  .word-chunk {
+    display: inline-block;
+    padding: 1px 4px;
+    margin: 0 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background .12s, box-shadow .12s;
+  }
+  .word-chunk:hover {
+    background: rgba(180,138,74,0.18);
+    box-shadow: 0 0 0 1px rgba(141,102,48,0.15);
+  }
+  .word-chunk:active { background: rgba(180,138,74,0.28); }
+  .word-chunk .wc-stem { }
+
+  .word-pop-glyph, .word-pop-kana {
+    cursor: pointer;
+    user-select: none;
+  }
+  .word-pop-glyph:hover { color: var(--gold-dark); }
+  .word-pop-kana:hover { color: var(--ink); }
+
+  .word-pop-divider {
+    height: 0; border-top: 1px dashed var(--gold-soft);
+    margin: 16px 0 12px;
+  }
+
+  .word-pop-section-label {
+    font-family: var(--serif); font-style: italic; font-size: 11px;
+    color: var(--ink-3); letter-spacing: 0.06em;
+    text-transform: lowercase;
+    margin-bottom: 6px;
+  }
+
+  .word-pop-quote {
+    font-family: var(--serif-jp); font-size: 15px;
+    color: var(--ink); line-height: 1.55;
+  }
+  .word-pop-quote-en {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    color: var(--ink-3); line-height: 1.4;
+    margin-top: 4px;
+  }
+  .word-pop-quote .mark {
+    background: linear-gradient(transparent 60%, var(--gold-soft) 60%);
+    padding: 0 1px;
+  }
+  .word-pop-empty {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    color: var(--ink-3); line-height: 1.5;
+  }
+
+  .word-pop-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 14px;
+    background: none; border: none; padding: 0; cursor: pointer;
+    font-family: var(--serif); font-style: italic; font-size: 13px;
+    color: var(--gold-dark);
+    text-decoration: underline;
+    text-decoration-color: var(--gold-soft);
+    text-underline-offset: 3px;
+    transition: color .12s;
+  }
+  .word-pop-link:hover { color: var(--ink); }
+
+  .fade-enter { animation: fadeIn .28s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--gold-soft); border-radius: 3px; }
+
+  /* ─── settings button ───────────────────────────────────────────────── */
+  .settings-btn {
+    position: fixed; bottom: 16px; right: 16px; z-index: 90;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--paper-2); border: 1px solid var(--paper-edge);
+    color: var(--ink-2); font-size: 17px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(100,72,30,0.12);
+    transition: background .15s, transform .15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .settings-btn:hover { background: var(--gold-soft); transform: rotate(30deg); }
+
+  .settings-panel {
+    position: fixed; bottom: 62px; right: 16px; z-index: 91;
+    width: 240px; background: var(--paper-2);
+    border: 1px solid var(--paper-edge); border-radius: 10px;
+    padding: 14px 16px; box-shadow: 0 4px 18px rgba(100,72,30,0.14);
+  }
+  .settings-panel[hidden] { display: none; }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 0; font-family: var(--serif); font-size: 13px; color: var(--ink-2);
+    border-bottom: 1px dashed rgba(141,102,48,0.15);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-toggle {
+    position: relative; width: 32px; height: 18px;
+    background: rgba(0,0,0,.15); border: none; border-radius: 999px;
+    cursor: pointer; padding: 0; transition: background .15s;
+  }
+  .settings-toggle[aria-checked="true"] { background: var(--gold); }
+  .settings-toggle i {
+    position: absolute; top: 2px; left: 2px; width: 14px; height: 14px;
+    border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25);
+    transition: transform .15s; pointer-events: none;
+  }
+  .settings-toggle[aria-checked="true"] i { transform: translateX(14px); }
+  .settings-density { display: flex; gap: 4px; }
+  .settings-density button {
+    padding: 3px 8px; border-radius: 5px; border: 1px solid var(--paper-edge);
+    background: var(--paper); font-family: var(--serif); font-size: 12px;
+    color: var(--ink-3); cursor: pointer; transition: all .12s;
+  }
+  .settings-density button.active {
+    background: var(--gold); color: white; border-color: var(--gold-dark);
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main">
+    <div class="main-inner" id="main-inner"></div>
+  </main>
+</div>
+
+<div id="word-pop-backdrop" class="word-pop-backdrop" style="display:none"></div>
+<div id="word-pop" class="word-pop is-hidden"></div>
+
+<button id="settings-btn" class="settings-btn" aria-label="Settings" title="Settings">⚙</button>
+<div id="settings-panel" class="settings-panel" hidden></div>
+
+<script src="image-slot.js"></script>
+<script src="data.js"></script>
+<script>
+'use strict';
+
+// ── Persistence helpers ─────────────────────────────────────────────────
+function lsGet(key, def) {
+  try { const r = localStorage.getItem(key); return r == null ? def : JSON.parse(r); }
+  catch { return def; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+
+// ── Sections ────────────────────────────────────────────────────────────
+const SECTIONS = [
+  { id: 'vocab',      glyph: '語', ja: '語彙',  en: 'Vocabulary' },
+  { id: 'flashcards', glyph: '札', ja: '単語札', en: 'Flashcards' },
+  { id: 'dictionary', glyph: '辞', ja: '辞書',   en: 'Dictionary' },
+];
+
+function hashSection() {
+  const h = (location.hash || '').replace('#', '');
+  return ['vocab','flashcards','dictionary'].includes(h) ? h : lsGet('jp:section', 'vocab');
+}
+
+const APP = {
+  section:      hashSection(),
+  showEnglish:  lsGet('jp:showEnglish', true),
+  density:      lsGet('jp:density', 'comfortable'),
+  particlesOn:  lsGet('jp:particles', true),
+  vocabBookId:  lsGet('jp:vocabBook', (window.VOCAB_BOOKS||[{id:'bathroom'}])[0].id),
+  vocabPageIdx: 0,
+  flashIdx:     0,
+  flashShowEn:  true,
+  dictQ:        '',
+  dictKind:     'all',
+  dictLevel:    'all',
+  dictTag:      'all',
+  popoverItem:  null,
+  popoverRect:  null,
+  pendingDictQ: null,
+  _flashKeyHandler: null,
+};
+
+function setSection(s) {
+  APP.section = s;
+  location.hash = s;
+  lsSet('jp:section', s);
+  renderMain();
+  updateSidebar();
+}
+
+// ── Body classes ────────────────────────────────────────────────────────
+function applyBodyClasses() {
+  document.body.classList.toggle('no-english', !APP.showEnglish);
+  document.body.classList.toggle('no-particles', !APP.particlesOn);
+  const pad = APP.density === 'compact' ? '32px' : APP.density === 'roomy' ? '72px' : '56px';
+  document.documentElement.style.setProperty('--pad-page', pad);
+}
+
+// ── Utilities ───────────────────────────────────────────────────────────
+function escHTML(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s) {
+  return String(s).replace(/"/g,'&quot;');
+}
+
+const PARTICLE_COLORS = {
+  'は':'#8a2538','を':'#5a2e8a','が':'#c97a2c',
+  'と':'#2a5b94','の':'#c43a4a','で':'#2e7a3f',
+};
+const PARTICLE_CHARS = ['は','を','が','と','の','で'];
+
+function _isHiragana(c) { return !!c && /[぀-ゟ]/.test(c); }
+
+function colorParticles(ja) {
+  if (!ja) return '';
+  let html = '';
+  for (let i = 0; i < ja.length; i++) {
+    const c = ja[i];
+    const next = ja[i + 1] || '';
+    if (PARTICLE_COLORS[c] && !_isHiragana(next)) {
+      html += `<span class="ja-particle" style="color:${PARTICLE_COLORS[c]};margin:0 0.18em;font-weight:500">${c}</span>`;
+    } else {
+      html += c;
+    }
+  }
+  return html;
+}
+
+function splitKanjiBreakdown(word) {
+  if (!word) return null;
+  const meanings = window.KANJI_MEANINGS || {};
+  const chars = [...word];
+  const kanji = chars.filter(c => /[㐀-鿿]/.test(c));
+  const hiragana = chars.filter(c => /[぀-ゟ]/.test(c));
+  if (kanji.length === 0) return null;
+  if (kanji.length === 1 && hiragana.length === 0) return null;
+  return kanji.map(c => ({ char: c, meaning: meanings[c] || '?' }));
+}
+
+function parseChunk(text) {
+  if (!text) return { stem: '', particles: [], punct: '' };
+  let rest = text;
+  const punctMatch = rest.match(/([。、！？!?,\.…]+)$/);
+  const punct = punctMatch ? punctMatch[0] : '';
+  if (punct) rest = rest.slice(0, -punct.length);
+  const particles = [];
+  while (rest.length > 1 && PARTICLE_CHARS.includes(rest[rest.length - 1])) {
+    particles.unshift(rest[rest.length - 1]);
+    rest = rest.slice(0, -1);
+  }
+  return { stem: rest, particles, punct };
+}
+
+function lookupWord(text) {
+  if (!text) return null;
+  for (const book of (window.VOCAB_BOOKS || [])) {
+    for (const page of (book.pages || [])) {
+      for (const item of (page.items || [])) {
+        const k = item.kanji || item.ja;
+        if (k === text || item.kana === text || item.ja === text)
+          return { kanji: k || text, kana: item.kana || '', en: item.en || '' };
+      }
+    }
+  }
+  const d = (window.DICTIONARY || []).find(e => e.kanji === text || e.kana === text);
+  if (d) return { kanji: d.kanji, kana: d.kana, en: d.en };
+  return { kanji: text, kana: '', en: '' };
+}
+
+function wordChunkHTML(text) {
+  const { stem, particles, punct } = parseChunk(text);
+  if (!stem) return escHTML(text);
+  const particleSpans = particles.map(p =>
+    `<span class="ja-particle" style="color:${PARTICLE_COLORS[p]||'inherit'};font-weight:500;margin:0">${p}</span>`
+  ).join('');
+  return `<span class="word-chunk" data-stem="${escAttr(stem)}" title="click to look up · double-click for dictionary"><span class="wc-stem">${escHTML(stem)}</span>${particleSpans}</span>${escHTML(punct)}`;
+}
+
+function jaSentenceHTML(text) {
+  if (!text) return '';
+  return text.split(/[\s　]+/).filter(Boolean).map(wordChunkHTML).join('');
+}
+
+// ── Popover ─────────────────────────────────────────────────────────────
+function initPopover() {
+  const backdrop = document.getElementById('word-pop-backdrop');
+
+  backdrop.addEventListener('click', closePopover);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopover(); });
+
+  document.getElementById('main').addEventListener('click', e => {
+    const chunk = e.target.closest('.word-chunk');
+    if (!chunk) return;
+    e.stopPropagation();
+    openPopover(lookupWord(chunk.dataset.stem), chunk.getBoundingClientRect());
+  });
+  document.getElementById('main').addEventListener('dblclick', e => {
+    const chunk = e.target.closest('.word-chunk');
+    if (!chunk) return;
+    e.preventDefault(); e.stopPropagation();
+    jumpToDictionary(chunk.dataset.stem);
+  });
+
+  document.getElementById('main').addEventListener('click', e => {
+    const row = e.target.closest('.vocab-row[data-kanji]');
+    if (!row) return;
+    openPopover({ kanji: row.dataset.kanji, kana: row.dataset.kana, en: row.dataset.en }, row.getBoundingClientRect());
+  });
+  document.getElementById('main').addEventListener('dblclick', e => {
+    const row = e.target.closest('.vocab-row[data-kanji]');
+    if (!row) return;
+    e.preventDefault();
+    jumpToDictionary(row.dataset.kanji);
+  });
+}
+
+function jumpToDictionary(q) {
+  APP.pendingDictQ = q;
+  setSection('dictionary');
+}
+
+function openPopover(item, anchorRect) {
+  const pop = document.getElementById('word-pop');
+  const backdrop = document.getElementById('word-pop-backdrop');
+  const breakdown = splitKanjiBreakdown(item.kanji);
+  const bdHTML = breakdown ? `
+    <div class="word-pop-breakdown">
+      ${breakdown.map((b, i) => `
+        ${i > 0 ? '<span class="bk-sep">·</span>' : ''}
+        <span class="bk-pair">
+          <span class="bk-kanji">${escHTML(b.char)}</span>
+          <span class="bk-eq">=</span>
+          <span class="bk-meaning">${escHTML(b.meaning)}</span>
+        </span>
+      `).join('')}
+    </div>` : '';
+
+  pop.innerHTML = `
+    <button class="word-pop-close" id="pop-close" aria-label="close">×</button>
+    <div class="word-pop-glyph">${escHTML(item.kanji || '')}</div>
+    <div class="word-pop-kana">${escHTML(item.kana || '')}</div>
+    <div class="word-pop-en">${escHTML(item.en || '')}</div>
+    ${bdHTML}`;
+
+  document.getElementById('pop-close').addEventListener('click', closePopover);
+  pop.querySelector('.word-pop-glyph').addEventListener('dblclick', e => {
+    e.preventDefault(); jumpToDictionary(item.kanji || item.kana);
+  });
+
+  pop.classList.remove('is-hidden');
+  backdrop.style.display = 'block';
+
+  const popW = pop.offsetWidth || 304;
+  const popH = pop.offsetHeight || 200;
+  const gap = 14, margin = 16;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const r = anchorRect;
+  let left = r.right + gap;
+  let top = r.top - 8;
+  if (left + popW > vw - margin) {
+    left = r.left - popW - gap;
+    if (left < margin) { left = Math.max(margin, Math.min(vw - popW - margin, r.left)); top = r.bottom + gap; }
+  }
+  if (top + popH > vh - margin) top = vh - popH - margin;
+  if (top < margin) top = margin;
+  pop.style.left = left + 'px';
+  pop.style.top = top + 'px';
+}
+
+function closePopover() {
+  document.getElementById('word-pop').classList.add('is-hidden');
+  document.getElementById('word-pop-backdrop').style.display = 'none';
+}
+
+// ── Sidebar ─────────────────────────────────────────────────────────────
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.innerHTML = `
+    <div class="sidebar-inner">
+      <div class="brand">
+        <div class="brand-mark">学</div>
+        <div>
+          <div class="brand-name">learn jp</div>
+          <div class="brand-sub">a quiet notebook</div>
+        </div>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-section-label">sections</li>
+        ${SECTIONS.map(s => `
+          <li>
+            <button class="bookmark ${APP.section === s.id ? 'active' : ''}" data-section="${s.id}">
+              <span class="glyph">${s.glyph}</span>
+              <span class="label">
+                <span class="ja">${s.ja}</span>
+                <span class="en">${s.en}</span>
+              </span>
+            </button>
+          </li>
+        `).join('')}
+      </ul>
+      <div class="sidebar-foot">
+        <div class="streak"><span class="streak-dot"></span> 12-day streak</div>
+        <div style="font-size:11px">312 words learned</div>
+      </div>
+    </div>`;
+  sidebar.querySelectorAll('[data-section]').forEach(btn => {
+    btn.addEventListener('click', () => setSection(btn.dataset.section));
+  });
+}
+
+function updateSidebar() {
+  document.querySelectorAll('.bookmark').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.section === APP.section);
+  });
+}
+
+// ── Settings ────────────────────────────────────────────────────────────
+function renderSettings() {
+  const panel = document.getElementById('settings-panel');
+  panel.innerHTML = `
+    <div class="settings-row">
+      <span>Show English</span>
+      <button class="settings-toggle" aria-checked="${APP.showEnglish}" data-setting="showEnglish" role="switch"><i></i></button>
+    </div>
+    <div class="settings-row">
+      <span>Particle colors</span>
+      <button class="settings-toggle" aria-checked="${APP.particlesOn}" data-setting="particlesOn" role="switch"><i></i></button>
+    </div>
+    <div class="settings-row">
+      <span>Density</span>
+      <div class="settings-density">
+        ${['compact','comfortable','roomy'].map(d =>
+          `<button data-density="${d}" class="${APP.density === d ? 'active' : ''}">${d[0].toUpperCase()}</button>`
+        ).join('')}
+      </div>
+    </div>`;
+
+  panel.querySelectorAll('[data-setting]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.setting;
+      APP[key] = !APP[key];
+      lsSet(key === 'showEnglish' ? 'jp:showEnglish' : 'jp:particles', APP[key]);
+      applyBodyClasses();
+      renderSettings();
+    });
+  });
+  panel.querySelectorAll('[data-density]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP.density = btn.dataset.density;
+      lsSet('jp:density', APP.density);
+      applyBodyClasses();
+      renderSettings();
+    });
+  });
+}
+
+function initSettings() {
+  const btn = document.getElementById('settings-btn');
+  const panel = document.getElementById('settings-panel');
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (panel.hasAttribute('hidden')) { renderSettings(); panel.removeAttribute('hidden'); }
+    else panel.setAttribute('hidden', '');
+  });
+  document.addEventListener('click', e => {
+    if (!panel.contains(e.target) && e.target !== btn) panel.setAttribute('hidden', '');
+  });
+}
+
+// ── Main dispatcher ──────────────────────────────────────────────────────
+function renderMain() {
+  closePopover();
+  if (APP._flashKeyHandler) {
+    window.removeEventListener('keydown', APP._flashKeyHandler);
+    APP._flashKeyHandler = null;
+  }
+  const el = document.getElementById('main-inner');
+  el.className = 'main-inner fade-enter';
+  if (APP.section === 'vocab')           renderVocab(el);
+  else if (APP.section === 'flashcards') renderFlashcards(el);
+  else if (APP.section === 'dictionary') renderDictionary(el);
+}
+
+// ── Vocab ────────────────────────────────────────────────────────────────
+function renderVocab(container) {
+  const book = VOCAB_BOOKS.find(b => b.id === APP.vocabBookId) || VOCAB_BOOKS[0];
+  if (APP.vocabPageIdx >= book.pages.length) APP.vocabPageIdx = 0;
+  const page = book.pages[APP.vocabPageIdx];
+
+  container.innerHTML = `
+    <div class="page-head">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div>
+          <div class="page-eyebrow">vocabulary · 語彙</div>
+          <h1 class="page-title-jp">部屋ごとに ことばを 集める</h1>
+          <div class="page-title-en">Vocabulary, gathered room by room</div>
+        </div>
+      </div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="book-strip">
+      ${VOCAB_BOOKS.map(b => `
+        <button class="book-card ${b.id === APP.vocabBookId ? 'active' : ''}" data-book="${b.id}">
+          <div class="glyph">${b.glyph}</div>
+          <div class="ja">${b.titleJa}</div>
+          <div class="en">${b.titleEn}</div>
+        </button>
+      `).join('')}
+    </div>
+
+    <div id="vocab-page-content"></div>
+
+    <div class="pager">
+      <button class="icon-btn" id="pager-prev" ${APP.vocabPageIdx === 0 ? 'disabled' : ''} title="previous page">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="dots">
+        ${book.pages.map((p, i) => `
+          <button class="dot ${i === APP.vocabPageIdx ? 'active' : ''}" data-page="${i}" title="${escAttr(p.title)}"></button>
+        `).join('')}
+      </div>
+      <button class="icon-btn" id="pager-next" ${APP.vocabPageIdx === book.pages.length - 1 ? 'disabled' : ''} title="next page">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+      <span class="small-label" style="margin-left:12px">page ${APP.vocabPageIdx + 1} / ${book.pages.length}</span>
+    </div>`;
+
+  renderVocabPage(book, page);
+
+  container.querySelectorAll('[data-book]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP.vocabBookId = btn.dataset.book;
+      APP.vocabPageIdx = 0;
+      lsSet('jp:vocabBook', APP.vocabBookId);
+      renderVocab(container);
+    });
+  });
+  container.querySelector('#pager-prev').addEventListener('click', () => {
+    APP.vocabPageIdx = Math.max(0, APP.vocabPageIdx - 1);
+    renderVocab(container);
+  });
+  container.querySelector('#pager-next').addEventListener('click', () => {
+    APP.vocabPageIdx = Math.min(book.pages.length - 1, APP.vocabPageIdx + 1);
+    renderVocab(container);
+  });
+  container.querySelectorAll('.dot[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP.vocabPageIdx = parseInt(btn.dataset.page, 10);
+      renderVocab(container);
+    });
+  });
+}
+
+function renderVocabPage(book, page) {
+  const el = document.getElementById('vocab-page-content');
+  if (page.type === 'cheatsheet')  el.innerHTML = cheatsheetHTML(book, page);
+  else if (page.type === 'usage')  el.innerHTML = usageHTML(page);
+  else if (page.type === 'sentences') {
+    el.innerHTML = sentencesHTML(page, 'ALL', false);
+    attachSentencesEvents(el, page);
+  }
+}
+
+function cheatsheetHTML(book, page) {
+  const titleHTML = page.title.replace(/(の|と)/g, '<span class="particle">$1</span>');
+  const items = page.items.map(item => `
+    <div class="vocab-row" data-kanji="${escAttr(item.kanji)}" data-kana="${escAttr(item.kana)}" data-en="${escAttr(item.en)}">
+      <span class="num">${item.num}.</span>
+      <div class="body">
+        <span class="kanji">${escHTML(item.kanji)}</span>
+        <span class="kana">（${escHTML(item.kana)}）</span>
+        <span class="en">${escHTML(item.en)}</span>
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="book-frame">
+      <span class="corner-tl"></span><span class="corner-tr"></span>
+      <h2 class="book-title">${titleHTML}</h2>
+      <div class="sheet-image">
+        <image-slot
+          id="vocab-${book.id}-${page.imageSlotId}"
+          shape="rounded" radius="4"
+          placeholder="Drop the ${escAttr(book.titleEn.toLowerCase())} cheatsheet illustration"
+          style="width:100%;height:100%"></image-slot>
+      </div>
+      <div class="vocab-grid">${items}</div>
+    </div>`;
+}
+
+function usageHTML(page) {
+  const cards = page.items.map(u => `
+    <div class="usage-card">
+      <div class="ja">${jaSentenceHTML(u.ja)}</div>
+      <div class="kana">${escHTML(u.kana)}</div>
+      <div class="en">${escHTML(u.en)}</div>
+    </div>`).join('');
+  return `
+    <div class="panel">
+      <div style="margin-bottom:18px">
+        <h2 style="font-family:var(--serif-jp);font-size:26px;color:var(--ink);margin:0;font-weight:600">${escHTML(page.title)}</h2>
+        <div style="font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-3);margin-top:4px">${escHTML(page.subtitle)}</div>
+      </div>
+      <div class="usage-grid">${cards}</div>
+    </div>`;
+}
+
+function sentencesHTML(page, level, showAll) {
+  const LEVELS = ['ALL', ...(window.JLPT_LEVELS || ['N5','N4','N3','N2','N1'])];
+  const filtered = page.items.filter(s => level === 'ALL' || s.level === level);
+  const INITIAL = 5;
+  const visible = showAll ? filtered : filtered.slice(0, INITIAL);
+  const hidden = filtered.length - visible.length;
+
+  const levelPills = LEVELS.map(L => `
+    <button class="pill ${level === L ? 'active' : ''}" data-level="${L}">${L === 'ALL' ? 'all' : L}</button>`
+  ).join('');
+
+  const rows = visible.map(s => `
+    <div class="sentence">
+      <span class="level-tag">${s.level}</span>
+      <div class="body">
+        <div class="ja">${jaSentenceHTML(s.ja)}</div>
+        <div class="en">${escHTML(s.en)}</div>
+      </div>
+      <button class="icon-btn audio" title="play audio">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
+    </div>`).join('');
+
+  const emptyState = visible.length === 0
+    ? `<div class="empty-state">no sentences at ${escHTML(level)} yet — try another level</div>` : '';
+  const showMoreBtn = hidden > 0 && !showAll
+    ? `<div style="text-align:center;margin-top:20px"><button class="btn ghost" data-show-more>see ${hidden} more ↓</button></div>` : '';
+  const collapseBtn = showAll && filtered.length > INITIAL
+    ? `<div style="text-align:center;margin-top:20px"><button class="btn ghost" data-collapse>collapse ↑</button></div>` : '';
+
+  return `
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:18px">
+        <div>
+          <h2 style="font-family:var(--serif-jp);font-size:26px;color:var(--ink);margin:0;font-weight:600">${escHTML(page.title)}</h2>
+          <div style="font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-3);margin-top:4px">${escHTML(page.subtitle)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="small-label">level:</span>
+          ${levelPills}
+        </div>
+      </div>
+      <div class="sentences">${emptyState}${rows}</div>
+      ${showMoreBtn}${collapseBtn}
+    </div>`;
+}
+
+function attachSentencesEvents(container, page) {
+  let level = 'ALL', showAll = false;
+  function rerender() {
+    container.innerHTML = sentencesHTML(page, level, showAll);
+    attachSentencesEvents(container, page);
+  }
+  container.querySelectorAll('[data-level]').forEach(btn => {
+    btn.addEventListener('click', () => { level = btn.dataset.level; showAll = false; rerender(); });
+  });
+  const more = container.querySelector('[data-show-more]');
+  if (more) more.addEventListener('click', () => { showAll = true; rerender(); });
+  const collapse = container.querySelector('[data-collapse]');
+  if (collapse) collapse.addEventListener('click', () => { showAll = false; rerender(); });
+}
+
+// ── Flashcards ───────────────────────────────────────────────────────────
+function renderFlashcards(container) {
+  const deck = window.FLASHCARDS || [];
+  if (!deck.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
+  if (APP.flashIdx >= deck.length) APP.flashIdx = 0;
+  const card = deck[APP.flashIdx];
+
+  container.innerHTML = `
+    <div class="page-head">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div>
+          <div class="page-eyebrow">flashcards · 単語札</div>
+          <h1 class="page-title-jp">絵 · 漢字 · よみかた</h1>
+          <div class="page-title-en">Picture, character, reading — English only if you need it</div>
+        </div>
+        <div class="floating-controls" style="margin:0">
+          <span class="small-label">english</span>
+          <button class="pill ${APP.flashShowEn ? 'active' : ''}" data-flash-en="true">show</button>
+          <button class="pill ${!APP.flashShowEn ? 'active' : ''}" data-flash-en="false">hide</button>
+        </div>
+      </div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="flash-deck">
+      <div class="flash-stage">
+        <div class="flash-card">
+          <div class="flash-image">
+            <image-slot id="flash-${card.id}" shape="rounded" radius="4"
+              placeholder="Drop image for &quot;${escAttr(card.en)}&quot;"
+              style="width:100%;height:100%"></image-slot>
+          </div>
+          <div class="flash-kanji">${escHTML(card.kanji)}</div>
+          <div class="flash-reading">
+            <span class="kun"><span class="label">kun</span>${escHTML(card.kun)}</span>
+            <span style="color:var(--ink-4)">·</span>
+            <span class="on"><span class="label">on</span>${escHTML(card.on)}</span>
+          </div>
+          <div class="flash-en" style="opacity:${APP.flashShowEn ? 1 : 0.3};font-style:${APP.flashShowEn ? 'italic' : 'normal'}">
+            <span class="eyebrow">meaning</span>
+            ${APP.flashShowEn ? escHTML(card.en) : '— —'}
+          </div>
+        </div>
+      </div>
+
+      <div class="flash-controls">
+        <button class="icon-btn" id="flash-prev" title="previous (←)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="flash-progress">
+          <div style="width:${((APP.flashIdx + 1) / deck.length) * 100}%"></div>
+        </div>
+        <button class="icon-btn" id="flash-next" title="next (→)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>
+
+      <div style="text-align:center;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink-3)">
+        ${APP.flashIdx + 1} of ${deck.length} · use ← → to flip, space to hide English
+      </div>
+    </div>`;
+
+  container.querySelectorAll('[data-flash-en]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP.flashShowEn = btn.dataset.flashEn === 'true';
+      renderFlashcards(container);
+    });
+  });
+  container.querySelector('#flash-prev').addEventListener('click', () => {
+    APP.flashIdx = (APP.flashIdx - 1 + deck.length) % deck.length;
+    renderFlashcards(container);
+  });
+  container.querySelector('#flash-next').addEventListener('click', () => {
+    APP.flashIdx = (APP.flashIdx + 1) % deck.length;
+    renderFlashcards(container);
+  });
+
+  APP._flashKeyHandler = e => {
+    if (e.key === 'ArrowLeft')  { APP.flashIdx = (APP.flashIdx - 1 + deck.length) % deck.length; renderFlashcards(container); }
+    if (e.key === 'ArrowRight') { APP.flashIdx = (APP.flashIdx + 1) % deck.length; renderFlashcards(container); }
+    if (e.key === ' ')          { e.preventDefault(); APP.flashShowEn = !APP.flashShowEn; renderFlashcards(container); }
+  };
+  window.addEventListener('keydown', APP._flashKeyHandler);
+}
+
+// ── Dictionary ───────────────────────────────────────────────────────────
+function renderDictionary(container) {
+  if (APP.pendingDictQ) {
+    APP.dictQ = APP.pendingDictQ;
+    APP.dictKind = 'all'; APP.dictLevel = 'all'; APP.dictTag = 'all';
+    APP.pendingDictQ = null;
+  }
+
+  const allTags = [...new Set((window.DICTIONARY || []).flatMap(e => e.tags || []))].sort();
+  const norm = s => (s || '').toLowerCase().normalize('NFC');
+  const query = norm(APP.dictQ);
+  const filtered = (window.DICTIONARY || []).filter(e => {
+    if (APP.dictKind  !== 'all' && e.kind  !== APP.dictKind)  return false;
+    if (APP.dictLevel !== 'all' && e.level !== APP.dictLevel) return false;
+    if (APP.dictTag   !== 'all' && !(e.tags||[]).includes(APP.dictTag)) return false;
+    if (!query) return true;
+    return (e.kanji||'').includes(APP.dictQ) || norm(e.kana).includes(query) || norm(e.en).includes(query);
+  });
+  const kanjiHits = filtered.filter(e => e.kind === 'kanji');
+  const wordHits  = filtered.filter(e => e.kind === 'word');
+
+  const pill = (val, cur, key) =>
+    `<button class="pill ${val === APP[key] ? 'active' : ''}" data-filter-key="${key}" data-filter-val="${escAttr(val)}">${escHTML(val === 'all' ? (key === 'dictTag' ? 'any' : 'all') : val)}</button>`;
+
+  const clearBtnHTML = APP.dictQ
+    ? `<button class="icon-btn" id="dict-clear" title="clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>` : '';
+
+  const groupHTML = (label, entries) => entries.length === 0 ? '' : `
+    <section style="margin-bottom:36px">
+      <div style="font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink-3);
+                  letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;
+                  border-bottom:1px dashed rgba(141,102,48,.25)">${escHTML(label)} · ${entries.length}</div>
+      <div class="dict-list">
+        ${entries.map(e => `
+          <div class="dict-row">
+            <div class="kanji-cell">${escHTML(e.kanji)}</div>
+            <div class="word-cell">
+              <div class="kana">${escHTML(e.kana)}</div>
+              <div class="en">${escHTML(e.en)}</div>
+            </div>
+            <div class="meta"><span class="level">${escHTML(e.level)}</span></div>
+            <div class="meta" style="min-width:80px">${escHTML((e.tags||[]).slice(0,2).join(' · '))}</div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+
+  container.innerHTML = `
+    <div class="page-head">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div>
+          <div class="page-eyebrow">dictionary · 辞書</div>
+          <h1 class="page-title-jp">さがす</h1>
+          <div class="page-title-en">Browse and search — kanji, words, and what they mean</div>
+        </div>
+        <div class="small-label">${filtered.length} entries</div>
+      </div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="dict-input" value="${escAttr(APP.dictQ)}" placeholder="kanji, kana, or english… (e.g. 風, kaze, mirror)" />
+      ${clearBtnHTML}
+    </div>
+
+    <div class="filters">
+      <span class="small-label">kind:</span>
+      ${['all','kanji','word'].map(v => pill(v, APP.dictKind, 'dictKind')).join('')}
+      <span class="floating-controls" style="margin:0"><span class="sep"></span></span>
+      <span class="small-label">level:</span>
+      ${['all',...(window.JLPT_LEVELS||['N5','N4','N3','N2','N1'])].map(v => pill(v, APP.dictLevel, 'dictLevel')).join('')}
+      <span class="floating-controls" style="margin:0"><span class="sep"></span></span>
+      <span class="small-label">tag:</span>
+      ${['all',...allTags].map(v => pill(v, APP.dictTag, 'dictTag')).join('')}
+    </div>
+
+    ${filtered.length === 0 ? '<div class="empty-state">nothing matches yet — try clearing some filters</div>' : ''}
+    ${groupHTML('Kanji', kanjiHits)}
+    ${groupHTML('Words', wordHits)}`;
+
+  const input = container.querySelector('#dict-input');
+  let debTimer;
+  input.addEventListener('input', () => {
+    clearTimeout(debTimer);
+    debTimer = setTimeout(() => { APP.dictQ = input.value; renderDictionary(container); }, 120);
+  });
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+
+  const clearBtn2 = container.querySelector('#dict-clear');
+  if (clearBtn2) clearBtn2.addEventListener('click', () => { APP.dictQ = ''; renderDictionary(container); });
+
+  container.querySelectorAll('[data-filter-key]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP[btn.dataset.filterKey] = btn.dataset.filterVal;
+      renderDictionary(container);
+    });
+  });
+}
+
+// ── Hash change ──────────────────────────────────────────────────────────
+window.addEventListener('hashchange', () => {
+  const s = hashSection();
+  if (s !== APP.section) { APP.section = s; renderMain(); updateSidebar(); }
+});
+
+// ── Init ─────────────────────────────────────────────────────────────────
+function init() {
+  applyBodyClasses();
+  renderSidebar();
+  renderMain();
+  initSettings();
+  initPopover();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
