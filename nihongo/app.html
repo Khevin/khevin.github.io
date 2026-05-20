@@ -701,10 +701,10 @@
   }
 
   .word-pop-breakdown {
-    display: flex; flex-wrap: wrap; align-items: baseline;
-    gap: 4px 8px;
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 6px 10px;
     margin-top: 12px;
-    padding: 8px 10px;
+    padding: 10px 10px 8px;
     background: rgba(180,138,74,0.08);
     border-left: 2px solid var(--gold-soft);
     border-radius: 0 4px 4px 0;
@@ -712,8 +712,17 @@
     font-size: 12px;
   }
   .word-pop-breakdown .bk-pair {
-    display: inline-flex; align-items: baseline; gap: 4px;
+    display: inline-flex; align-items: center; gap: 5px;
     white-space: nowrap;
+  }
+  .word-pop-breakdown .bk-stack {
+    display: inline-flex; flex-direction: column; align-items: center;
+    line-height: 1; gap: 1px;
+  }
+  .word-pop-breakdown .bk-reading {
+    font-family: var(--serif-jp); font-size: 9px;
+    color: var(--ink-3); letter-spacing: 0.02em;
+    min-height: 11px;
   }
   .word-pop-breakdown .bk-kanji {
     font-family: var(--serif-jp); font-size: 16px;
@@ -727,6 +736,21 @@
   }
   .word-pop-breakdown .bk-sep {
     color: var(--ink-4);
+  }
+
+  /* Furigana on the big popover glyph. ruby spacing kept tight so the
+     stacked kanji+reading still reads as one block. */
+  .word-pop-glyph ruby {
+    ruby-position: over;
+    ruby-align: center;
+  }
+  .word-pop-glyph rt {
+    font-family: var(--serif-jp);
+    font-size: 0.32em;
+    font-weight: 500;
+    color: var(--ink-3);
+    line-height: 1;
+    letter-spacing: 0.02em;
   }
 
   body.no-particles .ja-particle {
@@ -972,7 +996,20 @@ function colorParticles(ja) {
   return html;
 }
 
-function splitKanjiBreakdown(word) {
+function kanjiReading(c) {
+  const readings = window.KANJI_READINGS || {};
+  if (readings[c]) return readings[c];
+  // Fall back to a dictionary kanji entry's kana (convert katakana → hiragana,
+  // drop the okurigana marker after `.`).
+  const dictEntry = (window.DICTIONARY || []).find(e => e.kind === 'kanji' && e.kanji === c);
+  if (dictEntry && dictEntry.kana) {
+    return dictEntry.kana.split('.')[0]
+      .replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+  }
+  return '';
+}
+
+function splitKanjiBreakdown(word, kana) {
   if (!word) return null;
   const meanings = window.KANJI_MEANINGS || {};
   const chars = [...word];
@@ -980,7 +1017,130 @@ function splitKanjiBreakdown(word) {
   const hiragana = chars.filter(c => /[぀-ゟ]/.test(c));
   if (kanji.length === 0) return null;
   if (kanji.length === 1 && hiragana.length === 0) return null;
-  return kanji.map(c => ({ char: c, meaning: meanings[c] || '?' }));
+  const aligned = alignReadings(word, kana);
+  const out = [];
+  for (let i = 0; i < word.length; i++) {
+    const c = word[i];
+    if (/[㐀-鿿]/.test(c)) {
+      out.push({
+        char: c,
+        reading: (aligned && aligned.get(i)) || kanjiReading(c),
+        meaning: meanings[c] || '?'
+      });
+    }
+  }
+  return out;
+}
+
+// Align a word's per-kanji reading against the supplied kana, so context-
+// dependent readings come out right. The hiragana runs in the word are
+// matched literally in the kana; everything else is attributed to the
+// surrounding kanji. Adjacent kanji are split by walking each one's default
+// reading from KANJI_READINGS. Returns a Map(index → reading) or null on
+// mismatch.
+function alignReadings(word, kana) {
+  if (!word || !kana) return null;
+  const ka = kana.replace(/[\s　]/g, '');
+  const toHira = s => s.replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+
+  // Tokenize word into kanji singletons + literal (non-kanji) runs.
+  const tokens = [];
+  for (let i = 0; i < word.length; i++) {
+    const c = word[i];
+    if (/[㐀-鿿]/.test(c)) {
+      tokens.push({ type: 'k', char: c, idx: i });
+    } else {
+      const last = tokens[tokens.length - 1];
+      if (last && last.type === 'lit') last.text += c;
+      else tokens.push({ type: 'lit', text: c });
+    }
+  }
+
+  // Locate each literal in the kana; the gaps between them are kanji.
+  let kPos = 0;
+  for (const tok of tokens) {
+    if (tok.type !== 'lit') continue;
+    const hira = toHira(tok.text);
+    const idx = ka.indexOf(hira, kPos);
+    if (idx < 0) return null;
+    tok.kanaStart = idx;
+    tok.kanaEnd = idx + hira.length;
+    kPos = tok.kanaEnd;
+  }
+
+  // Fill in kanji readings from the gaps.
+  const out = new Map();
+  let prevEnd = 0;
+  for (let t = 0; t < tokens.length; t++) {
+    const tok = tokens[t];
+    if (tok.type === 'lit') { prevEnd = tok.kanaEnd; continue; }
+    const nextLit = tokens.slice(t + 1).find(x => x.type === 'lit');
+    const endPos = nextLit ? nextLit.kanaStart : ka.length;
+    const cluster = [tok];
+    while (t + 1 < tokens.length && tokens[t + 1].type === 'k') {
+      cluster.push(tokens[t + 1]); t++;
+    }
+    const total = ka.slice(prevEnd, endPos);
+    if (cluster.length === 1) {
+      out.set(cluster[0].idx, total);
+    } else {
+      // First pass: match each kanji's default reading sequentially. If every
+      // default lines up, great. If any default fails, split the cluster's
+      // total kana proportionally by the default *lengths* instead — this
+      // catches rendaku and other one-mora shifts (e.g. お風呂: defaults よく
+      // /ろ don't match, but lengths 2/1 → wrong; the actual ふ/ろ wants 1/1).
+      const defs = cluster.map(k => (window.KANJI_READINGS || {})[k.char] || '');
+      let pos = 0;
+      let ok = true;
+      for (let i = 0; i < cluster.length; i++) {
+        if (defs[i] && total.slice(pos).startsWith(defs[i])) pos += defs[i].length;
+        else { ok = false; break; }
+      }
+      if (ok && pos === total.length) {
+        for (let i = 0, p = 0; i < cluster.length; i++) {
+          out.set(cluster[i].idx, defs[i]); p += defs[i].length;
+        }
+      } else {
+        // Proportional fallback: distribute `total` across the cluster using
+        // the ratio of each kanji's default-reading length. Kanji with no
+        // default reading get an equal share.
+        const lens = defs.map(d => d.length || 1);
+        const lensSum = lens.reduce((a, b) => a + b, 0);
+        let p = 0;
+        for (let i = 0; i < cluster.length; i++) {
+          const share = i === cluster.length - 1
+            ? total.length - p
+            : Math.round(total.length * lens[i] / lensSum);
+          out.set(cluster[i].idx, total.slice(p, p + share));
+          p += share;
+        }
+      }
+    }
+    prevEnd = endPos;
+  }
+  return out;
+}
+
+// Wrap each kanji in a word with <ruby>k<rt>reading</rt></ruby>. Non-kanji
+// characters pass through unchanged so シャワーを浴びる only annotates 浴.
+// When `kana` is provided, the per-kanji reading is aligned against it
+// (so 浴 reads あ in 浴びる but よく in 浴室).
+function withFurigana(word, kana) {
+  if (!word) return '';
+  const aligned = alignReadings(word, kana);
+  let html = '';
+  for (let i = 0; i < word.length; i++) {
+    const c = word[i];
+    if (/[㐀-鿿]/.test(c)) {
+      const r = (aligned && aligned.get(i)) || kanjiReading(c);
+      html += r
+        ? `<ruby>${escHTML(c)}<rt>${escHTML(r)}</rt></ruby>`
+        : escHTML(c);
+    } else {
+      html += escHTML(c);
+    }
+  }
+  return html;
 }
 
 function parseChunk(text) {
@@ -1100,13 +1260,16 @@ function jumpToDictionary(q) {
 function openPopover(item, anchorRect) {
   const pop = document.getElementById('word-pop');
   const backdrop = document.getElementById('word-pop-backdrop');
-  const breakdown = splitKanjiBreakdown(item.kanji);
+  const breakdown = splitKanjiBreakdown(item.kanji, item.kana);
   const bdHTML = breakdown ? `
     <div class="word-pop-breakdown">
       ${breakdown.map((b, i) => `
         ${i > 0 ? '<span class="bk-sep">·</span>' : ''}
         <span class="bk-pair">
-          <span class="bk-kanji">${escHTML(b.char)}</span>
+          <span class="bk-stack">
+            <span class="bk-reading">${escHTML(b.reading)}</span>
+            <span class="bk-kanji">${escHTML(b.char)}</span>
+          </span>
           <span class="bk-eq">=</span>
           <span class="bk-meaning">${escHTML(b.meaning)}</span>
         </span>
@@ -1120,7 +1283,7 @@ function openPopover(item, anchorRect) {
 
   pop.innerHTML = `
     <button class="word-pop-close" id="pop-close" aria-label="close">×</button>
-    <div class="word-pop-glyph" style="font-size:${glyphSize}px;line-height:1.15">${escHTML(item.kanji || '')}</div>
+    <div class="word-pop-glyph" style="font-size:${glyphSize}px;line-height:1.35">${withFurigana(item.kanji || '', item.kana || '')}</div>
     <div class="word-pop-kana">${escHTML(item.kana || '')}</div>
     <div class="word-pop-en">${escHTML(item.en || '')}</div>
     ${bdHTML}`;
