@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>learn jp</title>
+<title>nihongo — 日本語</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -557,6 +557,47 @@
     color: var(--ink-3); font-style: italic; font-family: var(--serif);
   }
 
+  /* ─── class strip (above book picker) ───────────────────────────────── */
+  .class-strip {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed rgba(141,102,48,0.20);
+  }
+  .class-tab {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 6px 14px 6px 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .class-tab:hover { background: rgba(180,138,74,0.08); color: var(--ink-2); }
+  .class-tab.active {
+    background: var(--paper-2);
+    border-color: rgba(141,102,48,0.30);
+    color: var(--ink);
+  }
+  .class-tab .glyph {
+    font-family: var(--serif-jp); font-weight: 700; font-size: 20px;
+    color: var(--gold-dark);
+    line-height: 1; width: 22px; text-align: center;
+  }
+  .class-tab.active .glyph { color: var(--ink); }
+  .class-tab .label {
+    display: flex; flex-direction: column; gap: 1px; line-height: 1.1;
+  }
+  .class-tab .label .ja {
+    font-family: var(--serif-jp); font-size: 13px;
+  }
+  .class-tab .label .en {
+    font-family: var(--serif); font-style: italic; font-size: 11px;
+    color: var(--ink-3);
+  }
+  .class-tab.active .label .en { color: var(--ink-2); }
+
   /* ─── book picker ───────────────────────────────────────────────────── */
   .book-strip {
     display: grid;
@@ -860,7 +901,8 @@ const APP = {
   showEnglish:  lsGet('jp:showEnglish', true),
   density:      lsGet('jp:density', 'comfortable'),
   particlesOn:  lsGet('jp:particles', true),
-  vocabBookId:  lsGet('jp:vocabBook', (window.VOCAB_BOOKS||[{id:'bathroom'}])[0].id),
+  vocabClassId: lsGet('jp:vocabClass', 'home'),
+  vocabBookId:  lsGet('jp:vocabBook', 'bathroom'),
   vocabPageIdx: 0,
   flashIdx:     0,
   flashShowEn:  true,
@@ -1119,14 +1161,12 @@ function renderSidebar() {
   sidebar.innerHTML = `
     <div class="sidebar-inner">
       <div class="brand">
-        <div class="brand-mark">学</div>
+        <div class="brand-mark">日</div>
         <div>
-          <div class="brand-name">learn jp</div>
-          <div class="brand-sub">a quiet notebook</div>
+          <div class="brand-name">nihongo</div>
         </div>
       </div>
       <ul class="nav-list">
-        <li class="nav-section-label">sections</li>
         ${SECTIONS.map(s => `
           <li>
             <button class="bookmark ${APP.section === s.id ? 'active' : ''}" data-section="${s.id}">
@@ -1139,10 +1179,6 @@ function renderSidebar() {
           </li>
         `).join('')}
       </ul>
-      <div class="sidebar-foot">
-        <div class="streak"><span class="streak-dot"></span> 12-day streak</div>
-        <div style="font-size:11px">312 words learned</div>
-      </div>
     </div>`;
   sidebar.querySelectorAll('[data-section]').forEach(btn => {
     btn.addEventListener('click', () => setSection(btn.dataset.section));
@@ -1224,34 +1260,19 @@ function renderMain() {
 
 // ── Vocab ────────────────────────────────────────────────────────────────
 function renderVocab(container) {
-  const book = VOCAB_BOOKS.find(b => b.id === APP.vocabBookId) || VOCAB_BOOKS[0];
-  if (APP.vocabPageIdx >= book.pages.length) APP.vocabPageIdx = 0;
-  const page = book.pages[APP.vocabPageIdx];
+  const cls = VOCAB_CLASSES.find(c => c.id === APP.vocabClassId) || VOCAB_CLASSES[0];
+  // If the stored book doesn't belong to this class (e.g. user switched
+  // classes), drop to the first book in the class.
+  if (!cls.books.some(b => b.id === APP.vocabBookId)) {
+    APP.vocabBookId = cls.books[0] ? cls.books[0].id : null;
+    APP.vocabPageIdx = 0;
+  }
+  const book = cls.books.find(b => b.id === APP.vocabBookId) || cls.books[0];
+  const hasPages = !!(book && book.pages && book.pages.length);
+  if (hasPages && APP.vocabPageIdx >= book.pages.length) APP.vocabPageIdx = 0;
+  const page = hasPages ? book.pages[APP.vocabPageIdx] : null;
 
-  container.innerHTML = `
-    <div class="page-head">
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
-        <div>
-          <div class="page-eyebrow">vocabulary · 語彙</div>
-          <h1 class="page-title-jp">部屋ごとに ことばを 集める</h1>
-          <div class="page-title-en">Vocabulary, gathered room by room</div>
-        </div>
-      </div>
-      <div class="rule"></div>
-    </div>
-
-    <div class="book-strip">
-      ${VOCAB_BOOKS.map(b => `
-        <button class="book-card ${b.id === APP.vocabBookId ? 'active' : ''}" data-book="${b.id}">
-          <div class="glyph">${b.glyph}</div>
-          <div class="ja">${b.titleJa}</div>
-          <div class="en">${b.titleEn}</div>
-        </button>
-      `).join('')}
-    </div>
-
-    <div id="vocab-page-content"></div>
-
+  const pagerHTML = hasPages ? `
     <div class="pager">
       <button class="icon-btn" id="pager-prev" ${APP.vocabPageIdx === 0 ? 'disabled' : ''} title="previous page">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1265,10 +1286,56 @@ function renderVocab(container) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
       </button>
       <span class="small-label" style="margin-left:12px">page ${APP.vocabPageIdx + 1} / ${book.pages.length}</span>
-    </div>`;
+    </div>` : '';
 
-  renderVocabPage(book, page);
+  container.innerHTML = `
+    <div class="page-head">
+      <div class="page-eyebrow">vocabulary · 語彙</div>
+      <h1 class="page-title-jp">${escHTML(cls.pageTitleJa)}</h1>
+      <div class="rule"></div>
+    </div>
 
+    <div class="class-strip">
+      ${VOCAB_CLASSES.map(c => `
+        <button class="class-tab ${c.id === APP.vocabClassId ? 'active' : ''}" data-class="${c.id}">
+          <span class="glyph">${c.glyph}</span>
+          <span class="label">
+            <span class="ja">${escHTML(c.titleJa)}</span>
+            <span class="en">${escHTML(c.titleEn)}</span>
+          </span>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="book-strip">
+      ${cls.books.map(b => `
+        <button class="book-card ${b.id === APP.vocabBookId ? 'active' : ''}" data-book="${b.id}">
+          <div class="glyph">${b.glyph}</div>
+          <div class="ja">${escHTML(b.titleJa)}</div>
+          <div class="en">${escHTML(b.titleEn)}</div>
+        </button>
+      `).join('')}
+    </div>
+
+    <div id="vocab-page-content"></div>
+    ${pagerHTML}`;
+
+  if (hasPages) {
+    renderVocabPage(book, page);
+  } else {
+    document.getElementById('vocab-page-content').innerHTML =
+      `<div class="empty-state">${escHTML(book ? book.titleEn : 'This category')} — coming soon.</div>`;
+  }
+
+  container.querySelectorAll('[data-class]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP.vocabClassId = btn.dataset.class;
+      APP.vocabBookId = null;
+      APP.vocabPageIdx = 0;
+      lsSet('jp:vocabClass', APP.vocabClassId);
+      renderVocab(container);
+    });
+  });
   container.querySelectorAll('[data-book]').forEach(btn => {
     btn.addEventListener('click', () => {
       APP.vocabBookId = btn.dataset.book;
@@ -1277,11 +1344,13 @@ function renderVocab(container) {
       renderVocab(container);
     });
   });
-  container.querySelector('#pager-prev').addEventListener('click', () => {
+  const prev = container.querySelector('#pager-prev');
+  const next = container.querySelector('#pager-next');
+  if (prev) prev.addEventListener('click', () => {
     APP.vocabPageIdx = Math.max(0, APP.vocabPageIdx - 1);
     renderVocab(container);
   });
-  container.querySelector('#pager-next').addEventListener('click', () => {
+  if (next) next.addEventListener('click', () => {
     APP.vocabPageIdx = Math.min(book.pages.length - 1, APP.vocabPageIdx + 1);
     renderVocab(container);
   });
@@ -1323,7 +1392,7 @@ function cheatsheetHTML(book, page) {
         <image-slot
           id="vocab-${book.id}-${page.imageSlotId}"
           shape="rounded" radius="4"
-          placeholder="Drop the ${escAttr(book.titleEn.toLowerCase())} cheatsheet illustration"
+          placeholder="Drop an illustration"
           style="width:100%;height:100%"></image-slot>
       </div>
       <div class="vocab-grid">${items}</div>

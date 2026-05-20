@@ -1,14 +1,15 @@
-// Seed data for the learn-jp prototype.
+// Seed data for the nihongo study app.
 // Designed to be easy to expand later — every entry is a flat object.
 
-// ── VOCAB BOOKS ────────────────────────────────────────────────────────
-// Each book has a stable id (used by image-slot keys + persistence) and a list
-// of pages. Pages are typed: 'cheatsheet' | 'usage' | 'sentences'.
-window.VOCAB_BOOKS = [
+// ── VOCAB CLASSES ──────────────────────────────────────────────────────
+// Top-level grouping. Each class holds a set of related books (categories).
+// Books with `pages: []` render a placeholder — they reserve their slot in
+// the UI before content lands.
+const HOME_BOOKS = [
   {
     id: 'bathroom',
-    titleJa: 'おふろば と せんめんしつ',
-    titleEn: 'Bathroom & Washroom',
+    titleJa: 'おふろば',
+    titleEn: 'Bathroom',
     glyph: '浴',
     primaryLevel: 'N5',
     pages: [
@@ -315,6 +316,51 @@ window.VOCAB_BOOKS = [
     ]
   },
 ];
+
+window.VOCAB_CLASSES = [
+  {
+    id: 'home',
+    glyph: '家',
+    titleJa: 'いえ',
+    titleEn: 'Home',
+    pageTitleJa: '部屋ごとに ことばを 集める',
+    pageTitleEn: 'Vocabulary, gathered room by room',
+    books: HOME_BOOKS,
+  },
+  {
+    id: 'eating-out',
+    glyph: '食',
+    titleJa: 'がいしょく',
+    titleEn: 'Eating Out',
+    pageTitleJa: '食べに 出かける',
+    pageTitleEn: 'Words for sitting down somewhere',
+    books: [
+      { id:'sushi-ya', titleJa:'すしや',   titleEn:'Sushi',       glyph:'寿', primaryLevel:'N5', pages:[] },
+      { id:'omakase',  titleJa:'おまかせ', titleEn:'Omakase',     glyph:'板', primaryLevel:'N4', pages:[] },
+      { id:'izakaya',  titleJa:'いざかや', titleEn:'Izakaya',     glyph:'串', primaryLevel:'N5', pages:[] },
+      { id:'ramen-ya', titleJa:'ラーメン', titleEn:'Ramen',       glyph:'麺', primaryLevel:'N5', pages:[] },
+      { id:'yatai',    titleJa:'やたい',   titleEn:'Street Food', glyph:'屋', primaryLevel:'N5', pages:[] },
+      { id:'konbini',  titleJa:'コンビニ', titleEn:'Conbini',     glyph:'便', primaryLevel:'N5', pages:[] },
+    ],
+  },
+  {
+    id: 'stays',
+    glyph: '宿',
+    titleJa: 'やど',
+    titleEn: 'Stays',
+    pageTitleJa: '場面ごとに ことばを 集める',
+    pageTitleEn: 'Places and scenes — beyond home',
+    books: [
+      { id:'hotel',  titleJa:'ホテル',   titleEn:'Hotel',       glyph:'宿', primaryLevel:'N5', pages:[] },
+      { id:'office', titleJa:'おふぃす', titleEn:'Office',      glyph:'働', primaryLevel:'N4', pages:[] },
+      { id:'airbnb', titleJa:'えあびー', titleEn:'Airbnb host', glyph:'貸', primaryLevel:'N3', pages:[] },
+      { id:'dorm',   titleJa:'りょう',   titleEn:'Dorm',        glyph:'寮', primaryLevel:'N4', pages:[] },
+    ],
+  },
+];
+
+// Flat list for cross-class lookups (dictionary jumps, popover word lookup).
+window.VOCAB_BOOKS = window.VOCAB_CLASSES.flatMap(c => c.books);
 
 // ── FLASHCARDS ─────────────────────────────────────────────────────────
 // 10 starter cards focused on very common, basic words. The deck is image-
