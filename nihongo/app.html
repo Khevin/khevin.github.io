@@ -2264,7 +2264,7 @@ function renderFlashcards(container) {
         </button>
         <div class="flash-card">
           <div class="flash-image">
-            <image-slot id="flash-${card.id}" shape="rounded" radius="4" fit="natural"
+            <image-slot id="flash-${card.id}" image-key="${escAttr(card.kanji)}" shape="rounded" radius="4" fit="natural"
               placeholder="Drop image for &quot;${escAttr(card.en)}&quot;"></image-slot>
           </div>
           <div class="flash-kanji">${escHTML(card.kanji)}</div>

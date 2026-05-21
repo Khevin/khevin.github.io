@@ -264,7 +264,7 @@
 
   class ImageSlot extends HTMLElement {
     static get observedAttributes() {
-      return ['shape', 'radius', 'mask', 'fit', 'position', 'placeholder', 'src', 'id'];
+      return ['shape', 'radius', 'mask', 'fit', 'position', 'placeholder', 'src', 'id', 'image-key'];
     }
 
     constructor() {
@@ -622,9 +622,11 @@
       else { this._local = v; }
     }
 
-    // Committed assets live alongside the app under ./images/<id>.<ext>.
-    // We try each extension in order; first to load wins. IndexedDB still
-    // takes precedence (a local drop overrides the shipped file).
+    // Committed assets live alongside the app under ./images/<id>.<ext>,
+    // or under ./images/<image-key>.<ext> when the slot author provides
+    // a friendlier path (e.g. `image-key="水"` so the file can be just
+    // 水.png on disk). We try each extension in order; first to load wins.
+    // IndexedDB still takes precedence (a local drop overrides the file).
     static get _imageExts() { return ['webp', 'png', 'jpg', 'jpeg']; }
 
     _render() {
@@ -661,8 +663,11 @@
       const srcAttr = this.getAttribute('src') || '';
       this._userUrl = (stored && stored.u) || null;
       // The shipped-asset path. We attempt each known extension on error.
-      const shippedBase = (this.id && !this._userUrl && !srcAttr)
-        ? `./images/${encodeURIComponent(this.id)}.` : null;
+      // `image-key` overrides the id, so a slot with id="flash-water" can
+      // still load from ./images/水.<ext> when the author opts in.
+      const imageKey = this.getAttribute('image-key') || this.id;
+      const shippedBase = (imageKey && !this._userUrl && !srcAttr)
+        ? `./images/${encodeURIComponent(imageKey)}.` : null;
       let url = this._userUrl;
       if (!url && shippedBase) url = shippedBase + ImageSlot._imageExts[0];
       if (!url && srcAttr) url = srcAttr;
