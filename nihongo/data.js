@@ -489,6 +489,16 @@ window.FLASHCARD_CLASSES = [
       { id:'arm',   kanji:'腕', kun:'うで',     on:'ワン', en:'arm' },
     ],
   },
+  {
+    id: 'directions',
+    titleJa: 'ほうこう',
+    titleEn: 'Directions',
+    glyph: '方',
+    cards: [
+      { id:'up',   kanji:'上', kun:'うえ', on:'ジョウ', en:'up / above' },
+      { id:'down', kanji:'下', kun:'した', on:'カ',     en:'down / below' },
+    ],
+  },
 ];
 
 // Flat list for any code that still expects FLASHCARDS as a single array.
@@ -547,6 +557,8 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'生', kana:'なま',     en:'life / raw',       level:'N5', tags:['nature'] },
   { kind:'kanji', kanji:'国', kana:'くに',     en:'country',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'円', kana:'えん',     en:'yen / circle',     level:'N5', tags:[] },
+  { kind:'kanji', kanji:'上', kana:'うえ',     en:'up / above',       level:'N5', tags:[] },
+  { kind:'kanji', kanji:'下', kana:'した',     en:'down / below',     level:'N5', tags:[] },
   { kind:'kanji', kanji:'日', kana:'ひ',       en:'sun / day',       level:'N5', tags:['time'] },
   { kind:'kanji', kanji:'月', kana:'つき',     en:'moon / month',    level:'N5', tags:['time'] },
   { kind:'kanji', kanji:'目', kana:'め',       en:'eye',             level:'N5', tags:['body'] },
@@ -680,6 +692,7 @@ window.KANJI_READINGS = {
   '土':'つち', '去':'さ', '王':'おう', '国':'くに',
   '刀':'かたな', '力':'ちから', '弓':'ゆみ', '市':'いち', '田':'た', '町':'まち', '村':'むら',
   '円':'えん',
+  '上':'うえ', '下':'した',
   '鼻':'はな', '耳':'みみ',
   '父':'ちち', '母':'はは', '女':'おんな', '男':'おとこ', '好':'す',
   '反':'はん', '氷':'こおり',
@@ -763,6 +776,7 @@ window.KANJI_MEANINGS = {
   '土':'earth', '去':'leave', '王':'king', '国':'country',
   '刀':'katana', '力':'power', '弓':'bow', '市':'city', '田':'field', '町':'town', '村':'village',
   '円':'yen',
+  '上':'up', '下':'down',
   '鼻':'nose', '耳':'ear',
   '女':'woman', '男':'man', '好':'like',
   '反':'opposite', '氷':'ice',
