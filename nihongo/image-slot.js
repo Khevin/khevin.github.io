@@ -254,7 +254,19 @@
     '  transform:none;left:auto;top:auto;display:block}' +
     ':host([fit="natural"]) .empty{position:absolute;inset:0}' +
     ':host([fit="natural"][data-filled]) .empty{display:none}' +
-    ':host([fit="natural"]) .spill{display:none !important}';
+    ':host([fit="natural"]) .spill{display:none !important}' +
+    // ── variant dots (visible when an imageKey has multiple files) ───────
+    '.variant-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);' +
+    '  display:none;gap:5px;padding:5px 9px;border-radius:999px;' +
+    '  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);' +
+    '  opacity:0;transition:opacity .15s;z-index:3}' +
+    ':host([data-filled]:hover) .variant-dots,' +
+    ':host([data-filled]:focus-within) .variant-dots{opacity:1}' +
+    '.variant-dots[data-many]{display:flex}' +
+    '.variant-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);' +
+    '  border:none;padding:0;cursor:pointer;transition:background .12s,transform .12s}' +
+    '.variant-dot:hover{background:rgba(255,255,255,.75);transform:scale(1.2)}' +
+    '.variant-dot[aria-current="true"]{background:#fff}';
 
   const icon =
     '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
@@ -280,6 +292,7 @@
         '    <div class="cap"></div>' +
         '    <div class="sub">or <u>browse files</u></div></div>' +
         '  <div class="ring" part="ring"></div>' +
+        '  <div class="variant-dots" part="variant-dots"></div>' +
         '</div>' +
         '<div class="spill">' +
         '  <img class="ghost" alt="" draggable="false">' +
@@ -297,11 +310,15 @@
       this._sub = root.querySelector('.sub');
       this._spill = root.querySelector('.spill');
       this._ghost = root.querySelector('.ghost');
+      this._dots = root.querySelector('.variant-dots');
       this._err = null;
       this._input = root.querySelector('input');
       this._depth = 0;
       this._gen = 0;
       this._view = { s: 1, x: 0, y: 0 };
+      this._variants = [];      // current imageKey's variant URLs
+      this._variantIdx = 0;     // which one is showing
+      this._variantKey = null;  // imageKey we last probed for
       this._subFn = () => this._render();
       // Shadow-DOM listeners live with the shadow DOM — bound once here so
       // disconnect/reconnect (e.g. React remount) doesn't stack handlers.
@@ -629,6 +646,45 @@
     // IndexedDB still takes precedence (a local drop overrides the file).
     static get _imageExts() { return ['webp', 'png', 'jpg', 'jpeg']; }
 
+    // Variant probing — once per imageKey, cached. Returns an array of
+    // fully-encoded URLs for files matching the patterns:
+    //   ./images/<key>.<ext>            (variant 1, the default)
+    //   ./images/<key> (2).<ext>         (variant 2)
+    //   ./images/<key> (3).<ext>         (variant 3)
+    //   ...up to (9)
+    // Stops at the first index where no file is found.
+    static _probeVariants(imageKey) {
+      if (!ImageSlot._variantCache) ImageSlot._variantCache = new Map();
+      const cache = ImageSlot._variantCache;
+      if (cache.has(imageKey)) return cache.get(imageKey);
+
+      const encodedKey = imageKey.split('/').map(encodeURIComponent).join('/');
+      const exts = ImageSlot._imageExts;
+
+      const promise = (async () => {
+        const found = [];
+        for (let n = 1; n <= 9; n++) {
+          const suffix = n === 1 ? '' : encodeURIComponent(` (${n})`);
+          let url = null;
+          for (const ext of exts) {
+            const candidate = './images/' + encodedKey + suffix + '.' + ext;
+            const exists = await new Promise(resolve => {
+              const img = new Image();
+              img.onload = () => resolve(true);
+              img.onerror = () => resolve(false);
+              img.src = candidate;
+            });
+            if (exists) { url = candidate; break; }
+          }
+          if (!url) break;
+          found.push(url);
+        }
+        return found;
+      })();
+      cache.set(imageKey, promise);
+      return promise;
+    }
+
     _render() {
       // Shape / mask. Presets use border-radius so the dashed ring can
       // follow the rounded outline; clip-path is only applied for an
@@ -672,6 +728,29 @@
       const keyPath = imageKey ? imageKey.split('/').map(encodeURIComponent).join('/') : '';
       const shippedBase = (imageKey && !this._userUrl && !srcAttr)
         ? `./images/${keyPath}.` : null;
+
+      // Kick off variant probing if the imageKey changed since last render.
+      // The probe is async; once it resolves we re-render to swap in the
+      // probed URL (which matches the file's actual extension) and to show
+      // the dot strip if multiple variants exist.
+      if (imageKey && imageKey !== this._variantKey) {
+        this._variantKey = imageKey;
+        this._variants = [];
+        this._variantIdx = 0;
+        ImageSlot._probeVariants(imageKey).then(found => {
+          if (this._variantKey !== imageKey) return; // stale
+          this._variants = found;
+          if (this._variantIdx >= found.length) this._variantIdx = 0;
+          this._renderVariantDots();
+          // If a variant is available and we don't yet have a user image,
+          // re-point the visible img at the probed URL (which knows the
+          // correct extension).
+          if (found.length > 0 && !this._userUrl && !srcAttr) {
+            this._img.src = found[this._variantIdx];
+            this._ghost.src = found[this._variantIdx];
+          }
+        });
+      }
       let url = this._userUrl;
       if (!url && shippedBase) url = shippedBase + ImageSlot._imageExts[0];
       if (!url && srcAttr) url = srcAttr;
@@ -727,6 +806,37 @@
       }
     }
   }
+
+  // Render the variant dot strip if the current imageKey has >1 file.
+  // Each dot is a button; clicking switches the visible image to that
+  // variant. State lives on the instance — preference doesn't persist
+  // across reloads (intentional — kicking through variants is exploratory).
+  ImageSlot.prototype._renderVariantDots = function () {
+    const dots = this._dots;
+    if (!dots) return;
+    if (!this._variants || this._variants.length <= 1 || this._userUrl) {
+      dots.removeAttribute('data-many');
+      dots.innerHTML = '';
+      return;
+    }
+    dots.setAttribute('data-many', '');
+    const buttons = this._variants.map((_, i) =>
+      `<button class="variant-dot" aria-current="${i === this._variantIdx}" data-i="${i}" aria-label="variant ${i + 1}"></button>`
+    ).join('');
+    dots.innerHTML = buttons;
+    dots.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this._variantIdx = parseInt(btn.dataset.i, 10) || 0;
+        const url = this._variants[this._variantIdx];
+        if (url) {
+          this._img.src = url;
+          this._ghost.src = url;
+        }
+        this._renderVariantDots();
+      });
+    });
+  };
 
   if (!customElements.get('image-slot')) {
     customElements.define('image-slot', ImageSlot);
