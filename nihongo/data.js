@@ -397,6 +397,7 @@ window.FLASHCARD_CLASSES = [
       { id:'big',       kanji:'大', kun:'おお',   on:'ダイ',   en:'big / large' },
       { id:'small',     kanji:'小', kun:'ちい',   on:'ショウ', en:'small' },
       { id:'yen',       kanji:'円', kun:'まる',   on:'エン',   en:'yen / circle' },
+      { id:'every',     kanji:'毎', kun:'まい',   on:'マイ',   en:'every' },
     ],
   },
   {
@@ -426,7 +427,6 @@ window.FLASHCARD_CLASSES = [
       // others
       { id:'child',  kanji:'子', kun:'こ',       on:'シ',     en:'child' },
       { id:'like',   kanji:'好', kun:'す',       on:'コウ',   en:'like / fond' },
-      { id:'every',  kanji:'毎', kun:'まい',     on:'マイ',   en:'every' },
       { id:'friend', kanji:'友', kun:'とも',     on:'ユウ',   en:'friend' },
       { id:'anti',   kanji:'反', kun:'そら',     on:'ハン',   en:'anti- / opposite' },
     ],
