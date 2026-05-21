@@ -727,10 +727,10 @@
       const shippedBase = (imageKey && !this._userUrl && !srcAttr)
         ? `./images/${keyPath}.` : null;
 
-      // Kick off variant probing if the imageKey changed since last render.
-      // The probe is async; once it resolves we re-render to swap in the
-      // probed URL (which matches the file's actual extension) and to show
-      // the dot strip if multiple variants exist.
+      // Kick off variant probing whenever the imageKey changes — even if the
+      // user has an IndexedDB drop. The drop still wins visually on first
+      // render, but the dots stay reachable so the user can click into the
+      // shipped variants (which clears the drop, sticking the choice).
       if (imageKey && imageKey !== this._variantKey) {
         this._variantKey = imageKey;
         this._variants = [];
@@ -740,9 +740,8 @@
           this._variants = found;
           if (this._variantIdx >= found.length) this._variantIdx = 0;
           this._renderVariantDots();
-          // If a variant is available and we don't yet have a user image,
-          // re-point the visible img at the probed URL (which knows the
-          // correct extension).
+          // If we don't yet have a user image, re-point the visible img at
+          // the probed URL (which knows the correct extension).
           if (found.length > 0 && !this._userUrl && !srcAttr) {
             this._img.src = found[this._variantIdx];
             this._ghost.src = found[this._variantIdx];
@@ -750,6 +749,13 @@
         });
       }
       let url = this._userUrl;
+      // If the variant probe has already finished and selected a variant
+      // (e.g. the user just clicked dot #2), honor that choice on re-render
+      // instead of restarting at the first extension of the base path.
+      if (!url && this._variants && this._variants.length > 0) {
+        const v = this._variants[this._variantIdx] || this._variants[0];
+        if (v) url = v;
+      }
       if (!url && shippedBase) url = shippedBase + ImageSlot._imageExts[0];
       if (!url && srcAttr) url = srcAttr;
       // Don't clobber an in-flight reframe with a store-triggered re-render.
@@ -805,14 +811,15 @@
     }
   }
 
-  // Render the variant dot strip if the current imageKey has >1 file.
-  // Each dot is a button; clicking switches the visible image to that
-  // variant. State lives on the instance — preference doesn't persist
-  // across reloads (intentional — kicking through variants is exploratory).
+  // Render the variant dot strip whenever the current imageKey has >1 file.
+  // Shown even when a user drop is in IndexedDB — the dots stay reachable
+  // so the user can flip into a shipped variant. Clicking a dot clears the
+  // IDB drop for this slot (if any) so the chosen variant sticks across
+  // subsequent renders.
   ImageSlot.prototype._renderVariantDots = function () {
     const dots = this._dots;
     if (!dots) return;
-    if (!this._variants || this._variants.length <= 1 || this._userUrl) {
+    if (!this._variants || this._variants.length <= 1) {
       dots.removeAttribute('data-many');
       dots.innerHTML = '';
       return;
@@ -825,12 +832,16 @@
     dots.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         this._variantIdx = parseInt(btn.dataset.i, 10) || 0;
         const url = this._variants[this._variantIdx];
         if (url) {
           this._img.src = url;
           this._ghost.src = url;
         }
+        // If there was an IndexedDB drop on this slot, clear it so the
+        // chosen variant becomes the authoritative image for next render.
+        if (this.id && this._userUrl) setSlot(this.id, null);
         this._renderVariantDots();
       });
     });
