@@ -2336,6 +2336,39 @@ function relatedByKun(card, kunIdx) {
   return (kunIdx.get(kun) || []).filter(p => p.kanji !== card.kanji);
 }
 
+// "See also" cross-references are manually declared via card.seeAlso.
+// Bidirectional by design — a single declaration on either side surfaces
+// the link on both. Used for visual-component / component-radical pairs
+// where kun-based homophone matching wouldn't catch the relationship
+// (e.g. 未 and 妹 share the 未 component but have different readings).
+function lookupCardByKanji(kanji) {
+  for (const cls of (window.FLASHCARD_CLASSES || [])) {
+    const card = cls.cards.find(c => c.kanji === kanji);
+    if (card) return Object.assign({}, card, { classId: cls.id });
+  }
+  return null;
+}
+function seeAlsoCards(card) {
+  if (!card) return [];
+  const seen = new Set();
+  const out = [];
+  for (const k of (card.seeAlso || [])) {
+    if (k === card.kanji || seen.has(k)) continue;
+    const c = lookupCardByKanji(k);
+    if (c) { out.push(c); seen.add(k); }
+  }
+  // Reverse direction — peers that point AT this card auto-surface here.
+  for (const cls of (window.FLASHCARD_CLASSES || [])) {
+    for (const c of cls.cards) {
+      if (!c.seeAlso || !c.seeAlso.includes(card.kanji)) continue;
+      if (c.kanji === card.kanji || seen.has(c.kanji)) continue;
+      out.push(Object.assign({}, c, { classId: cls.id }));
+      seen.add(c.kanji);
+    }
+  }
+  return out;
+}
+
 function renderFlashcards(container) {
   const classes = window.FLASHCARD_CLASSES || [];
   if (!classes.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
@@ -2348,6 +2381,7 @@ function renderFlashcards(container) {
   if (APP.flashIdx >= deck.length) APP.flashIdx = 0;
   const card = deck[APP.flashIdx];
   const related = relatedByKun(card, buildKunIndex());
+  const seeAlso = seeAlsoCards(card);
 
   container.innerHTML = `
     <div class="page-head">
@@ -2393,12 +2427,12 @@ function renderFlashcards(container) {
             <span style="color:var(--ink-4)">·</span>
             <span class="on"><span class="label">on</span>${escHTML(card.on)}</span>
           </div>
-          <div class="flash-bottom ${(card.usage || related.length) ? 'has-right' : ''}">
+          <div class="flash-bottom ${(card.usage || related.length || seeAlso.length) ? 'has-right' : ''}">
             <div class="flash-en" style="opacity:${APP.flashShowEn ? 1 : 0.3};font-style:${APP.flashShowEn ? 'italic' : 'normal'}">
               <span class="eyebrow">meaning</span>
               ${APP.flashShowEn ? escHTML(card.en) : '— —'}
             </div>
-            ${(card.usage || related.length) ? `
+            ${(card.usage || related.length || seeAlso.length) ? `
               <div class="flash-right">
                 ${card.usage ? `
                   <div class="flash-usage">
@@ -2412,6 +2446,19 @@ function renderFlashcards(container) {
                     <span class="eyebrow">also reads ${escHTML(card.kun)}</span>
                     <div class="chips">
                       ${related.map(p => `
+                        <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
+                          <span class="rk">${escHTML(p.kanji)}</span>
+                          <span class="re">${escHTML(p.en)}</span>
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+                ${seeAlso.length ? `
+                  <div class="flash-related">
+                    <span class="eyebrow">see also</span>
+                    <div class="chips">
+                      ${seeAlso.map(p => `
                         <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
                           <span class="rk">${escHTML(p.kanji)}</span>
                           <span class="re">${escHTML(p.en)}</span>
