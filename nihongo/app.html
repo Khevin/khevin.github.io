@@ -1217,6 +1217,7 @@ const APP = {
   vocabClassId: lsGet('jp:vocabClass', 'home'),
   vocabBookId:  lsGet('jp:vocabBook', 'bathroom'),
   vocabPageIdx: 0,
+  flashClassId: lsGet('jp:flashClass', 'basic'),
   flashIdx:     0,
   flashShowEn:  true,
   dictQ:        '',
@@ -2217,8 +2218,14 @@ function renderWriting(container) {
 
 // ── Flashcards ───────────────────────────────────────────────────────────
 function renderFlashcards(container) {
-  const deck = window.FLASHCARDS || [];
-  if (!deck.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
+  const classes = window.FLASHCARD_CLASSES || [];
+  if (!classes.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
+  const cls = classes.find(c => c.id === APP.flashClassId) || classes[0];
+  const deck = cls.cards || [];
+  if (!deck.length) {
+    container.innerHTML = `<div class="empty-state">${escHTML(cls.titleEn)} — coming soon.</div>`;
+    return;
+  }
   if (APP.flashIdx >= deck.length) APP.flashIdx = 0;
   const card = deck[APP.flashIdx];
 
@@ -2228,7 +2235,6 @@ function renderFlashcards(container) {
         <div>
           <div class="page-eyebrow">flashcards · 単語札</div>
           <h1 class="page-title-jp">絵 · 漢字 · よみかた</h1>
-          <div class="page-title-en">Picture, character, reading — English only if you need it</div>
         </div>
         <div class="floating-controls" style="margin:0">
           <span class="small-label">english</span>
@@ -2237,6 +2243,18 @@ function renderFlashcards(container) {
         </div>
       </div>
       <div class="rule"></div>
+    </div>
+
+    <div class="class-strip">
+      ${classes.map(c => `
+        <button class="class-tab ${c.id === APP.flashClassId ? 'active' : ''}" data-flash-class="${c.id}">
+          <span class="glyph">${c.glyph}</span>
+          <span class="label">
+            <span class="ja">${escHTML(c.titleJa)}</span>
+            <span class="en">${escHTML(c.titleEn)}</span>
+          </span>
+        </button>
+      `).join('')}
     </div>
 
     <div class="flash-deck">
@@ -2276,6 +2294,14 @@ function renderFlashcards(container) {
       </div>
     </div>`;
 
+  container.querySelectorAll('[data-flash-class]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP.flashClassId = btn.dataset.flashClass;
+      APP.flashIdx = 0;
+      lsSet('jp:flashClass', APP.flashClassId);
+      renderFlashcards(container);
+    });
+  });
   container.querySelectorAll('[data-flash-en]').forEach(btn => {
     btn.addEventListener('click', () => {
       APP.flashShowEn = btn.dataset.flashEn === 'true';
