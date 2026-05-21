@@ -394,7 +394,6 @@ window.FLASHCARD_CLASSES = [
       { id:'moon',      kanji:'月', kun:'つき',   on:'ゲツ',   en:'moon / month' },
       { id:'mtn',       kanji:'山', kun:'やま',   on:'サン',   en:'mountain' },
       { id:'river',     kanji:'川', kun:'かわ',   on:'セン',   en:'river' },
-      { id:'hand',      kanji:'手', kun:'て',     on:'シュ',   en:'hand' },
     ],
   },
   {
@@ -451,6 +450,7 @@ window.FLASHCARD_CLASSES = [
     glyph: '体',
     // Basic-first: N5 entries before the lone N3 (鼻).
     cards: [
+      { id:'hand',  kanji:'手', kun:'て',   on:'シュ', en:'hand' },
       { id:'eye',   kanji:'目', kun:'め',   on:'モク', en:'eye' },
       { id:'mouth', kanji:'口', kun:'くち', on:'コウ', en:'mouth' },
       { id:'ear',   kanji:'耳', kun:'みみ', on:'ジ',   en:'ear' },
