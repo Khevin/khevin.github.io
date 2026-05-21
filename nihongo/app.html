@@ -517,7 +517,7 @@
     display: grid;
     grid-template-columns: 1fr;
   }
-  .flash-bottom.has-related {
+  .flash-bottom.has-right {
     grid-template-columns: 1fr auto;
     gap: 18px;
     align-items: start;
@@ -527,13 +527,36 @@
     padding-top: 0;
     border-top: none;
   }
-  .flash-bottom.has-related .flash-en {
+  .flash-bottom.has-right .flash-en {
     text-align: left;
+  }
+  .flash-right {
+    display: flex; flex-direction: column;
+    gap: 14px;
+    min-width: 130px;
+  }
+  .flash-usage {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .flash-usage .eyebrow {
+    font-family: var(--serif);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-4); font-style: normal;
+    margin-bottom: 2px;
+  }
+  .flash-usage .usage-ja {
+    font-family: var(--serif-jp);
+    font-size: 18px; color: var(--ink);
+    letter-spacing: 0.02em; line-height: 1.15;
+  }
+  .flash-usage .usage-kana {
+    font-family: var(--serif-jp);
+    font-size: 12px; color: var(--ink-3);
+    letter-spacing: 0.04em;
   }
   .flash-related {
     display: flex; flex-direction: column;
     gap: 6px;
-    min-width: 120px;
   }
   .flash-related .eyebrow {
     font-family: var(--serif);
@@ -568,8 +591,10 @@
     color: var(--ink-3);
   }
   @media (max-width: 480px) {
-    .flash-bottom.has-related { grid-template-columns: 1fr; }
-    .flash-bottom.has-related .flash-en { text-align: center; }
+    .flash-bottom.has-right { grid-template-columns: 1fr; }
+    .flash-bottom.has-right .flash-en { text-align: center; }
+    .flash-right { align-items: center; }
+    .flash-usage { align-items: center; text-align: center; }
     .flash-related { align-items: center; }
     .flash-related .chips { justify-content: center; }
   }
@@ -2368,22 +2393,33 @@ function renderFlashcards(container) {
             <span style="color:var(--ink-4)">·</span>
             <span class="on"><span class="label">on</span>${escHTML(card.on)}</span>
           </div>
-          <div class="flash-bottom ${related.length ? 'has-related' : ''}">
+          <div class="flash-bottom ${(card.usage || related.length) ? 'has-right' : ''}">
             <div class="flash-en" style="opacity:${APP.flashShowEn ? 1 : 0.3};font-style:${APP.flashShowEn ? 'italic' : 'normal'}">
               <span class="eyebrow">meaning</span>
               ${APP.flashShowEn ? escHTML(card.en) : '— —'}
             </div>
-            ${related.length ? `
-              <div class="flash-related">
-                <span class="eyebrow">also reads ${escHTML(card.kun)}</span>
-                <div class="chips">
-                  ${related.map(p => `
-                    <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
-                      <span class="rk">${escHTML(p.kanji)}</span>
-                      <span class="re">${escHTML(p.en)}</span>
-                    </button>
-                  `).join('')}
-                </div>
+            ${(card.usage || related.length) ? `
+              <div class="flash-right">
+                ${card.usage ? `
+                  <div class="flash-usage">
+                    <span class="eyebrow">addressed as</span>
+                    <div class="usage-ja">${escHTML(card.usage.ja)}</div>
+                    <div class="usage-kana">${escHTML(card.usage.kana || '')}</div>
+                  </div>
+                ` : ''}
+                ${related.length ? `
+                  <div class="flash-related">
+                    <span class="eyebrow">also reads ${escHTML(card.kun)}</span>
+                    <div class="chips">
+                      ${related.map(p => `
+                        <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
+                          <span class="rk">${escHTML(p.kanji)}</span>
+                          <span class="re">${escHTML(p.en)}</span>
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
               </div>
             ` : ''}
           </div>
