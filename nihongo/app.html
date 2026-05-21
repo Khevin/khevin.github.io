@@ -1854,6 +1854,7 @@ function cheatsheetHTML(book, page) {
       <div class="sheet-image">
         <image-slot
           id="vocab-${book.id}-${page.imageSlotId}"
+          image-key="vocab/${escAttr(book.id)}-${escAttr(page.imageSlotId)}"
           shape="rounded" radius="4" fit="natural"
           placeholder="Drop an illustration"></image-slot>
       </div>
@@ -2264,7 +2265,7 @@ function renderFlashcards(container) {
         </button>
         <div class="flash-card">
           <div class="flash-image">
-            <image-slot id="flash-${card.id}" image-key="${escAttr(card.kanji)}" shape="rounded" radius="4" fit="natural"
+            <image-slot id="flash-${card.id}" image-key="kanji/${escAttr(card.kanji)}" shape="rounded" radius="4" fit="natural"
               placeholder="Drop image for &quot;${escAttr(card.en)}&quot;"></image-slot>
           </div>
           <div class="flash-kanji">${escHTML(card.kanji)}</div>

@@ -664,10 +664,14 @@
       this._userUrl = (stored && stored.u) || null;
       // The shipped-asset path. We attempt each known extension on error.
       // `image-key` overrides the id, so a slot with id="flash-water" can
-      // still load from ./images/水.<ext> when the author opts in.
+      // still load from ./images/kanji/水.<ext> when the author opts in.
+      // Slashes in image-key denote subdirectories (e.g. "kanji/水",
+      // "vocab/bathroom-sheet-1") — each segment is URL-encoded separately
+      // so the slashes survive into the URL.
       const imageKey = this.getAttribute('image-key') || this.id;
+      const keyPath = imageKey ? imageKey.split('/').map(encodeURIComponent).join('/') : '';
       const shippedBase = (imageKey && !this._userUrl && !srcAttr)
-        ? `./images/${encodeURIComponent(imageKey)}.` : null;
+        ? `./images/${keyPath}.` : null;
       let url = this._userUrl;
       if (!url && shippedBase) url = shippedBase + ImageSlot._imageExts[0];
       if (!url && srcAttr) url = srcAttr;
