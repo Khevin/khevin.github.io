@@ -1561,6 +1561,22 @@ function lookupWord(text) {
   }
   const d = (window.DICTIONARY || []).find(e => e.kanji === text || e.kana === text);
   if (d) return { kanji: d.kanji, kana: d.kana, en: d.en };
+
+  // Character-level fallback: a single kanji that's not in any vocab book
+  // or DICTIONARY entry might still have an entry in KANJI_READINGS and
+  // KANJI_MEANINGS. Without this, clicking unknown kanji inside a sentence
+  // (e.g. 前 inside 食べる 前に) showed an empty popover. The rule now is
+  // that every kanji we have any data for surfaces at least its reading
+  // and meaning when clicked.
+  const chars = [...text];
+  if (chars.length === 1) {
+    const c = chars[0];
+    const meanings = window.KANJI_MEANINGS || {};
+    const readings = window.KANJI_READINGS || {};
+    if (meanings[c] || readings[c]) {
+      return { kanji: c, kana: readings[c] || '', en: meanings[c] || '' };
+    }
+  }
   return { kanji: text, kana: '', en: '' };
 }
 
