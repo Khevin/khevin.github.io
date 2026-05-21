@@ -456,24 +456,28 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'からだ',
     titleEn: 'Body',
     glyph: '体',
-    // Basic-first: all N5 before N4 before N3.
+    // Basic-first within thematic clusters. The 目見自首 cluster sits
+    // together right after the eye — they all share the rectangular 目
+    // component as a visual hook, even though their meanings diverge.
     cards: [
-      // N5
-      { id:'hand',  kanji:'手', kun:'て',     on:'シュ', en:'hand' },
-      { id:'eye',   kanji:'目', kun:'め',     on:'モク', en:'eye' },
-      { id:'mouth', kanji:'口', kun:'くち',   on:'コウ', en:'mouth' },
-      { id:'ear',   kanji:'耳', kun:'みみ',   on:'ジ',   en:'ear' },
-      { id:'foot',  kanji:'足', kun:'あし',   on:'ソク', en:'foot / leg' },
-      // N4
-      { id:'face',  kanji:'顔', kun:'かお',   on:'ガン', en:'face' },
-      { id:'head',  kanji:'頭', kun:'あたま', on:'トウ', en:'head' },
-      { id:'hair',  kanji:'髪', kun:'かみ',   on:'ハツ', en:'hair' },
-      { id:'tooth', kanji:'歯', kun:'は',     on:'シ',   en:'tooth' },
-      { id:'heart', kanji:'心', kun:'こころ', on:'シン', en:'heart / mind' },
-      // N3
-      { id:'nose',  kanji:'鼻', kun:'はな',   on:'ビ',   en:'nose' },
-      { id:'arm',   kanji:'腕', kun:'うで',   on:'ワン', en:'arm' },
-      { id:'neck',  kanji:'首', kun:'くび',   on:'シュ', en:'neck' },
+      { id:'hand',  kanji:'手', kun:'て',       on:'シュ', en:'hand' },
+      // 目 cluster — same eye-radical shape
+      { id:'eye',   kanji:'目', kun:'め',       on:'モク', en:'eye' },
+      { id:'look',  kanji:'見', kun:'み',       on:'ケン', en:'look / see' },
+      { id:'self',  kanji:'自', kun:'みずから', on:'ジ',   en:'self / oneself',
+        usage:{ ja:'自分', kana:'じぶん' } },
+      { id:'neck',  kanji:'首', kun:'くび',     on:'シュ', en:'neck' },
+      // other body parts
+      { id:'mouth', kanji:'口', kun:'くち',     on:'コウ', en:'mouth' },
+      { id:'ear',   kanji:'耳', kun:'みみ',     on:'ジ',   en:'ear' },
+      { id:'foot',  kanji:'足', kun:'あし',     on:'ソク', en:'foot / leg' },
+      { id:'face',  kanji:'顔', kun:'かお',     on:'ガン', en:'face' },
+      { id:'head',  kanji:'頭', kun:'あたま',   on:'トウ', en:'head' },
+      { id:'hair',  kanji:'髪', kun:'かみ',     on:'ハツ', en:'hair' },
+      { id:'tooth', kanji:'歯', kun:'は',       on:'シ',   en:'tooth' },
+      { id:'heart', kanji:'心', kun:'こころ',   on:'シン', en:'heart / mind' },
+      { id:'nose',  kanji:'鼻', kun:'はな',     on:'ビ',   en:'nose' },
+      { id:'arm',   kanji:'腕', kun:'うで',     on:'ワン', en:'arm' },
     ],
   },
 ];
@@ -533,6 +537,8 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'月', kana:'つき',     en:'moon / month',    level:'N5', tags:['time'] },
   { kind:'kanji', kanji:'目', kana:'め',       en:'eye',             level:'N5', tags:['body'] },
   { kind:'kanji', kanji:'手', kana:'て',       en:'hand',            level:'N5', tags:['body'] },
+  { kind:'kanji', kanji:'見', kana:'み.る',    en:'look / see',      level:'N5', tags:[] },
+  { kind:'kanji', kanji:'自', kana:'じ',       en:'self / oneself',  level:'N4', tags:[] },
   { kind:'kanji', kanji:'口', kana:'くち',     en:'mouth',           level:'N5', tags:['body'] },
   { kind:'kanji', kanji:'耳', kana:'みみ',     en:'ear',             level:'N5', tags:['body'] },
   { kind:'kanji', kanji:'鼻', kana:'はな',     en:'nose',            level:'N3', tags:['body'] },
@@ -665,6 +671,7 @@ window.KANJI_READINGS = {
   '葉':'は', '星':'ほし', '雲':'くも',
   '足':'あし', '頭':'あたま', '心':'こころ', '腕':'うで', '首':'くび',
   '兄':'あに', '姉':'あね', '弟':'おとうと', '妹':'いもうと',
+  '自':'じ',
   '光':'ひかり', '音':'おと', '声':'こえ', '花':'はな', '草':'くさ',
   '海':'うみ', '河':'かわ', '池':'いけ', '流':'なが', '泳':'およ',
   '汽':'き', '注':'そそ', '沢':'さわ', '漢':'かん',
@@ -746,6 +753,7 @@ window.KANJI_MEANINGS = {
   '葉':'leaf', '星':'star', '雲':'cloud',
   '足':'foot', '頭':'head', '心':'heart', '腕':'arm', '首':'neck',
   '兄':'older brother', '姉':'older sister', '弟':'younger brother', '妹':'younger sister',
+  '自':'self',
   '光':'light', '音':'sound', '声':'voice', '花':'flower', '草':'grass',
   '海':'sea', '河':'stream', '池':'pond', '流':'flow', '泳':'swim',
   '汽':'steam', '注':'pour', '沢':'marsh', '漢':'Chinese',
