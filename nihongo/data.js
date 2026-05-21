@@ -411,6 +411,7 @@ window.FLASHCARD_CLASSES = [
       { id:'oneesan', kanji:'姉', kun:'あね',    on:'シ',     en:'older sister',
         usage:{ ja:'お姉さん', kana:'おねえさん' } },
       { id:'imouto', kanji:'妹', kun:'いもうと', on:'マイ',   en:'younger sister' },
+      { id:'shimai', kanji:'姉妹', kun:'しまい', on:'シマイ', en:'sisters' },
       // male cluster
       { id:'father', kanji:'父', kun:'ちち',     on:'フ',     en:'father',
         usage:{ ja:'お父さん', kana:'おとうさん' } },
@@ -418,6 +419,7 @@ window.FLASHCARD_CLASSES = [
       { id:'oniisan', kanji:'兄', kun:'あに',    on:'ケイ',   en:'older brother',
         usage:{ ja:'お兄さん', kana:'おにいさん' } },
       { id:'otouto', kanji:'弟', kun:'おとうと', on:'テイ',   en:'younger brother' },
+      { id:'kyoudai', kanji:'兄弟', kun:'きょうだい', on:'キョウダイ', en:'brothers / siblings' },
       // others
       { id:'child',  kanji:'子', kun:'こ',       on:'シ',     en:'child' },
       { id:'like',   kanji:'好', kun:'す',       on:'コウ',   en:'like / fond' },
@@ -506,6 +508,8 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'姉', kana:'あね',     en:'older sister',    level:'N5', tags:[] },
   { kind:'kanji', kanji:'弟', kana:'おとうと', en:'younger brother', level:'N4', tags:[] },
   { kind:'kanji', kanji:'妹', kana:'いもうと', en:'younger sister',  level:'N4', tags:[] },
+  { kind:'word',  kanji:'姉妹', kana:'しまい',    en:'sisters',            level:'N4', tags:[] },
+  { kind:'word',  kanji:'兄弟', kana:'きょうだい', en:'brothers / siblings', level:'N4', tags:[] },
   { kind:'kanji', kanji:'子', kana:'こ',       en:'child',           level:'N5', tags:[] },
   { kind:'kanji', kanji:'女', kana:'おんな',   en:'woman',           level:'N5', tags:[] },
   { kind:'kanji', kanji:'好', kana:'す.き',    en:'like / fond',     level:'N5', tags:[] },
