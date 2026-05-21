@@ -395,9 +395,6 @@ window.FLASHCARD_CLASSES = [
       { id:'mtn',       kanji:'山', kun:'やま',   on:'サン',   en:'mountain' },
       { id:'river',     kanji:'川', kun:'かわ',   on:'セン',   en:'river' },
       { id:'hand',      kanji:'手', kun:'て',     on:'シュ',   en:'hand' },
-      { id:'mouth',     kanji:'口', kun:'くち',   on:'コウ',   en:'mouth' },
-      { id:'eye',       kanji:'目', kun:'め',     on:'モク',   en:'eye' },
-      { id:'ear',       kanji:'耳', kun:'みみ',   on:'ジ',     en:'ear' },
     ],
   },
   {
@@ -445,7 +442,19 @@ window.FLASHCARD_CLASSES = [
       { id:'leaf',     kanji:'葉', kun:'は',     on:'ヨウ',   en:'leaf' },
       { id:'grass',    kanji:'草', kun:'くさ',   on:'ソウ',   en:'grass' },
       { id:'ice',      kanji:'氷', kun:'こおり', on:'ヒョウ', en:'ice' },
-      { id:'nose',     kanji:'鼻', kun:'はな',   on:'ビ',     en:'nose' },
+    ],
+  },
+  {
+    id: 'body',
+    titleJa: 'からだ',
+    titleEn: 'Body',
+    glyph: '体',
+    // Basic-first: N5 entries before the lone N3 (鼻).
+    cards: [
+      { id:'eye',   kanji:'目', kun:'め',   on:'モク', en:'eye' },
+      { id:'mouth', kanji:'口', kun:'くち', on:'コウ', en:'mouth' },
+      { id:'ear',   kanji:'耳', kun:'みみ', on:'ジ',   en:'ear' },
+      { id:'nose',  kanji:'鼻', kun:'はな', on:'ビ',   en:'nose' },
     ],
   },
 ];
