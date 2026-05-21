@@ -1217,7 +1217,8 @@ const APP = {
   vocabClassId: lsGet('jp:vocabClass', 'home'),
   vocabBookId:  lsGet('jp:vocabBook', 'bathroom'),
   vocabPageIdx: 0,
-  flashClassId: lsGet('jp:flashClass', 'basic'),
+  // Migrate the legacy 'weather' class id (renamed to 'nature').
+  flashClassId: (lsGet('jp:flashClass', 'basic') === 'weather' ? 'nature' : lsGet('jp:flashClass', 'basic')),
   flashIdx:     0,
   flashShowEn:  true,
   dictQ:        '',
