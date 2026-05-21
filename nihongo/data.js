@@ -372,12 +372,12 @@ window.FLASHCARD_CLASSES = [
     titleEn: 'Basic',
     glyph: '一',
     cards: [
-      { id:'water',     kanji:'水', kun:'みず',   on:'スイ',   en:'water' },
+      // elements lead: 火 水 氷 (fire then water then ice)
       { id:'fire',      kanji:'火', kun:'ひ',     on:'カ',     en:'fire' },
+      { id:'water',     kanji:'水', kun:'みず',   on:'スイ',   en:'water' },
+      { id:'ice',       kanji:'氷', kun:'こおり', on:'ヒョウ', en:'ice' },
       { id:'tree',      kanji:'木', kun:'き',     on:'ボク',   en:'tree / wood' },
       { id:'book',      kanji:'本', kun:'もと',   on:'ホン',   en:'book / origin / root' },
-      { id:'woods',     kanji:'林', kun:'はやし', on:'リン',   en:'woods' },
-      { id:'forest',    kanji:'森', kun:'もり',   on:'シン',   en:'forest' },
       { id:'earth',     kanji:'土', kun:'つち',   on:'ド',     en:'earth / soil / Saturday' },
       { id:'leave',     kanji:'去', kun:'さる',   on:'キョ',   en:'to leave / past' },
       { id:'katana',    kanji:'刀', kun:'かたな', on:'トウ',   en:'katana / sword' },
@@ -390,11 +390,11 @@ window.FLASHCARD_CLASSES = [
       { id:'king',      kanji:'王', kun:'おう',   on:'オウ',   en:'king' },
       { id:'life',      kanji:'生', kun:'い',     on:'セイ',   en:'life' },
       { id:'country',   kanji:'国', kun:'くに',   on:'コク',   en:'country' },
-      { id:'yen',       kanji:'円', kun:'まる',   on:'エン',   en:'yen / circle' },
       { id:'sun',       kanji:'日', kun:'ひ',     on:'ニチ',   en:'sun / day' },
       { id:'moon',      kanji:'月', kun:'つき',   on:'ゲツ',   en:'moon / month' },
       { id:'mtn',       kanji:'山', kun:'やま',   on:'サン',   en:'mountain' },
       { id:'river',     kanji:'川', kun:'かわ',   on:'セン',   en:'river' },
+      { id:'yen',       kanji:'円', kun:'まる',   on:'エン',   en:'yen / circle' },
     ],
   },
   {
@@ -435,29 +435,29 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'しぜん',
     titleEn: 'Nature',
     glyph: '自',
-    // Ordered N5 → N4 → N3 so basic stuff lands first.
     cards: [
-      // N5
+      // wood family + the not-yet/insect lead-in
+      { id:'woods',    kanji:'林', kun:'はやし', on:'リン',   en:'woods' },
+      { id:'forest',   kanji:'森', kun:'もり',   on:'シン',   en:'forest' },
+      { id:'mada',     kanji:'未', kun:'まだ',   on:'ミ',     en:'not yet / unripe',
+        seeAlso:['妹'] },
+      { id:'insect',   kanji:'虫', kun:'むし',   on:'チュウ', en:'insect' },
+      // seasons (N5)
       { id:'spring',   kanji:'春', kun:'はる',   on:'シュン', en:'spring' },
       { id:'summer',   kanji:'夏', kun:'なつ',   on:'カ',     en:'summer' },
       { id:'autumn',   kanji:'秋', kun:'あき',   on:'シュウ', en:'autumn' },
       { id:'winter',   kanji:'冬', kun:'ふゆ',   on:'トウ',   en:'winter' },
+      // weather
       { id:'rain',     kanji:'雨', kun:'あめ',   on:'ウ',     en:'rain' },
+      { id:'umbrella', kanji:'傘', kun:'かさ',   on:'サン',   en:'umbrella' },
       { id:'wind',     kanji:'風', kun:'かぜ',   on:'フウ',   en:'wind' },
       { id:'sky',      kanji:'空', kun:'そら',   on:'クウ',   en:'sky' },
       { id:'flower',   kanji:'花', kun:'はな',   on:'カ',     en:'flower' },
-      // N4
       { id:'snow',     kanji:'雪', kun:'ゆき',   on:'セツ',   en:'snow' },
       { id:'cloud',    kanji:'雲', kun:'くも',   on:'ウン',   en:'cloud' },
       { id:'star',     kanji:'星', kun:'ほし',   on:'セイ',   en:'star' },
-      { id:'insect',   kanji:'虫', kun:'むし',   on:'チュウ', en:'insect' },
-      { id:'umbrella', kanji:'傘', kun:'かさ',   on:'サン',   en:'umbrella' },
-      // N3
       { id:'leaf',     kanji:'葉', kun:'は',     on:'ヨウ',   en:'leaf' },
       { id:'grass',    kanji:'草', kun:'くさ',   on:'ソウ',   en:'grass' },
-      { id:'ice',      kanji:'氷', kun:'こおり', on:'ヒョウ', en:'ice' },
-      { id:'mada',     kanji:'未', kun:'まだ',   on:'ミ',     en:'not yet / unripe',
-        seeAlso:['妹'] },
     ],
   },
   {
