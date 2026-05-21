@@ -407,7 +407,6 @@ window.FLASHCARD_CLASSES = [
     cards: [
       { id:'person', kanji:'人', kun:'ひと',     on:'ジン',   en:'person' },
       { id:'enter',  kanji:'入', kun:'はい',     on:'ニュウ', en:'enter' },
-      { id:'exit',   kanji:'出', kun:'で',       on:'シュツ', en:'go out / exit' },
       // female cluster
       { id:'mother', kanji:'母', kun:'はは',     on:'ボ',     en:'mother',
         usage:{ ja:'お母さん', kana:'おかあさん' } },
@@ -502,6 +501,18 @@ window.FLASHCARD_CLASSES = [
       { id:'down', kanji:'下', kun:'した', on:'カ',     en:'down / below' },
     ],
   },
+  {
+    id: 'doors',
+    titleJa: 'とびら',
+    titleEn: 'Doors',
+    glyph: '門',
+    cards: [
+      { id:'door',  kanji:'戸', kun:'と',   on:'コ',     en:'door' },
+      { id:'gate',  kanji:'門', kun:'かど', on:'モン',   en:'gate' },
+      { id:'open',  kanji:'開', kun:'ひら', on:'カイ',   en:'open' },
+      { id:'exit',  kanji:'出', kun:'で',   on:'シュツ', en:'go out / exit' },
+    ],
+  },
 ];
 
 // Flat list for any code that still expects FLASHCARDS as a single array.
@@ -520,6 +531,9 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'人', kana:'ひと',     en:'person',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'入', kana:'はい.る',  en:'enter / put in',  level:'N5', tags:[] },
   { kind:'kanji', kanji:'出', kana:'で.る',    en:'go out / exit',   level:'N5', tags:[] },
+  { kind:'kanji', kanji:'戸', kana:'と',       en:'door',            level:'N3', tags:[] },
+  { kind:'kanji', kanji:'門', kana:'もん',     en:'gate',            level:'N3', tags:[] },
+  { kind:'kanji', kanji:'開', kana:'ひら.く',  en:'open',            level:'N4', tags:[] },
   { kind:'kanji', kanji:'父', kana:'ちち',     en:'father',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'母', kana:'はは',     en:'mother',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'兄', kana:'あに',     en:'older brother',   level:'N5', tags:[] },
@@ -700,6 +714,7 @@ window.KANJI_READINGS = {
   '円':'えん',
   '上':'うえ', '下':'した',
   '大':'おお',
+  '戸':'と', '門':'もん',
   '鼻':'はな', '耳':'みみ',
   '父':'ちち', '母':'はは', '女':'おんな', '男':'おとこ', '好':'す',
   '反':'はん', '氷':'こおり',
@@ -785,6 +800,7 @@ window.KANJI_MEANINGS = {
   '円':'yen',
   '上':'up', '下':'down',
   '大':'big',
+  '戸':'door', '門':'gate',
   '鼻':'nose', '耳':'ear',
   '女':'woman', '男':'man', '好':'like',
   '反':'opposite', '氷':'ice',
