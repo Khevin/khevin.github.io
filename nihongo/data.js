@@ -404,6 +404,7 @@ window.FLASHCARD_CLASSES = [
     cards: [
       { id:'person', kanji:'人', kun:'ひと',     on:'ジン',   en:'person' },
       { id:'enter',  kanji:'入', kun:'はい',     on:'ニュウ', en:'enter' },
+      { id:'exit',   kanji:'出', kun:'で',       on:'シュツ', en:'go out / exit' },
       // female cluster
       { id:'mother', kanji:'母', kun:'はは',     on:'ボ',     en:'mother',
         usage:{ ja:'お母さん', kana:'おかあさん' } },
@@ -504,6 +505,7 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'川', kana:'かわ',     en:'river',           level:'N5', tags:['nature'] },
   { kind:'kanji', kanji:'人', kana:'ひと',     en:'person',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'入', kana:'はい.る',  en:'enter / put in',  level:'N5', tags:[] },
+  { kind:'kanji', kanji:'出', kana:'で.る',    en:'go out / exit',   level:'N5', tags:[] },
   { kind:'kanji', kanji:'父', kana:'ちち',     en:'father',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'母', kana:'はは',     en:'mother',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'兄', kana:'あに',     en:'older brother',   level:'N5', tags:[] },
