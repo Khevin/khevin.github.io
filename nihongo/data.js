@@ -471,6 +471,7 @@ window.FLASHCARD_CLASSES = [
     // together right after the eye — they all share the rectangular 目
     // component as a visual hook, even though their meanings diverge.
     cards: [
+      { id:'body',  kanji:'体', kun:'からだ',   on:'タイ', en:'body' },
       { id:'hand',  kanji:'手', kun:'て',       on:'シュ', en:'hand' },
       // 目 cluster — same eye-radical shape
       { id:'eye',   kanji:'目', kun:'め',       on:'モク', en:'eye' },
@@ -511,6 +512,7 @@ window.FLASHCARD_CLASSES = [
     cards: [
       { id:'door',      kanji:'戸',   kun:'と',     on:'コ',         en:'door' },
       { id:'gate',      kanji:'門',   kun:'かど',   on:'モン',       en:'gate' },
+      { id:'sidedoor',  kanji:'閤',   kun:'こう',   on:'コウ',       en:'side door' },
       { id:'window',    kanji:'窓',   kun:'まど',   on:'ソウ',       en:'window' },
       { id:'open',      kanji:'開',   kun:'ひら',   on:'カイ',       en:'open' },
       { id:'exit',      kanji:'出',   kun:'で',     on:'シュツ',     en:'go out / exit' },
@@ -540,6 +542,7 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'出', kana:'で.る',    en:'go out / exit',   level:'N5', tags:[] },
   { kind:'kanji', kanji:'戸', kana:'と',       en:'door',            level:'N3', tags:[] },
   { kind:'kanji', kanji:'門', kana:'もん',     en:'gate',            level:'N3', tags:[] },
+  { kind:'kanji', kanji:'閤', kana:'こう',     en:'side door',       level:'N1', tags:[] },
   { kind:'kanji', kanji:'開', kana:'ひら.く',  en:'open',            level:'N4', tags:[] },
   { kind:'kanji', kanji:'床', kana:'ゆか',     en:'floor',           level:'N3', tags:['home'] },
   { kind:'kanji', kanji:'棚', kana:'たな',     en:'shelf',           level:'N2', tags:['home'] },
@@ -592,6 +595,7 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'日', kana:'ひ',       en:'sun / day',       level:'N5', tags:['time'] },
   { kind:'kanji', kanji:'月', kana:'つき',     en:'moon / month',    level:'N5', tags:['time'] },
   { kind:'kanji', kanji:'目', kana:'め',       en:'eye',             level:'N5', tags:['body'] },
+  { kind:'kanji', kanji:'体', kana:'からだ',   en:'body',            level:'N5', tags:['body'] },
   { kind:'kanji', kanji:'手', kana:'て',       en:'hand',            level:'N5', tags:['body'] },
   { kind:'kanji', kanji:'見', kana:'み.る',    en:'look / see',      level:'N5', tags:[] },
   { kind:'kanji', kanji:'自', kana:'じ',       en:'self / oneself',  level:'N4', tags:[] },
@@ -726,6 +730,7 @@ window.KANJI_READINGS = {
   '大':'おお',
   '戸':'と', '門':'もん',
   '床':'ゆか', '天':'てん', '井':'じょう',
+  '閤':'こう',
   '鼻':'はな', '耳':'みみ',
   '父':'ちち', '母':'はは', '女':'おんな', '男':'おとこ', '好':'す',
   '反':'はん', '氷':'こおり',
@@ -813,6 +818,7 @@ window.KANJI_MEANINGS = {
   '大':'big',
   '戸':'door', '門':'gate',
   '床':'floor', '天':'heaven', '井':'well',
+  '閤':'side door',
   '鼻':'nose', '耳':'ear',
   '女':'woman', '男':'man', '好':'like',
   '反':'opposite', '氷':'ice',
