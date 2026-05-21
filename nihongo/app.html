@@ -471,6 +471,12 @@
     border-radius: 4px;
     overflow: hidden;
   }
+  /* When the inner image-slot is readonly and not yet filled (no shipped
+     file), drop the container so the card doesn't carry an empty 24px
+     placeholder gap above the kanji. */
+  .flash-image:has(image-slot[readonly]:not([data-filled])) {
+    display: none;
+  }
   .flash-kanji {
     font-family: var(--serif-jp); font-weight: 700;
     font-size: clamp(56px, 10vw, 88px);
@@ -1276,8 +1282,8 @@
 <button id="settings-btn" class="settings-btn" aria-label="Settings" title="Settings">⚙</button>
 <div id="settings-panel" class="settings-panel" hidden></div>
 
-<script src="image-slot.js?v=dots-sticky"></script>
-<script src="data.js?v=dots-sticky"></script>
+<script src="image-slot.js?v=readonly"></script>
+<script src="data.js?v=readonly"></script>
 <script>
 'use strict';
 
@@ -2439,8 +2445,7 @@ function renderFlashcards(container) {
         </button>
         <div class="flash-card">
           <div class="flash-image">
-            <image-slot id="flash-${card.id}" image-key="kanji/${escAttr(card.kanji)}" shape="rounded" radius="4" fit="natural"
-              placeholder="Drop image for &quot;${escAttr(card.en)}&quot;"></image-slot>
+            <image-slot id="flash-${card.id}" image-key="kanji/${escAttr(card.kanji)}" shape="rounded" radius="4" fit="natural" readonly></image-slot>
           </div>
           <div class="flash-kanji">${escHTML(card.kanji)}</div>
           <div class="flash-reading">

@@ -255,6 +255,16 @@
     ':host([fit="natural"]) .empty{position:absolute;inset:0}' +
     ':host([fit="natural"][data-filled]) .empty{display:none}' +
     ':host([fit="natural"]) .spill{display:none !important}' +
+    // ── readonly mode ────────────────────────────────────────────────────
+    // For slots that should only ever read from the filesystem — no drop
+    // zone, no controls, and the host itself collapses out of the layout
+    // when the probe finds no image. Used by flashcards where images are
+    // curated and committed; not used by vocab cheatsheets where drops are
+    // still allowed.
+    ':host([readonly]) .empty{display:none !important}' +
+    ':host([readonly]) .ctl{display:none !important}' +
+    ':host([readonly]) .ring{display:none !important}' +
+    ':host([readonly]:not([data-filled])){display:none !important}' +
     // ── variant dots (visible when an imageKey has multiple files) ───────
     '.variant-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);' +
     '  display:none;gap:5px;padding:5px 9px;border-radius:999px;' +
@@ -320,7 +330,10 @@
       this._subFn = () => this._render();
       // Shadow-DOM listeners live with the shadow DOM — bound once here so
       // disconnect/reconnect (e.g. React remount) doesn't stack handlers.
-      this._empty.addEventListener('click', () => this._input.click());
+      this._empty.addEventListener('click', () => {
+        if (this.hasAttribute('readonly')) return;
+        this._input.click();
+      });
       root.addEventListener('click', (e) => {
         const act = e.target && e.target.getAttribute && e.target.getAttribute('data-act');
         if (act === 'replace') { this._exitReframe(true); this._input.click(); }
@@ -438,10 +451,12 @@
         ImageSlot._warned = true;
         console.warn('<image-slot> without an id will not persist its dropped image.');
       }
-      this.addEventListener('dragenter', this);
-      this.addEventListener('dragover', this);
-      this.addEventListener('dragleave', this);
-      this.addEventListener('drop', this);
+      if (!this.hasAttribute('readonly')) {
+        this.addEventListener('dragenter', this);
+        this.addEventListener('dragover', this);
+        this.addEventListener('dragleave', this);
+        this.addEventListener('drop', this);
+      }
       subs.add(this._subFn);
       // width%/height% in _applyView encode the frame aspect at call time —
       // a host resize (responsive grid, pane divider) would stretch the
@@ -745,6 +760,14 @@
           if (found.length > 0 && !this._userUrl && !srcAttr) {
             this._img.src = found[this._variantIdx];
             this._ghost.src = found[this._variantIdx];
+            // Readonly slots flip to filled now — the probe pre-loaded the
+            // image so it's guaranteed to render; no onload race.
+            if (this.hasAttribute('readonly')) {
+              this.setAttribute('data-filled', '');
+            }
+          } else if (found.length === 0 && this.hasAttribute('readonly')) {
+            // No image on disk for this readonly slot — stay collapsed.
+            this.removeAttribute('data-filled');
           }
         });
       }
@@ -770,35 +793,60 @@
       // Toggle via style.display — the [hidden] attribute alone loses to
       // the display:flex / display:block rules in the stylesheet above.
       if (url) {
-        if (this._img.getAttribute('src') !== url) {
-          this._img.src = url;
-          this._ghost.src = url;
-        }
-        // For the shipped-asset path, fall through extensions on 404. When
-        // all extensions miss, drop to the empty state.
-        if (shippedBase) {
-          let attempt = 0;
-          this._img.onerror = () => {
-            attempt++;
-            if (attempt < ImageSlot._imageExts.length) {
-              const next = shippedBase + ImageSlot._imageExts[attempt];
-              this._img.src = next;
-              this._ghost.src = next;
+        if (this.hasAttribute('readonly')) {
+          // Readonly: the probe is the single source of truth. We don't
+          // touch src here — we wait for the probe handler to drop in the
+          // matching URL and flip data-filled synchronously. If the probe
+          // has already run (cache hit), use its results immediately.
+          this._img.onerror = null;
+          this._img.onload = null;
+          this._img.style.display = 'block';
+          this._empty.style.display = 'none';
+          if (this._variants && this._variants.length > 0) {
+            const v = this._variants[this._variantIdx] || this._variants[0];
+            if (v) {
+              if (this._img.getAttribute('src') !== v) {
+                this._img.src = v;
+                this._ghost.src = v;
+              }
+              this.setAttribute('data-filled', '');
             } else {
-              this._img.onerror = null;
-              this._img.style.display = 'none';
-              this._img.removeAttribute('src');
-              this._ghost.removeAttribute('src');
-              this._empty.style.display = 'flex';
               this.removeAttribute('data-filled');
             }
-          };
+          } else {
+            this.removeAttribute('data-filled');
+          }
         } else {
-          this._img.onerror = null;
+          if (this._img.getAttribute('src') !== url) {
+            this._img.src = url;
+            this._ghost.src = url;
+          }
+          // Editable mode: optimistic display with onerror cascade through
+          // the known extensions; drop to the empty state if all miss.
+          if (shippedBase) {
+            let attempt = 0;
+            this._img.onerror = () => {
+              attempt++;
+              if (attempt < ImageSlot._imageExts.length) {
+                const next = shippedBase + ImageSlot._imageExts[attempt];
+                this._img.src = next;
+                this._ghost.src = next;
+              } else {
+                this._img.onerror = null;
+                this._img.style.display = 'none';
+                this._img.removeAttribute('src');
+                this._ghost.removeAttribute('src');
+                this._empty.style.display = 'flex';
+                this.removeAttribute('data-filled');
+              }
+            };
+          } else {
+            this._img.onerror = null;
+          }
+          this._img.style.display = 'block';
+          this._empty.style.display = 'none';
+          this.setAttribute('data-filled', '');
         }
-        this._img.style.display = 'block';
-        this._empty.style.display = 'none';
-        this.setAttribute('data-filled', '');
         this._clampView();
         this._applyView();
       } else {
