@@ -441,6 +441,7 @@ window.FLASHCARD_CLASSES = [
       // wood family + the not-yet/insect lead-in
       { id:'woods',    kanji:'林', kun:'はやし', on:'リン',   en:'woods' },
       { id:'forest',   kanji:'森', kun:'もり',   on:'シン',   en:'forest' },
+      { id:'stone',    kanji:'石', kun:'いし',   on:'セキ',   en:'stone / rock' },
       { id:'mada',     kanji:'未', kun:'まだ',   on:'ミ',     en:'not yet / unripe',
         seeAlso:['妹'] },
       { id:'insect',   kanji:'虫', kun:'むし',   on:'チュウ', en:'insect' },
@@ -546,6 +547,7 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'本', kana:'ほん',     en:'book / origin / root', level:'N5', tags:['home'] },
   { kind:'kanji', kanji:'林', kana:'はやし',   en:'woods',           level:'N4', tags:['nature'] },
   { kind:'kanji', kanji:'森', kana:'もり',     en:'forest',          level:'N4', tags:['nature'] },
+  { kind:'kanji', kanji:'石', kana:'いし',     en:'stone / rock',    level:'N5', tags:['nature'] },
   { kind:'kanji', kanji:'土', kana:'つち',     en:'earth / soil / Saturday', level:'N5', tags:['nature','time'] },
   { kind:'kanji', kanji:'去', kana:'さ.る',   en:'to leave / past',  level:'N4', tags:['time'] },
   { kind:'kanji', kanji:'刀', kana:'かたな',   en:'katana / sword',   level:'N3', tags:[] },
