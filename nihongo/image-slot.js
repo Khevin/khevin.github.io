@@ -259,9 +259,7 @@
     '.variant-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);' +
     '  display:none;gap:5px;padding:5px 9px;border-radius:999px;' +
     '  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);' +
-    '  opacity:0;transition:opacity .15s;z-index:3}' +
-    ':host([data-filled]:hover) .variant-dots,' +
-    ':host([data-filled]:focus-within) .variant-dots{opacity:1}' +
+    '  z-index:3}' +
     '.variant-dots[data-many]{display:flex}' +
     '.variant-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);' +
     '  border:none;padding:0;cursor:pointer;transition:background .12s,transform .12s}' +
