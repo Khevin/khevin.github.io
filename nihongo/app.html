@@ -425,22 +425,99 @@
   .sentence .audio { color: var(--ink-3); }
 
   /* ─── flashcards ────────────────────────────────────────────────────── */
+  /* ─── flash 3-column layout (rails + card) ──────────────────────────── */
+  .flash-layout {
+    display: grid;
+    grid-template-columns: 36px 1fr 44px;
+    gap: 0 10px;
+    align-items: stretch;
+    max-width: 720px;
+    margin: 0 auto;
+    min-height: calc(100vh - var(--pad-page) * 2);
+  }
+  .flash-rail-left {
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flash-title-vert {
+    writing-mode: vertical-rl;
+    font-family: var(--serif-jp); font-weight: 600;
+    font-size: clamp(16px, 2vw, 22px);
+    color: var(--ink-4); letter-spacing: 0.14em;
+    white-space: nowrap;
+  }
+  .flash-center {
+    display: flex; flex-direction: column; justify-content: center;
+    min-width: 0;
+  }
+  .flash-rail-right {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 14px;
+    padding: 24px 0;
+  }
+  .flash-label-vert {
+    writing-mode: vertical-rl;
+    font-family: var(--serif); font-style: italic;
+    font-size: 11px; color: var(--ink-4);
+    letter-spacing: 0.06em;
+  }
+  .flash-toggle-vert {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .pill-sq {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.25);
+    font-family: var(--serif-jp); font-size: 13px; font-weight: 500;
+    color: var(--ink-3); cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .pill-sq:hover { border-color: var(--gold); color: var(--ink-2); }
+  .pill-sq.active {
+    background: var(--gold); color: white; border-color: var(--gold-dark);
+  }
+  .flash-progress-vert {
+    flex: 1; width: 4px; min-height: 40px;
+    background: var(--paper-edge); border-radius: 2px;
+    position: relative;
+  }
+  .flash-progress-vert > div {
+    position: absolute; left: 0; right: 0; top: 0;
+    background: var(--gold); border-radius: 2px;
+    transition: height .25s;
+  }
+  .flash-mobile-head {
+    display: none;
+  }
+  @media (max-width: 760px) {
+    .flash-layout { grid-template-columns: 1fr; min-height: auto; }
+    .flash-rail-left, .flash-rail-right { display: none; }
+    .flash-mobile-head {
+      display: flex; justify-content: flex-end; margin-bottom: 10px;
+    }
+  }
+
   .flash-deck {
-    display: grid; grid-template-columns: 1fr; gap: 24px;
-    max-width: 580px; margin: 0 auto;
+    max-width: 580px; margin: 0 auto; width: 100%;
   }
   .flash-stage {
-    display: flex; align-items: center; gap: 14px;
+    display: grid;
+    grid-template-columns: 52px 1fr 52px;
+    gap: 14px;
     perspective: 1200px;
     position: relative;
   }
-  .flash-stage > .flash-card { flex: 1; min-width: 0; }
+  .flash-stage > .flash-card { min-width: 0; }
+  .flash-nav-col {
+    /* Stretches to full grid-row height; arrow inside repositioned via JS */
+  }
   .flash-nav {
-    flex: 0 0 auto;
     width: 52px; height: 52px;
-    background: transparent;
+    background: var(--paper);
     border-color: transparent;
     color: var(--ink-3);
+    transition: background .15s, color .15s, border-color .15s;
   }
   .flash-nav svg { width: 22px; height: 22px; }
   .flash-nav:hover {
@@ -449,7 +526,7 @@
     border-color: rgba(141,102,48,0.25);
   }
   @media (max-width: 520px) {
-    .flash-stage { gap: 6px; }
+    .flash-stage { grid-template-columns: 40px 1fr 40px; gap: 6px; }
     .flash-nav { width: 40px; height: 40px; }
     .flash-nav svg { width: 18px; height: 18px; }
   }
@@ -485,6 +562,111 @@
     line-height: 1;
     letter-spacing: 0.02em;
   }
+  /* ── Heisig tooltip chip ── */
+  .heisig-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 6px;
+    padding: 3px 10px 3px 8px;
+    font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px;
+    color: var(--ink-3); background: var(--paper-2);
+    border: 1px solid var(--paper-edge); border-radius: 12px;
+    cursor: help; position: relative;
+    transition: color .15s, border-color .15s;
+  }
+  .heisig-chip:hover { color: var(--ink); border-color: var(--gold); }
+  .heisig-chip .h-icon {
+    font-weight: 700; font-size: 10px; color: var(--gold-dark);
+    background: var(--paper); border: 1px solid var(--paper-edge);
+    border-radius: 3px; padding: 1px 4px; line-height: 1;
+  }
+  .heisig-chip .h-kw {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+  }
+  /* tooltip bubble */
+  .heisig-tip {
+    display: none; position: absolute; bottom: calc(100% + 8px);
+    left: 50%; transform: translateX(-50%);
+    width: max(280px, min(380px, 60vw));
+    padding: 14px 16px;
+    background: var(--paper); border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(60,40,10,0.12);
+    z-index: 40;
+    text-align: left;
+  }
+  .heisig-chip:hover .heisig-tip { display: block; }
+  .heisig-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: var(--paper-edge);
+  }
+  .heisig-tip .ht-head {
+    display: flex; align-items: baseline; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .heisig-tip .ht-frame {
+    font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px; color: var(--gold-dark);
+    background: var(--paper-2); border: 1px solid var(--paper-edge);
+    border-radius: 4px; padding: 2px 6px;
+  }
+  .heisig-tip .ht-kw {
+    font-family: var(--serif); font-style: italic; font-size: 15px;
+    font-weight: 500; color: var(--ink);
+  }
+  .heisig-tip .ht-story {
+    font-family: var(--serif); font-size: 13px; line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .heisig-tip .ht-src {
+    margin-top: 8px;
+    font-family: var(--serif); font-style: italic; font-size: 10px;
+    color: var(--ink-4);
+  }
+  /* ── Stroke count badge ── */
+  .flash-strokes {
+    display: inline-block;
+    font-family: 'SF Mono', 'Consolas', monospace; font-size: 10px;
+    color: var(--ink-3); background: var(--paper-2);
+    border: 1px solid var(--paper-edge); border-radius: 10px;
+    padding: 1px 7px; margin-left: 6px;
+    vertical-align: 2px; letter-spacing: 0; font-style: normal;
+  }
+  /* ── Word examples ── */
+  .flash-examples {
+    margin-top: 16px; padding-top: 14px;
+    border-top: 1px dashed rgba(141,102,48,0.25);
+  }
+  .flash-examples > .eyebrow {
+    display: block; font-family: var(--serif);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-4); margin-bottom: 8px; font-style: normal;
+  }
+  .flash-ex-row {
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 4px 14px; align-items: baseline; padding: 5px 0;
+  }
+  .flash-ex-row + .flash-ex-row {
+    border-top: 1px solid rgba(141,102,48,0.08);
+  }
+  .ex-word {
+    font-family: var(--serif-jp); font-size: 17px;
+    color: var(--ink); letter-spacing: 0.03em;
+  }
+  .ex-reading {
+    font-family: var(--serif); font-size: 13px;
+    color: var(--ink-2); letter-spacing: 0.02em;
+  }
+  .ex-meaning {
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    color: var(--ink-3); text-align: right; white-space: nowrap;
+  }
+  /* ── Flash card footer (Heisig chip) ── */
+  .flash-foot {
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px dashed rgba(141,102,48,0.25);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .flash-foot:empty { display: none; }
   .flash-reading {
     display: flex; justify-content: center; gap: 14px;
     margin-top: 12px;
@@ -688,6 +870,69 @@
   .empty-state {
     padding: 60px 20px; text-align: center;
     color: var(--ink-3); font-style: italic; font-family: var(--serif);
+  }
+
+  /* ─── flash category sidebar ─────────────────────────────────────────── */
+  .flash-sidebar {
+    display: none;
+    background: color-mix(in srgb, var(--paper-edge) 35%, var(--paper) 65%);
+    border-right: 1px solid rgba(141,102,48,0.15);
+    box-shadow: inset -6px 0 16px -12px rgba(100,72,30,0.10);
+    padding: 16px 10px;
+    position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .app.show-flash-sidebar .flash-sidebar { display: block; }
+  .app.show-flash-sidebar { grid-template-columns: 232px 180px 1fr; }
+
+  .flash-sidebar-head {
+    font-family: var(--serif); font-style: italic;
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-4);
+    padding: 4px 8px 10px;
+    border-bottom: 1px dashed rgba(141,102,48,0.20);
+    margin-bottom: 6px;
+  }
+  .cat-list {
+    display: flex; flex-direction: column; gap: 2px;
+    list-style: none; padding: 0; margin: 0;
+  }
+  .cat-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border: none; background: transparent;
+    cursor: pointer; color: var(--ink-3); width: 100%; text-align: left;
+    border-radius: 0 6px 6px 0;
+    transition: background .15s, color .15s;
+  }
+  .cat-item:hover { background: rgba(180,138,74,0.10); color: var(--ink-2); }
+  .cat-item.active {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: inset 3px 0 0 var(--gold);
+  }
+  .cat-item .cat-glyph {
+    font-family: var(--serif-jp); font-weight: 600; font-size: 18px;
+    width: 26px; height: 26px; display: flex; align-items: center;
+    justify-content: center; color: var(--gold-dark); flex: 0 0 auto;
+  }
+  .cat-item.active .cat-glyph { color: var(--ink); }
+  .cat-item .cat-label {
+    display: flex; flex-direction: column; gap: 1px; line-height: 1.1;
+    flex: 1; min-width: 0;
+  }
+  .cat-item .cat-ja { font-family: var(--serif-jp); font-size: 13px; }
+  .cat-item .cat-en {
+    font-family: var(--serif); font-style: italic; font-size: 11px; color: var(--ink-3);
+  }
+  .cat-item.active .cat-en { color: var(--ink-2); }
+
+  /* Hide the horizontal class-strip on desktop when sidebar is visible */
+  @media (min-width: 761px) {
+    .app.show-flash-sidebar .class-strip { display: none; }
+  }
+  @media (max-width: 760px) {
+    .flash-sidebar { display: none !important; }
+    .app.show-flash-sidebar { grid-template-columns: 1fr; }
   }
 
   /* ─── class strip (above book picker) ───────────────────────────────── */
@@ -1271,6 +1516,7 @@
 
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
+  <aside class="flash-sidebar" id="flash-sidebar"></aside>
   <main class="main" id="main">
     <div class="main-inner" id="main-inner"></div>
   </main>
@@ -1284,6 +1530,7 @@
 
 <script src="image-slot.js?v=readonly2"></script>
 <script src="data.js?v=readonly2"></script>
+<script src="heisig-data.js?v=1"></script>
 <script>
 'use strict';
 
@@ -1334,6 +1581,7 @@ const APP = {
   popoverRect:  null,
   pendingDictQ: null,
   _flashKeyHandler: null,
+  _flashScrollHandler: null,
   // writing / kana
   kanaShowH:    lsGet('jp:kana-show-h', true),
   kanaShowK:    lsGet('jp:kana-show-k', true),
@@ -1346,6 +1594,7 @@ function setSection(s) {
   APP.section = s;
   location.hash = s;
   lsSet('jp:section', s);
+  document.querySelector('.app').classList.toggle('show-flash-sidebar', s === 'flashcards');
   renderMain();
   updateSidebar();
 }
@@ -1364,6 +1613,28 @@ function escHTML(s) {
 }
 function escAttr(s) {
   return String(s).replace(/"/g,'&quot;');
+}
+
+/** Heisig chip: tiny badge with tooltip showing RTK frame + keyword + story. */
+function heisigChip(kanji) {
+  if (typeof HEISIG === 'undefined') return '';
+  // For multi-char entries, try first char
+  const key = kanji.length === 1 ? kanji : kanji[0];
+  const h = HEISIG[key];
+  if (!h) return '';
+  return `
+    <span class="heisig-chip">
+      <span class="h-icon">H</span>
+      <span class="h-kw">#${h.frame} · ${escHTML(h.keyword)}</span>
+      <span class="heisig-tip">
+        <div class="ht-head">
+          <span class="ht-frame">#${h.frame}</span>
+          <span class="ht-kw">${escHTML(h.keyword)}</span>
+        </div>
+        ${h.story ? `<div class="ht-story">${escHTML(h.story)}</div>` : ''}
+        <div class="ht-src">Remembering the Kanji — James Heisig, 4th Ed.</div>
+      </span>
+    </span>`;
 }
 
 // Particle colors are keyed to grammatical role so the same color travels
@@ -1831,6 +2102,10 @@ function renderMain() {
   if (APP._flashKeyHandler) {
     window.removeEventListener('keydown', APP._flashKeyHandler);
     APP._flashKeyHandler = null;
+  }
+  if (APP._flashScrollHandler) {
+    window.removeEventListener('scroll', APP._flashScrollHandler);
+    APP._flashScrollHandler = null;
   }
   const el = document.getElementById('main-inner');
   el.className = 'main-inner fade-enter';
@@ -2396,6 +2671,36 @@ function seeAlsoCards(card) {
   return out;
 }
 
+function renderFlashSidebar() {
+  const el = document.getElementById('flash-sidebar');
+  if (!el) return;
+  const classes = window.FLASHCARD_CLASSES || [];
+  el.innerHTML = `
+    <div class="flash-sidebar-head">categories</div>
+    <ul class="cat-list">
+      ${classes.map(c => `
+        <li>
+          <button class="cat-item ${c.id === APP.flashClassId ? 'active' : ''}" data-flash-cat="${c.id}">
+            <span class="cat-glyph">${c.glyph}</span>
+            <span class="cat-label">
+              <span class="cat-ja">${escHTML(c.titleJa)}</span>
+              <span class="cat-en">${escHTML(c.titleEn)}</span>
+            </span>
+          </button>
+        </li>
+      `).join('')}
+    </ul>`;
+  el.querySelectorAll('[data-flash-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      APP.flashClassId = btn.dataset.flashCat;
+      APP.flashIdx = 0;
+      lsSet('jp:flashClass', APP.flashClassId);
+      renderFlashcards(document.getElementById('main-inner'));
+      renderFlashSidebar();
+    });
+  });
+}
+
 function renderFlashcards(container) {
   const classes = window.FLASHCARD_CLASSES || [];
   if (!classes.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
@@ -2410,22 +2715,9 @@ function renderFlashcards(container) {
   const related = relatedByKun(card, buildKunIndex());
   const seeAlso = seeAlsoCards(card);
 
-  container.innerHTML = `
-    <div class="page-head">
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
-        <div>
-          <div class="page-eyebrow">flashcards · 単語札</div>
-          <h1 class="page-title-jp">絵 · 漢字 · よみかた</h1>
-        </div>
-        <div class="floating-controls" style="margin:0">
-          <span class="small-label">english</span>
-          <button class="pill ${APP.flashShowEn ? 'active' : ''}" data-flash-en="true">show</button>
-          <button class="pill ${!APP.flashShowEn ? 'active' : ''}" data-flash-en="false">hide</button>
-        </div>
-      </div>
-      <div class="rule"></div>
-    </div>
+  const pct = ((APP.flashIdx + 1) / deck.length) * 100;
 
+  container.innerHTML = `
     <div class="class-strip">
       ${classes.map(c => `
         <button class="class-tab ${c.id === APP.flashClassId ? 'active' : ''}" data-flash-class="${c.id}">
@@ -2438,78 +2730,115 @@ function renderFlashcards(container) {
       `).join('')}
     </div>
 
-    <div class="flash-deck">
-      <div class="flash-stage">
-        <button class="icon-btn flash-nav" id="flash-prev" title="previous (←)" aria-label="previous card">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div class="flash-card">
-          <div class="flash-image">
-            <image-slot id="flash-${card.id}" image-key="kanji/${escAttr(card.kanji)}" shape="rounded" radius="4" fit="natural" readonly></image-slot>
-          </div>
-          <div class="flash-kanji">${escHTML(card.kanji)}</div>
-          <div class="flash-reading">
-            <span class="kun"><span class="label">kun</span>${escHTML(card.kun)}</span>
-            <span style="color:var(--ink-4)">·</span>
-            <span class="on"><span class="label">on</span>${escHTML(card.on)}</span>
-          </div>
-          <div class="flash-bottom ${(card.usage || related.length || seeAlso.length) ? 'has-right' : ''}">
-            <div class="flash-en" style="opacity:${APP.flashShowEn ? 1 : 0.3};font-style:${APP.flashShowEn ? 'italic' : 'normal'}">
-              <span class="eyebrow">meaning</span>
-              ${APP.flashShowEn ? escHTML(card.en) : '— —'}
+    <div class="flash-mobile-head">
+      <div class="floating-controls" style="margin:0">
+        <span class="small-label">translations</span>
+        <button class="pill ${APP.flashShowEn ? 'active' : ''}" data-flash-en="true">show</button>
+        <button class="pill ${!APP.flashShowEn ? 'active' : ''}" data-flash-en="false">hide</button>
+      </div>
+    </div>
+
+    <div class="flash-layout">
+      <div class="flash-rail-left">
+        <span class="flash-title-vert">絵 · 漢字 · よみかた</span>
+      </div>
+
+      <div class="flash-center">
+        <div class="flash-deck">
+          <div class="flash-stage">
+            <div class="flash-nav-col">
+              <button class="icon-btn flash-nav" id="flash-prev" title="previous (←)" aria-label="previous card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
             </div>
-            ${(card.usage || related.length || seeAlso.length) ? `
-              <div class="flash-right">
-                ${card.usage ? `
-                  <div class="flash-usage">
-                    <span class="eyebrow">in conversation</span>
-                    <div class="usage-ja">${escHTML(card.usage.ja)}</div>
-                    <div class="usage-kana">${escHTML(card.usage.kana || '')}</div>
-                  </div>
-                ` : ''}
-                ${related.length ? `
-                  <div class="flash-related">
-                    <span class="eyebrow">also reads ${escHTML(card.kun)}</span>
-                    <div class="chips">
-                      ${related.map(p => `
-                        <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
-                          <span class="rk">${escHTML(p.kanji)}</span>
-                          <span class="re">${escHTML(p.en)}</span>
-                        </button>
-                      `).join('')}
-                    </div>
-                  </div>
-                ` : ''}
-                ${seeAlso.length ? `
-                  <div class="flash-related">
-                    <span class="eyebrow">see also</span>
-                    <div class="chips">
-                      ${seeAlso.map(p => `
-                        <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
-                          <span class="rk">${escHTML(p.kanji)}</span>
-                          <span class="re">${escHTML(p.en)}</span>
-                        </button>
-                      `).join('')}
-                    </div>
+            <div class="flash-card">
+              <div class="flash-image">
+                <image-slot id="flash-${card.id}" image-key="kanji/${escAttr(card.kanji)}" shape="rounded" radius="4" fit="natural" readonly></image-slot>
+              </div>
+              <div class="flash-kanji">${escHTML(card.kanji)}</div>
+              <div class="flash-reading">
+                <span class="kun"><span class="label">kun</span>${escHTML(card.kun)}</span>
+                <span style="color:var(--ink-4)">·</span>
+                <span class="on"><span class="label">on</span>${escHTML(card.on)}</span>
+              </div>
+              <div class="flash-bottom ${(card.usage || related.length || seeAlso.length) ? 'has-right' : ''}">
+                <div class="flash-en" style="opacity:${APP.flashShowEn ? 1 : 0.3};font-style:${APP.flashShowEn ? 'italic' : 'normal'}">
+                  <span class="eyebrow">meaning</span>
+                  ${APP.flashShowEn ? escHTML(card.en) : '— —'}
+                </div>
+                ${(card.usage || related.length || seeAlso.length) ? `
+                  <div class="flash-right">
+                    ${card.usage ? `
+                      <div class="flash-usage">
+                        <span class="eyebrow">in conversation</span>
+                        <div class="usage-ja">${escHTML(card.usage.ja)}</div>
+                        <div class="usage-kana">${escHTML(card.usage.kana || '')}</div>
+                      </div>
+                    ` : ''}
+                    ${related.length ? `
+                      <div class="flash-related">
+                        <span class="eyebrow">also reads ${escHTML(card.kun)}</span>
+                        <div class="chips">
+                          ${related.map(p => `
+                            <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
+                              <span class="rk">${escHTML(p.kanji)}</span>
+                              <span class="re">${escHTML(p.en)}</span>
+                            </button>
+                          `).join('')}
+                        </div>
+                      </div>
+                    ` : ''}
+                    ${seeAlso.length ? `
+                      <div class="flash-related">
+                        <span class="eyebrow">see also</span>
+                        <div class="chips">
+                          ${seeAlso.map(p => `
+                            <button class="related-chip" data-flash-jump="${escAttr(p.classId)}:${escAttr(p.id)}" title="${escAttr(p.en)}">
+                              <span class="rk">${escHTML(p.kanji)}</span>
+                              <span class="re">${escHTML(p.en)}</span>
+                            </button>
+                          `).join('')}
+                        </div>
+                      </div>
+                    ` : ''}
                   </div>
                 ` : ''}
               </div>
-            ` : ''}
+              ${card.examples && card.examples.length ? `
+                <div class="flash-examples">
+                  <span class="eyebrow">examples</span>
+                  ${card.examples.map(ex => `
+                    <div class="flash-ex-row">
+                      <span class="ex-word">${escHTML(ex.word)}</span>
+                      <span class="ex-reading">${escHTML(ex.reading)}</span>
+                      <span class="ex-meaning">${escHTML(ex.meaning)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+              <div class="flash-foot">
+                ${heisigChip(card.kanji)}
+                ${card.strokes ? `<span class="flash-strokes">${card.strokes}画</span>` : ''}
+              </div>
+            </div>
+            <div class="flash-nav-col">
+              <button class="icon-btn flash-nav" id="flash-next" title="next (→)" aria-label="next card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+              </button>
+            </div>
           </div>
         </div>
-        <button class="icon-btn flash-nav" id="flash-next" title="next (→)" aria-label="next card">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </button>
       </div>
 
-      <div class="flash-controls">
-        <div class="flash-progress">
-          <div style="width:${((APP.flashIdx + 1) / deck.length) * 100}%"></div>
+      <div class="flash-rail-right">
+        <div class="flash-label-vert">単語札</div>
+        <div class="flash-toggle-vert">
+          <button class="pill-sq ${APP.flashShowEn ? 'active' : ''}" data-flash-en="true" title="Show English">英</button>
+          <button class="pill-sq ${!APP.flashShowEn ? 'active' : ''}" data-flash-en="false" title="Hide English">—</button>
         </div>
-      </div>
-
-      <div style="text-align:center;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink-3)">
-        ${APP.flashIdx + 1} of ${deck.length} · use ← → to flip, space to hide English
+        <div class="flash-progress-vert" title="${APP.flashIdx + 1} of ${deck.length}">
+          <div style="height:${pct}%"></div>
+        </div>
       </div>
     </div>`;
 
@@ -2548,12 +2877,49 @@ function renderFlashcards(container) {
     renderFlashcards(container);
   });
 
+  // ── Fixed arrows: keep nav buttons at viewport vertical center ──
+  const prevNav = container.querySelector('#flash-prev');
+  const nextNav = container.querySelector('#flash-next');
+  const prevCol = prevNav.parentElement;
+  const nextCol = nextNav.parentElement;
+  function positionArrows() {
+    const btnH = prevNav.offsetHeight || 52;
+    const midY = window.innerHeight / 2 - btnH / 2;
+    for (const [col, btn] of [[prevCol, prevNav], [nextCol, nextNav]]) {
+      const colRect = col.getBoundingClientRect();
+      const offset = Math.max(0, Math.min(col.offsetHeight - btnH, midY - colRect.top));
+      btn.style.position = 'relative';
+      btn.style.top = offset + 'px';
+    }
+  }
+  if (APP._flashScrollHandler) window.removeEventListener('scroll', APP._flashScrollHandler);
+  APP._flashScrollHandler = positionArrows;
+  window.addEventListener('scroll', positionArrows, { passive: true });
+  requestAnimationFrame(positionArrows);
+
   APP._flashKeyHandler = e => {
     if (e.key === 'ArrowLeft')  { APP.flashIdx = (APP.flashIdx - 1 + deck.length) % deck.length; renderFlashcards(container); }
     if (e.key === 'ArrowRight') { APP.flashIdx = (APP.flashIdx + 1) % deck.length; renderFlashcards(container); }
     if (e.key === ' ')          { e.preventDefault(); APP.flashShowEn = !APP.flashShowEn; renderFlashcards(container); }
   };
   window.addEventListener('keydown', APP._flashKeyHandler);
+
+  // ── Preload adjacent card images so arrow navigation feels instant ──
+  const preloadIdxs = [
+    (APP.flashIdx + 1) % deck.length,
+    (APP.flashIdx - 1 + deck.length) % deck.length,
+    (APP.flashIdx + 2) % deck.length,
+  ];
+  for (const i of preloadIdxs) {
+    const k = deck[i] && deck[i].kanji;
+    if (!k) continue;
+    const encoded = encodeURIComponent(k);
+    const img = new Image();
+    img.src = './images/kanji/' + encoded + '.webp';
+  }
+
+  // Keep the flash category sidebar in sync
+  renderFlashSidebar();
 }
 
 // ── Dictionary ───────────────────────────────────────────────────────────
@@ -2661,12 +3027,13 @@ function renderDictionary(container) {
 // ── Hash change ──────────────────────────────────────────────────────────
 window.addEventListener('hashchange', () => {
   const s = hashSection();
-  if (s !== APP.section) { APP.section = s; renderMain(); updateSidebar(); }
+  if (s !== APP.section) { APP.section = s; document.querySelector('.app').classList.toggle('show-flash-sidebar', s === 'flashcards'); renderMain(); updateSidebar(); }
 });
 
 // ── Init ─────────────────────────────────────────────────────────────────
 function init() {
   applyBodyClasses();
+  document.querySelector('.app').classList.toggle('show-flash-sidebar', APP.section === 'flashcards');
   renderSidebar();
   renderMain();
   initSettings();
