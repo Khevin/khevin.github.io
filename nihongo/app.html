@@ -1906,6 +1906,36 @@
     color: var(--gold-dark);
     text-decoration: underline dotted;
   }
+  /* Multi-kanji back face — when a compound card (元気, 御飯, 烏賊) is
+     showing, the stroke-order area splits into N equal panels side by
+     side, one per kanji. A small label under each panel re-states the
+     kanji so the learner knows which stroke order belongs to which
+     half of the compound. Single-kanji cards (the majority) use the
+     default flow above — no flex container needed. Spec §4.4. */
+  .testcard-back-stroke.is-multi {
+    display: flex;
+    gap: 14px;
+    align-items: stretch;
+  }
+  .testcard-back-stroke.is-multi .testcard-back-stroke-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .testcard-back-stroke.is-multi .testcard-stroke-gif {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .testcard-back-stroke-label {
+    font-family: var(--serif-jp);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-align: center;
+    line-height: 1;
+  }
   .testcard-back-info {
     display: flex; flex-direction: column;
     gap: 18px;
@@ -15311,10 +15341,27 @@ function editorialFlashcardHTML(card, cls, related, seeAlso) {
   // a file with `%E6%9E%97` in its name and 404. The HTML spec lets
   // the browser handle URL encoding for the network request, so
   // passing the raw kanji works in BOTH file:// and HTTP contexts.
-  const strokeFormat = (window.STROKE_FORMATS || {})[card.kanji] || null;
-  const strokeSrc = strokeFormat
-    ? `images/stroke/${card.kanji}-order.${strokeFormat}`
-    : null;
+  // Extract kanji-only chars from card.kanji. The back-face stroke-order
+  // panel needs to handle three shapes:
+  //   1. Pure kana cards (にこにこ, ピンク) → no kanji at all → skip the
+  //      stroke section entirely.
+  //   2. Single kanji (人, 食, 茶) → existing single-panel render.
+  //   3. Multi-kanji compound (元気, 御飯, 昨日) → render one panel
+  //      per kanji, side by side.
+  // Spec §4.4 / §4.5.
+  const kanjiChars = [...(card.kanji || '')].filter(c => {
+    const code = c.codePointAt(0);
+    return (code >= 0x4E00 && code <= 0x9FFF)   // CJK Unified Ideographs
+        || (code >= 0x3400 && code <= 0x4DBF);  // Extension A (rare but legal)
+  });
+  const strokePanels = kanjiChars.map(k => {
+    const fmt = (window.STROKE_FORMATS || {})[k] || null;
+    return {
+      kanji: k,
+      fmt,
+      src: fmt ? `images/stroke/${k}-order.${fmt}` : null,
+    };
+  });
   const wiktionaryUrl = `https://en.wiktionary.org/wiki/${encodeURIComponent(card.kanji)}`;
   const composeChips = composeChipsHTML(card.kanji);
   const flipped = !!APP.flashFlipped;
@@ -15395,37 +15442,43 @@ function editorialFlashcardHTML(card, cls, related, seeAlso) {
             </div>
 
             <div class="testcard-back-body">
-              <div class="testcard-back-stroke">
-                ${strokeSrc ? (strokeFormat === 'svg' ? `
-                  <!-- SVG uses <object> instead of <img>: KanjiVG SVGs
-                       animate via SMIL (stroke-dashoffset on each path),
-                       and many browsers don't run SMIL inside <img>
-                       tags — they render only the first frame, which
-                       for these SVGs is "dashoffset=1" = stroke fully
-                       hidden = empty box. <object> loads the SVG as its
-                       own document, with full SMIL support. -->
-                  <object
-                    class="testcard-stroke-gif"
-                    type="image/svg+xml"
-                    data="${escAttr(strokeSrc)}"
-                    aria-label="Stroke order for ${escAttr(card.kanji)}">
-                  </object>
-                ` : `
-                  <!-- GIF uses plain <img> — animation is baked into
-                       the file format itself, no SMIL needed. -->
-                  <img
-                    class="testcard-stroke-gif"
-                    src="${escAttr(strokeSrc)}"
-                    alt="Stroke order for ${escAttr(card.kanji)}">
-                `) : `
-                  <img class="testcard-stroke-gif is-missing" alt="" aria-hidden="true">
-                  <div class="testcard-stroke-missing">
-                    Stroke order for <strong>${escHTML(card.kanji)}</strong> isn't downloaded yet.<br>
-                    Run <code>node scripts/download-stroke-gifs.mjs --jouyou</code> to fetch it, or
-                    view it on <a href="${escAttr(wiktionaryUrl)}" target="_blank" rel="noopener noreferrer">Wiktionary</a>.
-                  </div>
-                `}
-              </div>
+              ${strokePanels.length === 0 ? '' : `
+                <div class="testcard-back-stroke ${strokePanels.length > 1 ? 'is-multi' : ''}">
+                  ${strokePanels.map(p => `
+                    <div class="testcard-back-stroke-panel">
+                      ${p.src ? (p.fmt === 'svg' ? `
+                        <!-- SVG uses <object> instead of <img>: KanjiVG SVGs
+                             animate via SMIL (stroke-dashoffset on each path),
+                             and many browsers don't run SMIL inside <img>
+                             tags — they render only the first frame, which
+                             for these SVGs is "dashoffset=1" = stroke fully
+                             hidden = empty box. <object> loads the SVG as its
+                             own document, with full SMIL support. -->
+                        <object
+                          class="testcard-stroke-gif"
+                          type="image/svg+xml"
+                          data="${escAttr(p.src)}"
+                          aria-label="Stroke order for ${escAttr(p.kanji)}">
+                        </object>
+                      ` : `
+                        <!-- GIF uses plain <img> — animation is baked into
+                             the file format itself, no SMIL needed. -->
+                        <img
+                          class="testcard-stroke-gif"
+                          src="${escAttr(p.src)}"
+                          alt="Stroke order for ${escAttr(p.kanji)}">
+                      `) : `
+                        <img class="testcard-stroke-gif is-missing" alt="" aria-hidden="true">
+                        <div class="testcard-stroke-missing">
+                          Stroke order for <strong>${escHTML(p.kanji)}</strong> isn't downloaded yet.<br>
+                          Run <code>node scripts/download-stroke-gifs.mjs --jouyou</code> to fetch it.
+                        </div>
+                      `}
+                      ${strokePanels.length > 1 ? `<div class="testcard-back-stroke-label">${escHTML(p.kanji)}</div>` : ''}
+                    </div>
+                  `).join('')}
+                </div>
+              `}
 
               <div class="testcard-back-info">
                 <section>
