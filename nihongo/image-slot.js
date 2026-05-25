@@ -250,11 +250,22 @@
     // minimum so the drop zone stays visible.
     ':host([fit="natural"]){display:block;width:100%;height:auto}' +
     ':host([fit="natural"]) .frame{position:relative;inset:auto;width:100%;height:auto;min-height:200px}' +
+    ':host([fit="natural"][data-filled]) .frame{min-height:0;background:transparent}' +
     ':host([fit="natural"]) .frame img{position:static;width:100%;height:auto;max-width:100%;' +
     '  transform:none;left:auto;top:auto;display:block}' +
     ':host([fit="natural"]) .empty{position:absolute;inset:0}' +
     ':host([fit="natural"][data-filled]) .empty{display:none}' +
     ':host([fit="natural"]) .spill{display:none !important}' +
+    // ── fit="natural" with bound height ─────────────────────────────────
+    // When the parent constrains the height (e.g. inside a 100vh layout),
+    // opt in via `data-bound-height`. The host fills its parent's height,
+    // the img scales to fit while preserving its natural aspect ratio
+    // (object-fit: contain handles the letterboxing if dimensions
+    // disagree). Lets a cheatsheet fit the full viewport without page
+    // scroll while still showing the whole illustration.
+    ':host([fit="natural"][data-bound-height]){height:100%;min-height:0}' +
+    ':host([fit="natural"][data-bound-height]) .frame{height:100%;min-height:0;display:flex;align-items:center;justify-content:center}' +
+    ':host([fit="natural"][data-bound-height]) .frame img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}' +
     // ── readonly mode ────────────────────────────────────────────────────
     // For slots that should only ever read from the filesystem — no drop
     // zone, no controls, and the host itself collapses out of the layout
@@ -327,6 +338,10 @@
       this._variants = [];      // current imageKey's variant URLs
       this._variantIdx = 0;     // which one is showing
       this._variantKey = null;  // imageKey we last probed for
+      this._probeDone = false;  // true once the variant probe has settled —
+                                // re-renders that happen AFTER the probe
+                                // must trust the result and not re-flip
+                                // data-filled back to optimistic.
       this._subFn = () => this._render();
       // Shadow-DOM listeners live with the shadow DOM — bound once here so
       // disconnect/reconnect (e.g. React remount) doesn't stack handlers.
@@ -750,9 +765,11 @@
         this._variantKey = imageKey;
         this._variants = [];
         this._variantIdx = 0;
+        this._probeDone = false;   // resets so the next render goes optimistic
         ImageSlot._probeVariants(imageKey).then(found => {
           if (this._variantKey !== imageKey) return; // stale
           this._variants = found;
+          this._probeDone = true;  // sticky: subsequent renders trust the result
           if (this._variantIdx >= found.length) this._variantIdx = 0;
           this._renderVariantDots();
           // If we don't yet have a user image, re-point the visible img at
@@ -769,6 +786,9 @@
             // No image on disk for this readonly slot — stay collapsed.
             this.removeAttribute('data-filled');
           }
+          // Re-render now that the probe is done so the slot transitions from
+          // the "in-flight" optimistic state to the correct filled/empty state.
+          this._render();
         });
       }
       let url = this._userUrl;
@@ -813,7 +833,22 @@
             } else {
               this.removeAttribute('data-filled');
             }
+          } else if (imageKey && imageKey === this._variantKey && !this._probeDone) {
+            // Probe is still in-flight — keep data-filled optimistically
+            // so the parent container stays visible while we wait. The probe
+            // callback will remove data-filled if no image is found.
+            this.setAttribute('data-filled', '');
+            // Point img at the first candidate so something appears while
+            // the probe runs (the probe will correct the src if needed).
+            if (shippedBase && !this._img.getAttribute('src')) {
+              this._img.src = shippedBase + ImageSlot._imageExts[0];
+              this._ghost.src = shippedBase + ImageSlot._imageExts[0];
+            }
           } else {
+            // Probe finished and found nothing OR keys mismatch — make the
+            // empty state sticky. Without _probeDone, a re-render after the
+            // probe would re-enter the optimistic branch and re-set
+            // data-filled, hiding the missing-image collapse.
             this.removeAttribute('data-filled');
           }
         } else {
