@@ -1187,6 +1187,80 @@ window.VOCAB_CLASSES = [
           }
         ]
       },
+      {
+        id: 'jougo-common',
+        titleJa: 'よくつかう',
+        titleEn: 'Common Jougo',
+        glyph: '畳',
+        primaryLevel: 'N4',
+        pages: [
+          {
+            id: 'sheet-1',
+            type: 'cheatsheet',
+            title: '畳語 の きほん',
+            subtitle: 'Repeated words that add nuance — emphasis, plurality, vagueness',
+            imageSlotId: 'sheet-jougo-1',
+            items: [
+              { num:1,  kanji:'いろいろ',     kana:'いろいろ',     en:'various, all sorts of' },
+              { num:2,  kanji:'時々',          kana:'ときどき',     en:'sometimes' },
+              { num:3,  kanji:'段々',          kana:'だんだん',     en:'gradually, little by little' },
+              { num:4,  kanji:'人々',          kana:'ひとびと',     en:'people (plural)' },
+              { num:5,  kanji:'次々',          kana:'つぎつぎ',     en:'one after another' },
+              { num:6,  kanji:'別々',          kana:'べつべつ',     en:'separately, individually' },
+              { num:7,  kanji:'まだまだ',      kana:'まだまだ',     en:'still a long way / not yet' },
+              { num:8,  kanji:'なかなか',      kana:'なかなか',     en:'quite / not easily' },
+              { num:9,  kanji:'ますます',      kana:'ますます',     en:'more and more, increasingly' },
+              { num:10, kanji:'わざわざ',      kana:'わざわざ',     en:'purposely, going out of one\'s way' },
+              { num:11, kanji:'ぴかぴか',      kana:'ぴかぴか',     en:'sparkling, shiny' },
+              { num:12, kanji:'ばらばら',      kana:'ばらばら',     en:'scattered, in pieces' },
+            ]
+          },
+          {
+            id: 'usage',
+            type: 'usage',
+            title: 'つかいかた',
+            subtitle: 'How common jougo appear in speech',
+            items: [
+              { ja:'いろいろな人',        kana:'いろいろ な ひと',        en:'various people' },
+              { ja:'時々雨が降る',        kana:'ときどき あめが ふる',    en:'it rains sometimes' },
+              { ja:'段々寒くなる',        kana:'だんだん さむく なる',    en:'to gradually get cold' },
+              { ja:'人々が集まる',        kana:'ひとびとが あつまる',     en:'people gather' },
+              { ja:'次々と届く',          kana:'つぎつぎと とどく',       en:'to arrive one after another' },
+              { ja:'別々に払う',          kana:'べつべつに はらう',       en:'to pay separately' },
+              { ja:'まだまだ頑張る',      kana:'まだまだ がんばる',       en:'to keep trying (still more to go)' },
+              { ja:'なかなか決められない',kana:'なかなか きめられない',   en:'can\'t easily decide' },
+              { ja:'ますます好きになる',  kana:'ますます すきに なる',    en:'to like more and more' },
+              { ja:'わざわざ来てくれた',  kana:'わざわざ きて くれた',    en:'went out of their way to come' },
+            ]
+          },
+          {
+            id: 'sentences',
+            type: 'sentences',
+            title: 'ぶん',
+            subtitle: 'Jougo in real sentences',
+            items: [
+              { ja:'いろいろ ありがとう ございます。',
+                en:'Thank you for everything.', level:'N5' },
+              { ja:'時々、友達と カフェに 行きます。',
+                en:'Sometimes I go to a café with friends.', level:'N5' },
+              { ja:'段々 日本語が 分かるように なりました。',
+                en:'I gradually came to understand Japanese.', level:'N4' },
+              { ja:'人々は 桜の 下で お花見を して いた。',
+                en:'People were having hanami under the cherry trees.', level:'N4' },
+              { ja:'荷物が 次々と 届いて、部屋が いっぱいに なった。',
+                en:'Packages arrived one after another and filled the room.', level:'N3' },
+              { ja:'別々に 注文しても いいですか？',
+                en:'Is it okay if we order separately?', level:'N4' },
+              { ja:'まだまだ 暑い 日が 続きそう です。',
+                en:'It seems like the hot days will continue for a while yet.', level:'N4' },
+              { ja:'この 問題は なかなか 難しい。',
+                en:'This problem is quite difficult.', level:'N4' },
+              { ja:'ますます 便利に なって きた。',
+                en:'It\'s become more and more convenient.', level:'N3' },
+            ]
+          }
+        ]
+      },
     ],
   },
 ];
