@@ -1505,8 +1505,13 @@
      --pad-page locally so the .main-inner height calc below stays
      correct without a duplicate constant. */
   .main:has(.flash-layout-editorial) {
-    --pad-page: 24px;
-    padding: 24px 24px 24px 20px;
+    /* --pad-page-v is used by the .main-inner height calc; we set it to
+       the vertical padding only (top + bottom = 16+16 = 32) so the inner
+       fills the viewport exactly. Horizontal padding is asymmetric: tight
+       on the left so the vertical title rail sits a finger's-width from
+       the sidebar, slightly looser on the right. */
+    --pad-page: 16px;
+    padding: 16px 20px 16px 12px;
   }
   .main-inner:has(.flash-layout-editorial) {
     height: calc(100vh - var(--pad-page) * 2);
@@ -1546,11 +1551,34 @@
      vertical progress bar. Both are centered in the column so the
      caption sits roughly mid-card-height with the progress just below. */
   .flash-layout.flash-layout-editorial .flash-rail-inner {
-    gap: 10px;
+    gap: 14px;
   }
   .flash-layout.flash-layout-editorial .flash-progress-vert {
-    width: 3px;
-    height: clamp(120px, 26vh, 220px);
+    width: 2px;
+    height: clamp(140px, 30vh, 260px);
+  }
+  /* In editorial mode, compress the above-card chrome aggressively so the
+     card claims every spare pixel of vertical real estate. The view
+     toggle, font pickers, and bg picker still need to exist (the user
+     reaches for them often) but their row shouldn't weigh as much as the
+     card it sits above. Smaller buttons, tighter padding, tighter gap. */
+  .main:has(.flash-layout-editorial) .flash-top-row {
+    margin: 0 auto 6px;
+    gap: 10px;
+  }
+  .main:has(.flash-layout-editorial) .flash-view-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+  .main:has(.flash-layout-editorial) .flash-view-btn svg {
+    width: 12px; height: 12px;
+  }
+  .main:has(.flash-layout-editorial) .flash-top-fontpicker-label {
+    font-size: 10px;
+  }
+  .main:has(.flash-layout-editorial) .flash-bg-select {
+    font-size: 11px;
+    padding: 3px 20px 3px 8px;
   }
 
   /* Wrapping frame — sits inside .flash-card so the editorial layout
@@ -2506,8 +2534,12 @@
      the card. Rails are deliberately narrow so the card breathes wide. */
   .flash-layout {
     display: grid;
-    grid-template-columns: 28px 1fr 32px 44px;
-    column-gap: 14px;
+    /* Narrow rails so the card hogs the middle column. Left rail is
+       intentionally the tightest (20px) — just enough to fit the vertical
+       caption text + a 1px hairline. The 14px column-gap reads as page
+       breathing room, not as wasted column. */
+    grid-template-columns: 22px 1fr 26px 40px;
+    column-gap: 12px;
     align-items: stretch;
     width: 100%;
     margin: 0;
@@ -2517,18 +2549,52 @@
     display: flex; align-items: center; justify-content: flex-start;
     padding: 0;
   }
+  /* Vertical page title — runs top-to-bottom along the left gutter so it
+     reads as a deliberate caption pinned to the sidebar edge, not chrome
+     that steals vertical room from the card. Gold dot caps at top + bottom
+     terminate the hairline as if it were a punctuated stroke rather than
+     a leftover rule. */
   .flash-title-vert {
     writing-mode: vertical-rl;
     font-family: var(--serif-jp); font-weight: 500;
-    font-size: clamp(13px, 1.2vw, 16px);
-    color: var(--ink-3); letter-spacing: 0.32em;
+    font-size: clamp(12px, 1.05vw, 14px);
+    color: var(--ink-3); letter-spacing: 0.42em;
     white-space: nowrap;
-    /* Hairline mark on the sidebar side, so the title reads as a vertical
-       caption pinned to the gutter rather than floating in space. */
-    border-left: 1px solid rgba(141,102,48,0.22);
-    padding-left: 10px;
-    padding-block: 4px;
+    /* Hairline as a soft vertical gradient — strong in the middle where the
+       text sits, fading at top/bottom so it reads as a deliberate caption
+       gutter rather than a hard rule running floor-to-ceiling. */
+    border-left: none;
+    background:
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(141,102,48,0.0) 4%,
+        rgba(141,102,48,0.22) 22%,
+        rgba(141,102,48,0.28) 50%,
+        rgba(141,102,48,0.22) 78%,
+        rgba(141,102,48,0.0) 96%,
+        transparent 100%
+      ) left center / 1px 80% no-repeat;
+    /* Using physical properties because writing-mode: vertical-rl remaps
+       padding-block / padding-inline in confusing ways. Padding-left
+       creates the gap between the hairline and the vertical text column;
+       padding-top/bottom create the breathing room at the ends. */
+    padding: 4px 0 4px 7px;
+    position: relative;
   }
+  /* Gold dot caps — terminate the hairline at top and bottom so the title
+     rail reads as an intentional vertical mark, not a stray border. */
+  .flash-title-vert::before,
+  .flash-title-vert::after {
+    content: "";
+    position: absolute;
+    left: -1.5px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(141,102,48,0.45);
+  }
+  .flash-title-vert::before { top: 8%; }
+  .flash-title-vert::after  { bottom: 8%; }
   .flash-center {
     display: flex; align-items: center; justify-content: center;
     gap: 14px;
@@ -2552,18 +2618,35 @@
     gap: 10px;
     padding: 0;
   }
+  /* Vertical 単語札 caption — mirrors the left rail's vertical title in
+     weight and rhythm so the card is bookended by two matched gutter
+     marks. Hairline on the RIGHT side (closer to the card) reads as a
+     pinned caption, not a free-floating label. */
   .flash-label-vert {
     writing-mode: vertical-rl;
     font-family: var(--serif-jp); font-weight: 500;
-    font-size: 12px; color: var(--ink-3);
-    letter-spacing: 0.32em;
+    font-size: 11px; color: var(--ink-3);
+    letter-spacing: 0.42em;
     white-space: nowrap;
-    padding-block: 4px;
-    /* Right-side hairline mirrors the title rail on the opposite side
-       so the caption reads as a pinned vertical gutter mark, not a
-       free-floating label. */
-    border-right: 1px solid rgba(141,102,48,0.18);
-    padding-right: 8px;
+    /* Physical padding — keeps the layout predictable under vertical-rl
+       (logical block/inline get remapped in confusing ways). Right-side
+       padding creates the gap between the hairline and the vertical text
+       column; top/bottom create breathing room at the ends. */
+    padding: 4px 6px 4px 0;
+    /* Matched soft hairline — same vertical fade as the title rail so
+       both rails read as paired gutter marks. */
+    border-right: none;
+    background:
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(141,102,48,0.0) 6%,
+        rgba(141,102,48,0.18) 24%,
+        rgba(141,102,48,0.24) 50%,
+        rgba(141,102,48,0.18) 76%,
+        rgba(141,102,48,0.0) 94%,
+        transparent 100%
+      ) right center / 1px 80% no-repeat;
   }
   .flash-toggle-vert {
     display: flex; flex-direction: column; gap: 4px;
@@ -2582,19 +2665,34 @@
   .pill-sq.active {
     background: var(--gold); color: white; border-color: var(--gold-dark);
   }
-  /* Vertical progress bar: no text, no tooltip — just a thin gold column
-     that fills bottom-to-top as the deck advances. Sits at the bottom of
-     the right rail to anchor it visually to the card's lower edge. */
+  /* Vertical progress bar — no text, no tooltip, no axis label. Just a
+     thin gold column that fills bottom-to-top as the deck advances. The
+     track is barely visible (paper-edge) so the FILL reads as the only
+     mark on the rail. Gold dot caps at both ends terminate the bar
+     visually so it doesn't read as a clipped stripe. */
   .flash-progress-vert {
-    width: 3px; height: clamp(140px, 32vh, 280px);
-    background: var(--paper-edge); border-radius: 2px;
+    width: 2px; height: clamp(160px, 36vh, 320px);
+    background: rgba(141,102,48,0.10);
+    border-radius: 999px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;          /* dot caps poke past the track ends */
   }
+  .flash-progress-vert::before,
+  .flash-progress-vert::after {
+    content: "";
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(141,102,48,0.35);
+  }
+  .flash-progress-vert::before { top: -3px; }
+  .flash-progress-vert::after  { bottom: -3px; }
   .flash-progress-vert > div {
     position: absolute; left: 0; right: 0; bottom: 0;
-    background: var(--gold); border-radius: 2px;
-    transition: height .25s;
+    background: var(--gold);
+    border-radius: 999px;
+    transition: height .35s cubic-bezier(.4,.0,.2,1);
   }
   .flash-mobile-head {
     display: none;
