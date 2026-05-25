@@ -14613,8 +14613,11 @@ function numCardHTML({ badge, title, body, aside, wide, font }) {
 const WRITING_PAGES = [
   { id:'kana',               glyph:'あ', ja:'ひらがな・カタカナ', en:'Hiragana & Katakana' },
   { id:'numbers',            glyph:'数', ja:'すうじ',             en:'Numbers' },
+  // ぶんの・くみたて — middle-dot triggers the sidebar's two-line stack
+  // (renderWritingSidebar stackedJa helper) so the title reads BUN NO /
+  // KUMITATE on two rows instead of crowding a single line.
+  { id:'sentence-structure', glyph:'文', ja:'ぶんの・くみたて',   en:'Sentence Structure' },
   { id:'particles',          glyph:'は', ja:'じょし',             en:'Particles' },
-  { id:'sentence-structure', glyph:'文', ja:'ぶんのくみたて',     en:'Sentence Structure' },
   { id:'colors',             glyph:'色', ja:'いろ',               en:'Colors' },
 ];
 
