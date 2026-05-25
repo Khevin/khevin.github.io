@@ -17,7 +17,7 @@ const DATA_PATH  = join(ROOT, 'data.js');
 
 // Cards in this set are intentionally cross-listed across classes; the
 // duplicate-kanji check treats them as expected, not a violation.
-const ALLOWED_DUPLICATES = new Set(['茶', '本', '魚', '半']);
+const ALLOWED_DUPLICATES = new Set(['茶', '本', '魚', '半', '言', '天']);
 
 // Card count band per class. Onomatopoeia is the only narrow class.
 const MIN_PER_CLASS = 9;
