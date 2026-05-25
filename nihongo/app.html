@@ -1396,6 +1396,30 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(141,102,48,0.10);
   }
+  /* Each tile's image well — 1:1 square so the grid stays uniform
+     regardless of which words have art on disk. Same paper-2 placeholder
+     pattern as the editorial flashcard's image-slot: filled shows the
+     illustration, empty shows a flat-color block at the same height. */
+  .jougo-fc-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .jougo-fc-image image-slot {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .jougo-fc-image:has(image-slot[readonly]:not([data-filled])) {
+    background: var(--paper);
+  }
   .jougo-fc-glyph {
     font-family: var(--serif-jp);
     font-size: 30px;
@@ -14345,8 +14369,26 @@ function flashcardsGridHTML(page) {
     const glyphHtml = (typeof splitJougoGlyph === 'function')
       ? splitJougoGlyph(card.kanji)
       : escHTML(card.kanji);
+    // Resolve the same image-key the editorial flashcard uses, so
+    // `<image-slot>` finds the existing illustration on disk (e.g.
+    // images/vocabulary/にこにこ.webp). card.imageFolder wins, then the
+    // owning class's imageFolder, then 'kanji' as a last resort. When no
+    // image exists the slot collapses to its paper-2 placeholder via the
+    // shared :has(image-slot[readonly]:not([data-filled])) rule, so every
+    // tile in the grid still occupies the same height.
+    const cls = (window.FLASHCARD_CLASSES || []).find(c => c.id === classId);
+    const folder = card.imageFolder || (cls && cls.imageFolder) || 'kanji';
+    const imageKey = folder + '/' + card.kanji;
+    const slotId = 'jougo-fc-' + classId + '-' + card.id;
     return `
       <button class="jougo-fc" data-jump-class="${escAttr(classId)}" data-jump-id="${escAttr(card.id)}">
+        <span class="jougo-fc-image">
+          <image-slot
+            id="${escAttr(slotId)}"
+            image-key="${escAttr(imageKey)}"
+            shape="rounded" radius="6" fit="contain" position="50% 50%" readonly
+            placeholder=""></image-slot>
+        </span>
         <span class="jougo-fc-glyph">${glyphHtml}</span>
         <span class="jougo-fc-reading">${escHTML(card.kun || card.kana || '')}</span>
         <span class="jougo-fc-en">${escHTML(card.en || '')}</span>
