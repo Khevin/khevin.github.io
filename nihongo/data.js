@@ -1712,12 +1712,20 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'がっこう',
     titleEn: 'School',
     glyph: '学',
-    // Order: ◆宀 → 宀 → 字 → 学 → 校 → 文 → 名 → [◆言] → 言 → 話 → 読 → 書 → 本 → 生.
+    // Order: ◆宀 → 宀 → 字 → 学 → 校 → 文 → 名 → 言 → ◆言 → 話 → 読 → 書 → 本 → 生.
+    //
     // 字 sits right after the standalone 宀 because it IS 宀 + 子 (child
     // under a roof learning a character) — meeting it before 学 makes the
     // radical lesson land twice: once as the radical card, once as the
     // payoff in 字, and a third time as a contrast against 学 (which
     // does NOT use 宀).
+    //
+    // Radical-after-kanji rule: 言 (the standalone kanji) is taught
+    // BEFORE ◆言 (the gonben left-side variant), the same way 手 → ◆扌
+    // works in Body. The kanji is the source; the radical card reveals
+    // how it embeds. (Special case: ◆宀 → 宀 keeps the reverse order
+    // because 宀 has no real standalone use in modern Japanese — it
+    // exists almost entirely as a compound roof.)
     cards: [
       { id:'ukanmuri-radical', type:'radical',
         radical:'宀', from:'宀',
@@ -1757,6 +1765,16 @@ window.FLASHCARD_CLASSES = [
         strokes:10, examples:[{word:'学校',reading:'GAKKŌ',meaning:'school'},{word:'校長',reading:'KŌCHŌ',meaning:'principal'},{word:'高校',reading:'KŌKŌ',meaning:'high school'}] },
       { id:'writing',  kanji:'文', kun:'ふみ',     on:'ブン',   en:'writing / text / culture', strokes:4, examples:[{word:'文化',reading:'BUNKA',meaning:'culture'},{word:'文学',reading:'BUNGAKU',meaning:'literature'},{word:'文字',reading:'MOJI',meaning:'character'}] },
       { id:'name',     kanji:'名', kun:'な',       on:'メイ',   en:'name / fame', strokes:6, examples:[{word:'名前',reading:'namae',meaning:'name'},{word:'名人',reading:'MEIJIN',meaning:'master'},{word:'有名',reading:'YŪMEI',meaning:'famous'}] },
+      { id:'say', kanji:'言', kun:'い', on:'ゲン', en:'say / word', strokes:7,
+        seeAlso:['口'],
+        examples:[
+          {word:'言う',   reading:'iu',    meaning:'to say'},
+          {word:'言葉',   reading:'kotoba', meaning:'word / language'},
+          {word:'方言',   reading:'HŌGEN', meaning:'dialect'},
+        ] },
+      // 言 (standalone) introduced FIRST, then ◆言 shows how it tucks
+      // onto the left side of compounds. Same rule as 手 → ◆扌 in Body:
+      // teach the kanji, THEN reveal the radical role it plays.
       { id:'gonben-radical', type:'radical',
         radical:'言', from:'言',
         titleJa:'ごんべん', titleEn:'left-side speech',
@@ -1767,13 +1785,6 @@ window.FLASHCARD_CLASSES = [
           { kanji:'読', kun:'よ',   on:'ドク', en:'read' },
           { kanji:'語', kun:'かた', on:'ゴ',   en:'language / tell' },
           { kanji:'記', kun:'しる', on:'キ',   en:'record / chronicle' },
-        ] },
-      { id:'say', kanji:'言', kun:'い', on:'ゲン', en:'say / word', strokes:7,
-        seeAlso:['口'],
-        examples:[
-          {word:'言う',   reading:'iu',    meaning:'to say'},
-          {word:'言葉',   reading:'kotoba', meaning:'word / language'},
-          {word:'方言',   reading:'HŌGEN', meaning:'dialect'},
         ] },
       { id:'talk', kanji:'話', kun:'はな', on:'ワ', en:'talk / story', strokes:13,
         seeAlso:['言'],
