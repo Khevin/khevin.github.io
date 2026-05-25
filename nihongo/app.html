@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400;600&family=Klee+One:wght@400;600&family=Yuji+Syuku&family=Kaisei+Decol:wght@400;700&family=Hina+Mincho&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400;600&family=Klee+One:wght@400;600&family=Yuji+Syuku&family=Yuji+Mai&family=Kaisei+Decol:wght@400;700&family=Hina+Mincho&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --paper:        #f6ecd5;
@@ -8640,6 +8640,749 @@
     position: absolute;
     top: 6px; right: 6px;
   }
+
+  /* ───────────────────────────────────────────────────────────────────
+     Sentence Structure page — ported from sentence-structure.html
+     All class names are prefixed `ss-` to keep the page sandboxed from
+     the rest of the app. The page uses the lego-block visualization
+     (noun/verb/particle/stop) and particle color highlights to teach
+     SOV order, particles-as-labels, the verb-as-anchor, and word
+     reordering for emphasis.
+     ──────────────────────────────────────────────────────────────── */
+
+  /* page-local tokens — lego-block palette + particle hues
+     (the particle hues mirror the palette assigned to each particle in
+     window.PARTICLES so colors stay consistent across the app). */
+  .ss-page {
+    /* lego-block palette (semantic word types) */
+    --block-noun:    #d4884a;
+    --block-noun-dk: #a85f24;
+    --block-verb:    #6f9c5b;
+    --block-verb-dk: #4a7138;
+    --block-part:    #4f9aa8;
+    --block-part-dk: #2f6e7a;
+    --block-stop:    #8d6c9c;
+    --block-stop-dk: #5e4470;
+
+    /* particle hues — match particles-data.js exactly */
+    --pc-wa:   #8a2538;
+    --pc-ga:   #c97a2c;
+    --pc-o:    #5a2e8a;
+    --pc-ni:   #3a7a4a;
+    --pc-de:   #2e7a3f;
+    --pc-e:    #2a5b94;
+    --pc-no:   #c43a4a;
+    --pc-to:   #2a5b94;
+    --pc-mo:   #6a3a92;
+    --pc-kara: #a04a8a;
+    --pc-made: #3a7a8a;
+    --pc-ya:   #8d6630;
+
+    /* Shared chevron depth — used by both the arrow blocks (notch + point)
+       and the diamond's half-width, so adjacent pieces share their vertices. */
+    --chev: 28px;
+  }
+
+  /* ─── section chrome ────────────────────────────────────────────────── */
+  .ss-section { margin-bottom: 64px; }
+  .ss-section-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin-bottom: 22px;
+  }
+  .ss-section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(72px, 7vw, 96px);
+    height: clamp(72px, 7vw, 96px);
+    margin: 0 18px 0 -8px;
+    flex: 0 0 auto;
+    overflow: visible;
+    position: relative;
+    perspective: 600px;
+  }
+  .ss-section-num .ss-kanji-num {
+    display: inline-block;
+    font-family: 'Yuji Mai', 'Shippori Mincho', serif;
+    font-weight: 400;
+    font-size: clamp(70px, 8vw, 96px);
+    line-height: 1;
+    color: #1a120a;
+    text-shadow:
+      0 0 1.5px rgba(26, 18, 10, 0.45),
+      0 0 8px rgba(26, 18, 10, 0.06),
+      0 1px 0 rgba(255, 255, 255, 0.18);
+    filter: drop-shadow(0 2px 1px rgba(26, 18, 10, 0.10));
+    --rot: -3deg;
+    transform: rotate(var(--rot));
+    transform-origin: 50% 60%;
+    transition:
+      clip-path 1300ms cubic-bezier(.22, .9, .12, 1.0),
+      transform 1300ms cubic-bezier(.22, .9, .12, 1.0);
+    will-change: clip-path, transform;
+  }
+  .ss-section-num[data-axis="h"] .ss-kanji-num {
+    clip-path: inset(0% 100% 0% 0%);
+    transform: rotate(var(--rot)) translateX(-6%) scaleX(0.92);
+  }
+  .ss-section-num[data-axis="v"] .ss-kanji-num {
+    clip-path: inset(0% 0% 100% 0%);
+    transform: rotate(var(--rot)) translateY(-4%) scaleY(0.92);
+  }
+  .ss-section-num.ss-drawn[data-axis="h"] .ss-kanji-num,
+  .ss-section-num.ss-drawn[data-axis="v"] .ss-kanji-num,
+  .ss-section-num.ss-drawn .ss-kanji-num {
+    clip-path: inset(0% 0.01% 0% 0.01%);
+    transform: rotate(var(--rot));
+  }
+  .ss-section-title {
+    font-family: var(--serif-jp); font-weight: 600;
+    font-size: clamp(22px, 2.6vw, 28px);
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .ss-section-title em {
+    font-style: italic;
+    font-family: var(--serif);
+    color: var(--ink-3);
+    font-size: 0.7em;
+    margin-left: 8px;
+    font-weight: 400;
+  }
+  .ss-section-lede {
+    flex: 1 0 100%;
+    margin-left: calc(clamp(72px, 7vw, 96px) + 18px);
+    font-family: var(--serif); font-size: 17px;
+    color: var(--ink-2);
+    line-height: 1.6;
+    max-width: 64ch;
+    margin-top: 8px;
+  }
+  .ss-section-lede b { color: var(--ink); font-weight: 600; }
+  @media (max-width: 760px) {
+    .ss-section-lede { margin-left: 0; }
+  }
+
+  /* ─── card / panel ──────────────────────────────────────────────────── */
+  .ss-card {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.22);
+    border-radius: 10px;
+    padding: 28px clamp(20px, 3vw, 36px);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 4px 14px var(--paper-shadow);
+    margin-top: 18px;
+    position: relative;
+  }
+  .ss-card.ss-feature {
+    border: 2px solid var(--gold-soft);
+    box-shadow:
+      0 0 0 6px var(--paper-2),
+      0 0 0 7px var(--gold-soft),
+      0 8px 24px rgba(100,72,30,0.18);
+    border-radius: 4px;
+    padding: 32px clamp(20px, 4vw, 48px);
+  }
+  .ss-card.ss-feature::before, .ss-card.ss-feature::after,
+  .ss-card.ss-feature > .ss-corner-a, .ss-card.ss-feature > .ss-corner-b {
+    content: ""; position: absolute; width: 14px; height: 14px;
+    border: 2px solid var(--gold);
+    background: var(--paper-2);
+    border-radius: 50%;
+  }
+  .ss-card.ss-feature::before { top: -8px; left: -8px; }
+  .ss-card.ss-feature::after  { bottom: -8px; right: -8px; }
+  .ss-card.ss-feature > .ss-corner-a { top: -8px; right: -8px; }
+  .ss-card.ss-feature > .ss-corner-b { bottom: -8px; left: -8px; }
+
+  /* ─── english vs japanese contrast ─────────────────────────────────── */
+  .ss-contrast {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (max-width: 760px) {
+    .ss-contrast { grid-template-columns: 1fr; }
+    .ss-contrast .ss-vs { order: 2; transform: rotate(90deg); }
+  }
+  .ss-lang-panel { text-align: center; }
+  .ss-lang-panel h3 {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--ink-3); font-size: 14px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  .ss-lang-sentence {
+    font-family: var(--serif-jp); font-size: clamp(18px, 2vw, 22px);
+    color: var(--ink); line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .ss-lang-sentence .ss-en-word { font-family: var(--serif); font-style: italic; }
+  .ss-lang-sentence .ss-verb-pop {
+    display: inline-block;
+    padding: 2px 10px;
+    background: var(--block-verb);
+    color: #fff;
+    border-radius: 4px;
+    font-family: var(--sans-jp); font-weight: 700;
+    box-shadow: 0 2px 0 var(--block-verb-dk);
+  }
+  .ss-vs {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px dashed var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-style: italic;
+    color: var(--gold-dark); font-size: 14px;
+  }
+  .ss-lang-rule {
+    font-family: var(--serif); font-style: italic; font-size: 14px;
+    color: var(--ink-3); line-height: 1.5;
+  }
+  .ss-lang-rule b { color: var(--ink-2); font-style: normal; font-weight: 600; }
+
+  /* ─── verb-anchor diagram ──────────────────────────────────────────── */
+  .ss-anchor-wrap {
+    position: relative;
+    padding: 40px 20px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(180,138,74,0.06), transparent 70%);
+  }
+  .ss-anchor-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1.1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 14px 30px;
+    align-items: center;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .ss-anchor-verb {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    align-self: center;
+    justify-self: center;
+    width: clamp(150px, 18vw, 200px);
+    height: clamp(150px, 18vw, 200px);
+    border-radius: 50%;
+    background: var(--block-verb);
+    box-shadow:
+      0 4px 0 var(--block-verb-dk),
+      0 14px 30px rgba(74,113,56,0.30);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+  }
+  .ss-anchor-verb .ss-jp { font-family: var(--serif-jp); font-weight: 700; font-size: 38px; line-height: 1; }
+  .ss-anchor-verb .ss-en { font-family: var(--serif); font-style: italic; font-size: 15px; opacity: 0.85; margin-top: 4px; }
+  .ss-anchor-verb .ss-badge {
+    position: absolute; bottom: -14px;
+    background: var(--paper);
+    color: var(--block-verb-dk);
+    border: 1.5px solid var(--block-verb-dk);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-family: var(--serif); font-style: italic; font-size: 12px;
+    white-space: nowrap;
+  }
+  .ss-satellite {
+    display: flex; align-items: center; gap: 10px;
+    position: relative;
+  }
+  .ss-satellite.ss-left { flex-direction: row-reverse; text-align: right; justify-content: flex-end; }
+  .ss-sat-tag {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.25);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: var(--serif-jp); font-weight: 600;
+    color: var(--ink); font-size: 14px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .ss-sat-tag .ss-ja-sub { color: var(--ink-3); font-family: var(--serif); font-style: italic; font-weight: 400; margin-left: 4px; font-size: 12px;}
+  .ss-sat-particle {
+    --pc: var(--ink);
+    flex: 0 0 auto;
+    width: 64px; height: 64px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: 24px;
+    color: #fff;
+    background: var(--pc);
+    border-radius: 50%;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 6px rgba(0,0,0,0.25);
+    filter: drop-shadow(0 2px 4px rgba(100,72,30,0.12));
+  }
+  .ss-anchor-line {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .ss-anchor-note {
+    text-align: center;
+    margin-top: 20px;
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-3); font-size: 14px;
+  }
+  .ss-anchor-note .ss-pc-wa { color: var(--pc-wa); font-family: var(--serif-jp); font-weight: 600; font-style: normal; }
+  .ss-anchor-note .ss-pc-ga { color: var(--pc-ga); font-family: var(--serif-jp); font-weight: 600; font-style: normal; }
+
+  /* ─── lego legend ───────────────────────────────────────────────────── */
+  .ss-lego-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .ss-lego-card {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.22);
+    border-radius: 10px;
+    padding: 18px 18px 22px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .ss-lego-card .ss-shape-row { display: flex; justify-content: center; padding: 6px 0; }
+  .ss-lego-card h4 {
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: 17px; color: var(--ink);
+    margin: 0;
+  }
+  .ss-lego-card .ss-what {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-2); font-size: 14px;
+    line-height: 1.45;
+    margin: 0;
+  }
+  .ss-lego-card .ss-ex {
+    font-family: var(--sans-jp); font-size: 13px;
+    color: var(--ink-3);
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 6px 10px;
+    border: 1px dashed rgba(141,102,48,0.3);
+  }
+  .ss-lego-card .ss-ex .ss-jp { font-family: var(--serif-jp); font-weight: 600; color: var(--ink-2); }
+
+  /* ─── lego block shapes (clip-path) ─────────────────────────────────── */
+  .ss-blk {
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 56px;
+    padding: 0 22px;
+    font-family: var(--sans-jp); font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.18);
+    transition: transform .15s;
+    cursor: default;
+    flex: 0 0 auto;
+  }
+  .ss-blk small { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 12px; opacity: 0.85; margin-left: 6px; }
+  .ss-blk.ss-noun {
+    background: var(--block-noun);
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--chev)) 50%, 100% 100%, 0 100%, var(--chev) 50%);
+    padding: 0 calc(20px + var(--chev));
+    filter: drop-shadow(0 3px 0 var(--block-noun-dk));
+  }
+  .ss-blk.ss-verb {
+    background: var(--block-verb);
+    clip-path: polygon(0 0, calc(100% - var(--chev)) 0, 100% 50%, calc(100% - var(--chev)) 100%, 0 100%, var(--chev) 50%);
+    padding: 0 calc(20px + var(--chev));
+    filter: drop-shadow(0 3px 0 var(--block-verb-dk));
+  }
+  .ss-blk.ss-part {
+    background: var(--block-part);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    font-size: 18px;
+    filter: drop-shadow(0 3px 0 var(--block-part-dk));
+  }
+  .ss-blk.ss-stop {
+    background: var(--block-stop);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, var(--chev) 50%);
+    padding: 0 12px 0 calc(8px + var(--chev));
+    min-width: 52px;
+    filter: drop-shadow(0 3px 0 var(--block-stop-dk));
+  }
+  /* particle diamond colored by hue (overrides the generic cyan) */
+  .ss-blk.ss-part.ss-h-wa   { background: var(--pc-wa);   filter: drop-shadow(0 3px 0 #5a1923); }
+  .ss-blk.ss-part.ss-h-ga   { background: var(--pc-ga);   filter: drop-shadow(0 3px 0 #8f521b); }
+  .ss-blk.ss-part.ss-h-o    { background: var(--pc-o);    filter: drop-shadow(0 3px 0 #3a1d5c); }
+  .ss-blk.ss-part.ss-h-ni   { background: var(--pc-ni);   filter: drop-shadow(0 3px 0 #245030); }
+  .ss-blk.ss-part.ss-h-de   { background: var(--pc-de);   filter: drop-shadow(0 3px 0 #1f5229); }
+  .ss-blk.ss-part.ss-h-e    { background: var(--pc-e);    filter: drop-shadow(0 3px 0 #1c3e66); }
+  .ss-blk.ss-part.ss-h-no   { background: var(--pc-no);   filter: drop-shadow(0 3px 0 #872732); }
+  .ss-blk.ss-part.ss-h-to   { background: var(--pc-to);   filter: drop-shadow(0 3px 0 #1c3e66); }
+  .ss-blk.ss-part.ss-h-mo   { background: var(--pc-mo);   filter: drop-shadow(0 3px 0 #482664); }
+  .ss-blk.ss-part.ss-h-kara { background: var(--pc-kara); filter: drop-shadow(0 3px 0 #6e305f); }
+  .ss-blk.ss-part.ss-h-made { background: var(--pc-made); filter: drop-shadow(0 3px 0 #275660); }
+  .ss-blk.ss-part.ss-h-ya   { background: var(--pc-ya);   filter: drop-shadow(0 3px 0 #5d4420); }
+
+  /* ─── built sentence row ───────────────────────────────────────────── */
+  .ss-sentence-build {
+    background: linear-gradient(180deg, #2e261e, #1a140e);
+    border-radius: 12px;
+    padding: 28px clamp(16px, 3vw, 32px);
+    position: relative;
+    overflow: hidden;
+    margin-top: 18px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.04),
+      0 8px 30px rgba(58,40,24,0.30);
+  }
+  .ss-sentence-build::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 12% 20%, rgba(212,136,74,0.06), transparent 40%),
+      radial-gradient(circle at 88% 80%, rgba(143,108,156,0.05), transparent 40%);
+    pointer-events: none;
+  }
+  .ss-sentence-build > * { position: relative; z-index: 1; }
+  .ss-sentence-en {
+    font-family: var(--serif); font-style: italic;
+    color: rgba(255,255,255,0.65);
+    font-size: 17px;
+    text-align: center;
+    margin: 0 0 16px;
+    letter-spacing: 0.02em;
+  }
+  .ss-sentence-jp-text {
+    font-family: var(--sans-jp); font-weight: 900;
+    font-size: clamp(20px, 2.6vw, 30px);
+    color: #fff;
+    text-align: center;
+    line-height: 1.2;
+    margin: 0 0 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .ss-sentence-jp-text .ss-w-noun   { color: var(--block-noun); }
+  .ss-sentence-jp-text .ss-w-verb   { color: var(--block-verb); }
+  .ss-sentence-jp-text .ss-w-part   { color: var(--block-part); }
+  .ss-sentence-jp-text .ss-w-stop   { color: var(--block-stop); }
+  .ss-sentence-jp-text .ss-w-h-wa   { color: var(--pc-wa); }
+  .ss-sentence-jp-text .ss-w-h-ga   { color: var(--pc-ga); }
+  .ss-sentence-jp-text .ss-w-h-o    { color: #b287d6; }
+  .ss-sentence-jp-text .ss-w-h-ni   { color: #74b187; }
+  .ss-sentence-jp-text .ss-w-h-no   { color: var(--pc-no); }
+  .ss-sentence-jp-text .ss-w-h-to   { color: #6a9bce; }
+  .ss-sentence-jp-text .ss-w-h-mo   { color: #a87fc4; }
+
+  .ss-blocks-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 14px;
+    margin-top: 14px;
+    padding: 0 var(--chev);
+  }
+  .ss-blocks-row .ss-blk { margin: 0; }
+  .ss-blocks-row .ss-blk + .ss-blk { margin-left: calc(-1 * var(--chev)); }
+  .ss-blocks-row .ss-blk.ss-part { z-index: 1; }
+  /* First arrow block in a row should have a flat left edge instead of a notch */
+  .ss-blocks-row > .ss-blk.ss-noun:first-child {
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--chev)) 50%, 100% 100%, 0 100%);
+    padding-left: 22px;
+  }
+  .ss-blocks-row > .ss-blk.ss-verb:first-child {
+    clip-path: polygon(0 0, calc(100% - var(--chev)) 0, 100% 50%, calc(100% - var(--chev)) 100%, 0 100%);
+    padding-left: 22px;
+  }
+
+  .ss-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(255,255,255,0.12);
+  }
+  .ss-breakdown .ss-bd {
+    display: flex; flex-direction: column; gap: 2px;
+    font-family: var(--serif); font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.3;
+  }
+  .ss-breakdown .ss-bd .ss-jp {
+    font-family: var(--sans-jp); font-weight: 700;
+    font-size: 15px;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: 0.02em;
+  }
+  .ss-breakdown .ss-bd .ss-role {
+    font-family: var(--serif); font-style: italic;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+  .ss-breakdown .ss-bd.ss-w-noun .ss-jp { color: var(--block-noun); }
+  .ss-breakdown .ss-bd.ss-w-verb .ss-jp { color: var(--block-verb); }
+  .ss-breakdown .ss-bd.ss-w-part .ss-jp { color: var(--block-part); }
+  .ss-breakdown .ss-bd.ss-w-stop .ss-jp { color: var(--block-stop); }
+
+  /* ─── flexible order grid ──────────────────────────────────────────── */
+  .ss-reorder-list {
+    display: flex; flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .ss-reorder-row {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.22);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  @media (max-width: 600px) {
+    .ss-reorder-row { grid-template-columns: 1fr; }
+  }
+  .ss-reorder-row .ss-nuance {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-3); font-size: 13px;
+    line-height: 1.4;
+  }
+  .ss-reorder-row .ss-nuance b {
+    font-family: var(--serif); font-style: normal; font-weight: 600;
+    color: var(--gold-dark); display: block;
+    font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 3px;
+    white-space: nowrap;
+  }
+  .ss-reorder-row .ss-jp-line {
+    font-family: var(--serif-jp); font-weight: 500;
+    font-size: 19px;
+    color: var(--ink); line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+  .ss-reorder-row .ss-jp-line .ss-pc { font-weight: 700; }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-wa   { color: var(--pc-wa); }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-ga   { color: var(--pc-ga); }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-o    { color: var(--pc-o);  }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-ni   { color: var(--pc-ni); }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-de   { color: var(--pc-de); }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-no   { color: var(--pc-no); }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-to   { color: var(--pc-to); }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-kara { color: var(--pc-kara); }
+  .ss-reorder-row .ss-jp-line .ss-pc.ss-made { color: var(--pc-made); }
+  .ss-reorder-row .ss-jp-line .ss-verb-u { border-bottom: 2px solid var(--block-verb); padding-bottom: 1px; }
+  .ss-reorder-row .ss-jp-line .ss-trans {
+    font-family: var(--serif); font-style: italic; font-size: 13px;
+    color: var(--ink-3); margin-top: 4px;
+  }
+
+  /* ─── rule pills (the two rules) ───────────────────────────────────── */
+  .ss-rules-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 12px;
+  }
+  @media (max-width: 600px) { .ss-rules-two { grid-template-columns: 1fr; } }
+  .ss-rule-pill {
+    position: relative;
+    background: var(--paper-2);
+    border-radius: 10px;
+    border: 1px solid rgba(141,102,48,0.22);
+    padding: 22px 22px 22px 70px;
+    overflow: hidden;
+  }
+  .ss-rule-pill .ss-num {
+    position: absolute; left: 18px; top: 22px;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #fff;
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 0 var(--gold-dark);
+  }
+  .ss-rule-pill h4 {
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: 16px; color: var(--ink);
+    margin: 0 0 6px;
+  }
+  .ss-rule-pill p {
+    font-family: var(--serif); font-size: 14px;
+    color: var(--ink-2); line-height: 1.55;
+    margin: 0;
+  }
+  .ss-rule-pill p b { color: var(--ink); font-weight: 600; }
+
+  /* ─── confusing pairs ───────────────────────────────────────────────── */
+  .ss-pairs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 18px;
+  }
+  .ss-pair {
+    background: var(--paper-2);
+    border: 1px solid rgba(141,102,48,0.22);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .ss-pair-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-3); font-size: 14px;
+  }
+  .ss-pair-chip {
+    width: 52px; height: 52px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--serif-jp); font-weight: 700;
+    font-size: 22px;
+    background: var(--ss-pc-bg, var(--block-part));
+    color: #fff;
+    border-radius: 50%;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4), 0 0 6px rgba(0,0,0,0.25);
+  }
+  .ss-pair-chip.ss-wa { --ss-pc-bg: var(--pc-wa); }
+  .ss-pair-chip.ss-ga { --ss-pc-bg: var(--pc-ga); }
+  .ss-pair-chip.ss-o  { --ss-pc-bg: var(--pc-o);  }
+  .ss-pair-chip.ss-ni { --ss-pc-bg: var(--pc-ni); }
+  .ss-pair-chip.ss-de { --ss-pc-bg: var(--pc-de); }
+  .ss-pair-chip.ss-e  { --ss-pc-bg: var(--pc-e);  }
+  .ss-pair-vs {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-3); font-size: 14px;
+  }
+  .ss-pair-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .ss-pair-col h5 {
+    font-family: var(--serif); font-weight: 600;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3); margin: 0 0 6px;
+  }
+  .ss-pair-col p {
+    font-family: var(--serif); font-size: 14px;
+    color: var(--ink-2); line-height: 1.5;
+    margin: 0 0 8px;
+  }
+  .ss-pair-col p b { color: var(--ink); font-weight: 600; }
+  .ss-pair-ex {
+    font-family: var(--serif-jp); font-size: 15px;
+    color: var(--ink);
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 6px 10px;
+    border-left: 2px solid var(--gold-soft);
+    margin-bottom: 4px;
+  }
+  .ss-pair-ex .ss-pc { font-weight: 700; }
+  .ss-pair-ex .ss-pc.ss-wa { color: var(--pc-wa); }
+  .ss-pair-ex .ss-pc.ss-ga { color: var(--pc-ga); }
+  .ss-pair-ex .ss-pc.ss-ni { color: var(--pc-ni); }
+  .ss-pair-ex .ss-pc.ss-de { color: var(--pc-de); }
+  .ss-pair-ex .ss-pc.ss-e  { color: var(--pc-e); }
+  .ss-pair-ex .ss-en {
+    display: block;
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-3); font-size: 12px;
+    margin-top: 2px;
+  }
+
+  /* ─── inline kana marker (for body text references) ──────────────── */
+  .ss-pmark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.8em; height: 1.8em;
+    margin: 0 0.1em;
+    vertical-align: middle;
+    font-family: var(--serif-jp); font-weight: 700;
+    background: var(--ss-pc-bg, var(--block-part));
+    color: #fff;
+    border-radius: 50%;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4), 0 0 4px rgba(0,0,0,0.25);
+  }
+  .ss-pmark.ss-wa   { --ss-pc-bg: var(--pc-wa); }
+  .ss-pmark.ss-ga   { --ss-pc-bg: var(--pc-ga); }
+  .ss-pmark.ss-o    { --ss-pc-bg: var(--pc-o);  }
+  .ss-pmark.ss-ni   { --ss-pc-bg: var(--pc-ni); }
+  .ss-pmark.ss-de   { --ss-pc-bg: var(--pc-de); }
+  .ss-pmark.ss-e    { --ss-pc-bg: var(--pc-e);  }
+  .ss-pmark.ss-no   { --ss-pc-bg: var(--pc-no); }
+  .ss-pmark.ss-to   { --ss-pc-bg: var(--pc-to); }
+  .ss-pmark.ss-mo   { --ss-pc-bg: var(--pc-mo); }
+  .ss-pmark.ss-kara { --ss-pc-bg: var(--pc-kara); width: 2.4em; font-size: 0.85em; }
+  .ss-pmark.ss-made { --ss-pc-bg: var(--pc-made); width: 2.4em; font-size: 0.85em; }
+  .ss-pmark.ss-ya   { --ss-pc-bg: var(--pc-ya); }
+
+  /* ─── footnote paragraphs ──────────────────────────────────────────── */
+  .ss-footnote {
+    font-family: var(--serif); font-style: italic; font-size: 14px;
+    color: var(--ink-3);
+    margin-top: 18px;
+    max-width: 64ch;
+    line-height: 1.5;
+  }
+  .ss-footnote i { color: var(--ink-2); }
+
+  /* ─── final call-to-action ──────────────────────────────────────────── */
+  .ss-end-cta {
+    text-align: center;
+    padding: 32px 24px;
+    margin-top: 20px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(180,138,74,0.10), transparent 70%),
+      var(--paper-2);
+    border-radius: 10px;
+    border: 1px solid rgba(141,102,48,0.22);
+  }
+  .ss-end-cta h3 {
+    font-family: var(--serif-jp); font-weight: 600;
+    font-size: 22px; margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .ss-end-cta p {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-2); font-size: 15px;
+    margin: 0 0 16px;
+  }
+  .ss-btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .ss-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: 8px;
+    background: var(--gold); color: white;
+    border: 1px solid var(--gold-dark);
+    font-family: var(--serif); font-size: 14px;
+    text-decoration: none;
+    transition: all .15s;
+    box-shadow: 0 3px 0 var(--gold-dark);
+    cursor: pointer;
+  }
+  .ss-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 0 var(--gold-dark); }
+  .ss-btn.ss-ghost {
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px dashed rgba(141,102,48,0.4);
+    box-shadow: none;
+  }
+  .ss-btn.ss-ghost:hover { background: rgba(180,138,74,0.10); box-shadow: none; transform: none; }
 </style>
 </head>
 <body>
@@ -10521,10 +11264,11 @@ const SECTION_BGS = {
                         'images/bg/eating-out/bg3.webp'],
   // Each writing subpage carries one specific bg — the brush + ink
   // aesthetics map to the subject they teach.
-  'writing-kana':      ['images/bg/writing/bg-shodo.webp'],   // calligraphy → hiragana/katakana
-  'writing-numbers':   ['images/bg/writing/bg-sumi.webp'],    // sumi strokes → numerals
-  'writing-colors':    ['images/bg/writing/bg-suzuri.webp'],  // ink + brush + bamboo → colors
-  'writing-particles': ['images/bg/writing/bg-shodo.webp'],   // calligraphy → particles
+  'writing-kana':               ['images/bg/writing/bg-shodo.webp'],            // calligraphy → hiragana/katakana
+  'writing-numbers':            ['images/bg/writing/bg-sumi.webp'],             // sumi strokes → numerals
+  'writing-particles':          ['images/bg/writing/bg-shodo.webp'],            // calligraphy → particles
+  'writing-sentence-structure': ['images/bg/writing/sentence-structure.webp'],  // building blocks → sentence structure
+  'writing-colors':             ['images/bg/writing/bg-suzuri.webp'],           // ink + brush + bamboo → colors
   // Flashcards draws from the same global pool. The dropdown in the
   // flashcards top-row lets the learner lock to one image, choose
   // 'none' to suppress the bg entirely, or stay on 'random' to get
@@ -13621,10 +14365,11 @@ function numCardHTML({ badge, title, body, aside, wide, font }) {
 }
 
 const WRITING_PAGES = [
-  { id:'kana',      glyph:'あ', ja:'ひらがな・カタカナ', en:'Hiragana & Katakana' },
-  { id:'numbers',   glyph:'数', ja:'すうじ',             en:'Numbers' },
-  { id:'colors',    glyph:'色', ja:'いろ',               en:'Colors' },
-  { id:'particles', glyph:'は', ja:'じょし',             en:'Particles' },
+  { id:'kana',               glyph:'あ', ja:'ひらがな・カタカナ', en:'Hiragana & Katakana' },
+  { id:'numbers',            glyph:'数', ja:'すうじ',             en:'Numbers' },
+  { id:'particles',          glyph:'は', ja:'じょし',             en:'Particles' },
+  { id:'sentence-structure', glyph:'文', ja:'ぶんのくみたて',     en:'Sentence Structure' },
+  { id:'colors',             glyph:'色', ja:'いろ',               en:'Colors' },
 ];
 
 function renderWritingSidebar() {
@@ -13691,10 +14436,11 @@ function renderWriting(container) {
   // preference still points here, redirect on next render.
   if (page === 'radicals') { APP.writingPage = 'kana'; lsSet('jp:writingPage', 'kana'); }
   const actual = APP.writingPage || 'kana';
-  if (actual === 'kana')           renderWritingKana(container);
-  else if (actual === 'numbers')   renderWritingNumbers(container);
-  else if (actual === 'colors')    renderWritingColors(container);
-  else if (actual === 'particles') renderWritingParticles(container);
+  if (actual === 'kana')                    renderWritingKana(container);
+  else if (actual === 'numbers')            renderWritingNumbers(container);
+  else if (actual === 'particles')          renderWritingParticles(container);
+  else if (actual === 'sentence-structure') renderWritingSentenceStructure(container);
+  else if (actual === 'colors')             renderWritingColors(container);
 }
 
 function renderWritingKana(container) {
@@ -14268,6 +15014,471 @@ function renderWritingParticles(container) {
       ` : ''}
     </div>`;
 
+}
+
+// ── Sentence Structure page ────────────────────────────────────────────
+// Pure educational content — no clicks, no state, no quizzes. Eight
+// sections that walk a learner from "English vs Japanese" through the
+// verb-as-anchor metaphor, the four lego-block parts of speech, building
+// short and long sentences, word reordering for emphasis, the two
+// non-negotiable rules, and the は/が + に/で confusing pairs.
+//
+// CSS lives in the main <style> block, all classes prefixed `ss-`. The
+// only side effect is a single setTimeout that flips the ss-drawn class
+// on each section-num so the kanji "brush" themselves in on first paint.
+function renderWritingSentenceStructure(container) {
+  container.innerHTML = `
+    <div class="page-head">
+      <div class="page-eyebrow">writing · grammar</div>
+      <div class="page-title-jp">ぶんの くみたて <span style="font-family:var(--serif); font-style:italic; color:var(--ink-3); font-weight:400; font-size:0.5em;">— building a Japanese sentence</span></div>
+      <div class="page-title-en">If English is a line, Japanese is a constellation. Words can sit almost anywhere — what matters is the little tag that follows each one, and the verb that pins everything to the end.</div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="ss-page">
+
+      <!-- 1. English vs Japanese -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="h" style="--rot: -4deg;"><span class="ss-kanji-num">一</span></span>
+          <h2 class="ss-section-title">A different way of saying the same thing<em>english vs japanese</em></h2>
+          <p class="ss-section-lede">English uses <b>word order</b> to tell you who's doing what to whom. Japanese uses <b>little markers called particles</b> — and the verb almost always lands at the very end.</p>
+        </div>
+
+        <div class="ss-card">
+          <div class="ss-contrast">
+            <div class="ss-lang-panel">
+              <h3>English</h3>
+              <div class="ss-lang-sentence">
+                <span class="ss-en-word">I</span>
+                <span class="ss-verb-pop">watch</span>
+                <span class="ss-en-word">anime</span>.
+              </div>
+              <div class="ss-lang-rule">
+                <b>Word order = meaning.</b><br>
+                Subject &nbsp;→&nbsp; <i>Verb</i> &nbsp;→&nbsp; Object.<br>
+                Move "I" and "anime" and the sentence breaks.
+              </div>
+            </div>
+
+            <div class="ss-vs">vs.</div>
+
+            <div class="ss-lang-panel">
+              <h3>Japanese</h3>
+              <div class="ss-lang-sentence">
+                私<span class="ss-pmark ss-wa">は</span> アニメ<span class="ss-pmark ss-o">を</span> <span class="ss-verb-pop">見る</span>。
+              </div>
+              <div class="ss-lang-rule">
+                <b>Particles = meaning.</b><br>
+                Each noun carries a marker telling its job.<br>
+                The <span style="color:var(--block-verb-dk); font-weight:600;">verb</span> sits at the end.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="ss-footnote">
+          So <span class="ss-pmark ss-wa">は</span> tags <i>watashi</i> as the topic. <span class="ss-pmark ss-o">を</span> tags <i>anime</i> as the thing being watched. Once those tags are in place, the order can shuffle — and the meaning still holds.
+        </p>
+      </section>
+
+      <!-- 2. The verb is the anchor -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="h" style="--rot: -2deg;"><span class="ss-kanji-num">二</span></span>
+          <h2 class="ss-section-title">The verb is the anchor<em>動詞 / どうし</em></h2>
+          <p class="ss-section-lede">Picture every Japanese sentence as a planet. The <b>verb</b> sits at the center. Everything else orbits — and each piece of information clips on with its own little particle.</p>
+        </div>
+
+        <div class="ss-card ss-feature">
+          <span class="ss-corner-a"></span><span class="ss-corner-b"></span>
+          <div class="ss-anchor-wrap">
+            <svg class="ss-anchor-line" viewBox="0 0 820 480" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="240" y1="80"  x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+              <line x1="240" y1="180" x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+              <line x1="240" y1="300" x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+              <line x1="240" y1="400" x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+              <line x1="580" y1="80"  x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+              <line x1="580" y1="180" x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+              <line x1="580" y1="300" x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+              <line x1="580" y1="400" x2="410" y2="240" stroke="rgba(141,102,48,0.35)" stroke-width="1" stroke-dasharray="3 4"/>
+            </svg>
+
+            <div class="ss-anchor-grid">
+              <!-- ROW 1 -->
+              <div class="ss-satellite ss-left">
+                <div class="ss-sat-tag">Topic <span class="ss-ja-sub">主題</span></div>
+                <div class="ss-sat-particle" style="--pc:var(--pc-wa); background:var(--pc-wa);">は</div>
+              </div>
+              <div class="ss-anchor-verb">
+                <div class="ss-jp">動詞</div>
+                <div class="ss-en">Verb</div>
+                <div class="ss-badge">always at the end</div>
+              </div>
+              <div class="ss-satellite">
+                <div class="ss-sat-particle" style="--pc:var(--pc-o); background:var(--pc-o);">を</div>
+                <div class="ss-sat-tag">Object <span class="ss-ja-sub">直接目的語</span></div>
+              </div>
+
+              <!-- ROW 2 -->
+              <div class="ss-satellite ss-left">
+                <div class="ss-sat-tag">Time <span class="ss-ja-sub">時間</span></div>
+                <div class="ss-sat-particle" style="--pc:var(--pc-ni); background:var(--pc-ni);">に</div>
+              </div>
+              <div class="ss-satellite">
+                <div class="ss-sat-particle" style="--pc:var(--pc-de); background:var(--pc-de);">で</div>
+                <div class="ss-sat-tag">Location <span class="ss-ja-sub">場所</span></div>
+              </div>
+
+              <!-- ROW 3 -->
+              <div class="ss-satellite ss-left">
+                <div class="ss-sat-tag">Origin <span class="ss-ja-sub">出発点</span></div>
+                <div class="ss-sat-particle" style="--pc:var(--pc-kara); background:var(--pc-kara); font-size:18px;">から</div>
+              </div>
+              <div class="ss-satellite">
+                <div class="ss-sat-particle" style="--pc:var(--pc-ni); background:var(--pc-ni);">に</div>
+                <div class="ss-sat-tag">Destination <span class="ss-ja-sub">行き先</span></div>
+              </div>
+
+              <!-- ROW 4 -->
+              <div class="ss-satellite ss-left">
+                <div class="ss-sat-tag">Means <span class="ss-ja-sub">手段</span></div>
+                <div class="ss-sat-particle" style="--pc:var(--pc-de); background:var(--pc-de);">で</div>
+              </div>
+              <div class="ss-satellite">
+                <div class="ss-sat-particle" style="--pc:var(--pc-to); background:var(--pc-to);">と</div>
+                <div class="ss-sat-tag">Co-participant <span class="ss-ja-sub">同伴者</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="ss-anchor-note">
+            Everything other than the verb is <i>optional</i>, including the topic <span class="ss-pc-wa">は</span>.<br>
+            Word order changes the <i>emphasis</i>, but rarely the underlying meaning.
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. The four building blocks -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="h" style="--rot: 3deg;"><span class="ss-kanji-num">三</span></span>
+          <h2 class="ss-section-title">Four kinds of building block<em>like clip-together pieces</em></h2>
+          <p class="ss-section-lede">If we colour every word in a Japanese sentence by its <b>part of speech</b>, only four colours come back. Memorise these four shapes and you'll see the seams in every sentence.</p>
+        </div>
+
+        <div class="ss-lego-legend">
+          <div class="ss-lego-card">
+            <div class="ss-shape-row"><span class="ss-blk ss-noun">名詞 <small>noun</small></span></div>
+            <h4>Nouns &amp; な-adjectives</h4>
+            <p class="ss-what">The "things" of the sentence: people, places, ideas. <i>な</i>-adjectives feel like nouns and behave like them.</p>
+            <p class="ss-ex"><span class="ss-jp">私 · 学校 · アニメ · 静か(な)</span><br>watashi · gakkou · anime · shizuka</p>
+          </div>
+
+          <div class="ss-lego-card">
+            <div class="ss-shape-row"><span class="ss-blk ss-verb">動詞 <small>verb</small></span></div>
+            <h4>Verbs &amp; い-adjectives</h4>
+            <p class="ss-what">Words that conjugate. <i>い</i>-adjectives count here too — they take tense and negation just like verbs.</p>
+            <p class="ss-ex"><span class="ss-jp">見る · 食べる · 行く · 寒い · 楽しい</span><br>miru · taberu · iku · samui · tanoshii</p>
+          </div>
+
+          <div class="ss-lego-card">
+            <div class="ss-shape-row"><span class="ss-blk ss-part">助詞</span></div>
+            <h4>Particles &amp; です</h4>
+            <p class="ss-what">The tiny clips that label nouns and glue clauses together. <i>です</i> belongs here too — it's grammar, not vocabulary.</p>
+            <p class="ss-ex"><span class="ss-jp">は · が · を · に · で · の · と · です</span><br>wa · ga · o · ni · de · no · to · desu</p>
+          </div>
+
+          <div class="ss-lego-card">
+            <div class="ss-shape-row"><span class="ss-blk ss-stop">。</span></div>
+            <h4>Sentence ender</h4>
+            <p class="ss-what">The full stop. In Japanese it's the little circle <span class="ss-jp" style="font-family:var(--serif-jp); font-weight:700; color:var(--ink);">。</span> — and once you reach it, the sentence is sealed.</p>
+            <p class="ss-ex"><span class="ss-jp">見る<span style="color:var(--block-stop-dk); font-weight:700;">。</span></span><br>"watch <i>(period)</i>"</p>
+          </div>
+        </div>
+
+        <p class="ss-footnote">
+          Notice the shapes: nouns and verbs are <i>arrows</i> that pass meaning forward. Particles are <i>diamonds</i> that snap between them. The full stop is the cap on the end.
+        </p>
+      </section>
+
+      <!-- 4. Build a simple sentence -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="v" style="--rot: -5deg;"><span class="ss-kanji-num">四</span></span>
+          <h2 class="ss-section-title">Snap the pieces together<em>your first sentence</em></h2>
+          <p class="ss-section-lede">Let's build "<i>I watch anime.</i>" Each block clips onto the next — and the diamond particles are what hold the noun arrows in place.</p>
+        </div>
+
+        <div class="ss-sentence-build">
+          <p class="ss-sentence-en">"I watch anime."</p>
+          <p class="ss-sentence-jp-text">
+            <span class="ss-w-noun">WATASHI</span>
+            <span class="ss-w-h-wa">WA</span>
+            <span class="ss-w-noun">ANIME</span>
+            <span class="ss-w-h-o">WO</span>
+            <span class="ss-w-verb">MITEIRU</span><span class="ss-w-stop">。</span>
+          </p>
+          <div class="ss-blocks-row">
+            <span class="ss-blk ss-noun">私 <small>watashi</small></span>
+            <span class="ss-blk ss-part ss-h-wa">は</span>
+            <span class="ss-blk ss-noun">アニメ <small>anime</small></span>
+            <span class="ss-blk ss-part ss-h-o">を</span>
+            <span class="ss-blk ss-verb">見ている <small>miteiru</small></span>
+            <span class="ss-blk ss-stop">。</span>
+          </div>
+          <div class="ss-breakdown">
+            <div class="ss-bd ss-w-noun"><span class="ss-jp">私 (watashi)</span><span class="ss-role">I — the topic</span></div>
+            <div class="ss-bd ss-w-part"><span class="ss-jp">は (wa)</span><span class="ss-role">topic marker</span></div>
+            <div class="ss-bd ss-w-noun"><span class="ss-jp">アニメ (anime)</span><span class="ss-role">the thing watched</span></div>
+            <div class="ss-bd ss-w-part"><span class="ss-jp">を (wo)</span><span class="ss-role">object marker</span></div>
+            <div class="ss-bd ss-w-verb"><span class="ss-jp">見ている (miteiru)</span><span class="ss-role">am watching</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Extend the sentence -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="v" style="--rot: 2deg;"><span class="ss-kanji-num">五</span></span>
+          <h2 class="ss-section-title">Now make it longer<em>same shape, more pieces</em></h2>
+          <p class="ss-section-lede">The same clip-together rule scales. Add more nouns, more particles, more clauses — but every new noun still needs its own diamond, and the verb still anchors the end.</p>
+        </div>
+
+        <div class="ss-sentence-build">
+          <p class="ss-sentence-en">"I'm a fool who watches anime."</p>
+          <p class="ss-sentence-jp-text">
+            <span class="ss-w-noun">WATASHI</span>
+            <span class="ss-w-h-wa">WA</span>
+            <span class="ss-w-noun">ANIME</span>
+            <span class="ss-w-h-o">WO</span>
+            <span class="ss-w-verb">MIRU</span>
+            <span class="ss-w-noun">BAKA</span>
+            <span class="ss-w-part">DESU</span><span class="ss-w-stop">。</span>
+          </p>
+          <div class="ss-blocks-row">
+            <span class="ss-blk ss-noun">私</span>
+            <span class="ss-blk ss-part ss-h-wa">は</span>
+            <span class="ss-blk ss-noun">アニメ</span>
+            <span class="ss-blk ss-part ss-h-o">を</span>
+            <span class="ss-blk ss-verb">見る</span>
+            <span class="ss-blk ss-noun">バカ</span>
+            <span class="ss-blk ss-part">です</span>
+            <span class="ss-blk ss-stop">。</span>
+          </div>
+          <div class="ss-breakdown">
+            <div class="ss-bd ss-w-noun"><span class="ss-jp">私</span><span class="ss-role">I</span></div>
+            <div class="ss-bd ss-w-part"><span class="ss-jp">は</span><span class="ss-role">topic marker</span></div>
+            <div class="ss-bd ss-w-noun"><span class="ss-jp">アニメ</span><span class="ss-role">anime (object)</span></div>
+            <div class="ss-bd ss-w-part"><span class="ss-jp">を</span><span class="ss-role">object marker</span></div>
+            <div class="ss-bd ss-w-verb"><span class="ss-jp">見る</span><span class="ss-role">watch — modifies バカ</span></div>
+            <div class="ss-bd ss-w-noun"><span class="ss-jp">バカ</span><span class="ss-role">fool — the predicate</span></div>
+            <div class="ss-bd ss-w-part"><span class="ss-jp">です</span><span class="ss-role">copula "am"</span></div>
+          </div>
+        </div>
+
+        <p class="ss-footnote">
+          See what happened? <span class="ss-pmark ss-o">を</span> still says "the thing being watched is <i>anime</i>" — even though the action of watching is now describing a <i>person</i> (バカ), not the speaker directly. Particles stay glued to their noun no matter what's happening around them.
+        </p>
+
+        <div class="ss-sentence-build" style="margin-top: 22px;">
+          <p class="ss-sentence-en">"I watch anime with my cute cat."</p>
+          <p class="ss-sentence-jp-text">
+            <span class="ss-w-noun">WATASHI</span>
+            <span class="ss-w-h-wa">WA</span>
+            <span class="ss-w-noun">WATASHI</span>
+            <span class="ss-w-h-no">NO</span>
+            <span class="ss-w-verb">KAWAII</span>
+            <span class="ss-w-noun">NEKO</span>
+            <span class="ss-w-h-to">TO</span>
+            <span class="ss-w-noun">ANIME</span>
+            <span class="ss-w-h-o">WO</span>
+            <span class="ss-w-verb">MIRU</span><span class="ss-w-stop">。</span>
+          </p>
+          <div class="ss-blocks-row">
+            <span class="ss-blk ss-noun">私</span>
+            <span class="ss-blk ss-part ss-h-wa">は</span>
+            <span class="ss-blk ss-noun">私</span>
+            <span class="ss-blk ss-part ss-h-no">の</span>
+            <span class="ss-blk ss-verb">可愛い</span>
+            <span class="ss-blk ss-noun">猫</span>
+            <span class="ss-blk ss-part ss-h-to">と</span>
+            <span class="ss-blk ss-noun">アニメ</span>
+            <span class="ss-blk ss-part ss-h-o">を</span>
+            <span class="ss-blk ss-verb">見る</span>
+            <span class="ss-blk ss-stop">。</span>
+          </div>
+          <div class="ss-breakdown">
+            <div class="ss-bd ss-w-noun"><span class="ss-jp">私 の 可愛い 猫</span><span class="ss-role">"my cute cat" — one big noun phrase</span></div>
+            <div class="ss-bd ss-w-part"><span class="ss-jp">と (to)</span><span class="ss-role">co-participant — "with"</span></div>
+            <div class="ss-bd ss-w-noun"><span class="ss-jp">アニメ</span><span class="ss-role">the object</span></div>
+            <div class="ss-bd ss-w-part"><span class="ss-jp">を (wo)</span><span class="ss-role">object marker</span></div>
+            <div class="ss-bd ss-w-verb"><span class="ss-jp">見る</span><span class="ss-role">the verb, anchoring it all</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Word order is flexible -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="v" style="--rot: -3deg;"><span class="ss-kanji-num">六</span></span>
+          <h2 class="ss-section-title">Word order changes the spotlight<em>same sentence, different emphasis</em></h2>
+          <p class="ss-section-lede">Because particles do the labelling, you can shuffle the satellites around the verb. <b>The verb stays at the end</b> — but whatever sits closest to it gets the most weight.</p>
+        </div>
+
+        <div class="ss-reorder-list">
+          <div class="ss-reorder-row">
+            <div class="ss-nuance"><b>Neutral</b>Standard order — no special emphasis.</div>
+            <div class="ss-jp-line">
+              太郎<span class="ss-pc ss-wa">は</span> 日曜日<span class="ss-pc ss-ni">に</span> 公園<span class="ss-pc ss-de">で</span> 野球<span class="ss-pc ss-o">を</span> <span class="ss-verb-u">しました</span>。
+              <div class="ss-trans">Taro played baseball at the park on Sunday.</div>
+            </div>
+          </div>
+
+          <div class="ss-reorder-row">
+            <div class="ss-nuance"><b>When-focused</b>Time slid toward the front, then verb.</div>
+            <div class="ss-jp-line">
+              日曜日<span class="ss-pc ss-ni">に</span> 太郎<span class="ss-pc ss-wa">は</span> 公園<span class="ss-pc ss-de">で</span> 野球<span class="ss-pc ss-o">を</span> <span class="ss-verb-u">しました</span>。
+              <div class="ss-trans">On Sunday, Taro played baseball at the park.</div>
+            </div>
+          </div>
+
+          <div class="ss-reorder-row">
+            <div class="ss-nuance"><b>What-focused</b>Object hugged up next to the verb.</div>
+            <div class="ss-jp-line">
+              太郎<span class="ss-pc ss-wa">は</span> 公園<span class="ss-pc ss-de">で</span> 日曜日<span class="ss-pc ss-ni">に</span> 野球<span class="ss-pc ss-o">を</span> <span class="ss-verb-u">しました</span>。
+              <div class="ss-trans">It was <i>baseball</i> Taro played at the park on Sunday.</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="ss-footnote">
+          Try saying each line out loud — the meaning stays put, but the <i>colour</i> of the sentence shifts.
+        </p>
+      </section>
+
+      <!-- 7. The two rules -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="v" style="--rot: 4deg;"><span class="ss-kanji-num">七</span></span>
+          <h2 class="ss-section-title">Only two rules are non-negotiable<em>everything else can move</em></h2>
+        </div>
+
+        <div class="ss-rules-two">
+          <div class="ss-rule-pill">
+            <span class="ss-num">壱</span>
+            <h4>The verb goes at the end</h4>
+            <p>Whatever the sentence is doing — saying, asking, describing — the <b>verb (or です)</b> is the last thing before the full stop. If your sentence is ending in a noun, you're missing your anchor.</p>
+          </div>
+          <div class="ss-rule-pill">
+            <span class="ss-num">弐</span>
+            <h4>Particles follow their noun</h4>
+            <p>The diamond always sits <b>immediately after</b> the noun it's tagging. You can move a noun-and-its-particle as a single unit — but you can never separate them.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. Confusing pairs -->
+      <section class="ss-section">
+        <div class="ss-section-head">
+          <span class="ss-section-num" data-axis="v" style="--rot: -2deg;"><span class="ss-kanji-num">八</span></span>
+          <h2 class="ss-section-title">Two pairs that trip everyone up<em>は vs が, に vs で</em></h2>
+          <p class="ss-section-lede">These are the famous confusions. They feel like the same thing at first — but they tell different stories.</p>
+        </div>
+
+        <div class="ss-pairs">
+          <div class="ss-pair">
+            <div class="ss-pair-head">
+              <span class="ss-pair-chip ss-wa">は</span>
+              <span class="ss-pair-vs">vs.</span>
+              <span class="ss-pair-chip ss-ga">が</span>
+            </div>
+            <div class="ss-pair-row">
+              <div class="ss-pair-col">
+                <h5>は · topic</h5>
+                <p>Sets up what the sentence is <b>about</b>. Old information — already on the table.</p>
+                <div class="ss-pair-ex">私<span class="ss-pc ss-wa">は</span>学生です。<span class="ss-en">As for me — student.</span></div>
+              </div>
+              <div class="ss-pair-col">
+                <h5>が · subject</h5>
+                <p>Identifies <b>who</b> or <b>what</b>. New information, often emphatic.</p>
+                <div class="ss-pair-ex">私<span class="ss-pc ss-ga">が</span>学生です。<span class="ss-en"><i>I</i> am the student (not them).</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-pair">
+            <div class="ss-pair-head">
+              <span class="ss-pair-chip ss-ni">に</span>
+              <span class="ss-pair-vs">vs.</span>
+              <span class="ss-pair-chip ss-de">で</span>
+            </div>
+            <div class="ss-pair-row">
+              <div class="ss-pair-col">
+                <h5>に · existence / destination</h5>
+                <p>Where someone <b>is</b>, or where they're <b>going to</b>.</p>
+                <div class="ss-pair-ex">図書館<span class="ss-pc ss-ni">に</span>います。<span class="ss-en">I am at the library.</span></div>
+              </div>
+              <div class="ss-pair-col">
+                <h5>で · place of action</h5>
+                <p>Where something <b>happens</b>. The action's stage.</p>
+                <div class="ss-pair-ex">図書館<span class="ss-pc ss-de">で</span>勉強します。<span class="ss-en">I study at the library.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. End CTA -->
+      <section class="ss-section">
+        <div class="ss-end-cta">
+          <h3>You've got the skeleton.</h3>
+          <p>Next: walk through each particle individually, and start writing your own sentences from scratch.</p>
+          <div class="ss-btn-row">
+            <button class="ss-btn" data-ss-goto="particles">Study the particles →</button>
+          </div>
+        </div>
+      </section>
+
+    </div>`;
+
+  // Wire the "Study the particles" CTA — switches to the particles
+  // writing subpage using the same path used by the writing sidebar
+  // (keep state in localStorage so a refresh lands the user back).
+  const goPart = container.querySelector('[data-ss-goto="particles"]');
+  if (goPart) {
+    goPart.addEventListener('click', () => {
+      APP.writingPage = 'particles';
+      lsSet('jp:writingPage', 'particles');
+      APP.particleMode = 'lessons';
+      lsSet('jp:particleMode', 'lessons');
+      APP.lessonId = null;
+      lsSet('jp:lessonId', null);
+      document.querySelector('.app').classList
+        .toggle('show-particles-sidebar', shouldShowParticlesSidebar());
+      if (typeof applyContextBg === 'function') applyContextBg();
+      renderWriting(document.getElementById('main-inner'));
+      renderWritingSidebar();
+      renderParticlesSidebar();
+    });
+  }
+
+  // Reveal each section-num kanji as the user scrolls. Same animation
+  // pattern as the standalone page — IntersectionObserver where
+  // available, plus a 4-second safety net so all glyphs are drawn even
+  // if the observer never fires (e.g. when the entire page fits in the
+  // viewport on a large monitor and nothing scrolls into view).
+  const nums = Array.from(container.querySelectorAll('.ss-section-num'));
+  const reveal = (el) => el.classList.add('ss-drawn');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { setTimeout(() => reveal(e.target), 320); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.4, rootMargin: '0px 0px -8% 0px' });
+    nums.forEach(n => io.observe(n));
+  }
+  // Safety net: draw all kanji within 4s no matter what.
+  setTimeout(() => nums.forEach(reveal), 4000);
 }
 
 // ── Particle lessons ───────────────────────────────────────────────────
