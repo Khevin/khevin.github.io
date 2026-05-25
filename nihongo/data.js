@@ -1556,6 +1556,18 @@ window.FLASHCARD_CLASSES = [
           { kanji:'宿', kun:'やど', on:'シュク', en:'lodging / inn' },
           { kanji:'守', kun:'まも', on:'シュ', en:'protect / keep' },
         ] },
+      // 宀 as a standalone learner card — the user wanted the radical
+      // taught both as a ◆ interlude (above) and as its own kanji card
+      // (here) so the illustration lands too. Image lives at
+      // images/kanji/宀.webp; back-face stroke order is the natural
+      // 3-stroke roof shape.
+      { id:'roof',     kanji:'宀', kun:'うかんむり', on:'',       en:'roof / crown / cap (radical)',
+        strokes:3,
+        examples:[
+          {word:'家',     reading:'ie',    meaning:'house (uses 宀 as roof)'},
+          {word:'室',     reading:'shitsu', meaning:'room'},
+          {word:'宿',     reading:'yado',  meaning:'inn / lodging'},
+        ] },
       { id:'learn',    kanji:'学', kun:'まな',     on:'ガク',   en:'learn / study',
         seeAlso:['子'], strokes:8, examples:[{word:'学校',reading:'GAKKŌ',meaning:'school'},{word:'学生',reading:'GAKUSEI',meaning:'student'},{word:'学ぶ',reading:'manabu',meaning:'to learn'}] },
       { id:'school',   kanji:'校', kun:'',         on:'コウ',   en:'school',
