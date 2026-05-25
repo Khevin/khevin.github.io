@@ -1125,6 +1125,8 @@ window.FLASHCARD_CLASSES = [
       { id:'river',     kanji:'川', kun:'かわ',   on:'セン',   en:'river', strokes:3, examples:[{word:'川上',reading:'kawakami',meaning:'upstream'},{word:'川下',reading:'kawashimo',meaning:'downstream'},{word:'小川',reading:'ogawa',meaning:'stream'}] },
       { id:'tree',      kanji:'木', kun:'き',     on:'ボク',   en:'tree / wood',
         strokes:4, examples:[{word:'木曜日',reading:'MOKUYŌbi',meaning:'Thursday'},{word:'木造',reading:'MOKUZŌ',meaning:'wooden'},{word:'木陰',reading:'kokage',meaning:'tree shade'}] },
+      { id:'book',      kanji:'本', kun:'もと',   on:'ホン',   en:'book / origin / root',
+        strokes:5, seeAlso:['木'], examples:[{word:'日本',reading:'NIHON',meaning:'Japan'},{word:'本当',reading:'HONTŌ',meaning:'really'},{word:'本棚',reading:'hondana',meaning:'bookshelf'}] },
       { id:'fire',      kanji:'火', kun:'ひ',     on:'カ',     en:'fire',
         strokes:4, examples:[{word:'火曜日',reading:'KAYŌbi',meaning:'Tuesday'},{word:'火山',reading:'KAZAN',meaning:'volcano'},{word:'火花',reading:'hibana',meaning:'spark'}] },
       { id:'water',     kanji:'水', kun:'みず',   on:'スイ',   en:'water',
@@ -1135,7 +1137,10 @@ window.FLASHCARD_CLASSES = [
       { id:'big',       kanji:'大', kun:'おお',   on:'ダイ',   en:'big / large', strokes:3, examples:[{word:'大学',reading:'DAIGAKU',meaning:'university'},{word:'大人',reading:'otona',meaning:'adult'},{word:'大きい',reading:'ōkii',meaning:'big'}] },
       { id:'small',     kanji:'小', kun:'ちい',   on:'ショウ', en:'small', strokes:3, examples:[{word:'小学校',reading:'SHŌGAKKŌ',meaning:'elementary school'},{word:'小さい',reading:'chiisai',meaning:'small'},{word:'小鳥',reading:'kotori',meaning:'small bird'}] },
       { id:'yen',       kanji:'円', kun:'まる',   on:'エン',   en:'yen / circle', strokes:4, examples:[{word:'円形',reading:'ENKEI',meaning:'circle'},{word:'円高',reading:'ENdaka',meaning:'strong yen'},{word:'百円',reading:'HYAKUEN',meaning:'100 yen'}] },
+      { id:'king',      kanji:'王', kun:'おう',   on:'オウ',   en:'king', strokes:4, examples:[{word:'王子',reading:'ŌJI',meaning:'prince'},{word:'女王',reading:'JOŌ',meaning:'queen'},{word:'王様',reading:'Ōsama',meaning:'king'}] },
+      { id:'life',      kanji:'生', kun:'い',     on:'セイ',   en:'life / give birth / student', strokes:5, examples:[{word:'学生',reading:'GAKUSEI',meaning:'student'},{word:'先生',reading:'SENSEI',meaning:'teacher'},{word:'生活',reading:'SEIKATSU',meaning:'daily life'},{word:'生まれる',reading:'umareru',meaning:'to be born'}] },
       { id:'jewel',     kanji:'玉', kun:'たま',   on:'ギョク', en:'jewel / ball', strokes:5, examples:[{word:'玉ねぎ',reading:'tamanegi',meaning:'onion'},{word:'目玉',reading:'medama',meaning:'eyeball'},{word:'宝玉',reading:'HŌGYOKU',meaning:'jewel'}] },
+      { id:'country',   kanji:'国', kun:'くに',   on:'コク',   en:'country', strokes:8, seeAlso:['王'], examples:[{word:'外国',reading:'GAIKOKU',meaning:'foreign country'},{word:'国民',reading:'KOKUMIN',meaning:'citizens'},{word:'国語',reading:'KOKUGO',meaning:'Japanese (subject)'}] },
       { id:'gold',      kanji:'金', kun:'かね',   on:'キン',   en:'gold / money / metal', strokes:8, examples:[{word:'金曜日',reading:'KIN\'YŌbi',meaning:'Friday'},{word:'お金',reading:'okane',meaning:'money'},{word:'金魚',reading:'kingyo',meaning:'goldfish'}] },
       { id:'vehicle',   kanji:'車', kun:'くるま', on:'シャ',   en:'vehicle / car', strokes:7, examples:[{word:'自動車',reading:'JIDŌSHA',meaning:'car'},{word:'電車',reading:'DENSHA',meaning:'train'},{word:'車輪',reading:'SHARIN',meaning:'wheel'}] },
     ],
@@ -1293,6 +1298,15 @@ window.FLASHCARD_CLASSES = [
           {word:'姉妹',reading:'SHIMAI',meaning:'sisters'},
           {word:'義妹',reading:'GIMAI',meaning:'sister-in-law'},
         ] },
+      // Vocab compound card — 姉 + 妹 together form the everyday word
+      // for "sisters." Back face renders both kanji's stroke order
+      // side-by-side (spec §4.4).
+      { id:'shimai', kanji:'姉妹', kun:'しまい', on:'シマイ', en:'sisters',
+        examples:[
+          {word:'姉妹',     reading:'shimai',       meaning:'sisters'},
+          {word:'三姉妹',   reading:'sanshimai',    meaning:'three sisters'},
+          {word:'姉妹都市', reading:'shimai toshi', meaning:'sister city'},
+        ] },
       // male cluster
       { id:'father', kanji:'父', kun:'ちち',     on:'フ',     en:'father',
         usage:{ ja:'お父さん', kana:'おとうさん' },
@@ -1324,6 +1338,15 @@ window.FLASHCARD_CLASSES = [
           {word:'弟子',reading:'DESHI',meaning:'disciple'},
           {word:'兄弟',reading:'KYŌDAI',meaning:'siblings'},
           {word:'弟さん',reading:'otōtosan',meaning:'younger brother (polite)'},
+        ] },
+      // Vocab compound card — 兄 + 弟 together form the everyday word
+      // for "brothers / siblings." Back face renders both kanji's
+      // stroke order side-by-side (spec §4.4).
+      { id:'kyoudai', kanji:'兄弟', kun:'きょうだい', on:'キョウダイ', en:'brothers / siblings',
+        examples:[
+          {word:'兄弟',     reading:'kyōdai',        meaning:'brothers / siblings'},
+          {word:'兄弟姉妹', reading:'kyōdai shimai', meaning:'all siblings'},
+          {word:'義兄弟',   reading:'gikyōdai',      meaning:'in-law siblings'},
         ] },
       // Radical card — two more hand-derived forms (ナ on top, 又 on the
       // right-hand side of compounds). Companion to the ナ・ヨ card in Body:
@@ -1360,6 +1383,15 @@ window.FLASHCARD_CLASSES = [
           {word:'双子',reading:'futago',meaning:'twins'},
           {word:'双方',reading:'SŌHŌ',meaning:'both sides / both parties'},
           {word:'双葉',reading:'futaba',meaning:'sprout / pair of leaves'},
+        ] },
+      // Vocab compound card — 双 + 子 together form the everyday word
+      // for "twins" (a matched pair of children). Back face renders
+      // both kanji's stroke order side-by-side (spec §4.4).
+      { id:'futago', kanji:'双子', kun:'ふたご', en:'twins',
+        examples:[
+          {word:'双子',     reading:'futago',          meaning:'twins'},
+          {word:'双子座',   reading:'futagoza',        meaning:'Gemini (zodiac)'},
+          {word:'一卵性双生児', reading:'ichirantai sōseiji', meaning:'identical twins'},
         ] },
     ],
   },
@@ -1530,9 +1562,6 @@ window.FLASHCARD_CLASSES = [
       { id:'forest',   kanji:'森', kun:'もり',   on:'シン',   en:'forest',
         seeAlso:['木'],
         strokes:12, examples:[{word:'森林',reading:'SHINRIN',meaning:'forest'},{word:'森林浴',reading:'SHINRINYOKU',meaning:'forest bathing'},{word:'森の中',reading:'morinonaka',meaning:'in the forest'}] },
-      { id:'book',     kanji:'本', kun:'もと',   on:'ホン',   en:'book / origin / root',
-        seeAlso:['木'],
-        strokes:5, examples:[{word:'日本',reading:'NIHON',meaning:'Japan'},{word:'本当',reading:'HONTŌ',meaning:'really'},{word:'本棚',reading:'hondana',meaning:'bookshelf'}] },
       { id:'stone',    kanji:'石', kun:'いし',   on:'セキ',   en:'stone / rock',
         strokes:5, examples:[{word:'石油',reading:'SEKIYU',meaning:'petroleum'},{word:'宝石',reading:'HŌSEKI',meaning:'jewel'},{word:'石橋',reading:'ishibashi',meaning:'stone bridge'}] },
       { id:'rock',     kanji:'岩', kun:'いわ',   on:'ガン',   en:'rock / boulder',
@@ -1756,22 +1785,6 @@ window.FLASHCARD_CLASSES = [
           {word:'書道',reading:'SHODŌ',meaning:'calligraphy'},
           {word:'書く',reading:'kaku',meaning:'to write'},
         ] },
-      // 本 is cross-listed with Nature (ALLOWED_DUPLICATES includes 本).
-      { id:'book',     kanji:'本', kun:'もと',   on:'ホン',   en:'book / origin / root',
-        seeAlso:['木'],
-        strokes:5,
-        examples:[
-          {word:'日本',reading:'NIHON',meaning:'Japan'},
-          {word:'本当',reading:'HONTŌ',meaning:'really'},
-          {word:'本棚',reading:'hondana',meaning:'bookshelf'},
-        ] },
-      { id:'life',      kanji:'生', kun:'い',     on:'セイ',   en:'life / give birth / student', strokes:5,
-        examples:[
-          {word:'学生',reading:'GAKUSEI',meaning:'student'},
-          {word:'先生',reading:'SENSEI',meaning:'teacher'},
-          {word:'生活',reading:'SEIKATSU',meaning:'daily life'},
-          {word:'生まれる',reading:'umareru',meaning:'to be born'},
-        ] },
     ],
   },
   {
@@ -1876,19 +1889,6 @@ window.FLASHCARD_CLASSES = [
           {word:'北口',     reading:'kitaguchi', meaning:'north exit'},
           {word:'北海道',   reading:'HOKKAIDŌ',  meaning:'Hokkaido'},
           {word:'東北',     reading:'TŌHOKU',    meaning:'northeast / Tohoku region'},
-        ] },
-      { id:'king',  kanji:'王', kun:'おう',   on:'オウ',   en:'king', strokes:4,
-        examples:[
-          {word:'王子',reading:'ŌJI',meaning:'prince'},
-          {word:'女王',reading:'JOŌ',meaning:'queen'},
-          {word:'王様',reading:'Ōsama',meaning:'king'},
-        ] },
-      { id:'country', kanji:'国', kun:'くに', on:'コク', en:'country', strokes:8,
-        seeAlso:['王'],
-        examples:[
-          {word:'外国',reading:'GAIKOKU',meaning:'foreign country'},
-          {word:'国民',reading:'KOKUMIN',meaning:'citizens'},
-          {word:'国語',reading:'KOKUGO',meaning:'Japanese (subject)'},
         ] },
       { id:'house', kanji:'家', kun:'いえ', on:'カ', en:'house / home', strokes:10,
         examples:[

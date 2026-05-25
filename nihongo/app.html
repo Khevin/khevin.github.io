@@ -1434,13 +1434,17 @@
     overflow: hidden;
   }
   /* No-image flashcards — when the slot is read-only AND no image has
-     been uploaded, drop the entire image well. .testcard-left already
-     justifies content to center, so the kanji glyph + readings reflow
-     to sit vertically centered alongside the right column. The result
-     looks intentional ("this card just has the glyph") instead of
-     placeholder-y ("missing illustration for X"). */
+     been uploaded, the inner image-slot hides itself (display:none
+     in its shadow DOM), but the outer .testcard-image keeps its
+     1:1 aspect-ratio square. We paint it the same paper-2 color as
+     the surrounding card frame so it reads as "card surface
+     continues here" rather than a missing-illustration placeholder.
+     Result: every editorial flashcard reserves the same vertical
+     space whether or not it carries an image — the deck reads as
+     a uniform grid, and the kanji glyph + readings sit at the same
+     y-position card to card. */
   .testcard-image:has(image-slot[readonly]:not([data-filled])) {
-    display: none;
+    background: var(--paper-2);
   }
   /* The image-slot\'s inner <img> doesn\'t inherit the host\'s
      border-radius through the shadow root — we use ::part if exposed,
