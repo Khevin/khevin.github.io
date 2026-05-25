@@ -3,3 +3,21 @@
 .design-ref-hero/
 .DS_Store
 Thumbs.db
+
+# Node deps + lock files for the nihongo image-optimization scripts.
+nihongo/node_modules/
+nihongo/package-lock.json
+
+# Scratch + WIP artefacts.
+*.tmp
+*.tmp.js
+*.webp.tmp
+
+# Large reference PDFs the user keeps in nihongo/ for offline lookup.
+# Source code only in git; reference books live in the working tree.
+nihongo/*.pdf
+
+# Editor noise.
+*.swp
+.idea/
+.vscode/

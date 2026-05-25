@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<ellipse cx="120" cy="158" rx="84" ry="6" fill="currentColor" opacity="0.18"></ellipse>
+<rect x="50" y="144" width="14" height="14" fill="currentColor" opacity="0.85"></rect>
+<rect x="176" y="144" width="14" height="14" fill="currentColor" opacity="0.85"></rect>
+<path d="M36 132 L204 132 L204 146 L36 146 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.8"></path>
+<line x1="36" y1="146" x2="204" y2="146" stroke="currentColor" stroke-width="1.6"></line>
+<path d="M52 138 Q90 136 130 138 T200 137" stroke="currentColor" stroke-width="0.7" opacity="0.45" fill="none"></path>
+
+<circle cx="64" cy="116" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="64" cy="116" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="59" cy="113" r="0.8"></circle>
+  <circle cx="68" cy="112" r="0.8"></circle>
+  <circle cx="60" cy="120" r="0.8"></circle>
+  <circle cx="69" cy="119" r="0.8"></circle>
+  <circle cx="64" cy="110" r="0.8"></circle>
+  <circle cx="64" cy="122" r="0.8"></circle>
+</g>
+
+<circle cx="64" cy="116" r="4" fill="currentColor" opacity="0.85"></circle>
+
+<circle cx="98" cy="116" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="98" cy="116" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="93" cy="113" r="0.8"></circle>
+  <circle cx="102" cy="112" r="0.8"></circle>
+  <circle cx="94" cy="120" r="0.8"></circle>
+  <circle cx="103" cy="119" r="0.8"></circle>
+  <circle cx="98" cy="110" r="0.8"></circle>
+  <circle cx="98" cy="122" r="0.8"></circle>
+</g>
+
+<circle cx="98" cy="116" r="4" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="0.8"></circle><circle cx="98" cy="116" r="1.4" fill="var(--paper, #f6ecd5)" opacity="0.6"></circle>
+
+<circle cx="132" cy="116" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="132" cy="116" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="127" cy="113" r="0.8"></circle>
+  <circle cx="136" cy="112" r="0.8"></circle>
+  <circle cx="128" cy="120" r="0.8"></circle>
+  <circle cx="137" cy="119" r="0.8"></circle>
+  <circle cx="132" cy="110" r="0.8"></circle>
+  <circle cx="132" cy="122" r="0.8"></circle>
+</g>
+
+<circle cx="132" cy="116" r="4" fill="currentColor" opacity="0.55"></circle><line x1="129" y1="114" x2="135" y2="114" stroke="var(--paper, #f6ecd5)" stroke-width="0.8"></line><line x1="129" y1="117" x2="135" y2="117" stroke="var(--paper, #f6ecd5)" stroke-width="0.8"></line>
+
+<circle cx="166" cy="116" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="166" cy="116" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="161" cy="113" r="0.8"></circle>
+  <circle cx="170" cy="112" r="0.8"></circle>
+  <circle cx="162" cy="120" r="0.8"></circle>
+  <circle cx="171" cy="119" r="0.8"></circle>
+  <circle cx="166" cy="110" r="0.8"></circle>
+  <circle cx="166" cy="122" r="0.8"></circle>
+</g>
+
+<circle cx="166" cy="116" r="4" fill="currentColor" opacity="0.85"></circle>
+
+<circle cx="82" cy="90" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="82" cy="90" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="77" cy="87" r="0.8"></circle>
+  <circle cx="86" cy="86" r="0.8"></circle>
+  <circle cx="78" cy="94" r="0.8"></circle>
+  <circle cx="87" cy="93" r="0.8"></circle>
+  <circle cx="82" cy="84" r="0.8"></circle>
+  <circle cx="82" cy="96" r="0.8"></circle>
+</g>
+
+<circle cx="82" cy="90" r="4" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="0.8"></circle><circle cx="82" cy="90" r="1.4" fill="var(--paper, #f6ecd5)" opacity="0.6"></circle>
+
+<circle cx="116" cy="90" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="116" cy="90" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="111" cy="87" r="0.8"></circle>
+  <circle cx="120" cy="86" r="0.8"></circle>
+  <circle cx="112" cy="94" r="0.8"></circle>
+  <circle cx="121" cy="93" r="0.8"></circle>
+  <circle cx="116" cy="84" r="0.8"></circle>
+  <circle cx="116" cy="96" r="0.8"></circle>
+</g>
+
+<circle cx="116" cy="90" r="4" fill="currentColor" opacity="0.55"></circle><line x1="113" y1="88" x2="119" y2="88" stroke="var(--paper, #f6ecd5)" stroke-width="0.8"></line><line x1="113" y1="91" x2="119" y2="91" stroke="var(--paper, #f6ecd5)" stroke-width="0.8"></line>
+
+<circle cx="150" cy="90" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="150" cy="90" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="145" cy="87" r="0.8"></circle>
+  <circle cx="154" cy="86" r="0.8"></circle>
+  <circle cx="146" cy="94" r="0.8"></circle>
+  <circle cx="155" cy="93" r="0.8"></circle>
+  <circle cx="150" cy="84" r="0.8"></circle>
+  <circle cx="150" cy="96" r="0.8"></circle>
+</g>
+
+<circle cx="150" cy="90" r="4" fill="currentColor" opacity="0.85"></circle>
+
+<circle cx="184" cy="90" r="16" fill="currentColor" opacity="0.95" stroke="currentColor" stroke-width="1.4"></circle>
+<circle cx="184" cy="90" r="13" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="0.9"></circle>
+<g stroke="currentColor" stroke-width="0.5" opacity="0.45" fill="none">
+  <circle cx="179" cy="87" r="0.8"></circle>
+  <circle cx="188" cy="86" r="0.8"></circle>
+  <circle cx="180" cy="94" r="0.8"></circle>
+  <circle cx="189" cy="93" r="0.8"></circle>
+  <circle cx="184" cy="84" r="0.8"></circle>
+  <circle cx="184" cy="96" r="0.8"></circle>
+</g>
+
+<circle cx="184" cy="90" r="4" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="0.8"></circle><circle cx="184" cy="90" r="1.4" fill="var(--paper, #f6ecd5)" opacity="0.6"></circle>
+<ellipse cx="48" cy="200" rx="22" ry="6" fill="currentColor" opacity="0.85"></ellipse>
+<ellipse cx="48" cy="198" rx="20" ry="4.5" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.2"></ellipse>
+<ellipse cx="48" cy="198" rx="13" ry="3" fill="currentColor" opacity="0.55"></ellipse>
+
+<path d="M168 198 Q186 192 204 198 Q204 210 186 210 Q168 210 168 198 Z" fill="currentColor" opacity="0.6" stroke="currentColor" stroke-width="1.1"></path>
+<line x1="92" y1="186" x2="216" y2="186" stroke="currentColor" stroke-width="3"></line>
+<line x1="92" y1="194" x2="216" y2="194" stroke="currentColor" stroke-width="3"></line>
+<line x1="76" y1="186" x2="92" y2="186" stroke="currentColor" stroke-width="1.6"></line>
+<line x1="76" y1="194" x2="92" y2="194" stroke="currentColor" stroke-width="1.6"></line>
+
+</svg>

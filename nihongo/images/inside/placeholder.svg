@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" aria-hidden="true">
+  <!-- Inside placeholder — used for the "look around" pause between
+       order and food arrival. Same paper aesthetic, different scene. -->
+  <defs>
+    <linearGradient id="bg-in" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbf5e6"/>
+      <stop offset="100%" stop-color="#f1e3c2"/>
+    </linearGradient>
+    <pattern id="hatch-in" patternUnits="userSpaceOnUse" width="36" height="36" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="36" stroke="rgba(141,102,48,0.05)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg-in)"/>
+  <rect width="1200" height="700" fill="url(#hatch-in)"/>
+  <!-- Suggestion of counter + steam -->
+  <g transform="translate(600,360)" opacity="0.18">
+    <line x1="-180" y1="60" x2="180" y2="60" stroke="#8d6630" stroke-width="3"/>
+    <ellipse cx="0" cy="40" rx="80" ry="14" fill="#8d6630"/>
+    <path d="M-30 -30 Q-22 -50 -30 -70 Q-38 -86 -30 -100" fill="none" stroke="#8d6630" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 0 -34 Q 8 -54 0 -74 Q -8 -90 0 -104" fill="none" stroke="#8d6630" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 30 -30 Q 38 -50 30 -70 Q 22 -86 30 -100" fill="none" stroke="#8d6630" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <text x="600" y="540" text-anchor="middle" font-family="serif" font-style="italic" font-size="22" fill="rgba(141,102,48,0.45)">
+    inside-the-shop placeholder
+  </text>
+</svg>

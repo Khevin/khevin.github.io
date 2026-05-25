@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<ellipse cx="120" cy="180" rx="100" ry="6" fill="currentColor" opacity="0.18"></ellipse>
+<path d="M22 116 Q120 102 218 116 L218 168 Q120 184 22 168 Z" fill="currentColor" opacity="0.9"></path>
+<path d="M22 116 Q120 102 218 116 L218 162 Q120 178 22 162 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.6"></path>
+<path d="M34 126 Q120 116 206 126" stroke="currentColor" stroke-width="0.7" opacity="0.4" fill="none"></path>
+<path d="M34 154 Q120 168 206 154" stroke="currentColor" stroke-width="0.7" opacity="0.4" fill="none"></path>
+
+<g transform="rotate(-14 120 140)">
+  <line x1="12" y1="140" x2="228" y2="140" stroke="currentColor" stroke-width="1.6"></line>
+  <g stroke="currentColor" stroke-width="0.7" opacity="0.6">
+    <line x1="210" y1="138" x2="220" y2="138"></line><line x1="210" y1="142" x2="220" y2="142"></line>
+  </g>
+  
+<path d="M54 129 L94 129 Q98 129 98 134 L98 146 Q98 151 94 151 L54 151 Q50 151 50 146 L50 134 Q50 129 54 129 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+
+<rect x="70" y="129" width="12" height="22" fill="currentColor" opacity="0.55" stroke="currentColor" stroke-width="0.8"></rect>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.55"><line x1="58" y1="136" x2="66" y2="136"></line><line x1="86" y1="136" x2="94" y2="136"></line><line x1="58" y1="144" x2="66" y2="144"></line><line x1="86" y1="144" x2="94" y2="144"></line></g>
+<path d="M108 129 L148 129 Q152 129 152 134 L152 146 Q152 151 148 151 L108 151 Q104 151 104 146 L104 134 Q104 129 108 129 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+
+<rect x="124" y="129" width="12" height="22" fill="currentColor" opacity="0.55" stroke="currentColor" stroke-width="0.8"></rect>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.55"><line x1="112" y1="136" x2="120" y2="136"></line><line x1="140" y1="136" x2="148" y2="136"></line><line x1="112" y1="144" x2="120" y2="144"></line><line x1="140" y1="144" x2="148" y2="144"></line></g>
+<path d="M162 129 L202 129 Q206 129 206 134 L206 146 Q206 151 202 151 L162 151 Q158 151 158 146 L158 134 Q158 129 162 129 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+
+<rect x="178" y="129" width="12" height="22" fill="currentColor" opacity="0.55" stroke="currentColor" stroke-width="0.8"></rect>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.55"><line x1="166" y1="136" x2="174" y2="136"></line><line x1="194" y1="136" x2="202" y2="136"></line><line x1="166" y1="144" x2="174" y2="144"></line><line x1="194" y1="144" x2="202" y2="144"></line></g>
+</g>
+
+<g transform="rotate(10 120 144)">
+  <line x1="12" y1="144" x2="228" y2="144" stroke="currentColor" stroke-width="1.6"></line>
+  <g stroke="currentColor" stroke-width="0.7" opacity="0.6">
+    <line x1="20" y1="142" x2="30" y2="142"></line><line x1="20" y1="146" x2="30" y2="146"></line>
+  </g>
+  
+<path d="M54 133 L94 133 Q98 133 98 138 L98 150 Q98 155 94 155 L54 155 Q50 155 50 150 L50 138 Q50 133 54 133 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+
+<rect x="70" y="133" width="12" height="22" fill="currentColor" opacity="0.55" stroke="currentColor" stroke-width="0.8"></rect>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.55"><line x1="58" y1="140" x2="66" y2="140"></line><line x1="86" y1="140" x2="94" y2="140"></line><line x1="58" y1="148" x2="66" y2="148"></line><line x1="86" y1="148" x2="94" y2="148"></line></g>
+<path d="M108 133 L148 133 Q152 133 152 138 L152 150 Q152 155 148 155 L108 155 Q104 155 104 150 L104 138 Q104 133 108 133 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+
+<rect x="124" y="133" width="12" height="22" fill="currentColor" opacity="0.55" stroke="currentColor" stroke-width="0.8"></rect>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.55"><line x1="112" y1="140" x2="120" y2="140"></line><line x1="140" y1="140" x2="148" y2="140"></line><line x1="112" y1="148" x2="120" y2="148"></line><line x1="140" y1="148" x2="148" y2="148"></line></g>
+<path d="M162 133 L202 133 Q206 133 206 138 L206 150 Q206 155 202 155 L162 155 Q158 155 158 150 L158 138 Q158 133 162 133 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+
+<rect x="178" y="133" width="12" height="22" fill="currentColor" opacity="0.55" stroke="currentColor" stroke-width="0.8"></rect>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.55"><line x1="166" y1="140" x2="174" y2="140"></line><line x1="194" y1="140" x2="202" y2="140"></line><line x1="166" y1="148" x2="174" y2="148"></line><line x1="194" y1="148" x2="202" y2="148"></line></g>
+</g>
+
+<g>
+  <path d="M186 162 Q198 158 206 168 Q200 174 186 162 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.2"></path>
+  <line x1="190" y1="164" x2="200" y2="170" stroke="currentColor" stroke-width="0.6" opacity="0.6"></line>
+</g>
+
+<path d="M168 198 Q186 192 204 198 Q204 210 186 210 Q168 210 168 198 Z" fill="currentColor" opacity="0.6" stroke="currentColor" stroke-width="1.1"></path>
+<line x1="92" y1="186" x2="216" y2="186" stroke="currentColor" stroke-width="3"></line>
+<line x1="92" y1="194" x2="216" y2="194" stroke="currentColor" stroke-width="3"></line>
+<line x1="76" y1="186" x2="92" y2="186" stroke="currentColor" stroke-width="1.6"></line>
+<line x1="76" y1="194" x2="92" y2="194" stroke="currentColor" stroke-width="1.6"></line>
+
+</svg>

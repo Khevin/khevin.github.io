@@ -1,0 +1,13 @@
+{
+  "name": "nihongo-tooling",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-only build/process scripts for the nihongo app. Not a published package — exists so node_modules has a home and scripts can require their dependencies cleanly.",
+  "type": "module",
+  "scripts": {
+    "process-particles": "node scripts/process-particle-blobs.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0"
+  }
+}

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<line x1="20" y1="218" x2="220" y2="218" stroke="currentColor" stroke-width="1.4" opacity="0.4"></line>
+
+
+<g>
+  
+  <path d="M-4 158 L-4 130 Q-4 122 18 120 L48 122 Q70 124 78 134 L78 152 Q66 158 44 158 Z" fill="currentColor" opacity="0.92" stroke="currentColor" stroke-width="1.4"></path>
+  <line x1="14" y1="120" x2="14" y2="158" stroke="var(--paper, #f6ecd5)" stroke-width="1.4" opacity="0.7"></line>
+  
+  <path d="M76 116 Q88 110 102 116 L116 122 Q124 128 122 138 L116 148 Q104 152 90 148 L76 142 Q72 136 72 128 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.3"></path>
+  
+  <path d="M76 116 Q72 108 78 104 Q84 108 84 116 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.1"></path>
+  
+  <path d="M88 116 L86 138" stroke="currentColor" stroke-width="0.6" opacity="0.55"></path>
+  <path d="M98 118 L96 142" stroke="currentColor" stroke-width="0.6" opacity="0.55"></path>
+  <path d="M108 120 L106 144" stroke="currentColor" stroke-width="0.6" opacity="0.55"></path>
+</g>
+
+
+<g transform="translate(72 84) rotate(-4)">
+  
+  <path d="M2 4 L48 0 L52 4 L56 0 L102 4 L102 36 L56 40 L52 36 L48 40 L2 36 Z" fill="currentColor" opacity="0.5"></path>
+  
+  <path d="M0 0 L48 -4 L52 0 L56 -4 L104 0 L104 32 L56 36 L52 32 L48 36 L0 32 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.6"></path>
+  <line x1="48" y1="-4" x2="48" y2="32" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line>
+  <line x1="56" y1="-4" x2="56" y2="32" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line>
+  
+  <rect x="6" y="6" width="14" height="3" fill="currentColor" opacity="0.85"></rect>
+  <rect x="60" y="4" width="14" height="3" fill="currentColor" opacity="0.85"></rect>
+  <line x1="6" y1="14" x2="42" y2="13" stroke="currentColor" stroke-width="0.4" opacity="0.4"></line>
+  <line x1="60" y1="13" x2="96" y2="12" stroke="currentColor" stroke-width="0.4" opacity="0.4"></line>
+  <line x1="6" y1="20" x2="42" y2="19" stroke="currentColor" stroke-width="1.2"></line>
+  <line x1="6" y1="26" x2="42" y2="25" stroke="currentColor" stroke-width="1.2"></line>
+  <line x1="60" y1="19" x2="96" y2="18" stroke="currentColor" stroke-width="1.2"></line>
+  <line x1="60" y1="25" x2="96" y2="24" stroke="currentColor" stroke-width="1.2"></line>
+</g>
+
+
+<g>
+  
+  <path d="M244 158 L244 130 Q244 122 222 120 L192 122 Q170 124 162 134 L162 152 Q174 158 196 158 Z" fill="currentColor" opacity="0.84" stroke="currentColor" stroke-width="1.4"></path>
+  <line x1="226" y1="120" x2="226" y2="158" stroke="var(--paper, #f6ecd5)" stroke-width="1.4" opacity="0.7"></line>
+  
+  <path d="M164 116 Q150 112 138 118 L124 124 Q116 132 120 142 L130 146 Q144 142 158 138 L168 130 Q172 124 168 118 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.3"></path>
+  
+  <path d="M164 116 Q170 108 164 104 Q158 108 158 114 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.1"></path>
+  
+  <path d="M152 118 L150 140" stroke="currentColor" stroke-width="0.6" opacity="0.55"></path>
+  <path d="M142 120 L140 142" stroke="currentColor" stroke-width="0.6" opacity="0.55"></path>
+  <path d="M132 122 L130 144" stroke="currentColor" stroke-width="0.6" opacity="0.55"></path>
+</g>
+
+
+<g opacity="0.45" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round">
+  <path d="M50 178 Q120 188 190 178"></path>
+</g>
+
+
+</svg>

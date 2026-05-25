@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  
+  
+  <circle cx="120" cy="120" r="84" stroke="currentColor" stroke-width="4" fill="var(--paper-2, #fbf5e6)"></circle>
+  
+  <circle cx="120" cy="120" r="76" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"></circle>
+  
+  <line x1="120" y1="48" x2="120" y2="58" stroke="currentColor" stroke-width="3"></line>
+  <line x1="192" y1="120" x2="182" y2="120" stroke="currentColor" stroke-width="3"></line>
+  <line x1="120" y1="192" x2="120" y2="182" stroke="currentColor" stroke-width="3"></line>
+  <line x1="48" y1="120" x2="58" y2="120" stroke="currentColor" stroke-width="3"></line>
+  
+  <line x1="156" y1="58" x2="152" y2="66" stroke="currentColor" stroke-width="1.8"></line>
+  <line x1="182" y1="84" x2="174" y2="88" stroke="currentColor" stroke-width="1.8"></line>
+  <line x1="182" y1="156" x2="174" y2="152" stroke="currentColor" stroke-width="1.8"></line>
+  <line x1="156" y1="182" x2="152" y2="174" stroke="currentColor" stroke-width="1.8"></line>
+  <line x1="84" y1="182" x2="88" y2="174" stroke="currentColor" stroke-width="1.8"></line>
+  <line x1="58" y1="156" x2="66" y2="152" stroke="currentColor" stroke-width="1.8"></line>
+  <line x1="58" y1="84" x2="66" y2="88" stroke="currentColor" stroke-width="1.8"></line>
+  <line x1="84" y1="58" x2="88" y2="66" stroke="currentColor" stroke-width="1.8"></line>
+  
+  <line x1="120" y1="120" x2="92" y2="80" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"></line>
+  
+  <line x1="120" y1="120" x2="156" y2="76" stroke="currentColor" stroke-width="3" stroke-linecap="round"></line>
+  
+  <circle cx="120" cy="120" r="4" fill="currentColor"></circle>
+</svg>

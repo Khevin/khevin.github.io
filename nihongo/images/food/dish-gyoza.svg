@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  
+  <ellipse cx="120" cy="184" rx="92" ry="6" fill="currentColor" opacity="0.18" stroke="none"></ellipse>
+
+  
+  <ellipse cx="120" cy="142" rx="96" ry="38" fill="currentColor" opacity="0.9" stroke="none"></ellipse>
+  <ellipse cx="120" cy="140" rx="92" ry="34" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.6"></ellipse>
+  <ellipse cx="120" cy="140" rx="82" ry="28" stroke="currentColor" stroke-width="0.7" opacity="0.4" fill="none"></ellipse>
+
+  
+  <g>
+    
+    <g transform="translate(56 132) rotate(-22)">
+      <path d="M-22 0 Q-18 -14 0 -14 Q18 -14 22 0 Q14 6 0 6 Q-14 6 -22 0 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+      <path d="M-22 0 Q-14 -2 0 -2 Q14 -2 22 0" stroke="currentColor" stroke-width="0.8" opacity="0.6" fill="none"></path>
+      
+      <path d="M-18 -10 L-16 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-12 -12 L-10 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-6 -13 L-4 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M0 -14 L0 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M6 -13 L6 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M12 -12 L12 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M18 -10 L18 -4" stroke="currentColor" stroke-width="1"></path>
+      
+      <path d="M-20 2 Q-10 6 0 4 Q10 6 20 2" stroke="currentColor" stroke-width="0.9" opacity="0.7" fill="none"></path>
+    </g>
+
+    <g transform="translate(86 122) rotate(-10)">
+      <path d="M-22 0 Q-18 -14 0 -14 Q18 -14 22 0 Q14 6 0 6 Q-14 6 -22 0 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+      <path d="M-22 0 Q-14 -2 0 -2 Q14 -2 22 0" stroke="currentColor" stroke-width="0.8" opacity="0.6" fill="none"></path>
+      <path d="M-18 -10 L-16 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-12 -12 L-10 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-6 -13 L-4 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M0 -14 L0 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M6 -13 L6 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M12 -12 L12 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M18 -10 L18 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-20 2 Q-10 6 0 4 Q10 6 20 2" stroke="currentColor" stroke-width="0.9" opacity="0.7" fill="none"></path>
+    </g>
+
+    <g transform="translate(120 118)">
+      <path d="M-22 0 Q-18 -14 0 -14 Q18 -14 22 0 Q14 6 0 6 Q-14 6 -22 0 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+      <path d="M-22 0 Q-14 -2 0 -2 Q14 -2 22 0" stroke="currentColor" stroke-width="0.8" opacity="0.6" fill="none"></path>
+      <path d="M-18 -10 L-16 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-12 -12 L-10 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-6 -13 L-4 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M0 -14 L0 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M6 -13 L6 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M12 -12 L12 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M18 -10 L18 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-20 2 Q-10 6 0 4 Q10 6 20 2" stroke="currentColor" stroke-width="0.9" opacity="0.7" fill="none"></path>
+    </g>
+
+    <g transform="translate(154 122) rotate(10)">
+      <path d="M-22 0 Q-18 -14 0 -14 Q18 -14 22 0 Q14 6 0 6 Q-14 6 -22 0 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+      <path d="M-22 0 Q-14 -2 0 -2 Q14 -2 22 0" stroke="currentColor" stroke-width="0.8" opacity="0.6" fill="none"></path>
+      <path d="M-18 -10 L-16 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-12 -12 L-10 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-6 -13 L-4 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M0 -14 L0 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M6 -13 L6 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M12 -12 L12 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M18 -10 L18 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-20 2 Q-10 6 0 4 Q10 6 20 2" stroke="currentColor" stroke-width="0.9" opacity="0.7" fill="none"></path>
+    </g>
+
+    <g transform="translate(184 132) rotate(22)">
+      <path d="M-22 0 Q-18 -14 0 -14 Q18 -14 22 0 Q14 6 0 6 Q-14 6 -22 0 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+      <path d="M-22 0 Q-14 -2 0 -2 Q14 -2 22 0" stroke="currentColor" stroke-width="0.8" opacity="0.6" fill="none"></path>
+      <path d="M-18 -10 L-16 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-12 -12 L-10 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-6 -13 L-4 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M0 -14 L0 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M6 -13 L6 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M12 -12 L12 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M18 -10 L18 -4" stroke="currentColor" stroke-width="1"></path>
+      <path d="M-20 2 Q-10 6 0 4 Q10 6 20 2" stroke="currentColor" stroke-width="0.9" opacity="0.7" fill="none"></path>
+    </g>
+  </g>
+
+  
+  <g transform="translate(102 154) rotate(-4)">
+    <path d="M-22 0 Q-18 -14 0 -14 Q18 -14 22 0 Q14 6 0 6 Q-14 6 -22 0 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+    <path d="M-22 0 Q-14 -2 0 -2 Q14 -2 22 0" stroke="currentColor" stroke-width="0.8" opacity="0.6" fill="none"></path>
+    <path d="M-18 -10 L-16 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M-12 -12 L-10 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M-6 -13 L-4 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M0 -14 L0 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M6 -13 L6 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M12 -12 L12 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M18 -10 L18 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M-20 2 Q-10 6 0 4 Q10 6 20 2" stroke="currentColor" stroke-width="0.9" opacity="0.7" fill="none"></path>
+  </g>
+  <g transform="translate(140 154) rotate(4)">
+    <path d="M-22 0 Q-18 -14 0 -14 Q18 -14 22 0 Q14 6 0 6 Q-14 6 -22 0 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+    <path d="M-22 0 Q-14 -2 0 -2 Q14 -2 22 0" stroke="currentColor" stroke-width="0.8" opacity="0.6" fill="none"></path>
+    <path d="M-18 -10 L-16 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M-12 -12 L-10 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M-6 -13 L-4 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M0 -14 L0 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M6 -13 L6 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M12 -12 L12 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M18 -10 L18 -4" stroke="currentColor" stroke-width="1"></path>
+    <path d="M-20 2 Q-10 6 0 4 Q10 6 20 2" stroke="currentColor" stroke-width="0.9" opacity="0.7" fill="none"></path>
+  </g>
+
+  
+  <ellipse cx="40" cy="80" rx="22" ry="6" fill="currentColor" opacity="0.85" stroke="none"></ellipse>
+  <ellipse cx="40" cy="78" rx="20" ry="4.5" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.2"></ellipse>
+  <ellipse cx="40" cy="78" rx="13" ry="3" fill="currentColor" opacity="0.55" stroke="none"></ellipse>
+
+  
+  <g opacity="0.45" fill="none" stroke="currentColor" stroke-width="1">
+    <path d="M110 96 Q104 84 112 76 Q118 70 110 60"></path>
+    <path d="M140 96 Q134 84 142 76 Q148 70 140 60"></path>
+  </g>
+
+  
+  <path d="M168 198 Q186 192 204 198 Q204 210 186 210 Q168 210 168 198 Z" fill="currentColor" opacity="0.6" stroke="currentColor" stroke-width="1.1"></path>
+  <line x1="92" y1="186" x2="216" y2="186" stroke="currentColor" stroke-width="3"></line>
+  <line x1="92" y1="194" x2="216" y2="194" stroke="currentColor" stroke-width="3"></line>
+  <line x1="76" y1="186" x2="92" y2="186" stroke="currentColor" stroke-width="1.6"></line>
+  <line x1="76" y1="194" x2="92" y2="194" stroke="currentColor" stroke-width="1.6"></line>
+
+  
+  <g opacity="0.4">
+    <circle cx="216" cy="36" r="9" stroke="currentColor" stroke-width="1" fill="none"></circle>
+    <path d="M216 31 L216 41 M211 36 L221 36" stroke="currentColor" stroke-width="0.9"></path>
+  </g>
+</svg>

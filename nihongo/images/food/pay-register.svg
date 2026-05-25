@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  
+  
+  <rect x="48" y="84" width="144" height="116" rx="6" fill="currentColor" opacity="0.92" stroke="none"></rect>
+  
+  <rect x="60" y="96" width="120" height="40" rx="3" fill="var(--paper, #f6ecd5)" stroke="none"></rect>
+  
+  <line x1="74" y1="116" x2="92" y2="116" stroke="currentColor" stroke-width="3"></line>
+  <line x1="100" y1="116" x2="118" y2="116" stroke="currentColor" stroke-width="3"></line>
+  <line x1="126" y1="116" x2="146" y2="116" stroke="currentColor" stroke-width="3"></line>
+  
+  <circle cx="70" cy="156" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="92" cy="156" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="114" cy="156" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="136" cy="156" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="158" cy="156" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="70" cy="180" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="92" cy="180" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="114" cy="180" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="136" cy="180" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  <circle cx="158" cy="180" r="6" fill="var(--paper, #f6ecd5)"></circle>
+  
+  <ellipse cx="208" cy="186" rx="16" ry="5" fill="currentColor" opacity="0.9" stroke="none"></ellipse>
+  <ellipse cx="208" cy="178" rx="16" ry="5" fill="currentColor" opacity="0.8" stroke="none"></ellipse>
+  <ellipse cx="208" cy="170" rx="16" ry="5" fill="currentColor" opacity="0.7" stroke="none"></ellipse>
+  
+  <line x1="16" y1="200" x2="224" y2="200" stroke="currentColor" stroke-width="2"></line>
+</svg>

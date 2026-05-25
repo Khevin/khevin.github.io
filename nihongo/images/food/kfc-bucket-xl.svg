@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <!-- KFC bucket — Extra Large (16-piece Party Barrel). Taller, wider
+       than the L bucket; banner "PARTY" stripe across the front. -->
+  <ellipse cx="120" cy="228" rx="68" ry="4.5" fill="currentColor" opacity="0.18" stroke="none"/>
+  <!-- Bucket body — taller barrel proportions -->
+  <path d="M 54 80 L 68 222 L 172 222 L 186 80 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="2.2"/>
+  <!-- Rim -->
+  <ellipse cx="120" cy="80" rx="66" ry="12" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="2.2"/>
+  <!-- Stripes (6) -->
+  <line x1="56" y1="108" x2="184" y2="108" stroke="currentColor" stroke-width="2.4"/>
+  <line x1="58" y1="132" x2="182" y2="132" stroke="currentColor" stroke-width="2.4"/>
+  <line x1="60" y1="156" x2="180" y2="156" stroke="currentColor" stroke-width="2.4"/>
+  <line x1="62" y1="180" x2="178" y2="180" stroke="currentColor" stroke-width="2.4"/>
+  <line x1="64" y1="200" x2="176" y2="200" stroke="currentColor" stroke-width="2.4"/>
+  <line x1="66" y1="216" x2="174" y2="216" stroke="currentColor" stroke-width="1.6" opacity="0.55"/>
+  <!-- "PARTY" wordmark across the middle stripe -->
+  <text x="120" y="148" text-anchor="middle" font-family="serif" font-style="italic" font-weight="700" font-size="13" fill="currentColor" stroke="none" letter-spacing="0.12em">PARTY</text>
+  <!-- Many chicken pieces overflowing -->
+  <ellipse cx="70"  cy="80" rx="10" ry="7"  fill="currentColor" opacity="0.85"/>
+  <ellipse cx="90"  cy="70" rx="12" ry="8"  fill="currentColor" opacity="0.95"/>
+  <ellipse cx="110" cy="62" rx="13" ry="9"  fill="currentColor" opacity="0.98"/>
+  <ellipse cx="130" cy="60" rx="13" ry="9"  fill="currentColor" opacity="0.98"/>
+  <ellipse cx="150" cy="64" rx="12" ry="8"  fill="currentColor" opacity="0.95"/>
+  <ellipse cx="170" cy="78" rx="10" ry="7"  fill="currentColor" opacity="0.85"/>
+  <ellipse cx="100" cy="80" rx="9"  ry="6"  fill="currentColor" opacity="0.75"/>
+  <ellipse cx="120" cy="78" rx="9"  ry="6"  fill="currentColor" opacity="0.75"/>
+  <ellipse cx="140" cy="80" rx="9"  ry="6"  fill="currentColor" opacity="0.75"/>
+  <ellipse cx="158" cy="82" rx="8"  ry="5"  fill="currentColor" opacity="0.65"/>
+  <!-- Crispy texture dots on key pieces -->
+  <g fill="var(--paper, #f6ecd5)">
+    <circle cx="87"  cy="69"  r="1"/>
+    <circle cx="93"  cy="71"  r="1"/>
+    <circle cx="106" cy="61"  r="1"/>
+    <circle cx="114" cy="63"  r="1"/>
+    <circle cx="126" cy="59"  r="1"/>
+    <circle cx="134" cy="61"  r="1"/>
+    <circle cx="147" cy="63"  r="1"/>
+    <circle cx="153" cy="65"  r="1"/>
+  </g>
+</svg>

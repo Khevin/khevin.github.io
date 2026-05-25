@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" aria-hidden="true">
+  <!-- 3:4 section hero placeholder. Drop a real section-<id>.png next
+       to this file and the onerror chain in shelfStepHTML will pick it
+       up automatically. -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbf5e6"/>
+      <stop offset="100%" stop-color="#ead9b2"/>
+    </linearGradient>
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="32" height="32" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="32" stroke="rgba(141,102,48,0.05)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="600" height="800" fill="url(#bg)"/>
+  <rect width="600" height="800" fill="url(#hatch)"/>
+  <!-- Suggestion of shelves -->
+  <g stroke="rgba(141,102,48,0.18)" stroke-width="2" fill="none">
+    <line x1="60" y1="220" x2="540" y2="220"/>
+    <line x1="60" y1="400" x2="540" y2="400"/>
+    <line x1="60" y1="580" x2="540" y2="580"/>
+  </g>
+  <!-- Centered mark -->
+  <g transform="translate(300,400)" opacity="0.22">
+    <circle r="80" fill="none" stroke="#8d6630" stroke-width="3"/>
+    <text text-anchor="middle" dominant-baseline="central" font-family="serif" font-size="86" fill="#8d6630">棚</text>
+  </g>
+  <text x="300" y="720" text-anchor="middle" font-family="serif" font-style="italic" font-size="22" fill="rgba(141,102,48,0.45)">
+    section image placeholder
+  </text>
+</svg>

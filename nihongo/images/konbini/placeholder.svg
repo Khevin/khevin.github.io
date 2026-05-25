@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 48" aria-hidden="true">
+  <!-- Small konbini-item placeholder. Sits in the item card behind a
+       (potentially missing) real product image. Soft paper tone so the
+       kanji label below still reads as the primary identifier. -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f6ecd5"/>
+      <stop offset="100%" stop-color="#ead9b2"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="48" fill="url(#bg)" rx="2"/>
+  <circle cx="32" cy="24" r="6" fill="none" stroke="rgba(141,102,48,0.35)" stroke-width="1"/>
+  <line x1="26" y1="32" x2="38" y2="32" stroke="rgba(141,102,48,0.25)" stroke-width="1"/>
+</svg>

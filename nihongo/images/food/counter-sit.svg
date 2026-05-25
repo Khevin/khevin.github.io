@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+
+<rect x="0" y="0" width="240" height="60" fill="var(--paper, #f6ecd5)" opacity="0.5"></rect>
+
+<line x1="60" y1="0" x2="60" y2="10" stroke="currentColor" stroke-width="0.8" opacity="0.6"></line>
+<ellipse cx="60" cy="18" rx="8" ry="9" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.2"></ellipse>
+<line x1="52" y1="16" x2="68" y2="16" stroke="currentColor" stroke-width="0.5" opacity="0.5"></line>
+<line x1="52" y1="20" x2="68" y2="20" stroke="currentColor" stroke-width="0.5" opacity="0.5"></line>
+<rect x="58" y="15" width="4" height="6" fill="currentColor" opacity="0.7"></rect>
+
+
+<rect x="160" y="0" width="64" height="3" fill="currentColor" opacity="0.85"></rect>
+<path d="M162 3 L188 3 L188 36 L162 36 Z" fill="currentColor" opacity="0.88"></path>
+<path d="M194 3 L222 3 L222 36 L194 36 Z" fill="currentColor" opacity="0.88"></path>
+
+
+<g>
+  
+  <path d="M100 22 Q98 12 116 10 Q138 10 138 22 L138 34 L100 34 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.4"></path>
+  
+  <ellipse cx="119" cy="46" rx="14" ry="14" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></ellipse>
+  
+  <line x1="113" y1="48" x2="116" y2="48" stroke="currentColor" stroke-width="1.4" opacity="0.85" stroke-linecap="round"></line>
+  <line x1="122" y1="48" x2="125" y2="48" stroke="currentColor" stroke-width="1.4" opacity="0.85" stroke-linecap="round"></line>
+  
+  <path d="M84 70 Q98 60 119 60 Q140 60 154 70 L154 96 L84 96 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.4"></path>
+  
+  <path d="M110 64 L119 76 L128 64" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.7"></path>
+  
+  <ellipse cx="119" cy="96" rx="14" ry="6" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.2"></ellipse>
+</g>
+
+
+<rect x="32" y="92" width="176" height="22" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.6"></rect>
+
+<rect x="32" y="90" width="176" height="4" fill="currentColor" opacity="0.85"></rect>
+
+<g>
+  <ellipse cx="50" cy="104" rx="8" ry="3" fill="currentColor" opacity="0.78"></ellipse>
+  <ellipse cx="68" cy="104" rx="8" ry="3" fill="currentColor" opacity="0.55"></ellipse>
+  <ellipse cx="86" cy="104" rx="8" ry="3" fill="currentColor" opacity="0.78"></ellipse>
+  <ellipse cx="104" cy="104" rx="8" ry="3" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="0.8"></ellipse>
+  <ellipse cx="134" cy="104" rx="8" ry="3" fill="currentColor" opacity="0.55"></ellipse>
+  <ellipse cx="152" cy="104" rx="8" ry="3" fill="currentColor" opacity="0.78"></ellipse>
+  <ellipse cx="170" cy="104" rx="8" ry="3" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="0.8"></ellipse>
+  <ellipse cx="188" cy="104" rx="8" ry="3" fill="currentColor" opacity="0.55"></ellipse>
+</g>
+
+
+<path d="M0 114 L240 114 L240 240 L0 240 Z" fill="var(--paper-2, #efe2c2)" stroke="none"></path>
+
+<line x1="0" y1="114" x2="240" y2="114" stroke="currentColor" stroke-width="1.6"></line>
+
+<g stroke="currentColor" stroke-width="0.6" opacity="0.35" fill="none">
+  <path d="M0 130 Q120 126 240 130"></path>
+  <path d="M0 150 Q120 144 240 150"></path>
+  <path d="M0 174 Q120 168 240 174"></path>
+  <path d="M0 200 Q120 192 240 200"></path>
+</g>
+
+
+
+<rect x="58" y="138" width="124" height="56" fill="var(--paper, #f6ecd5)" opacity="0.5" stroke="currentColor" stroke-width="0.9"></rect>
+
+<ellipse cx="84" cy="158" rx="14" ry="4" fill="currentColor" opacity="0.85"></ellipse>
+<ellipse cx="84" cy="156" rx="13" ry="3" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1"></ellipse>
+<ellipse cx="84" cy="156" rx="9" ry="2" fill="currentColor" opacity="0.6"></ellipse>
+
+<ellipse cx="156" cy="162" rx="12" ry="3" fill="currentColor" opacity="0.85"></ellipse>
+<path d="M146 162 Q148 144 156 144 Q164 144 166 162 Z" fill="currentColor" opacity="0.92" stroke="currentColor" stroke-width="1.2"></path>
+<ellipse cx="156" cy="144" rx="10" ry="3" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1"></ellipse>
+
+<path d="M106 184 Q120 180 134 184 Q134 190 120 190 Q106 190 106 184 Z" fill="currentColor" opacity="0.65"></path>
+<line x1="78" y1="178" x2="172" y2="178" stroke="currentColor" stroke-width="2.6"></line>
+<line x1="78" y1="185" x2="172" y2="185" stroke="currentColor" stroke-width="2.6"></line>
+
+
+<g>
+  
+  <path d="M-4 240 L-4 216 Q-4 206 14 204 Q34 202 50 208 L52 230 Q34 240 14 240 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+  
+  <ellipse cx="48" cy="212" rx="6" ry="4" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.2"></ellipse>
+  
+  <line x1="20" y1="206" x2="22" y2="222" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line>
+  <line x1="32" y1="206" x2="34" y2="224" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line>
+
+  
+  <path d="M244 240 L244 216 Q244 206 226 204 Q206 202 190 208 L188 230 Q206 240 226 240 Z" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.4"></path>
+  <ellipse cx="192" cy="212" rx="6" ry="4" fill="var(--paper-2, #efe2c2)" stroke="currentColor" stroke-width="1.2"></ellipse>
+  <line x1="220" y1="206" x2="218" y2="222" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line>
+  <line x1="208" y1="206" x2="206" y2="224" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line>
+</g>
+
+
+</svg>

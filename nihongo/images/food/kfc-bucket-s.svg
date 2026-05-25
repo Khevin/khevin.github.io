@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <!-- KFC bucket — Small (2 pieces). Compact tapered cup with two
+       chicken pieces poking out the top. Matches the line-art style
+       of the rest of the food SVGs (currentColor stroke, paper fill). -->
+  <ellipse cx="120" cy="218" rx="30" ry="3" fill="currentColor" opacity="0.18" stroke="none"/>
+  <!-- Bucket body (tapered trapezoid) -->
+  <path d="M 96 134 L 100 212 L 140 212 L 144 134 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.8"/>
+  <!-- Top rim -->
+  <ellipse cx="120" cy="134" rx="24" ry="6" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.6"/>
+  <!-- Stripes -->
+  <line x1="98"  y1="156" x2="142" y2="156" stroke="currentColor" stroke-width="2"/>
+  <line x1="99"  y1="178" x2="141" y2="178" stroke="currentColor" stroke-width="2"/>
+  <line x1="100" y1="200" x2="140" y2="200" stroke="currentColor" stroke-width="2"/>
+  <!-- 2 chicken pieces -->
+  <ellipse cx="109" cy="128" rx="10" ry="7" fill="currentColor" opacity="0.92"/>
+  <ellipse cx="130" cy="126" rx="10" ry="7" fill="currentColor" opacity="0.92"/>
+  <!-- Crispy texture dots on chicken -->
+  <circle cx="106" cy="127" r="0.9" fill="var(--paper, #f6ecd5)"/>
+  <circle cx="112" cy="129" r="0.9" fill="var(--paper, #f6ecd5)"/>
+  <circle cx="127" cy="125" r="0.9" fill="var(--paper, #f6ecd5)"/>
+  <circle cx="133" cy="127" r="0.9" fill="var(--paper, #f6ecd5)"/>
+</svg>

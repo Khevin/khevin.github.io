@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<line x1="20" y1="216" x2="220" y2="216" stroke="currentColor" stroke-width="1.4" opacity="0.4"></line>
+
+<ellipse cx="120" cy="208" rx="98" ry="6" fill="currentColor" opacity="0.2"></ellipse>
+
+<path d="M28 70 L114 64 L114 198 L28 204 Z" fill="currentColor" opacity="0.92" stroke="none"></path>
+<path d="M126 64 L212 70 L212 204 L126 198 Z" fill="currentColor" opacity="0.92" stroke="none"></path>
+
+<path d="M32 64 L114 60 L120 64 L126 60 L208 64 L208 198 L126 194 L120 198 L114 194 L32 198 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.6"></path>
+
+<path d="M114 60 L114 194" stroke="currentColor" stroke-width="0.8" opacity="0.5"></path>
+<path d="M126 60 L126 194" stroke="currentColor" stroke-width="0.8" opacity="0.5"></path>
+<path d="M120 64 L120 198" stroke="currentColor" stroke-width="0.5" opacity="0.4"></path>
+
+
+<rect x="42" y="74" width="22" height="6" fill="currentColor" opacity="0.85"></rect>
+<line x1="42" y1="92" x2="106" y2="92" stroke="currentColor" stroke-width="0.5" opacity="0.4"></line>
+
+
+<line x1="42" y1="102" x2="70" y2="102" stroke="currentColor" stroke-width="2"></line>
+<line x1="72" y1="102" x2="92" y2="102" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="94" y1="102" x2="106" y2="102" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="42" y1="120" x2="70" y2="120" stroke="currentColor" stroke-width="2"></line>
+<line x1="72" y1="120" x2="92" y2="120" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="94" y1="120" x2="106" y2="120" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="42" y1="138" x2="70" y2="138" stroke="currentColor" stroke-width="2"></line>
+<line x1="72" y1="138" x2="92" y2="138" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="94" y1="138" x2="106" y2="138" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="42" y1="156" x2="70" y2="156" stroke="currentColor" stroke-width="2"></line>
+<line x1="72" y1="156" x2="92" y2="156" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="94" y1="156" x2="106" y2="156" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="42" y1="174" x2="70" y2="174" stroke="currentColor" stroke-width="2"></line>
+<line x1="72" y1="174" x2="92" y2="174" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="94" y1="174" x2="106" y2="174" stroke="currentColor" stroke-width="1.4"></line>
+
+
+
+<rect x="134" y="74" width="22" height="6" fill="currentColor" opacity="0.85"></rect>
+<line x1="134" y1="92" x2="198" y2="92" stroke="currentColor" stroke-width="0.5" opacity="0.4"></line>
+
+<line x1="134" y1="102" x2="162" y2="102" stroke="currentColor" stroke-width="2"></line>
+<line x1="164" y1="102" x2="184" y2="102" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="186" y1="102" x2="198" y2="102" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="134" y1="120" x2="162" y2="120" stroke="currentColor" stroke-width="2"></line>
+<line x1="164" y1="120" x2="184" y2="120" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="186" y1="120" x2="198" y2="120" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="134" y1="138" x2="162" y2="138" stroke="currentColor" stroke-width="2"></line>
+<line x1="164" y1="138" x2="184" y2="138" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="186" y1="138" x2="198" y2="138" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="134" y1="156" x2="162" y2="156" stroke="currentColor" stroke-width="2"></line>
+<line x1="164" y1="156" x2="184" y2="156" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="186" y1="156" x2="198" y2="156" stroke="currentColor" stroke-width="1.4"></line>
+
+<line x1="134" y1="174" x2="162" y2="174" stroke="currentColor" stroke-width="2"></line>
+<line x1="164" y1="174" x2="184" y2="174" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2.5" opacity="0.7"></line>
+<line x1="186" y1="174" x2="198" y2="174" stroke="currentColor" stroke-width="1.4"></line>
+
+
+
+<g opacity="0.5">
+  <path d="M178 188 Q184 184 188 186 Q186 192 180 192 Z" fill="currentColor"></path>
+  <path d="M188 186 Q194 184 196 180" stroke="currentColor" stroke-width="0.8" fill="none"></path>
+</g>
+
+
+</svg>

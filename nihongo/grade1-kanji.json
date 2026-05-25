@@ -1,0 +1,1168 @@
+[
+  {
+    "num": 5,
+    "kanji": "王",
+    "on": [
+      "EN"
+    ],
+    "kun": [
+      "marui"
+    ],
+    "meaning": "round, yen",
+    "strokes": 4,
+    "jlpt": "N3",
+    "mnemonic": "",
+    "examples": []
+  },
+  {
+    "num": 14,
+    "kanji": "休",
+    "on": [
+      "KYŪ"
+    ],
+    "kun": [
+      "yasumu"
+    ],
+    "meaning": "rest(ing)",
+    "strokes": 6,
+    "jlpt": "N5",
+    "mnemonic": "STRING OF BALL-LIKE JEWELS FIT",
+    "examples": [
+      {
+        "word": "夏休み",
+        "reading": "natsuyasumi",
+        "meaning": "summer break"
+      }
+    ]
+  },
+  {
+    "num": 15,
+    "kanji": "玉",
+    "on": [
+      "GYOKU"
+    ],
+    "kun": [
+      "tama"
+    ],
+    "meaning": "jewel, ball",
+    "strokes": 5,
+    "jlpt": "N3",
+    "mnemonic": "KING KEEPS TWO GOLD NUGGETS",
+    "examples": []
+  },
+  {
+    "num": 16,
+    "kanji": "金",
+    "on": [
+      "KIN",
+      "KON"
+    ],
+    "kun": [
+      "kane"
+    ],
+    "meaning": "gold, metal, money",
+    "strokes": 8,
+    "jlpt": "N5",
+    "mnemonic": "WORK TO OPEN THE ROOF TO",
+    "examples": []
+  },
+  {
+    "num": 17,
+    "kanji": "空",
+    "on": [
+      "SEE THE EMPTY SKY"
+    ],
+    "kun": [],
+    "meaning": "sky, empty",
+    "strokes": 8,
+    "jlpt": "N5",
+    "mnemonic": "CRESCENT MOON IS PITTED AND",
+    "examples": []
+  },
+  {
+    "num": 18,
+    "kanji": "犬",
+    "on": [
+      "KEN"
+    ],
+    "kun": [
+      "inu"
+    ],
+    "meaning": "dog",
+    "strokes": 4,
+    "jlpt": "N5",
+    "mnemonic": "DOG IS BIG WITH A SPOT 発見",
+    "examples": [
+      {
+        "word": "犬小屋",
+        "reading": "inugoya",
+        "meaning": "kennel"
+      }
+    ]
+  },
+  {
+    "num": 20,
+    "kanji": "見",
+    "on": [
+      "KEN"
+    ],
+    "kun": [
+      "miru/seru/eru"
+    ],
+    "meaning": "look, see, show",
+    "strokes": 7,
+    "jlpt": "N5",
+    "mnemonic": "PERSON WITH BIG EYE BENDS TO SEE 五月",
+    "examples": []
+  },
+  {
+    "num": 21,
+    "kanji": "五",
+    "on": [
+      "GO"
+    ],
+    "kun": [
+      "itsu-"
+    ],
+    "meaning": "fi ve",
+    "strokes": 4,
+    "jlpt": "N5",
+    "mnemonic": "IS A MISSHAPEN REEL BETTER",
+    "examples": []
+  },
+  {
+    "num": 22,
+    "kanji": "口",
+    "on": [
+      "KŌ",
+      "KU"
+    ],
+    "kun": [
+      "kuchi"
+    ],
+    "meaning": "mouth, opening",
+    "strokes": 3,
+    "jlpt": "N5",
+    "mnemonic": "SQUARE OPEN MOUTH",
+    "examples": []
+  },
+  {
+    "num": 23,
+    "kanji": "校",
+    "on": [
+      "KŌCHŌ   school principal"
+    ],
+    "kun": [],
+    "meaning": "school, check",
+    "strokes": 10,
+    "jlpt": "N5",
+    "mnemonic": "CHECK OUT SIX WOODEN",
+    "examples": []
+  },
+  {
+    "num": 24,
+    "kanji": "左",
+    "on": [
+      "SA"
+    ],
+    "kun": [
+      "hidari"
+    ],
+    "meaning": "left",
+    "strokes": 5,
+    "jlpt": "N5",
+    "mnemonic": "LEFT HAND HOLDS THE",
+    "examples": []
+  },
+  {
+    "num": 25,
+    "kanji": "三",
+    "on": [
+      "SAN"
+    ],
+    "kun": [
+      "mi-"
+    ],
+    "meaning": "three",
+    "strokes": 3,
+    "jlpt": "N5",
+    "mnemonic": "THREE FINGERS 三月",
+    "examples": []
+  },
+  {
+    "num": 26,
+    "kanji": "子",
+    "on": [
+      "SHI",
+      "SU"
+    ],
+    "kun": [
+      "ko"
+    ],
+    "meaning": "child",
+    "strokes": 3,
+    "jlpt": "N5",
+    "mnemonic": "CHILD ON MUM’S BACK WITH",
+    "examples": []
+  },
+  {
+    "num": 28,
+    "kanji": "四",
+    "on": [
+      "SHI"
+    ],
+    "kun": [
+      "ito"
+    ],
+    "meaning": "thread",
+    "strokes": 6,
+    "jlpt": "N5",
+    "mnemonic": "FOUR FINGERS IN CLENCHED FIST",
+    "examples": []
+  },
+  {
+    "num": 30,
+    "kanji": "字",
+    "on": [
+      "JI"
+    ],
+    "kun": [],
+    "meaning": "letter, symbol",
+    "strokes": 6,
+    "jlpt": "N4",
+    "mnemonic": "A CHILD AT HOME LEARNING LETTERS 耳科",
+    "examples": []
+  },
+  {
+    "num": 31,
+    "kanji": "耳",
+    "on": [
+      "SHICHI"
+    ],
+    "kun": [
+      "nana-"
+    ],
+    "meaning": "seven",
+    "strokes": 2,
+    "jlpt": "N5",
+    "mnemonic": "BADLY WRITTEN TEN: ONLY",
+    "examples": []
+  },
+  {
+    "num": 33,
+    "kanji": "車",
+    "on": [
+      "SHA"
+    ],
+    "kun": [
+      "kuruma"
+    ],
+    "meaning": "vehicle",
+    "strokes": 7,
+    "jlpt": "N5",
+    "mnemonic": "CHARIOT WITH TWO WHEELS",
+    "examples": [
+      {
+        "word": "洗車場",
+        "reading": "SENSHAJŌ",
+        "meaning": "carwash"
+      }
+    ]
+  },
+  {
+    "num": 35,
+    "kanji": "十",
+    "on": [
+      "JŪJI   a cross"
+    ],
+    "kun": [],
+    "meaning": "ten",
+    "strokes": 2,
+    "jlpt": "N5",
+    "mnemonic": "A PROPER CROSS GETS TEN OUT",
+    "examples": []
+  },
+  {
+    "num": 38,
+    "kanji": "小",
+    "on": [],
+    "kun": [],
+    "meaning": "up, top, over, rise",
+    "strokes": 3,
+    "jlpt": "N5",
+    "mnemonic": "A STROKE DIVIDED INTO TWO",
+    "examples": [
+      {
+        "word": "値上げ",
+        "reading": "neage",
+        "meaning": "price rise"
+      }
+    ]
+  },
+  {
+    "num": 40,
+    "kanji": "森",
+    "on": [
+      "SHIN"
+    ],
+    "kun": [
+      "mori"
+    ],
+    "meaning": "woods",
+    "strokes": 12,
+    "jlpt": "N4",
+    "mnemonic": "THE WOODS CONTAIN MANY",
+    "examples": []
+  },
+  {
+    "num": 41,
+    "kanji": "人",
+    "on": [
+      "SUI"
+    ],
+    "kun": [
+      "mizu"
+    ],
+    "meaning": "water",
+    "strokes": 4,
+    "jlpt": "N5",
+    "mnemonic": "WATER NARROWS BETWEEN",
+    "examples": []
+  },
+  {
+    "num": 47,
+    "kanji": "石",
+    "on": [
+      "SEKI",
+      "SHAKU"
+    ],
+    "kun": [
+      "ishi"
+    ],
+    "meaning": "stone, rock",
+    "strokes": 5,
+    "jlpt": "N3",
+    "mnemonic": "LARGE STONE AT BASE OF",
+    "examples": []
+  },
+  {
+    "num": 48,
+    "kanji": "赤",
+    "on": [
+      "SEKI",
+      "SHAKU"
+    ],
+    "kun": [
+      "akai"
+    ],
+    "meaning": "red",
+    "strokes": 7,
+    "jlpt": "N4",
+    "mnemonic": "BIG FIRE MAKES EARTH GLOW RED 千円",
+    "examples": [
+      {
+        "word": "赤道",
+        "reading": "SEKIDŌ",
+        "meaning": "equator"
+      },
+      {
+        "word": "赤面",
+        "reading": "SEKIMEN",
+        "meaning": "blush"
+      },
+      {
+        "word": "赤ん坊",
+        "reading": "akanbō",
+        "meaning": "baby"
+      }
+    ]
+  },
+  {
+    "num": 49,
+    "kanji": "千",
+    "on": [
+      "SEN"
+    ],
+    "kun": [
+      "kawa"
+    ],
+    "meaning": "river",
+    "strokes": 3,
+    "jlpt": "N5",
+    "mnemonic": "RIVER FLOWS BETWEEN TWO",
+    "examples": [
+      {
+        "word": "千鳥",
+        "reading": "chidori",
+        "meaning": "plover"
+      },
+      {
+        "word": "川口",
+        "reading": "kawaguchi",
+        "meaning": "rivermouth"
+      },
+      {
+        "word": "江戸川",
+        "reading": "edogawa",
+        "meaning": "Edo River"
+      }
+    ]
+  },
+  {
+    "num": 51,
+    "kanji": "先",
+    "on": [
+      "SEN"
+    ],
+    "kun": [
+      "saki"
+    ],
+    "meaning": "prior, precede, tip",
+    "strokes": 6,
+    "jlpt": "N5",
+    "mnemonic": "BEND TO GO THROUGH UNDER-",
+    "examples": [
+      {
+        "word": "指先",
+        "reading": "yubisaki",
+        "meaning": "fi ngertip"
+      }
+    ]
+  },
+  {
+    "num": 52,
+    "kanji": "早",
+    "on": [],
+    "kun": [],
+    "meaning": "early, fast",
+    "strokes": 6,
+    "jlpt": "N4",
+    "mnemonic": "SUN SHOWS TEN BUT IT’S STILL",
+    "examples": [
+      {
+        "word": "早死に",
+        "reading": "hayajini",
+        "meaning": "early death"
+      }
+    ]
+  },
+  {
+    "num": 53,
+    "kanji": "草",
+    "on": [],
+    "kun": [
+      "草地 kusaCHI   grassland"
+    ],
+    "meaning": "grass, plant",
+    "strokes": 9,
+    "jlpt": "N3",
+    "mnemonic": "GRASS GROWS FAST 不足 FUSOKU   insuffi  ciency",
+    "examples": [
+      {
+        "word": "雑草",
+        "reading": "ZASSŌ",
+        "meaning": "weed"
+      },
+      {
+        "word": "草書",
+        "reading": "SŌSHO",
+        "meaning": "cursive script"
+      },
+      {
+        "word": "草地",
+        "reading": "kusaCHI",
+        "meaning": "grassland"
+      }
+    ]
+  },
+  {
+    "num": 54,
+    "kanji": "足",
+    "on": [
+      "SOKU"
+    ],
+    "kun": [
+      "ashi",
+      "tariru"
+    ],
+    "meaning": "leg, foot, suffi  ce",
+    "strokes": 7,
+    "jlpt": "N5",
+    "mnemonic": "ROUND KNEE AND FOOT SUFFICE",
+    "examples": [
+      {
+        "word": "不足",
+        "reading": "FUSOKU",
+        "meaning": "insuffi  ciency"
+      },
+      {
+        "word": "足首",
+        "reading": "ashikubi",
+        "meaning": "ankle"
+      },
+      {
+        "word": "足音",
+        "reading": "ashioto",
+        "meaning": "footsteps"
+      }
+    ]
+  },
+  {
+    "num": 55,
+    "kanji": "村",
+    "on": [
+      "DAI",
+      "TAI"
+    ],
+    "kun": [
+      "ōkii",
+      "ō-"
+    ],
+    "meaning": "big",
+    "strokes": 3,
+    "jlpt": "N5",
+    "mnemonic": "PERSON SPREADS ARMS AND",
+    "examples": []
+  },
+  {
+    "num": 57,
+    "kanji": "男",
+    "on": [
+      "DAN",
+      "NAN"
+    ],
+    "kun": [
+      "otoko"
+    ],
+    "meaning": "man, male",
+    "strokes": 7,
+    "jlpt": "N5",
+    "mnemonic": "MAN PROVIDES STRENGTH IN",
+    "examples": [
+      {
+        "word": "男気",
+        "reading": "otokogi",
+        "meaning": "gallantry"
+      }
+    ]
+  },
+  {
+    "num": 58,
+    "kanji": "竹",
+    "on": [
+      "CHIKU"
+    ],
+    "kun": [
+      "take"
+    ],
+    "meaning": "bamboo",
+    "strokes": 6,
+    "jlpt": "",
+    "mnemonic": "HOODED SNAKE REARS TO",
+    "examples": [
+      {
+        "word": "爆竹",
+        "reading": "BAKUCHIKU",
+        "meaning": "fi recracker"
+      },
+      {
+        "word": "竹馬",
+        "reading": "takeuma",
+        "meaning": "stilts"
+      },
+      {
+        "word": "竹やぶ",
+        "reading": "takeyabu",
+        "meaning": "bamboo grove"
+      }
+    ]
+  },
+  {
+    "num": 59,
+    "kanji": "中",
+    "on": [
+      "CHŪ"
+    ],
+    "kun": [
+      "naka"
+    ],
+    "meaning": "Sino-",
+    "strokes": 4,
+    "jlpt": "N5",
+    "mnemonic": "CHINESE LANCE PIERCES MIDDLE",
+    "examples": [
+      {
+        "word": "中立",
+        "reading": "CHŪRITSU",
+        "meaning": "neutrality"
+      },
+      {
+        "word": "中国",
+        "reading": "CHŪGOKU",
+        "meaning": "China"
+      },
+      {
+        "word": "真ん中",
+        "reading": "mannaka",
+        "meaning": "very middle"
+      }
+    ]
+  },
+  {
+    "num": 60,
+    "kanji": "虫",
+    "on": [
+      "CHŌ"
+    ],
+    "kun": [
+      "machi"
+    ],
+    "meaning": "town, block",
+    "strokes": 7,
+    "jlpt": "N3",
+    "mnemonic": "HOODED SNAKE REARS TO",
+    "examples": [
+      {
+        "word": "寄生虫",
+        "reading": "KISEICHŪ",
+        "meaning": "parasite"
+      },
+      {
+        "word": "害虫",
+        "reading": "GAICHŪ",
+        "meaning": "harmful insect"
+      },
+      {
+        "word": "虫歯",
+        "reading": "mushiba",
+        "meaning": "decayed tooth"
+      }
+    ]
+  },
+  {
+    "num": 62,
+    "kanji": "天",
+    "on": [
+      "TEN"
+    ],
+    "kun": [
+      "ama-",
+      "ame"
+    ],
+    "meaning": "heaven",
+    "strokes": 4,
+    "jlpt": "N5",
+    "mnemonic": "BIG MAN GETS HEAD FLATTENED",
+    "examples": [
+      {
+        "word": "天使",
+        "reading": "TENSHI",
+        "meaning": "angel"
+      },
+      {
+        "word": "天皇",
+        "reading": "TENNŌ",
+        "meaning": "emperor"
+      },
+      {
+        "word": "天下り",
+        "reading": "amakudari",
+        "meaning": "heavenly descent"
+      }
+    ]
+  },
+  {
+    "num": 63,
+    "kanji": "田",
+    "on": [
+      "DEN"
+    ],
+    "kun": [
+      "ta"
+    ],
+    "meaning": "rice-fi eld, paddy",
+    "strokes": 5,
+    "jlpt": "",
+    "mnemonic": "A PLANT BREAKS THROUGH THE",
+    "examples": [
+      {
+        "word": "田園",
+        "reading": "DEN’EN",
+        "meaning": "rural area"
+      },
+      {
+        "word": "田植え",
+        "reading": "taue",
+        "meaning": "rice planting"
+      },
+      {
+        "word": "田舎",
+        "reading": "inaka*",
+        "meaning": "countryside"
+      }
+    ]
+  },
+  {
+    "num": 64,
+    "kanji": "土",
+    "on": [
+      "DO",
+      "TO"
+    ],
+    "kun": [
+      "tsuchi"
+    ],
+    "meaning": "earth, ground",
+    "strokes": 3,
+    "jlpt": "",
+    "mnemonic": "TWO LINES MEANS TWO, EVEN IF",
+    "examples": [
+      {
+        "word": "土曜日",
+        "reading": "DOYŌbi",
+        "meaning": "Saturday"
+      },
+      {
+        "word": "土地",
+        "reading": "TOCHI",
+        "meaning": "land"
+      },
+      {
+        "word": "土臭い",
+        "reading": "tsuchikusai",
+        "meaning": "unsophisticated"
+      }
+    ]
+  },
+  {
+    "num": 65,
+    "kanji": "二",
+    "on": [
+      "NI"
+    ],
+    "kun": [
+      "futa-"
+    ],
+    "meaning": "two",
+    "strokes": 2,
+    "jlpt": "N5",
+    "mnemonic": "IN LINE WITH THE SUN, A NEW",
+    "examples": [
+      {
+        "word": "二十",
+        "reading": "NIJŪ",
+        "meaning": "twenty"
+      },
+      {
+        "word": "二人",
+        "reading": "NININ/futari*",
+        "meaning": "two people"
+      }
+    ]
+  },
+  {
+    "num": 66,
+    "kanji": "日",
+    "on": [
+      "NICHI",
+      "JITSU"
+    ],
+    "kun": [
+      "hi",
+      "-ka"
+    ],
+    "meaning": "sun, day",
+    "strokes": 4,
+    "jlpt": "N5",
+    "mnemonic": "IN LINE WITH THE SUN, A NEW",
+    "examples": [
+      {
+        "word": "日曜日",
+        "reading": "NICHIYŌbi",
+        "meaning": "Sunday"
+      }
+    ]
+  },
+  {
+    "num": 67,
+    "kanji": "入",
+    "on": [
+      "NYŪ"
+    ],
+    "kun": [
+      "hairu",
+      "ireru/ru"
+    ],
+    "meaning": "enter, put in",
+    "strokes": 2,
+    "jlpt": "N5",
+    "mnemonic": "BEND TO ENTER THROUGH",
+    "examples": [
+      {
+        "word": "輸入",
+        "reading": "YUNYŪ",
+        "meaning": "import"
+      },
+      {
+        "word": "入り口",
+        "reading": "iriguchi",
+        "meaning": "entrance"
+      },
+      {
+        "word": "入れ物",
+        "reading": "iremono",
+        "meaning": "container"
+      }
+    ]
+  },
+  {
+    "num": 68,
+    "kanji": "年",
+    "on": [
+      "NEN"
+    ],
+    "kun": [
+      "toshi"
+    ],
+    "meaning": "year",
+    "strokes": 6,
+    "jlpt": "N5",
+    "mnemonic": "SUNSTROKE LEAVES YOU WHITE!? 八月",
+    "examples": [
+      {
+        "word": "年寄",
+        "reading": "toshiyori",
+        "meaning": "elderly person"
+      }
+    ]
+  },
+  {
+    "num": 69,
+    "kanji": "白",
+    "on": [
+      "HAKU"
+    ],
+    "kun": [
+      "shiroi",
+      "shira-"
+    ],
+    "meaning": "white",
+    "strokes": 5,
+    "jlpt": "N5",
+    "mnemonic": "SUNSTROKE LEAVES YOU WHITE!? 八月",
+    "examples": [
+      {
+        "word": "白書",
+        "reading": "HAKUSHO",
+        "meaning": "White Paper"
+      },
+      {
+        "word": "面白い",
+        "reading": "omoshiroi",
+        "meaning": "interesting"
+      },
+      {
+        "word": "白髪",
+        "reading": "shiraga*",
+        "meaning": "greyed hair"
+      }
+    ]
+  },
+  {
+    "num": 70,
+    "kanji": "八",
+    "on": [
+      "HACHI"
+    ],
+    "kun": [
+      "ya-"
+    ],
+    "meaning": "eight",
+    "strokes": 2,
+    "jlpt": "N5",
+    "mnemonic": "EIGHT IS EASILY DIVIDED",
+    "examples": [
+      {
+        "word": "八百屋",
+        "reading": "yaoya*",
+        "meaning": "greengrocer"
+      }
+    ]
+  },
+  {
+    "num": 71,
+    "kanji": "百",
+    "on": [
+      "HYAKU"
+    ],
+    "kun": [],
+    "meaning": "hundred",
+    "strokes": 6,
+    "jlpt": "N5",
+    "mnemonic": "ONE WHITE THUMBNAIL IS",
+    "examples": [
+      {
+        "word": "百姓",
+        "reading": "HYAKUSHŌ",
+        "meaning": "farmer"
+      },
+      {
+        "word": "百貨店",
+        "reading": "HYAKKATEN",
+        "meaning": "dept store"
+      }
+    ]
+  },
+  {
+    "num": 72,
+    "kanji": "文",
+    "on": [
+      "BUN",
+      "MON"
+    ],
+    "kun": [
+      "fumi"
+    ],
+    "meaning": "writing, text",
+    "strokes": 4,
+    "jlpt": "N4",
+    "mnemonic": "A CROSS IS THE LOWEST FORM",
+    "examples": [
+      {
+        "word": "文学",
+        "reading": "BUNGAKU",
+        "meaning": "literature"
+      },
+      {
+        "word": "文字",
+        "reading": "MO(N)JI",
+        "meaning": "character"
+      },
+      {
+        "word": "恋文",
+        "reading": "koibumi",
+        "meaning": "love-letter"
+      }
+    ]
+  },
+  {
+    "num": 73,
+    "kanji": "木",
+    "on": [
+      "HON"
+    ],
+    "kun": [
+      "moto"
+    ],
+    "meaning": "this, cylinder-counter",
+    "strokes": 5,
+    "jlpt": "N5",
+    "mnemonic": "TREE WITH ONE MAIN ROOT",
+    "examples": [
+      {
+        "word": "本屋",
+        "reading": "HONya",
+        "meaning": "bookshop"
+      },
+      {
+        "word": "本社",
+        "reading": "HONSHA",
+        "meaning": "this/head offi  ce"
+      }
+    ]
+  },
+  {
+    "num": 75,
+    "kanji": "名",
+    "on": [
+      "MEI",
+      "MYŌ"
+    ],
+    "kun": [
+      "na"
+    ],
+    "meaning": "name, fame",
+    "strokes": 6,
+    "jlpt": "N5",
+    "mnemonic": "MOUTH CALLS FAMOUS NAME",
+    "examples": [
+      {
+        "word": "有名",
+        "reading": "YŪMEI",
+        "meaning": "famous"
+      },
+      {
+        "word": "名字",
+        "reading": "MYŌJI",
+        "meaning": "surname"
+      },
+      {
+        "word": "名前",
+        "reading": "namae",
+        "meaning": "name"
+      }
+    ]
+  },
+  {
+    "num": "",
+    "kanji": "一",
+    "on": [],
+    "kun": [],
+    "meaning": "rain",
+    "strokes": 8,
+    "jlpt": "N5",
+    "mnemonic": "KING RULES WITH AN AX (regularized shape for ‘circle’) with 員 248 (‘offi  -",
+    "examples": []
+  },
+  {
+    "num": "",
+    "kanji": "音",
+    "on": [
+      "KA"
+    ],
+    "kun": [
+      "hi"
+    ],
+    "meaning": "fi re",
+    "strokes": 4,
+    "jlpt": "",
+    "mnemonic": "T-BAR WITH DROOPY LOWER",
+    "examples": []
+  },
+  {
+    "num": "",
+    "kanji": "貝",
+    "on": [],
+    "kun": [],
+    "meaning": "shell, shellfi sh",
+    "strokes": 7,
+    "jlpt": "",
+    "mnemonic": "",
+    "examples": []
+  },
+  {
+    "num": "",
+    "kanji": "学",
+    "on": [
+      "KYŪ",
+      "KU"
+    ],
+    "kun": [
+      "kokono-"
+    ],
+    "meaning": "nine",
+    "strokes": 2,
+    "jlpt": "N3",
+    "mnemonic": "CHILD LEARNS UNDER ORNATE",
+    "examples": [
+      {
+        "word": "十九",
+        "reading": "JŪKYŪ",
+        "meaning": "nineteen"
+      },
+      {
+        "word": "九日",
+        "reading": "kokonoka",
+        "meaning": "ninth day"
+      },
+      {
+        "word": "九月",
+        "reading": "KUGATSU",
+        "meaning": "September"
+      }
+    ]
+  },
+  {
+    "num": "",
+    "kanji": "月",
+    "on": [
+      "GETSU",
+      "GATSU"
+    ],
+    "kun": [],
+    "meaning": "moon, month",
+    "strokes": 4,
+    "jlpt": "",
+    "mnemonic": "DOG IS BIG WITH A SPOT 発見",
+    "examples": []
+  },
+  {
+    "num": "",
+    "kanji": "山",
+    "on": [
+      "SAN"
+    ],
+    "kun": [
+      "yama"
+    ],
+    "meaning": "mountain, hill",
+    "strokes": 3,
+    "jlpt": "",
+    "mnemonic": "CHILD ON MUM’S BACK WITH",
+    "examples": []
+  },
+  {
+    "num": "",
+    "kanji": "出",
+    "on": [
+      "SHUTSU"
+    ],
+    "kun": [
+      "deru",
+      "dasu"
+    ],
+    "meaning": "emerge, put out",
+    "strokes": 5,
+    "jlpt": "",
+    "mnemonic": "HAND WITH FIVE FINGERS BUT",
+    "examples": [
+      {
+        "word": "思い出",
+        "reading": "omoide",
+        "meaning": "a memory"
+      },
+      {
+        "word": "引き出し",
+        "reading": "hikidashi",
+        "meaning": "drawer"
+      }
+    ]
+  },
+  {
+    "num": "",
+    "kanji": "手",
+    "on": [
+      "JO",
+      "NYO",
+      "NYŌ"
+    ],
+    "kun": [],
+    "meaning": "woman",
+    "strokes": 3,
+    "jlpt": "N5",
+    "mnemonic": "KNEELING WOMAN 十月",
+    "examples": [
+      {
+        "word": "女の子",
+        "reading": "onna-no-ko",
+        "meaning": "girl"
+      }
+    ]
+  },
+  {
+    "num": "",
+    "kanji": "生",
+    "on": [
+      "SEI",
+      "SHŌ"
+    ],
+    "kun": [
+      "tadashii"
+    ],
+    "meaning": "correct, proper",
+    "strokes": 5,
+    "jlpt": "",
+    "mnemonic": "YOUNG BLUE-GREEN PLANTS",
+    "examples": []
+  }
+]

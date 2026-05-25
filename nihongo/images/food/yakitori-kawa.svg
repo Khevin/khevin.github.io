@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<ellipse cx="120" cy="180" rx="100" ry="6" fill="currentColor" opacity="0.18"></ellipse>
+<path d="M22 116 Q120 102 218 116 L218 168 Q120 184 22 168 Z" fill="currentColor" opacity="0.9"></path>
+<path d="M22 116 Q120 102 218 116 L218 162 Q120 178 22 162 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.6"></path>
+<path d="M34 126 Q120 116 206 126" stroke="currentColor" stroke-width="0.7" opacity="0.4" fill="none"></path>
+<path d="M34 154 Q120 168 206 154" stroke="currentColor" stroke-width="0.7" opacity="0.4" fill="none"></path>
+
+<g transform="rotate(-14 120 140)">
+  <line x1="12" y1="140" x2="228" y2="140" stroke="currentColor" stroke-width="1.6"></line>
+  <g stroke="currentColor" stroke-width="0.7" opacity="0.6">
+    <line x1="210" y1="138" x2="220" y2="138"></line><line x1="210" y1="142" x2="220" y2="142"></line>
+  </g>
+  
+<path d="M50 130 Q48 126 54 126 L96 126 Q100 126 100 130 Q100 134 96 134 L54 134 Q50 134 50 130 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M52 138 Q50 134 56 134 L98 134 Q102 134 102 138 Q102 142 98 142 L56 142 Q52 142 52 138 Z" fill="currentColor" opacity="0.78" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M50 146 Q48 142 54 142 L96 142 Q100 142 100 146 Q100 150 96 150 L54 150 Q50 150 50 146 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.6"><line x1="58" y1="130" x2="92" y2="130"></line><line x1="58" y1="138" x2="92" y2="138"></line><line x1="58" y1="146" x2="92" y2="146"></line></g>
+<path d="M104 130 Q102 126 108 126 L150 126 Q154 126 154 130 Q154 134 150 134 L108 134 Q104 134 104 130 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M106 138 Q104 134 110 134 L152 134 Q156 134 156 138 Q156 142 152 142 L110 142 Q106 142 106 138 Z" fill="currentColor" opacity="0.78" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M104 146 Q102 142 108 142 L150 142 Q154 142 154 146 Q154 150 150 150 L108 150 Q104 150 104 146 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.6"><line x1="112" y1="130" x2="146" y2="130"></line><line x1="112" y1="138" x2="146" y2="138"></line><line x1="112" y1="146" x2="146" y2="146"></line></g>
+<path d="M158 130 Q156 126 162 126 L204 126 Q208 126 208 130 Q208 134 204 134 L162 134 Q158 134 158 130 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M160 138 Q158 134 164 134 L206 134 Q210 134 210 138 Q210 142 206 142 L164 142 Q160 142 160 138 Z" fill="currentColor" opacity="0.78" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M158 146 Q156 142 162 142 L204 142 Q208 142 208 146 Q208 150 204 150 L162 150 Q158 150 158 146 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.6"><line x1="166" y1="130" x2="200" y2="130"></line><line x1="166" y1="138" x2="200" y2="138"></line><line x1="166" y1="146" x2="200" y2="146"></line></g>
+</g>
+
+<g transform="rotate(10 120 144)">
+  <line x1="12" y1="144" x2="228" y2="144" stroke="currentColor" stroke-width="1.6"></line>
+  <g stroke="currentColor" stroke-width="0.7" opacity="0.6">
+    <line x1="20" y1="142" x2="30" y2="142"></line><line x1="20" y1="146" x2="30" y2="146"></line>
+  </g>
+  
+<path d="M50 134 Q48 130 54 130 L96 130 Q100 130 100 134 Q100 138 96 138 L54 138 Q50 138 50 134 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M52 142 Q50 138 56 138 L98 138 Q102 138 102 142 Q102 146 98 146 L56 146 Q52 146 52 142 Z" fill="currentColor" opacity="0.78" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M50 150 Q48 146 54 146 L96 146 Q100 146 100 150 Q100 154 96 154 L54 154 Q50 154 50 150 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.6"><line x1="58" y1="134" x2="92" y2="134"></line><line x1="58" y1="142" x2="92" y2="142"></line><line x1="58" y1="150" x2="92" y2="150"></line></g>
+<path d="M104 134 Q102 130 108 130 L150 130 Q154 130 154 134 Q154 138 150 138 L108 138 Q104 138 104 134 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M106 142 Q104 138 110 138 L152 138 Q156 138 156 142 Q156 146 152 146 L110 146 Q106 146 106 142 Z" fill="currentColor" opacity="0.78" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M104 150 Q102 146 108 146 L150 146 Q154 146 154 150 Q154 154 150 154 L108 154 Q104 154 104 150 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.6"><line x1="112" y1="134" x2="146" y2="134"></line><line x1="112" y1="142" x2="146" y2="142"></line><line x1="112" y1="150" x2="146" y2="150"></line></g>
+<path d="M158 134 Q156 130 162 130 L204 130 Q208 130 208 134 Q208 138 204 138 L162 138 Q158 138 158 134 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M160 142 Q158 138 164 138 L206 138 Q210 138 210 142 Q210 146 206 146 L164 146 Q160 146 160 142 Z" fill="currentColor" opacity="0.78" stroke="currentColor" stroke-width="1.2"></path>
+<path d="M158 150 Q156 146 162 146 L204 146 Q208 146 208 150 Q208 154 204 154 L162 154 Q158 154 158 150 Z" fill="currentColor" opacity="0.9" stroke="currentColor" stroke-width="1.2"></path>
+<g stroke="var(--paper, #f6ecd5)" stroke-width="0.6" opacity="0.6"><line x1="166" y1="134" x2="200" y2="134"></line><line x1="166" y1="142" x2="200" y2="142"></line><line x1="166" y1="150" x2="200" y2="150"></line></g>
+</g>
+
+<g>
+  <path d="M186 162 Q198 158 206 168 Q200 174 186 162 Z" fill="var(--paper, #f6ecd5)" stroke="currentColor" stroke-width="1.2"></path>
+  <line x1="190" y1="164" x2="200" y2="170" stroke="currentColor" stroke-width="0.6" opacity="0.6"></line>
+</g>
+
+<path d="M168 198 Q186 192 204 198 Q204 210 186 210 Q168 210 168 198 Z" fill="currentColor" opacity="0.6" stroke="currentColor" stroke-width="1.1"></path>
+<line x1="92" y1="186" x2="216" y2="186" stroke="currentColor" stroke-width="3"></line>
+<line x1="92" y1="194" x2="216" y2="194" stroke="currentColor" stroke-width="3"></line>
+<line x1="76" y1="186" x2="92" y2="186" stroke="currentColor" stroke-width="1.6"></line>
+<line x1="76" y1="194" x2="92" y2="194" stroke="currentColor" stroke-width="1.6"></line>
+
+</svg>
