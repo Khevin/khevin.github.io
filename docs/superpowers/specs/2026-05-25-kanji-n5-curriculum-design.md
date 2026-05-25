@@ -4,9 +4,11 @@
 
 **Goal:** Grow the Nihongo flashcards deck from its current ~104 unique kanji (unevenly spread across 18 classes, several of them stubs) to a **complete JLPT N5 coverage** (≈100 official N5 kanji) plus ~30 useful N4/N3 exceptions, organized into ~16 didactically-coherent classes of 10–20 cards each.
 
-**Architecture:** Pure data change. The curriculum lives in `nihongo/data.js` under `window.FLASHCARD_CLASSES`. Each class is an ordered array of card objects; array order *is* the progression order. Kanji are grouped by theme and ordered by radical-prerequisite within each class. Where a radical is non-obvious in form (e.g., 亻 from 人, 飠 from 食), a dedicated `type:'radical'` interlude card breaks down the radical mid-deck — extending the existing pattern that already teaches `亻`, `ナ・ヨ`, `又`, `roof`, and `cliff` this way.
+**Architecture:** Primarily a data change. The curriculum lives in `nihongo/data.js` under `window.FLASHCARD_CLASSES`. Each class is an ordered array of card objects; array order *is* the progression order. Kanji are grouped by theme and ordered by radical-prerequisite within each class. Where a radical is non-obvious in form (e.g., 亻 from 人, 飠 from 食), a dedicated `type:'radical'` interlude card breaks down the radical mid-deck — extending the existing pattern that already teaches `亻`, `ナ・ヨ`, `又`, `roof`, and `cliff` this way.
 
-**Tech stack:** No code changes. Existing card schema already supports every field used (`{id, kanji, kun, on, en, strokes, examples, usage?, seeAlso?, type, radical, from, descEn, descJa, imageFolder}`). Renderer (`renderFlashcards` in `app.html`) walks the array, surfaces the front + back face, paints stroke order on the back from `images/stroke/<kanji>-order.{svg,gif}`, and reads `seeAlso` chips for cross-references.
+A **small renderer change** in `editorialFlashcardHTML` (`app.html`) handles back-face stroke order for multi-kanji compound cards (昨日, 元気, 御飯) and skips it entirely for kana-only cards (にこにこ, ピンク) — see §4.4.
+
+**Tech stack:** Existing card schema already supports every field used (`{id, kanji, kun, on, en, strokes, examples, usage?, seeAlso?, type, radical, from, descEn, descJa, imageFolder}`). Renderer (`renderFlashcards` in `app.html`) walks the array, surfaces the front + back face, paints stroke order on the back from `images/stroke/<kanji>-order.{svg,gif}`, and reads `seeAlso` chips for cross-references. One narrow renderer change to support per-kanji stroke order on compound cards (§4.4).
 
 ---
 
@@ -363,6 +365,42 @@ A radical gets its own card when **all three** are true:
 - **Keep** as standalone cards: 元気, 御飯 (high-frequency vocab learners say more often than the parts)
 - **Demote** to `usage:{ja:'...', kana:'...'}` on the parent kanji: 姉妹 (→ 姉's `usage`), 兄弟 (→ 兄's), 黄色 (→ 黄's), 今日 / 今週 / 今月 / 今年 / 去年 / 来年 / 先生 (→ 今's, 先's, 来's `usage` fields)
 - **Drop** entirely: 灰色, 水色 (vocab page material, not kanji-card material)
+
+### 4.4 — Back-face stroke order rule
+The back face's stroke-order panel renders based on which **kanji glyphs** (CJK Unified Ideographs) appear in `card.kanji`. Logic:
+
+| `card.kanji` shape | Behavior |
+|---|---|
+| Pure kana (にこにこ, ピンク, ぴたり) | Skip the stroke-order section entirely. The flip-back still shows the glyph/readings/meaning header, just no stroke panel. |
+| Single kanji (人, 食, 茶) | Existing behavior — one stroke panel for that kanji from `images/stroke/<k>-order.{svg,gif}`. |
+| Multi-kanji compound (元気, 御飯, 昨日, 烏賊, 天井) | Render one stroke panel **per kanji**, side by side. Each panel sized to fit half/third of the stroke-order area. The label under each panel shows just that kanji glyph. |
+| Mixed kanji + kana (赤ちゃん, お母さん, 双子 if kept) | Show stroke panels only for the kanji characters in order. Skip the kana entirely. |
+
+**Renderer change (small)**, in `editorialFlashcardHTML` (`app.html ~line 15254`):
+
+```js
+// Extract kanji-only chars from card.kanji
+const kanjiChars = [...(card.kanji || '')].filter(c => {
+  const code = c.codePointAt(0);
+  return (code >= 0x4E00 && code <= 0x9FFF)   // CJK Unified Ideographs
+      || (code >= 0x3400 && code <= 0x4DBF);  // Extension A (rare but legal)
+});
+
+// 0 chars → don't render stroke section at all
+// 1 char → existing single-panel render
+// 2+ chars → render N panels side by side
+```
+
+Layout for 2+ panels: a thin horizontal flex row inside the existing `.testcard-back-stroke` container, equal-width children. No new CSS class needed — just `display:flex; gap:12px;` on the container when multi.
+
+### 4.5 — Audit (retroactive)
+After the curriculum redesign settles, the cards needing the new behavior:
+
+**Skip stroke order (kana-only):** all 11 Onomatopoeia cards (にこにこ・ぽよぽよ・ちくちく・ふにゃふにゃ・くすくす・にゃーにゃー・ワンワン・ぴたり・ぴょんぴょん・ぽたぽた・コロコロ).
+
+**Multi-kanji panels:** 元気 (Nature), 御飯 (Food & Drink), 天井 (Rooms), 本棚 (Rooms), 烏賊 (Animals). If any of the demoted compound cards (姉妹, 兄弟, 黄色, 今日…) are accidentally kept post-redesign, they fall into this bucket too — the audit catches them.
+
+**Mixed kanji + kana:** unlikely after the redesign (赤ちゃん and 双子 demoted to `usage` chips). If any remain, the renderer auto-handles them — no per-card config needed.
 
 ---
 
