@@ -1112,27 +1112,6 @@ window.VOCAB_BOOKS = window.VOCAB_CLASSES.flatMap(c => c.books);
 // Cards are grouped into classes. Each class is a focused thematic deck;
 // adding more classes is the easiest way to grow the curriculum.
 
-// ── SCRATCH (delete after Tasks 14 + 15 land) ────────────────────
-// Saved for relocation when the drinks/food stub classes are dropped:
-//
-// 茶 (from old `drinks` class):
-//   { id:'tea', kanji:'茶', kun:'', on:'チャ', en:'tea',
-//     strokes:9,
-//     examples:[
-//       {word:'お茶',     reading:'ocha',     meaning:'tea (polite)'},
-//       {word:'紅茶',     reading:'KŌCHA',    meaning:'black tea'},
-//       {word:'抹茶',     reading:'MATCHA',   meaning:'matcha (powdered green tea)'},
-//       {word:'喫茶店',   reading:'KISSATEN', meaning:'café'},
-//     ] }
-//
-// 御飯 (from old `food` class):
-//   { id:'gohan', kanji:'御飯', kun:'ごはん', on:'', en:'cooked rice / meal',
-//     notes:'御 [go] is the honorific prefix that softens 飯 [han, meal] into everyday polite speech. Often written ご飯 with the prefix in hiragana.',
-//     examples:[
-//       {word:'御飯を食べる', reading:'gohan o taberu', meaning:'to eat a meal'},
-//       {word:'朝御飯',       reading:'asagohan',       meaning:'breakfast'},
-//       {word:'夕御飯',       reading:'yūgohan',        meaning:'dinner'},
-//     ] }
 window.FLASHCARD_CLASSES = [
   {
     id: 'basic',
@@ -1159,9 +1138,6 @@ window.FLASHCARD_CLASSES = [
       { id:'jewel',     kanji:'玉', kun:'たま',   on:'ギョク', en:'jewel / ball', strokes:5, examples:[{word:'玉ねぎ',reading:'tamanegi',meaning:'onion'},{word:'目玉',reading:'medama',meaning:'eyeball'},{word:'宝玉',reading:'HŌGYOKU',meaning:'jewel'}] },
       { id:'gold',      kanji:'金', kun:'かね',   on:'キン',   en:'gold / money / metal', strokes:8, examples:[{word:'金曜日',reading:'KIN\'YŌbi',meaning:'Friday'},{word:'お金',reading:'okane',meaning:'money'},{word:'金魚',reading:'kingyo',meaning:'goldfish'}] },
       { id:'vehicle',   kanji:'車', kun:'くるま', on:'シャ',   en:'vehicle / car', strokes:7, examples:[{word:'自動車',reading:'JIDŌSHA',meaning:'car'},{word:'電車',reading:'DENSHA',meaning:'train'},{word:'車輪',reading:'SHARIN',meaning:'wheel'}] },
-      // 立 parked here temporarily — moves out to Verbs (Task 16).
-      // 生 already relocated to School (Task 10). 王 / 国 to Places (Task 12).
-      { id:'stand',     kanji:'立', kun:'た',     on:'リツ',   en:'stand / establish', strokes:5, examples:[{word:'立場',reading:'tachiba',meaning:'standpoint'},{word:'独立',reading:'DOKURITSU',meaning:'independence'},{word:'立派',reading:'RIPPA',meaning:'splendid'}] },
     ],
   },
   {
@@ -1730,20 +1706,6 @@ window.FLASHCARD_CLASSES = [
           {word:'今夜',   reading:'KON\'YA', meaning:'tonight'},
           {word:'夜中',   reading:'yonaka',  meaning:'midnight'},
         ] },
-      // ── SCRATCH for Task 16 (Verbs class) — paste then delete ─────────
-      // 来 (from old Time class — its meaning + last-year/next-year
-      // examples landed here when 去 was dropped; 来 itself moves to Verbs):
-      //
-      //   { id:'come', kanji:'来', kun:'く', on:'ライ',
-      //     en:'come / next / future', strokes:7,
-      //     notes:'The verb 来る (kuru, "to come") is one of the two irregular verbs in Japanese — the stem changes (く・き・こ) by tense. As a prefix, ライ marks "next/coming" (来週, 来月, 来年). Pairs with 去 (kyo, past / leave) for last-year vs next-year.',
-      //     examples:[
-      //       {word:'来る',reading:'kuru',meaning:'to come'},
-      //       {word:'未来',reading:'MIRAI',meaning:'future'},
-      //       {word:'将来',reading:'SHŌRAI',meaning:'future (career)'},
-      //       {word:'来年',reading:'RAINEN',meaning:'next year'},
-      //       {word:'去年',reading:'KYONEN',meaning:'last year'},
-      //     ] }
     ],
   },
   {
@@ -1909,16 +1871,6 @@ window.FLASHCARD_CLASSES = [
         ] },
       { id:'bookshelf', kanji:'本棚', kun:'ほんだな', on:'ホンダナ',   en:'bookshelf',
         strokes:17 },
-      // ── SCRATCH for Task 16 (Verbs class) — paste then delete ─────────
-      // 出 (from old Rooms class — moves to Verbs as a motion verb):
-      //
-      //   { id:'exit', kanji:'出', kun:'で', on:'シュツ',
-      //     en:'go out / exit', strokes:5,
-      //     examples:[
-      //       {word:'出口',     reading:'deguchi',   meaning:'exit'},
-      //       {word:'出発',     reading:'SHUPPATSU', meaning:'departure'},
-      //       {word:'出来る',   reading:'dekiru',    meaning:'can do'},
-      //     ] }
     ],
   },
   {
@@ -2034,6 +1986,254 @@ window.FLASHCARD_CLASSES = [
         strokes:9, examples:[{word:'秋分',reading:'SHŪBUN',meaning:'autumn equinox'},{word:'秋風',reading:'akikaze',meaning:'autumn breeze'},{word:'秋田',reading:'AKITA',meaning:'Akita'}] },
       { id:'winter',   kanji:'冬', kun:'ふゆ',   on:'トウ',   en:'winter',
         strokes:5, examples:[{word:'冬休み',reading:'fuyuyasumi',meaning:'winter break'},{word:'冬至',reading:'TŌJI',meaning:'winter solstice'},{word:'冬眠',reading:'TŌMIN',meaning:'hibernation'}] },
+    ],
+  },
+  {
+    id: 'food-drink',
+    titleJa: 'たべもの・のみもの',
+    titleEn: 'Food & Drink',
+    glyph: '食',
+    imageFolder: 'food',
+    // Spec §3.13 order: 米 飯 ◆飠 食 飲 茶 酒 肉 卵 御飯.
+    // ◆飠 radical card lands in Batch 4 (Task 18) between 飯 and 食.
+    cards: [
+      { id:'rice-grain', kanji:'米', kun:'こめ', on:'ベイ', en:'rice / America (kome / bei)', strokes:6,
+        examples:[
+          {word:'米',     reading:'kome', meaning:'rice (raw)'},
+          {word:'米国',   reading:'BEIKOKU', meaning:'America'},
+          {word:'新米',   reading:'SHINMAI', meaning:'new rice / novice'},
+        ] },
+      { id:'cooked-rice', kanji:'飯', kun:'めし', on:'ハン', en:'cooked rice / meal', strokes:12,
+        seeAlso:['米'],
+        examples:[
+          {word:'御飯',   reading:'GOHAN', meaning:'cooked rice / meal'},
+          {word:'朝飯',   reading:'asameshi', meaning:'breakfast'},
+          {word:'夕飯',   reading:'YŪHAN', meaning:'dinner'},
+        ] },
+      // ◆飠 radical card placeholder — Task 18 inserts the radical card here.
+      { id:'eat', kanji:'食', kun:'た', on:'ショク', en:'eat / food', strokes:9,
+        examples:[
+          {word:'食べる', reading:'taberu', meaning:'to eat'},
+          {word:'食事',   reading:'SHOKUJI', meaning:'a meal'},
+          {word:'食堂',   reading:'SHOKUDŌ', meaning:'cafeteria'},
+        ] },
+      { id:'drink', kanji:'飲', kun:'の', on:'イン', en:'drink', strokes:12,
+        seeAlso:['食'],
+        examples:[
+          {word:'飲む',   reading:'nomu', meaning:'to drink'},
+          {word:'飲み物', reading:'nomimono', meaning:'a drink'},
+          {word:'飲料',   reading:'INRYŌ', meaning:'beverage'},
+        ] },
+      { id:'tea', kanji:'茶', kun:'ちゃ', on:'チャ', en:'tea', strokes:9,
+        usage:{ ja:'お茶', kana:'おちゃ' },
+        examples:[
+          {word:'お茶',     reading:'ocha',     meaning:'tea (polite)'},
+          {word:'紅茶',     reading:'KŌCHA',    meaning:'black tea'},
+          {word:'抹茶',     reading:'MATCHA',   meaning:'matcha (powdered green tea)'},
+          {word:'喫茶店',   reading:'KISSATEN', meaning:'café'},
+        ] },
+      { id:'alcohol', kanji:'酒', kun:'さけ', on:'シュ', en:'alcohol / sake', strokes:10,
+        examples:[
+          {word:'酒',     reading:'sake', meaning:'sake / alcohol'},
+          {word:'日本酒', reading:'NIHONSHU', meaning:'Japanese sake'},
+          {word:'居酒屋', reading:'IZAKAYA', meaning:'izakaya'},
+        ] },
+      { id:'meat', kanji:'肉', kun:'にく', on:'ニク', en:'meat / flesh', strokes:6,
+        examples:[
+          {word:'牛肉',   reading:'GYŪNIKU', meaning:'beef'},
+          {word:'豚肉',   reading:'butaniku', meaning:'pork'},
+          {word:'鶏肉',   reading:'toriniku', meaning:'chicken (meat)'},
+        ] },
+      { id:'egg', kanji:'卵', kun:'たまご', on:'ラン', en:'egg', strokes:7,
+        examples:[
+          {word:'卵',     reading:'tamago', meaning:'egg'},
+          {word:'生卵',   reading:'namatamago', meaning:'raw egg'},
+          {word:'卵焼き', reading:'tamagoyaki', meaning:'rolled omelet'},
+        ] },
+      { id:'gohan', kanji:'御飯', kun:'ごはん', on:'', en:'cooked rice / meal', strokes:15,
+        notes:'御 [go] is the honorific prefix that softens 飯 [han, meal] into everyday polite speech. Often written ご飯 with the prefix in hiragana.',
+        examples:[
+          {word:'御飯を食べる', reading:'gohan o taberu', meaning:'to eat a meal'},
+          {word:'朝御飯',       reading:'asagohan',       meaning:'breakfast'},
+          {word:'夕御飯',       reading:'yūgohan',        meaning:'dinner'},
+        ] },
+    ],
+  },
+  {
+    id: 'verbs',
+    titleJa: 'どうし',
+    titleEn: 'Verbs',
+    glyph: '行',
+    imageFolder: 'kanji',
+    // Spec §3.14 order: 行 来 出 立 聞 買 売 知 思 待 帰 切 走 働 忙.
+    cards: [
+      { id:'go', kanji:'行', kun:'い', on:'コウ', en:'go', strokes:6,
+        examples:[
+          {word:'行く',   reading:'iku', meaning:'to go'},
+          {word:'銀行',   reading:'GINKŌ', meaning:'bank'},
+          {word:'旅行',   reading:'RYOKŌ', meaning:'travel'},
+        ] },
+      { id:'come', kanji:'来', kun:'く', on:'ライ', en:'come / next / future', strokes:7,
+        notes:'The verb 来る (kuru, "to come") is one of the two irregular verbs in Japanese — the stem changes (く・き・こ) by tense. As a prefix, ライ marks "next/coming" (来週, 来月, 来年). Pairs with 去 (kyo, past / leave) for last-year vs next-year.',
+        examples:[
+          {word:'来る',reading:'kuru',meaning:'to come'},
+          {word:'未来',reading:'MIRAI',meaning:'future'},
+          {word:'将来',reading:'SHŌRAI',meaning:'future (career)'},
+          {word:'来年',reading:'RAINEN',meaning:'next year'},
+          {word:'去年',reading:'KYONEN',meaning:'last year'},
+        ] },
+      { id:'exit', kanji:'出', kun:'で', on:'シュツ', en:'go out / exit', strokes:5,
+        examples:[
+          {word:'出口',     reading:'deguchi',   meaning:'exit'},
+          {word:'出発',     reading:'SHUPPATSU', meaning:'departure'},
+          {word:'出来る',   reading:'dekiru',    meaning:'can do'},
+        ] },
+      { id:'stand', kanji:'立', kun:'た', on:'リツ', en:'stand / establish', strokes:5,
+        examples:[
+          {word:'立場',reading:'tachiba',meaning:'standpoint'},
+          {word:'独立',reading:'DOKURITSU',meaning:'independence'},
+          {word:'立派',reading:'RIPPA',meaning:'splendid'},
+        ] },
+      { id:'hear', kanji:'聞', kun:'き', on:'ブン', en:'hear / ask', strokes:14,
+        seeAlso:['耳','門'],
+        examples:[
+          {word:'聞く',   reading:'kiku', meaning:'to hear / ask'},
+          {word:'新聞',   reading:'SHINBUN', meaning:'newspaper'},
+          {word:'見聞',   reading:'KENBUN', meaning:'observation'},
+        ] },
+      { id:'buy', kanji:'買', kun:'か', on:'バイ', en:'buy', strokes:12,
+        seeAlso:['貝'],
+        examples:[
+          {word:'買う',   reading:'kau', meaning:'to buy'},
+          {word:'買物',   reading:'kaimono', meaning:'shopping'},
+          {word:'売買',   reading:'BAIBAI', meaning:'buying and selling'},
+        ] },
+      { id:'sell', kanji:'売', kun:'う', on:'バイ', en:'sell', strokes:7,
+        seeAlso:['買'],
+        examples:[
+          {word:'売る',   reading:'uru', meaning:'to sell'},
+          {word:'売れる', reading:'ureru', meaning:'to sell well'},
+          {word:'売店',   reading:'BAITEN', meaning:'kiosk'},
+        ] },
+      { id:'know', kanji:'知', kun:'し', on:'チ', en:'know', strokes:8,
+        examples:[
+          {word:'知る',   reading:'shiru', meaning:'to know'},
+          {word:'知識',   reading:'CHISHIKI', meaning:'knowledge'},
+          {word:'知人',   reading:'CHIJIN', meaning:'acquaintance'},
+        ] },
+      { id:'think', kanji:'思', kun:'おも', on:'シ', en:'think', strokes:9,
+        seeAlso:['心','田'],
+        examples:[
+          {word:'思う',   reading:'omou', meaning:'to think'},
+          {word:'意思',   reading:'ISHI', meaning:'intention'},
+          {word:'思想',   reading:'SHISŌ', meaning:'thought / ideology'},
+        ] },
+      { id:'wait', kanji:'待', kun:'ま', on:'タイ', en:'wait', strokes:9,
+        examples:[
+          {word:'待つ',   reading:'matsu', meaning:'to wait'},
+          {word:'期待',   reading:'KITAI', meaning:'expectation'},
+          {word:'招待',   reading:'SHŌTAI', meaning:'invitation'},
+        ] },
+      { id:'return', kanji:'帰', kun:'かえ', on:'キ', en:'return (home)', strokes:10,
+        examples:[
+          {word:'帰る',   reading:'kaeru', meaning:'to return home'},
+          {word:'帰国',   reading:'KIKOKU', meaning:'returning to home country'},
+          {word:'日帰り', reading:'higaeri', meaning:'day trip'},
+        ] },
+      { id:'cut', kanji:'切', kun:'き', on:'セツ', en:'cut', strokes:4,
+        examples:[
+          {word:'切る',   reading:'kiru', meaning:'to cut'},
+          {word:'親切',   reading:'SHINSETSU', meaning:'kindness'},
+          {word:'大切',   reading:'TAISETSU', meaning:'important'},
+        ] },
+      { id:'run', kanji:'走', kun:'はし', on:'ソウ', en:'run', strokes:7,
+        examples:[
+          {word:'走る',   reading:'hashiru', meaning:'to run'},
+          {word:'競走',   reading:'KYŌSŌ', meaning:'race'},
+          {word:'脱走',   reading:'DASSŌ', meaning:'escape'},
+        ] },
+      { id:'work', kanji:'働', kun:'はたら', on:'ドウ', en:'work / labor', strokes:13,
+        examples:[
+          {word:'働く',   reading:'hataraku', meaning:'to work'},
+          {word:'労働',   reading:'RŌDŌ', meaning:'labor'},
+          {word:'共働き', reading:'tomobataraki', meaning:'dual-income household'},
+        ] },
+      { id:'busy', kanji:'忙', kun:'いそが', on:'ボウ', en:'busy', strokes:6,
+        examples:[
+          {word:'忙しい', reading:'isogashii', meaning:'busy'},
+          {word:'多忙',   reading:'TABŌ', meaning:'very busy'},
+          {word:'繁忙',   reading:'HANBŌ', meaning:'pressure of business'},
+        ] },
+    ],
+  },
+  {
+    id: 'adjectives',
+    titleJa: 'けいようし',
+    titleEn: 'Adjectives',
+    glyph: '高',
+    imageFolder: 'kanji',
+    // Spec §3.15 order: 高 安 多 少 古 新 長 短 強 弱.
+    cards: [
+      { id:'tall', kanji:'高', kun:'たか', on:'コウ', en:'tall / expensive / high', strokes:10,
+        examples:[
+          {word:'高い',   reading:'takai', meaning:'tall / expensive'},
+          {word:'高校',   reading:'KŌKŌ', meaning:'high school'},
+          {word:'最高',   reading:'SAIKŌ', meaning:'the best / highest'},
+        ] },
+      { id:'cheap', kanji:'安', kun:'やす', on:'アン', en:'cheap / safe / peaceful', strokes:6,
+        examples:[
+          {word:'安い',   reading:'yasui', meaning:'cheap'},
+          {word:'安心',   reading:'ANSHIN', meaning:'relief / peace of mind'},
+          {word:'安全',   reading:'ANZEN', meaning:'safety'},
+        ] },
+      { id:'many', kanji:'多', kun:'おお', on:'タ', en:'many / much', strokes:6,
+        examples:[
+          {word:'多い',   reading:'ōi', meaning:'many'},
+          {word:'多分',   reading:'TABUN', meaning:'probably'},
+          {word:'多数',   reading:'TASŪ', meaning:'majority'},
+        ] },
+      { id:'few', kanji:'少', kun:'すく', on:'ショウ', en:'few / a little', strokes:4,
+        examples:[
+          {word:'少ない', reading:'sukunai', meaning:'few'},
+          {word:'少し',   reading:'sukoshi', meaning:'a little'},
+          {word:'少年',   reading:'SHŌNEN', meaning:'boy / youth'},
+        ] },
+      { id:'old', kanji:'古', kun:'ふる', on:'コ', en:'old', strokes:5,
+        examples:[
+          {word:'古い',   reading:'furui', meaning:'old (of things)'},
+          {word:'古本',   reading:'furuhon', meaning:'used book'},
+          {word:'中古',   reading:'CHŪKO', meaning:'second-hand'},
+        ] },
+      { id:'new', kanji:'新', kun:'あたら', on:'シン', en:'new', strokes:13,
+        examples:[
+          {word:'新しい', reading:'atarashii', meaning:'new'},
+          {word:'新聞',   reading:'SHINBUN', meaning:'newspaper'},
+          {word:'最新',   reading:'SAISHIN', meaning:'newest'},
+        ] },
+      { id:'long', kanji:'長', kun:'なが', on:'チョウ', en:'long / chief', strokes:8,
+        examples:[
+          {word:'長い',   reading:'nagai', meaning:'long'},
+          {word:'社長',   reading:'SHACHŌ', meaning:'company president'},
+          {word:'校長',   reading:'KŌCHŌ', meaning:'school principal'},
+        ] },
+      { id:'short', kanji:'短', kun:'みじか', on:'タン', en:'short', strokes:12,
+        examples:[
+          {word:'短い',   reading:'mijikai', meaning:'short'},
+          {word:'短時間', reading:'TANJIKAN', meaning:'short time'},
+          {word:'短歌',   reading:'TANKA', meaning:'tanka poetry'},
+        ] },
+      { id:'strong', kanji:'強', kun:'つよ', on:'キョウ', en:'strong', strokes:11,
+        examples:[
+          {word:'強い',   reading:'tsuyoi', meaning:'strong'},
+          {word:'勉強',   reading:'BENKYŌ', meaning:'study'},
+          {word:'強化',   reading:'KYŌKA', meaning:'reinforcement'},
+        ] },
+      { id:'weak', kanji:'弱', kun:'よわ', on:'ジャク', en:'weak', strokes:10,
+        examples:[
+          {word:'弱い',   reading:'yowai', meaning:'weak'},
+          {word:'弱点',   reading:'JAKUTEN', meaning:'weakness'},
+          {word:'弱気',   reading:'yowaki', meaning:'timidity'},
+        ] },
     ],
   },
 ];
