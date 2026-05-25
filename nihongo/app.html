@@ -1264,6 +1264,158 @@
   }
   .sentence .audio { color: var(--ink-3); }
 
+  /* ─── Jougo explainer page ─────────────────────────────────────────── */
+  .explainer-body {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink-2);
+    line-height: 1.6;
+    max-width: 780px;
+    margin-top: 18px;
+  }
+  .explainer-body .jougo-section {
+    margin-bottom: 8px;
+    padding-bottom: 22px;
+    border-bottom: 1px dashed var(--paper-edge);
+  }
+  .explainer-body .jougo-section:last-child { border-bottom: none; }
+  .explainer-body h3 {
+    font-family: var(--serif-jp);
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 600;
+    margin: 30px 0 12px;
+    letter-spacing: 0.02em;
+  }
+  .explainer-body h4 {
+    font-family: var(--serif-jp);
+    font-size: 16px;
+    color: var(--ink-2);
+    font-weight: 600;
+    margin: 20px 0 8px;
+  }
+  .explainer-body p { margin: 0 0 12px; }
+  .explainer-body ul {
+    margin: 0 0 14px;
+    padding-left: 22px;
+  }
+  .explainer-body li {
+    margin-bottom: 6px;
+  }
+  .explainer-body strong { color: var(--ink); }
+  .explainer-body em { font-style: italic; color: var(--ink-2); }
+  .explainer-body .ja {
+    font-family: var(--serif-jp);
+    color: var(--ink);
+  }
+  .explainer-body code,
+  .explainer-body .glyph-inline {
+    font-family: var(--serif-jp);
+    color: var(--gold-dark);
+    font-weight: 600;
+    font-size: 1.08em;
+    background: transparent;
+    padding: 0;
+  }
+  .explainer-body a {
+    color: var(--gold-dark);
+    text-decoration: underline;
+    text-decoration-color: var(--gold-soft);
+    text-underline-offset: 2px;
+    transition: text-decoration-color .15s;
+  }
+  .explainer-body a:hover { text-decoration-color: var(--gold); }
+
+  /* Tile grids inside the explainer (group examples). */
+  .jougo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin: 14px 0 18px;
+  }
+  .jougo-tile {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    padding: 14px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    transition: border-color .15s, transform .15s;
+  }
+  .jougo-tile:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .jougo-tile-glyph {
+    font-family: var(--serif-jp);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .jougo-tile-reading {
+    font-family: var(--serif-jp);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .jougo-tile-en {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.3;
+  }
+
+  /* ─── Jougo flashcards aggregator grid ─────────────────────────────── */
+  .jougo-flashcards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .jougo-fc {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+    font-family: inherit;
+    color: inherit;
+  }
+  .jougo-fc:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(141,102,48,0.10);
+  }
+  .jougo-fc-glyph {
+    font-family: var(--serif-jp);
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.05;
+  }
+  .jougo-fc-reading {
+    font-family: var(--serif-jp);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  .jougo-fc-en {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.3;
+  }
+
   /* ─── Test cards (new editorial flashcard design) ─────────────────────
      Two-column layout with a vertical hairline divider. The left column
      holds a square illustration + the brush-style glyph + small readings.
@@ -11637,13 +11789,15 @@ function renderVocab(container) {
 function stepperLabel(page) {
   if (page.stepLabel) return page.stepLabel;
   switch (page.type) {
-    case 'cheatsheet':     return { ja:'ことば',     en:'Vocab' };
-    case 'explanation':    return { ja:'について',   en:'About' };
-    case 'menu-reference': return { ja:'メニュー',   en:'Menu' };
-    case 'usage':          return { ja:'つかいかた', en:'Usage' };
-    case 'sentences':      return { ja:'ぶん',       en:'Sentences' };
-    case 'restaurant':     return { ja:'体験',       en:'Experience' };
-    default:               return { ja: page.title || '', en:'' };
+    case 'cheatsheet':       return { ja:'ことば',     en:'Vocab' };
+    case 'explanation':      return { ja:'について',   en:'About' };
+    case 'menu-reference':   return { ja:'メニュー',   en:'Menu' };
+    case 'usage':            return { ja:'つかいかた', en:'Usage' };
+    case 'sentences':        return { ja:'ぶん',       en:'Sentences' };
+    case 'restaurant':       return { ja:'体験',       en:'Experience' };
+    case 'explainer':        return { ja:'について',   en:'Concept' };
+    case 'flashcards-grid':  return { ja:'単語札',     en:'Flashcards' };
+    default:                 return { ja: page.title || '', en:'' };
   }
 }
 
@@ -11663,6 +11817,11 @@ function renderVocabPage(book, page) {
   else if (page.type === 'sentences') {
     el.innerHTML = sentencesHTML(page, 'ALL', false);
     attachSentencesEvents(el, page);
+  }
+  else if (page.type === 'explainer') el.innerHTML = explainerHTML(page);
+  else if (page.type === 'flashcards-grid') {
+    el.innerHTML = flashcardsGridHTML(page);
+    attachFlashcardsGridEvents(el, page);
   }
   // Sync the mobile drawer state to the current page. Cheatsheets get the
   // FAB + drawer (items list); other page types hide it.
@@ -14147,6 +14306,93 @@ function attachSentencesEvents(container, page) {
   if (more) more.addEventListener('click', () => { showAll = true; rerender(); });
   const collapse = container.querySelector('[data-collapse]');
   if (collapse) collapse.addEventListener('click', () => { showAll = false; rerender(); });
+}
+
+// ── Explainer page (long-form HTML body) ───────────────────────────────
+// Trusts page.bodyHTML — this is first-party content authored in data.js,
+// so no escaping. Used by the Jougo "Intro" book to host the 々-and-jōgo
+// explainer with its grouped tile examples and external study links.
+function explainerHTML(page) {
+  return `
+    <div class="panel">
+      <div style="margin-bottom:18px">
+        <h2 style="font-family:var(--serif-jp);font-size:26px;color:var(--ink);margin:0;font-weight:600">${escHTML(page.title)}</h2>
+        <div style="font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-3);margin-top:4px">${escHTML(page.subtitle)}</div>
+      </div>
+      <div class="explainer-body">
+        ${page.bodyHTML || ''}
+      </div>
+    </div>
+  `;
+}
+
+// ── Flashcards-grid page (cross-class tag aggregator) ───────────────────
+// Walks every FLASHCARD_CLASSES card, collects any whose card.tags[]
+// array includes page.tag, and renders them as a click-to-study grid.
+// Generic: any card in any class can opt into a tag-bucket by adding
+// the tag string to its tags[] field — no per-tag code required here.
+function flashcardsGridHTML(page) {
+  const tag = page.tag;
+  const matches = [];
+  for (const cls of (window.FLASHCARD_CLASSES || [])) {
+    for (const card of (cls.cards || [])) {
+      if (Array.isArray(card.tags) && card.tags.includes(tag)) {
+        matches.push({ classId: cls.id, card });
+      }
+    }
+  }
+  const cards = matches.map(({classId, card}) => {
+    const glyphHtml = (typeof splitJougoGlyph === 'function')
+      ? splitJougoGlyph(card.kanji)
+      : escHTML(card.kanji);
+    return `
+      <button class="jougo-fc" data-jump-class="${escAttr(classId)}" data-jump-id="${escAttr(card.id)}">
+        <span class="jougo-fc-glyph">${glyphHtml}</span>
+        <span class="jougo-fc-reading">${escHTML(card.kun || card.kana || '')}</span>
+        <span class="jougo-fc-en">${escHTML(card.en || '')}</span>
+      </button>
+    `;
+  }).join('');
+  const emptyState = matches.length === 0
+    ? `<div class="empty-state">no flashcards tagged "${escHTML(tag)}" yet</div>` : '';
+  return `
+    <div class="panel">
+      <div style="margin-bottom:18px">
+        <h2 style="font-family:var(--serif-jp);font-size:26px;color:var(--ink);margin:0;font-weight:600">${escHTML(page.title)}</h2>
+        <div style="font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-3);margin-top:4px">${escHTML(page.subtitle)}</div>
+        <div style="font-family:var(--serif);font-style:italic;font-size:12px;color:var(--ink-4);margin-top:6px">${matches.length} cards tagged "${escHTML(tag)}" — click any card to study it in flashcards.</div>
+      </div>
+      ${emptyState}
+      <div class="jougo-flashcards-grid">${cards}</div>
+    </div>
+  `;
+}
+
+// Wire click-to-jump for the flashcards-grid. Each card sets the
+// active class + index in APP state, persists the class for next visit,
+// then calls setSection('flashcards') — the app's canonical navigation
+// hook, which handles hash update, sidebar swap, and renderMain.
+function attachFlashcardsGridEvents(el, page) {
+  el.querySelectorAll('[data-jump-class][data-jump-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const classId = btn.dataset.jumpClass;
+      const cardId = btn.dataset.jumpId;
+      const cls = (window.FLASHCARD_CLASSES || []).find(c => c.id === classId);
+      if (!cls) return;
+      const idx = cls.cards.findIndex(c => c.id === cardId);
+      if (idx < 0) return;
+      APP.flashClassId = classId;
+      APP.flashIdx = idx;
+      APP.flashFlipped = false;
+      try { lsSet('jp:flashClass', classId); } catch (e) {}
+      if (typeof setSection === 'function') {
+        setSection('flashcards');
+      } else {
+        location.hash = '#flashcards';
+        location.reload();
+      }
+    });
+  });
 }
 
 // ── Writing / Kana ───────────────────────────────────────────────────────

@@ -954,6 +954,166 @@ window.VOCAB_CLASSES = [
     pageTitleEn: 'Reduplicated words — repeated for emphasis & texture',
     books: [
       {
+        id: 'intro',
+        titleJa: 'いんとろ',
+        titleEn: 'Intro',
+        glyph: '々',
+        primaryLevel: 'N5',
+        pages: [
+          {
+            id: 'jougo-explainer',
+            type: 'explainer',
+            title: '々 と 畳語',
+            subtitle: 'The iteration mark and how Japanese repeats itself',
+            bodyHTML: `
+              <section class="jougo-section">
+                <h3>A · What is 畳語 (jōgo)?</h3>
+                <p><strong class="ja">畳語</strong> (<em>jōgo</em>) literally means "stacked words" — words formed by <em>reduplication</em>, the deliberate repeating of a kanji, a kana, or a whole word. The first character, <span class="glyph-inline">畳</span> (<em>tatamu</em>, "to fold / stack"), is the same one used for the woven mats on the floor of a Japanese room. The image is identical: layers laid on top of each other.</p>
+                <p>Languages around the world use repetition for emphasis — English "very very tired," "tiny tiny ant," child-speak "doggy doggy." Japanese formalised the same intuition into a productive grammatical device. Where English uses repetition <em>occasionally</em> for colour, Japanese uses it <em>structurally</em> — and it even has a dedicated written mark to make repeated kanji shorter on the page.</p>
+                <p>Reduplication does one of four things in Japanese:</p>
+                <ul>
+                  <li><strong>Plurality</strong> — turns a singular noun into "many of them" (<span class="ja">人</span> "person" → <span class="ja">人々</span> "people").</li>
+                  <li><strong>Cyclicity</strong> — turns a moment into a recurring pattern (<span class="ja">時</span> "time" → <span class="ja">時々</span> "sometimes / time after time").</li>
+                  <li><strong>Intensification</strong> — boosts an adjective (<span class="ja">若い</span> "young" → <span class="ja">若々しい</span> "youthful-looking, full of youth").</li>
+                  <li><strong>Texture</strong> — kana reduplication paints a sensation (<span class="ja">ぽよぽよ</span> "soft and squishy," <span class="ja">ちくちく</span> "prickly"). This branch is called <em>onomatopoeia</em> (擬音語/擬態語) and lives in its own book.</li>
+                </ul>
+              </section>
+
+              <section class="jougo-section">
+                <h3>B · The 々 mark (kasanenoma / odoriji / noma)</h3>
+                <p>The symbol <span class="glyph-inline">々</span> is the <em>kanji iteration mark</em>. It is not itself a kanji and has no reading of its own — it simply says <em>"repeat the previous kanji."</em> Several names exist for it:</p>
+                <ul>
+                  <li><span class="ja">同の字点</span> (<em>dō-no-jiten</em>) — "the same-character mark," its formal name.</li>
+                  <li><span class="ja">踊り字</span> (<em>odoriji</em>) — "dancing mark," the everyday name.</li>
+                  <li><span class="ja">ノマ</span> (<em>noma</em>) — colloquial, because the shape resembles the katakana ノ + マ.</li>
+                </ul>
+                <h4>Etymology</h4>
+                <p>The mark is a cursive shorthand for <span class="ja">仝</span>, an archaic variant of <span class="ja">同</span> ("same"). Scribes copying manuscripts wrote <span class="ja">仝</span> in flowing strokes; the abbreviation eventually settled into the modern <span class="glyph-inline">々</span>. So <span class="ja">人々</span> is read as "person + same-as-the-previous" → <em>hitobito</em>.</p>
+                <h4>Pronunciation &amp; rendaku</h4>
+                <p>The repeated kanji usually keeps the same reading, but it very often triggers <em>rendaku</em> (sequential voicing) — an unvoiced first consonant becomes voiced:</p>
+                <ul>
+                  <li><span class="ja">人</span> <em>hito</em> + <span class="glyph-inline">々</span> → <span class="ja">人々</span> <em>hito<strong>b</strong>ito</em> (not <em>hitohito</em>)</li>
+                  <li><span class="ja">時</span> <em>toki</em> + <span class="glyph-inline">々</span> → <span class="ja">時々</span> <em>toki<strong>d</strong>oki</em></li>
+                  <li><span class="ja">国</span> <em>kuni</em> + <span class="glyph-inline">々</span> → <span class="ja">国々</span> <em>kuni<strong>g</strong>uni</em></li>
+                  <li><span class="ja">山</span> <em>yama</em> + <span class="glyph-inline">々</span> → <span class="ja">山々</span> <em>yama<strong>y</strong>ama</em> (no rendaku — <em>y</em> stays)</li>
+                </ul>
+                <h4>Typing 々</h4>
+                <p>Most IMEs accept any of these inputs to produce <span class="glyph-inline">々</span>: <code>onaji</code> ("same"), <code>noma</code>, <code>kurikaeshi</code> ("repetition"), or <code>dou</code>. On Mac and iOS you can also press-and-hold a kanji and pick the duplication mark from the suggestion bar.</p>
+                <h4>When NOT to use 々</h4>
+                <p>The mark only repeats <strong>kanji</strong>. Kana reduplication — <span class="ja">ちくちく</span>, <span class="ja">ぴょんぴょん</span>, <span class="ja">わくわく</span> — is always written out in full. You will not see <span class="ja">ちく々</span> in standard Japanese. (Old-fashioned hiragana <em>did</em> have its own iteration mark, <span class="glyph-inline">ゝ</span>, but it is essentially extinct outside calligraphy and family names like <span class="ja">いすゞ</span>.)</p>
+              </section>
+
+              <section class="jougo-section">
+                <h3>C · Common 々 vocab, grouped by feel</h3>
+                <p>The 々 mark shows up most often in a handful of semantic neighbourhoods. Here are the ones you will meet in everyday reading.</p>
+
+                <h4>Plurality — "many of these"</h4>
+                <div class="jougo-grid">
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">人々</span><span class="jougo-tile-reading">hitobito</span><span class="jougo-tile-en">people</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">山々</span><span class="jougo-tile-reading">yamayama</span><span class="jougo-tile-en">mountains</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">木々</span><span class="jougo-tile-reading">kigi</span><span class="jougo-tile-en">trees</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">国々</span><span class="jougo-tile-reading">kuniguni</span><span class="jougo-tile-en">countries</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">我々</span><span class="jougo-tile-reading">wareware</span><span class="jougo-tile-en">we (formal)</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">諸々</span><span class="jougo-tile-reading">moromoro</span><span class="jougo-tile-en">various things</span></div>
+                </div>
+
+                <h4>Time-cycling &amp; frequency</h4>
+                <div class="jougo-grid">
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">時々</span><span class="jougo-tile-reading">tokidoki</span><span class="jougo-tile-en">sometimes</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">段々</span><span class="jougo-tile-reading">dandan</span><span class="jougo-tile-en">gradually</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">次々</span><span class="jougo-tile-reading">tsugitsugi</span><span class="jougo-tile-en">one after another</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">益々</span><span class="jougo-tile-reading">masumasu</span><span class="jougo-tile-en">more and more</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">徐々</span><span class="jougo-tile-reading">jojo (ni)</span><span class="jougo-tile-en">slowly, gradually</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">続々</span><span class="jougo-tile-reading">zokuzoku</span><span class="jougo-tile-en">in succession</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">着々</span><span class="jougo-tile-reading">chakuchaku</span><span class="jougo-tile-en">steadily</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">近々</span><span class="jougo-tile-reading">chikajika</span><span class="jougo-tile-en">in the near future</span></div>
+                </div>
+
+                <h4>Intensification — 々しい adjectives</h4>
+                <p>Adjective stems can repeat and take the <span class="ja">-しい</span> ending. The result is a richer, more textural version of the base: not just "young" but "youth-filled," not just "rough" but "wild and rough all over."</p>
+                <div class="jougo-grid">
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">若々しい</span><span class="jougo-tile-reading">wakawakashii</span><span class="jougo-tile-en">youthful, full of youth</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">弱々しい</span><span class="jougo-tile-reading">yowayowashii</span><span class="jougo-tile-en">weak-looking, frail</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">華々しい</span><span class="jougo-tile-reading">hanabanashii</span><span class="jougo-tile-en">glorious, brilliant</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">荒々しい</span><span class="jougo-tile-reading">araarashii</span><span class="jougo-tile-en">wild, rough, violent</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">仰々しい</span><span class="jougo-tile-reading">gyōgyōshii</span><span class="jougo-tile-en">pompous, exaggerated</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">凛々しい</span><span class="jougo-tile-reading">ririshii</span><span class="jougo-tile-en">gallant, dignified</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">瑞々しい</span><span class="jougo-tile-reading">mizumizushii</span><span class="jougo-tile-en">fresh, succulent</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">々々しい</span><span class="jougo-tile-reading">— pattern</span><span class="jougo-tile-en">stem + 々 + しい</span></div>
+                </div>
+
+                <h4>States &amp; variety — "each / every / various"</h4>
+                <div class="jougo-grid">
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">色々</span><span class="jougo-tile-reading">iroiro</span><span class="jougo-tile-en">various, all sorts of</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">様々</span><span class="jougo-tile-reading">samazama</span><span class="jougo-tile-en">diverse, various</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">別々</span><span class="jougo-tile-reading">betsubetsu</span><span class="jougo-tile-en">separately</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">各々</span><span class="jougo-tile-reading">onoono</span><span class="jougo-tile-en">each, respectively</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">銘々</span><span class="jougo-tile-reading">meimei</span><span class="jougo-tile-en">each (individual)</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">隅々</span><span class="jougo-tile-reading">sumizumi</span><span class="jougo-tile-en">every corner</span></div>
+                </div>
+
+                <h4>Mood adverbs — how an action feels</h4>
+                <div class="jougo-grid">
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">早々</span><span class="jougo-tile-reading">sōsō</span><span class="jougo-tile-en">immediately, right away</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">元々</span><span class="jougo-tile-reading">motomoto</span><span class="jougo-tile-en">originally, from the start</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">渋々</span><span class="jougo-tile-reading">shibushibu</span><span class="jougo-tile-en">reluctantly</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">嬉々</span><span class="jougo-tile-reading">kiki (to shite)</span><span class="jougo-tile-en">joyfully</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">静々</span><span class="jougo-tile-reading">shizushizu</span><span class="jougo-tile-en">quietly, calmly</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">悠々</span><span class="jougo-tile-reading">yūyū</span><span class="jougo-tile-en">relaxed, leisurely</span></div>
+                </div>
+
+                <h4>Living things &amp; the rest</h4>
+                <div class="jougo-grid">
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">蝶々</span><span class="jougo-tile-reading">chōchō</span><span class="jougo-tile-en">butterfly</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">粘々</span><span class="jougo-tile-reading">nebaneba</span><span class="jougo-tile-en">sticky, gooey</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">苛々する</span><span class="jougo-tile-reading">iraira suru</span><span class="jougo-tile-en">to get irritated</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">謎々</span><span class="jougo-tile-reading">nazonazo</span><span class="jougo-tile-en">a riddle</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">先々月</span><span class="jougo-tile-reading">sensengetsu</span><span class="jougo-tile-en">month before last</span></div>
+                  <div class="jougo-tile"><span class="jougo-tile-glyph">日々</span><span class="jougo-tile-reading">hibi / nichinichi</span><span class="jougo-tile-en">days, daily life</span></div>
+                </div>
+              </section>
+
+              <section class="jougo-section">
+                <h3>D · The bridge to kana reduplication</h3>
+                <p>The instinct behind <span class="glyph-inline">々</span> — "say it twice for texture" — does not stop at kanji. Open any Japanese novel and you will trip over kana reduplications on every page:</p>
+                <ul>
+                  <li><span class="ja">にこにこ笑う</span> — <em>to smile broadly</em> (not just smile — smile with the corners crinkled)</li>
+                  <li><span class="ja">ふにゃふにゃのパン</span> — <em>floppy, limp bread</em></li>
+                  <li><span class="ja">きらきら光る</span> — <em>to twinkle / sparkle</em></li>
+                  <li><span class="ja">ぴょんぴょん跳ぶ</span> — <em>to hop and hop</em></li>
+                </ul>
+                <p>These are <em>onomatopoeia</em> in the broad Japanese sense — <span class="ja">擬音語</span> (mimicking sound) and <span class="ja">擬態語</span> (mimicking state/manner). They are the kana cousins of 々-jōgo and live in the <strong>Onomatopoeia</strong> book of this class. Same instinct, different script.</p>
+                <p>One pattern, two surface forms: <span class="glyph-inline">人々</span> packs the repetition into a single typographic mark; <span class="ja">にこにこ</span> spells it out. The underlying linguistic move is identical — repetition for plurality, frequency, intensity, or texture.</p>
+              </section>
+
+              <section class="jougo-section">
+                <h3>E · For deeper study</h3>
+                <ul>
+                  <li><a href="https://www.kanshudo.com/grammar/%E3%80%85" target="_blank" rel="noopener">Kanshudo — grammar entry for 々</a> · history, voicing rules, edge cases.</li>
+                  <li><a href="https://jisho.org/search/%E3%80%85%20%23sentences" target="_blank" rel="noopener">Jisho.org — sentence search for 々</a> · live examples pulled from Tatoeba, with English translations.</li>
+                </ul>
+              </section>
+            `,
+          },
+        ],
+      },
+      {
+        id: 'flashcards',
+        titleJa: 'たんごふだ',
+        titleEn: 'Flashcards',
+        glyph: '札',
+        primaryLevel: 'N5',
+        pages: [
+          {
+            id: 'jougo-flashcards-grid',
+            type: 'flashcards-grid',
+            title: '畳語 の 単語札',
+            subtitle: 'Every jōgo flashcard in the deck, in one place',
+            tag: 'jougo',
+          },
+        ],
+      },
+      {
         id: 'ono',
         titleJa: 'オノマトペ',
         titleEn: 'Onomatopoeia',
@@ -1023,80 +1183,6 @@ window.VOCAB_CLASSES = [
                 en:'I was happy when the numbers matched exactly.', level:'N3' },
               { ja:'落ち葉が コロコロ 転がって いった。',
                 en:'The fallen leaves tumbled away.', level:'N4' },
-            ]
-          }
-        ]
-      },
-      {
-        id: 'jougo-common',
-        titleJa: 'よくつかう',
-        titleEn: 'Common Jougo',
-        glyph: '畳',
-        primaryLevel: 'N4',
-        pages: [
-          {
-            id: 'sheet-1',
-            type: 'cheatsheet',
-            title: '畳語 の きほん',
-            subtitle: 'Repeated words that add nuance — emphasis, plurality, vagueness',
-            imageSlotId: 'sheet-jougo-1',
-            items: [
-              { num:1,  kanji:'いろいろ',     kana:'いろいろ',     en:'various, all sorts of' },
-              { num:2,  kanji:'時々',          kana:'ときどき',     en:'sometimes' },
-              { num:3,  kanji:'段々',          kana:'だんだん',     en:'gradually, little by little' },
-              { num:4,  kanji:'人々',          kana:'ひとびと',     en:'people (plural)' },
-              { num:5,  kanji:'次々',          kana:'つぎつぎ',     en:'one after another' },
-              { num:6,  kanji:'別々',          kana:'べつべつ',     en:'separately, individually' },
-              { num:7,  kanji:'まだまだ',      kana:'まだまだ',     en:'still a long way / not yet' },
-              { num:8,  kanji:'なかなか',      kana:'なかなか',     en:'quite / not easily' },
-              { num:9,  kanji:'ますます',      kana:'ますます',     en:'more and more, increasingly' },
-              { num:10, kanji:'わざわざ',      kana:'わざわざ',     en:'purposely, going out of one\'s way' },
-              { num:11, kanji:'ぴかぴか',      kana:'ぴかぴか',     en:'sparkling, shiny' },
-              { num:12, kanji:'ばらばら',      kana:'ばらばら',     en:'scattered, in pieces' },
-            ]
-          },
-          {
-            id: 'usage',
-            type: 'usage',
-            title: 'つかいかた',
-            subtitle: 'How common jougo appear in speech',
-            items: [
-              { ja:'いろいろな人',        kana:'いろいろ な ひと',        en:'various people' },
-              { ja:'時々雨が降る',        kana:'ときどき あめが ふる',    en:'it rains sometimes' },
-              { ja:'段々寒くなる',        kana:'だんだん さむく なる',    en:'to gradually get cold' },
-              { ja:'人々が集まる',        kana:'ひとびとが あつまる',     en:'people gather' },
-              { ja:'次々と届く',          kana:'つぎつぎと とどく',       en:'to arrive one after another' },
-              { ja:'別々に払う',          kana:'べつべつに はらう',       en:'to pay separately' },
-              { ja:'まだまだ頑張る',      kana:'まだまだ がんばる',       en:'to keep trying (still more to go)' },
-              { ja:'なかなか決められない',kana:'なかなか きめられない',   en:'can\'t easily decide' },
-              { ja:'ますます好きになる',  kana:'ますます すきに なる',    en:'to like more and more' },
-              { ja:'わざわざ来てくれた',  kana:'わざわざ きて くれた',    en:'went out of their way to come' },
-            ]
-          },
-          {
-            id: 'sentences',
-            type: 'sentences',
-            title: 'ぶん',
-            subtitle: 'Jougo in real sentences',
-            items: [
-              { ja:'いろいろ ありがとう ございます。',
-                en:'Thank you for everything.', level:'N5' },
-              { ja:'時々、友達と カフェに 行きます。',
-                en:'Sometimes I go to a café with friends.', level:'N5' },
-              { ja:'段々 日本語が 分かるように なりました。',
-                en:'I gradually came to understand Japanese.', level:'N4' },
-              { ja:'人々は 桜の 下で お花見を して いた。',
-                en:'People were having hanami under the cherry trees.', level:'N4' },
-              { ja:'荷物が 次々と 届いて、部屋が いっぱいに なった。',
-                en:'Packages arrived one after another and filled the room.', level:'N3' },
-              { ja:'別々に 注文しても いいですか？',
-                en:'Is it okay if we order separately?', level:'N4' },
-              { ja:'まだまだ 暑い 日が 続きそう です。',
-                en:'It seems like the hot days will continue for a while yet.', level:'N4' },
-              { ja:'この 問題は なかなか 難しい。',
-                en:'This problem is quite difficult.', level:'N4' },
-              { ja:'ますます 便利に なって きた。',
-                en:'It\'s become more and more convenient.', level:'N3' },
             ]
           }
         ]
@@ -2291,27 +2377,27 @@ window.FLASHCARD_CLASSES = [
     glyph: '音',
     imageFolder: 'vocabulary',
     cards: [
-      { id:'nikoniko',   kanji:'にこにこ',     kun:'niko niko',   on:'', en:'smiling, beaming',
+      { id:'nikoniko',   kanji:'にこにこ',     kun:'niko niko',   on:'', en:'smiling, beaming', tags:['jougo'],
         examples:[{word:'にこにこ笑う',reading:'niko niko warau',meaning:'to smile broadly'},{word:'にこにこ顔',reading:'niko niko gao',meaning:'smiley face'}] },
-      { id:'poyopoyo',   kanji:'ぽよぽよ',     kun:'poyo poyo',   on:'', en:'soft and squishy',
+      { id:'poyopoyo',   kanji:'ぽよぽよ',     kun:'poyo poyo',   on:'', en:'soft and squishy', tags:['jougo'],
         examples:[{word:'ぽよぽよした肌',reading:'poyo poyo shita hada',meaning:'soft squishy skin'},{word:'ぽよぽよのお腹',reading:'poyo poyo no onaka',meaning:'squishy belly'}] },
-      { id:'chikuchiku', kanji:'ちくちく',     kun:'chiku chiku',  on:'', en:'prickly, stinging',
+      { id:'chikuchiku', kanji:'ちくちく',     kun:'chiku chiku',  on:'', en:'prickly, stinging', tags:['jougo'],
         examples:[{word:'ちくちく痛い',reading:'chiku chiku itai',meaning:'to sting / prickle'},{word:'ちくちくする',reading:'chiku chiku suru',meaning:'to feel prickly'}] },
-      { id:'funyafunya', kanji:'ふにゃふにゃ', kun:'funya funya',  on:'', en:'floppy, limp',
+      { id:'funyafunya', kanji:'ふにゃふにゃ', kun:'funya funya',  on:'', en:'floppy, limp', tags:['jougo'],
         examples:[{word:'ふにゃふにゃになる',reading:'funya funya ni naru',meaning:'to go all floppy'},{word:'ふにゃふにゃの麺',reading:'funya funya no men',meaning:'limp noodles'}] },
-      { id:'kusukusu',   kanji:'くすくす',     kun:'kusu kusu',    on:'', en:'giggling, snickering',
+      { id:'kusukusu',   kanji:'くすくす',     kun:'kusu kusu',    on:'', en:'giggling, snickering', tags:['jougo'],
         examples:[{word:'くすくす笑う',reading:'kusu kusu warau',meaning:'to giggle'},{word:'くすくす笑い',reading:'kusu kusu warai',meaning:'a giggle / snicker'}] },
-      { id:'nyanya',     kanji:'にゃーにゃー', kun:'nyā nyā',      on:'', en:'meow meow',
+      { id:'nyanya',     kanji:'にゃーにゃー', kun:'nyā nyā',      on:'', en:'meow meow', tags:['jougo'],
         examples:[{word:'にゃーにゃー鳴く',reading:'nyā nyā naku',meaning:'to meow'},{word:'にゃーと鳴く',reading:'nyā to naku',meaning:'to go meow'}] },
-      { id:'wanwan',     kanji:'ワンワン',     kun:'wan wan',      on:'', en:'woof woof (dog barking)',
+      { id:'wanwan',     kanji:'ワンワン',     kun:'wan wan',      on:'', en:'woof woof (dog barking)', tags:['jougo'],
         examples:[{word:'ワンワン吠える',reading:'wan wan hoeru',meaning:'to bark (woof woof)'},{word:'ワンワンと鳴く',reading:'wan wan to naku',meaning:'the dog goes woof'}] },
-      { id:'pitari',     kanji:'ぴたり',       kun:'pitari',       on:'', en:'exactly right / stopping dead',
+      { id:'pitari',     kanji:'ぴたり',       kun:'pitari',       on:'', en:'exactly right / stopping dead', tags:['jougo'],
         examples:[{word:'ぴたりと合う',reading:'pitari to au',meaning:'to match exactly'},{word:'ぴたりと止まる',reading:'pitari to tomaru',meaning:'to stop dead'}] },
-      { id:'pyonpyon',   kanji:'ぴょんぴょん', kun:'pyon pyon',    on:'', en:'hopping, bouncing',
+      { id:'pyonpyon',   kanji:'ぴょんぴょん', kun:'pyon pyon',    on:'', en:'hopping, bouncing', tags:['jougo'],
         examples:[{word:'ぴょんぴょん跳ぶ',reading:'pyon pyon tobu',meaning:'to hop around'},{word:'ぴょんと跳ねる',reading:'pyon to haneru',meaning:'to bounce up'}] },
-      { id:'potapota',   kanji:'ぽたぽた',     kun:'pota pota',    on:'', en:'drip drip',
+      { id:'potapota',   kanji:'ぽたぽた',     kun:'pota pota',    on:'', en:'drip drip', tags:['jougo'],
         examples:[{word:'ぽたぽた落ちる',reading:'pota pota ochiru',meaning:'to drip down'},{word:'ぽたぽた垂れる',reading:'pota pota tareru',meaning:'to dribble'}] },
-      { id:'korokoro',   kanji:'コロコロ',     kun:'koro koro',    on:'', en:'rolling, tumbling',
+      { id:'korokoro',   kanji:'コロコロ',     kun:'koro koro',    on:'', en:'rolling, tumbling', tags:['jougo'],
         examples:[{word:'コロコロ転がる',reading:'koro koro korogaru',meaning:'to roll around'},{word:'コロコロ変わる',reading:'koro koro kawaru',meaning:'to change frequently'}] },
     ],
   },
