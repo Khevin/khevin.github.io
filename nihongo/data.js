@@ -1131,6 +1131,12 @@ window.FLASHCARD_CLASSES = [
         strokes:4, examples:[{word:'火曜日',reading:'KAYŌbi',meaning:'Tuesday'},{word:'火山',reading:'KAZAN',meaning:'volcano'},{word:'火花',reading:'hibana',meaning:'spark'}] },
       { id:'water',     kanji:'水', kun:'みず',   on:'スイ',   en:'water',
         strokes:4, examples:[{word:'水曜日',reading:'SUIYŌbi',meaning:'Wednesday'},{word:'水泳',reading:'SUIEI',meaning:'swimming'},{word:'水着',reading:'mizugi',meaning:'swimsuit'}] },
+      // 氷 (ice) = 水 with a frozen-mark stroke at the top-left. Sits
+      // right after 水 in the deck so the water → frozen-water mnemonic
+      // lands while 水 is still warm in memory. N3 by JLPT level but
+      // pedagogically a natural neighbour of 水.
+      { id:'ice',       kanji:'氷', kun:'こおり', on:'ヒョウ', en:'ice', strokes:5, seeAlso:['水'],
+        examples:[{word:'氷水',reading:'kōrimizu',meaning:'ice water'},{word:'氷山',reading:'HYŌZAN',meaning:'iceberg'},{word:'かき氷',reading:'kakigōri',meaning:'shaved ice'}] },
       { id:'earth',     kanji:'土', kun:'つち',   on:'ド',     en:'earth / soil / Saturday',
         strokes:3, examples:[{word:'土曜日',reading:'DOYŌbi',meaning:'Saturday'},{word:'土地',reading:'TOCHI',meaning:'land'},{word:'土産',reading:'miyage',meaning:'souvenir'}] },
       { id:'ricefield', kanji:'田', kun:'た',     on:'デン',   en:'rice field', strokes:5, examples:[{word:'田んぼ',reading:'tanbo',meaning:'rice paddy'},{word:'田園',reading:'DEN\'EN',meaning:'countryside'},{word:'田植え',reading:'taue',meaning:'rice planting'}] },
