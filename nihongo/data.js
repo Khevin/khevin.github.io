@@ -1891,13 +1891,6 @@ window.FLASHCARD_CLASSES = [
           {word:'自然',reading:'SHIZEN',meaning:'nature'},
           {word:'自転車',reading:'JITENSHA',meaning:'bicycle'},
         ] },
-      { id:'nose',  kanji:'鼻', kun:'はな',     on:'ビ',   en:'nose',
-        strokes:14,
-        examples:[
-          {word:'鼻水',reading:'hanamizu',meaning:'runny nose'},
-          {word:'鼻歌',reading:'hanauta',meaning:'humming'},
-          {word:'鼻血',reading:'hanaji',meaning:'nosebleed'},
-        ] },
       { id:'ear',   kanji:'耳', kun:'みみ',     on:'ジ',   en:'ear',
         strokes:6,
         examples:[
@@ -1945,6 +1938,33 @@ window.FLASHCARD_CLASSES = [
           {word:'打つ',   reading:'utsu',   meaning:'to hit'},
           {word:'打者',   reading:'DASHA',  meaning:'batter'},
           {word:'打撃',   reading:'DAGEKI', meaning:'blow / impact'},
+        ] },
+      // ◆廾 (にじゅうあし / "twenty-feet") — two hands held up beneath
+      // a kanji, set into a wide base. Sits at the BOTTOM of 鼻 (which
+      // is itself 自 + 田 + 廾) and shows up under 弁 (speech) and 弊
+      // (evil), among others. The earlier ナ・ヨ + 又 hands card covered
+      // the SIDE-hand forms; 廾 is the lifted-up pair from below. Lands
+      // right before 鼻 so the breakdown ladders 自 → 田 → 廾 = 鼻 reads
+      // cleanly on the next card.
+      { id:'niju-ashi-radical', type:'radical',
+        radical:'廾', from:'廾',
+        titleJa:'にじゅうあし', titleEn:'two hands raised (base)',
+        descEn:'A pair of hands raised together as a base — same hands the ナ·又 card covered, but viewed FROM BELOW supporting whatever sits on top. Lives at the BOTTOM of 鼻 (nose) and 弁 (speech / dialect), and inside 弊 (evil). When you see 廾 as the lower platform of a kanji, the meaning usually involves something being held up, supported, or presented.',
+        descJa:'下から ささえる ふたつ の 手。「ナ」「又」 の カード で 出 た 手 と 同じ かたち だが、ここ では 下 から 上 を ささえる 形。「鼻」 の 下、「弁」 の 下、「弊」 の 内側 に あらわれる。漢字 の 下 に 廾 が ある とき、なにか を ささえる・もち上げる 意味 を もつ こと が おおい。',
+        examples:[
+          { kanji:'鼻', kun:'はな', on:'ビ',  en:'nose (自 + 田 + 廾)' },
+          { kanji:'弁', kun:'',     on:'ベン', en:'speech / dialect' },
+          { kanji:'弊', kun:'',     on:'ヘイ', en:'evil / harm' },
+          { kanji:'葬', kun:'ほうむ', on:'ソウ', en:'bury / funeral' },
+        ] },
+      { id:'nose',  kanji:'鼻', kun:'はな',     on:'ビ',   en:'nose',
+        seeAlso:['自'],
+        notes:'鼻 = 自 (the old pictograph for nose) + 田 (interesting / grid) + 廾 (two-hands raised base). The original 自 came to mean "self" because people point at their nose to indicate themselves, so the language built 鼻 on top to recover the body-part reading.',
+        strokes:14,
+        examples:[
+          {word:'鼻水',reading:'hanamizu',meaning:'runny nose'},
+          {word:'鼻歌',reading:'hanauta',meaning:'humming'},
+          {word:'鼻血',reading:'hanaji',meaning:'nosebleed'},
         ] },
       { id:'foot',  kanji:'足', kun:'あし',     on:'ソク', en:'foot / leg',
         strokes:7,
