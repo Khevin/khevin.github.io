@@ -16471,6 +16471,28 @@ function composeChipsHTML(kanji) {
   }).join('');
 }
 
+// 畳語 (jōgo) — reduplicated kana words like にこにこ / ふにゃふにゃ /
+// にゃーにゃー / ぴょんぴょん display as two stacked halves so the
+// repeated mirror is readable top-to-bottom (にこ / にこ). Detects
+// even-length strings whose two halves are exactly identical and
+// splits at the midpoint with a <br>; non-reduplicated strings (人,
+// 元気, ぴたり, 御飯, etc.) fall through unchanged. Used by the
+// editorial card's front-face glyph.
+function splitJougoGlyph(text) {
+  const s = text || '';
+  const chars = [...s];  // unicode-safe split — kana chars are single code points
+  const n = chars.length;
+  if (n >= 4 && n % 2 === 0) {
+    const half = n / 2;
+    const front = chars.slice(0, half).join('');
+    const back  = chars.slice(half).join('');
+    if (front === back) {
+      return escHTML(front) + '<br>' + escHTML(back);
+    }
+  }
+  return escHTML(s);
+}
+
 function editorialFlashcardHTML(card, cls, related, seeAlso) {
   // Use the EXACT same image path the classic flash-card resolves to —
   // so 人 in editorial mode shows the same illustration 人 shows in old
@@ -16595,7 +16617,7 @@ function editorialFlashcardHTML(card, cls, related, seeAlso) {
                     shape="rounded" radius="4" fit="contain" position="50% 50%" readonly
                     placeholder="No illustration for ${escAttr(card.kanji)} yet"></image-slot>
                 </div>
-                <div class="testcard-glyph" style="font-family:${escAttr(glyphFontStack)}">${escHTML(card.kanji)}</div>
+                <div class="testcard-glyph" style="font-family:${escAttr(glyphFontStack)}">${splitJougoGlyph(card.kanji)}</div>
                 <div class="testcard-readings">
                   ${card.kun ? `<span class="testcard-reading-label">kun</span>
                     <span class="testcard-reading-val read-tts" data-speak="${escAttr(card.kun)}" title="play kun reading">

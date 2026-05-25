@@ -1155,7 +1155,7 @@ window.FLASHCARD_CLASSES = [
     id: 'numbers',
     titleJa: 'すうじ',
     titleEn: 'Numbers',
-    glyph: '数',
+    glyph: '千',
     cards: [
       { id:'one',      kanji:'一', kun:'ひと',     on:'イチ',   en:'one', strokes:1, examples:[{word:'一月',reading:'ICHIGATSU',meaning:'January'},{word:'一人',reading:'hitori',meaning:'one person'},{word:'一番',reading:'ICHIBAN',meaning:'number one'}] },
       { id:'two',      kanji:'二', kun:'ふた',     on:'ニ',     en:'two', strokes:2, examples:[{word:'二月',reading:'NIGATSU',meaning:'February'},{word:'二人',reading:'futari',meaning:'two people'},{word:'二階',reading:'NIKAI',meaning:'second floor'}] },
@@ -1373,7 +1373,7 @@ window.FLASHCARD_CLASSES = [
     id: 'nature',
     titleJa: 'しぜん',
     titleEn: 'Nature',
-    glyph: '自',
+    glyph: '森',
     cards: [
       // Composed natural objects. The five elemental pictographs (日月山川木火水土田)
       // live in Basic; this class focuses on composed kanji that USE them.
