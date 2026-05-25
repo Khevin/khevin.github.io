@@ -2312,13 +2312,27 @@ window.FLASHCARD_CLASSES = [
     titleEn: 'Verbs',
     glyph: '行',
     imageFolder: 'kanji',
-    // Spec §3.14 order: 行 来 出 立 聞 買 売 知 思 待 帰 切 走 働 忙.
+    // Order: 行 → 止 → 来 → 出 → 立 → 聞 → 買 → 売 → 知 → 思 → 待 → 帰 → 切 → 走 → 働 → 忙.
+    // 止 (stop) lands right after 行 (go) as its semantic opposite —
+    // the go/stop pair lets the learner anchor 止's reading and meaning
+    // on a verb they just met. 止 is also a foundational radical
+    // appearing inside 歩 (walk), 正 (correct), 武 (military), so the
+    // early introduction pays back later compounds.
     cards: [
       { id:'go', kanji:'行', kun:'い', on:'コウ', en:'go', strokes:6,
         examples:[
           {word:'行く',   reading:'iku', meaning:'to go'},
           {word:'銀行',   reading:'GINKŌ', meaning:'bank'},
           {word:'旅行',   reading:'RYOKŌ', meaning:'travel'},
+        ] },
+      { id:'stop', kanji:'止', kun:'と', on:'シ', en:'stop / halt', strokes:4,
+        notes:'Semantic opposite of 行 (go). Originally a pictograph of a foot planted in place — the same foot-shape that lives at the bottom of 歩 (walk: 止 stacked twice) and 正 (correct: a straight foot meeting a line). Transitive 止める (tomeru) "to stop something" vs intransitive 止まる (tomaru) "to come to a stop."',
+        examples:[
+          {word:'止まる', reading:'tomaru', meaning:'to stop (intransitive)'},
+          {word:'止める', reading:'tomeru', meaning:'to stop (transitive)'},
+          {word:'中止',   reading:'CHŪSHI', meaning:'cancellation / suspension'},
+          {word:'停止',   reading:'TEISHI', meaning:'halt / standstill'},
+          {word:'禁止',   reading:'KINSHI', meaning:'prohibition'},
         ] },
       { id:'come', kanji:'来', kun:'く', on:'ライ', en:'come / next / future', strokes:7,
         notes:'The verb 来る (kuru, "to come") is one of the two irregular verbs in Japanese — the stem changes (く・き・こ) by tense. As a prefix, ライ marks "next/coming" (来週, 来月, 来年). Pairs with 去 (kyo, past / leave) for last-year vs next-year.',
@@ -4032,6 +4046,7 @@ window.DICTIONARY = [
   { kind:'kanji', kanji:'人', kana:'ひと',     en:'person',          level:'N5', tags:[] },
   { kind:'kanji', kanji:'入', kana:'はい.る',  en:'enter / put in',  level:'N5', tags:[] },
   { kind:'kanji', kanji:'出', kana:'で.る',    en:'go out / exit',   level:'N5', tags:[] },
+  { kind:'kanji', kanji:'止', kana:'と.まる',  en:'stop / halt',     level:'N4', tags:[] },
   { kind:'kanji', kanji:'戸', kana:'と',       en:'door',            level:'N3', tags:[] },
   { kind:'kanji', kanji:'門', kana:'もん',     en:'gate',            level:'N3', tags:[] },
   { kind:'kanji', kanji:'閤', kana:'こう',     en:'side door',       level:'N1', tags:[] },
@@ -4202,7 +4217,7 @@ window.KANJI_READINGS = {
   '呼':'よ', '脱':'ぬ', '降':'ふ',
   '持':'も', '切':'き', '座':'すわ', '履':'は',
   '空':'そら', '気':'き', '新':'しん', '鮮':'せん',
-  '湿':'しめ', '残':'のこ', '行':'い', '来':'く',
+  '湿':'しめ', '残':'のこ', '行':'い', '止':'と', '来':'く',
   '中':'なか', '友':'とも', '達':'たち',
   '部':'へ', '屋':'や',
   '見':'み', '読':'よ', '休':'やす', '飲':'の', '聞':'き',
@@ -4304,7 +4319,7 @@ window.KANJI_MEANINGS = {
   '呼':'call', '脱':'take off', '降':'fall',
   '持':'hold', '切':'cut', '座':'sit', '履':'put on',
   '空':'sky', '気':'air', '新':'new', '鮮':'fresh',
-  '湿':'damp', '残':'remain', '行':'go', '来':'come',
+  '湿':'damp', '残':'remain', '行':'go', '止':'stop', '来':'come',
   '中':'middle', '友':'friend', '達':'arrive',
   '部':'section', '屋':'shop',
   '見':'see', '読':'read', '休':'rest', '飲':'drink', '聞':'hear',
