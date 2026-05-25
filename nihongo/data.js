@@ -1416,8 +1416,17 @@ window.FLASHCARD_CLASSES = [
           {word:'握手',reading:'AKUSHU',meaning:'handshake'},
           {word:'手話',reading:'SHUWA',meaning:'sign language'},
         ] },
-      // ◆扌 radical-interlude card slots here in Batch 4 (Task 18).
-      // It bridges 手 to its left-side compound form, unlocking 持 / 打.
+      { id:'tehen-radical', type:'radical',
+        radical:'扌', from:'手',
+        titleJa:'てへん', titleEn:'left-side hand',
+        descEn:'When 手 lives on the LEFT side of a compound kanji, the bottom-right stroke flattens and it becomes 扌 — same hand, side-on. Marks kanji that involve doing something with the hands: holding, hitting, pushing, drawing.',
+        descJa:'「手」が漢字の左がわに立つとき、右下の払いが平らになり「扌」になる。同じ手の形をふくむ。手で何かをすること—持つ、打つ、押す、引く—に関する漢字につく。',
+        examples:[
+          { kanji:'持', kun:'も',   on:'ジ',   en:'hold / carry' },
+          { kanji:'打', kun:'う',   on:'ダ',   en:'hit / strike' },
+          { kanji:'押', kun:'お',   on:'オウ', en:'push' },
+          { kanji:'引', kun:'ひ',   on:'イン', en:'pull' },
+        ] },
       { id:'hold',  kanji:'持', kun:'も',       on:'ジ',   en:'hold / carry',
         seeAlso:['手'],
         strokes:9,
@@ -1571,7 +1580,17 @@ window.FLASHCARD_CLASSES = [
         ] },
       { id:'writing',  kanji:'文', kun:'ふみ',     on:'ブン',   en:'writing / text / culture', strokes:4, examples:[{word:'文化',reading:'BUNKA',meaning:'culture'},{word:'文学',reading:'BUNGAKU',meaning:'literature'},{word:'文字',reading:'MOJI',meaning:'character'}] },
       { id:'name',     kanji:'名', kun:'な',       on:'メイ',   en:'name / fame', strokes:6, examples:[{word:'名前',reading:'namae',meaning:'name'},{word:'名人',reading:'MEIJIN',meaning:'master'},{word:'有名',reading:'YŪMEI',meaning:'famous'}] },
-      // ◆言 radical-interlude card slots here in Batch 4 (Task 18).
+      { id:'gonben-radical', type:'radical',
+        radical:'言', from:'言',
+        titleJa:'ごんべん', titleEn:'left-side speech',
+        descEn:'When 言 (say / word) lives on the left side of a compound, it keeps its full shape — the rectangular speech-marks stacked above an open mouth (口). Marks kanji about saying, asking, reading, naming, recording.',
+        descJa:'「言」が漢字の左がわに立つときも、形はそのまま。口の上に積まれた言葉のかたち。話す、訊く、読む、名づける、記すこと—言葉に関する漢字につく。',
+        examples:[
+          { kanji:'話', kun:'はな', on:'ワ',   en:'talk / story' },
+          { kanji:'読', kun:'よ',   on:'ドク', en:'read' },
+          { kanji:'語', kun:'かた', on:'ゴ',   en:'language / tell' },
+          { kanji:'記', kun:'しる', on:'キ',   en:'record / chronicle' },
+        ] },
       { id:'say', kanji:'言', kun:'い', on:'ゲン', en:'say / word', strokes:7,
         seeAlso:['口'],
         examples:[
@@ -1817,6 +1836,17 @@ window.FLASHCARD_CLASSES = [
     // 出 carved out for Verbs (Task 16) — full card preserved in scratch
     // comment near the eventual Verbs slot. 閤 dropped (rare).
     cards: [
+      { id:'ukanmuri-radical', type:'radical',
+        radical:'宀', from:'宀',
+        titleJa:'うかんむり', titleEn:'roof / cap',
+        descEn:'A roof in profile — left wall, gabled top, right wall. Sits on top of a compound kanji to mark "things that happen under a roof": houses, rooms, family life, shelter from the elements.',
+        descJa:'横から見た屋根のかたち。漢字の上にのって、家・部屋・家族・しのぎの場—屋根の下で起きること—を表す漢字につく。',
+        examples:[
+          { kanji:'家', kun:'いえ', on:'カ',  en:'house / home' },
+          { kanji:'室', kun:'むろ', on:'シツ', en:'room' },
+          { kanji:'宿', kun:'やど', on:'シュク', en:'lodging / inn' },
+          { kanji:'守', kun:'まも', on:'シュ', en:'protect / keep' },
+        ] },
       { id:'door',      kanji:'戸',   kun:'と',     on:'コ',         en:'door',
         strokes:4,
         examples:[
@@ -2010,7 +2040,17 @@ window.FLASHCARD_CLASSES = [
           {word:'朝飯',   reading:'asameshi', meaning:'breakfast'},
           {word:'夕飯',   reading:'YŪHAN', meaning:'dinner'},
         ] },
-      // ◆飠 radical card placeholder — Task 18 inserts the radical card here.
+      { id:'shoku-radical', type:'radical',
+        radical:'飠', from:'食',
+        titleJa:'しょくへん', titleEn:'food / eat (left side)',
+        descEn:'When 食 (eat / food) lives on the LEFT side of a compound, it compresses into 飠 — the same lid + heaped-rice silhouette, made narrow. Marks kanji about food: cooking, drinking, restaurants, particular dishes.',
+        descJa:'「食」が漢字の左がわに立つとき、せまく圧縮されて「飠」になる。同じふた + ご飯の山のかたち。食べること、飲むこと、料理、料理屋に関する漢字につく。',
+        examples:[
+          { kanji:'飯', kun:'めし', on:'ハン', en:'cooked rice / meal' },
+          { kanji:'飲', kun:'の',   on:'イン', en:'drink' },
+          { kanji:'館', kun:'やかた', on:'カン', en:'large building / hall' },
+          { kanji:'飼', kun:'か',   on:'シ',   en:'raise / keep (animal)' },
+        ] },
       { id:'eat', kanji:'食', kun:'た', on:'ショク', en:'eat / food', strokes:9,
         examples:[
           {word:'食べる', reading:'taberu', meaning:'to eat'},
