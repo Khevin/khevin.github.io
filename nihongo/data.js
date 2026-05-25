@@ -1712,7 +1712,12 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'がっこう',
     titleEn: 'School',
     glyph: '学',
-    // Spec §3.9 order: 学 校 字 文 名 [◆言 — added in Batch 4] 言 話 読 書 本 生.
+    // Order: ◆宀 → 宀 → 字 → 学 → 校 → 文 → 名 → [◆言] → 言 → 話 → 読 → 書 → 本 → 生.
+    // 字 sits right after the standalone 宀 because it IS 宀 + 子 (child
+    // under a roof learning a character) — meeting it before 学 makes the
+    // radical lesson land twice: once as the radical card, once as the
+    // payoff in 字, and a third time as a contrast against 学 (which
+    // does NOT use 宀).
     cards: [
       { id:'ukanmuri-radical', type:'radical',
         radical:'宀', from:'宀',
@@ -1737,19 +1742,19 @@ window.FLASHCARD_CLASSES = [
           {word:'室',     reading:'shitsu', meaning:'room'},
           {word:'宿',     reading:'yado',  meaning:'inn / lodging'},
         ] },
-      { id:'learn',    kanji:'学', kun:'まな',     on:'ガク',   en:'learn / study',
-        seeAlso:['子'], strokes:8, examples:[{word:'学校',reading:'GAKKŌ',meaning:'school'},{word:'学生',reading:'GAKUSEI',meaning:'student'},{word:'学ぶ',reading:'manabu',meaning:'to learn'}] },
-      { id:'school',   kanji:'校', kun:'',         on:'コウ',   en:'school',
-        seeAlso:['木'],
-        strokes:10, examples:[{word:'学校',reading:'GAKKŌ',meaning:'school'},{word:'校長',reading:'KŌCHŌ',meaning:'principal'},{word:'高校',reading:'KŌKŌ',meaning:'high school'}] },
       { id:'character', kanji:'字', kun:'じ',     on:'ジ',     en:'character / letter',
-        seeAlso:['子'],
+        seeAlso:['子','宀'],
         strokes:6,
         examples:[
           {word:'文字',reading:'MOJI',meaning:'character'},
           {word:'漢字',reading:'KANJI',meaning:'kanji'},
           {word:'数字',reading:'SŪJI',meaning:'number'},
         ] },
+      { id:'learn',    kanji:'学', kun:'まな',     on:'ガク',   en:'learn / study',
+        seeAlso:['子'], strokes:8, examples:[{word:'学校',reading:'GAKKŌ',meaning:'school'},{word:'学生',reading:'GAKUSEI',meaning:'student'},{word:'学ぶ',reading:'manabu',meaning:'to learn'}] },
+      { id:'school',   kanji:'校', kun:'',         on:'コウ',   en:'school',
+        seeAlso:['木'],
+        strokes:10, examples:[{word:'学校',reading:'GAKKŌ',meaning:'school'},{word:'校長',reading:'KŌCHŌ',meaning:'principal'},{word:'高校',reading:'KŌKŌ',meaning:'high school'}] },
       { id:'writing',  kanji:'文', kun:'ふみ',     on:'ブン',   en:'writing / text / culture', strokes:4, examples:[{word:'文化',reading:'BUNKA',meaning:'culture'},{word:'文学',reading:'BUNGAKU',meaning:'literature'},{word:'文字',reading:'MOJI',meaning:'character'}] },
       { id:'name',     kanji:'名', kun:'な',       on:'メイ',   en:'name / fame', strokes:6, examples:[{word:'名前',reading:'namae',meaning:'name'},{word:'名人',reading:'MEIJIN',meaning:'master'},{word:'有名',reading:'YŪMEI',meaning:'famous'}] },
       { id:'gonben-radical', type:'radical',
