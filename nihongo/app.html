@@ -15853,7 +15853,13 @@ function renderFlashcards(container) {
   const classes = window.FLASHCARD_CLASSES || [];
   if (!classes.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
   const cls = classes.find(c => c.id === APP.flashClassId) || classes[0];
-  const deck = cls.cards || [];
+  // Filter out cards marked vocabOnly:true — these are vocabulary words
+  // that live in a class's `cards` array so they show up in places like
+  // the writing/colors reference grid (which reads from FLASHCARD_CLASSES),
+  // but shouldn't appear as standalone flashcards. Used for loanwords
+  // (オレンジ, ピンク) and softer compound-color variants (桃色) that
+  // don't earn drill time in the Colors deck.
+  const deck = (cls.cards || []).filter(c => !c.vocabOnly);
   if (!deck.length) {
     container.innerHTML = `<div class="empty-state">${escHTML(cls.titleEn)} — coming soon.</div>`;
     return;

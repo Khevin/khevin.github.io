@@ -1661,6 +1661,27 @@ window.FLASHCARD_CLASSES = [
         ] },
       { id:'green',    kanji:'緑', kun:'みどり',   on:'リョク', en:'green', swatch:'#2e8b57', strokes:14, examples:[{word:'緑茶',reading:'RYOKUCHA',meaning:'green tea'},{word:'緑色',reading:'midori iro',meaning:'green color'},{word:'新緑',reading:'SHINRYOKU',meaning:'fresh green'}] },
       { id:'purple',   kanji:'紫', kun:'むらさき', on:'シ',     en:'purple', swatch:'#6b2fa0', strokes:12, examples:[{word:'紫色',reading:'murasaki iro',meaning:'purple color'},{word:'紫外線',reading:'SHIGAISEN',meaning:'ultraviolet'}] },
+      // 灰色 (gray) — full flashcard. The 灰 (ash) component is rare enough
+      // that it's worth its own card; the compound is high-frequency
+      // everyday vocab (gray skies, gray hair, "gray area").
+      { id:'gray',     kanji:'灰色', kun:'はいいろ', on:'',       en:'gray', swatch:'#888a86',
+        notes:'灰 [hai] is "ash." Pairs with 色 [iro] for "ash color" = gray.',
+        examples:[
+          {word:'灰色',     reading:'haiiro',         meaning:'gray'},
+          {word:'灰色の空', reading:'haiiro no sora', meaning:'gray sky'},
+          {word:'灰皿',     reading:'haizara',        meaning:'ashtray'},
+        ] },
+      // Vocab-only entries (vocabOnly:true skips them from the flashcards
+      // deck, but they still surface on the writing/colors reference grid
+      // which reads from FLASHCARD_CLASSES). Loanwords + softer native
+      // pinks that learners will encounter but don't need drilled as
+      // standalone flashcards.
+      { id:'momoiro',  kanji:'桃色', kun:'ももいろ', on:'',       en:'peach pink', swatch:'#f7a8b8', vocabOnly:true,
+        notes:'桃 [momo] is "peach." 桃色 (momoiro) is the softer / more poetic Japanese word for pink; the loanword ピンク covers the brighter modern shade.' },
+      { id:'pink',     kanji:'ピンク', kun:'ぴんく',  on:'',       en:'pink (loanword)', swatch:'#f4a8c0', vocabOnly:true,
+        notes:'Loanword from English "pink." More common in everyday speech than the native 桃色 (momoiro).' },
+      { id:'orange',   kanji:'オレンジ', kun:'おれんじ', on:'',     en:'orange (loanword)', swatch:'#f08c2a', vocabOnly:true,
+        notes:'Loanword from English "orange." Used for both the color and the fruit. The native 橙色 (daidaiiro) sounds literary.' },
     ],
   },
   {
