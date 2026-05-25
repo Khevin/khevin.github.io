@@ -1326,6 +1326,32 @@
   }
   .explainer-body a:hover { text-decoration-color: var(--gold); }
 
+  /* Editorial cover figure — sits inline in the explainer body to break
+     up long prose with a visual rest. Soft paper-2 fill + gold-soft
+     halo + drop shadow matches the flashcard chrome so it reads as a
+     framed plate from the same family of editorial cards. The width
+     respects the body's reading column so the figure doesn't blow out
+     wider than the surrounding paragraphs. */
+  .explainer-body .jougo-cover {
+    margin: 18px auto 22px;
+    padding: 0;
+    max-width: 560px;
+    background: var(--paper-2);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 1px var(--paper-edge),
+      0 0 0 5px var(--paper-2),
+      0 0 0 6px var(--gold-soft),
+      0 16px 36px rgba(60, 40, 10, 0.14);
+    overflow: hidden;
+  }
+  .explainer-body .jougo-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
   /* Tile grids inside the explainer (group examples). */
   .jougo-grid {
     display: grid;
@@ -8985,11 +9011,9 @@
     font-size: clamp(70px, 8vw, 96px);
     line-height: 1;
     color: #1a120a;
-    text-shadow:
-      0 0 1.5px rgba(26, 18, 10, 0.45),
-      0 0 8px rgba(26, 18, 10, 0.06),
-      0 1px 0 rgba(255, 255, 255, 0.18);
-    filter: drop-shadow(0 2px 1px rgba(26, 18, 10, 0.10));
+    /* Drop shadows removed — the kanji number reads cleaner flat,
+       letting the calligraphic stroke do the work without bevelled
+       text-shadow + filter:drop-shadow layers competing for attention. */
     --rot: -3deg;
     transform: rotate(var(--rot));
     transform-origin: 50% 60%;

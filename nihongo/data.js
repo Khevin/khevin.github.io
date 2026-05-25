@@ -969,6 +969,9 @@ window.VOCAB_CLASSES = [
               <section class="jougo-section">
                 <h3>A · What is 畳語 (jōgo)?</h3>
                 <p><strong class="ja">畳語</strong> (<em>jōgo</em>) literally means "stacked words" — words formed by <em>reduplication</em>, the deliberate repeating of a kanji, a kana, or a whole word. The first character, <span class="glyph-inline">畳</span> (<em>tatamu</em>, "to fold / stack"), is the same one used for the woven mats on the floor of a Japanese room. The image is identical: layers laid on top of each other.</p>
+                <figure class="jougo-cover">
+                  <img src="images/covers/jougo.png" alt="Jōgo cover — the layered tatami metaphor for stacked words" loading="lazy">
+                </figure>
                 <p>Languages around the world use repetition for emphasis — English "very very tired," "tiny tiny ant," child-speak "doggy doggy." Japanese formalised the same intuition into a productive grammatical device. Where English uses repetition <em>occasionally</em> for colour, Japanese uses it <em>structurally</em> — and it even has a dedicated written mark to make repeated kanji shorter on the page.</p>
                 <p>Reduplication does one of four things in Japanese:</p>
                 <ul>
