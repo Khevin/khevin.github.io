@@ -552,7 +552,7 @@ window.VOCAB_CLASSES = [
               { num:5,  kanji:'焼きとうもろこし', kana:'やきとうもろこし', en:'grilled corn on the cob' },
               { num:6,  kanji:'かき氷',         kana:'かきごおり',       en:'shaved ice' },
               { num:7,  kanji:'たい焼き',       kana:'たいやき',         en:'fish-shaped sweet pastry' },
-              { num:8,  kanji:'ヨーヨー釣り',   kana:'よーよーつり',     en:'water-balloon fishing (game)' },
+              { num:8,  kanji:'天ぷら',         kana:'てんぷら',         en:'tempura (battered & deep-fried)' },
               { num:9,  kanji:'提灯',           kana:'ちょうちん',       en:'paper lantern' },
               { num:10, kanji:'浴衣',           kana:'ゆかた',           en:'summer kimono (worn at festivals)' },
             ]
