@@ -10886,66 +10886,153 @@
     .dt-day-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* ─── 月 — the twelve months ──────────────────────────────────────
-     Compact 4-column grid (3 rows × 4 = 12). Smaller cells than the
-     day cards since months don't need illustrations — just number
-     + kanji + kana + EN. Same .is-irregular gold tint as the hour
-     cells in Section 3 so 四月 / 七月 / 九月 surface their bend. */
-  .dt-month-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+  /* ─── 月 — formula card + three exceptions ───────────────────────
+     Replaced the 12-cell grid (pattern-as-data default) with a
+     two-part treatment: the rule as a visual equation on top,
+     the three exceptions as larger highlighted cards below.
+     The squint test should read "rule → exceptions" — two beats,
+     not twelve. */
+  .dt-month-formula-card {
+    margin-bottom: 24px;
+    padding: 24px 28px;
+    background: var(--dt-paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(141,102,48,0.06);
   }
-  .dt-month-cell {
-    position: relative;
+  .dt-month-formula {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 16px 0 18px;
+    font-family: var(--serif-jp);
+    color: var(--dt-ink);
+    line-height: 1;
+  }
+  .dt-month-formula-n {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    padding: 6px 10px;
+    background: var(--dt-paper-2);
+    border: 1.5px dashed var(--dt-gold-soft);
+    border-radius: 6px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--dt-gold-dark);
+    line-height: 1;
+  }
+  .dt-month-formula-glyph {
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 44px);
+    color: var(--dt-ink);
+  }
+  .dt-month-formula-eq {
+    margin: 0 6px;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 3.5vw, 36px);
+    color: var(--dt-gold-dark);
+  }
+  .dt-month-formula-suffix {
+    font-weight: 600;
+    font-size: clamp(22px, 2.8vw, 28px);
+    color: var(--dt-ink);
+  }
+  .dt-month-formula-explain {
+    margin: 0;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(141,102,48,0.25);
+    text-align: center;
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--dt-ink-2);
+  }
+  .dt-month-formula-explain b { color: var(--dt-ink); font-weight: 600; }
+  .dt-month-formula-explain .ja {
+    font-family: var(--serif-jp);
+    color: var(--dt-ink);
+  }
+
+  .dt-month-irr-label {
+    margin: 24px 0 12px;
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--dt-ink-2);
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .dt-month-irr-label em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--dt-ink-3);
+  }
+  .dt-month-irr-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .dt-month-irr-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    padding: 12px 10px;
-    background: var(--dt-paper);
-    border: 1px solid var(--paper-edge);
-    border-radius: 6px;
+    gap: 4px;
+    padding: 18px 12px 14px;
+    background: linear-gradient(180deg, var(--dt-paper) 0%, rgba(180,138,74,0.08) 100%);
+    border: 1.5px solid var(--dt-gold);
+    border-radius: 8px;
     text-align: center;
   }
-  .dt-month-cell.is-irregular {
-    border-color: var(--dt-gold);
-    background: linear-gradient(180deg, var(--dt-paper) 0%, rgba(180,138,74,0.06) 100%);
+  .dt-month-irr-glyph {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 36px;
+    color: var(--dt-gold-dark);
+    line-height: 1;
   }
-  .dt-month-num {
-    font-family: var(--serif);
-    font-size: 11px;
-    color: var(--dt-ink-3);
-    font-feature-settings: 'tnum' 1;
-  }
-  .dt-month-kanji {
+  .dt-month-irr-kana {
     font-family: var(--serif-jp);
     font-weight: 600;
-    font-size: 20px;
-    color: var(--dt-ink);
-    line-height: 1.05;
-  }
-  .dt-month-cell.is-irregular .dt-month-kanji { color: var(--dt-gold-dark); }
-  .dt-month-kana {
-    font-family: var(--serif-jp);
-    font-size: 12px;
-    color: var(--dt-ink-2);
-  }
-  .dt-month-cell.is-irregular .dt-month-kana { color: var(--dt-gold-dark); font-weight: 600; }
-  .dt-month-en {
-    margin-top: 2px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 11px;
-    color: var(--dt-ink-3);
-    letter-spacing: 0.02em;
-  }
-  .dt-month-note {
-    margin-top: 4px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 10px;
+    font-size: 18px;
     color: var(--dt-gold-dark);
+    margin-top: 2px;
+  }
+  .dt-month-irr-en {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--dt-ink-3);
+  }
+  .dt-month-irr-wrong {
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(141,102,48,0.3);
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .dt-month-irr-x {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--dt-ink-3);
+    text-decoration: line-through;
+    text-decoration-color: var(--dt-ink-4, var(--dt-ink-3));
+  }
+  .dt-month-irr-wrong .ja {
+    font-family: var(--serif-jp);
+    color: var(--dt-ink-3);
+    text-decoration: line-through;
+    text-decoration-color: var(--dt-ink-3);
   }
   .dt-month-footnote {
     margin: 12px 0 0;
@@ -10961,10 +11048,8 @@
     color: var(--dt-ink-2);
   }
   @media (max-width: 720px) {
-    .dt-month-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (max-width: 480px) {
-    .dt-month-grid { grid-template-columns: repeat(2, 1fr); }
+    .dt-month-formula-card { padding: 18px 16px; }
+    .dt-month-irr-grid { grid-template-columns: 1fr; }
   }
 
   /* ─── 二. Reading dates — three neutral stamps + dl rules ────────────
@@ -17083,31 +17168,25 @@ function renderParticlesSidebar() {
 // numbers (.dt-card), color-coded role stamps from the particle-verb
 // diagram (.dt-stamp variants). Reads as a phrasebook chapter.
 function renderWritingDatetime(container) {
-  // 12 months — read [number]月. Three irregular readings to memorize:
-  // 四月 しがつ (not よんがつ), 七月 しちがつ (not なながつ), 九月 くがつ
-  // (not きゅうがつ). Same irregulars as the hours, same root cause —
-  // these on-readings come from older Sino-Japanese counting.
-  const months = [
-    { n:1,  kanji:'一月',   kana:'いちがつ',     en:'January',   irr:false },
-    { n:2,  kanji:'二月',   kana:'にがつ',       en:'February',  irr:false },
-    { n:3,  kanji:'三月',   kana:'さんがつ',     en:'March',     irr:false },
-    { n:4,  kanji:'四月',   kana:'しがつ',       en:'April',     irr:true,  note:'not よんがつ' },
-    { n:5,  kanji:'五月',   kana:'ごがつ',       en:'May',       irr:false },
-    { n:6,  kanji:'六月',   kana:'ろくがつ',     en:'June',      irr:false },
-    { n:7,  kanji:'七月',   kana:'しちがつ',     en:'July',      irr:true,  note:'not なながつ' },
-    { n:8,  kanji:'八月',   kana:'はちがつ',     en:'August',    irr:false },
-    { n:9,  kanji:'九月',   kana:'くがつ',       en:'September', irr:true,  note:'not きゅうがつ' },
-    { n:10, kanji:'十月',   kana:'じゅうがつ',   en:'October',   irr:false },
-    { n:11, kanji:'十一月', kana:'じゅういちがつ', en:'November', irr:false },
-    { n:12, kanji:'十二月', kana:'じゅうにがつ', en:'December',  irr:false },
+  // Months are a formula, not a table. The rule (number + 月) is the
+  // lesson; surface the rule once with inline canonical examples,
+  // then surface the three exceptions prominently. The 12-cell grid
+  // we used to render was a default — pattern-as-data when the
+  // pattern itself IS the meaningful content.
+  const monthIrregulars = [
+    { n:4, kanji:'四月', kana:'しがつ',   en:'April',     wrong:'よんがつ' },
+    { n:7, kanji:'七月', kana:'しちがつ', en:'July',      wrong:'なながつ' },
+    { n:9, kanji:'九月', kana:'くがつ',   en:'September', wrong:'きゅうがつ' },
   ];
-  const monthCardsHTML = months.map(m => `
-    <div class="dt-month-cell${m.irr ? ' is-irregular' : ''}">
-      <span class="dt-month-num">${m.n}</span>
-      <span class="dt-month-kanji">${escHTML(m.kanji)}</span>
-      <span class="dt-month-kana">${escHTML(m.kana)}</span>
-      <span class="dt-month-en">${escHTML(m.en)}</span>
-      ${m.irr ? `<span class="dt-month-note">${escHTML(m.note)}</span>` : ''}
+  const monthIrregularsHTML = monthIrregulars.map(m => `
+    <div class="dt-month-irr-card">
+      <div class="dt-month-irr-glyph">${escHTML(m.kanji)}</div>
+      <div class="dt-month-irr-kana">${escHTML(m.kana)}</div>
+      <div class="dt-month-irr-en">${escHTML(m.en)}</div>
+      <div class="dt-month-irr-wrong">
+        <span class="dt-month-irr-x">not</span>
+        <span class="ja">${escHTML(m.wrong)}</span>
+      </div>
     </div>`).join('');
 
   // 7 days — Sunday first per JIS standard week start. The image
@@ -17237,17 +17316,32 @@ function renderWritingDatetime(container) {
           ${dayCardsHTML}
         </div>
 
-        <!-- 12 months grid — same Section 1 (the calendar week) and a
-             natural bridge to Section 2 (full dates). 4-column grid,
-             3 rows, 12 months. Each cell shows number / kanji / kana /
-             EN, with the three irregular readings (四 七 九 = same
-             irregulars as the hours) highlighted in gold. -->
-        <div class="dt-block-label"><span class="ja">月</span> · the twelve months</div>
-        <div class="dt-month-grid">
-          ${monthCardsHTML}
+        <!-- Months: formula + exceptions ──────────────────────────
+             Showing all 12 was the AI-default — pattern rendered as a
+             data table. The rule (number + 月 → Nがつ) is the lesson;
+             the work is memorizing the three exceptions. Formula card
+             on top, three exception cards below. -->
+        <div class="dt-block-label"><span class="ja">月</span> · the twelve months — a formula and three exceptions</div>
+
+        <div class="dt-month-formula-card">
+          <div class="dt-month-formula">
+            <span class="dt-month-formula-n">N</span>
+            <span class="dt-month-formula-glyph">月</span>
+            <span class="dt-month-formula-eq">=</span>
+            <span class="dt-month-formula-n">N</span>
+            <span class="dt-month-formula-suffix">がつ</span>
+          </div>
+          <p class="dt-month-formula-explain">
+            Months are just <b>a number + <span class="ja">月</span></b>. <span class="ja">一月 (いちがつ)</span> · <span class="ja">三月 (さんがつ)</span> · <span class="ja">十月 (じゅうがつ)</span> · <span class="ja">十二月 (じゅうにがつ)</span>. Plug any 1–12 into the slot and the reading is just that number + <span class="ja">がつ</span>.
+          </p>
+        </div>
+
+        <div class="dt-month-irr-label">Three readings that bend <em>— memorize as exceptions</em></div>
+        <div class="dt-month-irr-grid">
+          ${monthIrregularsHTML}
         </div>
         <p class="dt-month-footnote">
-          Months follow <span class="ja">[number]月</span> mechanically, but three readings bend (same irregulars as the hours): <span class="ja">四月 しがつ, 七月 しちがつ, 九月 くがつ</span> — the on-readings click into a clipped form.
+          Same irregulars as the hours (<span class="ja">四 七 九</span>): the on-readings clip into a shorter form. Once these three click, every other month follows the formula.
         </p>
       </section>
 
