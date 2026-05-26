@@ -34,6 +34,7 @@ window.PARTICLE_LESSON_BLOCKS = [
   { id:'additive',    title:'Additive',          sub:'も — also, too, even' },
   { id:'range',       title:'Range',             sub:'から と まで — from, until, because' },
   { id:'synthesis',   title:'Synthesis',         sub:'pulling all twelve particles together' },
+  { id:'omission',    title:'Omission',          sub:'when particles disappear — and why' },
 ];
 
 window.PARTICLE_LESSONS = [
@@ -1163,6 +1164,87 @@ window.PARTICLE_LESSONS = [
       'The classic confusions (は/が, に/で, へ/に, と/や) all have clean rules — review them when uncertain.',
       'The X は Y が pattern underlies the most natural Japanese sentences.',
       'Particles are the skeleton — everything else hangs off them. You\'re fluent in the system now.',
+    ],
+  },
+
+  // ════════════════════════════════════════════════════════════════════════
+  // Lesson 18 — Zero が: when the subject marker disappears
+  // ════════════════════════════════════════════════════════════════════════
+  {
+    id:'lesson-18-zero-ga', num:18,
+    titleJa:'ゼロガ', titleEn:'Zero が — when the subject marker disappears',
+    particles:['が','∅'],
+    block:'omission', time:'8 min', status:'ready',
+    intro:`In casual speech, native speakers drop <b>が</b> all the time. <span class="ja">お腹空いた</span> ("I'm hungry") and <span class="ja">時間ある？</span> ("Got time?") both contain a hidden が that linguists call <i>ゼロが</i> — "zero が." The particle is gone from the surface, but the grammatical role it marked is still there. Learning to hear the gap is the difference between sounding like a textbook and sounding like a person.`,
+    steps:[
+      { type:'concept',
+        title:'What "zero が" means',
+        body:`Zero が ( <span class="ja">ゼロガ / ガ格の省略</span> ) is the linguistic name for a <b>dropped</b> subject marker. The subject is still there; the particle that marks it is just invisible. Compare:<br>
+        • Full: <span class="ja">お腹<b style="color:#c97a2c">が</b>空いた</span> — "my stomach has emptied → I'm hungry"<br>
+        • Zero: <span class="ja">お腹<b style="color:#999">∅</b>空いた</span> — same meaning, casual register<br>
+        The "∅" symbol is how linguists mark the slot where が <i>would</i> sit. You don't write it — it's a teaching device.`,
+      },
+      { type:'concept',
+        title:'Zero が is NOT the same as は-topicalization',
+        body:`When you say <span class="ja">私<b style="color:#8a2538">は</b>学生です</span>, <b>は</b> didn't replace <b>が</b> — <b>は</b> made the noun the <i>topic</i>, which happens to suppress the subject marker. That's a different mechanism.<br><br>
+        Zero が is when <i>no marker appears at all</i>, but the noun is still grammatically the subject. Compare:<br>
+        • <span class="ja">田中さん<b style="color:#8a2538">は</b>来ました</span> — topic structure (formal, neutral)<br>
+        • <span class="ja">田中さん<b style="color:#c97a2c">が</b>来ました</span> — subject + が (focus on Tanaka)<br>
+        • <span class="ja">田中さん<b style="color:#999">∅</b>来た</span> — zero が (casual)<br>
+        Same skeletal meaning across all three; only the register and emphasis shift.`,
+      },
+      { type:'concept',
+        title:'Where you hear zero が in the wild',
+        body:`Zero が is heavily concentrated in:<br>
+        • <b>Short casual sentences</b> with <span class="ja">ある / いる / 空く / 痛い / 上手</span>: <span class="ja">時間∅ある？</span> · <span class="ja">頭∅痛い</span> · <span class="ja">弟∅サッカー上手</span><br>
+        • <b>Exclamations</b>: <span class="ja">雨∅降ってきた！</span> · <span class="ja">電車∅来た！</span><br>
+        • <b>Subordinate clauses with question-words</b>: <span class="ja">誰∅来るか分からない</span> ("I don't know who's coming")<br>
+        • <b>Relative clauses</b> (this is where it pairs with の — see Lesson 10): <span class="ja">私∅作った料理</span> ("the dish I made")`,
+      },
+      { type:'concept',
+        title:'When you CANNOT drop が',
+        body:`Zero が breaks down when the listener can't recover the subject. Two reliable triggers <i>force</i> the particle back in:<br>
+        • <b>Question words</b> as subjects: <span class="ja">誰<b style="color:#c97a2c">が</b>来ましたか？</span> ("Who came?") — dropping が here would be ungrammatical, not just casual. Lesson 2's rule still holds.<br>
+        • <b>Contrast / emphasis</b>: <span class="ja">私<b style="color:#c97a2c">が</b>やります</span> ("<i>I'll</i> do it") — pulling が back in is HOW you focus the subject. Drop it and the emphasis dies.<br>
+        Rule of thumb: if the が is doing work (identifying or focusing), keep it. If it's just marking a subject everyone already knows, you can drop it.`,
+      },
+      { type:'concept',
+        title:'Register — when zero が sounds natural vs. wrong',
+        body:`Zero が lives mostly in <b>spoken, casual</b> Japanese. It also appears in writing that mimics speech: manga, song lyrics, casual messages, blog posts.<br><br>
+        It feels <i>wrong</i> in:<br>
+        • Formal writing (essays, reports, news)<br>
+        • Business email<br>
+        • Polite speech to strangers or superiors<br>
+        • Any sentence longer than ~12 syllables, where the listener needs the marker to parse the role<br>
+        When in doubt with a new conversational partner, keep the が. As you get more comfortable in casual settings, you'll start dropping it on instinct.`,
+      },
+      { type:'mistake',
+        title:'The two common traps',
+        body:`• <b>Dropping が in a "who/what" question</b> — <span class="ja">誰来るか？</span> sounds broken. Native speakers do say <span class="ja">誰来る？</span> in very casual speech, but it's the kind of thing that takes years of immersion to pull off. Stick to <span class="ja">誰<b style="color:#c97a2c">が</b>来る？</span> as a learner.<br>
+        • <b>Dropping が in long sentences</b> — <span class="ja">昨日学校でクラスメート手伝った課題終わった</span> is parseable to a native ear but feels lazy and unclear. The full sentence with markers (<span class="ja">クラスメート<b style="color:#c97a2c">が</b>...課題<b style="color:#c97a2c">が</b>...</span>) is what natural Japanese actually does.`,
+      },
+      { type:'concept',
+        title:'The mental model — particles as optional armor',
+        body:`Think of particles as the skeleton's <i>visible</i> armor. In short, casual sentences the underlying skeleton is obvious to both speakers, so the armor comes off and the language gets faster. In longer or more formal sentences the armor stays on so nobody loses the thread.<br><br>
+        Zero が isn't a separate particle — it's <b>the SAME が, just not pronounced</b>. The grammatical role is unchanged. Once you accept that, hearing where it should be becomes second nature.`,
+      },
+      { type:'check',
+        qJa:'お腹___空いた！', qEn:'"I\'m hungry!" — casual spoken Japanese. Which is most natural?',
+        options:['お腹が空いた','お腹は空いた','お腹空いた (zero が)','お腹を空いた'], answer:2,
+        explain:`<b>お腹空いた</b> (zero が) is what you'll hear from a friend at lunch. The <b>が</b> is grammatically there but unmarked. <span class="ja">お腹<b style="color:#c97a2c">が</b>空いた</span> is also correct — slightly more emphatic or careful. <span class="ja">お腹<b style="color:#8a2538">は</b>空いた</span> implies contrast ("my stomach is empty <i>but</i>...") and <span class="ja">を</span> is wrong because 空く is intransitive.`,
+      },
+      { type:'check',
+        qJa:'誰___来ましたか？', qEn:'"Who came?" — particle?',
+        options:['が','は','∅ (drop it)','を'], answer:0,
+        explain:`<b>が</b>. Question words as subjects always take が (Lesson 2, Rule 1). Even though casual speech allows dropping が in many places, question-word subjects are one of the contexts where <i>you cannot</i>. Zero が isn't allowed here.`,
+      },
+    ],
+    takeaways:[
+      'Zero が means the が is grammatically there but not pronounced — the subject role still holds.',
+      'It\'s common in casual speech (esp. with ある / いる / 痛い / 上手 / short exclamations) and in relative clauses.',
+      'It\'s different from は-topicalization — は actively topicalizes; zero が just omits the marker.',
+      'You cannot drop が after a question word as subject, or when contrast/focus is the whole point.',
+      'Heard but rarely taught — internalizing zero が is part of moving from textbook Japanese to spoken Japanese.',
     ],
   },
 ];
