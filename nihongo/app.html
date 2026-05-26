@@ -10886,159 +10886,85 @@
     .dt-day-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* ─── 曜 explainer card — radical-card-style aside ─────────────────
-     The 7 day cards introduce 曜 implicitly. This block right after
-     the grid breaks the kanji open: where it comes from, what it's
-     built from, and the crucial reframe — you never need 曜 outside
-     of these seven appearances, so memorizing it as a standalone
-     character is unnecessary work. */
-  .dt-yo-card {
-    margin-top: 24px;
-    padding: 24px 28px;
-    background: var(--dt-paper);
-    border: 1px solid var(--paper-edge);
-    border-left: 4px solid var(--dt-gold-soft);
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(141,102,48,0.06);
+  /* ─── 月 — the twelve months ──────────────────────────────────────
+     Compact 4-column grid (3 rows × 4 = 12). Smaller cells than the
+     day cards since months don't need illustrations — just number
+     + kanji + kana + EN. Same .is-irregular gold tint as the hour
+     cells in Section 3 so 四月 / 七月 / 九月 surface their bend. */
+  .dt-month-grid {
     display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      "head head"
-      "head head"
-      "decomp decomp"
-      "desc desc"
-      "examples examples";
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
-  .dt-yo-head {
-    grid-area: head;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed rgba(141,102,48,0.25);
-  }
-  .dt-yo-glyph {
-    flex-shrink: 0;
-    width: 88px; height: 88px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--dt-paper-2);
-    border: 1px solid var(--paper-edge);
-    border-radius: 8px;
-    font-family: var(--serif-jp);
-    font-weight: 700;
-    font-size: 56px;
-    color: var(--dt-ink);
-    line-height: 1;
-  }
-  .dt-yo-title {
+  .dt-month-cell {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-  }
-  .dt-yo-titleja {
-    font-family: var(--serif-jp);
-    font-weight: 600;
-    font-size: 22px;
-    color: var(--dt-ink);
-    letter-spacing: 0.04em;
-  }
-  .dt-yo-titleen {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 15px;
-    color: var(--dt-ink-3);
-  }
-  /* Decomposition row — 日 + 翟 → meaning. Reads as a single math
-     expression sentence; chips for the parts, arrow for the result. */
-  .dt-yo-decomp {
-    grid-area: decomp;
-    display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 10px 14px;
-    padding: 12px 16px;
-    background: var(--dt-paper-2);
-    border-radius: 6px;
-    font-family: var(--serif);
-    font-size: 14px;
-    color: var(--dt-ink-2);
-  }
-  .dt-yo-decomp-part {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 6px;
-  }
-  .dt-yo-decomp-part b {
-    font-family: var(--serif-jp);
-    font-weight: 700;
-    font-size: 22px;
-    color: var(--dt-ink);
-    line-height: 1;
-  }
-  .dt-yo-decomp-plus,
-  .dt-yo-decomp-arrow {
-    font-family: var(--serif);
-    color: var(--dt-gold-dark);
-    font-weight: 600;
-  }
-  .dt-yo-decomp-result {
-    font-style: italic;
-    color: var(--dt-ink);
-    line-height: 1.35;
-  }
-  .dt-yo-desc {
-    grid-area: desc;
-    margin: 0;
-    font-family: var(--serif);
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: var(--dt-ink-2);
-  }
-  .dt-yo-desc + .dt-yo-desc { margin-top: -8px; }
-  .dt-yo-desc b { color: var(--dt-ink); font-weight: 600; }
-  .dt-yo-desc .ja {
-    font-family: var(--serif-jp);
-    color: var(--dt-ink);
-  }
-  .dt-yo-examples {
-    grid-area: examples;
-    padding-top: 12px;
-    border-top: 1px dashed rgba(141,102,48,0.25);
-  }
-  .dt-yo-ex-label {
-    display: block;
-    margin-bottom: 8px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 12px;
-    color: var(--dt-ink-3);
-    letter-spacing: 0.06em;
-  }
-  .dt-yo-ex-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .dt-yo-ex {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 12px;
-    background: var(--dt-paper-2);
+    gap: 3px;
+    padding: 12px 10px;
+    background: var(--dt-paper);
     border: 1px solid var(--paper-edge);
     border-radius: 6px;
+    text-align: center;
+  }
+  .dt-month-cell.is-irregular {
+    border-color: var(--dt-gold);
+    background: linear-gradient(180deg, var(--dt-paper) 0%, rgba(180,138,74,0.06) 100%);
+  }
+  .dt-month-num {
+    font-family: var(--serif);
+    font-size: 11px;
+    color: var(--dt-ink-3);
+    font-feature-settings: 'tnum' 1;
+  }
+  .dt-month-kanji {
     font-family: var(--serif-jp);
     font-weight: 600;
-    font-size: 16px;
+    font-size: 20px;
     color: var(--dt-ink);
+    line-height: 1.05;
+  }
+  .dt-month-cell.is-irregular .dt-month-kanji { color: var(--dt-gold-dark); }
+  .dt-month-kana {
+    font-family: var(--serif-jp);
+    font-size: 12px;
+    color: var(--dt-ink-2);
+  }
+  .dt-month-cell.is-irregular .dt-month-kana { color: var(--dt-gold-dark); font-weight: 600; }
+  .dt-month-en {
+    margin-top: 2px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--dt-ink-3);
+    letter-spacing: 0.02em;
+  }
+  .dt-month-note {
+    margin-top: 4px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 10px;
+    color: var(--dt-gold-dark);
+  }
+  .dt-month-footnote {
+    margin: 12px 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--dt-ink-3);
+    line-height: 1.55;
+  }
+  .dt-month-footnote .ja {
+    font-style: normal;
+    font-family: var(--serif-jp);
+    color: var(--dt-ink-2);
   }
   @media (max-width: 720px) {
-    .dt-yo-card { padding: 18px 16px; }
-    .dt-yo-decomp { font-size: 13px; }
-    .dt-yo-glyph { width: 64px; height: 64px; font-size: 40px; }
+    .dt-month-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .dt-month-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   /* ─── 二. Reading dates — three neutral stamps + dl rules ────────────
@@ -17157,6 +17083,33 @@ function renderParticlesSidebar() {
 // numbers (.dt-card), color-coded role stamps from the particle-verb
 // diagram (.dt-stamp variants). Reads as a phrasebook chapter.
 function renderWritingDatetime(container) {
+  // 12 months — read [number]月. Three irregular readings to memorize:
+  // 四月 しがつ (not よんがつ), 七月 しちがつ (not なながつ), 九月 くがつ
+  // (not きゅうがつ). Same irregulars as the hours, same root cause —
+  // these on-readings come from older Sino-Japanese counting.
+  const months = [
+    { n:1,  kanji:'一月',   kana:'いちがつ',     en:'January',   irr:false },
+    { n:2,  kanji:'二月',   kana:'にがつ',       en:'February',  irr:false },
+    { n:3,  kanji:'三月',   kana:'さんがつ',     en:'March',     irr:false },
+    { n:4,  kanji:'四月',   kana:'しがつ',       en:'April',     irr:true,  note:'not よんがつ' },
+    { n:5,  kanji:'五月',   kana:'ごがつ',       en:'May',       irr:false },
+    { n:6,  kanji:'六月',   kana:'ろくがつ',     en:'June',      irr:false },
+    { n:7,  kanji:'七月',   kana:'しちがつ',     en:'July',      irr:true,  note:'not なながつ' },
+    { n:8,  kanji:'八月',   kana:'はちがつ',     en:'August',    irr:false },
+    { n:9,  kanji:'九月',   kana:'くがつ',       en:'September', irr:true,  note:'not きゅうがつ' },
+    { n:10, kanji:'十月',   kana:'じゅうがつ',   en:'October',   irr:false },
+    { n:11, kanji:'十一月', kana:'じゅういちがつ', en:'November', irr:false },
+    { n:12, kanji:'十二月', kana:'じゅうにがつ', en:'December',  irr:false },
+  ];
+  const monthCardsHTML = months.map(m => `
+    <div class="dt-month-cell${m.irr ? ' is-irregular' : ''}">
+      <span class="dt-month-num">${m.n}</span>
+      <span class="dt-month-kanji">${escHTML(m.kanji)}</span>
+      <span class="dt-month-kana">${escHTML(m.kana)}</span>
+      <span class="dt-month-en">${escHTML(m.en)}</span>
+      ${m.irr ? `<span class="dt-month-note">${escHTML(m.note)}</span>` : ''}
+    </div>`).join('');
+
   // 7 days — Sunday first per JIS standard week start. The image
   // (provided in images/kanji/<日曜日>.webp etc.) does the visual
   // work; the elemental kanji moves into the body as a small line
@@ -17284,47 +17237,18 @@ function renderWritingDatetime(container) {
           ${dayCardsHTML}
         </div>
 
-        <!-- 曜 explainer — radical-card-style block sitting right after
-             the day grid. 曜 is daunting at first (18 strokes, the 翟
-             half is rare), so we reframe it: you don't memorize 曜
-             on its own. You meet it 7 times — once per day — and
-             those 7 meetings are the entire job. Mirrors the
-             radical-card visual treatment used for ◆々, ◆工, ◆穴
-             over in the flashcards. -->
-        <div class="dt-yo-card">
-          <div class="dt-yo-head">
-            <span class="dt-yo-glyph">曜</span>
-            <div class="dt-yo-title">
-              <span class="dt-yo-titleja">よう</span>
-              <span class="dt-yo-titleen">day-of-the-week marker</span>
-            </div>
-          </div>
-          <div class="dt-yo-decomp">
-            <span class="dt-yo-decomp-part"><b>日</b> sun · day</span>
-            <span class="dt-yo-decomp-plus">+</span>
-            <span class="dt-yo-decomp-part"><b>翟</b> long-tailed bird</span>
-            <span class="dt-yo-decomp-arrow">→</span>
-            <span class="dt-yo-decomp-result">"shines like a sun-bird"<br>→ celestial body → day of the week</span>
-          </div>
-          <p class="dt-yo-desc">
-            <b>You don't need to memorize 曜 in isolation.</b> It appears in only seven words in everyday Japanese — the seven you just learned. After meeting all seven, you've seen 曜 seven times, which is enough. The right half (<span class="ja">翟</span>) is rare and basically lives inside 曜; you'll never need to write it standalone.
-          </p>
-          <p class="dt-yo-desc">
-            The pattern is dead simple: <span class="ja"><b>[element]曜日</b></span> — sandwich the element between the marker and 日. If you can recognize the seven elements (<span class="ja">日 月 火 水 木 金 土</span>), you can read every day name.
-          </p>
-          <div class="dt-yo-examples">
-            <span class="dt-yo-ex-label">Every appearance in plain Japanese</span>
-            <div class="dt-yo-ex-row">
-              <span class="dt-yo-ex">日曜日</span>
-              <span class="dt-yo-ex">月曜日</span>
-              <span class="dt-yo-ex">火曜日</span>
-              <span class="dt-yo-ex">水曜日</span>
-              <span class="dt-yo-ex">木曜日</span>
-              <span class="dt-yo-ex">金曜日</span>
-              <span class="dt-yo-ex">土曜日</span>
-            </div>
-          </div>
+        <!-- 12 months grid — same Section 1 (the calendar week) and a
+             natural bridge to Section 2 (full dates). 4-column grid,
+             3 rows, 12 months. Each cell shows number / kanji / kana /
+             EN, with the three irregular readings (四 七 九 = same
+             irregulars as the hours) highlighted in gold. -->
+        <div class="dt-block-label"><span class="ja">月</span> · the twelve months</div>
+        <div class="dt-month-grid">
+          ${monthCardsHTML}
         </div>
+        <p class="dt-month-footnote">
+          Months follow <span class="ja">[number]月</span> mechanically, but three readings bend (same irregulars as the hours): <span class="ja">四月 しがつ, 七月 しちがつ, 九月 くがつ</span> — the on-readings click into a clipped form.
+        </p>
       </section>
 
       <!-- Reading dates ────────────────────────────────────────────── -->

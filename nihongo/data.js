@@ -1982,6 +1982,43 @@ window.FLASHCARD_CLASSES = [
           {word:'土曜の昼',     reading:'DOYŌ no hiru',      meaning:'Saturday noon'},
           {word:'土日',         reading:'DONICHI',           meaning:'the weekend (Sat + Sun)'},
         ] },
+      // 曜 — the day-of-the-week marker the learner has now met seven
+      // times. We surface it as its own kanji card right after the
+      // seven days so the closed-set framing lands: every appearance
+      // of 曜 in plain Japanese is one of those seven names plus a
+      // small set of celestial-body compounds. The ◆曜 radical card
+      // that follows decomposes the glyph (日 + 翟) and names the
+      // mnemonic.
+      { id:'you', kanji:'曜', kun:'', on:'ヨウ', en:'day of the week / shining',
+        seeAlso:['日'],
+        strokes:18,
+        notes:'曜 alone almost never appears in modern Japanese — it lives inside the seven 曜日 names and a small set of celestial-body words. Etymology: 日 (sun) + 翟 (a long-tailed bird) → "shines bright like a sun-bird" → celestial body → day of the week. The right half 翟 is rare and basically lives inside this character; you only need to recognize 曜, not write it from scratch.',
+        examples:[
+          {word:'曜日',     reading:'YŌBI',          meaning:'day of the week'},
+          {word:'七曜',     reading:'SHICHIYŌ',      meaning:'the seven celestial bodies / days of the week'},
+          {word:'何曜日',   reading:'NANIYŌBI',      meaning:'what day of the week?'},
+        ] },
+      // ◆曜 — radical-style explainer. The kanji-before-radical rule
+      // holds: meet 曜 as a kanji first, then the radical card lifts
+      // the curtain on the seven-slot closed set. Pedagogically this
+      // is the "you've already met every appearance of this character"
+      // reveal — once the learner sees the chip row of all seven
+      // day names, the daunting 18-stroke glyph collapses into a
+      // memorable closed set.
+      { id:'you-radical', type:'radical',
+        radical:'曜', from:'日',
+        titleJa:'よう', titleEn:'day-of-the-week marker',
+        descEn:'曜 = 日 (sun) + 翟 (long-tailed bird) — historically "shines bright like a sun-bird," narrowed to "celestial body" → day of the week. You don\'t need to memorize this character in isolation: it appears in only seven words in everyday Japanese — the seven days you just learned. After meeting all seven, you\'ve seen 曜 seven times, which is enough.',
+        descJa:'「曜」は 日（太陽）＋ 翟（尾の長い鳥）から成る — もとは「太陽の鳥のように輝く」、そこから「天体」「曜日」へ。右側の「翟」は単独ではほとんど使わない。実用上は七つの曜日のなかでしか出会わないので、その七つを覚えれば「曜」も自然に身についている。',
+        examples:[
+          { kanji:'日曜日', kun:'にちようび', on:'',  en:'Sunday' },
+          { kanji:'月曜日', kun:'げつようび', on:'',  en:'Monday' },
+          { kanji:'火曜日', kun:'かようび',   on:'',  en:'Tuesday' },
+          { kanji:'水曜日', kun:'すいようび', on:'',  en:'Wednesday' },
+          { kanji:'木曜日', kun:'もくようび', on:'',  en:'Thursday' },
+          { kanji:'金曜日', kun:'きんようび', on:'',  en:'Friday' },
+          { kanji:'土曜日', kun:'どようび',   on:'',  en:'Saturday' },
+        ] },
       { id:'before', kanji:'前', kun:'まえ', on:'ゼン', en:'before / front', strokes:9,
         examples:[
           {word:'前',   reading:'mae',  meaning:'before / in front'},
