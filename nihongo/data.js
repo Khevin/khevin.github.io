@@ -1659,8 +1659,47 @@ window.FLASHCARD_CLASSES = [
           {word:'工業', reading:'KŌGYŌ',  meaning:'industry'},
           {word:'大工', reading:'DAIKU',  meaning:'carpenter'},
         ] },
-      { id:'sky',      kanji:'空', kun:'そら',   on:'クウ',   en:'sky',
-        strokes:8, examples:[{word:'空気',reading:'KŪKI',meaning:'air'},{word:'空港',reading:'KŪKŌ',meaning:'airport'},{word:'空色',reading:'sorairo',meaning:'sky blue'}] },
+      // ◆穴 → 穴 cluster — the SECOND piece of 空's breakdown. The
+      // learner just met 工 (the bottom of 空); now they meet 穴 (the
+      // top of 空). Same radical-first ordering exception as ◆工 →
+      // 工 above: shape primes the structural breakdown of 空 that
+      // arrives next. 空 = 穴 (cave) sitting on top of 工 (the
+      // worked-out floor of the cave).
+      { id:'anakanmuri-radical', type:'radical',
+        radical:'穴', from:'穴',
+        titleJa:'あなかんむり', titleEn:'cave / hole crown',
+        descEn:'穴 is a pictograph of a cave dwelling — the 宀 roof sitting over 八, the two splayed legs of the entrance spread apart by the opening. As a "crown" (kanmuri), it plants itself on TOP of compounds about caves, holes, openings, and hidden interior spaces — 空 (cave + worked-floor 工 = the hollow they dug out → "empty / sky"), 窓 (cave + heart = the opening you peer through → "window"), 究 (cave + nine = digging to the deepest point → "investigate"), 突 (cave + dog = the dog bursts out of the den → "poke / thrust").',
+        descJa:'「穴」は岩屋（いわや）— 宀（屋根）の下に八（広がる入口の二本足）が広がる象形。漢字の上にのる「かんむり」として、穴・あな・すきま・奥まった場所を表す漢字につく。例：空（穴の下に工 → 掘り抜いた空間 → 空っぽ・そら）、窓（穴 + 心 → のぞき見る開口 → まど）、究（穴 + 九 → いちばん奥まで → きわめる）、突（穴 + 犬 → 犬が穴から飛び出す → つく）。',
+        examples:[
+          { kanji:'空', kun:'そら',   on:'クウ', en:'empty / sky' },
+          { kanji:'窓', kun:'まど',   on:'ソウ', en:'window' },
+          { kanji:'究', kun:'きわ',   on:'キュウ', en:'investigate deeply' },
+          { kanji:'突', kun:'つ',     on:'トツ', en:'poke / thrust' },
+        ] },
+      { id:'hole',     kanji:'穴', kun:'あな',   on:'ケツ',   en:'hole / cave / opening',
+        seeAlso:['穴'],
+        strokes:5,
+        notes:'The standalone kanji uses the same cave pictograph. Kun-reading あな dominates everyday speech — 穴 alone just means "a hole," from a small puncture to a literal cave. The on-reading ケツ shows up in medical / formal compounds (毛穴 KEANA = pore, 鼻の穴 hana no ana = nostril). Slangy idiom: 穴場 (anaba, "hole-place") = a hidden gem, the secret spot only insiders know.',
+        examples:[
+          {word:'穴',          reading:'ana',           meaning:'hole'},
+          {word:'穴場',        reading:'anaba',         meaning:'hidden gem, secret spot'},
+          {word:'落とし穴',    reading:'otoshi-ana',    meaning:'pitfall / trap'},
+          {word:'鼻の穴',      reading:'hana no ana',   meaning:'nostril'},
+        ] },
+      // The structural payoff — both ingredients (穴 on top, 工 on
+      // the bottom) just landed, so 空 reads as a literal compound
+      // rather than a fresh shape. The mnemonic almost writes itself:
+      // "workers (工) hollowed out a cave (穴) and left it empty (空)."
+      { id:'sky',      kanji:'空', kun:'そら',   on:'クウ',   en:'empty / sky',
+        seeAlso:['穴','工'],
+        strokes:8,
+        notes:'空 = 穴 (cave, on top) + 工 (workers / craftsmanship, underneath). "Workers carved out a cave and left it empty" — so 空 carries both senses: 空っぽ (kara-ppo, empty) and 空 (sora, the sky — that wide empty above us). Same kanji, two opposite-feeling meanings rooted in the same idea of emptiness.',
+        examples:[
+          {word:'空気',  reading:'KŪKI',     meaning:'air (the empty stuff)'},
+          {word:'空港',  reading:'KŪKŌ',     meaning:'airport'},
+          {word:'空色',  reading:'sorairo',  meaning:'sky blue'},
+          {word:'空っぽ', reading:'kara-ppo', meaning:'empty (colloquial)'},
+        ] },
       { id:'cloud',    kanji:'雲', kun:'くも',   on:'ウン',   en:'cloud',
         seeAlso:['雨'],
         strokes:12, examples:[{word:'雨雲',reading:'amagumo',meaning:'rain cloud'},{word:'入道雲',reading:'nyūdōgumo',meaning:'cumulonimbus'},{word:'雲海',reading:'UNKAI',meaning:'sea of clouds'}] },
