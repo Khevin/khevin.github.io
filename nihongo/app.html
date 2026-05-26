@@ -2070,6 +2070,34 @@
     width: 100%; height: 100%;
     border-radius: 4px;
     overflow: hidden;
+    /* Organic torn-paper mask. An SVG <feTurbulence> generates fractal
+       noise; <feDisplacementMap> pushes the edges of a white rect by
+       that noise, producing a wavy / deckle silhouette. The result is
+       used as mask-image on the image-slot host, so:
+         • the rectangular paper-2 image well underneath stays squared
+           (4px border-radius continues to bound the image well)
+         • the IMAGE itself reveals only where the mask is white —
+           which is a torn-paper-shaped subset of the rectangle
+       Empty placeholders are unaffected: image-slot has no rendered
+       content when [readonly]:not([data-filled]), so there's nothing
+       to mask and the paper-2 well shows uniformly.
+
+       baseFrequency 0.022 = large wavelength → ~6-10 organic peaks
+       per edge (not jagged). scale 9 = displacement amplitude ~9% of
+       the SVG canvas → visible deckle, not aggressive shred. The
+       inner <rect> is inset 6% from the SVG bounds so the
+       displacement has room to push outward without clipping at
+       the canvas edge (which would re-introduce a hard straight
+       segment along the tear). */
+    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='3' seed='5' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='9'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
+    -webkit-mask-image: var(--torn-mask);
+            mask-image: var(--torn-mask);
+    -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+            mask-position: center;
   }
   /* No-image flashcards — when the slot is read-only AND no image has
      been uploaded, the inner image-slot hides itself (display:none
