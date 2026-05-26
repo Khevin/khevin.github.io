@@ -1588,10 +1588,15 @@ window.FLASHCARD_CLASSES = [
       },
       { id:'spirit',   kanji:'気', kun:'き',     on:'キ',     en:'spirit / air / energy',
         strokes:6, examples:[{word:'天気',reading:'TENKI',meaning:'weather'},{word:'元気',reading:'GENKI',meaning:'energetic'},{word:'気持ち',reading:'kimochi',meaning:'feeling'}] },
-      { id:'genki',    kanji:'元気', kun:'げんき', on:'',     en:'energetic / lively / in good health',
+      { id:'genki',    kanji:'元気', kun:'げんき', on:'',     en:'well / fine / energetic / lively',
         seeAlso:['気','元'],
-        notes:'元 (gen, origin) + 気 (ki, spirit / energy) — "the energy at one\'s source." The everyday greeting お元気ですか? (How are you?) literally asks "Are you genki?"',
-        examples:[{word:'お元気ですか',reading:'ogenki desu ka',meaning:'how are you?'},{word:'元気な子供',reading:'genki na kodomo',meaning:'energetic child'},{word:'元気を出す',reading:'genki o dasu',meaning:'to cheer up'}] },
+        notes:'元 (gen, origin) + 気 (ki, spirit / energy) — literally "original energy" or "vigorous spirit." It points at the whole package: mental, emotional, and physical life-force. That\'s why お元気ですか? isn\'t just "how are you?" — it\'s asking whether your life-force is intact today. When someone\'s 元気 is low, you offer it back: 元気を出して ("cheer up — get your energy out") or note its absence with 元気ないね ("you don\'t seem yourself").',
+        examples:[
+          {word:'お元気ですか',     reading:'o-genki desu ka',     meaning:'how are you?'},
+          {word:'元気な子供',       reading:'genki na kodomo',     meaning:'energetic child'},
+          {word:'元気を出して',     reading:'genki o dashite',     meaning:'cheer up! (lit. let out your energy)'},
+          {word:'元気ないね',       reading:'genki nai ne',        meaning:"you don't seem well / energetic"},
+        ] },
     ],
   },
   {
