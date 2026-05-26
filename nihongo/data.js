@@ -1862,6 +1862,69 @@ window.FLASHCARD_CLASSES = [
       { id:'leaf',     kanji:'葉', kun:'は',     on:'ヨウ',   en:'leaf',
         seeAlso:['木'],
         strokes:12, examples:[{word:'言葉',reading:'kotoba',meaning:'word'},{word:'葉書',reading:'hagaki',meaning:'postcard'},{word:'紅葉',reading:'KŌYŌ',meaning:'autumn leaves'}] },
+      // 町 → 寸 → 村 → ◆寸 cluster — closes the Society class with the
+      // built-environment that frames social life. 町 (town) and 村
+      // (village) bracket the scale; 寸 (sun, the historical Japanese
+      // inch and "a small bit") sits between them because it's the
+      // structural component of 村 — and once the learner has met it
+      // as a kanji, the ◆寸 radical card lifts the curtain on the
+      // many other characters it builds (守 protect, 寺 temple, 対
+      // versus, 専 specialty, …).
+      { id:'town',  kanji:'町', kun:'まち', on:'チョウ', en:'town / city block', strokes:7,
+        seeAlso:['田'],
+        notes:'町 = 田 (rice paddy) + 丁 (a wooden block / nail). A "town" started as the gridded block of fields that grew into the urban block we still call 町 — every Japanese city is divided into 町, and addresses run NNN番地, M丁目, X町 from the inside out. Kun-reading まち covers the everyday "town" sense; on-reading チョウ shows up in administrative compounds (町長, 町内会, 下町).',
+        examples:[
+          {word:'町',       reading:'machi',        meaning:'town / neighborhood'},
+          {word:'町内',     reading:'CHŌNAI',       meaning:'within the neighborhood'},
+          {word:'下町',     reading:'shitamachi',   meaning:'old downtown / "low town"'},
+          {word:'町長',     reading:'CHŌCHŌ',       meaning:'town mayor'},
+        ] },
+      // 寸 (sun) — the historical Japanese inch (~3 cm), built as a
+      // pictograph of a hand with a thumb marking a small distance.
+      // Survives in modern Japanese mostly as "a little / a bit" and
+      // in set expressions; the on-reading スン is what almost every
+      // compound uses. Pedagogically it lands HERE because it's the
+      // right half of 村 (next card) — meeting the part first lets
+      // the village land as a real compound rather than a fresh
+      // shape.
+      { id:'sun',   kanji:'寸', kun:'',     on:'スン',   en:'sun (small unit) / a bit', strokes:3,
+        notes:'寸 = a pictograph of a hand with the thumb marking a small distance from the wrist — historically the Japanese "inch" (one 寸 ≈ 3 cm). Almost never appears alone in modern Japanese; survives in idioms and measure-words. 一寸 (issun) is "one sun" or "a tiny bit" — 一寸法師 (Issun-bōshi) is the inch-high folktale hero, the Japanese Tom Thumb. 寸前 (sunzen) is "just before" — literally "a bit in front of." As a primitive it shows up in 村 (next card), 守 (protect), 寺 (temple), 対 (versus), 専 (specialty).',
+        examples:[
+          {word:'寸法',     reading:'SUNPŌ',        meaning:'dimensions / measurements'},
+          {word:'一寸',     reading:'CHOTTO',       meaning:'a little / just a moment (also issun)'},
+          {word:'寸前',     reading:'SUNZEN',       meaning:'just before / on the verge of'},
+          {word:'寸劇',     reading:'SUNGEKI',      meaning:'a short skit / sketch'},
+        ] },
+      // 村 — once 寸 has landed, this reads as a compound: 木 (tree)
+      // + 寸 (a hand measuring / a small bit) = "the place where
+      // trees are measured" → the village. The compound IS the
+      // mnemonic; Heisig's "tree + glue" version works too if you
+      // prefer.
+      { id:'village', kanji:'村', kun:'むら', on:'ソン', en:'village', strokes:7,
+        seeAlso:['木', '寸'],
+        notes:'村 = 木 (tree) + 寸 (the small-measure / hand-tool primitive met just above). Read it as "the place where the trees are measured out" — the village as the human-scale clearing inside the forest. Kun-reading むら is the everyday word; on-reading ソン shows up in administrative compounds (村長, 農村, 漁村). The 〜村 suffix is still the legal unit of "village" in Japanese local government, ranked just below 〜町.',
+        examples:[
+          {word:'村',       reading:'mura',         meaning:'village'},
+          {word:'村人',     reading:'murabito',     meaning:'villager'},
+          {word:'村長',     reading:'SONCHŌ',       meaning:'village headman'},
+          {word:'農村',     reading:'NŌSON',        meaning:'farming village'},
+        ] },
+      // ◆寸 — radical-style explainer. Same 寸 the learner just met
+      // as a kanji, but now as a structural piece sitting INSIDE
+      // other characters. Examples picked for variety of position
+      // (right side / underneath / right with company) so the
+      // learner sees the primitive in multiple contexts.
+      { id:'sun-radical', type:'radical',
+        radical:'寸', from:'寸',
+        titleJa:'すん', titleEn:'small-measure radical',
+        descEn:'The same 寸 you just met — but now as a piece inside other characters. The hand-with-thumb pictograph plants itself inside compounds about doing-something-with-the-hand, measuring, holding, and human-scale control. 村 (tree + 寸 = village), 守 (roof + 寸 = the hand under the roof protects), 寺 (the earth-place where hands serve = temple), 対 (text + 寸 = opposing / versus).',
+        descJa:'いま見た「寸」を、漢字の中の部品として見る。手で何かをはかる・つかむ・治めるという意味のしるしになる。例：村（木 + 寸、木を測る場所 → 村）、守（宀 + 寸、屋根の下で手を尽くす → まもる）、寺（土 + 寸、手を尽くす場所 → てら）、対（文 + 寸、手で向き合う → たい）。',
+        examples:[
+          { kanji:'村', kun:'むら', on:'ソン', en:'village' },
+          { kanji:'守', kun:'まも', on:'シュ', en:'protect / guard' },
+          { kanji:'寺', kun:'てら', on:'ジ',   en:'temple' },
+          { kanji:'対', kun:'',    on:'タイ', en:'versus / opposite' },
+        ] },
     ],
   },
   {
