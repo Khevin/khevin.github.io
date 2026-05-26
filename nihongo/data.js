@@ -2553,9 +2553,6 @@ window.FLASHCARD_CLASSES = [
         examples:[{word:'鶏肉',reading:'TORINIKU',meaning:'chicken meat'},{word:'鶏卵',reading:'KEIRAN',meaning:'hen egg'},{word:'養鶏',reading:'YŌKEI',meaning:'poultry farming'}] },
       { id:'octopus',   kanji:'蛸', kun:'たこ',       on:'ショウ', en:'octopus', strokes:15,
         examples:[{word:'蛸焼き',reading:'takoyaki',meaning:'octopus balls'},{word:'蛸壺',reading:'takotsubo',meaning:'octopus pot'}] },
-      { id:'squid',     kanji:'烏賊', kun:'いか',      on:'',       en:'squid',
-        notes:'烏賊 [ika] uses ateji — the kanji are borrowed for sound, not meaning. 烏 means "crow" and 賊 means "thief."',
-        examples:[{word:'イカ墨',reading:'ika sumi',meaning:'squid ink'},{word:'するめいか',reading:'surume ika',meaning:'dried squid'}] },
     ],
   },
   {
