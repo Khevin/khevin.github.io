@@ -17807,14 +17807,38 @@ function renderWritingDatetime(container) {
       if (cx == null || cy == null) return;
       const a = angleFromPointer(cx, cy);
       if (dragging === 'min') {
-        state.m = Math.round(a / 6) % 60;
+        // Wrap-aware minute: crossing 12 forward (59→0) bumps the hour
+        // up; crossing backward (0→59) bumps it down. Detect by signed
+        // delta — if the raw (oldM → newM) diff exceeds half a
+        // revolution, treat as a wraparound in the OPPOSITE direction.
+        // The arithmetic ends up as `finalM = oldM + signedDelta`; the
+        // hour shifts if finalM lands outside [0, 60).
+        const newM = Math.round(a / 6) % 60;
+        let signedDelta = newM - state.m;
+        if (signedDelta >  30) signedDelta -= 60;
+        if (signedDelta < -30) signedDelta += 60;
+        const finalM = state.m + signedDelta;
+        if (finalM < 0)        state.h = (state.h - 1 + 24) % 24;
+        else if (finalM >= 60) state.h = (state.h + 1) % 24;
+        state.m = (finalM + 60) % 60;
       } else if (dragging === 'hour') {
-        // Snap to nearest hour. Preserve AM/PM context — the user
-        // flips period explicitly via the AM/PM button.
+        // Wrap-aware hour: the hour hand cycles the 12-position face
+        // twice per day. Crossing 12 (top) toggles between AM and PM.
+        // We pick whichever of the two candidate h24 values matches
+        // the angle (the AM one and the PM one — e.g., 3 o'clock means
+        // EITHER 3 AM (h=3) OR 3 PM (h=15)) by closest modulo-24
+        // distance to the current state. So dragging clockwise from
+        // 11 AM (h=11) past 12 lands at 12 PM (h=12) rather than 0
+        // (12 AM), because 12 is closer than 0 in the wraparound.
         let h12 = Math.round(a / 30) % 12;
         if (h12 === 0) h12 = 12;
-        const isPM = state.h >= 12;
-        state.h = (h12 % 12) + (isPM ? 12 : 0);
+        const candAm = h12 === 12 ? 0  : h12;       // 12→0   (AM hour)
+        const candPm = h12 === 12 ? 12 : h12 + 12;  // 12→12  (PM hour)
+        const modDist = (x, y) => {
+          const d = Math.abs(x - y) % 24;
+          return Math.min(d, 24 - d);
+        };
+        state.h = modDist(candAm, state.h) <= modDist(candPm, state.h) ? candAm : candPm;
       }
       render();
       e.preventDefault();
