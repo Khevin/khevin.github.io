@@ -1632,6 +1632,33 @@ window.FLASHCARD_CLASSES = [
           {word:'いい天気',  reading:'ii tenki',      meaning:'nice weather'},
           {word:'お天気は？', reading:'o-tenki wa?',   meaning:'how\'s the weather?'},
         ] },
+      // ◆工 → 工 → 空 cluster. Radical-first ordering is the EXCEPTION
+      // here (default rule is kanji-before-radical, see comment in
+      // School class). The exception applies because the learner is
+      // about to meet 空, which has 工 sitting at the bottom — meeting
+      // the SHAPE first (as a structural primer) makes the breakdown
+      // of 空 land cleanly. Same pattern as ◆宀 → 宀 in School.
+      { id:'takumi-radical', type:'radical',
+        radical:'工', from:'工',
+        titleJa:'たくみへん', titleEn:'carpenter\'s square',
+        descEn:'工 is a pictograph of the carpenter\'s right-angle measuring square — the L-shaped tool used to mark and check 90° corners on lumber. The top and bottom strokes are the two arms of the square; the short vertical is the handle joining them. As a component it plants itself inside compounds about WORK, CRAFTING, and MAKING — 空 (a hollow dug out by workers → "empty / sky"), 紅 (thread + 工 = the worked red dye → "crimson"), 江 (water + 工 = water-worked-into-a-channel → "river / inlet"), 功 (work + strength → "merit / achievement").',
+        descJa:'「工」は大工の差し金（さしがね）— 直角を測るL字の道具 — の象形。上下の横棒が定規の二本の腕、縦の短い線が握り。漢字の中に入ると「仕事・工作・つくる」を表すしるしになる。例：空（穴 + 工、職人が掘り出した空間 → 空っぽ・そら）、紅（糸 + 工、染め上げた赤 → くれない）、江（水 + 工、人が掘った水路 → 入り江）、功（工 + 力、骨折って成し遂げる → てがら）。',
+        examples:[
+          { kanji:'空', kun:'そら',   on:'クウ', en:'empty / sky' },
+          { kanji:'紅', kun:'くれない', on:'コウ', en:'crimson' },
+          { kanji:'江', kun:'え',     on:'コウ', en:'creek / inlet' },
+          { kanji:'功', kun:'',       on:'コウ', en:'merit / achievement' },
+        ] },
+      { id:'craft',    kanji:'工', kun:'',       on:'コウ',   en:'work / craft / construction',
+        seeAlso:['工'],
+        strokes:3,
+        notes:'The standalone kanji uses the same carpenter\'s-square pictograph. As a noun on its own 工 means "work" or "craft" in the industrial sense — appears almost entirely in compounds. Read コウ in nearly every compound (工事, 工場, 工業), with the rare 大工 (DAIKU, "big-工" = carpenter) being one of the few that breaks the COW pattern.',
+        examples:[
+          {word:'工事', reading:'KŌJI',   meaning:'construction work'},
+          {word:'工場', reading:'KŌJŌ',   meaning:'factory'},
+          {word:'工業', reading:'KŌGYŌ',  meaning:'industry'},
+          {word:'大工', reading:'DAIKU',  meaning:'carpenter'},
+        ] },
       { id:'sky',      kanji:'空', kun:'そら',   on:'クウ',   en:'sky',
         strokes:8, examples:[{word:'空気',reading:'KŪKI',meaning:'air'},{word:'空港',reading:'KŪKŌ',meaning:'airport'},{word:'空色',reading:'sorairo',meaning:'sky blue'}] },
       { id:'cloud',    kanji:'雲', kun:'くも',   on:'ウン',   en:'cloud',
