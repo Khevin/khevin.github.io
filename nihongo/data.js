@@ -1601,6 +1601,12 @@ window.FLASHCARD_CLASSES = [
         strokes:9, examples:[{word:'草原',reading:'SŌGEN',meaning:'grassland'},{word:'草花',reading:'kusabana',meaning:'wildflower'},{word:'雑草',reading:'ZASSŌ',meaning:'weed'}] },
       { id:'insect',   kanji:'虫', kun:'むし',   on:'チュウ', en:'insect · bichinho (pt)',
         strokes:6, examples:[{word:'虫歯',reading:'mushiba',meaning:'cavity'},{word:'昆虫',reading:'KONCHŪ',meaning:'insect'},{word:'害虫',reading:'GAICHŪ',meaning:'pest'}] },
+      // 風 (wind) — moved over from the old Sky & Seasons class when
+      // that bucket was repurposed for Society. Lives in Nature with
+      // the other living/atmospheric kanji (虫, 雨, 雪, etc.).
+      { id:'wind',     kanji:'風', kun:'かぜ',   on:'フウ',   en:'wind',
+        strokes:9,
+        examples:[{word:'台風',reading:'TAIFŪ',meaning:'typhoon'},{word:'風景',reading:'FŪKEI',meaning:'scenery'},{word:'風邪',reading:'kaze',meaning:'cold (illness)'}] },
       // 元 → 元々 → ◆々 → 気 → 元気 cluster — pedagogical staircase to
       // the compound 元気. Both ingredients (元 and 気) and the iteration
       // mark explainer (◆々) land BEFORE the compound, so when the
@@ -1671,16 +1677,20 @@ window.FLASHCARD_CLASSES = [
     ],
   },
   {
-    // Second Nature bucket — seasonal + sky-cluster kanji split out of the
-    // first Nature class to give it room to breathe. Order: 4 seasons
-    // (calendar order) → sky family (空 then weather/celestial sequence
-    // 花 雪 雲 星 → 葉 as the bridge back to grass/plants which stayed
-    // in the first class).
+    // Society — the bucket that started life as "Sky & Seasons" and got
+    // repurposed once the seasons moved over to Time (they really wanted
+    // to be next to 何時 / 朝 / 昼 / 夜) and 風 moved back to Nature with
+    // 虫 / 雨 / 雪. What stayed are the kanji that describe the human
+    // world: 天 / 天気 (the sky as a social phenomenon), 工 / 穴 / 空
+    // (worked spaces — the carpenter's-square / cave / dug-out sky
+    // cluster), 雲, 花, and the 世 → 界 → 世界 → 世間 spine that names
+    // the social world directly. The glyph leads with 世.
     id: 'sky-seasons',
-    titleJa: 'そらときせつ',
-    titleEn: 'Sky & Seasons',
-    glyph: '空',
-    // Spec §3.7 order: 天 空 雲 星 風 花 葉 春 夏 秋 冬.
+    titleJa: 'しゃかい',
+    titleEn: 'Society',
+    glyph: '世',
+    // Order: 天 → 天気 → 星 → 工 → ◆工 → 穴 → ◆穴 → 空 → 雲 → 花 →
+    //        世 → 界 → 世界 → 世間 → 葉.
     cards: [
       { id:'heaven',   kanji:'天', kun:'あめ',   on:'テン',   en:'heaven / sky',
         strokes:4,
@@ -1693,8 +1703,7 @@ window.FLASHCARD_CLASSES = [
       // heaven) + 気 (spirit / atmosphere / mood) = "the mood of the
       // sky" → weather. Same 気 the learner just met in 元気 over in
       // Nature, so this is the second time it's appearing as the
-      // "atmosphere/mood" half of a compound. Pairs naturally with
-      // the seasonal vocabulary that follows (雲 雨 風 春 夏 秋 冬).
+      // "atmosphere/mood" half of a compound.
       { id:'weather',  kanji:'天気', kun:'てんき', on:'',       en:'weather',
         seeAlso:['天','気'],
         notes:'天 (ten, sky) + 気 (ki, spirit / atmosphere) — literally "the mood of the sky." The same 気 used in 元気 (original-energy → well/fine), here describing the atmosphere itself. 天気予報 (TENKI YOHŌ) is the weather forecast you see on TV; お天気 (with the polite お-) is how it sounds in everyday conversation.',
@@ -1703,6 +1712,12 @@ window.FLASHCARD_CLASSES = [
           {word:'いい天気',  reading:'ii tenki',      meaning:'nice weather'},
           {word:'お天気は？', reading:'o-tenki wa?',   meaning:'how\'s the weather?'},
         ] },
+      // 星 — paired with the sky/atmosphere triplet (天 → 天気 → 星)
+      // so the celestial-overhead cluster lands together before we
+      // pivot down to the worked-spaces sequence (工 / 穴 / 空).
+      { id:'star',     kanji:'星', kun:'ほし',   on:'セイ',   en:'star',
+        seeAlso:['日'],
+        strokes:9, examples:[{word:'星座',reading:'SEIZA',meaning:'constellation'},{word:'流れ星',reading:'nagareboshi',meaning:'shooting star'},{word:'星空',reading:'hoshizora',meaning:'starry sky'}] },
       // 工 → ◆工 → 穴 → ◆穴 → 空 cluster — follows the default
       // kanji-before-radical rule (commit 601598f). The learner meets
       // the glyph + illustration FIRST, then the radical card lifts
@@ -1768,20 +1783,15 @@ window.FLASHCARD_CLASSES = [
       { id:'cloud',    kanji:'雲', kun:'くも',   on:'ウン',   en:'cloud',
         seeAlso:['雨'],
         strokes:12, examples:[{word:'雨雲',reading:'amagumo',meaning:'rain cloud'},{word:'入道雲',reading:'nyūdōgumo',meaning:'cumulonimbus'},{word:'雲海',reading:'UNKAI',meaning:'sea of clouds'}] },
-      { id:'star',     kanji:'星', kun:'ほし',   on:'セイ',   en:'star',
-        seeAlso:['日'],
-        strokes:9, examples:[{word:'星座',reading:'SEIZA',meaning:'constellation'},{word:'流れ星',reading:'nagareboshi',meaning:'shooting star'},{word:'星空',reading:'hoshizora',meaning:'starry sky'}] },
-      { id:'wind',     kanji:'風', kun:'かぜ',   on:'フウ',   en:'wind',
-        strokes:9,
-        examples:[{word:'台風',reading:'TAIFŪ',meaning:'typhoon'},{word:'風景',reading:'FŪKEI',meaning:'scenery'},{word:'風邪',reading:'kaze',meaning:'cold (illness)'}] },
       { id:'flower',   kanji:'花', kun:'はな',   on:'カ',     en:'flower',
         seeAlso:['茶'],
         strokes:7, examples:[{word:'花火',reading:'hanabi',meaning:'fireworks'},{word:'花見',reading:'hanami',meaning:'flower viewing'},{word:'生け花',reading:'ikebana',meaning:'flower arrangement'}] },
-      // 世 → 世界 — the learner already met 廿 in Numbers as a kanji and
-      // as a primitive. Here 世 ("world, generation") cashes that
-      // pattern in: same 廿 silhouette sitting on top of 一 with a
-      // small vertical stroke through it. 世界 (sekai) then welds 世 to
-      // 界 ("boundary") to form the everyday word for "world."
+      // 世 → 界 → 世界 → 世間 — the social-world spine of the class.
+      // The learner already met 廿 in Numbers as a kanji and as a
+      // primitive. Here 世 cashes that pattern in (same 廿 silhouette
+      // over a wide base), 界 names "bounded sphere," and the two
+      // weld together into 世界 (the geographic world) and 世間 (the
+      // social one).
       { id:'generation', kanji:'世', kun:'よ', on:'セイ', en:'world / generation / era',
         seeAlso:['廿'],
         strokes:5,
@@ -1792,8 +1802,24 @@ window.FLASHCARD_CLASSES = [
           {word:'二世',     reading:'NISEI',         meaning:'second generation'},
           {word:'中世',     reading:'CHŪSEI',        meaning:'the Middle Ages'},
         ] },
+      // 界 — the second ingredient of 世界 (and the one less likely to
+      // stand alone in everyday speech). 田 (rice paddy) + 介 (a person
+      // wedged between two boundaries) — Heisig reads it as "the
+      // person standing between two fields" → boundary, sphere, realm.
+      // Once 界 lands, 世界 reads as a compound rather than a fresh
+      // shape: 世 (era / world) + 界 (bounded sphere) = "the bounded
+      // realm of an era."
+      { id:'boundary', kanji:'界', kun:'',     on:'カイ',   en:'boundary / sphere / realm',
+        strokes:9,
+        notes:'界 alone is rare in everyday Japanese — it mostly lives inside compounds. 田 (rice paddy) over 介 (a person wedged between two strokes) → "the boundary between fields," then extended to any "sphere" or "realm" (academic, business, natural). 世界 (the world), 業界 (an industry / "trade-sphere"), 限界 (the limit), 自然界 (the natural world).',
+        examples:[
+          {word:'業界',   reading:'GYŌKAI',   meaning:'industry / trade'},
+          {word:'限界',   reading:'GENKAI',   meaning:'limit / boundary'},
+          {word:'自然界', reading:'SHIZENKAI',meaning:'the natural world'},
+          {word:'政界',   reading:'SEIKAI',   meaning:'political world'},
+        ] },
       { id:'sekai',    kanji:'世界', kun:'せかい', on:'',       en:'the world',
-        seeAlso:['世'],
+        seeAlso:['世','界'],
         notes:'世 (sei, world / generation) + 界 (kai, boundary / sphere) — literally "the bounded realm of an era." Where 世 on its own leans toward "society" or "the age," 世界 specifically means the geographic and human world. 世界中 (sekaijuu) means "all over the world"; 世界一 (sekai-ichi) means "the best in the world."',
         examples:[
           {word:'世界中',     reading:'sekai-juu',     meaning:'all over the world'},
@@ -1811,15 +1837,6 @@ window.FLASHCARD_CLASSES = [
       { id:'leaf',     kanji:'葉', kun:'は',     on:'ヨウ',   en:'leaf',
         seeAlso:['木'],
         strokes:12, examples:[{word:'言葉',reading:'kotoba',meaning:'word'},{word:'葉書',reading:'hagaki',meaning:'postcard'},{word:'紅葉',reading:'KŌYŌ',meaning:'autumn leaves'}] },
-      { id:'spring',   kanji:'春', kun:'はる',   on:'シュン', en:'spring',
-        strokes:9, examples:[{word:'春分',reading:'SHUNBUN',meaning:'spring equinox'},{word:'春休み',reading:'haruyasumi',meaning:'spring break'},{word:'青春',reading:'SEISHUN',meaning:'youth'}] },
-      { id:'summer',   kanji:'夏', kun:'なつ',   on:'カ',     en:'summer',
-        strokes:10, examples:[{word:'夏休み',reading:'natsuyasumi',meaning:'summer break'},{word:'夏至',reading:'GESHI',meaning:'summer solstice'},{word:'真夏',reading:'manatsu',meaning:'midsummer'}] },
-      { id:'autumn',   kanji:'秋', kun:'あき',   on:'シュウ', en:'autumn',
-        seeAlso:['火'],
-        strokes:9, examples:[{word:'秋分',reading:'SHŪBUN',meaning:'autumn equinox'},{word:'秋風',reading:'akikaze',meaning:'autumn breeze'},{word:'秋田',reading:'AKITA',meaning:'Akita'}] },
-      { id:'winter',   kanji:'冬', kun:'ふゆ',   on:'トウ',   en:'winter',
-        strokes:5, examples:[{word:'冬休み',reading:'fuyuyasumi',meaning:'winter break'},{word:'冬至',reading:'TŌJI',meaning:'winter solstice'},{word:'冬眠',reading:'TŌMIN',meaning:'hibernation'}] },
     ],
   },
   {
@@ -1884,6 +1901,20 @@ window.FLASHCARD_CLASSES = [
           {word:'午後', reading:'GOGO', meaning:'afternoon / PM'},
           {word:'最後', reading:'SAIGO', meaning:'last / final'},
         ] },
+      // 春夏秋冬 — the four seasons. Moved over from the old Sky &
+      // Seasons class (now Society) because the seasons are time
+      // markers more than weather: they live alongside 朝 / 昼 / 夕 /
+      // 夜 (parts of the day) and 年 / 月 / 週 (longer time spans).
+      // Calendar order: spring → summer → autumn → winter.
+      { id:'spring',   kanji:'春', kun:'はる',   on:'シュン', en:'spring',
+        strokes:9, examples:[{word:'春分',reading:'SHUNBUN',meaning:'spring equinox'},{word:'春休み',reading:'haruyasumi',meaning:'spring break'},{word:'青春',reading:'SEISHUN',meaning:'youth'}] },
+      { id:'summer',   kanji:'夏', kun:'なつ',   on:'カ',     en:'summer',
+        strokes:10, examples:[{word:'夏休み',reading:'natsuyasumi',meaning:'summer break'},{word:'夏至',reading:'GESHI',meaning:'summer solstice'},{word:'真夏',reading:'manatsu',meaning:'midsummer'}] },
+      { id:'autumn',   kanji:'秋', kun:'あき',   on:'シュウ', en:'autumn',
+        seeAlso:['火'],
+        strokes:9, examples:[{word:'秋分',reading:'SHŪBUN',meaning:'autumn equinox'},{word:'秋風',reading:'akikaze',meaning:'autumn breeze'},{word:'秋田',reading:'AKITA',meaning:'Akita'}] },
+      { id:'winter',   kanji:'冬', kun:'ふゆ',   on:'トウ',   en:'winter',
+        strokes:5, examples:[{word:'冬休み',reading:'fuyuyasumi',meaning:'winter break'},{word:'冬至',reading:'TŌJI',meaning:'winter solstice'},{word:'冬眠',reading:'TŌMIN',meaning:'hibernation'}] },
       { id:'what', kanji:'何', kun:'なに', on:'カ', en:'what / how many', strokes:7,
         examples:[
           {word:'何時', reading:'NANJI',  meaning:'what time'},
@@ -2277,6 +2308,71 @@ window.FLASHCARD_CLASSES = [
     ],
   },
   {
+    id: 'rooms',
+    titleJa: 'へや',
+    titleEn: 'Rooms',
+    glyph: '室',
+    // Spec §3.12 order: [◆宀 — added in Batch 4] 戸 門 開 閉 窓 床 天井 棚 本棚.
+    // 出 carved out for Verbs (Task 16) — full card preserved in scratch
+    // comment near the eventual Verbs slot. 閤 dropped (rare).
+    cards: [
+      { id:'door',      kanji:'戸',   kun:'と',     on:'コ',         en:'door',
+        strokes:4,
+        examples:[
+          {word:'戸棚',reading:'todana',meaning:'cupboard'},
+          {word:'木戸',reading:'kido',meaning:'wooden gate'},
+          {word:'戸口',reading:'toguchi',meaning:'doorway'},
+        ] },
+      { id:'gate',      kanji:'門',   kun:'かど',   on:'モン',       en:'gate',
+        strokes:8,
+        examples:[
+          {word:'門前',reading:'MONZEN',meaning:'before the gate'},
+          {word:'専門',reading:'SENMON',meaning:'specialty'},
+          {word:'正門',reading:'SEIMON',meaning:'main gate'},
+        ] },
+      { id:'open',      kanji:'開',   kun:'ひら',   on:'カイ',       en:'open',
+        strokes:12,
+        examples:[
+          {word:'開始',reading:'KAISHI',meaning:'start'},
+          {word:'公開',reading:'KŌKAI',meaning:'public release'},
+          {word:'開く',reading:'hiraku',meaning:'to open'},
+        ] },
+      { id:'close',     kanji:'閉',   kun:'し',     on:'ヘイ',       en:'close / shut',
+        seeAlso:['門'],
+        strokes:11,
+        examples:[
+          {word:'閉める', reading:'shimeru', meaning:'to close (tr.)'},
+          {word:'閉まる', reading:'shimaru', meaning:'to close (intr.)'},
+          {word:'閉店',   reading:'HEITEN',  meaning:'shop closing'},
+        ] },
+      { id:'window',    kanji:'窓',   kun:'まど',   on:'ソウ',       en:'window',
+        strokes:11,
+        examples:[
+          {word:'窓口',reading:'madoguchi',meaning:'counter / window'},
+          {word:'窓際',reading:'madogiwa',meaning:'by the window'},
+          {word:'窓辺',reading:'madobe',meaning:'windowsill'},
+        ] },
+      { id:'floor',     kanji:'床',   kun:'ゆか',   on:'ショウ',     en:'floor',
+        strokes:7,
+        examples:[
+          {word:'床の間',reading:'tokonoma',meaning:'alcove'},
+          {word:'起床',reading:'KISHŌ',meaning:'getting up'},
+          {word:'床屋',reading:'tokoya',meaning:'barber'},
+        ] },
+      { id:'ceiling',   kanji:'天井', kun:'てんじょう', on:'テンジョウ', en:'ceiling',
+        strokes:8 },
+      { id:'shelf',     kanji:'棚',   kun:'たな',   on:'',           en:'shelf',
+        strokes:12,
+        examples:[
+          {word:'本棚',reading:'hondana',meaning:'bookshelf'},
+          {word:'棚上げ',reading:'tanaage',meaning:'shelving'},
+          {word:'戸棚',reading:'todana',meaning:'cupboard'},
+        ] },
+      { id:'bookshelf', kanji:'本棚', kun:'ほんだな', on:'ホンダナ',   en:'bookshelf',
+        strokes:17 },
+    ],
+  },
+  {
     id: 'places',
     titleJa: 'ばしょ',
     titleEn: 'Places & Compass',
@@ -2361,71 +2457,6 @@ window.FLASHCARD_CLASSES = [
           {word:'駅前',     reading:'ekimae',    meaning:'in front of the station'},
           {word:'東京駅',   reading:'TŌKYŌ-eki', meaning:'Tokyo Station'},
         ] },
-    ],
-  },
-  {
-    id: 'rooms',
-    titleJa: 'へや',
-    titleEn: 'Rooms',
-    glyph: '室',
-    // Spec §3.12 order: [◆宀 — added in Batch 4] 戸 門 開 閉 窓 床 天井 棚 本棚.
-    // 出 carved out for Verbs (Task 16) — full card preserved in scratch
-    // comment near the eventual Verbs slot. 閤 dropped (rare).
-    cards: [
-      { id:'door',      kanji:'戸',   kun:'と',     on:'コ',         en:'door',
-        strokes:4,
-        examples:[
-          {word:'戸棚',reading:'todana',meaning:'cupboard'},
-          {word:'木戸',reading:'kido',meaning:'wooden gate'},
-          {word:'戸口',reading:'toguchi',meaning:'doorway'},
-        ] },
-      { id:'gate',      kanji:'門',   kun:'かど',   on:'モン',       en:'gate',
-        strokes:8,
-        examples:[
-          {word:'門前',reading:'MONZEN',meaning:'before the gate'},
-          {word:'専門',reading:'SENMON',meaning:'specialty'},
-          {word:'正門',reading:'SEIMON',meaning:'main gate'},
-        ] },
-      { id:'open',      kanji:'開',   kun:'ひら',   on:'カイ',       en:'open',
-        strokes:12,
-        examples:[
-          {word:'開始',reading:'KAISHI',meaning:'start'},
-          {word:'公開',reading:'KŌKAI',meaning:'public release'},
-          {word:'開く',reading:'hiraku',meaning:'to open'},
-        ] },
-      { id:'close',     kanji:'閉',   kun:'し',     on:'ヘイ',       en:'close / shut',
-        seeAlso:['門'],
-        strokes:11,
-        examples:[
-          {word:'閉める', reading:'shimeru', meaning:'to close (tr.)'},
-          {word:'閉まる', reading:'shimaru', meaning:'to close (intr.)'},
-          {word:'閉店',   reading:'HEITEN',  meaning:'shop closing'},
-        ] },
-      { id:'window',    kanji:'窓',   kun:'まど',   on:'ソウ',       en:'window',
-        strokes:11,
-        examples:[
-          {word:'窓口',reading:'madoguchi',meaning:'counter / window'},
-          {word:'窓際',reading:'madogiwa',meaning:'by the window'},
-          {word:'窓辺',reading:'madobe',meaning:'windowsill'},
-        ] },
-      { id:'floor',     kanji:'床',   kun:'ゆか',   on:'ショウ',     en:'floor',
-        strokes:7,
-        examples:[
-          {word:'床の間',reading:'tokonoma',meaning:'alcove'},
-          {word:'起床',reading:'KISHŌ',meaning:'getting up'},
-          {word:'床屋',reading:'tokoya',meaning:'barber'},
-        ] },
-      { id:'ceiling',   kanji:'天井', kun:'てんじょう', on:'テンジョウ', en:'ceiling',
-        strokes:8 },
-      { id:'shelf',     kanji:'棚',   kun:'たな',   on:'',           en:'shelf',
-        strokes:12,
-        examples:[
-          {word:'本棚',reading:'hondana',meaning:'bookshelf'},
-          {word:'棚上げ',reading:'tanaage',meaning:'shelving'},
-          {word:'戸棚',reading:'todana',meaning:'cupboard'},
-        ] },
-      { id:'bookshelf', kanji:'本棚', kun:'ほんだな', on:'ホンダナ',   en:'bookshelf',
-        strokes:17 },
     ],
   },
   {

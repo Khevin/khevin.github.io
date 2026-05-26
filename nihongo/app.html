@@ -3265,9 +3265,12 @@
     justify-content: center;
     transition: opacity .18s;
   }
-  /* Default: image face visible, back hidden. Click toggles data-flip. */
-  .wrapup-tile[data-flip="0"] .wrapup-face-back  { opacity: 0; pointer-events: none; }
-  .wrapup-tile[data-flip="1"] .wrapup-face-image { opacity: 0; pointer-events: none; }
+  /* Default: glyph + readings face visible, image hidden. Click toggles
+     data-flip to reveal the image. Inverted from the original layout
+     because the learner has just finished the deck — the readings are
+     what they're testing themselves on, and the image is the reveal. */
+  .wrapup-tile[data-flip="0"] .wrapup-face-image { opacity: 0; pointer-events: none; }
+  .wrapup-tile[data-flip="1"] .wrapup-face-back  { opacity: 0; pointer-events: none; }
 
   .wrapup-face-image image-slot {
     width: 100%; height: 100%;
