@@ -12076,14 +12076,20 @@ function renderVocab(container) {
   if (hasPages && APP.vocabPageIdx >= book.pages.length) APP.vocabPageIdx = 0;
   const page = hasPages ? book.pages[APP.vocabPageIdx] : null;
 
-  // Bottom pager is suppressed only for *multi-chain* hub books (Fast
-  // Food, Street Food) where the top chain selector replaces it.
+  // Bottom pager is suppressed in two cases:
+  //   1. *Multi-chain* hub books (Fast Food, Street Food) where the
+  //      top chain selector replaces it.
+  //   2. *Single-page* books (e.g. jougo → intro → jougo-explainer)
+  //      where the stepper would be a one-step nav with nowhere to
+  //      step. The page stands alone; the stepper would just clutter
+  //      the top of the viewport.
   // Single-chain hub books (Sushi, Omakase, Izakaya, Ramen) keep the
   // pager — it steps between vocab / explanation / menu-reference.
   const isMultiChainHub = book && book.isCategoryHub
     && book.pages && book.pages.length > 1
     && book.pages.every(p => p.chainName);
-  const showPager = hasPages && !isMultiChainHub;
+  const isSinglePage = hasPages && book.pages.length === 1;
+  const showPager = hasPages && !isMultiChainHub && !isSinglePage;
   // Stepper — full-width horizontal step indicator. Each step is a
   // clickable column with a numbered marker, JP step label, and EN
   // sub-label. Connectors between markers color gold as you progress
