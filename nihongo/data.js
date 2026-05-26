@@ -1497,6 +1497,33 @@ window.FLASHCARD_CLASSES = [
           {word:'双子座',   reading:'futagoza',        meaning:'Gemini (zodiac)'},
           {word:'一卵性双生児', reading:'ichirantai sōseiji', meaning:'identical twins'},
         ] },
+      // 云 → ◆厶 cluster — follows the kanji-before-radical rule. 云
+      // is the standalone glyph (rare in modern Japanese as a verb,
+      // but the structural pictograph the learner needs to recognize
+      // the 厶 component sitting at the bottom). ◆厶 then names the
+      // role that bottom-shape plays across the writing system:
+      // "private / personal / I" — the curled-up self.
+      { id:'say-classical', kanji:'云', kun:'い',    on:'ウン',  en:'say (classical) / so they say',
+        seeAlso:['言'],
+        strokes:4,
+        notes:'The classical / literary verb for "to say" — replaced by 言う in modern speech, but still alive in set phrases. 云 = 二 (two) on top + 厶 (the curled-up self) at the bottom: an old pictograph of breath spiraling up out of a mouth into the air. Lives on inside 雲 (cloud) where that same breath becomes vapor, and in stiff written phrases like 〜と云う = "what is called 〜" (the more bookish twin of 〜という).',
+        examples:[
+          {word:'云う',    reading:'iu',         meaning:'to say (classical / literary)'},
+          {word:'と云う',  reading:'to iu',      meaning:'called / known as (formal)'},
+          {word:'云々',    reading:'unnun',      meaning:'and so on, etcetera'},
+          {word:'伝々云々', reading:'denden-unnun', meaning:'blah blah blah (dismissive)'},
+        ] },
+      { id:'mu-radical', type:'radical',
+        radical:'厶', from:'厶',
+        titleJa:'む', titleEn:'private · I · myself',
+        descEn:'A curled-up shape — historically a pictograph of an arm wrapped around something to keep it for oneself. The character that means "private" or "personal" in its original sense. 厶 plants itself at the bottom or side of compounds about the SELF, what is HELD CLOSE, what is KEPT BACK — 私 (grain + 厶 = "my own grain" → "I, private"), 公 (八 split-open over 厶 = "what is no longer private" → "public"), 弘 (bow + 厶 = drawn back wide → "vast"), and the 云 you just met (breath spiraling up from the self).',
+        descJa:'「厶」は、自分の腕で何かを抱え込む形 — もとは「私的なもの・自分のもの」を表す字。漢字の下や横にすわって「自分・自我・かかえこむ」を表すしるしになる。例：私（禾 + 厶 → 自分の米 → わたし）、公（八 + 厶 → 私を割って開く → おおやけ）、弘（弓 + 厶 → 弓をひろく引く → ひろい）、いま見た云（自分から立ちのぼる息）。',
+        examples:[
+          { kanji:'私', kun:'わたし', on:'シ',  en:'I / private' },
+          { kanji:'公', kun:'おおやけ', on:'コウ', en:'public / official' },
+          { kanji:'弘', kun:'ひろ',   on:'コウ', en:'vast / spread wide' },
+          { kanji:'云', kun:'い',     on:'ウン', en:'say (classical)' },
+        ] },
     ],
   },
   {
