@@ -1403,6 +1403,138 @@
   .jougo-tile.jougo-tile-illus .jougo-tile-glyph {
     margin-top: 12px;          /* breathing room between image and glyph */
   }
+  /* Illustrated tiles act as buttons — open a modal with the larger
+     illustration + an example sentence on click. Cursor + subtle lift on
+     hover signal the affordance; keyboard users get a focus ring. */
+  .jougo-tile[data-jougo-modal] { cursor: pointer; }
+  .jougo-tile[data-jougo-modal]:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  /* ─── Jougo example modal ─────────────────────────────────────────
+     A native <dialog> opened from the illustrated jōgo tiles. Shows
+     the illustration enlarged on top, then the glyph + reading + gloss
+     stack, then one strong example sentence (JP big serif, EN italic
+     underneath). Paper texture + gold-soft halo match the editorial
+     flashcard family so the modal reads as part of the same world. */
+  dialog.jougo-modal {
+    border: none;
+    padding: 0;
+    background: transparent;
+    max-width: 640px;
+    width: calc(100% - 32px);
+    max-height: 90vh;
+    overflow: visible;
+    color: var(--ink);
+  }
+  dialog.jougo-modal::backdrop {
+    background: rgba(60, 40, 10, 0.42);
+    backdrop-filter: blur(2px);
+  }
+  .jougo-modal-card {
+    background: var(--paper-2);
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 1px var(--paper-edge),
+      0 0 0 5px var(--paper-2),
+      0 0 0 6px var(--gold-soft),
+      0 18px 48px rgba(60, 40, 10, 0.28);
+    overflow: hidden;
+    position: relative;
+    max-height: 90vh;
+    display: flex; flex-direction: column;
+  }
+  .jougo-modal-image-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--paper);
+    overflow: hidden;
+    flex: 0 0 auto;
+  }
+  .jougo-modal-image {
+    display: block;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+  }
+  .jougo-modal-body {
+    padding: 22px 26px 26px;
+    display: flex; flex-direction: column;
+    gap: 10px;
+    overflow: auto;
+  }
+  .jougo-modal-glyph {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(36px, 5vw, 52px);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .jougo-modal-reading {
+    font-family: var(--serif-jp);
+    font-size: 18px;
+    color: var(--ink-2);
+    margin-top: -2px;
+  }
+  .jougo-modal-en {
+    font-family: var(--serif); font-style: italic;
+    font-size: 14px;
+    color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+  .jougo-modal-example {
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--paper-edge);
+    display: flex; flex-direction: column;
+    gap: 6px;
+  }
+  .jougo-modal-example-eyebrow {
+    font-family: var(--serif); font-style: italic;
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .jougo-modal-example .jp {
+    font-family: var(--serif-jp);
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .jougo-modal-example .en {
+    font-family: var(--serif); font-style: italic;
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .jougo-modal-close {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: rgba(252, 248, 240, 0.92);
+    border: 1px solid var(--paper-edge);
+    color: var(--ink-2);
+    font-size: 18px; line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(60, 40, 10, 0.16);
+    transition: background .15s, color .15s, transform .12s;
+    z-index: 1;
+  }
+  .jougo-modal-close:hover {
+    background: var(--paper);
+    color: var(--ink);
+    transform: scale(1.06);
+  }
+  @media (max-width: 480px) {
+    .jougo-modal-image-wrap { aspect-ratio: 4 / 3; }
+    .jougo-modal-body { padding: 18px 18px 22px; }
+  }
   .jougo-tile-glyph {
     font-family: var(--serif-jp);
     font-size: 24px;
@@ -18220,6 +18352,87 @@ function renderDictionary(container) {
 window.addEventListener('hashchange', () => {
   const s = hashSection();
   if (s !== APP.section) { APP.section = s; const cl = document.querySelector('.app').classList; cl.toggle('show-vocab-sidebar', s === 'vocab'); cl.toggle('show-flash-sidebar', s === 'flashcards'); cl.toggle('show-writing-sidebar', s === 'writing'); cl.toggle('show-particles-sidebar', shouldShowParticlesSidebar()); /* updateSidebar() FIRST so the tier-1 brush enters the render-cycle queue before any tier-2/3 brushes from renderMain — order in the queue determines cascade order. */ updateSidebar(); renderMain(); }
+});
+
+// ── Jougo example modal ─────────────────────────────────────────────────
+// Each illustrated tile on the jougo intro page (vocab → jougo → intro)
+// carries data-ex-jp / data-ex-en plus its glyph/reading/gloss as DOM
+// children. Clicking the tile (or Enter / Space when focused) opens a
+// native <dialog> built lazily on first use. The dialog shows: larger
+// image, glyph, kana reading, English gloss, and one example sentence
+// (JP big serif + EN italic). Closes via the × button, backdrop click,
+// or Escape (native dialog behavior).
+let _jougoModal = null;
+function ensureJougoModal() {
+  if (_jougoModal) return _jougoModal;
+  const dlg = document.createElement('dialog');
+  dlg.className = 'jougo-modal';
+  dlg.innerHTML = `
+    <div class="jougo-modal-card">
+      <button class="jougo-modal-close" aria-label="close (Esc)">×</button>
+      <div class="jougo-modal-image-wrap">
+        <img class="jougo-modal-image" alt="">
+      </div>
+      <div class="jougo-modal-body">
+        <div class="jougo-modal-glyph"></div>
+        <div class="jougo-modal-reading"></div>
+        <div class="jougo-modal-en"></div>
+        <div class="jougo-modal-example">
+          <span class="jougo-modal-example-eyebrow">example</span>
+          <p class="jp"></p>
+          <p class="en"></p>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(dlg);
+  // Close button
+  dlg.querySelector('.jougo-modal-close').addEventListener('click', () => dlg.close());
+  // Backdrop click — close when the click lands on the dialog element itself
+  // (not inside the card). Native <dialog> reports the click at dialog level
+  // when the user clicks the ::backdrop; the card stops propagation below.
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg) dlg.close();
+  });
+  // Stop card-internal clicks from bubbling up and triggering the backdrop
+  // close path. Without this, clicking the image would close the modal.
+  dlg.querySelector('.jougo-modal-card').addEventListener('click', (e) => e.stopPropagation());
+  _jougoModal = dlg;
+  return dlg;
+}
+function openJougoModal(tile) {
+  const dlg = ensureJougoModal();
+  const img    = tile.querySelector('.jougo-tile-img');
+  const glyph  = (tile.querySelector('.jougo-tile-glyph')   || {}).textContent || '';
+  const read   = (tile.querySelector('.jougo-tile-reading') || {}).textContent || '';
+  const en     = (tile.querySelector('.jougo-tile-en')      || {}).textContent || '';
+  const exJp   = tile.dataset.exJp || '';
+  const exEn   = tile.dataset.exEn || '';
+  const modalImg = dlg.querySelector('.jougo-modal-image');
+  if (img && img.src) { modalImg.src = img.src; modalImg.alt = en || glyph; }
+  dlg.querySelector('.jougo-modal-glyph').textContent   = glyph;
+  dlg.querySelector('.jougo-modal-reading').textContent = read;
+  dlg.querySelector('.jougo-modal-en').textContent      = en;
+  dlg.querySelector('.jougo-modal-example .jp').textContent = exJp;
+  dlg.querySelector('.jougo-modal-example .en').textContent = exEn;
+  if (typeof dlg.showModal === 'function') dlg.showModal();
+  else dlg.setAttribute('open', '');
+}
+// Document-level delegate — works regardless of when the explainer body
+// gets injected, since vocab/jougo/intro is rendered into the main panel
+// via innerHTML without a per-render attach step.
+document.addEventListener('click', (e) => {
+  const tile = e.target.closest('[data-jougo-modal]');
+  if (!tile) return;
+  openJougoModal(tile);
+});
+// Keyboard activation for accessibility — Enter or Space opens the modal
+// when a tile is focused via Tab.
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const tile = e.target.closest && e.target.closest('[data-jougo-modal]');
+  if (!tile) return;
+  e.preventDefault();
+  openJougoModal(tile);
 });
 
 // ── Init ─────────────────────────────────────────────────────────────────
