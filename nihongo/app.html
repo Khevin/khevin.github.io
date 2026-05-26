@@ -2091,6 +2091,27 @@
   .testcard-image image-slot::part(frame) {
     border-radius: 8px;
   }
+  /* Roman-numeral "image" for numbers 1–10. The 1:1 square frame is
+     reused — same dimensions as any kanji's photo — but instead of
+     probing an asset, the card carries a `digit` field (I, II, … X)
+     that we paint as a large serif numeral on the paper-2 background.
+     Reinforces the numeric meaning visually and pairs more cleanly
+     than a missing-illustration placeholder would. */
+  .testcard-image-digit {
+    background: var(--paper-2);
+  }
+  .testcard-digit {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(72px, 9vw, 124px);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    user-select: none;
+    /* Slight optical lift — Roman numerals look better when not
+       perfectly centered on the baseline. */
+    transform: translateY(-0.02em);
+  }
   .testcard-glyph {
     /* font-family is set inline per-card from APP.flashGlyphFont so the
        user can flip between mincho / gothic / kyokasho / brush without
@@ -3292,6 +3313,20 @@
     color: var(--ink);
     line-height: 1;
     letter-spacing: 0.02em;
+  }
+  /* Roman-numeral image for number cards in the wrap-up grid —
+     mirrors .testcard-image-digit's role on the main flashcard.
+     Sized down to fit the small tile; serif weight stays light. */
+  .wrapup-digit {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+  .wrapup-tile:has(.wrapup-digit) .wrapup-face-image {
+    background: var(--paper-2);
   }
 
   /* Back face — kanji glyph on top, kun + on stacked below */
@@ -18076,10 +18111,13 @@ function wrapupHTML(cls, deck) {
     const glyph = c.kanji || (Array.isArray(c.radical) ? c.radical.join(' · ') : c.radical) || '';
     const folder = c.imageFolder || cls.imageFolder || 'kanji';
     // Radical cards don't have a kanji image; render the glyph itself
-    // in the image face so the tile still identifies its card. Image
-    // cards get an image-slot that probes for the illustration.
+    // in the image face so the tile still identifies its card. Number
+    // cards (digit field set) render the Roman numeral. Everything
+    // else gets an image-slot that probes for the illustration.
     const imageFaceHTML = isRadical || !c.kanji
       ? `<div class="wrapup-radical-glyph">${escHTML(glyph)}</div>`
+      : c.digit
+      ? `<div class="wrapup-digit">${escHTML(c.digit)}</div>`
       : `<image-slot
            id="wrapup-${escAttr(cls.id)}-${escAttr(c.id)}"
            image-key="${escAttr(folder)}/${escAttr(c.kanji)}"
@@ -18264,12 +18302,14 @@ function editorialFlashcardHTML(card, cls, related, seeAlso) {
           <div class="testcard-flip-front" aria-hidden="${flipped}">
             <div class="testcard">
               <div class="testcard-left">
-                <div class="testcard-image">
-                  <image-slot
-                    id="flash-${escAttr(card.id)}"
-                    image-key="${escAttr(imageFolder)}/${escAttr(imageKey)}"
-                    shape="rounded" radius="8" fit="contain" position="50% 50%" readonly
-                    placeholder="No illustration for ${escAttr(card.kanji)} yet"></image-slot>
+                <div class="testcard-image${card.digit ? ' testcard-image-digit' : ''}">
+                  ${card.digit
+                    ? `<span class="testcard-digit">${escHTML(card.digit)}</span>`
+                    : `<image-slot
+                        id="flash-${escAttr(card.id)}"
+                        image-key="${escAttr(imageFolder)}/${escAttr(imageKey)}"
+                        shape="rounded" radius="8" fit="contain" position="50% 50%" readonly
+                        placeholder="No illustration for ${escAttr(card.kanji)} yet"></image-slot>`}
                 </div>
                 <div class="testcard-glyph" style="font-family:${escAttr(glyphFontStack)}">${splitJougoGlyph(card.kanji)}</div>
                 <div class="testcard-readings">
