@@ -3177,6 +3177,182 @@
     display: flex; flex-direction: column;
     transition: transform .35s cubic-bezier(.4,.0,.2,1);
   }
+
+  /* ─── Wrap-up card ─────────────────────────────────────────────────
+     The "you've reached the end" card that sits at position deck.length
+     in CARD view. Looks like the editorial flashcard chrome family but
+     shows every card in the class as a small image-tile grid — a quick
+     scan-back over what was just learned. Click any tile to flip image
+     ↔ kun/on. From here, "次" loops back to card 0; from card 0, "前"
+     loops here. The deck reads as a closed cycle. */
+  .flash-wrapup {
+    padding: 22px 22px 18px;
+    gap: 18px;
+  }
+  .wrapup-head {
+    text-align: center;
+    padding: 0 4px;
+  }
+  .wrapup-eyebrow {
+    font-family: var(--serif-jp);
+    font-size: 13px;
+    color: var(--gold-dark);
+    letter-spacing: 0.1em;
+  }
+  .wrapup-eyebrow em {
+    font-family: var(--serif); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    margin-left: 6px;
+  }
+  .wrapup-title {
+    font-family: var(--serif-jp);
+    font-weight: 600;
+    font-size: clamp(22px, 2.6vw, 28px);
+    color: var(--ink);
+    margin: 4px 0 2px;
+    letter-spacing: 0.02em;
+  }
+  .wrapup-title em {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--ink-3);
+    margin-left: 8px;
+  }
+  .wrapup-sub {
+    font-family: var(--serif); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-4);
+    margin: 4px 0 0;
+  }
+
+  /* Tile grid — auto-fill so the grid adapts from ~10 to ~30 cards
+     without manual breakpoints. Min tile width keeps small images
+     legible; max is implicit from the grid container width. */
+  .wrapup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+    gap: 8px;
+    margin: 4px 0;
+  }
+  .wrapup-tile {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    padding: 0;
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color .15s, transform .12s, box-shadow .15s;
+  }
+  .wrapup-tile:hover {
+    border-color: var(--gold);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(141, 102, 48, 0.12);
+  }
+  .wrapup-tile:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .wrapup-tile-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .18s;
+  }
+  /* Default: image face visible, back hidden. Click toggles data-flip. */
+  .wrapup-tile[data-flip="0"] .wrapup-face-back  { opacity: 0; pointer-events: none; }
+  .wrapup-tile[data-flip="1"] .wrapup-face-image { opacity: 0; pointer-events: none; }
+
+  .wrapup-face-image image-slot {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .wrapup-face-image image-slot::part(img),
+  .wrapup-face-image image-slot::part(frame) {
+    border-radius: 6px;
+  }
+  .wrapup-tile:has(image-slot[readonly]:not([data-filled])) .wrapup-face-image {
+    /* When the slot has no illustration, the placeholder is paper-2;
+       overlay the glyph so the empty tile still identifies its card. */
+    background: var(--paper-2);
+  }
+  .wrapup-radical-glyph {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  /* Back face — kanji glyph on top, kun + on stacked below */
+  .wrapup-face-back {
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+    background: var(--paper-2);
+    text-align: center;
+  }
+  .wrapup-tile-glyph {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+  }
+  .wrapup-tile-readings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3px 6px;
+    font-family: var(--serif-jp);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.2;
+  }
+  .wrapup-tile-readings .kun { color: var(--ink-2); }
+  .wrapup-tile-readings .on  { color: var(--ink-4); letter-spacing: 0.04em; }
+  .wrapup-tile-readings .dot { color: var(--ink-5); }
+  .wrapup-tile-readings .wrapup-title-ja {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+
+  /* Footer — same testcard-nav-btn family as the editorial card's
+     prev/next pair so the muscle memory carries over. The meta in
+     the middle confirms "you're at deck-length / deck-length". */
+  .wrapup-footer {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--paper-edge);
+    margin-top: 4px;
+  }
+  .wrapup-meta {
+    text-align: center;
+    font-family: var(--serif); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 520px) {
+    .wrapup-grid { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
+    .wrapup-tile-glyph { font-size: 18px; }
+    .wrapup-tile-readings { font-size: 10px; }
+    .wrapup-footer { grid-template-columns: 1fr; }
+    .wrapup-meta { display: none; }
+  }
   .flash-kanji-inner {
     position: relative;
     display: inline-block;
@@ -17805,6 +17981,73 @@ function splitJougoGlyph(text) {
   return escHTML(s);
 }
 
+// Wrap-up card — the virtual "you've reached the end of the deck" card
+// that sits at position deck.length, one past the last real card. Shown
+// in CARD view only. Renders every card in the class as a small image
+// tile (no English). Click a tile to flip image ↔ kun/on reading. From
+// here, "next" wraps back to card 0, "prev" goes to the last real card.
+// "prev" from card 0 wraps to the wrap-up — so the deck loops cyclically
+// through this screen.
+function wrapupHTML(cls, deck) {
+  const splitGlyph = (typeof splitJougoGlyph === 'function')
+    ? splitJougoGlyph : escHTML;
+  const tilesHTML = deck.map((c, i) => {
+    // Type-radical cards have card.radical instead of card.kanji and
+    // no kun/on — we show titleJa on the back face for those.
+    const isRadical = c.type === 'radical';
+    const glyph = c.kanji || (Array.isArray(c.radical) ? c.radical.join(' · ') : c.radical) || '';
+    const folder = c.imageFolder || cls.imageFolder || 'kanji';
+    // Radical cards don't have a kanji image; render the glyph itself
+    // in the image face so the tile still identifies its card. Image
+    // cards get an image-slot that probes for the illustration.
+    const imageFaceHTML = isRadical || !c.kanji
+      ? `<div class="wrapup-radical-glyph">${escHTML(glyph)}</div>`
+      : `<image-slot
+           id="wrapup-${escAttr(cls.id)}-${escAttr(c.id)}"
+           image-key="${escAttr(folder)}/${escAttr(c.kanji)}"
+           shape="rounded" radius="6" fit="contain" position="50% 50%" readonly
+           placeholder=""></image-slot>`;
+    // Back face: kanji glyph on top, kun + on stacked below. For
+    // radicals (no kun/on), show titleJa ("うかんむり", "ごんべん"
+    // etc) as the identity instead.
+    const readings = isRadical
+      ? `<span class="wrapup-title-ja">${escHTML(c.titleJa || '')}</span>`
+      : `${c.kun ? `<span class="kun">${escHTML(c.kun)}</span>` : ''}
+         ${c.kun && c.on ? '<span class="dot">·</span>' : ''}
+         ${c.on ? `<span class="on">${escHTML(c.on)}</span>` : ''}`;
+    return `
+      <button type="button" class="wrapup-tile" data-flip="0"
+              data-wrapup-tile="1"
+              aria-label="${escAttr(glyph + (c.kun ? ' ' + c.kun : '') + (c.on ? ' ' + c.on : ''))}">
+        <div class="wrapup-tile-face wrapup-face-image">${imageFaceHTML}</div>
+        <div class="wrapup-tile-face wrapup-face-back">
+          <div class="wrapup-tile-glyph">${splitGlyph(glyph)}</div>
+          <div class="wrapup-tile-readings">${readings}</div>
+        </div>
+      </button>`;
+  }).join('');
+  return `
+    <div class="flash-card flash-wrapup">
+      <div class="wrapup-head">
+        <span class="wrapup-eyebrow">おしまい <em>· end of</em></span>
+        <h2 class="wrapup-title">${escHTML(cls.titleJa)} <em>${escHTML(cls.titleEn)}</em></h2>
+        <p class="wrapup-sub">${deck.length} cards — click any tile to flip between image and readings</p>
+      </div>
+      <div class="wrapup-grid">${tilesHTML}</div>
+      <div class="wrapup-footer">
+        <button class="testcard-nav-btn" data-testcard-nav="prev" aria-label="previous card">
+          <span class="testcard-nav-furi">まえ</span>
+          <span class="testcard-nav-label"><span class="testcard-nav-arrow">←</span> 前のカード</span>
+        </button>
+        <span class="wrapup-meta">${deck.length} / ${deck.length} · おしまい</span>
+        <button class="testcard-nav-btn is-primary" data-testcard-nav="next" aria-label="back to first card">
+          <span class="testcard-nav-furi">つぎ</span>
+          <span class="testcard-nav-label">最初へ <span class="testcard-nav-arrow">→</span></span>
+        </button>
+      </div>
+    </div>`;
+}
+
 function editorialFlashcardHTML(card, cls, related, seeAlso) {
   // Use the EXACT same image path the classic flash-card resolves to —
   // so 人 in editorial mode shows the same illustration 人 shows in old
@@ -18409,27 +18652,35 @@ function renderFlashcards(container) {
     container.innerHTML = `<div class="empty-state">${escHTML(cls.titleEn)} — coming soon.</div>`;
     return;
   }
-  if (APP.flashIdx >= deck.length) APP.flashIdx = 0;
-  const card = deck[APP.flashIdx];
-  const related = relatedByKun(card, buildKunIndex());
-  const seeAlso = seeAlsoCards(card);
+  // Wrap-up sits at position deck.length — one past the last real card.
+  // Navigation now cycles through deck.length + 1 positions: 0..deck-1
+  // are normal cards, deck.length is the wrap-up screen. Only positions
+  // > deck.length get reset to 0 (handles a stored APP.flashIdx that
+  // doesn't match the current class's size after a class switch).
+  if (APP.flashIdx > deck.length) APP.flashIdx = 0;
+  const isWrapup = APP.flashIdx === deck.length;
+  const card = isWrapup ? null : deck[APP.flashIdx];
+  const related = card ? relatedByKun(card, buildKunIndex()) : [];
+  const seeAlso = card ? seeAlsoCards(card) : [];
 
-  const pct = ((APP.flashIdx + 1) / deck.length) * 100;
+  // Progress: full bar when on the wrap-up screen (you've reached the
+  // end of the deck), proportional otherwise.
+  const pct = isWrapup ? 100 : ((APP.flashIdx + 1) / deck.length) * 100;
 
   // Colors-class colorize: paint the kanji in the swatch color so the glyph
   // literally IS the color it names. For compound names ending in 色 (e.g.
   // 黄色, 茶色, 灰色, 水色) only the prefix is colored — the trailing 色 stays
   // in ink so the learner can still anchor on the base "color" kanji.
   // Loanwords (オレンジ, ピンク) and pure kanji (赤, 青, 緑) colorize fully.
-  const colorizeOn = APP.flashColorize && cls.id === 'colors' && card.swatch && card.kanji;
+  const colorizeOn = !isWrapup && APP.flashColorize && cls.id === 'colors' && card.swatch && card.kanji;
   const colorSuffix = (colorizeOn && card.kanji.endsWith('色')) ? '色' : '';
   const colorMain = colorizeOn ? (colorSuffix ? card.kanji.slice(0, -1) : card.kanji) : '';
-  const isWhiteSwatch = card.swatch && card.swatch.toLowerCase() === '#ffffff';
+  const isWhiteSwatch = !isWrapup && card.swatch && card.swatch.toLowerCase() === '#ffffff';
   // White on cream paper is invisible — switch to an outlined glyph instead
   // of a filled one so the kanji still reads.
-  const colorKanjiHTML = colorizeOn
+  const colorKanjiHTML = isWrapup ? '' : (colorizeOn
     ? `<span class="color-glyph${isWhiteSwatch ? ' color-glyph-light' : ''}"${isWhiteSwatch ? '' : ` style="color:${escAttr(card.swatch)}"`}>${escHTML(colorMain)}</span>${colorSuffix ? `<span>${escHTML(colorSuffix)}</span>` : ''}`
-    : escHTML(card.kanji);
+    : escHTML(card.kanji));
 
   // Top control row — three groups laid out horizontally:
   //   1. View toggle  (card / list)
@@ -18634,7 +18885,7 @@ function renderFlashcards(container) {
         </button>
         <div class="flash-deck flash-deck-editorial">
           <div class="flash-stage">
-            ${card.type === 'radical' ? `
+            ${isWrapup ? wrapupHTML(cls, deck) : card.type === 'radical' ? `
             <div class="flash-card radical-card">
               <div class="radical-head">
                 ${Array.isArray(card.radical) ? `
@@ -18810,7 +19061,11 @@ function renderFlashcards(container) {
   // turning the prior card over — but that intent doesn't carry across
   // to the next card.
   const navTo = (idx) => {
-    APP.flashIdx = ((idx % deck.length) + deck.length) % deck.length;
+    // Modulo over (deck.length + 1) so the wrap-up screen at position
+    // deck.length is reachable. From the last card, next → wrap-up.
+    // From wrap-up, next → card 0. From card 0, prev → wrap-up.
+    const N = deck.length + 1;
+    APP.flashIdx = ((idx % N) + N) % N;
     APP.flashFlipped = false;
     renderFlashcards(container);
   };
@@ -18878,6 +19133,16 @@ function renderFlashcards(container) {
       renderFlashcards(container);
     });
   });
+  // Wrap-up tile flip — each tile shows its image face by default and
+  // flips to a back face with the kanji glyph + kun/on readings on
+  // click. State is held on the data-flip attribute (0|1) so a re-render
+  // of the wrap-up screen resets every tile cleanly. CSS handles the
+  // crossfade via opacity rules on the two .wrapup-tile-face children.
+  container.querySelectorAll('[data-wrapup-tile]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.dataset.flip = btn.dataset.flip === '1' ? '0' : '1';
+    });
+  });
 
   // Arrows are flex-children of .flash-center (align-items:center),
   // pinned at the same vertical position as the page title. Pure CSS, no JS.
@@ -18897,12 +19162,16 @@ function renderFlashcards(container) {
   });
 
   APP._flashKeyHandler = e => {
-    if (e.key === 'ArrowLeft')  { APP.flashIdx = (APP.flashIdx - 1 + deck.length) % deck.length; APP.flashFlipped = false; renderFlashcards(container); }
-    if (e.key === 'ArrowRight') { APP.flashIdx = (APP.flashIdx + 1) % deck.length; APP.flashFlipped = false; renderFlashcards(container); }
+    // Keyboard arrows cycle the SAME deck.length + 1 positions as
+    // navTo (cards 0..deck-1 plus the wrap-up at deck.length).
+    const N = deck.length + 1;
+    if (e.key === 'ArrowLeft')  { APP.flashIdx = (APP.flashIdx - 1 + N) % N; APP.flashFlipped = false; renderFlashcards(container); }
+    if (e.key === 'ArrowRight') { APP.flashIdx = (APP.flashIdx + 1) % N;     APP.flashFlipped = false; renderFlashcards(container); }
     if (e.key === ' ')          { e.preventDefault(); APP.flashShowEn = !APP.flashShowEn; renderFlashcards(container); }
     // 'f' flips the card — quick keyboard access for power users so
     // they can study without reaching for the mouse. Doesn't fire if
-    // an input/textarea has focus (we'd hijack typing).
+    // an input/textarea has focus (we'd hijack typing). Inert on the
+    // wrap-up (which has no flippable card).
     if (e.key === 'f' && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
       APP.flashFlipped = !APP.flashFlipped;
       renderFlashcards(container);
