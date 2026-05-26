@@ -2585,6 +2585,11 @@ window.FLASHCARD_CLASSES = [
           {word:'黒鳥効果',     reading:'KOKUCHŌ KŌKA',     meaning:'the black-swan effect'},
           {word:'黒鳥のような', reading:'KOKUCHŌ no yō na', meaning:'black-swan-like (unforeseen)'},
         ] },
+      // 鶏 closes the bird block — sitting next to 鳥 / 白鳥 / 黒鳥
+      // keeps all the avian cards together before the deck pivots
+      // to 魚 (fish) and the four-legged staples.
+      { id:'chicken',   kanji:'鶏', kun:'にわとり',   on:'ケイ',   en:'chicken', strokes:19,
+        examples:[{word:'鶏肉',reading:'TORINIKU',meaning:'chicken meat'},{word:'鶏卵',reading:'KEIRAN',meaning:'hen egg'},{word:'養鶏',reading:'YŌKEI',meaning:'poultry farming'}] },
       { id:'fish',      kanji:'魚', kun:'さかな',     on:'ギョ',   en:'fish', strokes:11,
         examples:[{word:'金魚',reading:'kingyo',meaning:'goldfish'},{word:'魚屋',reading:'sakanaya',meaning:'fish shop'},{word:'焼き魚',reading:'yakizakana',meaning:'grilled fish'}] },
       { id:'horse',     kanji:'馬', kun:'うま',       on:'バ',     en:'horse', strokes:10,
@@ -2593,8 +2598,6 @@ window.FLASHCARD_CLASSES = [
         examples:[{word:'牛肉',reading:'GYŪNIKU',meaning:'beef'},{word:'牛乳',reading:'GYŪNYŪ',meaning:'milk'},{word:'牛丼',reading:'GYŪDON',meaning:'beef bowl'}] },
       { id:'pig',       kanji:'豚', kun:'ぶた',       on:'トン',   en:'pig', strokes:11,
         examples:[{word:'豚肉',reading:'BUTANIKU',meaning:'pork'},{word:'豚カツ',reading:'tonkatsu',meaning:'pork cutlet'},{word:'子豚',reading:'kobuta',meaning:'piglet'}] },
-      { id:'chicken',   kanji:'鶏', kun:'にわとり',   on:'ケイ',   en:'chicken', strokes:19,
-        examples:[{word:'鶏肉',reading:'TORINIKU',meaning:'chicken meat'},{word:'鶏卵',reading:'KEIRAN',meaning:'hen egg'},{word:'養鶏',reading:'YŌKEI',meaning:'poultry farming'}] },
       { id:'octopus',   kanji:'蛸', kun:'たこ',       on:'ショウ', en:'octopus', strokes:15,
         examples:[{word:'蛸焼き',reading:'takoyaki',meaning:'octopus balls'},{word:'蛸壺',reading:'takotsubo',meaning:'octopus pot'}] },
     ],
