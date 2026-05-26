@@ -1139,7 +1139,7 @@ window.VOCAB_CLASSES = [
               { glyph:'ぴたり',       reading:'pitari',       en:'exactly right / stopping dead', image:'ぴたり' },
               { glyph:'ぴょんぴょん', reading:'pyonpyon',     en:'hopping, bouncing',          image:'ぴょんぴょん' },
               { glyph:'ぽたぽた',     reading:'potapota',     en:'drip drip',                  image:'ぽたぽた' },
-              { glyph:'コロコロ',     reading:'korokoro',     en:'rolling, tumbling' },
+              { glyph:'コロコロ',     reading:'korokoro',     en:'rolling, tumbling',          image:'コロコロ' },
             ],
             dailyIntro: 'In speech, an onomatopoeia attaches to a verb or adjective and tints its meaning. Notice how each pairing forms a tight unit — the texture word and its verb live together as a single chunk.',
             daily: [
