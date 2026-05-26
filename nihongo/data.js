@@ -1632,59 +1632,53 @@ window.FLASHCARD_CLASSES = [
           {word:'いい天気',  reading:'ii tenki',      meaning:'nice weather'},
           {word:'お天気は？', reading:'o-tenki wa?',   meaning:'how\'s the weather?'},
         ] },
-      // ◆工 → 工 → 空 cluster. Radical-first ordering is the EXCEPTION
-      // here (default rule is kanji-before-radical, see comment in
-      // School class). The exception applies because the learner is
-      // about to meet 空, which has 工 sitting at the bottom — meeting
-      // the SHAPE first (as a structural primer) makes the breakdown
-      // of 空 land cleanly. Same pattern as ◆宀 → 宀 in School.
-      { id:'takumi-radical', type:'radical',
-        radical:'工', from:'工',
-        titleJa:'たくみへん', titleEn:'carpenter\'s square',
-        descEn:'工 is a pictograph of the carpenter\'s right-angle measuring square — the L-shaped tool used to mark and check 90° corners on lumber. The top and bottom strokes are the two arms of the square; the short vertical is the handle joining them. As a component it plants itself inside compounds about WORK, CRAFTING, and MAKING — 空 (a hollow dug out by workers → "empty / sky"), 紅 (thread + 工 = the worked red dye → "crimson"), 江 (water + 工 = water-worked-into-a-channel → "river / inlet"), 功 (work + strength → "merit / achievement").',
-        descJa:'「工」は大工の差し金（さしがね）— 直角を測るL字の道具 — の象形。上下の横棒が定規の二本の腕、縦の短い線が握り。漢字の中に入ると「仕事・工作・つくる」を表すしるしになる。例：空（穴 + 工、職人が掘り出した空間 → 空っぽ・そら）、紅（糸 + 工、染め上げた赤 → くれない）、江（水 + 工、人が掘った水路 → 入り江）、功（工 + 力、骨折って成し遂げる → てがら）。',
-        examples:[
-          { kanji:'空', kun:'そら',   on:'クウ', en:'empty / sky' },
-          { kanji:'紅', kun:'くれない', on:'コウ', en:'crimson' },
-          { kanji:'江', kun:'え',     on:'コウ', en:'creek / inlet' },
-          { kanji:'功', kun:'',       on:'コウ', en:'merit / achievement' },
-        ] },
+      // 工 → ◆工 → 穴 → ◆穴 → 空 cluster — follows the default
+      // kanji-before-radical rule (commit 601598f). The learner meets
+      // the glyph + illustration FIRST, then the radical card lifts
+      // the curtain on the structural role it plays. By the time 空
+      // arrives, both ingredients have been seen as kanji AND as the
+      // shapes-with-jobs they become inside compounds.
       { id:'craft',    kanji:'工', kun:'',       on:'コウ',   en:'work / craft / construction',
         seeAlso:['工'],
         strokes:3,
-        notes:'The standalone kanji uses the same carpenter\'s-square pictograph. As a noun on its own 工 means "work" or "craft" in the industrial sense — appears almost entirely in compounds. Read コウ in nearly every compound (工事, 工場, 工業), with the rare 大工 (DAIKU, "big-工" = carpenter) being one of the few that breaks the COW pattern.',
+        notes:'The carpenter\'s-square pictograph — the L-shaped right-angle measuring tool used to mark lumber. As a noun on its own 工 means "work" or "craft" in the industrial sense, appearing almost entirely in compounds. Reads コウ in nearly every compound (工事, 工場, 工業), with the rare 大工 (DAIKU, "big-工" = carpenter) being one of the few that breaks the COW pattern.',
         examples:[
           {word:'工事', reading:'KŌJI',   meaning:'construction work'},
           {word:'工場', reading:'KŌJŌ',   meaning:'factory'},
           {word:'工業', reading:'KŌGYŌ',  meaning:'industry'},
           {word:'大工', reading:'DAIKU',  meaning:'carpenter'},
         ] },
-      // ◆穴 → 穴 cluster — the SECOND piece of 空's breakdown. The
-      // learner just met 工 (the bottom of 空); now they meet 穴 (the
-      // top of 空). Same radical-first ordering exception as ◆工 →
-      // 工 above: shape primes the structural breakdown of 空 that
-      // arrives next. 空 = 穴 (cave) sitting on top of 工 (the
-      // worked-out floor of the cave).
-      { id:'anakanmuri-radical', type:'radical',
-        radical:'穴', from:'穴',
-        titleJa:'あなかんむり', titleEn:'cave / hole crown',
-        descEn:'穴 is a pictograph of a cave dwelling — the 宀 roof sitting over 八, the two splayed legs of the entrance spread apart by the opening. As a "crown" (kanmuri), it plants itself on TOP of compounds about caves, holes, openings, and hidden interior spaces — 空 (cave + worked-floor 工 = the hollow they dug out → "empty / sky"), 窓 (cave + heart = the opening you peer through → "window"), 究 (cave + nine = digging to the deepest point → "investigate"), 突 (cave + dog = the dog bursts out of the den → "poke / thrust").',
-        descJa:'「穴」は岩屋（いわや）— 宀（屋根）の下に八（広がる入口の二本足）が広がる象形。漢字の上にのる「かんむり」として、穴・あな・すきま・奥まった場所を表す漢字につく。例：空（穴の下に工 → 掘り抜いた空間 → 空っぽ・そら）、窓（穴 + 心 → のぞき見る開口 → まど）、究（穴 + 九 → いちばん奥まで → きわめる）、突（穴 + 犬 → 犬が穴から飛び出す → つく）。',
+      { id:'takumi-radical', type:'radical',
+        radical:'工', from:'工',
+        titleJa:'たくみへん', titleEn:'carpenter\'s square',
+        descEn:'The same 工 you just met — but now as a structural piece. The carpenter\'s-square pictograph plants itself inside compounds about WORK, CRAFTING, and MAKING — 空 (a hollow dug out by workers → "empty / sky"), 紅 (thread + 工 = the worked red dye → "crimson"), 江 (water + 工 = water-worked-into-a-channel → "river / inlet"), 功 (work + strength → "merit / achievement").',
+        descJa:'いま見た「工」を、こんどは漢字の部品として見る。差し金（さしがね）の象形が漢字の中に入ると「仕事・工作・つくる」を表すしるしになる。例：空（穴 + 工、職人が掘り出した空間 → 空っぽ・そら）、紅（糸 + 工、染め上げた赤 → くれない）、江（水 + 工、人が掘った水路 → 入り江）、功（工 + 力、骨折って成し遂げる → てがら）。',
         examples:[
           { kanji:'空', kun:'そら',   on:'クウ', en:'empty / sky' },
-          { kanji:'窓', kun:'まど',   on:'ソウ', en:'window' },
-          { kanji:'究', kun:'きわ',   on:'キュウ', en:'investigate deeply' },
-          { kanji:'突', kun:'つ',     on:'トツ', en:'poke / thrust' },
+          { kanji:'紅', kun:'くれない', on:'コウ', en:'crimson' },
+          { kanji:'江', kun:'え',     on:'コウ', en:'creek / inlet' },
+          { kanji:'功', kun:'',       on:'コウ', en:'merit / achievement' },
         ] },
       { id:'hole',     kanji:'穴', kun:'あな',   on:'ケツ',   en:'hole / cave / opening',
         seeAlso:['穴'],
         strokes:5,
-        notes:'The standalone kanji uses the same cave pictograph. Kun-reading あな dominates everyday speech — 穴 alone just means "a hole," from a small puncture to a literal cave. The on-reading ケツ shows up in medical / formal compounds (毛穴 KEANA = pore, 鼻の穴 hana no ana = nostril). Slangy idiom: 穴場 (anaba, "hole-place") = a hidden gem, the secret spot only insiders know.',
+        notes:'A pictograph of a cave dwelling — 宀 (roof) sitting over 八 (the splayed legs of the entrance). Kun-reading あな dominates everyday speech: 穴 alone just means "a hole," from a small puncture to a literal cave. On-reading ケツ shows up in medical / formal compounds (毛穴 KEANA = pore). Slangy idiom: 穴場 (anaba, "hole-place") = a hidden gem only insiders know.',
         examples:[
           {word:'穴',          reading:'ana',           meaning:'hole'},
           {word:'穴場',        reading:'anaba',         meaning:'hidden gem, secret spot'},
           {word:'落とし穴',    reading:'otoshi-ana',    meaning:'pitfall / trap'},
           {word:'鼻の穴',      reading:'hana no ana',   meaning:'nostril'},
+        ] },
+      { id:'anakanmuri-radical', type:'radical',
+        radical:'穴', from:'穴',
+        titleJa:'あなかんむり', titleEn:'cave / hole crown',
+        descEn:'The same 穴 you just met — but now as a "crown" (kanmuri) planted on TOP of other compounds. Marks kanji about caves, holes, openings, and hidden interior spaces — 空 (cave + worked-floor 工 = the hollow they dug out → "empty / sky"), 窓 (cave + heart = the opening you peer through → "window"), 究 (cave + nine = digging to the deepest point → "investigate"), 突 (cave + dog = the dog bursts out of the den → "poke / thrust").',
+        descJa:'いま見た「穴」を、こんどは「かんむり」として漢字の上にのせる形で見る。穴・あな・すきま・奥まった場所を表す漢字につく。例：空（穴の下に工 → 掘り抜いた空間 → 空っぽ・そら）、窓（穴 + 心 → のぞき見る開口 → まど）、究（穴 + 九 → いちばん奥まで → きわめる）、突（穴 + 犬 → 犬が穴から飛び出す → つく）。',
+        examples:[
+          { kanji:'空', kun:'そら',   on:'クウ', en:'empty / sky' },
+          { kanji:'窓', kun:'まど',   on:'ソウ', en:'window' },
+          { kanji:'究', kun:'きわ',   on:'キュウ', en:'investigate deeply' },
+          { kanji:'突', kun:'つ',     on:'トツ', en:'poke / thrust' },
         ] },
       // The structural payoff — both ingredients (穴 on top, 工 on
       // the bottom) just landed, so 空 reads as a literal compound
