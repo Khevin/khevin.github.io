@@ -1287,20 +1287,22 @@ window.FLASHCARD_CLASSES = [
     titleEn: 'Numbers',
     glyph: '千',
     cards: [
-      // Numbers 1–10 carry a `digit` field (Roman numeral I–X) used as
-      // the card's "image" — the editorial flashcard + wrap-up tile
-      // render the Roman numeral in the image slot instead of probing
-      // for a .webp. Cleaner pairing than a missing-image placeholder
-      // and reinforces the numeric meaning visually.
+      // Numbers carry a `digit` field used as the card's "image" — the
+      // editorial flashcard + wrap-up tile render it in the image slot
+      // instead of probing for a .webp. We use Roman numerals where the
+      // shape carries mnemonic weight (I, II, III mirror the strokes
+      // of 一, 二, 三; X mirrors the cross of 十; XX mirrors 廿 = two
+      // tens fused) and Arabic numerals for 4–9 where the Roman form
+      // (IV, V, VI…) loses the visual mnemonic and just becomes a code.
       { id:'one',      kanji:'一', digit:'I',    kun:'ひと',     on:'イチ',   en:'one', strokes:1, examples:[{word:'一月',reading:'ICHIGATSU',meaning:'January'},{word:'一人',reading:'hitori',meaning:'one person'},{word:'一番',reading:'ICHIBAN',meaning:'number one'}] },
       { id:'two',      kanji:'二', digit:'II',   kun:'ふた',     on:'ニ',     en:'two', strokes:2, examples:[{word:'二月',reading:'NIGATSU',meaning:'February'},{word:'二人',reading:'futari',meaning:'two people'},{word:'二階',reading:'NIKAI',meaning:'second floor'}] },
       { id:'three',    kanji:'三', digit:'III',  kun:'み',       on:'サン',   en:'three', strokes:3, examples:[{word:'三月',reading:'SANGATSU',meaning:'March'},{word:'三角',reading:'SANKAKU',meaning:'triangle'},{word:'三つ',reading:'mittsu',meaning:'three things'}] },
-      { id:'four',     kanji:'四', digit:'IV',   kun:'よ',       on:'シ',     en:'four', strokes:5, examples:[{word:'四月',reading:'SHIGATSU',meaning:'April'},{word:'四季',reading:'SHIKI',meaning:'four seasons'},{word:'四角',reading:'SHIKAKU',meaning:'square'}] },
-      { id:'five',     kanji:'五', digit:'V',    kun:'いつ',     on:'ゴ',     en:'five', strokes:4, examples:[{word:'五月',reading:'GOGATSU',meaning:'May'},{word:'五感',reading:'GOKAN',meaning:'five senses'},{word:'五つ',reading:'itsutsu',meaning:'five things'}] },
-      { id:'six',      kanji:'六', digit:'VI',   kun:'む',       on:'ロク',   en:'six', strokes:4, examples:[{word:'六月',reading:'ROKUGATSU',meaning:'June'},{word:'六つ',reading:'muttsu',meaning:'six things'},{word:'六本木',reading:'ROPPONGI',meaning:'Roppongi'}] },
-      { id:'seven',    kanji:'七', digit:'VII',  kun:'なな',     on:'シチ',   en:'seven', strokes:2, examples:[{word:'七月',reading:'SHICHIGATSU',meaning:'July'},{word:'七夕',reading:'tanabata',meaning:'Star Festival'},{word:'七つ',reading:'nanatsu',meaning:'seven things'}] },
-      { id:'eight',    kanji:'八', digit:'VIII', kun:'や',       on:'ハチ',   en:'eight', strokes:2, examples:[{word:'八月',reading:'HACHIGATSU',meaning:'August'},{word:'八百屋',reading:'yaoya',meaning:'greengrocer'},{word:'八つ',reading:'yattsu',meaning:'eight things'}] },
-      { id:'nine',     kanji:'九', digit:'IX',   kun:'ここの',   on:'キュウ', en:'nine', strokes:2, examples:[{word:'九月',reading:'KUGATSU',meaning:'September'},{word:'九州',reading:'KYŪSHŪ',meaning:'Kyushu'},{word:'九つ',reading:'kokonotsu',meaning:'nine things'}] },
+      { id:'four',     kanji:'四', digit:'4',    kun:'よ',       on:'シ',     en:'four', strokes:5, examples:[{word:'四月',reading:'SHIGATSU',meaning:'April'},{word:'四季',reading:'SHIKI',meaning:'four seasons'},{word:'四角',reading:'SHIKAKU',meaning:'square'}] },
+      { id:'five',     kanji:'五', digit:'5',    kun:'いつ',     on:'ゴ',     en:'five', strokes:4, examples:[{word:'五月',reading:'GOGATSU',meaning:'May'},{word:'五感',reading:'GOKAN',meaning:'five senses'},{word:'五つ',reading:'itsutsu',meaning:'five things'}] },
+      { id:'six',      kanji:'六', digit:'6',    kun:'む',       on:'ロク',   en:'six', strokes:4, examples:[{word:'六月',reading:'ROKUGATSU',meaning:'June'},{word:'六つ',reading:'muttsu',meaning:'six things'},{word:'六本木',reading:'ROPPONGI',meaning:'Roppongi'}] },
+      { id:'seven',    kanji:'七', digit:'7',    kun:'なな',     on:'シチ',   en:'seven', strokes:2, examples:[{word:'七月',reading:'SHICHIGATSU',meaning:'July'},{word:'七夕',reading:'tanabata',meaning:'Star Festival'},{word:'七つ',reading:'nanatsu',meaning:'seven things'}] },
+      { id:'eight',    kanji:'八', digit:'8',    kun:'や',       on:'ハチ',   en:'eight', strokes:2, examples:[{word:'八月',reading:'HACHIGATSU',meaning:'August'},{word:'八百屋',reading:'yaoya',meaning:'greengrocer'},{word:'八つ',reading:'yattsu',meaning:'eight things'}] },
+      { id:'nine',     kanji:'九', digit:'9',    kun:'ここの',   on:'キュウ', en:'nine', strokes:2, examples:[{word:'九月',reading:'KUGATSU',meaning:'September'},{word:'九州',reading:'KYŪSHŪ',meaning:'Kyushu'},{word:'九つ',reading:'kokonotsu',meaning:'nine things'}] },
       { id:'ten',      kanji:'十', digit:'X',    kun:'とお',     on:'ジュウ', en:'ten', strokes:2, examples:[{word:'十月',reading:'JŪGATSU',meaning:'October'},{word:'十分',reading:'JŪBUN',meaning:'enough'},{word:'十字路',reading:'JŪJIRO',meaning:'crossroads'}] },
       // ◆十 — 十 as a structural primitive. Same two crossed strokes
       // the learner just met as "ten," but Heisig labels the shape
@@ -1325,7 +1327,7 @@ window.FLASHCARD_CLASSES = [
       // and a few set expressions. Pedagogically it earns its slot
       // because the shape recurs as a primitive in 世 / 度 / 散 / 席 —
       // see the radical card immediately below.
-      { id:'twenty',   kanji:'廿', kun:'にじゅう', on:'ジュウ', en:'twenty', strokes:4,
+      { id:'twenty',   kanji:'廿', digit:'XX', kun:'にじゅう', on:'ジュウ', en:'twenty', strokes:4,
         notes:'Old / literary character for "twenty" — two 十 (ten) joined at the foot. Modern Japanese usually writes 二十 instead, but 廿 survives in 廿日 (hatsuka, the 20th of the month) and a handful of set phrases. Worth meeting now because its silhouette shows up as a structural piece inside 世, 度, 散, 席 — the radical card next door names that shape.',
         examples:[
           {word:'廿日',     reading:'hatsuka',         meaning:'the 20th (of the month)'},
