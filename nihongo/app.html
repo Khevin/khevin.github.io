@@ -1617,6 +1617,192 @@
     line-height: 1.3;
   }
 
+  /* ─── Jougo overview page — three editorial zones ────────────────── */
+  /* Used by vocab/jougo/onomatopoeia + vocab/jougo/common-jougo. Same
+     .explainer-body chrome inherited from the intro page (typography,
+     dashed section dividers, max-width body lane). Each of the three
+     zones (gallery / daily / sentences) overrides one or two rules to
+     get its distinct rhythm.
+
+     Zone headings carry an italic EN sub-label so the JP chapter
+     numbering ("A · 形") still scans for English readers without
+     drifting into the body. */
+  .zone-label-en {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--ink-3);
+    letter-spacing: 0;
+    margin-left: 4px;
+  }
+
+  /* Zone A · gallery — uses the existing .jougo-tile-illus from the
+     intro page, no extra rules. The tile chrome ALREADY handles the
+     squared top corners + image-flush-to-top + click-to-modal. The
+     no-image fallback variant is .jougo-tile-placeholder: paper-2 fill,
+     centered giant glyph instead of a 4:3 image, same overall card
+     height so the grid stays uniform. */
+  .jougo-tile.jougo-tile-placeholder {
+    /* Match the illustrated variant's structural moves (square top,
+       overflow:hidden, no top padding) so placeholder + illustrated
+       tiles share the same outer box and the grid alignment holds. */
+    padding-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .jougo-tile-glyph-large {
+    /* Replaces the image-region on placeholder tiles. Same 4:3 footprint
+       so the gallery grid stays uniform. Paper background is a touch
+       deeper than the card body so the glyph still reads as "the
+       illustration" rather than as a duplicated label. */
+    display: flex; align-items: center; justify-content: center;
+    width: calc(100% + 22px);
+    margin: 0 -11px;
+    aspect-ratio: 4 / 3;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-title);
+    font-weight: 600;
+    font-size: clamp(28px, 6vw, 44px);
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    text-align: center;
+    border-top: none;
+  }
+  .jougo-tile.jougo-tile-placeholder .jougo-tile-glyph {
+    margin-top: 12px;
+  }
+
+  /* Zone B · daily-use collocations — text-only cards in a tight grid.
+     No images on purpose; the rhythm change is what tells the reader
+     "you're in a new section." Each card is a self-contained letterpress
+     stack: small kanji eyebrow → JP phrase → kana → EN gloss. Cards
+     read top-to-bottom; the grid is roughly square so the eye flows
+     left-to-right, top-to-bottom across the rows. */
+  .jougo-daily-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 16px 0 6px;
+  }
+  .jougo-daily-card {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    padding: 14px 16px 14px 16px;
+    display: flex; flex-direction: column;
+    /* Gold-soft left-rule echoes the "this card is anchored to its
+       word" idea without competing with the eyebrow glyph above it.
+       Subtle enough to read as a typographic ornament, not a chrome
+       element. */
+    border-left: 2px solid var(--gold-soft);
+    transition: border-left-color .15s, background .15s;
+  }
+  .jougo-daily-card:hover {
+    border-left-color: var(--gold);
+    background: var(--paper);
+  }
+  .jougo-daily-eyebrow {
+    font-family: var(--serif-jp); font-weight: 600;
+    font-size: 13px;
+    color: var(--gold-dark);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .jougo-daily-phrase {
+    font-family: var(--serif-jp);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .jougo-daily-kana {
+    font-family: var(--serif-jp);
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    margin: 4px 0 0;
+  }
+  .jougo-daily-en {
+    font-family: var(--serif); font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.45;
+    margin: 8px 0 0;
+  }
+
+  /* Zone C · sentences — wide letterpressed stripes. One sentence per
+     row, full body width, generous line-height. Different rhythm from
+     Zone B's tight cards: stripes flow long-format like newspaper
+     paragraphs, cards flow as compact tiles. The eye reads each zone
+     differently because each zone's geometry IS different. */
+  .jougo-sentences-list {
+    display: flex; flex-direction: column;
+    gap: 14px;
+    margin: 16px 0 6px;
+  }
+  .jougo-sentence-stripe {
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 12px 16px 14px;
+    border-left: 2px solid var(--gold-soft);
+    /* Subtle pressed-into-paper shadow — keeps the stripe distinct
+       from the page background without competing with the gallery
+       tiles' gold halo. */
+    box-shadow: 0 1px 0 var(--paper-edge);
+  }
+  .jougo-sentence-jp-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .jougo-sentence-stripe .jp {
+    flex: 1 1 auto;
+    font-family: var(--serif-jp);
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .jougo-sentence-meta {
+    flex: 0 0 auto;
+    display: flex; align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .jougo-sentence-level {
+    font-family: var(--serif); font-style: italic;
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 999px;
+  }
+  .jougo-sentence-tts { flex-shrink: 0; }
+  .jougo-sentence-stripe .en {
+    font-family: var(--serif); font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    margin: 6px 0 0;
+  }
+
+  /* Mobile: tighten everything, drop the level chip's flex-grab so it
+     wraps under the sentence on narrow viewports rather than stealing
+     width from the JP. */
+  @media (max-width: 520px) {
+    .jougo-daily-grid { grid-template-columns: 1fr; }
+    .jougo-sentence-meta { flex-direction: row-reverse; }
+    .jougo-sentence-level { display: none; }
+  }
+
   /* ─── Jougo flashcards aggregator grid ─────────────────────────────── */
   .jougo-flashcards-grid {
     display: grid;
@@ -12246,6 +12432,11 @@ function renderVocabPage(book, page) {
     el.innerHTML = flashcardsGridHTML(page);
     attachFlashcardsGridEvents(el, page);
   }
+  else if (page.type === 'jougo-overview') {
+    el.innerHTML = jougoOverviewHTML(page);
+    // No per-page attach: tile clicks reuse the document-level
+    // [data-jougo-modal] delegate, sentence TTS reuses [data-speak].
+  }
   // Sync the mobile drawer state to the current page. Cheatsheets get the
   // FAB + drawer (items list); other page types hide it.
   updateVocabDrawer(book, page);
@@ -14841,6 +15032,131 @@ function attachFlashcardsGridEvents(el, page) {
       }
     });
   });
+}
+
+// ── Jougo overview page ────────────────────────────────────────────────
+// Editorial three-zone layout used by the jougo/onomatopoeia and
+// jougo/common-jougo books. Replaces the older cheatsheet + usage +
+// sentences trio with one scrollable page:
+//
+//   Zone A · 形   gallery grid    (clickable tiles → existing modal)
+//   Zone B · 暮らし  collocation cards (compact text-only phrase cards)
+//   Zone C · 文   sentence stripes (JP + EN + TTS speaker per row)
+//
+// Each zone has a distinct visual rhythm — gallery is image-heavy, daily
+// is text-only, sentences are long letterpressed rows — so the reader
+// never confuses one for another.
+function jougoOverviewHTML(page) {
+  const gallery   = page.gallery   || [];
+  const daily     = page.daily     || [];
+  const sentences = page.sentences || [];
+  // Splits reduplicated kana onto two lines (にこ / にこ) for the giant
+  // gallery glyph. Falls back to a plain HTML-escape if the helper
+  // hasn't loaded yet (defensive — it's defined further down).
+  const splitGlyph = (typeof splitJougoGlyph === 'function')
+    ? splitJougoGlyph : escHTML;
+
+  // Zone A — Image gallery. Reuses the .jougo-tile-illus chrome from the
+  // intro page so the visual grammar is consistent (same paper-2 tile,
+  // squared top corners, 4:3 image, click-to-open modal). Tiles without
+  // an image fall through to a paper-2 placeholder that displays the
+  // giant glyph centered.
+  //
+  // Each tile carries the FIRST matching sentence from Zone C as its
+  // example — so clicking the tile opens the modal with the gallery
+  // image enlarged + the right sentence + TTS. The match is glyph-by-
+  // substring (e.g. tile glyph 'にこにこ' picks up any sentence whose
+  // ja contains 'にこにこ'). No match → empty example, which the modal
+  // already handles by hiding the speaker row.
+  const findExample = (glyph) => {
+    if (!glyph) return { jp:'', en:'' };
+    const hit = sentences.find(s => s.ja && s.ja.includes(glyph));
+    return hit ? { jp: hit.ja, en: hit.en || '' } : { jp:'', en:'' };
+  };
+  const galleryHTML = gallery.length ? `
+    <section class="jougo-section jougo-overview-zone jougo-overview-zone-gallery">
+      <h3>A · 形 <span class="zone-label-en">— the shape</span></h3>
+      ${page.galleryIntro ? `<p>${escHTML(page.galleryIntro)}</p>` : ''}
+      <div class="jougo-grid">
+        ${gallery.map(item => {
+          const hasImg = !!item.image;
+          const ex = findExample(item.glyph);
+          return `
+          <div class="jougo-tile ${hasImg ? 'jougo-tile-illus' : 'jougo-tile-placeholder'}"
+               role="button" tabindex="0" data-jougo-modal="1"
+               data-ex-jp="${escAttr(ex.jp)}" data-ex-en="${escAttr(ex.en)}">
+            ${hasImg ? `<img class="jougo-tile-img" src="images/vocabulary/${escAttr(item.image)}.webp" alt="" loading="lazy">`
+                     : `<div class="jougo-tile-glyph-large">${splitGlyph(item.glyph)}</div>`}
+            <span class="jougo-tile-glyph">${splitGlyph(item.glyph)}</span>
+            <span class="jougo-tile-reading">${escHTML(item.reading || '')}</span>
+            <span class="jougo-tile-en">${escHTML(item.en || '')}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </section>` : '';
+
+  // Zone B — Daily-use collocations. Text-only on purpose; the rhythm
+  // change (no images) is what tells the reader "you're in a different
+  // section now." Each card stacks the JP phrase + kana + EN gloss in
+  // a tight letterpressed unit. Glyph eyebrow on top so the card is
+  // still anchored to its word at a glance.
+  const dailyHTML = daily.length ? `
+    <section class="jougo-section jougo-overview-zone jougo-overview-zone-daily">
+      <h3>B · 暮らし <span class="zone-label-en">— in daily life</span></h3>
+      ${page.dailyIntro ? `<p>${escHTML(page.dailyIntro)}</p>` : ''}
+      <div class="jougo-daily-grid">
+        ${daily.map(item => `
+          <div class="jougo-daily-card">
+            <span class="jougo-daily-eyebrow">${splitGlyph(item.glyph)}</span>
+            <p class="jougo-daily-phrase">${escHTML(item.phrase)}</p>
+            ${item.phraseKana ? `<p class="jougo-daily-kana">${escHTML(item.phraseKana)}</p>` : ''}
+            <p class="jougo-daily-en">${escHTML(item.en || '')}</p>
+          </div>
+        `).join('')}
+      </div>
+    </section>` : '';
+
+  // Zone C — Example sentences. Wide letterpressed stripes (one per
+  // row, full width) so the JP gets generous reading line-height. EN
+  // gloss underneath in italic. JLPT level chip at the right. TTS
+  // speaker on the right of the JP, routes through the existing
+  // [data-speak] document-level delegate.
+  const sentencesHTML_ = sentences.length ? `
+    <section class="jougo-section jougo-overview-zone jougo-overview-zone-sentences">
+      <h3>C · 文 <span class="zone-label-en">— in a sentence</span></h3>
+      ${page.sentencesIntro ? `<p>${escHTML(page.sentencesIntro)}</p>` : ''}
+      <div class="jougo-sentences-list">
+        ${sentences.map(s => `
+          <div class="jougo-sentence-stripe">
+            <div class="jougo-sentence-jp-row">
+              <p class="jp">${escHTML(s.ja)}</p>
+              <div class="jougo-sentence-meta">
+                ${s.level ? `<span class="jougo-sentence-level">${escHTML(s.level)}</span>` : ''}
+                <button class="tts-btn jougo-sentence-tts" type="button"
+                        aria-label="読み上げ (speak)" title="読み上げ"
+                        data-speak="${escAttr(s.ja)}">
+                  ${speakerIconSVG()}
+                </button>
+              </div>
+            </div>
+            <p class="en">${escHTML(s.en || '')}</p>
+          </div>
+        `).join('')}
+      </div>
+    </section>` : '';
+
+  return `
+    <div class="panel jougo-overview">
+      <div style="margin-bottom:18px">
+        <h2 style="font-family:var(--serif-jp);font-size:26px;color:var(--ink);margin:0;font-weight:600">${escHTML(page.title)}</h2>
+        ${page.subtitle ? `<div style="font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-3);margin-top:4px">${escHTML(page.subtitle)}</div>` : ''}
+      </div>
+      <div class="explainer-body">
+        ${galleryHTML}
+        ${dailyHTML}
+        ${sentencesHTML_}
+      </div>
+    </div>`;
 }
 
 // ── Writing / Kana ───────────────────────────────────────────────────────
@@ -18483,16 +18799,44 @@ function openJougoModal(tile) {
   const exJp   = tile.dataset.exJp || '';
   const exEn   = tile.dataset.exEn || '';
   const modalImg = dlg.querySelector('.jougo-modal-image');
-  if (img && img.src) { modalImg.src = img.src; modalImg.alt = en || glyph; }
+  const imageWrap = dlg.querySelector('.jougo-modal-image-wrap');
+  // Image-less tiles (placeholder variant on the overview page) shouldn't
+  // open the modal with a stale image from a previous open — hide the
+  // image well entirely so the modal becomes glyph + reading + example
+  // only, which reads as a deliberate "this word has no illustration
+  // yet" state instead of leaking the previous viewer's tile.
+  if (img && img.src) {
+    modalImg.src = img.src;
+    modalImg.alt = en || glyph;
+    if (imageWrap) imageWrap.style.display = '';
+  } else {
+    modalImg.removeAttribute('src');
+    modalImg.alt = '';
+    if (imageWrap) imageWrap.style.display = 'none';
+  }
   dlg.querySelector('.jougo-modal-glyph').textContent   = glyph;
   dlg.querySelector('.jougo-modal-reading').textContent = read;
   dlg.querySelector('.jougo-modal-en').textContent      = en;
-  dlg.querySelector('.jougo-modal-example .jp').textContent = exJp;
-  dlg.querySelector('.jougo-modal-example .en').textContent = exEn;
+  // Hide the entire example section when no JP sentence is present
+  // (placeholder gallery tiles whose word isn't covered in Zone C).
+  // Showing "EXAMPLE" with two empty lines would read as broken; the
+  // cleaner move is to render the modal as glyph + gloss only.
+  const example = dlg.querySelector('.jougo-modal-example');
+  if (example) {
+    if (exJp) {
+      example.style.display = '';
+      example.querySelector('.jp').textContent = exJp;
+      example.querySelector('.en').textContent = exEn;
+    } else {
+      example.style.display = 'none';
+      example.querySelector('.jp').textContent = '';
+      example.querySelector('.en').textContent = '';
+    }
+  }
   // TTS button — speaks the JP example. The global [data-speak] click
-  // delegate (above) handles playback; we just keep the attribute fresh
-  // each open so the button always carries the current sentence. Hidden
-  // when there's no JP example (defensive — every tile has one in data).
+  // delegate (above) handles playback; we keep the attribute fresh each
+  // open so the button always carries the current sentence. Hidden when
+  // there's no JP example.
   const ttsBtn = dlg.querySelector('.jougo-modal-tts');
   if (ttsBtn) {
     if (exJp) {
