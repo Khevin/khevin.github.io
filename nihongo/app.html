@@ -11537,6 +11537,16 @@
     color: var(--dt-ink-2);
     letter-spacing: 0.02em;
   }
+  /* Gold marker tint — applied to 時 / 分 / 半 in the kanji readout
+     and their kana equivalents (じ / ふん|ぷん / はん) in the kana
+     readout. Visually splits the unit boundary so a long readout
+     like 午後十二時五十五分 reads as PM + hour + minute instead of
+     a single solid block. */
+  .dt-clock-ja .dt-clock-mk,
+  .dt-clock-kana .dt-clock-mk {
+    color: var(--dt-gold-dark);
+    margin-left: 0.04em;
+  }
   .dt-clock-en {
     margin-top: 6px;
     font-family: var(--serif);
@@ -17371,20 +17381,44 @@ function renderParticlesSidebar() {
 //      with the ones-place chip layered on top for compound minutes.
 // Two helpers: buildMinuteReading handles 1–59 minute math; buildTimeReading
 // stitches the period (午前/午後), hour, and minute into one readout.
+// buildMinuteReading returns the structural pieces of a minute reading
+// (number kanji, number kana, kana-unit ふん/ぷん) separately so the
+// caller can wrap the marker units in styling. Kanji unit is always 分
+// and is added by the caller.
 function buildMinuteReading(m) {
   const tens = Math.floor(m / 10);
   const ones = m % 10;
-  // Ones place — 1–9, encoded with the rendaku already applied.
-  const ONES_R = ['', 'いっぷん', 'にふん', 'さんぷん', 'よんぷん', 'ごふん', 'ろっぷん', 'ななふん', 'はっぷん', 'きゅうふん'];
-  // Tens place when ones === 0 — じゅっぷん, にじゅっぷん, etc.
-  const TENS_ONLY_R = ['', 'じゅっぷん', 'にじゅっぷん', 'さんじゅっぷん', 'よんじゅっぷん', 'ごじゅっぷん'];
-  // Tens prefix when combining with ones (21分 = にじゅう + いっぷん).
+  // Number-only kana (no unit) — each entry is the ones-place reading
+  // up to the small っ glue.
+  const ONES_NUM_R  = ['', 'いっ', 'に', 'さん', 'よん', 'ご', 'ろっ', 'なな', 'はっ', 'きゅう'];
+  // Unit kana per ones place — fun after 2/5/7/9, pun (with っ) after
+  // 1/3/4/6/8. The ones-place 4 is the only "regular" ones digit that
+  // takes pun via よんぷん (the literature varies, but よんぷん is the
+  // dominant modern reading).
+  const ONES_UNIT_R = ['', 'ぷん', 'ふん', 'ぷん', 'ぷん', 'ふん', 'ぷん', 'ふん', 'ぷん', 'ふん'];
+  // Tens-only kana when ones === 0 — じゅっ, にじゅっ, etc. Always
+  // pun after the tens digit.
+  const TENS_ONLY_NUM_R = ['', 'じゅっ', 'にじゅっ', 'さんじゅっ', 'よんじゅっ', 'ごじゅっ'];
+  // Tens-prefix kana when combining with a non-zero ones (21 = にじゅう
+  // + いっぷん; no っ glue between the tens and the ones).
   const TENS_PREFIX_R = ['', 'じゅう', 'にじゅう', 'さんじゅう', 'よんじゅう', 'ごじゅう'];
   const ONES_K = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
   const TENS_K = ['', '十', '二十', '三十', '四十', '五十'];
-  if (tens === 0)      return [ONES_K[ones] + '分', ONES_R[ones]];
-  if (ones === 0)      return [TENS_K[tens] + '分', TENS_ONLY_R[tens]];
-  return [TENS_K[tens] + ONES_K[ones] + '分', TENS_PREFIX_R[tens] + ONES_R[ones]];
+  let kanjiNum, kanaNum, kanaUnit;
+  if (tens === 0) {
+    kanjiNum = ONES_K[ones];
+    kanaNum  = ONES_NUM_R[ones];
+    kanaUnit = ONES_UNIT_R[ones];
+  } else if (ones === 0) {
+    kanjiNum = TENS_K[tens];
+    kanaNum  = TENS_ONLY_NUM_R[tens];
+    kanaUnit = 'ぷん'; // tens-only always lands on pun
+  } else {
+    kanjiNum = TENS_K[tens] + ONES_K[ones];
+    kanaNum  = TENS_PREFIX_R[tens] + ONES_NUM_R[ones];
+    kanaUnit = ONES_UNIT_R[ones];
+  }
+  return { kanjiNum, kanaNum, kanaUnit };
 }
 function buildTimeReading(hour24, minute) {
   // Hours 1–12 with the three irregulars baked in (4→よ, 7→しち, 9→く).
@@ -17395,20 +17429,27 @@ function buildTimeReading(hour24, minute) {
   const periodJa   = hour24 < 12 ? '午前' : '午後';
   const periodKana = hour24 < 12 ? 'ごぜん' : 'ごご';
   const periodEn   = hour24 < 12 ? 'AM' : 'PM';
-  const hourJa   = HOUR_K[h12] + '時';
-  const hourKana = HOUR_R[h12] + 'じ';
-  let minJa = '', minKana = '', altJa = '', altKana = '';
+  // Marker-wrapper. Used to tint 時 / 分 / 半 (and their kana
+  // equivalents じ / ふん|ぷん / はん) in gold so the unit boundaries
+  // pop out — readouts like 午後十二時五十五分 are otherwise a wall of
+  // characters with no visual break.
+  const M = s => '<span class="dt-clock-mk">' + s + '</span>';
+  const hourK = HOUR_K[h12] + M('時');
+  const hourR = HOUR_R[h12] + M('じ');
+  let minK = '', minR = '', altK = '', altR = '';
   if (minute > 0) {
-    [minJa, minKana] = buildMinuteReading(minute);
+    const min = buildMinuteReading(minute);
+    minK = min.kanjiNum + M('分');
+    minR = min.kanaNum + M(min.kanaUnit);
     if (minute === 30) {
       // The 半 alternative — both 三十分 and 半 are correct for 30.
-      altJa = '半';
-      altKana = 'はん';
+      altK = periodJa + HOUR_K[h12] + M('時') + M('半');
+      altR = periodKana + ' ' + HOUR_R[h12] + M('じ') + M('はん');
     }
   }
-  const ja      = periodJa + hourJa + minJa + (altJa ? ' / ' + periodJa + hourJa + altJa : '');
-  const kana    = periodKana + ' ' + hourKana + (minKana ? ' ' + minKana : '') + (altKana ? ' / ' + periodKana + ' ' + hourKana + altKana : '');
-  const en      = h12 + ':' + String(minute).padStart(2, '0') + ' ' + periodEn;
+  const ja   = periodJa + hourK + minK + (altK ? ' / ' + altK : '');
+  const kana = periodKana + ' ' + hourR + (minR ? ' ' + minR : '') + (altR ? ' / ' + altR : '');
+  const en   = h12 + ':' + String(minute).padStart(2, '0') + ' ' + periodEn;
   return { ja, kana, en };
 }
 
@@ -17764,8 +17805,12 @@ function renderWritingDatetime(container) {
 
     function render() {
       const r = buildTimeReading(state.h, state.m);
-      jaOut.textContent = r.ja;
-      kanaOut.textContent = r.kana;
+      // ja/kana strings carry <span class="dt-clock-mk"> markers so the
+      // unit kanji/kana tint gold — use innerHTML. Strings come from
+      // our own code (no user input), so no XSS surface. en stays
+      // plain text (no markers there).
+      jaOut.innerHTML = r.ja;
+      kanaOut.innerHTML = r.kana;
       enOut.textContent = r.en;
       // 12-hour position on the face — hour hand also creeps with minute
       // (e.g. 9:30 sits the hour hand halfway between 9 and 10).
