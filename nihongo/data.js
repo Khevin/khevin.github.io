@@ -1942,6 +1942,20 @@ window.FLASHCARD_CLASSES = [
           { kanji:'寺', kun:'てら', on:'ジ',   en:'temple' },
           { kanji:'対', kun:'',    on:'タイ', en:'versus / opposite' },
         ] },
+      // 京 closes the Society class — the kanji for "capital" extends
+      // the social-world thread one rung higher (from town 町 to
+      // village 村 to capital 京). Pictograph of a tall building on
+      // a hill, the seat of the emperor. Surfaces in 東京 / 京都 /
+      // 北京 — the three major capitals the learner already half-
+      // recognizes from romaji.
+      { id:'capital', kanji:'京', kun:'みやこ', on:'キョウ', en:'capital city', strokes:8,
+        notes:'京 is a pictograph of a tall building on a hill — the imperial residence, the historical capital. Two on-readings: キョウ in Japanese contexts (東京, 京都) and ケイ in some compounds (京阪 Kei-Han = the Kyoto-Osaka corridor). The 京 of "capital" also extends to "of Kyoto" in compounds like 京風 (Kyoto-style) and 京野菜 (Kyoto vegetables). Closes the Society class because the capital sits at the top of the 町 → 村 → 京 social hierarchy you\'ve been building.',
+        examples:[
+          {word:'東京',     reading:'TŌKYŌ',         meaning:'Tokyo ("eastern capital")'},
+          {word:'京都',     reading:'KYŌTO',         meaning:'Kyoto ("capital metropolis")'},
+          {word:'北京',     reading:'PEKIN',         meaning:'Beijing ("northern capital")'},
+          {word:'京野菜',   reading:'KYŌ-yasai',     meaning:'Kyoto-grown vegetables'},
+        ] },
     ],
   },
   {
@@ -2598,8 +2612,81 @@ window.FLASHCARD_CLASSES = [
         examples:[{word:'牛肉',reading:'GYŪNIKU',meaning:'beef'},{word:'牛乳',reading:'GYŪNYŪ',meaning:'milk'},{word:'牛丼',reading:'GYŪDON',meaning:'beef bowl'}] },
       { id:'pig',       kanji:'豚', kun:'ぶた',       on:'トン',   en:'pig', strokes:11,
         examples:[{word:'豚肉',reading:'BUTANIKU',meaning:'pork'},{word:'豚カツ',reading:'tonkatsu',meaning:'pork cutlet'},{word:'子豚',reading:'kobuta',meaning:'piglet'}] },
+      // 蛙 → 蛇 → 蛸 — the 虫-radical block. All three share 虫
+      // (insect / small creature) as their left-side semantic
+      // component, then differ on the right. The block reads as
+      // "small ground-living creatures before the cephalopods and
+      // the sea creatures that follow."
+      { id:'frog',      kanji:'蛙', kun:'かえる',     on:'ア',     en:'frog', strokes:12,
+        seeAlso:['虫'],
+        notes:'蛙 = 虫 (insect / small creature) + 圭 (jewel / auspicious). Often written かえる in kana for casual or children\'s contexts. Cultural: 雨蛙 (amagaeru, tree frog) hides in summer rain, and the proverb 蛙の子は蛙 ("a frog\'s child is a frog") means "the apple doesn\'t fall far from the tree."',
+        examples:[
+          {word:'蛙',          reading:'kaeru',          meaning:'frog'},
+          {word:'雨蛙',        reading:'amagaeru',       meaning:'tree frog (lit. "rain frog")'},
+          {word:'蛙の子は蛙',  reading:'kaeru no ko wa kaeru', meaning:'"like father, like son"'},
+        ] },
+      { id:'snake',     kanji:'蛇', kun:'へび',       on:'ジャ',   en:'snake / serpent', strokes:11,
+        seeAlso:['虫'],
+        notes:'蛇 = 虫 + 它 (an old snake pictograph). The on-reading ジャ shows up in 大蛇 (daija, a giant serpent — the 蛇 of myth, like Yamata-no-Orochi) and 蛇行 (jakō, "snake-walking" = meandering). The everyday faucet 蛇口 (jaguchi, "snake mouth") gets its name from the curved spout. 藪蛇 (yabu-hebi, "snake from the bushes") is the cultural shorthand for "unintended consequences from poking trouble."',
+        examples:[
+          {word:'蛇',          reading:'hebi',           meaning:'snake'},
+          {word:'大蛇',        reading:'DAIJA',          meaning:'giant snake / serpent'},
+          {word:'蛇口',        reading:'jaguchi',        meaning:'faucet ("snake mouth")'},
+          {word:'毒蛇',        reading:'dokuhebi',       meaning:'venomous snake'},
+        ] },
       { id:'octopus',   kanji:'蛸', kun:'たこ',       on:'ショウ', en:'octopus', strokes:15,
         examples:[{word:'蛸焼き',reading:'takoyaki',meaning:'octopus balls'},{word:'蛸壺',reading:'takotsubo',meaning:'octopus pot'}] },
+      // 鯨 → 鮫 → ◆交 — sea-creature pair using the 魚 (fish) radical,
+      // then the structural radical 交 that 鮫 just showcased on its
+      // right side.
+      { id:'whale',     kanji:'鯨', kun:'くじら',     on:'ゲイ',   en:'whale', strokes:19,
+        seeAlso:['魚','京'],
+        notes:'鯨 = 魚 (fish) + 京 (capital city). Heisig\'s mnemonic: "the capital city of fish" — whales as the largest creatures in the sea. The on-reading ゲイ binds to formal compounds: 捕鯨 (hogei, whaling), 鯨肉 (geiniku, whale meat). Cultural-literary: 『白鯨』 is the Japanese title of Moby-Dick.',
+        examples:[
+          {word:'鯨',          reading:'kujira',         meaning:'whale'},
+          {word:'捕鯨',        reading:'HOGEI',          meaning:'whaling'},
+          {word:'鯨肉',        reading:'GEINIKU',        meaning:'whale meat'},
+          {word:'白鯨',        reading:'HAKUGEI',        meaning:'Moby-Dick ("white whale")'},
+        ] },
+      { id:'shark',     kanji:'鮫', kun:'さめ',       on:'コウ',   en:'shark', strokes:17,
+        seeAlso:['魚'],
+        notes:'鮫 = 魚 (fish) + 交 (cross / intersect — the radical card lands right after this). Cultural: 鮫肌 (samehada, "shark-skin") means rough or dry skin, and showed up famously as a character\'s power in modern manga. 人食い鮫 (hitokui-zame) is the "man-eating shark" trope.',
+        examples:[
+          {word:'鮫',          reading:'same',           meaning:'shark'},
+          {word:'鮫肌',        reading:'samehada',       meaning:'rough skin ("shark skin")'},
+          {word:'人食い鮫',    reading:'hitokui-zame',   meaning:'man-eating shark'},
+          {word:'鮫釣り',      reading:'samezuri',       meaning:'shark fishing'},
+        ] },
+      // ◆交 — radical-style explainer. The right half of 鮫 (just met)
+      // turns out to be 交, a structural primitive that means
+      // "crossing / mingling / exchange." Shows up across many kanji
+      // about intersection: 校 (school as crossroads of learning),
+      // 効 (effect as crossed forces), 較 (compare as crossed
+      // differences), 郊 (suburb as the crossing between city and
+      // country).
+      { id:'kou-radical', type:'radical',
+        radical:'交', from:'交',
+        titleJa:'こう / まじわる', titleEn:'cross / intersect / mingle',
+        descEn:'The same 交 you just met in 鮫 (魚 + 交). Means "crossing" in three senses — physical (intersecting), social (mingling), and commercial (exchange). When you see 交 inside another kanji, expect the meaning to involve some kind of mixing or meeting. Pictographically: 亠 (a lid) over 父 (father) — Heisig\'s mnemonic ladders it as "a person with legs crossed."',
+        descJa:'いま「鮫」(魚 + 交) の右がわで出会った「交」。「まじわる・まじる・かわす」を意味し、物が交差する、人が交わる、ものを交換する — どの意味でも「交」が中にあれば「混ざる」「ぶつかる」イメージを持つ。',
+        examples:[
+          { kanji:'鮫', kun:'さめ', on:'コウ', en:'shark (just met)' },
+          { kanji:'校', kun:'',    on:'コウ', en:'school' },
+          { kanji:'効', kun:'き',  on:'コウ', en:'effect / efficacy' },
+          { kanji:'較', kun:'',    on:'カク', en:'compare / contrast' },
+        ] },
+      // 亀 closes the class — a pictographic kanji of a turtle in
+      // profile, shell on top, head + tail + feet underneath. Twelve
+      // strokes that all need to land correctly; the proverb
+      // 亀の甲より年の功 sits at the heart of Japanese age-respect.
+      { id:'turtle',    kanji:'亀', kun:'かめ',       on:'キ',     en:'turtle', strokes:11,
+        notes:'亀 is one of the most-photographed kanji because the pictograph is still legible: shell on top, head + four legs + tail underneath. Cultural: 鶴亀 (tsuru-kame, "crane and turtle") is the standard longevity-symbol pair, and 亀の甲より年の功 ("the turtle\'s shell is worth less than years of experience") is the proverb honoring elderly wisdom.',
+        examples:[
+          {word:'亀',          reading:'kame',           meaning:'turtle'},
+          {word:'海亀',        reading:'umigame',        meaning:'sea turtle'},
+          {word:'鶴亀算',      reading:'tsurukame-zan',  meaning:'"crane-turtle math" (classic puzzle)'},
+          {word:'亀の甲',      reading:'kame no ko',     meaning:'turtle shell'},
+        ] },
     ],
   },
   {

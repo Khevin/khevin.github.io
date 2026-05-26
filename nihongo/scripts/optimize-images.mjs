@@ -239,8 +239,43 @@ async function walk(absDir, folderName) {
   return { totalBefore, totalAfter, processed, skipped };
 }
 
+// Walk every image folder and remove orphaned `<name>.webp.tmp` files
+// whose final `<name>.webp` already exists. These are staging files
+// left behind when the atomic-rename at the end of processOne() fails
+// (typically Windows EBUSY when Explorer's thumbnail cache or AV
+// scanner holds the destination open). The actual encode succeeded;
+// only the rename failed. Sweeping at startup keeps the folder clean
+// across runs.
+async function sweepOrphanTmps(absDir) {
+  let removed = 0;
+  try {
+    const entries = await readdir(absDir, { withFileTypes: true });
+    for (const e of entries) {
+      const full = join(absDir, e.name);
+      if (e.isDirectory()) {
+        if (SKIP_DIRS.has(e.name)) continue;
+        removed += await sweepOrphanTmps(full);
+        continue;
+      }
+      if (!e.name.endsWith('.webp.tmp')) continue;
+      const target = full.slice(0, -'.tmp'.length);
+      if (existsSync(target)) {
+        try { await unlink(full); removed++; }
+        catch { /* ignore — another runner may have raced us */ }
+      }
+    }
+  } catch { /* directory missing: nothing to sweep */ }
+  return removed;
+}
+
 async function main() {
   console.log('Optimizing images in', IMAGES);
+  // Sweep stale .tmp staging files first — they accumulate on Windows
+  // when a previous run hit EBUSY mid-rename. We only remove tmps
+  // whose final .webp twin already exists (the encode actually
+  // succeeded), so we can't lose work.
+  const sweptTmps = await sweepOrphanTmps(IMAGES);
+  if (sweptTmps > 0) console.log(`Swept ${sweptTmps} orphan .tmp staging files.`);
   console.log('');
   let grandBefore = 0, grandAfter = 0, grandProc = 0, grandSkip = 0;
 
