@@ -3682,6 +3682,23 @@
     color: var(--ink-3);
     line-height: 1;
   }
+  /* Multi-component variant — used when `from` is an array (e.g. 曜
+     decomposes into 日 + 隹). Glyphs sit on a baseline with a small
+     gold-tinted "+" between them. The font-size shrinks a touch so
+     two-character pairs don't overflow the column. */
+  .radical-from-glyph-multi {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: clamp(36px, 5vw, 50px);
+  }
+  .radical-from-sep {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 0.55em;
+    color: var(--gold-dark);
+    margin: 0 2px;
+  }
   .radical-arrow {
     font-family: var(--serif); font-size: 18px;
     color: var(--gold-dark);
@@ -3763,6 +3780,65 @@
   @media (max-width: 420px) {
     .radical-grid { grid-template-columns: 1fr; }
     .radical-grid.radical-grid-6 { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Image-card variant — opted into via card.examplesAsImageCards.
+     Mirrors the .dt-day-card visual from the Days & Time basics page:
+     image-first 1:1 frame on top, then kanji compound + reading + EN
+     stacked below. The auto-fill grid puts ~4 across on the editorial
+     card width (cleanly accommodates the 7 day-of-week examples for
+     the ◆曜 radical card). Tighter padding than the text-only variant
+     because the image already carries most of the visual identity. */
+  .radical-grid.radical-grid-img {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+  }
+  .radical-grid.radical-grid-img .radical-ex {
+    padding: 8px;
+    gap: 3px;
+  }
+  .radical-ex-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--paper-2);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .radical-ex-image image-slot {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+  }
+  .radical-ex-image image-slot::part(img),
+  .radical-ex-image image-slot::part(frame) {
+    border-radius: 6px;
+  }
+  /* Override the text-only kanji size — the kanji compound sits below
+     the image now and shouldn't dominate. */
+  .radical-grid.radical-grid-img .rex-kanji {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.05;
+    margin-top: 2px;
+  }
+  .radical-grid.radical-grid-img .rex-reading {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  .radical-grid.radical-grid-img .rex-en {
+    font-size: 11px;
+  }
+  /* Mobile fallback — the auto-fill already adapts, but tighten the
+     min for very narrow screens so we don't get 1-col single tiles. */
+  @media (max-width: 420px) {
+    .radical-grid.radical-grid-img {
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    }
   }
 
   /* Radical card CTA — hands the learner off to another page in the
@@ -20813,7 +20889,11 @@ function renderFlashcards(container) {
                   <div class="radical-arrow">←</div>
                   <div class="radical-from">
                     <span class="eyebrow">from</span>
-                    <span class="radical-from-glyph">${escHTML(card.from)}</span>
+                    <span class="radical-from-glyph${Array.isArray(card.from) ? ' radical-from-glyph-multi' : ''}">${
+                      Array.isArray(card.from)
+                        ? card.from.map((f, i) => `${i > 0 ? '<span class="radical-from-sep">+</span>' : ''}<span>${escHTML(f)}</span>`).join('')
+                        : escHTML(card.from)
+                    }</span>
                   </div>
                 ` : ''}
               </div>
@@ -20825,8 +20905,24 @@ function renderFlashcards(container) {
                 ${APP.flashShowEn ? `<p class="en">${escHTML(card.descEn)}</p>` : ''}
                 <p class="ja">${escHTML(card.descJa)}</p>
               </div>
-              <div class="radical-grid ${(card.examples || []).length >= 6 ? 'radical-grid-6' : ''}">
-                ${(card.examples || []).map(ex => `
+              <div class="radical-grid${(card.examples || []).length >= 6 ? ' radical-grid-6' : ''}${card.examplesAsImageCards ? ' radical-grid-img' : ''}">
+                ${(card.examples || []).map((ex, i) => card.examplesAsImageCards ? `
+                  <div class="radical-ex radical-ex-img">
+                    <div class="radical-ex-image">
+                      <image-slot id="rex-${escAttr(card.id)}-${i}"
+                                  image-key="kanji/${escAttr(ex.kanji)}"
+                                  shape="rounded" radius="6" fit="contain" position="50% 50%" readonly
+                                  placeholder=""></image-slot>
+                    </div>
+                    <div class="rex-kanji">${escHTML(ex.kanji)}</div>
+                    <div class="rex-reading">
+                      ${ex.kun ? `<span class="kun">${escHTML(ex.kun)}</span>` : ''}
+                      ${ex.kun && ex.on ? `<span class="dot">·</span>` : ''}
+                      ${ex.on ? `<span class="on">${escHTML(ex.on)}</span>` : ''}
+                    </div>
+                    <div class="rex-en">${APP.flashShowEn ? escHTML(ex.en) : '— —'}</div>
+                  </div>
+                ` : `
                   <div class="radical-ex">
                     <div class="rex-kanji">${escHTML(ex.kanji)}</div>
                     <div class="rex-reading">

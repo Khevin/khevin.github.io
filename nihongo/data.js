@@ -2006,10 +2006,19 @@ window.FLASHCARD_CLASSES = [
       // day names, the daunting 18-stroke glyph collapses into a
       // memorable closed set.
       { id:'you-radical', type:'radical',
-        radical:'曜', from:'日',
+        // 'from' carries two components: 日 (sun, the meaning radical
+        // on the left) and 隹 (short-tailed bird, the recognizable
+        // piece sitting inside the right-half 翟). The renderer in
+        // app.html handles array form by joining glyphs with a + sep.
+        radical:'曜', from:['日', '隹'],
         titleJa:'よう', titleEn:'day-of-the-week marker',
-        descEn:'曜 = 日 (sun) + 翟 (long-tailed bird) — historically "shines bright like a sun-bird," narrowed to "celestial body" → day of the week. You don\'t need to memorize this character in isolation: it appears in only seven words in everyday Japanese — the seven days you just learned. After meeting all seven, you\'ve seen 曜 seven times, which is enough.',
-        descJa:'「曜」は 日（太陽）＋ 翟（尾の長い鳥）から成る — もとは「太陽の鳥のように輝く」、そこから「天体」「曜日」へ。右側の「翟」は単独ではほとんど使わない。実用上は七つの曜日のなかでしか出会わないので、その七つを覚えれば「曜」も自然に身についている。',
+        descEn:'曜 = 日 (sun) + 翟 (long-tailed bird, which contains 隹 "short-tailed bird") — historically "shines bright like a sun-bird," narrowed to "celestial body" → day of the week. You don\'t need to memorize this character in isolation: it appears in only seven words in everyday Japanese — the seven days you just learned. After meeting all seven, you\'ve seen 曜 seven times, which is enough.',
+        descJa:'「曜」は 日（太陽）＋ 翟（尾の長い鳥、中に「隹」を含む）から成る — もとは「太陽の鳥のように輝く」、そこから「天体」「曜日」へ。右側の「翟」は単独ではほとんど使わない。実用上は七つの曜日のなかでしか出会わないので、その七つを覚えれば「曜」も自然に身についている。',
+        // Render the 7 example day names as image-first cards using
+        // the same illustrations from the Days & Time basics page.
+        // The renderer probes images/kanji/<compound>.webp for each
+        // example.kanji when this flag is set.
+        examplesAsImageCards: true,
         examples:[
           { kanji:'日曜日', kun:'にちようび', on:'',  en:'Sunday' },
           { kanji:'月曜日', kun:'げつようび', on:'',  en:'Monday' },
