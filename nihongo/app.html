@@ -1546,12 +1546,25 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
+  /* JP sentence + TTS speaker side-by-side. Speaker is right-aligned
+     and locked to the top so multi-line sentences keep their start
+     aligned with the icon, instead of the icon drifting to mid-text. */
+  .jougo-modal-example-jp-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
   .jougo-modal-example .jp {
+    flex: 1 1 auto;
     font-family: var(--serif-jp);
     font-size: 18px;
     color: var(--ink);
     line-height: 1.55;
     margin: 0;
+  }
+  .jougo-modal-tts {
+    flex: 0 0 auto;
+    margin-top: 2px;          /* nudge down so the icon aligns with the JP cap-height */
   }
   .jougo-modal-example .en {
     font-family: var(--serif); font-style: italic;
@@ -18428,7 +18441,14 @@ function ensureJougoModal() {
         <div class="jougo-modal-en"></div>
         <div class="jougo-modal-example">
           <span class="jougo-modal-example-eyebrow">example</span>
-          <p class="jp"></p>
+          <div class="jougo-modal-example-jp-row">
+            <p class="jp"></p>
+            <button class="tts-btn jougo-modal-tts" type="button"
+                    aria-label="読み上げ (speak)" title="読み上げ"
+                    data-speak="">
+              ${speakerIconSVG()}
+            </button>
+          </div>
           <p class="en"></p>
         </div>
       </div>
@@ -18463,6 +18483,20 @@ function openJougoModal(tile) {
   dlg.querySelector('.jougo-modal-en').textContent      = en;
   dlg.querySelector('.jougo-modal-example .jp').textContent = exJp;
   dlg.querySelector('.jougo-modal-example .en').textContent = exEn;
+  // TTS button — speaks the JP example. The global [data-speak] click
+  // delegate (above) handles playback; we just keep the attribute fresh
+  // each open so the button always carries the current sentence. Hidden
+  // when there's no JP example (defensive — every tile has one in data).
+  const ttsBtn = dlg.querySelector('.jougo-modal-tts');
+  if (ttsBtn) {
+    if (exJp) {
+      ttsBtn.dataset.speak = exJp;
+      ttsBtn.style.display = '';
+    } else {
+      ttsBtn.dataset.speak = '';
+      ttsBtn.style.display = 'none';
+    }
+  }
   if (typeof dlg.showModal === 'function') dlg.showModal();
   else dlg.setAttribute('open', '');
 }
