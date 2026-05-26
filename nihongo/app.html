@@ -15698,8 +15698,23 @@ const FONT_DROPDOWN_TARGETS = {
 // Generic click handler — attached once at document level. Toggles the
 // open/closed state of any dropdown menu, closes others when one opens,
 // dismisses on outside click, and handles option selection.
+//
+// IMPORTANT: this function is called from MANY surfaces (settings modal,
+// writing/kana, flashcards card view, flashcards list view, etc.), each
+// passing its own onPick callback. The document-level click listener
+// must only be attached once (otherwise picks stack and fire N times),
+// but the LIVE onPick must always be the most-recently-registered one —
+// otherwise a font picked on the flashcards page would fire the
+// settings-modal onPick (or the kana onPick), leading to silent failure
+// or the wrong surface re-rendering. Routing through a module-level
+// `_fontDropdownOnPick` slot keeps the listener idempotent while letting
+// the onPick callback follow the user across sections.
 let _fontDropdownInited = false;
+let _fontDropdownOnPick = null;
 function initFontDropdownHandlers(onPick /* (target, fontId) => void */) {
+  // Always update the current onPick so the live document listener
+  // calls whichever surface most recently registered itself.
+  _fontDropdownOnPick = onPick;
   if (_fontDropdownInited) return;
   _fontDropdownInited = true;
   document.addEventListener('click', (e) => {
@@ -15726,7 +15741,7 @@ function initFontDropdownHandlers(onPick /* (target, fontId) => void */) {
       const wrap = opt.closest('.font-dropdown');
       const target = wrap && wrap.dataset.fontddTarget;
       const fontId = opt.dataset.fontddPick;
-      if (target && fontId && typeof onPick === 'function') onPick(target, fontId);
+      if (target && fontId && typeof _fontDropdownOnPick === 'function') _fontDropdownOnPick(target, fontId);
       // Close this menu
       const menu = wrap && wrap.querySelector('.font-dropdown-menu');
       if (menu) menu.hidden = true;
@@ -18849,6 +18864,13 @@ function renderFlashcards(container) {
         renderFlashcards(container);
       });
     });
+    // Sync the flash-sidebar active item — the card-view branch does
+    // this in its final renderFlashSidebar() call (line ~19198), but
+    // the list-view branch returns early so we must mirror it here.
+    // Without this, clicking a sidebar category while in list view
+    // updates the list itself but leaves the OLD .active highlight
+    // and brushstroke pinned to the previous category.
+    renderFlashSidebar();
     return;
   }
 
