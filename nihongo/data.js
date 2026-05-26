@@ -1524,6 +1524,22 @@ window.FLASHCARD_CLASSES = [
           { kanji:'弘', kun:'ひろ',   on:'コウ', en:'vast / spread wide' },
           { kanji:'云', kun:'い',     on:'ウン', en:'say (classical)' },
         ] },
+      // 会 closes out People — a meeting kanji that visually rests on
+      // the 云 cluster just introduced. Top half is the "gather under
+      // one roof" cap (人-like 亼); bottom half contains the same 云
+      // shape, the breath / words rising up from the gathered selves.
+      // When people gather (人) and the talking starts (云), that IS
+      // a 会 — a meeting, association, society, conference.
+      { id:'meet',     kanji:'会', kun:'あ',     on:'カイ',   en:'meeting / meet / association',
+        seeAlso:['人','云'],
+        strokes:6,
+        notes:'人 (people gathered under one roof) sitting on top of 云 (the breath rising from the self). When people gather and the talking starts, that\'s a 会. Covers every kind of coming-together: a casual meet-up, a formal conference, a club, a society, an athletic meet. The verb 会う (au) "to meet" carries the wider sense of "encounter" — including bad ones: 事故に会う means "to have an accident," literally "to encounter an accident."',
+        examples:[
+          {word:'会',     reading:'KAI',     meaning:'meeting / assembly / society'},
+          {word:'会員',   reading:'KAIIN',   meaning:'member'},
+          {word:'例会',   reading:'REIKAI',  meaning:'regular meeting'},
+          {word:'会う',   reading:'au',      meaning:'to meet / encounter'},
+        ] },
     ],
   },
   {
