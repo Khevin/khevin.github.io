@@ -1104,22 +1104,11 @@ window.VOCAB_CLASSES = [
           },
         ],
       },
-      {
-        id: 'flashcards',
-        titleJa: 'たんごふだ',
-        titleEn: 'Flashcards',
-        glyph: '札',
-        primaryLevel: 'N5',
-        pages: [
-          {
-            id: 'jougo-flashcards-grid',
-            type: 'flashcards-grid',
-            title: '畳語 の 単語札',
-            subtitle: 'Every jōgo flashcard in the deck, in one place',
-            tag: 'jougo',
-          },
-        ],
-      },
+      // (Removed) — the jougo flashcards book lived here, aggregating
+      // every card tagged 'jougo' across the FLASHCARD_CLASSES decks.
+      // Redundant once the Flashcards section gained its own jougo
+      // category — keeping both meant the same set surfaced in two
+      // places under two different chrome families.
       {
         id: 'ono',
         titleJa: 'オノマトペ',
