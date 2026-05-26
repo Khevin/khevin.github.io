@@ -2534,6 +2534,29 @@ window.FLASHCARD_CLASSES = [
         ] },
       { id:'cat',       kanji:'猫', kun:'ねこ',       on:'ビョウ', en:'cat', strokes:11,
         examples:[{word:'猫舌',reading:'nekojita',meaning:'cat tongue (sensitive to heat)'},{word:'子猫',reading:'koneko',meaning:'kitten'},{word:'黒猫',reading:'kuroneko',meaning:'black cat'}] },
+      // 子犬 → 子猫 — the 子-prefix pattern for young animals. Both
+      // kanji have already landed (子 in People, 犬 / 猫 just above),
+      // so these read as compounds: 子 (child) + animal = baby
+      // animal. Same pattern extends to 子豚 (piglet), 子鳥 (baby
+      // bird), 子馬 (foal), 子牛 (calf) — the curriculum surfaces
+      // those as examples on each animal card, but 子犬 / 子猫 are
+      // common enough to earn their own slot.
+      { id:'koinu', kanji:'子犬', kun:'こいぬ', on:'', en:'puppy',
+        seeAlso:['子', '犬'],
+        notes:'子 (child) + 犬 (dog) — literally "child-dog." Same prefix pattern as 子猫 (kitten), 子豚 (piglet), 子鳥 (baby bird), 子馬 (foal), 子牛 (calf). Sometimes written 仔犬 with the alternative "young animal" kanji 仔, but 子犬 is the standard form.',
+        examples:[
+          {word:'子犬',         reading:'koinu',          meaning:'puppy'},
+          {word:'子犬の頃',     reading:'koinu no koro',  meaning:'puppyhood'},
+          {word:'迷い子犬',     reading:'mayoigo-inu',    meaning:'lost puppy'},
+        ] },
+      { id:'koneko', kanji:'子猫', kun:'こねこ', on:'', en:'kitten',
+        seeAlso:['子', '猫'],
+        notes:'子 (child) + 猫 (cat) — "child-cat" → kitten. Same 子-prefix pattern as 子犬 (puppy). The compound itself is the standard everyday word; the 仔猫 spelling shows up in literary or veterinary contexts.',
+        examples:[
+          {word:'子猫',         reading:'koneko',         meaning:'kitten'},
+          {word:'子猫を拾う',   reading:'koneko o hirou', meaning:'to pick up a stray kitten'},
+          {word:'三毛子猫',     reading:'mike-koneko',    meaning:'tortoiseshell kitten'},
+        ] },
       { id:'bird',      kanji:'鳥', kun:'とり',       on:'チョウ', en:'bird', strokes:11,
         examples:[
           {word:'白鳥',reading:'HAKUCHŌ',meaning:'swan'},
