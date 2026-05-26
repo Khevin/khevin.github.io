@@ -1277,6 +1277,10 @@
     margin-bottom: 8px;
     padding-bottom: 22px;
     border-bottom: 1px dashed var(--paper-edge);
+    /* flow-root establishes a block formatting context so floated
+       figures inside the section (.jougo-noma-figure) are contained
+       and can't bleed into the next section. */
+    display: flow-root;
   }
   .explainer-body .jougo-section:last-child { border-bottom: none; }
   .explainer-body h3 {
@@ -1350,6 +1354,51 @@
     width: 100%;
     height: auto;
     border-radius: 8px;
+  }
+
+  /* Smaller inline figure — used to illustrate a single concept inside
+     a section's prose (e.g. the 々 hand-to-ear "say it again" image at
+     the start of section B). Floats right on wider viewports so the
+     paragraph wraps around it; stacks centered on narrow viewports. */
+  .explainer-body .jougo-noma-figure {
+    float: right;
+    width: clamp(160px, 26vw, 240px);
+    margin: 4px 0 14px 22px;
+    padding: 0;
+    background: var(--paper-2);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 1px var(--paper-edge),
+      0 0 0 4px var(--paper-2),
+      0 0 0 5px var(--gold-soft),
+      0 10px 24px rgba(60, 40, 10, 0.12);
+    overflow: hidden;
+  }
+  .explainer-body .jougo-noma-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+  .explainer-body .jougo-noma-figure figcaption {
+    font-family: var(--serif); font-size: 11px;
+    font-style: italic;
+    color: var(--ink-3);
+    line-height: 1.45;
+    padding: 8px 12px 10px;
+    text-align: left;
+  }
+  .explainer-body .jougo-noma-figure figcaption em {
+    color: var(--ink-2);
+  }
+  @media (max-width: 600px) {
+    .explainer-body .jougo-noma-figure {
+      float: none;
+      width: 100%;
+      max-width: 280px;
+      margin: 6px auto 16px;
+    }
   }
 
   /* Tile grids inside the explainer (group examples). */

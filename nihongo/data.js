@@ -984,6 +984,10 @@ window.VOCAB_CLASSES = [
 
               <section class="jougo-section">
                 <h3>B · The 々 mark (kasanenoma / odoriji / noma)</h3>
+                <figure class="jougo-noma-figure">
+                  <img src="images/vocabulary/々.webp" alt="Hand cupped behind ear — &lsquo;say it again&rsquo;, the gesture that the 々 mark performs in writing" loading="lazy">
+                  <figcaption>「もう一度」— the hand cupped behind the ear asks for the previous sound again. The 々 mark does the same thing in writing: it says <em>repeat what just came before</em>.</figcaption>
+                </figure>
                 <p>The symbol <span class="glyph-inline">々</span> is the <em>kanji iteration mark</em>. It is not itself a kanji and has no reading of its own — it simply says <em>"repeat the previous kanji."</em> Several names exist for it:</p>
                 <ul>
                   <li><span class="ja">同の字点</span> (<em>dō-no-jiten</em>) — "the same-character mark," its formal name.</li>
