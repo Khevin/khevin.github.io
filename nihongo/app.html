@@ -18462,15 +18462,15 @@ function ensureJougoModal() {
   document.body.appendChild(dlg);
   // Close button
   dlg.querySelector('.jougo-modal-close').addEventListener('click', () => dlg.close());
-  // Backdrop click — close when the click lands on the dialog element itself
-  // (not inside the card). Native <dialog> reports the click at dialog level
-  // when the user clicks the ::backdrop; the card stops propagation below.
+  // Backdrop click — close when the click lands on the dialog element
+  // ITSELF (not on the card or anything inside it). Native <dialog>
+  // reports backdrop clicks with e.target === dlg, so the identity check
+  // alone is enough to distinguish backdrop from card. We DON'T stop
+  // propagation on the card — clicks inside must reach the document-level
+  // [data-speak] delegate so the TTS speaker button works.
   dlg.addEventListener('click', (e) => {
     if (e.target === dlg) dlg.close();
   });
-  // Stop card-internal clicks from bubbling up and triggering the backdrop
-  // close path. Without this, clicking the image would close the modal.
-  dlg.querySelector('.jougo-modal-card').addEventListener('click', (e) => e.stopPropagation());
   _jougoModal = dlg;
   return dlg;
 }
