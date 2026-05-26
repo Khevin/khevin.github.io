@@ -2061,68 +2061,15 @@
     aspect-ratio: 1 / 1;
     background: transparent;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
     display: flex; align-items: center; justify-content: center;
   }
   .testcard-image image-slot {
     display: block;
     width: 100%; height: 100%;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
-    /* Organic torn-paper mask. An SVG <feTurbulence> generates fractal
-       noise; <feDisplacementMap> pushes the edges of a white rect by
-       that noise, producing a wavy / deckle silhouette. The result is
-       used as mask-image on the image-slot host, so:
-         • the rectangular paper-2 image well underneath stays squared
-         • the IMAGE itself reveals only where the mask is white —
-           a torn-paper-shaped subset of the rectangle
-       Six variants live below; the editorial card renderer hashes
-       card.id to a stable 0–5 and sets data-torn on .testcard-image
-       so the SAME card always gets the SAME tear, and adjacent cards
-       in the deck rarely share the same shape. baseFrequency and
-       scale are also varied slightly per seed so the variation reads
-       at multiple scales (some variants have larger peaks, others
-       have shallower deckles). The inner rect is inset 6% inside the
-       SVG so displacement has room to push outward without clipping
-       at the canvas edge. */
-    -webkit-mask-image: var(--torn-mask, none);
-            mask-image: var(--torn-mask, none);
-    -webkit-mask-size: 100% 100%;
-            mask-size: 100% 100%;
-    -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-            mask-position: center;
-  }
-  /* Six tear variants. seed alone changes the phase of the noise;
-     baseFrequency + scale tuned to vary the visual character — some
-     have larger wavelengths (more dramatic peaks), some shallower
-     deckle, so neighbouring cards in the deck don't read as the
-     same paper stamped six times. */
-  .testcard-image[data-torn="0"] image-slot {
-    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='3' seed='3' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='9'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
-  }
-  .testcard-image[data-torn="1"] image-slot {
-    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='3' seed='7' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='11'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
-  }
-  .testcard-image[data-torn="2"] image-slot {
-    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.026' numOctaves='3' seed='11' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='8'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
-  }
-  .testcard-image[data-torn="3"] image-slot {
-    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.020' numOctaves='4' seed='17' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='10'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
-  }
-  .testcard-image[data-torn="4"] image-slot {
-    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.024' numOctaves='3' seed='23' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='9'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
-  }
-  .testcard-image[data-torn="5"] image-slot {
-    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.017' numOctaves='3' seed='31' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='12'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
-  }
-  /* Fallback when no data-torn attribute is set (e.g. legacy markup
-     outside the editorial flashcard renderer): use variant 0 as the
-     default so the page never falls back to a sharp rectangle. */
-  .testcard-image:not([data-torn]) image-slot {
-    --torn-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><defs><filter id='t' x='-12%25' y='-12%25' width='124%25' height='124%25'><feTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='3' seed='3' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='9'/></filter></defs><rect x='6' y='6' width='88' height='88' fill='white' filter='url(%23t)'/></svg>");
   }
   /* No-image flashcards — when the slot is read-only AND no image has
      been uploaded, the inner image-slot hides itself (display:none
@@ -2142,7 +2089,7 @@
      otherwise the host\'s overflow:hidden + radius clips it. */
   .testcard-image image-slot::part(img),
   .testcard-image image-slot::part(frame) {
-    border-radius: 4px;
+    border-radius: 8px;
   }
   .testcard-glyph {
     /* font-family is set inline per-card from APP.flashGlyphFont so the
@@ -17858,22 +17805,6 @@ function splitJougoGlyph(text) {
   return escHTML(s);
 }
 
-// Deterministic 0..5 hash of a string. Used to pick which of the six
-// torn-paper SVG masks to apply to a flashcard's image. The hash is
-// stable: the SAME card id always lands on the SAME variant, so the
-// learner doesn't see a tear pattern flip every time the card re-
-// renders, and adjacent cards in the deck almost never share a tear.
-function tornVariantFor(id) {
-  const s = String(id || '');
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    // djb2-like rolling hash. << 5 - h amounts to multiplication by 31
-    // in 32-bit signed arithmetic; | 0 keeps the value in i32.
-    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  }
-  return Math.abs(h) % 6;
-}
-
 function editorialFlashcardHTML(card, cls, related, seeAlso) {
   // Use the EXACT same image path the classic flash-card resolves to —
   // so 人 in editorial mode shows the same illustration 人 shows in old
@@ -17881,7 +17812,6 @@ function editorialFlashcardHTML(card, cls, related, seeAlso) {
   // card.imageFolder → cls.imageFolder → 'kanji' (the global default).
   const imageFolder = card.imageFolder || cls.imageFolder || 'kanji';
   const imageKey = card.kanji;
-  const tornVariant = tornVariantFor(card.id);
 
   // Example meanings respect the global English toggle — when the learner
   // hides English to study, both the meaning field AND the leader dotted
@@ -17992,11 +17922,11 @@ function editorialFlashcardHTML(card, cls, related, seeAlso) {
           <div class="testcard-flip-front" aria-hidden="${flipped}">
             <div class="testcard">
               <div class="testcard-left">
-                <div class="testcard-image" data-torn="${tornVariant}">
+                <div class="testcard-image">
                   <image-slot
                     id="flash-${escAttr(card.id)}"
                     image-key="${escAttr(imageFolder)}/${escAttr(imageKey)}"
-                    shape="rounded" radius="4" fit="contain" position="50% 50%" readonly
+                    shape="rounded" radius="8" fit="contain" position="50% 50%" readonly
                     placeholder="No illustration for ${escAttr(card.kanji)} yet"></image-slot>
                 </div>
                 <div class="testcard-glyph" style="font-family:${escAttr(glyphFontStack)}">${splitJougoGlyph(card.kanji)}</div>
