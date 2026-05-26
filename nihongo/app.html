@@ -10686,7 +10686,12 @@
     --dt-elem-earth:   #8a6a4a;
   }
 
-  /* ─── section chrome — mirrors .ss-section but isolated ─────────── */
+  /* ─── section chrome — no kanji-numeral chips, just title + lede ───
+     Earlier versions had a circular kanji-numeral chip (一 / 二 / 三)
+     leading each section. Dropped because three sections don't need
+     ceremonial numbering — the title and lede do the work, and the
+     left-margin was eating horizontal space the day grid needed for
+     all 7 cards. */
   .dt-section { margin-bottom: 56px; }
   .dt-section-head {
     display: flex;
@@ -10694,24 +10699,6 @@
     gap: 18px;
     margin-bottom: 22px;
     flex-wrap: wrap;
-  }
-  .dt-section-num {
-    flex-shrink: 0;
-    width: 56px; height: 56px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--dt-paper-2);
-    border: 1.5px solid var(--dt-gold-soft);
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(141,102,48,0.10);
-  }
-  .dt-section-num-kanji {
-    font-family: var(--serif-jp);
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--dt-gold-dark);
-    line-height: 1;
   }
   .dt-section-title {
     margin: 0;
@@ -10737,7 +10724,6 @@
   .dt-section-lede {
     flex-basis: 100%;
     margin: 0;
-    padding-left: 74px;
     font-family: var(--serif);
     font-size: 15px;
     line-height: 1.6;
@@ -10745,7 +10731,7 @@
   }
   .dt-section-lede b { color: var(--dt-ink); font-weight: 600; }
   .dt-section-footnote {
-    margin: 14px 74px 0;
+    margin: 14px 0 0;
     font-family: var(--serif);
     font-style: italic;
     font-size: 13px;
@@ -10886,14 +10872,6 @@
     font-weight: 400;
     color: var(--dt-elem, var(--dt-ink-3));
     letter-spacing: 0.02em;
-  }
-  .dt-day-cognate {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 9px;
-    color: var(--dt-ink-3);
-    line-height: 1.3;
-    margin-top: 2px;
   }
   /* Below the desktop-wide breakpoint, fall back to a wrapping grid
      since 7 narrow cards become unreadable. 4 then 2 at the smallest. */
@@ -11279,8 +11257,6 @@
 
   /* Responsive — collapse heavy multi-column grids */
   @media (max-width: 720px) {
-    .dt-section-lede     { padding-left: 0; }
-    .dt-section-footnote { margin-left: 0; margin-right: 0; }
     .dt-date-row         { grid-template-columns: 1fr; }
     .dt-ampm-row         { grid-template-columns: 1fr; gap: 14px; }
     .dt-ampm-divider     { width: 64px; height: 1px; justify-self: center; }
@@ -17099,13 +17075,13 @@ function renderWritingDatetime(container) {
   // its planetary parallel (the cross-cultural anchor) and the
   // elemental kanji whose meaning the day inherits.
   const days = [
-    { ja:'日曜日', kana:'にちようび', en:'Sunday',    elem:'日', elemEn:'sun',        planet:'☉ Sun',     cognate:'En: Sun-day · It: domenica' },
-    { ja:'月曜日', kana:'げつようび', en:'Monday',    elem:'月', elemEn:'moon',       planet:'☽ Moon',    cognate:'En: Mon-day · Fr: lundi' },
-    { ja:'火曜日', kana:'かようび',   en:'Tuesday',   elem:'火', elemEn:'fire',       planet:'♂ Mars',    cognate:'En: Tues-day · It: martedì' },
-    { ja:'水曜日', kana:'すいようび', en:'Wednesday', elem:'水', elemEn:'water',      planet:'☿ Mercury', cognate:'En: Wed-nes-day · Fr: mercredi' },
-    { ja:'木曜日', kana:'もくようび', en:'Thursday',  elem:'木', elemEn:'wood',       planet:'♃ Jupiter', cognate:'En: Thurs-day · Fr: jeudi' },
-    { ja:'金曜日', kana:'きんようび', en:'Friday',    elem:'金', elemEn:'metal/gold', planet:'♀ Venus',   cognate:'En: Fri-day · Fr: vendredi' },
-    { ja:'土曜日', kana:'どようび',   en:'Saturday',  elem:'土', elemEn:'earth',      planet:'♄ Saturn',  cognate:'En: Saturn-day · It: sabato' },
+    { ja:'日曜日', kana:'にちようび', en:'Sunday',    elem:'日', elemEn:'sun',        planet:'☉ Sun' },
+    { ja:'月曜日', kana:'げつようび', en:'Monday',    elem:'月', elemEn:'moon',       planet:'☽ Moon' },
+    { ja:'火曜日', kana:'かようび',   en:'Tuesday',   elem:'火', elemEn:'fire',       planet:'♂ Mars' },
+    { ja:'水曜日', kana:'すいようび', en:'Wednesday', elem:'水', elemEn:'water',      planet:'☿ Mercury' },
+    { ja:'木曜日', kana:'もくようび', en:'Thursday',  elem:'木', elemEn:'wood',       planet:'♃ Jupiter' },
+    { ja:'金曜日', kana:'きんようび', en:'Friday',    elem:'金', elemEn:'metal/gold', planet:'♀ Venus' },
+    { ja:'土曜日', kana:'どようび',   en:'Saturday',  elem:'土', elemEn:'earth',      planet:'♄ Saturn' },
   ];
   const dayCardsHTML = days.map(d => `
     <div class="dt-day-card">
@@ -17117,7 +17093,6 @@ function renderWritingDatetime(container) {
         <div class="dt-day-ja">${escHTML(d.ja)}</div>
         <div class="dt-day-kana">${escHTML(d.kana)}</div>
         <div class="dt-day-en">${escHTML(d.en)} <span class="dt-day-planet">${escHTML(d.planet)}</span></div>
-        <div class="dt-day-cognate">${escHTML(d.cognate)}</div>
       </div>
     </div>`).join('');
 
@@ -17202,10 +17177,9 @@ function renderWritingDatetime(container) {
 
     <div class="dt-page">
 
-      <!-- 一. Days of the week ─────────────────────────────────────── -->
+      <!-- Days of the week ─────────────────────────────────────────── -->
       <section class="dt-section">
         <div class="dt-section-head">
-          <span class="dt-section-num"><span class="dt-section-num-kanji">一</span></span>
           <h2 class="dt-section-title">The seven elemental days<em>ようび — day of the week</em></h2>
           <p class="dt-section-lede">Japanese names each day after a classical element + 曜 (yō, "day-of-the-week") + 日 (bi, "day"). The same five elements + sun + moon that name the seven classical planets in Western astrology — Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn — give Romance languages their week. Once you see the planetary parallel, every day is a memorable hook.</p>
         </div>
@@ -17217,10 +17191,9 @@ function renderWritingDatetime(container) {
         </p>
       </section>
 
-      <!-- 二. Reading dates ─────────────────────────────────────────── -->
+      <!-- Reading dates ────────────────────────────────────────────── -->
       <section class="dt-section">
         <div class="dt-section-head">
-          <span class="dt-section-num"><span class="dt-section-num-kanji">二</span></span>
           <h2 class="dt-section-title">Dates run big to small<em>年月日 — year · month · day</em></h2>
           <p class="dt-section-lede">English writes "October 15, 2024" — month first, year last. Japanese flips it: <b>year → month → day</b>, biggest unit first. Each unit gets its own marker (年 / 月 / 日) so the reader knows what scale you're on without commas, slashes, or context.</p>
         </div>
@@ -17249,10 +17222,9 @@ function renderWritingDatetime(container) {
         </p>
       </section>
 
-      <!-- 三. Telling time ──────────────────────────────────────────── -->
+      <!-- Telling time ─────────────────────────────────────────────── -->
       <section class="dt-section">
         <div class="dt-section-head">
-          <span class="dt-section-num"><span class="dt-section-num-kanji">三</span></span>
           <h2 class="dt-section-title">Reading the clock<em>〜時 / 〜分 — hours and minutes</em></h2>
           <p class="dt-section-lede">Hours attach 時 (ji) to the number; minutes attach 分 (fun / pun). Three hours bend their reading — <span class="ja">四時 (yoji)</span>, <span class="ja">七時 (shichiji)</span>, <span class="ja">九時 (kuji)</span> drop their usual on-yomi — and minutes rendaku into <i>pun</i> after 1, 3, 6, 8, 10. <span class="ja">半 (han)</span> closes the system as "half past."</p>
         </div>
