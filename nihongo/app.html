@@ -1375,6 +1375,34 @@
     border-color: var(--gold);
     transform: translateY(-2px);
   }
+  /* Illustrated variant — first child is an <img> that sits flush
+     against the top edge of the tile. The tile's TOP corners are
+     squared off so the image touches the card with a clean horizontal
+     seam (no rounded-vs-square mismatch). The image carries no border
+     and no rounding of its own. Bottom corners of the tile stay
+     rounded for visual continuity with the rest of the grid. The
+     tile's top padding drops to zero since the image takes that
+     space; the kanji glyph gets a margin-top so it still breathes. */
+  .jougo-tile.jougo-tile-illus {
+    padding-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    overflow: hidden;          /* clip image to the tile's bottom corners */
+  }
+  .jougo-tile-img {
+    display: block;
+    width: calc(100% + 22px);  /* escape the tile's L/R padding (10px each + 1px border) */
+    margin: 0 -11px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center;
+    border: none;              /* no stroke per spec */
+    border-radius: 0;          /* square so it meets the squared-off tile top */
+  }
+  .jougo-tile.jougo-tile-illus .jougo-tile-glyph {
+    margin-top: 12px;          /* breathing room between image and glyph */
+  }
   .jougo-tile-glyph {
     font-family: var(--serif-jp);
     font-size: 24px;

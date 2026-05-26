@@ -1012,12 +1012,12 @@ window.VOCAB_CLASSES = [
 
                 <h4>Plurality — "many of these"</h4>
                 <div class="jougo-grid">
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">人々</span><span class="jougo-tile-reading">hitobito</span><span class="jougo-tile-en">people</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">山々</span><span class="jougo-tile-reading">yamayama</span><span class="jougo-tile-en">mountains</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">木々</span><span class="jougo-tile-reading">kigi</span><span class="jougo-tile-en">trees</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">国々</span><span class="jougo-tile-reading">kuniguni</span><span class="jougo-tile-en">countries</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">我々</span><span class="jougo-tile-reading">wareware</span><span class="jougo-tile-en">we (formal)</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">諸々</span><span class="jougo-tile-reading">moromoro</span><span class="jougo-tile-en">various things</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/hitobito.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">人々</span><span class="jougo-tile-reading">hitobito</span><span class="jougo-tile-en">people</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/yamayama.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">山々</span><span class="jougo-tile-reading">yamayama</span><span class="jougo-tile-en">mountains</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/kigi.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">木々</span><span class="jougo-tile-reading">kigi</span><span class="jougo-tile-en">trees</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/kuniguni.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">国々</span><span class="jougo-tile-reading">kuniguni</span><span class="jougo-tile-en">countries</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/warebare.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">我々</span><span class="jougo-tile-reading">wareware</span><span class="jougo-tile-en">we (formal)</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/moromoro.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">諸々</span><span class="jougo-tile-reading">moromoro</span><span class="jougo-tile-en">various things</span></div>
                 </div>
 
                 <h4>Time-cycling &amp; frequency</h4>
