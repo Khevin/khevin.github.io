@@ -2502,11 +2502,14 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'どうぶつ',
     titleEn: 'Animals',
     glyph: '犬',
-    // Order: 貝 犬 ◆犭 狼 狐 猫 鳥 魚 馬 牛 豚 鶏 蛸 烏賊.
+    // Order: 貝 犬 ◆犭 猫 鳥 魚 馬 牛 豚 鶏 蛸 烏賊.
     // 貝 leads — its kanji is structurally the simplest (a pictographic
-    // shell sitting on two legs). 犬 → ◆犭 → 狼/狐/猫 keeps the
-    // beast-radical family together: kanji-then-radical for 犬,
-    // radical-then-kanji for the three 犭-compounds that follow.
+    // shell sitting on two legs). 犬 → ◆犭 → 猫 keeps the beast-
+    // radical family together (kanji-then-radical for 犬, then the
+    // first 犭-compound 猫 immediately after). 狼 / 狐 are introduced
+    // in the Animals II deck — the radical card flags them as
+    // upcoming examples but doesn't ask the learner to retain them
+    // here.
     cards: [
       { id:'shellfish', kanji:'貝', kun:'かい',       on:'バイ',   en:'shellfish / shell', strokes:7,
         examples:[{word:'貝殻',reading:'kaigara',meaning:'seashell'},{word:'二枚貝',reading:'nimaigai',meaning:'bivalve'},{word:'貝柱',reading:'kaibashira',meaning:'scallop (adductor muscle)'}] },
@@ -2515,44 +2518,19 @@ window.FLASHCARD_CLASSES = [
       // ◆犭 — the beast / animal radical. 犬 (dog) becomes 犭 when
       // it slides onto the left side of a compound — same trick as
       // 人 → 亻 in People. Marks kanji about four-legged animals;
-      // the right half names which one. Lands right after 犬 so the
-      // three 犭-compounds that follow (狼, 狐, 猫) all read as
-      // "you've already met the structural piece."
+      // the right half names which one. Lands right after 犬;
+      // 猫 follows immediately as the first 犭-compound. Wolf and
+      // fox land in Animals II — flagged here as preview examples.
       { id:'kemonohen-radical', type:'radical',
         radical:'犭', from:'犬',
         titleJa:'けものへん', titleEn:'beast radical',
         descEn:'A variant of 犬 that lives on the left side of a kanji — three thin strokes evoking a slim animal in profile, paws and tail. Marks kanji about four-legged beasts; the right half names the species. Whenever you see 犭 on the left, expect an animal.',
         descJa:'「犬」が漢字の左がわに立つときの変形。三本の細い線で、しなやかな四つ足のけものを表す。漢字の右がわがどの動物かを示す。',
         examples:[
-          { kanji:'狼', kun:'おおかみ', on:'ロウ', en:'wolf' },
-          { kanji:'狐', kun:'きつね', on:'コ',     en:'fox' },
           { kanji:'猫', kun:'ねこ',   on:'ビョウ', en:'cat' },
+          { kanji:'狼', kun:'おおかみ', on:'ロウ', en:'wolf (in Animals II)' },
+          { kanji:'狐', kun:'きつね', on:'コ',     en:'fox (in Animals II)' },
           { kanji:'獣', kun:'けもの', on:'ジュウ', en:'beast / wild animal' },
-        ] },
-      // 狼 (ookami) — first 犭-compound after the radical card. 犭 +
-      // 良 ("good"). Modern usage: 一匹狼 (lone wolf, a cultural
-      // metonym), 狼狽 (rōbai, panic). Also lives in 狼煙 (noroshi,
-      // signal fire) — historically lit with wolf dung for its
-      // unique smoke trail.
-      { id:'wolf',      kanji:'狼', kun:'おおかみ',   on:'ロウ',   en:'wolf', strokes:10,
-        seeAlso:['犬'],
-        examples:[
-          {word:'狼',        reading:'ōkami',         meaning:'wolf'},
-          {word:'一匹狼',    reading:'IPPIKI-ōkami',  meaning:'lone wolf'},
-          {word:'狼狽',      reading:'RŌBAI',         meaning:'panic / confusion'},
-          {word:'狼煙',      reading:'noroshi',       meaning:'signal fire'},
-        ] },
-      // 狐 (kitsune) — the trickster of Japanese folklore. 犭 + 瓜
-      // ("melon" — Heisig's "fox-melon" mnemonic). The 狐 of folklore
-      // shape-shifts, marries (狐の嫁入り, the sunshower wedding),
-      // and serves Inari at every red-torii shrine.
-      { id:'fox',       kanji:'狐', kun:'きつね',     on:'コ',     en:'fox', strokes:8,
-        seeAlso:['犬'],
-        examples:[
-          {word:'狐',         reading:'kitsune',         meaning:'fox'},
-          {word:'狐火',       reading:'kitsunebi',       meaning:'fox-fire (will-o\'-the-wisp)'},
-          {word:'狐の嫁入り', reading:'kitsune no yomeiri', meaning:'"fox wedding" (sunshower)'},
-          {word:'白狐',       reading:'BYAKKO',          meaning:'white fox (Inari\'s messenger)'},
         ] },
       { id:'cat',       kanji:'猫', kun:'ねこ',       on:'ビョウ', en:'cat', strokes:11,
         examples:[{word:'猫舌',reading:'nekojita',meaning:'cat tongue (sensitive to heat)'},{word:'子猫',reading:'koneko',meaning:'kitten'},{word:'黒猫',reading:'kuroneko',meaning:'black cat'}] },
@@ -2810,6 +2788,44 @@ window.FLASHCARD_CLASSES = [
           {word:'御飯を食べる', reading:'gohan o taberu', meaning:'to eat a meal'},
           {word:'朝御飯',       reading:'asagohan',       meaning:'breakfast'},
           {word:'夕御飯',       reading:'yūgohan',        meaning:'dinner'},
+        ] },
+    ],
+  },
+  {
+    // Animals II — wild / non-domestic creatures. Starts with the two
+    // 犭-compounds (狼 wolf, 狐 fox) that wouldn't fit in the main
+    // Animals deck without crowding the staple-creature list. The
+    // beast-radical (◆犭) was already introduced over in Animals,
+    // so these read as "the radical you already know, applied to
+    // wild animals." Glyph is 狼 (the wolf as the deck's anchor).
+    id: 'animals-2',
+    titleJa: 'やせいどうぶつ',
+    titleEn: 'Animals II',
+    glyph: '狼',
+    cards: [
+      // 狼 (ookami) — 犭 + 良 ("good"). Modern usage leans into the
+      // cultural metonyms: 一匹狼 (lone wolf), 狼狽 (panic). Also
+      // lives in 狼煙 (noroshi, signal fire) — historically lit
+      // with wolf dung for its unique smoke trail.
+      { id:'wolf',      kanji:'狼', kun:'おおかみ',   on:'ロウ',   en:'wolf', strokes:10,
+        seeAlso:['犬'],
+        examples:[
+          {word:'狼',        reading:'ōkami',         meaning:'wolf'},
+          {word:'一匹狼',    reading:'IPPIKI-ōkami',  meaning:'lone wolf'},
+          {word:'狼狽',      reading:'RŌBAI',         meaning:'panic / confusion'},
+          {word:'狼煙',      reading:'noroshi',       meaning:'signal fire'},
+        ] },
+      // 狐 (kitsune) — the trickster of Japanese folklore. 犭 + 瓜
+      // ("melon" — Heisig's "fox-melon" mnemonic). The 狐 of folklore
+      // shape-shifts, marries (狐の嫁入り, the sunshower wedding),
+      // and serves Inari at every red-torii shrine.
+      { id:'fox',       kanji:'狐', kun:'きつね',     on:'コ',     en:'fox', strokes:8,
+        seeAlso:['犬'],
+        examples:[
+          {word:'狐',         reading:'kitsune',         meaning:'fox'},
+          {word:'狐火',       reading:'kitsunebi',       meaning:'fox-fire (will-o\'-the-wisp)'},
+          {word:'狐の嫁入り', reading:'kitsune no yomeiri', meaning:'"fox wedding" (sunshower)'},
+          {word:'白狐',       reading:'BYAKKO',          meaning:'white fox (Inari\'s messenger)'},
         ] },
     ],
   },
