@@ -3070,6 +3070,55 @@
     .radical-grid.radical-grid-6 { grid-template-columns: 1fr 1fr; }
   }
 
+  /* Radical card CTA — hands the learner off to another page in the
+     app (typically a vocab/jougo explainer). Sits below the examples
+     grid, above the card footer. Soft gold pill with a paper-2 fill
+     so it reads as "more here" without competing visually with the
+     primary teaching content. The two-line stack (JP big, EN italic
+     small underneath) matches the testcard-nav-btn pattern used
+     elsewhere on radical cards. */
+  .radical-cta {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 2px;
+    margin: 18px auto 14px;
+    padding: 11px 22px 10px;
+    background: var(--paper-2);
+    border: 1px solid var(--gold-soft);
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--ink);
+    transition:
+      background .15s,
+      border-color .15s,
+      transform .08s,
+      box-shadow .15s;
+    box-shadow: 0 1px 0 var(--paper-edge);
+    text-align: center;
+  }
+  .radical-cta:hover {
+    background: var(--paper);
+    border-color: var(--gold);
+    box-shadow: 0 4px 12px rgba(141, 102, 48, 0.16);
+    transform: translateY(-1px);
+  }
+  .radical-cta:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 0 var(--paper-edge);
+  }
+  .radical-cta-ja {
+    font-family: var(--serif-jp); font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+  .radical-cta-en {
+    font-family: var(--serif); font-style: italic;
+    font-size: 11px;
+    color: var(--gold-dark);
+    line-height: 1.2;
+  }
+
   .flash-reading {
     display: flex; justify-content: center; gap: 14px;
     margin-top: 12px;
@@ -14488,9 +14537,13 @@ function flashcardsGridHTML(page) {
     }
   }
   const cards = matches.map(({classId, card}) => {
+    // Radical-type cards (e.g. ◆々 the iteration-mark explainer) use
+    // card.radical instead of card.kanji. Fall through cleanly so the
+    // aggregator can include radical cards alongside kanji cards.
+    const glyph = card.kanji || card.radical || '';
     const glyphHtml = (typeof splitJougoGlyph === 'function')
-      ? splitJougoGlyph(card.kanji)
-      : escHTML(card.kanji);
+      ? splitJougoGlyph(glyph)
+      : escHTML(glyph);
     // Resolve the same image-key the editorial flashcard uses, so
     // `<image-slot>` finds the existing illustration on disk (e.g.
     // images/vocabulary/にこにこ.webp). card.imageFolder wins, then the
@@ -14500,8 +14553,11 @@ function flashcardsGridHTML(page) {
     // tile in the grid still occupies the same height.
     const cls = (window.FLASHCARD_CLASSES || []).find(c => c.id === classId);
     const folder = card.imageFolder || (cls && cls.imageFolder) || 'kanji';
-    const imageKey = folder + '/' + card.kanji;
+    const imageKey = folder + '/' + glyph;
     const slotId = 'jougo-fc-' + classId + '-' + card.id;
+    // Radical cards have titleEn/titleJa instead of en/kun.
+    const reading = card.kun || card.kana || card.titleJa || '';
+    const gloss   = card.en  || card.titleEn || '';
     return `
       <button class="jougo-fc" data-jump-class="${escAttr(classId)}" data-jump-id="${escAttr(card.id)}">
         <span class="jougo-fc-image">
@@ -14512,8 +14568,8 @@ function flashcardsGridHTML(page) {
             placeholder=""></image-slot>
         </span>
         <span class="jougo-fc-glyph">${glyphHtml}</span>
-        <span class="jougo-fc-reading">${escHTML(card.kun || card.kana || '')}</span>
-        <span class="jougo-fc-en">${escHTML(card.en || '')}</span>
+        <span class="jougo-fc-reading">${escHTML(reading)}</span>
+        <span class="jougo-fc-en">${escHTML(gloss)}</span>
       </button>
     `;
   }).join('');
@@ -17777,6 +17833,21 @@ function renderFlashcards(container) {
                   </div>
                 `).join('')}
               </div>
+              ${card.cta ? `
+                <!-- CTA: navigates to another section of the app (typically
+                     a vocab class+book+page) so the radical card can hand
+                     the learner off to a fuller explainer. Click handler
+                     is wired below this innerHTML block. -->
+                <button class="radical-cta"
+                        data-radical-cta="1"
+                        data-cta-section="${escAttr(card.cta.target.section || '')}"
+                        data-cta-vocab-class="${escAttr(card.cta.target.vocabClassId || '')}"
+                        data-cta-vocab-book="${escAttr(card.cta.target.vocabBookId || '')}"
+                        data-cta-vocab-page="${escAttr(card.cta.target.vocabPageId || '')}">
+                  ${APP.flashShowEn && card.cta.labelEn ? `<span class="radical-cta-en">${escHTML(card.cta.labelEn)}</span>` : ''}
+                  <span class="radical-cta-ja">${escHTML(card.cta.labelJa || card.cta.labelEn || '')}</span>
+                </button>
+              ` : ''}
               <div class="testcard-footer radical-footer">
                 <div class="testcard-footer-meta">
                   ${card.strokes ? `<span class="testcard-strokes">${card.strokes}画</span>` : ''}
@@ -17907,6 +17978,35 @@ function renderFlashcards(container) {
   container.querySelectorAll('[data-testcard-nav]').forEach(btn => {
     btn.addEventListener('click', () => {
       navTo(APP.flashIdx + (btn.dataset.testcardNav === 'next' ? 1 : -1));
+    });
+  });
+  // Radical-card CTA — hands the learner off to a fuller explainer in
+  // another section (typically vocab → jougo → intro → jougo-explainer).
+  // Reads section/class/book/page from data attributes; persists each
+  // choice to localStorage so the navigation survives a reload.
+  container.querySelectorAll('[data-radical-cta]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetSection = btn.dataset.ctaSection || 'vocab';
+      const cls  = btn.dataset.ctaVocabClass;
+      const book = btn.dataset.ctaVocabBook;
+      const pageId = btn.dataset.ctaVocabPage;
+      if (targetSection === 'vocab' && cls) {
+        APP.vocabClassId = cls;
+        lsSet('jp:vocabClass', cls);
+        if (book) {
+          APP.vocabBookId = book;
+          lsSet('jp:vocabBook', book);
+        }
+        // Resolve pageId → pageIdx so deep-linking to a specific page
+        // works even when the book has multiple pages.
+        if (pageId) {
+          const targetCls = (window.VOCAB_CLASSES || []).find(c => c.id === cls);
+          const targetBook = targetCls && targetCls.books.find(b => b.id === book);
+          const idx = targetBook && (targetBook.pages || []).findIndex(p => p.id === pageId);
+          if (typeof idx === 'number' && idx >= 0) APP.vocabPageIdx = idx;
+        }
+      }
+      setSection(targetSection);
     });
   });
   // Flip button — toggles APP.flashFlipped. The button rerenders the

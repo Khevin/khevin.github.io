@@ -1565,8 +1565,63 @@ window.FLASHCARD_CLASSES = [
         strokes:6, examples:[{word:'虫歯',reading:'mushiba',meaning:'cavity'},{word:'昆虫',reading:'KONCHŪ',meaning:'insect'},{word:'害虫',reading:'GAICHŪ',meaning:'pest'}] },
       { id:'spirit',   kanji:'気', kun:'き',     on:'キ',     en:'spirit / air / energy',
         strokes:6, examples:[{word:'天気',reading:'TENKI',meaning:'weather'},{word:'元気',reading:'GENKI',meaning:'energetic'},{word:'気持ち',reading:'kimochi',meaning:'feeling'}] },
-      { id:'genki',    kanji:'元気', kun:'げんき', on:'',     en:'energetic / lively / in good health',
+      // 元 → 元々 → ◆々 cluster — introduces the standalone kanji, then
+      // its jōgo reduplication, then the iteration mark explainer with a
+      // CTA that jumps to the full jōgo essay. Order matches the spec:
+      // 気 → 元 → 元々 → ◆々 → 元気. The mark explainer lands AFTER 元々
+      // so the learner first meets 々 in a real word, then the radical-
+      // style card explains what they just saw.
+      { id:'origin',   kanji:'元', kun:'もと',   on:'ゲン',   en:'origin / source / former',
+        strokes:4,
         seeAlso:['気'],
+        notes:'A pictograph of a person\'s head and shoulders — the head is the SOURCE of thought, the place where things begin. As a standalone noun 元 means "origin" or "former" (元の場所, "the original place"). On the on-reading ゲン it pairs with 気 to form 元気 (the energy at one\'s source).',
+        examples:[
+          {word:'元気',     reading:'GENKI',     meaning:'energetic / well'},
+          {word:'元の',     reading:'moto no',   meaning:'original / former'},
+          {word:'元日',     reading:'GANJITSU',  meaning:'New Year\'s Day'},
+          {word:'地元',     reading:'jimoto',    meaning:'local area, hometown'},
+        ] },
+      { id:'motomoto', kanji:'元々', kun:'もともと', on:'',    en:'originally / from the start',
+        tags:['jougo'],
+        seeAlso:['元'],
+        notes:'A 畳語 (jōgo) — reduplicate 元 with the 々 iteration mark to intensify it from "origin" into "from the very beginning." Used adverbially: 元々この街で生まれた = "I was born in this town from the start."',
+        examples:[
+          {word:'元々好きだった',  reading:'motomoto suki datta',  meaning:'I liked it from the start'},
+          {word:'元々の予定',      reading:'motomoto no yotei',    meaning:'the original plan'},
+          {word:'元々違う',        reading:'motomoto chigau',      meaning:'different from the outset'},
+        ] },
+      // ◆々 — radical-style explainer for the kanji iteration mark.
+      // Not actually a radical (々 has no Unicode CJK code point in the
+      // ideographs block and isn't a kanji at all), but the radical card
+      // shape is the right vehicle: a teaching interlude that lives
+      // between two related kanji and gives the learner a name and
+      // mental model for a structural element. The CTA at the bottom
+      // jumps to the full 畳語 explainer page in vocab/jougo/intro.
+      { id:'noma-mark', type:'radical',
+        radical:'々', from:'仝',
+        titleJa:'おどりじ', titleEn:'the iteration mark',
+        descEn:'々 is the kanji iteration mark — it says "repeat the previous kanji." Not a kanji itself, just a typographic shorthand. Names: 同の字点 (dō-no-jiten, formal), 踊り字 (odoriji, "dancing mark"), ノマ (noma, after its shape ノ + マ). It derives from cursive 仝, an archaic variant of 同 (same). So 人々 reads as "person + same-as-previous" → hitobito. Rendaku usually kicks in (人 hito → 人々 hito-bito).',
+        descJa:'「々」は同じ漢字を繰り返すしるし。漢字ではなく、書く手間を省くためのしるし。正式名は「同の字点」、ふつうに「踊り字」、形からは「ノマ」とも呼ぶ。古い「仝」(同のくずし字)からきている。例：人々 = hitobito、時々 = tokidoki、元々 = motomoto。',
+        examples:[
+          { kanji:'人々', kun:'ひとびと',   on:'',     en:'people (plural)' },
+          { kanji:'時々', kun:'ときどき',   on:'',     en:'sometimes' },
+          { kanji:'元々', kun:'もともと',   on:'',     en:'originally' },
+          { kanji:'山々', kun:'やまやま',   on:'',     en:'mountains' },
+          { kanji:'木々', kun:'きぎ',       on:'',     en:'trees' },
+          { kanji:'国々', kun:'くにぐに',   on:'',     en:'countries' },
+        ],
+        tags:['jougo'],
+        // CTA renders below the description as a soft gold button. The
+        // renderer in app.html reads this object, paints the button, and
+        // wires it to navigate the user to the target page on click.
+        cta: {
+          labelEn: 'Read the full 畳語 essay →',
+          labelJa: '畳語をくわしく',
+          target: { section:'vocab', vocabClassId:'jougo', vocabBookId:'intro', vocabPageId:'jougo-explainer' },
+        },
+      },
+      { id:'genki',    kanji:'元気', kun:'げんき', on:'',     en:'energetic / lively / in good health',
+        seeAlso:['気','元'],
         notes:'元 (gen, origin) + 気 (ki, spirit / energy) — "the energy at one\'s source." The everyday greeting お元気ですか? (How are you?) literally asks "Are you genki?"',
         examples:[{word:'お元気ですか',reading:'ogenki desu ka',meaning:'how are you?'},{word:'元気な子供',reading:'genki na kodomo',meaning:'energetic child'},{word:'元気を出す',reading:'genki o dasu',meaning:'to cheer up'}] },
     ],
