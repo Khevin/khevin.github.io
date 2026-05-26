@@ -1351,7 +1351,7 @@ window.FLASHCARD_CLASSES = [
           { kanji:'席', kun:'',      on:'セキ', en:'seat / place' },
         ] },
       { id:'hundred',  kanji:'百', kun:'もも',     on:'ヒャク', en:'hundred', strokes:6, examples:[{word:'百円',reading:'HYAKUEN',meaning:'100 yen'},{word:'百科',reading:'HYAKKA',meaning:'encyclopedia'},{word:'三百',reading:'SANBYAKU',meaning:'three hundred'}] },
-      { id:'thousand', kanji:'千', kun:'ち',       on:'セン',   en:'thousand', strokes:3, examples:[{word:'千円',reading:'SEN\'EN',meaning:'1000 yen'},{word:'千葉',reading:'CHIBA',meaning:'Chiba'},{word:'千年',reading:'SENNEN',meaning:'millennium'}] },
+      { id:'thousand', kanji:'千', digit:'1000', kun:'ち',       on:'セン',   en:'thousand', strokes:3, examples:[{word:'千円',reading:'SEN\'EN',meaning:'1000 yen'},{word:'千葉',reading:'CHIBA',meaning:'Chiba'},{word:'千年',reading:'SENNEN',meaning:'millennium'}] },
       { id:'ten-thousand', kanji:'万', kun:'よろず', on:'マン',   en:'ten thousand', strokes:3,
         examples:[
           {word:'一万',   reading:'ICHIMAN',  meaning:'10,000'},

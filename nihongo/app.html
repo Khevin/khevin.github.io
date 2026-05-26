@@ -2112,6 +2112,14 @@
        perfectly centered on the baseline. */
     transform: translateY(-0.02em);
   }
+  /* Long digits (4+ chars — currently only 1000 for 千) need to shrink
+     so they don't overflow the 1:1 image frame. Tabular figures and
+     a tighter tracking keep the four numerals from feeling cramped. */
+  .testcard-digit[data-digit-long="1"] {
+    font-size: clamp(44px, 5.5vw, 78px);
+    letter-spacing: -0.01em;
+    font-feature-settings: 'tnum' 1;
+  }
   .testcard-glyph {
     /* font-family is set inline per-card from APP.flashGlyphFont so the
        user can flip between mincho / gothic / kyokasho / brush without
@@ -3324,6 +3332,11 @@
     color: var(--ink);
     line-height: 1;
     letter-spacing: 0.02em;
+  }
+  .wrapup-digit[data-digit-long="1"] {
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    font-feature-settings: 'tnum' 1;
   }
   .wrapup-tile:has(.wrapup-digit) .wrapup-face-image {
     background: var(--paper-2);
@@ -18117,7 +18130,7 @@ function wrapupHTML(cls, deck) {
     const imageFaceHTML = isRadical || !c.kanji
       ? `<div class="wrapup-radical-glyph">${escHTML(glyph)}</div>`
       : c.digit
-      ? `<div class="wrapup-digit">${escHTML(c.digit)}</div>`
+      ? `<div class="wrapup-digit"${c.digit.length >= 4 ? ' data-digit-long="1"' : ''}>${escHTML(c.digit)}</div>`
       : `<image-slot
            id="wrapup-${escAttr(cls.id)}-${escAttr(c.id)}"
            image-key="${escAttr(folder)}/${escAttr(c.kanji)}"
@@ -18304,7 +18317,7 @@ function editorialFlashcardHTML(card, cls, related, seeAlso) {
               <div class="testcard-left">
                 <div class="testcard-image${card.digit ? ' testcard-image-digit' : ''}">
                   ${card.digit
-                    ? `<span class="testcard-digit">${escHTML(card.digit)}</span>`
+                    ? `<span class="testcard-digit"${card.digit.length >= 4 ? ' data-digit-long="1"' : ''}>${escHTML(card.digit)}</span>`
                     : `<image-slot
                         id="flash-${escAttr(card.id)}"
                         image-key="${escAttr(imageFolder)}/${escAttr(imageKey)}"
