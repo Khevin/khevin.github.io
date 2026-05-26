@@ -2564,6 +2564,27 @@ window.FLASHCARD_CLASSES = [
           {word:'焼き鳥',reading:'yakitori',meaning:'grilled chicken skewer'},
           {word:'小鳥',reading:'kotori',meaning:'small bird'},
         ] },
+      // 白鳥 → 黒鳥 — color + 鳥 compound pair. Both ingredients have
+      // landed (白 / 黒 in Colors, 鳥 just above). 白鳥 (swan) is the
+      // common word; 黒鳥 (black swan) carries the Taleb-popularized
+      // "rare unexpected event" connotation in modern Japanese the
+      // same way it does in English.
+      { id:'swan', kanji:'白鳥', kun:'はくちょう', on:'', en:'swan',
+        seeAlso:['白', '鳥'],
+        notes:'白 (white) + 鳥 (bird) → "white bird," the standard word for swan. The on-on reading HAKUCHŌ is what you\'ll hear in most contexts; the kun-on reading しらとり is older / poetic and shows up in place names (白鳥町, 白鳥神社).',
+        examples:[
+          {word:'白鳥',       reading:'HAKUCHŌ',         meaning:'swan'},
+          {word:'白鳥の湖',   reading:'HAKUCHŌ no mizūmi', meaning:'Swan Lake'},
+          {word:'白鳥座',     reading:'HAKUCHŌ-za',      meaning:'Cygnus (the constellation)'},
+        ] },
+      { id:'black-swan', kanji:'黒鳥', kun:'こくちょう', on:'', en:'black swan',
+        seeAlso:['黒', '鳥'],
+        notes:'黒 (black) + 鳥 (bird) → black swan. The compound is structurally identical to 白鳥 and reads with the same on-on pattern (KOKU-CHŌ). Outside of the literal Australian species, the term carries the modern "rare disruptive event" sense from Taleb\'s book — translated into Japanese as『黒い白鳥』(the "black white-bird," a deliberate paradox) but the bird itself stays 黒鳥.',
+        examples:[
+          {word:'黒鳥',         reading:'KOKUCHŌ',          meaning:'black swan'},
+          {word:'黒鳥効果',     reading:'KOKUCHŌ KŌKA',     meaning:'the black-swan effect'},
+          {word:'黒鳥のような', reading:'KOKUCHŌ no yō na', meaning:'black-swan-like (unforeseen)'},
+        ] },
       { id:'fish',      kanji:'魚', kun:'さかな',     on:'ギョ',   en:'fish', strokes:11,
         examples:[{word:'金魚',reading:'kingyo',meaning:'goldfish'},{word:'魚屋',reading:'sakanaya',meaning:'fish shop'},{word:'焼き魚',reading:'yakizakana',meaning:'grilled fish'}] },
       { id:'horse',     kanji:'馬', kun:'うま',       on:'バ',     en:'horse', strokes:10,
