@@ -1869,13 +1869,23 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'とき',
     titleEn: 'Time',
     glyph: '今',
-    // Spec §3.8 order: 時 分 半 年 今 先 前 後 何 早 遅 朝 昼 夕 夜.
-    // 来 carved out for Verbs (Task 16) — full card preserved in scratch
-    // comment near the eventual Verbs slot. 秒 / 昨日 dropped.
+    // Order: 今 分 時 半 年 先 前 後 春 夏 秋 冬 何 早 遅 朝 昼 夕 夜.
+    // 今 leads — same kanji as the class glyph, the broad "now" frame
+    // that anchors the rest of the deck. Then 分 → 時 (the smaller
+    // unit teaches the bigger one — same 半 + 分 pattern that gives
+    // 半分). 来 carved out for Verbs (Task 16). 秒 / 昨日 dropped.
     cards: [
-      { id:'hour',     kanji:'時', kun:'とき',     on:'ジ',     en:'hour / time', strokes:10,
-        seeAlso:['日'],
-        examples:[{word:'時間',reading:'JIKAN',meaning:'time / hours'},{word:'何時',reading:'NANJI',meaning:'what time'},{word:'一時',reading:'ICHIJI',meaning:'one o\'clock'}] },
+      { id:'now',      kanji:'今', kun:'いま',     on:'コン',   en:'now / present', strokes:4,
+        usage:{ ja:'今日', kana:'きょう' },
+        notes:'今 (kon, now) + 日 (nichi, day) gives 今日 (kyō, today) — a jukujikun where both kanji collapse into きょう. The same 今- prefix gives this-week / this-month / this-year.',
+        examples:[
+          {word:'今すぐ',reading:'ima sugu',meaning:'right now'},
+          {word:'今夜',reading:'KONYA',meaning:'tonight'},
+          {word:'今度',reading:'KONDO',meaning:'next time / this time'},
+          {word:'今週',reading:'konshū',meaning:'this week'},
+          {word:'今月',reading:'kongetsu',meaning:'this month'},
+          {word:'今年',reading:'kotoshi',meaning:'this year'},
+        ] },
       { id:'minute',   kanji:'分', kun:'わ',       on:'フン',   en:'minute / part / understand', strokes:4,
         notes:'分 has a wide range — minutes (一分 ippun), portions (半分 hanbun "half"), and understanding (分かる wakaru "to understand"). The on-reading shifts: フン / プン after small-tsu, ブン for portions.',
         examples:[
@@ -1886,6 +1896,12 @@ window.FLASHCARD_CLASSES = [
           {word:'気分',reading:'KIBUN',meaning:'mood / feeling'},
           {word:'分かる',reading:'wakaru',meaning:'to understand'},
         ] },
+      // 時 lands right after 分 — the learner just met "minute" and now
+      // gets the larger unit that contains 60 of them. The 一時 / 何時
+      // examples below carry straight over to telling time.
+      { id:'hour',     kanji:'時', kun:'とき',     on:'ジ',     en:'hour / time', strokes:10,
+        seeAlso:['日'],
+        examples:[{word:'時間',reading:'JIKAN',meaning:'time / hours'},{word:'何時',reading:'NANJI',meaning:'what time'},{word:'一時',reading:'ICHIJI',meaning:'one o\'clock'}] },
       // 半 is cross-listed with Numbers (ALLOWED_DUPLICATES includes 半).
       { id:'half', kanji:'半', kun:'なか.ば', on:'ハン', en:'half', strokes:5,
         examples:[
@@ -1898,17 +1914,6 @@ window.FLASHCARD_CLASSES = [
           {word:'毎年',   reading:'MAINEN',  meaning:'every year'},
           {word:'今年',   reading:'kotoshi', meaning:'this year'},
           {word:'来年',   reading:'RAINEN',  meaning:'next year'},
-        ] },
-      { id:'now',      kanji:'今', kun:'いま',     on:'コン',   en:'now / present', strokes:4,
-        usage:{ ja:'今日', kana:'きょう' },
-        notes:'今 (kon, now) + 日 (nichi, day) gives 今日 (kyō, today) — a jukujikun where both kanji collapse into きょう. The same 今- prefix gives this-week / this-month / this-year.',
-        examples:[
-          {word:'今すぐ',reading:'ima sugu',meaning:'right now'},
-          {word:'今夜',reading:'KONYA',meaning:'tonight'},
-          {word:'今度',reading:'KONDO',meaning:'next time / this time'},
-          {word:'今週',reading:'konshū',meaning:'this week'},
-          {word:'今月',reading:'kongetsu',meaning:'this month'},
-          {word:'今年',reading:'kotoshi',meaning:'this year'},
         ] },
       { id:'ahead',    kanji:'先', kun:'さき',     on:'セン',   en:'ahead / previous / tip', strokes:6,
         usage:{ ja:'先生', kana:'せんせい' },
