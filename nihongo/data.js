@@ -1022,14 +1022,14 @@ window.VOCAB_CLASSES = [
 
                 <h4>Time-cycling &amp; frequency</h4>
                 <div class="jougo-grid">
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">時々</span><span class="jougo-tile-reading">tokidoki</span><span class="jougo-tile-en">sometimes</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">段々</span><span class="jougo-tile-reading">dandan</span><span class="jougo-tile-en">gradually</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">次々</span><span class="jougo-tile-reading">tsugitsugi</span><span class="jougo-tile-en">one after another</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">益々</span><span class="jougo-tile-reading">masumasu</span><span class="jougo-tile-en">more and more</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">徐々</span><span class="jougo-tile-reading">jojo (ni)</span><span class="jougo-tile-en">slowly, gradually</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">続々</span><span class="jougo-tile-reading">zokuzoku</span><span class="jougo-tile-en">in succession</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">着々</span><span class="jougo-tile-reading">chakuchaku</span><span class="jougo-tile-en">steadily</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">近々</span><span class="jougo-tile-reading">chikajika</span><span class="jougo-tile-en">in the near future</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/tokidoki.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">時々</span><span class="jougo-tile-reading">tokidoki</span><span class="jougo-tile-en">sometimes</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/dandan.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">段々</span><span class="jougo-tile-reading">dandan</span><span class="jougo-tile-en">gradually</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/tsugitsugi.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">次々</span><span class="jougo-tile-reading">tsugitsugi</span><span class="jougo-tile-en">one after another</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/masumasu.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">益々</span><span class="jougo-tile-reading">masumasu</span><span class="jougo-tile-en">more and more</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/jojo.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">徐々</span><span class="jougo-tile-reading">jojo (ni)</span><span class="jougo-tile-en">slowly, gradually</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/zokuzoku.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">続々</span><span class="jougo-tile-reading">zokuzoku</span><span class="jougo-tile-en">in succession</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/chakuchaku.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">着々</span><span class="jougo-tile-reading">chakuchaku</span><span class="jougo-tile-en">steadily</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/chikajika.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">近々</span><span class="jougo-tile-reading">chikajika</span><span class="jougo-tile-en">in the near future</span></div>
                 </div>
 
                 <h4>Intensification — 々しい adjectives</h4>
