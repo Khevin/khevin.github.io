@@ -1618,6 +1618,20 @@ window.FLASHCARD_CLASSES = [
           {word:'天才',reading:'TENSAI',meaning:'genius'},
           {word:'天井',reading:'tenjō',meaning:'ceiling'},
         ] },
+      // 天気 lands right after 天 as its everyday compound — 天 (sky /
+      // heaven) + 気 (spirit / atmosphere / mood) = "the mood of the
+      // sky" → weather. Same 気 the learner just met in 元気 over in
+      // Nature, so this is the second time it's appearing as the
+      // "atmosphere/mood" half of a compound. Pairs naturally with
+      // the seasonal vocabulary that follows (雲 雨 風 春 夏 秋 冬).
+      { id:'weather',  kanji:'天気', kun:'てんき', on:'',       en:'weather',
+        seeAlso:['天','気'],
+        notes:'天 (ten, sky) + 気 (ki, spirit / atmosphere) — literally "the mood of the sky." The same 気 used in 元気 (original-energy → well/fine), here describing the atmosphere itself. 天気予報 (TENKI YOHŌ) is the weather forecast you see on TV; お天気 (with the polite お-) is how it sounds in everyday conversation.',
+        examples:[
+          {word:'天気予報',  reading:'TENKI YOHŌ',    meaning:'weather forecast'},
+          {word:'いい天気',  reading:'ii tenki',      meaning:'nice weather'},
+          {word:'お天気は？', reading:'o-tenki wa?',   meaning:'how\'s the weather?'},
+        ] },
       { id:'sky',      kanji:'空', kun:'そら',   on:'クウ',   en:'sky',
         strokes:8, examples:[{word:'空気',reading:'KŪKI',meaning:'air'},{word:'空港',reading:'KŪKŌ',meaning:'airport'},{word:'空色',reading:'sorairo',meaning:'sky blue'}] },
       { id:'cloud',    kanji:'雲', kun:'くも',   on:'ウン',   en:'cloud',
