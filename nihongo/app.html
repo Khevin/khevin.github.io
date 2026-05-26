@@ -10784,7 +10784,12 @@
     gap: 8px;
     padding: 8px;
     background: var(--dt-paper);
+    /* Explicit 1px border on ALL sides — earlier iterations of this
+       page used a colored border-top stripe per row that fought the
+       images for visual primacy. Forcing the border declaration here
+       makes sure no leftover stripe survives a partial CSS cache. */
     border: 1px solid var(--paper-edge);
+    border-top-width: 1px;
     border-radius: 8px;
     text-align: center;
     transition: border-color .15s, box-shadow .15s, transform .15s;
@@ -10879,6 +10884,161 @@
   }
   @media (max-width: 560px) {
     .dt-day-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ─── 曜 explainer card — radical-card-style aside ─────────────────
+     The 7 day cards introduce 曜 implicitly. This block right after
+     the grid breaks the kanji open: where it comes from, what it's
+     built from, and the crucial reframe — you never need 曜 outside
+     of these seven appearances, so memorizing it as a standalone
+     character is unnecessary work. */
+  .dt-yo-card {
+    margin-top: 24px;
+    padding: 24px 28px;
+    background: var(--dt-paper);
+    border: 1px solid var(--paper-edge);
+    border-left: 4px solid var(--dt-gold-soft);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(141,102,48,0.06);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "head head"
+      "head head"
+      "decomp decomp"
+      "desc desc"
+      "examples examples";
+    gap: 20px;
+  }
+  .dt-yo-head {
+    grid-area: head;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed rgba(141,102,48,0.25);
+  }
+  .dt-yo-glyph {
+    flex-shrink: 0;
+    width: 88px; height: 88px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dt-paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 56px;
+    color: var(--dt-ink);
+    line-height: 1;
+  }
+  .dt-yo-title {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dt-yo-titleja {
+    font-family: var(--serif-jp);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--dt-ink);
+    letter-spacing: 0.04em;
+  }
+  .dt-yo-titleen {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--dt-ink-3);
+  }
+  /* Decomposition row — 日 + 翟 → meaning. Reads as a single math
+     expression sentence; chips for the parts, arrow for the result. */
+  .dt-yo-decomp {
+    grid-area: decomp;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    padding: 12px 16px;
+    background: var(--dt-paper-2);
+    border-radius: 6px;
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--dt-ink-2);
+  }
+  .dt-yo-decomp-part {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .dt-yo-decomp-part b {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--dt-ink);
+    line-height: 1;
+  }
+  .dt-yo-decomp-plus,
+  .dt-yo-decomp-arrow {
+    font-family: var(--serif);
+    color: var(--dt-gold-dark);
+    font-weight: 600;
+  }
+  .dt-yo-decomp-result {
+    font-style: italic;
+    color: var(--dt-ink);
+    line-height: 1.35;
+  }
+  .dt-yo-desc {
+    grid-area: desc;
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--dt-ink-2);
+  }
+  .dt-yo-desc + .dt-yo-desc { margin-top: -8px; }
+  .dt-yo-desc b { color: var(--dt-ink); font-weight: 600; }
+  .dt-yo-desc .ja {
+    font-family: var(--serif-jp);
+    color: var(--dt-ink);
+  }
+  .dt-yo-examples {
+    grid-area: examples;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(141,102,48,0.25);
+  }
+  .dt-yo-ex-label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--dt-ink-3);
+    letter-spacing: 0.06em;
+  }
+  .dt-yo-ex-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .dt-yo-ex {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    background: var(--dt-paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    font-family: var(--serif-jp);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--dt-ink);
+  }
+  @media (max-width: 720px) {
+    .dt-yo-card { padding: 18px 16px; }
+    .dt-yo-decomp { font-size: 13px; }
+    .dt-yo-glyph { width: 64px; height: 64px; font-size: 40px; }
   }
 
   /* ─── 二. Reading dates — three neutral stamps + dl rules ────────────
@@ -17122,6 +17282,48 @@ function renderWritingDatetime(container) {
         </div>
         <div class="dt-day-grid">
           ${dayCardsHTML}
+        </div>
+
+        <!-- 曜 explainer — radical-card-style block sitting right after
+             the day grid. 曜 is daunting at first (18 strokes, the 翟
+             half is rare), so we reframe it: you don't memorize 曜
+             on its own. You meet it 7 times — once per day — and
+             those 7 meetings are the entire job. Mirrors the
+             radical-card visual treatment used for ◆々, ◆工, ◆穴
+             over in the flashcards. -->
+        <div class="dt-yo-card">
+          <div class="dt-yo-head">
+            <span class="dt-yo-glyph">曜</span>
+            <div class="dt-yo-title">
+              <span class="dt-yo-titleja">よう</span>
+              <span class="dt-yo-titleen">day-of-the-week marker</span>
+            </div>
+          </div>
+          <div class="dt-yo-decomp">
+            <span class="dt-yo-decomp-part"><b>日</b> sun · day</span>
+            <span class="dt-yo-decomp-plus">+</span>
+            <span class="dt-yo-decomp-part"><b>翟</b> long-tailed bird</span>
+            <span class="dt-yo-decomp-arrow">→</span>
+            <span class="dt-yo-decomp-result">"shines like a sun-bird"<br>→ celestial body → day of the week</span>
+          </div>
+          <p class="dt-yo-desc">
+            <b>You don't need to memorize 曜 in isolation.</b> It appears in only seven words in everyday Japanese — the seven you just learned. After meeting all seven, you've seen 曜 seven times, which is enough. The right half (<span class="ja">翟</span>) is rare and basically lives inside 曜; you'll never need to write it standalone.
+          </p>
+          <p class="dt-yo-desc">
+            The pattern is dead simple: <span class="ja"><b>[element]曜日</b></span> — sandwich the element between the marker and 日. If you can recognize the seven elements (<span class="ja">日 月 火 水 木 金 土</span>), you can read every day name.
+          </p>
+          <div class="dt-yo-examples">
+            <span class="dt-yo-ex-label">Every appearance in plain Japanese</span>
+            <div class="dt-yo-ex-row">
+              <span class="dt-yo-ex">日曜日</span>
+              <span class="dt-yo-ex">月曜日</span>
+              <span class="dt-yo-ex">火曜日</span>
+              <span class="dt-yo-ex">水曜日</span>
+              <span class="dt-yo-ex">木曜日</span>
+              <span class="dt-yo-ex">金曜日</span>
+              <span class="dt-yo-ex">土曜日</span>
+            </div>
+          </div>
         </div>
       </section>
 
