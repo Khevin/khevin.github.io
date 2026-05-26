@@ -1868,7 +1868,7 @@ window.FLASHCARD_CLASSES = [
     id: 'time',
     titleJa: 'とき',
     titleEn: 'Time',
-    glyph: '時',
+    glyph: '今',
     // Spec §3.8 order: 時 分 半 年 今 先 前 後 何 早 遅 朝 昼 夕 夜.
     // 来 carved out for Verbs (Task 16) — full card preserved in scratch
     // comment near the eventual Verbs slot. 秒 / 昨日 dropped.
