@@ -1857,35 +1857,23 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'がっこう',
     titleEn: 'School',
     glyph: '学',
-    // Order: ◆宀 → 宀 → 字 → 学 → 校 → 文 → 名 → 言 → ◆言 → 話 → 読 → 書 → 本 → 生.
+    // Order: 宀 → ◆宀 → 字 → 学 → 校 → 文 → 名 → 言 → ◆言 → 話 → 読 → 書 → 本 → 生.
     //
-    // 字 sits right after the standalone 宀 because it IS 宀 + 子 (child
-    // under a roof learning a character) — meeting it before 学 makes the
-    // radical lesson land twice: once as the radical card, once as the
-    // payoff in 字, and a third time as a contrast against 学 (which
-    // does NOT use 宀).
+    // Kanji-before-radical applies to 宀 too now (was previously the
+    // ◆宀 → 宀 exception). The standalone glyph + illustration lands
+    // first; the radical card then names the role it plays under the
+    // roofs of 家, 室, 宿, 守. 字 still lives right after the radical
+    // lesson because 字 IS 宀 + 子 (child under a roof learning a
+    // character) — both ingredients have been seen by the time 字
+    // arrives, and 学 (which does NOT use 宀) reads cleanly as
+    // contrast against the cluster.
     //
-    // Radical-after-kanji rule: 言 (the standalone kanji) is taught
-    // BEFORE ◆言 (the gonben left-side variant), the same way 手 → ◆扌
-    // works in Body. The kanji is the source; the radical card reveals
-    // how it embeds. (Special case: ◆宀 → 宀 keeps the reverse order
-    // because 宀 has no real standalone use in modern Japanese — it
-    // exists almost entirely as a compound roof.)
+    // Same pattern as 言 → ◆言 → 話 / 読 (gonben below) and 手 → ◆扌
+    // → 持 / 打 over in Body. Kanji is the source, radical reveals
+    // the embedding.
     cards: [
-      { id:'ukanmuri-radical', type:'radical',
-        radical:'宀', from:'宀',
-        titleJa:'うかんむり', titleEn:'roof / cap',
-        descEn:'A roof in profile — left wall, gabled top, right wall. Sits on top of a compound kanji to mark "things that happen under a roof": houses, rooms, family life, shelter from the elements.',
-        descJa:'横から見た屋根のかたち。漢字の上にのって、家・部屋・家族・しのぎの場—屋根の下で起きること—を表す漢字につく。',
-        examples:[
-          { kanji:'家', kun:'いえ', on:'カ',  en:'house / home' },
-          { kanji:'室', kun:'むろ', on:'シツ', en:'room' },
-          { kanji:'宿', kun:'やど', on:'シュク', en:'lodging / inn' },
-          { kanji:'守', kun:'まも', on:'シュ', en:'protect / keep' },
-        ] },
-      // 宀 as a standalone learner card — the user wanted the radical
-      // taught both as a ◆ interlude (above) and as its own kanji card
-      // (here) so the illustration lands too. Image lives at
+      // 宀 as a standalone learner card — the radical's pictograph
+      // taught first so the illustration lands. Image lives at
       // images/kanji/宀.webp; back-face stroke order is the natural
       // 3-stroke roof shape.
       { id:'roof',     kanji:'宀', kun:'うかんむり', on:'',       en:'roof / crown / cap (radical)',
@@ -1894,6 +1882,17 @@ window.FLASHCARD_CLASSES = [
           {word:'家',     reading:'ie',    meaning:'house (uses 宀 as roof)'},
           {word:'室',     reading:'shitsu', meaning:'room'},
           {word:'宿',     reading:'yado',  meaning:'inn / lodging'},
+        ] },
+      { id:'ukanmuri-radical', type:'radical',
+        radical:'宀', from:'宀',
+        titleJa:'うかんむり', titleEn:'roof / cap',
+        descEn:'The same 宀 you just met — but now as a structural piece. A roof in profile (left wall, gabled top, right wall) plants itself on top of compound kanji to mark "things that happen under a roof": houses, rooms, family life, shelter from the elements.',
+        descJa:'いま見た「宀」を、こんどは漢字の部品として見る。横から見た屋根のかたちが漢字の上にのって、家・部屋・家族・しのぎの場—屋根の下で起きること—を表す漢字につく。',
+        examples:[
+          { kanji:'家', kun:'いえ', on:'カ',  en:'house / home' },
+          { kanji:'室', kun:'むろ', on:'シツ', en:'room' },
+          { kanji:'宿', kun:'やど', on:'シュク', en:'lodging / inn' },
+          { kanji:'守', kun:'まも', on:'シュ', en:'protect / keep' },
         ] },
       { id:'character', kanji:'字', kun:'じ',     on:'ジ',     en:'character / letter',
         seeAlso:['子','宀'],
