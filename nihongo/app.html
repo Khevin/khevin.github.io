@@ -10886,6 +10886,218 @@
     .dt-day-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
+  /* Subsection title — used inside Section 1 to introduce the
+     months subsection (the formula card + irregulars below it).
+     Mirrors the section-title family but at a lower hierarchy
+     level so it reads as "section heading"-style, not as a peer
+     of the H2. */
+  .dt-subsection-title {
+    margin: 36px 0 12px;
+    font-family: var(--font-title);
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 600;
+    color: var(--dt-ink);
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+  }
+  .dt-subsection-title em {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--dt-ink-3);
+    letter-spacing: 0.02em;
+  }
+
+  /* ─── 曜 construction diagram ──────────────────────────────────────
+     Visual equation primes the day grid: [elemental kanji] + [曜
+     image] + [日] = day name. The image of 曜 anchors the centerpiece
+     so the unfamiliar character has a face attached to it; the seven
+     elementals on the left visually communicate "any one of these."
+     Squint test reads as four blocks connected by operators (+ + = )
+     — clean four-beat rhythm. */
+  .dt-yo-build {
+    display: grid;
+    grid-template-columns: 1.2fr auto 1.3fr auto 0.7fr auto 1.2fr;
+    gap: 8px;
+    align-items: center;
+    padding: 22px;
+    margin-bottom: 14px;
+    background: var(--dt-paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(141,102,48,0.06);
+  }
+  .dt-yo-build-plus,
+  .dt-yo-build-eq {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(20px, 2.6vw, 28px);
+    color: var(--dt-gold-dark);
+    text-align: center;
+    user-select: none;
+  }
+  /* Slot — the swap-position holding all 7 elementals stacked as a
+     vertical chip column. Communicates "any of these slots in here." */
+  .dt-yo-build-slot,
+  .dt-yo-build-yo,
+  .dt-yo-build-day,
+  .dt-yo-build-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .dt-yo-build-slot-eyebrow,
+  .dt-yo-build-yo-eyebrow,
+  .dt-yo-build-day-eyebrow,
+  .dt-yo-build-result-eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--dt-ink-3);
+    letter-spacing: 0.05em;
+  }
+  .dt-yo-build-elements {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 3px;
+    padding: 8px;
+    background: var(--dt-paper-2);
+    border: 1.5px dashed var(--dt-gold-soft);
+    border-radius: 8px;
+  }
+  .dt-yo-build-elem {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--dt-elem, var(--dt-ink));
+    line-height: 1;
+  }
+  .dt-yo-build-slot-label,
+  .dt-yo-build-yo-label,
+  .dt-yo-build-day-label,
+  .dt-yo-build-result-ex {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--dt-ink-3);
+    text-align: center;
+  }
+  .dt-yo-build-yo-label .ja,
+  .dt-yo-build-day-label .ja,
+  .dt-yo-build-result-ex .ja {
+    font-style: normal;
+    font-family: var(--serif-jp);
+    color: var(--dt-ink-2);
+  }
+  /* The 曜 image — the centerpiece of the equation. Larger than the
+     surrounding tiles since this is the kanji the learner doesn't
+     yet know by sight. */
+  .dt-yo-build-yo-image {
+    width: 96px; height: 96px;
+    background: var(--dt-paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dt-yo-build-yo-image image-slot {
+    width: 100%; height: 100%;
+    display: block;
+    border-radius: 8px;
+  }
+  .dt-yo-build-yo-image image-slot::part(img),
+  .dt-yo-build-yo-image image-slot::part(frame) {
+    border-radius: 8px;
+  }
+  /* Closing 日 — sits as a single kanji chip, smaller than the 曜
+     centerpiece but heavier than the slot of elementals. */
+  .dt-yo-build-day-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px; height: 54px;
+    background: var(--dt-paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--dt-ink);
+    line-height: 1;
+  }
+  /* Result — the final compound. The "X" slot is dashed-gold like
+     the formula card's N slot; the 曜日 tail is solid ink. */
+  .dt-yo-build-result-formula {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    padding: 8px 10px;
+    background: var(--dt-paper-2);
+    border-radius: 8px;
+  }
+  .dt-yo-build-result-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    padding: 2px 6px;
+    background: var(--dt-paper);
+    border: 1.5px dashed var(--dt-gold-soft);
+    border-radius: 4px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--dt-gold-dark);
+    line-height: 1;
+  }
+  .dt-yo-build-result-tail {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--dt-ink);
+    line-height: 1;
+  }
+  .dt-yo-build-explain {
+    margin: 0 0 32px;
+    font-family: var(--serif);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--dt-ink-3);
+    font-style: italic;
+  }
+  .dt-yo-build-explain .ja {
+    font-style: normal;
+    font-family: var(--serif-jp);
+    color: var(--dt-ink-2);
+  }
+  /* Mobile collapse — the 7-block diagram becomes too narrow on
+     small screens. Stack the parts and use a thin dashed line
+     between them instead of the +/= operators (which would float
+     awkwardly mid-stack). */
+  @media (max-width: 760px) {
+    .dt-yo-build {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 18px 16px;
+    }
+    .dt-yo-build-plus,
+    .dt-yo-build-eq {
+      font-size: 18px;
+    }
+  }
+
   /* ─── 月 — formula card + three exceptions ───────────────────────
      Replaced the 12-cell grid (pattern-as-data default) with a
      two-part treatment: the rule as a visual equation on top,
@@ -10951,13 +11163,26 @@
     text-align: center;
     font-family: var(--serif);
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.7;
     color: var(--dt-ink-2);
   }
   .dt-month-formula-explain b { color: var(--dt-ink); font-weight: 600; }
   .dt-month-formula-explain .ja {
     font-family: var(--serif-jp);
     color: var(--dt-ink);
+  }
+  /* Examples sub-line — sits on its own row below the rule sentence.
+     Smaller and slightly more spaced so it reads as "here's the
+     pattern in action," not as a continuation of the rule. */
+  .dt-month-formula-examples {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--dt-ink-3);
+    letter-spacing: 0.01em;
+  }
+  .dt-month-formula-examples .ja {
+    color: var(--dt-ink-2);
   }
 
   .dt-month-irr-label {
@@ -17632,6 +17857,60 @@ function renderWritingDatetime(container) {
           <h2 class="dt-section-title">The seven elemental days</h2>
           <p class="dt-section-lede">Each day is an elemental kanji + 曜日. Sun → Moon → Mars → Mercury → Jupiter → Venus → Saturn — the same planetary order that runs the Romance week, so 火曜日 matches Italian <i>martedì</i>, 金曜日 matches French <i>vendredi</i>.</p>
         </div>
+
+        <!-- 曜 construction diagram — visual equation that primes
+             the day grid below. Reads as "any element + the 曜
+             marker + 日 = a day name." The 曜 image is the
+             centerpiece (the kanji the learner doesn't already
+             know), flanked by the swap-slot of 7 elementals on
+             the left and the closing 日 on the right. -->
+        <div class="dt-yo-build">
+          <div class="dt-yo-build-slot">
+            <span class="dt-yo-build-slot-eyebrow">any one of</span>
+            <div class="dt-yo-build-elements">
+              <span class="dt-yo-build-elem" style="--dt-elem:var(--dt-elem-sun)">日</span>
+              <span class="dt-yo-build-elem" style="--dt-elem:var(--dt-elem-moon)">月</span>
+              <span class="dt-yo-build-elem" style="--dt-elem:var(--dt-elem-fire)">火</span>
+              <span class="dt-yo-build-elem" style="--dt-elem:var(--dt-elem-water)">水</span>
+              <span class="dt-yo-build-elem" style="--dt-elem:var(--dt-elem-wood)">木</span>
+              <span class="dt-yo-build-elem" style="--dt-elem:var(--dt-elem-metal)">金</span>
+              <span class="dt-yo-build-elem" style="--dt-elem:var(--dt-elem-earth)">土</span>
+            </div>
+            <span class="dt-yo-build-slot-label">elemental kanji</span>
+          </div>
+          <span class="dt-yo-build-plus">+</span>
+          <div class="dt-yo-build-yo">
+            <span class="dt-yo-build-yo-eyebrow">the marker</span>
+            <div class="dt-yo-build-yo-image">
+              <image-slot id="dt-yo-image"
+                          image-key="kanji/曜"
+                          shape="rounded" radius="8" fit="contain" position="50% 50%" readonly
+                          placeholder=""></image-slot>
+            </div>
+            <span class="dt-yo-build-yo-label"><span class="ja">曜 · よう</span></span>
+          </div>
+          <span class="dt-yo-build-plus">+</span>
+          <div class="dt-yo-build-day">
+            <span class="dt-yo-build-day-eyebrow">closing</span>
+            <span class="dt-yo-build-day-glyph">日</span>
+            <span class="dt-yo-build-day-label"><span class="ja">日 · び</span></span>
+          </div>
+          <span class="dt-yo-build-eq">=</span>
+          <div class="dt-yo-build-result">
+            <span class="dt-yo-build-result-eyebrow">a day name</span>
+            <div class="dt-yo-build-result-formula">
+              <span class="dt-yo-build-result-slot">X</span>
+              <span class="dt-yo-build-result-tail">曜日</span>
+            </div>
+            <span class="dt-yo-build-result-ex">
+              <span class="ja">火曜日</span> · <span class="ja">水曜日</span> · <span class="ja">金曜日</span>…
+            </span>
+          </div>
+        </div>
+        <p class="dt-yo-build-explain">
+          The 曜 in the middle is the same character in all seven days — it never changes. The learner's job is just to recognize which elemental kanji goes in the left slot. Once you know the seven elements (<span class="ja">日 月 火 水 木 金 土</span>), every day name is one substitution away.
+        </p>
+
         <div class="dt-day-grid">
           ${dayCardsHTML}
         </div>
@@ -17641,6 +17920,7 @@ function renderWritingDatetime(container) {
              data table. The rule (number + 月 → Nがつ) is the lesson;
              the work is memorizing the three exceptions. Formula card
              on top, three exception cards below. -->
+        <h3 class="dt-subsection-title">Months are read as numbers of the moon<em>月 · the lunar count</em></h3>
         <div class="dt-block-label"><span class="ja">月</span> · the twelve months — a formula and three exceptions</div>
 
         <div class="dt-month-formula-card">
@@ -17652,7 +17932,8 @@ function renderWritingDatetime(container) {
             <span class="dt-month-formula-suffix">がつ</span>
           </div>
           <p class="dt-month-formula-explain">
-            Months are just <b>a number + <span class="ja">月</span></b>. <span class="ja">一月 (いちがつ)</span> · <span class="ja">三月 (さんがつ)</span> · <span class="ja">十月 (じゅうがつ)</span> · <span class="ja">十二月 (じゅうにがつ)</span>. Plug any 1–12 into the slot and the reading is just that number + <span class="ja">がつ</span>.
+            Months are just <b>a number + <span class="ja">月</span></b>. Plug any 1–12 into the slot and the reading is just that number + <span class="ja">がつ</span>.<br>
+            <span class="dt-month-formula-examples"><span class="ja">一月 (いちがつ)</span> · <span class="ja">三月 (さんがつ)</span> · <span class="ja">十月 (じゅうがつ)</span> · <span class="ja">十二月 (じゅうにがつ)</span></span>
           </p>
         </div>
 
