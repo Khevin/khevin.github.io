@@ -1563,14 +1563,13 @@ window.FLASHCARD_CLASSES = [
         strokes:9, examples:[{word:'草原',reading:'SŌGEN',meaning:'grassland'},{word:'草花',reading:'kusabana',meaning:'wildflower'},{word:'雑草',reading:'ZASSŌ',meaning:'weed'}] },
       { id:'insect',   kanji:'虫', kun:'むし',   on:'チュウ', en:'insect · bichinho (pt)',
         strokes:6, examples:[{word:'虫歯',reading:'mushiba',meaning:'cavity'},{word:'昆虫',reading:'KONCHŪ',meaning:'insect'},{word:'害虫',reading:'GAICHŪ',meaning:'pest'}] },
-      { id:'spirit',   kanji:'気', kun:'き',     on:'キ',     en:'spirit / air / energy',
-        strokes:6, examples:[{word:'天気',reading:'TENKI',meaning:'weather'},{word:'元気',reading:'GENKI',meaning:'energetic'},{word:'気持ち',reading:'kimochi',meaning:'feeling'}] },
-      // 元 → 元々 → ◆々 cluster — introduces the standalone kanji, then
-      // its jōgo reduplication, then the iteration mark explainer with a
-      // CTA that jumps to the full jōgo essay. Order matches the spec:
-      // 気 → 元 → 元々 → ◆々 → 元気. The mark explainer lands AFTER 元々
-      // so the learner first meets 々 in a real word, then the radical-
-      // style card explains what they just saw.
+      // 元 → 元々 → ◆々 → 気 → 元気 cluster — pedagogical staircase to
+      // the compound 元気. Both ingredients (元 and 気) and the iteration
+      // mark explainer (◆々) land BEFORE the compound, so when the
+      // learner reaches 元気 every piece has been individually taught.
+      // 気 used to sit at the head of this cluster but moved next to its
+      // compound — the back-to-back pairing 気 → 元気 helps the kun→on
+      // reading shift land cleanly.
       { id:'origin',   kanji:'元', kun:'もと',   on:'ゲン',   en:'origin / source / former',
         strokes:4,
         seeAlso:['気'],
@@ -1620,6 +1619,8 @@ window.FLASHCARD_CLASSES = [
           target: { section:'vocab', vocabClassId:'jougo', vocabBookId:'intro', vocabPageId:'jougo-explainer' },
         },
       },
+      { id:'spirit',   kanji:'気', kun:'き',     on:'キ',     en:'spirit / air / energy',
+        strokes:6, examples:[{word:'天気',reading:'TENKI',meaning:'weather'},{word:'元気',reading:'GENKI',meaning:'energetic'},{word:'気持ち',reading:'kimochi',meaning:'feeling'}] },
       { id:'genki',    kanji:'元気', kun:'げんき', on:'',     en:'energetic / lively / in good health',
         seeAlso:['気','元'],
         notes:'元 (gen, origin) + 気 (ki, spirit / energy) — "the energy at one\'s source." The everyday greeting お元気ですか? (How are you?) literally asks "Are you genki?"',
