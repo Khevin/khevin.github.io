@@ -1297,6 +1297,34 @@ window.FLASHCARD_CLASSES = [
       { id:'eight',    kanji:'八', kun:'や',       on:'ハチ',   en:'eight', strokes:2, examples:[{word:'八月',reading:'HACHIGATSU',meaning:'August'},{word:'八百屋',reading:'yaoya',meaning:'greengrocer'},{word:'八つ',reading:'yattsu',meaning:'eight things'}] },
       { id:'nine',     kanji:'九', kun:'ここの',   on:'キュウ', en:'nine', strokes:2, examples:[{word:'九月',reading:'KUGATSU',meaning:'September'},{word:'九州',reading:'KYŪSHŪ',meaning:'Kyushu'},{word:'九つ',reading:'kokonotsu',meaning:'nine things'}] },
       { id:'ten',      kanji:'十', kun:'とお',     on:'ジュウ', en:'ten', strokes:2, examples:[{word:'十月',reading:'JŪGATSU',meaning:'October'},{word:'十分',reading:'JŪBUN',meaning:'enough'},{word:'十字路',reading:'JŪJIRO',meaning:'crossroads'}] },
+      // 廿 (twenty) — two 十 fused into one glyph. Literary/historical
+      // kanji: still alive in 廿日 (hatsuka, "the 20th of the month")
+      // and a few set expressions. Pedagogically it earns its slot
+      // because the shape recurs as a primitive in 世 / 度 / 散 / 席 —
+      // see the radical card immediately below.
+      { id:'twenty',   kanji:'廿', kun:'にじゅう', on:'ジュウ', en:'twenty', strokes:4,
+        notes:'Old / literary character for "twenty" — two 十 (ten) joined at the foot. Modern Japanese usually writes 二十 instead, but 廿 survives in 廿日 (hatsuka, the 20th of the month) and a handful of set phrases. Worth meeting now because its silhouette shows up as a structural piece inside 世, 度, 散, 席 — the radical card next door names that shape.',
+        examples:[
+          {word:'廿日',     reading:'hatsuka',         meaning:'the 20th (of the month)'},
+          {word:'廿歳',     reading:'hatachi',         meaning:'twenty years old (lit. variant of 二十歳)'},
+          {word:'廿世紀',   reading:'NIJISSEIKI',      meaning:'the 20th century (literary)'},
+        ] },
+      // Radical card — 廿 as a structural primitive. It rarely sits
+      // on its own in modern kanji; instead it lives at the top of
+      // characters where Heisig reads it as "twenty." Four examples
+      // span the four big domains it shows up in: world (世),
+      // measure (度), scatter (散), and seat (席).
+      { id:'twenty-radical', type:'radical',
+        radical:'廿', from:'十',
+        titleJa:'にじゅう', titleEn:'twenty (radical)',
+        descEn:'廿 as a structural primitive — two tens fused into one shape. Rarely stands alone in modern kanji; instead it sits at the top of compounds where Heisig labels it "twenty." Spot it in 世 (world), 度 (degree), 散 (scatter), and 席 (seat).',
+        descJa:'「廿」は十が二つ重なった形。現代の漢字では単独で書かれることは少ないが、世・度・散・席など、いろいろな漢字の上半分に部品として残っている。',
+        examples:[
+          { kanji:'世', kun:'よ',    on:'セイ', en:'world / generation' },
+          { kanji:'度', kun:'たび',  on:'ド',   en:'degree / times' },
+          { kanji:'散', kun:'ち',    on:'サン', en:'scatter / disperse' },
+          { kanji:'席', kun:'',      on:'セキ', en:'seat / place' },
+        ] },
       { id:'hundred',  kanji:'百', kun:'もも',     on:'ヒャク', en:'hundred', strokes:6, examples:[{word:'百円',reading:'HYAKUEN',meaning:'100 yen'},{word:'百科',reading:'HYAKKA',meaning:'encyclopedia'},{word:'三百',reading:'SANBYAKU',meaning:'three hundred'}] },
       { id:'thousand', kanji:'千', kun:'ち',       on:'セン',   en:'thousand', strokes:3, examples:[{word:'千円',reading:'SEN\'EN',meaning:'1000 yen'},{word:'千葉',reading:'CHIBA',meaning:'Chiba'},{word:'千年',reading:'SENNEN',meaning:'millennium'}] },
       { id:'ten-thousand', kanji:'万', kun:'よろず', on:'マン',   en:'ten thousand', strokes:3,
@@ -1749,6 +1777,29 @@ window.FLASHCARD_CLASSES = [
       { id:'flower',   kanji:'花', kun:'はな',   on:'カ',     en:'flower',
         seeAlso:['茶'],
         strokes:7, examples:[{word:'花火',reading:'hanabi',meaning:'fireworks'},{word:'花見',reading:'hanami',meaning:'flower viewing'},{word:'生け花',reading:'ikebana',meaning:'flower arrangement'}] },
+      // 世 → 世界 — the learner already met 廿 in Numbers as a kanji and
+      // as a primitive. Here 世 ("world, generation") cashes that
+      // pattern in: same 廿 silhouette sitting on top of 一 with a
+      // small vertical stroke through it. 世界 (sekai) then welds 世 to
+      // 界 ("boundary") to form the everyday word for "world."
+      { id:'generation', kanji:'世', kun:'よ', on:'セイ', en:'world / generation / era',
+        seeAlso:['廿'],
+        strokes:5,
+        notes:'廿 (twenty, the primitive met in Numbers) over a wide base — Heisig reads it as "twenty + ten" stacked, the span of a generation. As a noun on its own 世 means "the world" or "the age one lives in" (この世, "this world"). On the on-reading it pairs widely: 世紀 (a century), 世界 (the world), 中世 (the Middle Ages).',
+        examples:[
+          {word:'世紀',     reading:'SEIKI',         meaning:'century'},
+          {word:'世の中',   reading:'yo-no-naka',    meaning:'society / the world we live in'},
+          {word:'二世',     reading:'NISEI',         meaning:'second generation'},
+          {word:'中世',     reading:'CHŪSEI',        meaning:'the Middle Ages'},
+        ] },
+      { id:'sekai',    kanji:'世界', kun:'せかい', on:'',       en:'the world',
+        seeAlso:['世'],
+        notes:'世 (sei, world / generation) + 界 (kai, boundary / sphere) — literally "the bounded realm of an era." Where 世 on its own leans toward "society" or "the age," 世界 specifically means the geographic and human world. 世界中 (sekaijuu) means "all over the world"; 世界一 (sekai-ichi) means "the best in the world."',
+        examples:[
+          {word:'世界中',     reading:'sekai-juu',     meaning:'all over the world'},
+          {word:'世界一',     reading:'SEKAI-ICHI',    meaning:'the best in the world'},
+          {word:'世界地図',   reading:'SEKAI CHIZU',   meaning:'world map'},
+        ] },
       { id:'leaf',     kanji:'葉', kun:'は',     on:'ヨウ',   en:'leaf',
         seeAlso:['木'],
         strokes:12, examples:[{word:'言葉',reading:'kotoba',meaning:'word'},{word:'葉書',reading:'hagaki',meaning:'postcard'},{word:'紅葉',reading:'KŌYŌ',meaning:'autumn leaves'}] },
