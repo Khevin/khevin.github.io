@@ -1035,13 +1035,13 @@ window.VOCAB_CLASSES = [
                 <h4>Intensification — 々しい adjectives</h4>
                 <p>Adjective stems can repeat and take the <span class="ja">-しい</span> ending. The result is a richer, more textural version of the base: not just "young" but "youth-filled," not just "rough" but "wild and rough all over."</p>
                 <div class="jougo-grid">
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">若々しい</span><span class="jougo-tile-reading">wakawakashii</span><span class="jougo-tile-en">youthful, full of youth</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">弱々しい</span><span class="jougo-tile-reading">yowayowashii</span><span class="jougo-tile-en">weak-looking, frail</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">華々しい</span><span class="jougo-tile-reading">hanabanashii</span><span class="jougo-tile-en">glorious, brilliant</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">荒々しい</span><span class="jougo-tile-reading">araarashii</span><span class="jougo-tile-en">wild, rough, violent</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">仰々しい</span><span class="jougo-tile-reading">gyōgyōshii</span><span class="jougo-tile-en">pompous, exaggerated</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">凛々しい</span><span class="jougo-tile-reading">ririshii</span><span class="jougo-tile-en">gallant, dignified</span></div>
-                  <div class="jougo-tile"><span class="jougo-tile-glyph">瑞々しい</span><span class="jougo-tile-reading">mizumizushii</span><span class="jougo-tile-en">fresh, succulent</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/wakawakashii.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">若々しい</span><span class="jougo-tile-reading">wakawakashii</span><span class="jougo-tile-en">youthful, full of youth</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/yowayowashii.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">弱々しい</span><span class="jougo-tile-reading">yowayowashii</span><span class="jougo-tile-en">weak-looking, frail</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/hanabanashii.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">華々しい</span><span class="jougo-tile-reading">hanabanashii</span><span class="jougo-tile-en">glorious, brilliant</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/araarashii.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">荒々しい</span><span class="jougo-tile-reading">araarashii</span><span class="jougo-tile-en">wild, rough, violent</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/gyougyoushii.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">仰々しい</span><span class="jougo-tile-reading">gyōgyōshii</span><span class="jougo-tile-en">pompous, exaggerated</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/ririshii.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">凛々しい</span><span class="jougo-tile-reading">ririshii</span><span class="jougo-tile-en">gallant, dignified</span></div>
+                  <div class="jougo-tile jougo-tile-illus"><img class="jougo-tile-img" src="images/vocabulary/mizumizushii.webp" alt="" loading="lazy"><span class="jougo-tile-glyph">瑞々しい</span><span class="jougo-tile-reading">mizumizushii</span><span class="jougo-tile-en">fresh, succulent</span></div>
                   <div class="jougo-tile"><span class="jougo-tile-glyph">々々しい</span><span class="jougo-tile-reading">— pattern</span><span class="jougo-tile-en">stem + 々 + しい</span></div>
                 </div>
 
