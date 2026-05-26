@@ -11354,6 +11354,215 @@
     color: var(--dt-ink-2);
   }
 
+  /* ─── Interactive clock ────────────────────────────────────────────
+     SVG analog face on the left, numeric inputs + Japanese readout on
+     the right. Two-column on desktop; stacks on mobile. The clock
+     hands are SVG <line> elements with cursor:grab — the JS wiring
+     in renderWritingDatetime handles drag + numeric input syncing. */
+  .dt-clock-card {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 24px;
+    align-items: start;
+    padding: 20px 24px;
+    background: var(--dt-paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(141,102,48,0.06);
+  }
+  .dt-clock-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dt-clock-svg {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .dt-clock-svg [data-clock-hand] {
+    cursor: grab;
+    transition: stroke .12s;
+  }
+  .dt-clock-svg [data-clock-hand]:hover { stroke: var(--dt-gold-dark); }
+  .dt-clock-svg [data-clock-hand]:active { cursor: grabbing; }
+
+  .dt-clock-right {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .dt-clock-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    align-items: stretch;
+  }
+  .dt-clock-input-group {
+    flex: 1 1 110px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "glyph label"
+      "input input"
+      "hint  hint";
+    column-gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--dt-paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    cursor: text;
+    transition: border-color .12s, box-shadow .12s;
+  }
+  .dt-clock-input-group:focus-within {
+    border-color: var(--dt-gold);
+    box-shadow: 0 0 0 2px rgba(180,138,74,0.18);
+  }
+  .dt-clock-input-glyph {
+    grid-area: glyph;
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--dt-ink);
+    line-height: 1;
+  }
+  .dt-clock-input-label {
+    grid-area: label;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--dt-ink-3);
+    letter-spacing: 0.04em;
+  }
+  .dt-clock-input-group input {
+    grid-area: input;
+    width: 100%;
+    margin-top: 4px;
+    padding: 4px 0 0;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid var(--paper-edge);
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--dt-ink);
+    text-align: left;
+    font-feature-settings: 'tnum' 1;
+    outline: none;
+    transition: border-color .12s;
+    -moz-appearance: textfield;
+  }
+  .dt-clock-input-group input:focus { border-bottom-color: var(--dt-gold-dark); }
+  .dt-clock-input-group input::-webkit-outer-spin-button,
+  .dt-clock-input-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .dt-clock-input-hint {
+    grid-area: hint;
+    margin-top: 4px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 10px;
+    color: var(--dt-ink-4, var(--dt-ink-3));
+    letter-spacing: 0.04em;
+  }
+
+  .dt-clock-ampm-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--dt-paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    font-family: var(--font-title);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--dt-ink-2);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background .12s, border-color .12s, color .12s;
+    align-self: center;
+  }
+  .dt-clock-ampm-btn:hover {
+    background: var(--dt-paper);
+    border-color: var(--dt-gold);
+    color: var(--dt-ink);
+  }
+  .dt-clock-ampm-btn:active { transform: translateY(1px); }
+  .dt-clock-ampm-icon {
+    font-size: 16px;
+    color: var(--dt-gold-dark);
+  }
+
+  .dt-clock-readout {
+    padding: 16px 18px;
+    background: linear-gradient(180deg, var(--dt-paper-2) 0%, rgba(180,138,74,0.06) 100%);
+    border: 1px solid var(--dt-gold-soft);
+    border-radius: 8px;
+  }
+  .dt-clock-readout-label {
+    margin-bottom: 6px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--dt-ink-3);
+    letter-spacing: 0.04em;
+  }
+  .dt-clock-readout-label .ja {
+    font-style: normal;
+    font-family: var(--serif-jp);
+    color: var(--dt-ink-2);
+    font-weight: 600;
+  }
+  .dt-clock-ja {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: clamp(20px, 2.6vw, 28px);
+    color: var(--dt-ink);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+  .dt-clock-kana {
+    margin-top: 4px;
+    font-family: var(--serif-jp);
+    font-size: 15px;
+    color: var(--dt-ink-2);
+    letter-spacing: 0.02em;
+  }
+  .dt-clock-en {
+    margin-top: 6px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--dt-ink-3);
+    font-feature-settings: 'tnum' 1;
+  }
+  .dt-clock-explain {
+    margin: 14px 0 0;
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--dt-ink-2);
+  }
+  .dt-clock-explain b { color: var(--dt-ink); font-weight: 600; }
+  .dt-clock-explain .ja {
+    font-family: var(--serif-jp);
+    color: var(--dt-ink);
+  }
+
+  @media (max-width: 760px) {
+    .dt-clock-card { grid-template-columns: 1fr; gap: 18px; padding: 18px 16px; }
+    .dt-clock-svg { max-width: 220px; }
+  }
+
   /* Responsive — collapse heavy multi-column grids */
   @media (max-width: 720px) {
     .dt-date-row         { grid-template-columns: 1fr; }
@@ -17151,6 +17360,58 @@ function renderParticlesSidebar() {
   });
 }
 
+// ── Writing → Days & Time — time-reading helpers ───────────────────────
+// Converts a 24-hour-clock (h, m) into Japanese. Used by the interactive
+// clock at the bottom of Section 3. The two big rules the readout has to
+// honor:
+//   1. Hour irregulars — 四時 yoji (not yon-ji), 七時 shichi-ji (not
+//      nana-ji), 九時 kuji (not kyuu-ji). Lookup table, no logic.
+//   2. Minute rendaku — fun after 2/4/5/7/9, pun (with っ) after
+//      1/3/6/8/10. Tens place follows the same pun rule on its own,
+//      with the ones-place chip layered on top for compound minutes.
+// Two helpers: buildMinuteReading handles 1–59 minute math; buildTimeReading
+// stitches the period (午前/午後), hour, and minute into one readout.
+function buildMinuteReading(m) {
+  const tens = Math.floor(m / 10);
+  const ones = m % 10;
+  // Ones place — 1–9, encoded with the rendaku already applied.
+  const ONES_R = ['', 'いっぷん', 'にふん', 'さんぷん', 'よんぷん', 'ごふん', 'ろっぷん', 'ななふん', 'はっぷん', 'きゅうふん'];
+  // Tens place when ones === 0 — じゅっぷん, にじゅっぷん, etc.
+  const TENS_ONLY_R = ['', 'じゅっぷん', 'にじゅっぷん', 'さんじゅっぷん', 'よんじゅっぷん', 'ごじゅっぷん'];
+  // Tens prefix when combining with ones (21分 = にじゅう + いっぷん).
+  const TENS_PREFIX_R = ['', 'じゅう', 'にじゅう', 'さんじゅう', 'よんじゅう', 'ごじゅう'];
+  const ONES_K = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+  const TENS_K = ['', '十', '二十', '三十', '四十', '五十'];
+  if (tens === 0)      return [ONES_K[ones] + '分', ONES_R[ones]];
+  if (ones === 0)      return [TENS_K[tens] + '分', TENS_ONLY_R[tens]];
+  return [TENS_K[tens] + ONES_K[ones] + '分', TENS_PREFIX_R[tens] + ONES_R[ones]];
+}
+function buildTimeReading(hour24, minute) {
+  // Hours 1–12 with the three irregulars baked in (4→よ, 7→しち, 9→く).
+  const HOUR_K = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
+  const HOUR_R = ['', 'いち', 'に', 'さん', 'よ', 'ご', 'ろく', 'しち', 'はち', 'く', 'じゅう', 'じゅういち', 'じゅうに'];
+  let h12 = hour24 % 12;
+  if (h12 === 0) h12 = 12;
+  const periodJa   = hour24 < 12 ? '午前' : '午後';
+  const periodKana = hour24 < 12 ? 'ごぜん' : 'ごご';
+  const periodEn   = hour24 < 12 ? 'AM' : 'PM';
+  const hourJa   = HOUR_K[h12] + '時';
+  const hourKana = HOUR_R[h12] + 'じ';
+  let minJa = '', minKana = '', altJa = '', altKana = '';
+  if (minute > 0) {
+    [minJa, minKana] = buildMinuteReading(minute);
+    if (minute === 30) {
+      // The 半 alternative — both 三十分 and 半 are correct for 30.
+      altJa = '半';
+      altKana = 'はん';
+    }
+  }
+  const ja      = periodJa + hourJa + minJa + (altJa ? ' / ' + periodJa + hourJa + altJa : '');
+  const kana    = periodKana + ' ' + hourKana + (minKana ? ' ' + minKana : '') + (altKana ? ' / ' + periodKana + ' ' + hourKana + altKana : '');
+  const en      = h12 + ':' + String(minute).padStart(2, '0') + ' ' + periodEn;
+  return { ja, kana, en };
+}
+
 // ── Writing → Days & Time ──────────────────────────────────────────────
 // Last basics page. Three sections mirror the spec carved out during
 // design-expert:plan / :build:
@@ -17162,7 +17423,8 @@ function renderParticlesSidebar() {
 //       three stamps.
 //   三. Telling time — the 〜時 system, irregular readings (四 七 九
 //       drop their normal on-yomi), 半 for "half past," and 〜分 with
-//       the rendaku-driven pun/fun split.
+//       the rendaku-driven pun/fun split, plus an interactive clock
+//       (analog + numeric input) that converts any time to Japanese.
 // Visual language: kanji-numbered section heads from sentence-structure
 // (.dt-section-num one / two / three), numbered-card chrome from
 // numbers (.dt-card), color-coded role stamps from the particle-verb
@@ -17188,6 +17450,23 @@ function renderWritingDatetime(container) {
         <span class="ja">${escHTML(m.wrong)}</span>
       </div>
     </div>`).join('');
+
+  // Clock face hour-mark generation — 12 ticks at 30° intervals,
+  // with 12/3/6/9 emphasized (longer + thicker). Computed in JS
+  // because writing 12 hand-positioned SVG lines is more error-
+  // prone than a single trig loop.
+  const clockMarksHTML = [...Array(12)].map((_, i) => {
+    const angle = i * 30;
+    const isMain = i % 3 === 0;
+    const r1 = isMain ? 74 : 80;
+    const r2 = 88;
+    const rad = angle * Math.PI / 180;
+    const x1 = 100 + r1 * Math.sin(rad);
+    const y1 = 100 - r1 * Math.cos(rad);
+    const x2 = 100 + r2 * Math.sin(rad);
+    const y2 = 100 - r2 * Math.cos(rad);
+    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--dt-ink)" stroke-width="${isMain ? 2.5 : 1.2}" stroke-linecap="round" opacity="${isMain ? 1 : 0.6}"/>`;
+  }).join('');
 
   // 7 days — Sunday first per JIS standard week start. The image
   // (provided in images/kanji/<日曜日>.webp etc.) does the visual
@@ -17396,9 +17675,172 @@ function renderWritingDatetime(container) {
         <p class="dt-ampm-footnote">
           AM/PM markers PRECEDE the hour: <span class="ja">午前九時 (ごぜん くじ)</span> is 9 AM, <span class="ja">午後三時半 (ごご さんじはん)</span> is 3:30 PM. The 24-hour clock just keeps counting: <span class="ja">十八時三十分</span> is 18:30.
         </p>
-      </section>
 
+        <!-- Interactive clock — convert any time to its Japanese
+             reading. Two input paths: drag the hour/minute hands on
+             the SVG face, or type the hour (0–23) and minute (0–59).
+             Both are bidirectional with one shared state. Helper
+             functions buildTimeReading / buildMinuteReading (above
+             this renderer) bake in the hour irregulars and the
+             fun/pun rendaku rule so the readout is correct without
+             the learner needing to think about either. -->
+        <div class="dt-block-label"><span class="ja">時刻</span> · convert any time to Japanese</div>
+        <div class="dt-clock-card">
+          <div class="dt-clock-left">
+            <svg id="dt-clock-svg" viewBox="0 0 200 200" class="dt-clock-svg" role="img" aria-label="interactive clock — drag the hands to set a time">
+              <!-- face -->
+              <circle cx="100" cy="100" r="92" fill="var(--dt-paper-2)" stroke="var(--paper-edge)" stroke-width="2"/>
+              <!-- hour marks -->
+              ${clockMarksHTML}
+              <!-- hour numbers at 12 / 3 / 6 / 9 in kanji -->
+              <text x="100" y="36" text-anchor="middle" font-family="var(--serif-jp)" font-size="13" font-weight="700" fill="var(--dt-ink)">十二</text>
+              <text x="166" y="106" text-anchor="middle" font-family="var(--serif-jp)" font-size="14" font-weight="700" fill="var(--dt-ink)">三</text>
+              <text x="100" y="174" text-anchor="middle" font-family="var(--serif-jp)" font-size="14" font-weight="700" fill="var(--dt-ink)">六</text>
+              <text x="34" y="106" text-anchor="middle" font-family="var(--serif-jp)" font-size="14" font-weight="700" fill="var(--dt-ink)">九</text>
+              <!-- minute hand (drawn first so the hour hand sits on top) -->
+              <line id="dt-clock-min-hand" data-clock-hand="min"
+                    x1="100" y1="100" x2="100" y2="22"
+                    stroke="var(--dt-ink-2)" stroke-width="3" stroke-linecap="round"
+                    transform="rotate(180 100 100)" style="cursor: grab"/>
+              <!-- hour hand -->
+              <line id="dt-clock-hour-hand" data-clock-hand="hour"
+                    x1="100" y1="100" x2="100" y2="48"
+                    stroke="var(--dt-ink)" stroke-width="5" stroke-linecap="round"
+                    transform="rotate(270 100 100)" style="cursor: grab"/>
+              <!-- center pin -->
+              <circle cx="100" cy="100" r="6" fill="var(--dt-gold-dark)"/>
+              <circle cx="100" cy="100" r="2.5" fill="var(--dt-paper)"/>
+            </svg>
+          </div>
+          <div class="dt-clock-right">
+            <div class="dt-clock-inputs">
+              <label class="dt-clock-input-group">
+                <span class="dt-clock-input-glyph">時</span>
+                <span class="dt-clock-input-label">hour</span>
+                <input type="number" id="dt-clock-hour" min="0" max="23" step="1" value="9" aria-label="hour 0 to 23">
+                <span class="dt-clock-input-hint">0–23</span>
+              </label>
+              <label class="dt-clock-input-group">
+                <span class="dt-clock-input-glyph">分</span>
+                <span class="dt-clock-input-label">min</span>
+                <input type="number" id="dt-clock-min" min="0" max="59" step="1" value="30" aria-label="minute 0 to 59">
+                <span class="dt-clock-input-hint">0–59</span>
+              </label>
+              <button type="button" id="dt-clock-ampm" class="dt-clock-ampm-btn" aria-label="flip between AM and PM">
+                <span class="dt-clock-ampm-icon">⇄</span>
+                <span class="dt-clock-ampm-text">flip AM/PM</span>
+              </button>
+            </div>
+            <div class="dt-clock-readout">
+              <div class="dt-clock-readout-label"><span class="ja">日本語で</span> · in Japanese</div>
+              <div class="dt-clock-ja" id="dt-clock-ja"></div>
+              <div class="dt-clock-kana" id="dt-clock-kana"></div>
+              <div class="dt-clock-en" id="dt-clock-en"></div>
+            </div>
+          </div>
+        </div>
+        <p class="dt-clock-explain">
+          <b>Two ways to set the time.</b> Type the hour (0–23) and minute (0–59) into the inputs, or grab the clock hands and drag — both paths stay in sync. The Japanese reading updates live, with the hour irregulars (<span class="ja">四 七 九</span>) and the <span class="ja">ぷん</span>/<span class="ja">ふん</span> rendaku applied automatically. At 30 minutes you'll see both <span class="ja">三十分</span> and the <span class="ja">半</span> alternative — they're interchangeable. Use the <b>flip AM/PM</b> button to swap between morning and afternoon while keeping the same clock position.
+        </p>
+      </section>
     </div>`;
+
+  // Wire the interactive clock — synced inputs + draggable SVG hands.
+  // Bound here rather than in a separate function so the closure has
+  // direct access to the buildTimeReading helper above.
+  const clockSvg  = container.querySelector('#dt-clock-svg');
+  const hourIn    = container.querySelector('#dt-clock-hour');
+  const minIn     = container.querySelector('#dt-clock-min');
+  const ampmBtn   = container.querySelector('#dt-clock-ampm');
+  const jaOut     = container.querySelector('#dt-clock-ja');
+  const kanaOut   = container.querySelector('#dt-clock-kana');
+  const enOut     = container.querySelector('#dt-clock-en');
+  const hourHand  = container.querySelector('#dt-clock-hour-hand');
+  const minHand   = container.querySelector('#dt-clock-min-hand');
+  if (clockSvg && hourIn && minIn) {
+    // State lives inside this closure so re-renders of the page reset
+    // to the initial value. Two-way sync between inputs and hands.
+    const state = { h: 9, m: 30 };
+
+    function render() {
+      const r = buildTimeReading(state.h, state.m);
+      jaOut.textContent = r.ja;
+      kanaOut.textContent = r.kana;
+      enOut.textContent = r.en;
+      // 12-hour position on the face — hour hand also creeps with minute
+      // (e.g. 9:30 sits the hour hand halfway between 9 and 10).
+      const hAngle = ((state.h % 12) + state.m / 60) * 30;
+      const mAngle = state.m * 6;
+      hourHand.setAttribute('transform', `rotate(${hAngle} 100 100)`);
+      minHand.setAttribute('transform', `rotate(${mAngle} 100 100)`);
+      // Reflect state back into the inputs (in case a drag changed them).
+      if (document.activeElement !== hourIn) hourIn.value = state.h;
+      if (document.activeElement !== minIn)  minIn.value = state.m;
+    }
+
+    function clampInt(v, lo, hi) {
+      const n = parseInt(v, 10);
+      if (isNaN(n)) return lo;
+      return Math.max(lo, Math.min(hi, n));
+    }
+    hourIn.addEventListener('input', () => { state.h = clampInt(hourIn.value, 0, 23); render(); });
+    minIn.addEventListener('input',  () => { state.m = clampInt(minIn.value,  0, 59); render(); });
+    ampmBtn.addEventListener('click', () => { state.h = (state.h + 12) % 24; render(); });
+
+    // Drag the clock hands. The angle is measured from 12 o'clock
+    // clockwise. We use atan2(dx, -dy) so straight up = 0°, 3
+    // o'clock = 90°, etc. — matches the rotate(deg 100 100) the
+    // SVG uses, no conversion needed.
+    let dragging = null;
+    function angleFromPointer(clientX, clientY) {
+      const rect = clockSvg.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      let a = Math.atan2(clientX - cx, cy - clientY) * 180 / Math.PI;
+      if (a < 0) a += 360;
+      return a;
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      const cx = e.clientX != null ? e.clientX : (e.touches && e.touches[0] && e.touches[0].clientX);
+      const cy = e.clientY != null ? e.clientY : (e.touches && e.touches[0] && e.touches[0].clientY);
+      if (cx == null || cy == null) return;
+      const a = angleFromPointer(cx, cy);
+      if (dragging === 'min') {
+        state.m = Math.round(a / 6) % 60;
+      } else if (dragging === 'hour') {
+        // Snap to nearest hour. Preserve AM/PM context — the user
+        // flips period explicitly via the AM/PM button.
+        let h12 = Math.round(a / 30) % 12;
+        if (h12 === 0) h12 = 12;
+        const isPM = state.h >= 12;
+        state.h = (h12 % 12) + (isPM ? 12 : 0);
+      }
+      render();
+      e.preventDefault();
+    }
+    function onUp() {
+      dragging = null;
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      window.removeEventListener('touchend', onUp);
+    }
+    function onDown(e) {
+      const t = e.target.closest('[data-clock-hand]');
+      if (!t) return;
+      dragging = t.dataset.clockHand;
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('mouseup', onUp, { once: true });
+      window.addEventListener('touchend', onUp, { once: true });
+      e.preventDefault();
+    }
+    clockSvg.addEventListener('mousedown', onDown);
+    clockSvg.addEventListener('touchstart', onDown, { passive: false });
+
+    render();
+  }
 }
 
 // ── Writing → Particles ────────────────────────────────────────────────
