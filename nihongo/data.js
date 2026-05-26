@@ -1297,6 +1297,24 @@ window.FLASHCARD_CLASSES = [
       { id:'eight',    kanji:'八', kun:'や',       on:'ハチ',   en:'eight', strokes:2, examples:[{word:'八月',reading:'HACHIGATSU',meaning:'August'},{word:'八百屋',reading:'yaoya',meaning:'greengrocer'},{word:'八つ',reading:'yattsu',meaning:'eight things'}] },
       { id:'nine',     kanji:'九', kun:'ここの',   on:'キュウ', en:'nine', strokes:2, examples:[{word:'九月',reading:'KUGATSU',meaning:'September'},{word:'九州',reading:'KYŪSHŪ',meaning:'Kyushu'},{word:'九つ',reading:'kokonotsu',meaning:'nine things'}] },
       { id:'ten',      kanji:'十', kun:'とお',     on:'ジュウ', en:'ten', strokes:2, examples:[{word:'十月',reading:'JŪGATSU',meaning:'October'},{word:'十分',reading:'JŪBUN',meaning:'enough'},{word:'十字路',reading:'JŪJIRO',meaning:'crossroads'}] },
+      // ◆十 — 十 as a structural primitive. Same two crossed strokes
+      // the learner just met as "ten," but Heisig labels the shape
+      // "needle" when it appears inside other kanji (the vertical
+      // stroke piercing the horizontal one like a sewing needle
+      // through cloth). One of the most prolific primitives — shows
+      // up in 古 (old), 早 (early), 計 (calculate), 千 (thousand),
+      // 南 (south), 真 (true), 直 (straight), and many more.
+      { id:'needle-radical', type:'radical',
+        radical:'十', from:'十',
+        titleJa:'じゅう', titleEn:'ten (radical) · needle',
+        descEn:'The same 十 you just met — but now as a piece sitting INSIDE other kanji. Two strokes crossing at right angles. Heisig calls it "needle" because the vertical stroke pierces through the horizontal one. One of the busiest primitives in the language: 古 (十 over 口 → "ten mouths have spoken it" → old), 早 (日 over 十 → the sun above the needle of dawn → early), 計 (words + ten → counting up → calculate), 千 (a stroke leaning across 十 → thousand).',
+        descJa:'いま見た「十」を、漢字の中の部品として見る。たて棒が横棒を貫く形 ──「針（はり）」のイメージ。漢字の上・下・横・中に広く現れる：古（十 + 口、十の口が語り継いだ → 古い）、早（日 + 十、日が針の先に昇る → 早い）、計（言 + 十、ことばで数える → はかる）、千（一画 + 十 → せん）。',
+        examples:[
+          { kanji:'古', kun:'ふる',   on:'コ',     en:'old' },
+          { kanji:'早', kun:'はや',   on:'ソウ',   en:'early / fast' },
+          { kanji:'計', kun:'はか',   on:'ケイ',   en:'measure / calculate' },
+          { kanji:'千', kun:'ち',     on:'セン',   en:'thousand' },
+        ] },
       // 廿 (twenty) — two 十 fused into one glyph. Literary/historical
       // kanji: still alive in 廿日 (hatsuka, "the 20th of the month")
       // and a few set expressions. Pedagogically it earns its slot
