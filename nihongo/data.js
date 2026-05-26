@@ -1919,6 +1919,69 @@ window.FLASHCARD_CLASSES = [
         usage:{ ja:'先生', kana:'せんせい' },
         notes:'先 (sen, ahead) + 生 (sei, life) gives 先生 (sensei) — "one born ahead in life." Honorific for teachers, doctors, professors, and respected experts. Also marks past time: 先週 (last week), 先月 (last month).',
         examples:[{word:'先生',reading:'SENSEI',meaning:'teacher'},{word:'先月',reading:'SENGETSU',meaning:'last month'},{word:'先端',reading:'SENTAN',meaning:'cutting edge'}] },
+      // 7 days of the week — three-glyph compounds anchored by 曜 (the
+      // "day-of-week" connector) sandwiched between an elemental kanji
+      // (日 月 火 水 木 金 土) and a final 日. The pattern matches the
+      // Five-Elements + Sun + Moon planetary days carried over from
+      // classical Chinese astronomy. Order: Sunday first, following
+      // the JIS-standard week start. Each card carries one note —
+      // the elemental association and the rōmaji nuance for that day.
+      { id:'nichiyoubi', kanji:'日曜日', kun:'にちようび', on:'',  en:'Sunday',
+        seeAlso:['日'],
+        notes:'日 (nichi, sun) + 曜 (yō, day-of-the-week) + 日 (bi, day) → "sun-day-day," a.k.a. Sunday. The pattern repeats for the other six days, each starting with a different elemental kanji (月 moon, 火 fire/Mars, 水 water/Mercury, 木 wood/Jupiter, 金 metal/Venus, 土 earth/Saturn) — the same planet-day mapping that gave English Sun-day, Mon-day, Sat-urn-day.',
+        examples:[
+          {word:'日曜日',       reading:'NICHIYŌBI',         meaning:'Sunday'},
+          {word:'毎週日曜日',   reading:'maishū nichiyōbi',  meaning:'every Sunday'},
+          {word:'日曜大工',     reading:'NICHIYŌ-DAIKU',     meaning:'DIY (lit. "Sunday carpenter")'},
+        ] },
+      { id:'getsuyoubi', kanji:'月曜日', kun:'げつようび', on:'',  en:'Monday',
+        seeAlso:['月'],
+        notes:'月 (getsu, moon) + 曜 (yō) + 日 (bi) → Monday, "moon-day." Same pattern as English Mon-day (from Old English Mōnandæg, "moon\'s day").',
+        examples:[
+          {word:'月曜日',       reading:'GETSUYŌBI',         meaning:'Monday'},
+          {word:'月曜から金曜', reading:'getsuyō kara kin\'yō', meaning:'Monday through Friday'},
+          {word:'先月曜日',     reading:'sen-GETSUYŌBI',     meaning:'last Monday'},
+        ] },
+      { id:'kayoubi', kanji:'火曜日', kun:'かようび', on:'',  en:'Tuesday',
+        seeAlso:['火'],
+        notes:'火 (ka, fire) + 曜 + 日 → Tuesday. The elemental match is the planet Mars (火星, kasei, the "fire star"), matching English Tues-day from Norse Tiw, the god of war whom the Romans equated with Mars.',
+        examples:[
+          {word:'火曜日',       reading:'KAYŌBI',            meaning:'Tuesday'},
+          {word:'火曜の朝',     reading:'KAYŌ no asa',       meaning:'Tuesday morning'},
+          {word:'今度の火曜日', reading:'kondo no KAYŌBI',   meaning:'next Tuesday'},
+        ] },
+      { id:'suiyoubi', kanji:'水曜日', kun:'すいようび', on:'',  en:'Wednesday',
+        seeAlso:['水'],
+        notes:'水 (sui, water) + 曜 + 日 → Wednesday. Matches the planet Mercury (水星, suisei, the "water star") — same as French mercredi (Mercury\'s day).',
+        examples:[
+          {word:'水曜日',       reading:'SUIYŌBI',           meaning:'Wednesday'},
+          {word:'水曜の夜',     reading:'SUIYŌ no yoru',     meaning:'Wednesday night'},
+          {word:'水曜定休日',   reading:'SUIYŌ TEIKYŪBI',    meaning:'closed on Wednesdays'},
+        ] },
+      { id:'mokuyoubi', kanji:'木曜日', kun:'もくようび', on:'',  en:'Thursday',
+        seeAlso:['木'],
+        notes:'木 (moku, wood/tree) + 曜 + 日 → Thursday. The planet is Jupiter (木星, mokusei, the "wood star") — and Thurs-day in English is Thor\'s day, the Norse equivalent of Jupiter.',
+        examples:[
+          {word:'木曜日',       reading:'MOKUYŌBI',          meaning:'Thursday'},
+          {word:'木曜の午後',   reading:'MOKUYŌ no GOGO',    meaning:'Thursday afternoon'},
+          {word:'毎週木曜日',   reading:'maishū MOKUYŌBI',   meaning:'every Thursday'},
+        ] },
+      { id:'kinyoubi', kanji:'金曜日', kun:'きんようび', on:'',  en:'Friday',
+        seeAlso:['金'],
+        notes:'金 (kin, metal/gold) + 曜 + 日 → Friday. The planet is Venus (金星, kinsei, the "gold star") — same as French vendredi (Venus\' day) or Italian venerdì.',
+        examples:[
+          {word:'金曜日',       reading:'KIN\'YŌBI',         meaning:'Friday'},
+          {word:'花の金曜日',   reading:'hana no KIN\'YŌBI', meaning:'TGIF (lit. "flowery Friday")'},
+          {word:'金曜の夜',     reading:'KIN\'YŌ no yoru',   meaning:'Friday night'},
+        ] },
+      { id:'doyoubi', kanji:'土曜日', kun:'どようび', on:'',  en:'Saturday',
+        seeAlso:['土'],
+        notes:'土 (do, earth/soil) + 曜 + 日 → Saturday. The planet is Saturn (土星, dosei, the "earth star") — and Sat-urn-day in English IS Saturn\'s day. The whole week closes the loop: every day of the Japanese week pairs with the same planet as its Romance / Germanic counterpart.',
+        examples:[
+          {word:'土曜日',       reading:'DOYŌBI',            meaning:'Saturday'},
+          {word:'土曜の昼',     reading:'DOYŌ no hiru',      meaning:'Saturday noon'},
+          {word:'土日',         reading:'DONICHI',           meaning:'the weekend (Sat + Sun)'},
+        ] },
       { id:'before', kanji:'前', kun:'まえ', on:'ゼン', en:'before / front', strokes:9,
         examples:[
           {word:'前',   reading:'mae',  meaning:'before / in front'},
