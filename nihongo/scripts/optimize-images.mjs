@@ -180,7 +180,32 @@ async function processOne(absPath, rule) {
       await sleepMs(300 * (i + 1));
     }
   }
-  if (!renamed) throw new Error(`rename ${tmpPath} -> ${targetPath} kept failing with EBUSY`);
+  // Last-resort fallback: delete the existing target FIRST, then
+  // rename the tmp into place. On Windows, the atomic rename-over-
+  // existing can stay blocked indefinitely by an open handle to the
+  // target (Explorer's thumbnail cache holds .webp open for as long
+  // as the folder is in view), but a delete often succeeds anyway
+  // because the delete-pending semantic releases the handle once
+  // the last reader closes it. This avoids littering .tmp files
+  // when the user runs the optimizer with the images folder open
+  // in Explorer.
+  if (!renamed) {
+    try {
+      await unlink(targetPath);
+      await rename(tmpPath, targetPath);
+      renamed = true;
+    } catch (fallbackErr) {
+      // Truly stuck — clean up the orphan .tmp so we don't leave
+      // half-encoded staging files behind for the user to wonder
+      // about. The existing .webp target stays untouched.
+      try { await unlink(tmpPath); } catch { /* ignore */ }
+      throw new Error(
+        `rename ${tmpPath} -> ${targetPath} kept failing ` +
+        `(${fallbackErr.code || 'unknown'}); ` +
+        `close Explorer windows on the image folder and retry`
+      );
+    }
+  }
 
   const dstSize = (await stat(targetPath)).size;
 
