@@ -10745,18 +10745,13 @@
   }
   .dt-section-footnote b { color: var(--dt-ink); font-weight: 600; }
 
-  /* ─── shared card chrome ────────────────────────────────────────── */
-  .dt-card {
-    background: var(--dt-paper);
-    border: 1px solid var(--paper-edge);
-    border-radius: 8px;
-    padding: 22px;
-    box-shadow: 0 2px 8px rgba(141,102,48,0.06);
-    margin-bottom: 18px;
-  }
-  .dt-card-eyebrow {
-    margin: -4px 0 18px;
-    padding-bottom: 10px;
+  /* ─── block labels — replace what was .dt-card-eyebrow ─────────────
+     The page used to wrap each content chunk in a paper card with an
+     eyebrow label. Distillation pass dropped the cards; the label
+     survives as a subhead sitting directly on the page background. */
+  .dt-block-label {
+    margin: 24px 0 12px;
+    padding-bottom: 8px;
     border-bottom: 1px dashed rgba(141,102,48,0.25);
     font-family: var(--serif);
     font-style: italic;
@@ -10764,18 +10759,20 @@
     color: var(--dt-ink-3);
     letter-spacing: 0.04em;
   }
-  .dt-card-eyebrow .ja {
+  .dt-block-label .ja {
     font-style: normal;
     font-family: var(--serif-jp);
     color: var(--dt-ink-2);
+    font-weight: 600;
   }
 
-  /* ─── 一. Days of the week — 7 cards, side by side ──────────────────
-     Vertical card orientation: stamp (elemental kanji) on top, body
-     stacked below. 7-column grid lets the full week read as a single
-     row — the user scans Sun→Sat horizontally the way a real calendar
-     wants to be read. Element accent moves to border-top so the
-     colored stripe sits with the elemental stamp visually. */
+  /* ─── 一. Days of the week — image-first, 7 across ──────────────────
+     Image takes the top slot (1:1 frame); body below carries the
+     compound kanji, kana, and a small elemental + EN meta line.
+     The per-day element-accent stripe moves OFF the card (the image
+     now does the visual identification work) — we keep an
+     elemental color on the small "日" inline glyph so the variety
+     still threads through the row. */
   .dt-day-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -10784,23 +10781,23 @@
   .dt-day-card {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 10px 8px 12px;
+    gap: 8px;
+    padding: 8px;
     background: var(--dt-paper);
     border: 1px solid var(--paper-edge);
-    border-top: 3px solid var(--dt-elem, var(--dt-gold-soft));
-    border-radius: 6px;
+    border-radius: 8px;
     text-align: center;
     transition: border-color .15s, box-shadow .15s, transform .15s;
     min-width: 0;
   }
   .dt-day-card:hover {
-    box-shadow: 0 4px 12px rgba(141,102,48,0.12);
+    border-color: var(--dt-gold-soft);
+    box-shadow: 0 4px 12px rgba(141,102,48,0.10);
     transform: translateY(-1px);
   }
-  /* Assign element accent per row using nth-child since the days are
-     fixed-order. Cleaner than threading a --dt-elem variable through
-     the template. */
+  /* Color the inline elemental glyph per-row via nth-child. The image
+     itself carries the day's primary visual identity; the elemental
+     hue is a quiet thread under it, not a competing stripe. */
   .dt-day-card:nth-child(1) { --dt-elem: var(--dt-elem-sun); }
   .dt-day-card:nth-child(2) { --dt-elem: var(--dt-elem-moon); }
   .dt-day-card:nth-child(3) { --dt-elem: var(--dt-elem-fire); }
@@ -10808,35 +10805,32 @@
   .dt-day-card:nth-child(5) { --dt-elem: var(--dt-elem-wood); }
   .dt-day-card:nth-child(6) { --dt-elem: var(--dt-elem-metal); }
   .dt-day-card:nth-child(7) { --dt-elem: var(--dt-elem-earth); }
-  .dt-day-stamp {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-    padding: 8px 4px 6px;
+  .dt-day-image {
+    aspect-ratio: 1 / 1;
+    width: 100%;
     background: var(--dt-paper-2);
-    border-radius: 4px;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .dt-day-elem {
-    font-family: var(--serif-jp);
-    font-weight: 700;
-    font-size: 26px;
-    color: var(--dt-elem, var(--dt-ink));
-    line-height: 1;
+  .dt-day-image image-slot {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
   }
-  .dt-day-elem-en {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 9px;
-    color: var(--dt-ink-3);
-    letter-spacing: 0.04em;
-    line-height: 1.1;
+  .dt-day-image image-slot::part(img),
+  .dt-day-image image-slot::part(frame) {
+    border-radius: 6px;
   }
   .dt-day-body {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2px;
+    padding: 4px 0;
     min-width: 0;
   }
   .dt-day-ja {
@@ -10849,29 +10843,34 @@
   }
   .dt-day-kana {
     font-family: var(--serif-jp);
-    font-size: 10px;
+    font-size: 11px;
     color: var(--dt-ink-3);
     letter-spacing: 0.01em;
-    line-height: 1.1;
-  }
-  .dt-day-en {
-    margin-top: 4px;
-    font-family: var(--font-title);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--dt-ink-2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
     line-height: 1.2;
   }
-  .dt-day-planet {
-    font-family: var(--serif);
-    font-size: 10px;
+  .dt-day-meta {
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-family: var(--font-title);
+    font-size: 11px;
+    color: var(--dt-ink-2);
+    line-height: 1.2;
+  }
+  .dt-day-elem {
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--dt-elem, var(--dt-ink));
+    line-height: 1;
+  }
+  .dt-day-sep {
+    color: var(--dt-ink-4, var(--dt-ink-3));
     font-weight: 400;
-    color: var(--dt-elem, var(--dt-ink-3));
-    letter-spacing: 0.02em;
+  }
+  .dt-day-en {
+    font-weight: 600;
   }
   /* Below the desktop-wide breakpoint, fall back to a wrapping grid
      since 7 narrow cards become unreadable. 4 then 2 at the smallest. */
@@ -10882,71 +10881,58 @@
     .dt-day-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* ─── 二. Reading dates — three stamps ──────────────────────────── */
+  /* ─── 二. Reading dates — three neutral stamps + dl rules ────────────
+     Stamps lead with the 年/月/日 marker (the LESSON), the numeral
+     sits below as data. No colored top-stripes — the colors didn't
+     mean anything and read as decorative KPI-card chrome. Rules are
+     a definition list flowing on the page background, no boxes. */
   .dt-date-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 18px;
+    gap: 16px;
+    margin-bottom: 16px;
   }
   .dt-date-stamp {
-    position: relative;
     background: var(--dt-paper-2);
-    border: 1px solid var(--paper-edge);
-    border-top: 3px solid var(--dt-stamp, var(--dt-gold));
-    border-radius: 6px;
-    padding: 16px 14px 12px;
+    border-radius: 8px;
+    padding: 20px 16px 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
-    overflow: hidden;
-  }
-  .dt-date-year  { --dt-stamp: var(--dt-elem-water); }
-  .dt-date-month { --dt-stamp: var(--dt-elem-fire); }
-  .dt-date-day   { --dt-stamp: var(--dt-elem-wood); }
-  .dt-date-num {
-    font-family: var(--serif);
-    font-size: clamp(32px, 4.5vw, 48px);
-    font-weight: 400;
-    color: var(--dt-ink);
-    line-height: 1;
-    font-feature-settings: 'tnum' 1;
+    gap: 4px;
   }
   .dt-date-marker {
     font-family: var(--serif-jp);
     font-weight: 700;
-    font-size: 26px;
-    color: var(--dt-stamp);
+    font-size: clamp(40px, 5vw, 56px);
+    color: var(--dt-ink);
     line-height: 1;
-    margin: -2px 0 6px;
+  }
+  .dt-date-num {
+    font-family: var(--serif);
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 400;
+    color: var(--dt-ink-2);
+    line-height: 1;
+    font-feature-settings: 'tnum' 1;
   }
   .dt-date-label {
+    margin-top: 6px;
     font-family: var(--serif);
     font-style: italic;
     font-size: 12px;
     color: var(--dt-ink-3);
-    text-align: center;
     letter-spacing: 0.04em;
-  }
-  .dt-date-label em {
-    display: block;
-    margin-top: 2px;
-    font-family: var(--serif-jp);
-    font-style: normal;
-    font-size: 11px;
-    color: var(--dt-ink-2);
   }
   .dt-date-translation {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 16px;
-    padding: 12px 14px;
-    background: var(--dt-paper-2);
-    border-radius: 6px;
-    margin-bottom: 18px;
+    gap: 8px 24px;
+    padding: 12px 0;
+    margin-bottom: 24px;
+    border-bottom: 1px dashed rgba(141,102,48,0.25);
   }
   .dt-date-trans-ja {
     font-family: var(--serif-jp);
@@ -10954,52 +10940,48 @@
     color: var(--dt-ink);
     letter-spacing: 0.02em;
   }
-  .dt-date-trans-arrow {
-    font-size: 18px;
-    color: var(--dt-gold-dark);
-  }
   .dt-date-trans-en {
     font-family: var(--serif);
     font-style: italic;
     font-size: 15px;
-    color: var(--dt-ink-2);
+    color: var(--dt-ink-3);
   }
+  /* Definition list — no boxes, no accent borders, just flowing text.
+     dt holds the marker + kana; dd holds the explanation. */
   .dt-date-rules {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .dt-date-rule {
+    margin: 0;
     display: grid;
-    grid-template-columns: 48px 56px 1fr;
-    gap: 14px;
-    align-items: center;
-    padding: 12px 14px;
-    background: var(--dt-paper-2);
-    border-radius: 6px;
-    border-left: 2px solid var(--dt-gold-soft);
+    grid-template-columns: auto 1fr;
+    gap: 8px 24px;
+    align-items: baseline;
+  }
+  .dt-date-rules dt {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--serif-jp);
+    color: var(--dt-ink);
+    padding-top: 2px;
   }
   .dt-date-rule-marker {
-    font-family: var(--serif-jp);
     font-weight: 700;
-    font-size: 28px;
-    color: var(--dt-ink);
+    font-size: 22px;
     line-height: 1;
-    text-align: center;
+    color: var(--dt-ink);
   }
   .dt-date-rule-kana {
-    font-family: var(--serif-jp);
     font-size: 13px;
     color: var(--dt-ink-3);
     letter-spacing: 0.04em;
   }
-  .dt-date-rule-body {
+  .dt-date-rules dd {
+    margin: 0;
     font-family: var(--serif);
     font-size: 14px;
     line-height: 1.55;
     color: var(--dt-ink-2);
   }
-  .dt-date-rule-body .ja {
+  .dt-date-rules dd .ja {
     font-family: var(--serif-jp);
     color: var(--dt-ink);
   }
@@ -11052,26 +11034,6 @@
     color: var(--dt-ink-3);
     margin-top: 2px;
   }
-  .dt-hour-legend {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px dashed rgba(141,102,48,0.25);
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 12px;
-    color: var(--dt-ink-3);
-  }
-  .dt-hour-legend-irr {
-    display: inline-block;
-    width: 18px; height: 12px;
-    background: linear-gradient(180deg, var(--dt-paper-2) 0%, rgba(180,138,74,0.18) 100%);
-    border: 1px solid var(--dt-gold);
-    border-radius: 3px;
-  }
-
   /* Minutes */
   .dt-min-grid {
     display: grid;
@@ -11154,51 +11116,33 @@
     font-size: 10px;
     color: var(--dt-gold-dark);
   }
-  .dt-min-explain {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 14px;
-    background: var(--dt-paper-2);
-    border-radius: 6px;
-    border-left: 2px solid var(--dt-gold-soft);
-  }
-  .dt-min-explain-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  /* Minutes explanation — flowing prose paragraph, no row-list or
+     paper-2 frame. The fun/pun chips inline carry the visual cue
+     they had before; everything else is read normally. */
+  .dt-min-explain-prose {
+    margin: 12px 0 0;
     font-family: var(--serif);
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 1.65;
     color: var(--dt-ink-2);
-    line-height: 1.5;
   }
-  .dt-min-explain-row .ja {
+  .dt-min-explain-prose .ja {
     font-family: var(--serif-jp);
     color: var(--dt-ink);
   }
-  .dt-min-explain-row .dt-min-stem {
-    flex-shrink: 0;
-    align-self: start;
-    margin-top: 1px;
-  }
-  .dt-min-alt-ja-inline {
-    flex-shrink: 0;
-    padding: 1px 8px;
-    background: rgba(180,138,74,0.18);
-    border-radius: 3px;
-    font-family: var(--serif-jp);
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--dt-gold-dark);
+  .dt-min-explain-prose .dt-min-stem {
+    margin: 0 4px;
+    /* The chips are the same inline padding+radius from .dt-min-stem
+       already — they sit nicely in flowing text without extra glue. */
   }
 
-  /* AM / PM block */
-  .dt-card-am-pm { padding: 18px 22px; }
+  /* AM / PM block — two side-by-side blocks, no divider. */
   .dt-ampm-row {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 18px;
-    align-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    align-items: start;
+    padding: 8px 0 16px;
   }
   .dt-ampm-block {
     text-align: center;
@@ -11225,24 +11169,8 @@
     font-size: 14px;
     color: var(--dt-ink-2);
   }
-  .dt-ampm-en em {
-    display: block;
-    margin-top: 2px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 12px;
-    color: var(--dt-ink-3);
-  }
-  .dt-ampm-divider {
-    width: 1px;
-    height: 64px;
-    background: var(--paper-edge);
-  }
   .dt-ampm-footnote {
-    margin: 16px 0 0;
-    padding-top: 12px;
-    border-top: 1px dashed rgba(141,102,48,0.25);
+    margin: 0;
     font-family: var(--serif);
     font-style: italic;
     font-size: 13px;
@@ -11258,11 +11186,9 @@
   /* Responsive — collapse heavy multi-column grids */
   @media (max-width: 720px) {
     .dt-date-row         { grid-template-columns: 1fr; }
-    .dt-ampm-row         { grid-template-columns: 1fr; gap: 14px; }
-    .dt-ampm-divider     { width: 64px; height: 1px; justify-self: center; }
-    .dt-date-rule        { grid-template-columns: 36px 1fr; }
-    .dt-date-rule-kana   { grid-column: 1 / 3; grid-row: 2; padding-left: 50px; margin-top: -8px; }
-    .dt-date-rule-body   { grid-column: 1 / 3; grid-row: 3; }
+    .dt-ampm-row         { grid-template-columns: 1fr; gap: 16px; }
+    .dt-date-rules       { grid-template-columns: 1fr; gap: 4px 0; }
+    .dt-date-rules dt    { padding-top: 12px; }
   }
 </style>
 </head>
@@ -17071,54 +16997,65 @@ function renderParticlesSidebar() {
 // numbers (.dt-card), color-coded role stamps from the particle-verb
 // diagram (.dt-stamp variants). Reads as a phrasebook chapter.
 function renderWritingDatetime(container) {
-  // 7 days — Sunday first per JIS standard week start. Each carries
-  // its planetary parallel (the cross-cultural anchor) and the
-  // elemental kanji whose meaning the day inherits.
+  // 7 days — Sunday first per JIS standard week start. The image
+  // (provided in images/kanji/<日曜日>.webp etc.) does the visual
+  // work; the elemental kanji moves into the body as a small line
+  // beside the EN day name. No more paper-2 sub-frame fighting the
+  // image; no more planet glyph floating on every card (the planetary
+  // parallel lives in the section lede).
   const days = [
-    { ja:'日曜日', kana:'にちようび', en:'Sunday',    elem:'日', elemEn:'sun',        planet:'☉ Sun' },
-    { ja:'月曜日', kana:'げつようび', en:'Monday',    elem:'月', elemEn:'moon',       planet:'☽ Moon' },
-    { ja:'火曜日', kana:'かようび',   en:'Tuesday',   elem:'火', elemEn:'fire',       planet:'♂ Mars' },
-    { ja:'水曜日', kana:'すいようび', en:'Wednesday', elem:'水', elemEn:'water',      planet:'☿ Mercury' },
-    { ja:'木曜日', kana:'もくようび', en:'Thursday',  elem:'木', elemEn:'wood',       planet:'♃ Jupiter' },
-    { ja:'金曜日', kana:'きんようび', en:'Friday',    elem:'金', elemEn:'metal/gold', planet:'♀ Venus' },
-    { ja:'土曜日', kana:'どようび',   en:'Saturday',  elem:'土', elemEn:'earth',      planet:'♄ Saturn' },
+    { id:'nichi', ja:'日曜日', kana:'にちようび', en:'Sunday',    elem:'日' },
+    { id:'getsu', ja:'月曜日', kana:'げつようび', en:'Monday',    elem:'月' },
+    { id:'ka',    ja:'火曜日', kana:'かようび',   en:'Tuesday',   elem:'火' },
+    { id:'sui',   ja:'水曜日', kana:'すいようび', en:'Wednesday', elem:'水' },
+    { id:'moku',  ja:'木曜日', kana:'もくようび', en:'Thursday',  elem:'木' },
+    { id:'kin',   ja:'金曜日', kana:'きんようび', en:'Friday',    elem:'金' },
+    { id:'do',    ja:'土曜日', kana:'どようび',   en:'Saturday',  elem:'土' },
   ];
   const dayCardsHTML = days.map(d => `
     <div class="dt-day-card">
-      <div class="dt-day-stamp">
-        <span class="dt-day-elem">${escHTML(d.elem)}</span>
-        <span class="dt-day-elem-en">${escHTML(d.elemEn)}</span>
+      <div class="dt-day-image">
+        <image-slot
+          id="day-${escAttr(d.id)}"
+          image-key="kanji/${escAttr(d.ja)}"
+          shape="rounded" radius="6" fit="contain" position="50% 50%" readonly
+          placeholder=""></image-slot>
       </div>
       <div class="dt-day-body">
         <div class="dt-day-ja">${escHTML(d.ja)}</div>
         <div class="dt-day-kana">${escHTML(d.kana)}</div>
-        <div class="dt-day-en">${escHTML(d.en)} <span class="dt-day-planet">${escHTML(d.planet)}</span></div>
+        <div class="dt-day-meta">
+          <span class="dt-day-elem">${escHTML(d.elem)}</span>
+          <span class="dt-day-sep">·</span>
+          <span class="dt-day-en">${escHTML(d.en)}</span>
+        </div>
       </div>
     </div>`).join('');
 
   // Worked date example — same date shown three ways to make the
-  // big-to-small order land. 2024年12月31日 → 2024 / 12 / 31.
+  // big-to-small order land. 2024年12月31日 → 2024 / 12 / 31. The
+  // 年 / 月 / 日 marker is the visual lead (large kanji), the numeral
+  // sits below it as the data; the row reads as "kanji name first."
   const dateExampleHTML = `
     <div class="dt-date-row">
-      <div class="dt-date-stamp dt-date-year">
-        <span class="dt-date-num">2024</span>
+      <div class="dt-date-stamp">
         <span class="dt-date-marker">年</span>
-        <span class="dt-date-label">year<em>ねん</em></span>
+        <span class="dt-date-num">2024</span>
+        <span class="dt-date-label">year · ねん</span>
       </div>
-      <div class="dt-date-stamp dt-date-month">
-        <span class="dt-date-num">12</span>
+      <div class="dt-date-stamp">
         <span class="dt-date-marker">月</span>
-        <span class="dt-date-label">month<em>がつ</em></span>
+        <span class="dt-date-num">12</span>
+        <span class="dt-date-label">month · がつ</span>
       </div>
-      <div class="dt-date-stamp dt-date-day">
-        <span class="dt-date-num">31</span>
+      <div class="dt-date-stamp">
         <span class="dt-date-marker">日</span>
-        <span class="dt-date-label">day<em>にち</em></span>
+        <span class="dt-date-num">31</span>
+        <span class="dt-date-label">day · にち</span>
       </div>
     </div>
     <div class="dt-date-translation">
       <span class="dt-date-trans-ja">二〇二四年十二月三十一日</span>
-      <span class="dt-date-trans-arrow">⇄</span>
       <span class="dt-date-trans-en">December 31, 2024</span>
     </div>`;
 
@@ -17180,108 +17117,64 @@ function renderWritingDatetime(container) {
       <!-- Days of the week ─────────────────────────────────────────── -->
       <section class="dt-section">
         <div class="dt-section-head">
-          <h2 class="dt-section-title">The seven elemental days<em>ようび — day of the week</em></h2>
-          <p class="dt-section-lede">Japanese names each day after a classical element + 曜 (yō, "day-of-the-week") + 日 (bi, "day"). The same five elements + sun + moon that name the seven classical planets in Western astrology — Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn — give Romance languages their week. Once you see the planetary parallel, every day is a memorable hook.</p>
+          <h2 class="dt-section-title">The seven elemental days</h2>
+          <p class="dt-section-lede">Each day is an elemental kanji + 曜日. Sun → Moon → Mars → Mercury → Jupiter → Venus → Saturn — the same planetary order that runs the Romance week, so 火曜日 matches Italian <i>martedì</i>, 金曜日 matches French <i>vendredi</i>.</p>
         </div>
         <div class="dt-day-grid">
           ${dayCardsHTML}
         </div>
-        <p class="dt-section-footnote">
-          The pattern: <span class="ja"><b>X</b>曜日</span> where X is the elemental kanji. To say "every Monday" → <span class="ja">毎週月曜日 (maishū getsuyōbi)</span>. The weekend is <span class="ja">土日 (donichi)</span> — Saturday + Sunday.
-        </p>
       </section>
 
       <!-- Reading dates ────────────────────────────────────────────── -->
       <section class="dt-section">
         <div class="dt-section-head">
-          <h2 class="dt-section-title">Dates run big to small<em>年月日 — year · month · day</em></h2>
-          <p class="dt-section-lede">English writes "October 15, 2024" — month first, year last. Japanese flips it: <b>year → month → day</b>, biggest unit first. Each unit gets its own marker (年 / 月 / 日) so the reader knows what scale you're on without commas, slashes, or context.</p>
+          <h2 class="dt-section-title">Dates run big to small</h2>
+          <p class="dt-section-lede">Year → month → day, biggest unit first, each marked by its kanji (年 / 月 / 日).</p>
         </div>
-        <div class="dt-card">
-          ${dateExampleHTML}
-          <div class="dt-date-rules">
-            <div class="dt-date-rule">
-              <span class="dt-date-rule-marker">年</span>
-              <span class="dt-date-rule-kana">ねん</span>
-              <span class="dt-date-rule-body">The year sits first. Read each digit individually (<span class="ja">に・ぜろ・に・よん年</span>) or as a number (<span class="ja">にせんにじゅうよねん</span>).</span>
-            </div>
-            <div class="dt-date-rule">
-              <span class="dt-date-rule-marker">月</span>
-              <span class="dt-date-rule-kana">がつ</span>
-              <span class="dt-date-rule-body">Months use the on-readings: <span class="ja">一月 (いちがつ)</span> through <span class="ja">十二月 (じゅうにがつ)</span>. Same as the lesson in Numbers.</span>
-            </div>
-            <div class="dt-date-rule">
-              <span class="dt-date-rule-marker">日</span>
-              <span class="dt-date-rule-kana">にち / か</span>
-              <span class="dt-date-rule-body">Day-of-month is irregular for 1〜10 + 14, 20, 24 — they use <i>kun</i>-readings ending in <span class="ja">か</span>: <span class="ja">一日 ついたち, 二日 ふつか, 三日 みっか, 廿日 はつか</span>. Everything else takes <span class="ja">にち</span>.</span>
-            </div>
-          </div>
-        </div>
-        <p class="dt-section-footnote">
-          The big-to-small rule also runs your watch: <span class="ja">2024年12月31日 23時59分</span> — year, month, day, hour, minute. Each unit holds its own marker so word order can't lie to you.
-        </p>
+        ${dateExampleHTML}
+        <dl class="dt-date-rules">
+          <dt><span class="dt-date-rule-marker">年</span> <span class="dt-date-rule-kana">ねん</span></dt>
+          <dd>Read each digit individually (<span class="ja">に・ぜろ・に・よん年</span>) or as a number (<span class="ja">にせんにじゅうよねん</span>).</dd>
+          <dt><span class="dt-date-rule-marker">月</span> <span class="dt-date-rule-kana">がつ</span></dt>
+          <dd>Months use the on-readings: <span class="ja">一月 (いちがつ)</span> through <span class="ja">十二月 (じゅうにがつ)</span>.</dd>
+          <dt><span class="dt-date-rule-marker">日</span> <span class="dt-date-rule-kana">にち / か</span></dt>
+          <dd>Day-of-month is irregular for 1〜10 + 14, 20, 24 — they take <i>kun</i>-readings ending in <span class="ja">か</span>: <span class="ja">一日 ついたち, 二日 ふつか, 三日 みっか, 廿日 はつか</span>. Everything else takes <span class="ja">にち</span>.</dd>
+        </dl>
       </section>
 
       <!-- Telling time ─────────────────────────────────────────────── -->
       <section class="dt-section">
         <div class="dt-section-head">
-          <h2 class="dt-section-title">Reading the clock<em>〜時 / 〜分 — hours and minutes</em></h2>
-          <p class="dt-section-lede">Hours attach 時 (ji) to the number; minutes attach 分 (fun / pun). Three hours bend their reading — <span class="ja">四時 (yoji)</span>, <span class="ja">七時 (shichiji)</span>, <span class="ja">九時 (kuji)</span> drop their usual on-yomi — and minutes rendaku into <i>pun</i> after 1, 3, 6, 8, 10. <span class="ja">半 (han)</span> closes the system as "half past."</p>
+          <h2 class="dt-section-title">Reading the clock</h2>
+          <p class="dt-section-lede"><span class="ja">〜時</span> for hours, <span class="ja">〜分</span> for minutes, <span class="ja">半</span> for half-past — three of the hours bend their reading (<span class="ja">四 七 九</span>).</p>
         </div>
-        <div class="dt-card">
-          <div class="dt-card-eyebrow">
-            <span class="ja">時 · ji · the hours 1 〜 12</span>
+
+        <div class="dt-block-label"><span class="ja">時</span> · the hours 1 〜 12</div>
+        <div class="dt-hour-grid">${hoursHTML}</div>
+
+        <div class="dt-block-label"><span class="ja">分</span> · the minutes</div>
+        <div class="dt-min-grid">${minutesHTML}</div>
+        <p class="dt-min-explain-prose">
+          <span class="dt-min-stem dt-min-stem-fun">fun</span> after 2, 4, 5, 7, 9 — the plain reading.
+          <span class="dt-min-stem dt-min-stem-pun">pun</span> after 1, 3, 6, 8, 10 — rendaku-driven, often paired with a small <span class="ja">っ</span> in the kana (<span class="ja">いっぷん, さんぷん, ろっぷん</span>).
+          <span class="ja">半 (han)</span> replaces "30 minutes" — <span class="ja">三時半</span> is "three thirty," not "three hours and a half."
+        </p>
+
+        <div class="dt-block-label">午前 · 午後 — AM and PM</div>
+        <div class="dt-ampm-row">
+          <div class="dt-ampm-block dt-ampm-am">
+            <div class="dt-ampm-ja">午前</div>
+            <div class="dt-ampm-kana">ごぜん</div>
+            <div class="dt-ampm-en">AM — before noon</div>
           </div>
-          <div class="dt-hour-grid">
-            ${hoursHTML}
-          </div>
-          <div class="dt-hour-legend">
-            <span class="dt-hour-legend-irr"></span>
-            <span>highlighted hours bend their reading — memorize these as exceptions</span>
-          </div>
-        </div>
-        <div class="dt-card">
-          <div class="dt-card-eyebrow">
-            <span class="ja">分 · the minutes (and 半 for half past)</span>
-          </div>
-          <div class="dt-min-grid">
-            ${minutesHTML}
-          </div>
-          <div class="dt-min-explain">
-            <div class="dt-min-explain-row">
-              <span class="dt-min-stem dt-min-stem-fun">fun</span>
-              <span>after 2, 4, 5, 7, 9 — the plain reading</span>
-            </div>
-            <div class="dt-min-explain-row">
-              <span class="dt-min-stem dt-min-stem-pun">pun</span>
-              <span>after 1, 3, 6, 8, 10 — rendaku-driven explosion, often paired with a <span class="ja">っ</span> in the kana spelling (<span class="ja">いっぷん, さんぷん, ろっぷん</span>)</span>
-            </div>
-            <div class="dt-min-explain-row">
-              <span class="dt-min-alt-ja-inline">半</span>
-              <span><span class="ja">半 (han)</span> replaces "30 minutes" — <span class="ja">三時半</span> is "three thirty," not "three hours and a half"</span>
-            </div>
+          <div class="dt-ampm-block dt-ampm-pm">
+            <div class="dt-ampm-ja">午後</div>
+            <div class="dt-ampm-kana">ごご</div>
+            <div class="dt-ampm-en">PM — after noon</div>
           </div>
         </div>
-        <div class="dt-card dt-card-am-pm">
-          <div class="dt-ampm-row">
-            <div class="dt-ampm-block dt-ampm-am">
-              <div class="dt-ampm-ja">午前</div>
-              <div class="dt-ampm-kana">ごぜん</div>
-              <div class="dt-ampm-en">AM <em>before noon</em></div>
-            </div>
-            <div class="dt-ampm-divider"></div>
-            <div class="dt-ampm-block dt-ampm-pm">
-              <div class="dt-ampm-ja">午後</div>
-              <div class="dt-ampm-kana">ごご</div>
-              <div class="dt-ampm-en">PM <em>after noon</em></div>
-            </div>
-          </div>
-          <p class="dt-ampm-footnote">
-            AM/PM markers PRECEDE the hour: <span class="ja">午前九時 (ごぜん くじ) — 9 AM</span>, <span class="ja">午後三時半 (ごご さんじはん) — 3:30 PM</span>. The 24-hour clock (used in train timetables and TV listings) just keeps counting: <span class="ja">十八時三十分</span> is 18:30.
-          </p>
-        </div>
-        <p class="dt-section-footnote">
-          The full skeleton: <span class="ja">[午前/午後] [hour]時 [minute]分</span> — or just <span class="ja">[hour]時半</span> for "half past." Numbers + Days + Hours all use the same building blocks — Japanese time is a clock made of kanji you already know.
+        <p class="dt-ampm-footnote">
+          AM/PM markers PRECEDE the hour: <span class="ja">午前九時 (ごぜん くじ)</span> is 9 AM, <span class="ja">午後三時半 (ごご さんじはん)</span> is 3:30 PM. The 24-hour clock just keeps counting: <span class="ja">十八時三十分</span> is 18:30.
         </p>
       </section>
 
