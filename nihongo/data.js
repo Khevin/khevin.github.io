@@ -1909,6 +1909,23 @@ window.FLASHCARD_CLASSES = [
           {word:'村長',     reading:'SONCHŌ',       meaning:'village headman'},
           {word:'農村',     reading:'NŌSON',        meaning:'farming village'},
         ] },
+      // 寺 — second 寸-compound in a row. 土 (earth) + 寸 (the hand
+      // primitive just met) = "the earth-place where hands serve"
+      // → temple. The pair 村 → 寺 makes the 寸 primitive land
+      // twice in immediate succession before the radical card
+      // pulls the curtain back. Kun-reading てら is the everyday
+      // word (お寺 with the honorific お- is how you'll hear it);
+      // on-reading ジ shows up in formal / administrative compounds
+      // (寺院, 寺社).
+      { id:'temple', kanji:'寺', kun:'てら', on:'ジ', en:'temple', strokes:6,
+        seeAlso:['土', '寸'],
+        notes:'寺 = 土 (earth) + 寸 (hand-measure / small-unit primitive). Read it as "the earth-place where hands serve" — temple. The everyday word is お寺 (otera) with the polite お- prefix; bare てら sounds blunt. On-reading ジ binds to formal compounds: 寺院 (a temple complex), 寺社 (temples + shrines together), 山寺 (a mountain temple).',
+        examples:[
+          {word:'お寺',     reading:'otera',         meaning:'temple (everyday)'},
+          {word:'寺院',     reading:'JIIN',          meaning:'temple / temple complex'},
+          {word:'寺社',     reading:'JISHA',         meaning:'temples and shrines'},
+          {word:'山寺',     reading:'yamadera',      meaning:'mountain temple'},
+        ] },
       // ◆寸 — radical-style explainer. Same 寸 the learner just met
       // as a kanji, but now as a structural piece sitting INSIDE
       // other characters. Examples picked for variety of position
@@ -2483,6 +2500,24 @@ window.FLASHCARD_CLASSES = [
         examples:[{word:'子犬',reading:'koinu',meaning:'puppy'},{word:'番犬',reading:'BANKEN',meaning:'guard dog'},{word:'犬小屋',reading:'inugoya',meaning:'doghouse'}] },
       { id:'cat',       kanji:'猫', kun:'ねこ',       on:'ビョウ', en:'cat', strokes:11,
         examples:[{word:'猫舌',reading:'nekojita',meaning:'cat tongue (sensitive to heat)'},{word:'子猫',reading:'koneko',meaning:'kitten'},{word:'黒猫',reading:'kuroneko',meaning:'black cat'}] },
+      // ◆犭 — the beast / animal radical. 犬 (dog) becomes 犭 when
+      // it slides onto the left side of a compound — same trick as
+      // 人 → 亻 in People. Marks kanji that have something to do
+      // with four-legged animals; the right half names which one.
+      // Sits right after 猫 because the learner has now met two
+      // members of the family (犬 standalone earlier, 猫 just
+      // above) — the radical card reveals the connection.
+      { id:'kemonohen-radical', type:'radical',
+        radical:'犭', from:'犬',
+        titleJa:'けものへん', titleEn:'beast radical',
+        descEn:'A variant of 犬 that lives on the left side of a kanji — three thin strokes evoking a slim animal in profile, paws and tail. Marks kanji about four-legged beasts; the right half names the species. Whenever you see 犭 on the left, expect an animal.',
+        descJa:'「犬」が漢字の左がわに立つときの変形。三本の細い線で、しなやかな四つ足のけものを表す。漢字の右がわがどの動物かを示す。',
+        examples:[
+          { kanji:'猫', kun:'ねこ',   on:'ビョウ', en:'cat (just met)' },
+          { kanji:'狼', kun:'おおかみ', on:'ロウ', en:'wolf' },
+          { kanji:'狐', kun:'きつね', on:'コ',     en:'fox' },
+          { kanji:'獣', kun:'けもの', on:'ジュウ', en:'beast / wild animal' },
+        ] },
       { id:'bird',      kanji:'鳥', kun:'とり',       on:'チョウ', en:'bird', strokes:11,
         examples:[
           {word:'白鳥',reading:'HAKUCHŌ',meaning:'swan'},
