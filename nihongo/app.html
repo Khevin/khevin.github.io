@@ -3358,6 +3358,29 @@
     line-height: 1.05;
     letter-spacing: 0.01em;
   }
+  /* Tile inner width is ~66px (78px tile minus 6px padding × 2). At
+     the default 22px font, full-width kana chars are ~22px wide each,
+     so 3 chars × 22 = 66px — exactly the available width, which
+     means tiny letter-spacing + sub-pixel rounding push 3-char lines
+     into a second-row overflow. Step the font down per max-line-len
+     so 3-char lines breathe at 19px and 4-char lines fit at 16px.
+     The 1-2 char case keeps the default 22px (handles all the
+     にこ / にこ style two-up splits). */
+  .wrapup-tile-glyph[data-line-len="3"] {
+    font-size: 19px;
+    letter-spacing: 0;
+  }
+  .wrapup-tile-glyph[data-line-len="4"] {
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .wrapup-tile-glyph[data-line-len="5"],
+  .wrapup-tile-glyph[data-line-len="6"],
+  .wrapup-tile-glyph[data-line-len="7"],
+  .wrapup-tile-glyph[data-line-len="8"] {
+    font-size: 13px;
+    letter-spacing: -0.02em;
+  }
   .wrapup-tile-readings {
     display: flex;
     align-items: center;
@@ -22822,6 +22845,10 @@ function splitJougoGlyph(text) {
   const s = text || '';
   const chars = [...s];  // unicode-safe split — kana chars are single code points
   const n = chars.length;
+  // Case 1: doubled-stem onomatopoeia (n even, front === back, e.g.
+  // にこにこ → にこ / にこ, ふにゃふにゃ → ふにゃ / ふにゃ). Splitting
+  // at the midpoint surfaces the reduplication visually — the eye
+  // catches the doubling at a glance.
   if (n >= 4 && n % 2 === 0) {
     const half = n / 2;
     const front = chars.slice(0, half).join('');
@@ -22830,7 +22857,44 @@ function splitJougoGlyph(text) {
       return escHTML(front) + '<br>' + escHTML(back);
     }
   }
+  // Case 2: long non-doubled string (5+ chars) that would otherwise
+  // overflow a single line in the small wrap-up tile. Split at the
+  // ceiling-midpoint so the front line carries any extra char — this
+  // matches the typical "doubled-stem + tail" morphology of these
+  // words (くんくんぴょん → くんくん / ぴょん, where くんくん is the
+  // reduplicated stem and ぴょん is the trailing morpheme). Used for
+  // both kanji and kana strings; on kana strings the split is the
+  // only way to make a 7-char word like くんくんぴょん fit a 78px
+  // tile at the 22px glyph font-size.
+  if (n >= 5) {
+    const half = Math.ceil(n / 2);
+    return escHTML(chars.slice(0, half).join(''))
+         + '<br>'
+         + escHTML(chars.slice(half).join(''));
+  }
   return escHTML(s);
+}
+
+// Compute the longest visual line of a split kana/kanji string, used
+// by callers to set a data attribute the CSS can read to scale fonts
+// down for tight lines. Counts unicode code points per <br>-separated
+// segment and returns the max.
+function jougoGlyphMaxLineLen(text) {
+  const s = text || '';
+  if (!s) return 0;
+  const html = splitJougoGlyph(s);
+  // Strip any <br>, then take the longest segment by code-point count.
+  // We can't just count chars because splitJougoGlyph returns escaped
+  // HTML; the escape pass for kana is a no-op so [...] split is safe.
+  const segments = html.split(/<br\s*\/?>/i);
+  let max = 0;
+  for (const seg of segments) {
+    // Strip any &amp; / &lt; / etc that escHTML may have introduced.
+    const stripped = seg.replace(/&[a-z#0-9]+;/gi, '_');
+    const len = [...stripped].length;
+    if (len > max) max = len;
+  }
+  return max;
 }
 
 // Wrap-up card — the virtual "you've reached the end of the deck" card
@@ -22876,7 +22940,11 @@ function wrapupHTML(cls, deck) {
               aria-label="${escAttr(glyph + (c.kun ? ' ' + c.kun : '') + (c.on ? ' ' + c.on : ''))}">
         <div class="wrapup-tile-face wrapup-face-image">${imageFaceHTML}</div>
         <div class="wrapup-tile-face wrapup-face-back">
-          <div class="wrapup-tile-glyph">${splitGlyph(glyph)}</div>
+          <div class="wrapup-tile-glyph" data-line-len="${
+            (typeof jougoGlyphMaxLineLen === 'function')
+              ? jougoGlyphMaxLineLen(glyph)
+              : ([...(glyph || '')].length)
+          }">${splitGlyph(glyph)}</div>
           <div class="wrapup-tile-readings">${readings}</div>
         </div>
       </button>`;
