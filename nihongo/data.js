@@ -2140,12 +2140,49 @@ window.FLASHCARD_CLASSES = [
           { kanji:'弘', kun:'ひろ',   on:'コウ', en:'vast / spread wide' },
           { kanji:'云', kun:'い',     on:'ウン', en:'say (classical)' },
         ] },
+      // 私 — the FIRST full kanji card that uses 厶 from the radical
+      // page above. 禾 (grain stalk, the agrarian root of "harvest")
+      // on the left + 厶 (private/self) on the right = "my own grain"
+      // → "I." Pedagogically the cleanest payoff for the 厶 page:
+      // the radical's most common compound, the first-person pronoun
+      // every learner has already met as わたし.
+      { id:'i-private',kanji:'私', kun:'わたし', on:'シ',     en:'I / me / private',
+        seeAlso:['厶'],
+        strokes:7,
+        notes:'禾 (grain stalk) on the left + 厶 (the curled-up self) on the right — "my own grain" → "I, mine, private." The everyday first-person pronoun: わたし is the standard neutral, わたくし is the formal-polite version (used in business and ceremonial settings). 私 also stands alone as a noun for "the private sphere," set against its opposite 公 (the public sphere). All the abstract "private vs public" vocabulary in modern Japanese — 私立 (private school), 私生活 (private life), 私服 (street clothes, civilian dress) — pivots on this single character.',
+        examples:[
+          {word:'私',      reading:'watashi',         meaning:'I / me'},
+          {word:'私たち',  reading:'watashitachi',    meaning:'we / us'},
+          {word:'私立',    reading:'SHIRITSU',        meaning:'private (school, university, hospital)'},
+          {word:'私生活',  reading:'SHISEIKATSU',     meaning:'private life'},
+        ] },
+      // 公 — the OPPOSITE of 私, sitting right next to it. 八 (split
+      // open, the number eight, two strokes diverging) above 厶
+      // (private/self) = "the private cracked open, made visible" →
+      // public, official, open. The 私 ↔ 公 pair is one of the
+      // foundational opposites in Japanese vocabulary, like 内 / 外
+      // or 上 / 下. Every public-sphere word in modern Japanese is
+      // built on 公: 公園 (public park), 公務員 (civil servant),
+      // 公開 (open to the public, released), 公平 (impartial, fair).
+      { id:'public',   kanji:'公', kun:'おおやけ', on:'コウ',   en:'public / official',
+        seeAlso:['厶','私'],
+        strokes:4,
+        notes:'八 (split open, two strokes diverging) over 厶 (the curled-up self) — "the private cracked open and made visible" → public. The cultural opposite of 私: 私 vs 公 = private vs public, individual vs society, the home vs the outside world. Carries a formal/official register: 公務員 (civil servant), 公園 (public park), 公開 (open to the public / release), 公平 (impartial). Also the historical honorific suffix attached to important figures — 信長公 (Lord Nobunaga), 公爵 (duke).',
+        examples:[
+          {word:'公',     reading:'KŌ',         meaning:'public / official / lord (honorific)'},
+          {word:'公園',   reading:'KŌEN',       meaning:'public park'},
+          {word:'公開',   reading:'KŌKAI',      meaning:'open to the public / release'},
+          {word:'公務員', reading:'KŌMUIN',     meaning:'civil servant / government worker'},
+        ] },
       // 会 closes out People — a meeting kanji that visually rests on
       // the 云 cluster just introduced. Top half is the "gather under
       // one roof" cap (人-like 亼); bottom half contains the same 云
       // shape, the breath / words rising up from the gathered selves.
       // When people gather (人) and the talking starts (云), that IS
-      // a 会 — a meeting, association, society, conference.
+      // a 会 — a meeting, association, society, conference. Sits
+      // after 私 and 公 so the People class ends with the same 厶
+      // family it opened — individual self → public self → gathered
+      // selves.
       { id:'meet',     kanji:'会', kun:'あ',     on:'カイ',   en:'meeting / meet / association',
         seeAlso:['人','云'],
         strokes:6,
