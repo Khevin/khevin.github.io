@@ -5865,6 +5865,19 @@
     font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--ink-3);
   }
+  /* Japanese-content variant. Uppercase + wide letter-spacing read
+     fine on Roman text ("edibles · 食材") but trash Japanese kana
+     (kana doesn't have casing, and wide tracking looks broken on the
+     dense glyphs). Switch to the title serif, body-natural size, and
+     no transform. Used on the items-view header where the eyebrow
+     now carries the category kana (くだもの, やさい, etc). */
+  .edibles-eyebrow.is-kana {
+    font-family: var(--font-title);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--ink-2);
+  }
   .edibles-title {
     font-family: var(--font-title);
     font-size: clamp(2rem, 4vw, 3.2rem);
@@ -17413,7 +17426,7 @@ function ediblesItemsHTML(cat) {
           <span>all categories</span>
         </button>
         <header class="edibles-head">
-          <div class="edibles-eyebrow">${escHTML(cat.en)} · ${escHTML(cat.kanji || cat.kana)}</div>
+          <div class="edibles-eyebrow is-kana">${escHTML(cat.kana || cat.kanji || '')}</div>
           <h1 class="edibles-title">${escHTML(cat.kanji || cat.kana)}</h1>
         </header>
         <div class="edibles-empty-grid">
@@ -17469,7 +17482,7 @@ function ediblesItemsHTML(cat) {
           <span>all categories</span>
         </button>
         <header class="edibles-head">
-          <div class="edibles-eyebrow">${escHTML(cat.en)} · ${escHTML(cat.kanji || cat.kana)}</div>
+          <div class="edibles-eyebrow is-kana">${escHTML(cat.kana || cat.kanji || '')}</div>
           <h1 class="edibles-title">${escHTML(cat.kanji || cat.kana)}</h1>
           <p class="edibles-sub">${items.length} item${items.length === 1 ? '' : 's'}</p>
         </header>
