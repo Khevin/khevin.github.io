@@ -458,11 +458,557 @@ window.VOCAB_CLASSES = [
       // The other 6 books are normal vocab books that will get
       // cheatsheet/usage/sentences pages over time.
       { id:'experience',   titleJa:'体験',    titleEn:'Experience',     glyph:'体', primaryLevel:'N4', pages:[], isExperience:true },
-      // Food vocabulary gallery — sits alongside Experience in the
-      // Interactive group. `isExperience:true` puts it in the same
-      // sidebar bucket; `isFoodGallery:true` tells the renderer to
-      // show the food-SVG gallery instead of the random-restaurant flow.
-      { id:'food-gallery', titleJa:'食べ物',  titleEn:'Food vocabulary', glyph:'絵', primaryLevel:'N4', pages:[], isExperience:true, isFoodGallery:true },
+      // Food vocabulary gallery removed from sidebar — its content now
+      // lives directly on each restaurant's menu page (the visual food-
+      // gallery header above the menu rows pulls from the FOOD_GALLERY
+      // constant). The FOOD_GALLERY data itself is still used by every
+      // menu-reference page, just not exposed as a standalone book.
+      // Flavors — Phase 1 of the Flavors & Textures sub-system (see
+      // docs/superpowers/specs/2026-05-26-flavors-textures.PRODUCT.md).
+      // Editorial register, bento → drill-in immersion layout. The page
+      // is rendered by renderFlavorsPage() in app.html, dispatched off
+      // the isFlavorsPage:true flag in the renderVocab empty-state
+      // branch. The `flavors` array below seeds the 10 sensory primitives;
+      // each carries its color world (--flood / --ink / --chip), the
+      // canonical food, the kana + optional kanji, and a one-line note
+      // for the immersion-view drawer. English glosses live here too —
+      // they only surface inside the collapsed <details> drawer per the
+      // brief's pedagogical rule (multi-channel encoding, English last).
+      { id:'flavors', titleJa:'あじ', titleEn:'Flavors',
+        glyph:'味', primaryLevel:'N4', pages:[],
+        isExperience:true, isFlavorsPage:true,
+        // Order (user-set):
+        //   oishii → amai → karai → tsumetai → suppai → nigai →
+        //   sawayaka → atsui → shoppai → mazui
+        // Opens with the anchor "tasty", walks through the canonical
+        // sensory primitives (sweet / spicy / cold / sour / bitter),
+        // shifts to the qualifier register (refreshing / hot / salty),
+        // and closes on the rejected food. Bento renders 5×2 — the
+        // top row carries the positive sensory ramp; the bottom row
+        // carries the qualifier-and-negative pair.
+        flavors: [
+          { id:'oishii',  kana:'おいしい', kanji:'',       romaji:'oishii',
+            en:'delicious / tasty',
+            canonicalFood:{ ja:'おにぎり', en:'rice ball' },
+            flood:'#fbf3e8', ink:'#2a2520', chip:'#d8a06a',
+            notes:'The anchor flavor — the broad, warm "tasty" that umbrellas every other.' },
+          { id:'amai',    kana:'あまい',   kanji:'甘い',    romaji:'amai',
+            en:'sweet',
+            canonicalFood:{ ja:'いちごケーキ', en:'strawberry cake' },
+            flood:'#fbe1e7', ink:'#5a2a3a', chip:'#e69cb1',
+            notes:'Sakura pink. Strawberry shortcake, mochi, りんご飴.' },
+          { id:'karai',   kana:'からい',   kanji:'辛い',    romaji:'karai',
+            en:'spicy / hot',
+            canonicalFood:{ ja:'唐辛子', en:'chili pepper' },
+            flood:'#c84a3a', ink:'#fbf3e8', chip:'#e6603a',
+            notes:'Chili crimson. The only flavor that floods dark — cream ink on red.' },
+          { id:'tsumetai', kana:'つめたい', kanji:'冷たい', romaji:'tsumetai',
+            en:'cold (temperature)',
+            canonicalFood:{ ja:'アイスクリーム', en:'ice cream' },
+            flood:'#c8e0e8', ink:'#1e3a4f', chip:'#7ba8b8',
+            notes:'Ice cyan. Cold without being white — closer to glacier-edge than to pure ice.' },
+          { id:'suppai',  kana:'すっぱい', kanji:'酸っぱい', romaji:'suppai',
+            en:'sour',
+            canonicalFood:{ ja:'レモン', en:'lemon' },
+            flood:'#f4dd6a', ink:'#3a2e10', chip:'#e6c440',
+            notes:'Lemon yellow — the universal citric-acid color. The cheek-tightening pucker.' },
+          { id:'nigai',   kana:'にがい',   kanji:'苦い',    romaji:'nigai',
+            en:'bitter',
+            canonicalFood:{ ja:'コーヒー', en:'coffee' },
+            flood:'#3a2a1f', ink:'#f0d8b8', chip:'#6e4a30',
+            notes:'Espresso dark — the only fully-dark flood. Coffee, beer foam, charred fish skin.' },
+          { id:'sawayaka', kana:'さわやか', kanji:'爽やか', romaji:'sawayaka',
+            en:'refreshing',
+            canonicalFood:{ ja:'レモネード', en:'lemonade' },
+            flood:'#c8e6d8', ink:'#1f3a30', chip:'#6ea890',
+            notes:'Mint-water. Cool refreshment, mid-saturation cool green.' },
+          { id:'atsui',   kana:'あつい',   kanji:'熱い',    romaji:'atsui',
+            en:'hot (temperature)',
+            canonicalFood:{ ja:'味噌汁', en:'miso soup' },
+            flood:'#e07645', ink:'#3a1a10', chip:'#c8541f',
+            notes:'Ember. Thermal heat — terracotta-leaning, distinct from chili-heat (karai).' },
+          { id:'shoppai', kana:'しょっぱい', kanji:'',     romaji:'shoppai',
+            en:'salty',
+            canonicalFood:{ ja:'ポテトチップス', en:'potato chips' },
+            flood:'#dfe6ec', ink:'#1e3a5f', chip:'#7d96ad',
+            notes:'Sea-salt blue. Brine, chip-bag silver, the cooler salt-water register.' },
+          { id:'mazui',   kana:'まずい',   kanji:'',       romaji:'mazui',
+            en:'bad-tasting / off',
+            canonicalFood:{ ja:'まずい顔', en:'sour face' },
+            flood:'#d8d9b0', ink:'#3a3a25', chip:'#7d8a4a',
+            notes:'The rejected-food shade. Sickly green-yellow before the kana is even read.' },
+        ] },
+      // Edibles Database — Phase 3 of the Flavors & Textures sub-system.
+      // Per PRODUCT.md §7.3, eight categories of foodstuffs each with
+      // 10+ items carrying their flavor + texture profile. The renderer
+      // (renderEdiblesPageHTML in app.html) walks three views:
+      //   1. category-browse (8 tiles, click → category-grid)
+      //   2. category-grid   (N items in a denser bento)
+      //   3. item-detail     (image + identity + flavor/texture badges
+      //                       + notes drawer — Phase 3 spread)
+      //
+      // Phase 3a (this commit): only kudamono is populated, as the test
+      // of the database engine. The other 7 categories carry items:[]
+      // and render as "coming soon" tiles on the category-browse view.
+      // Each populated item carries the full Phase 3 data shape:
+      //   { id, kanji, kana, romaji, en, flavors[], textures[], season[], notes }
+      // — flavors[] are FK ids into the Flavors book (clickable, jump
+      // to the flavor immersion); textures[] are kana strings for now
+      // (Phase 2 will turn them into FK ids when Textures ships).
+      { id:'edibles', titleJa:'しょくざい', titleEn:'Edibles',
+        glyph:'食材', primaryLevel:'N4', pages:[],
+        isExperience:true, isEdiblesPage:true,
+        categories: [
+          // ── Kudamono (Fruits) — Phase 3a populated. ──────────────
+          { id:'kudamono', kanji:'果物', kana:'くだもの', romaji:'kudamono',
+            en:'Fruits', glyph:'果',
+            items: [
+              { id:'ringo',  kanji:'林檎',   kana:'りんご',     romaji:'ringo',
+                en:'apple',
+                flavors:['amai', 'suppai'],
+                textures:['シャキシャキ', 'ジューシー'],
+                season:['秋 autumn'],
+                notes:'Aomori grows ~60% of Japan\'s apples. Fuji is the classic eating apple — large, crisp, honey-sweet. The variety system is dense: 王林 (Ourin, yellow-green), 紅玉 (Kougyoku, tart cooking apple), 津軽 (Tsugaru, early-season). Often given as a midwinter gift in red netted boxes.' },
+              { id:'ichigo', kanji:'苺',     kana:'いちご',     romaji:'ichigo',
+                en:'strawberry',
+                flavors:['amai', 'suppai'],
+                textures:['ジューシー', 'やわらかい'],
+                season:['冬 winter', '春 spring'],
+                notes:'Hothouse-grown to peak for Christmas — strawberry shortcake is the Japanese Christmas cake. Tochiotome and あまおう (Amaou — Fukuoka prestige variety, big and sweet) dominate. Often eaten with sweetened condensed milk (練乳).' },
+              { id:'mikan',  kanji:'蜜柑',   kana:'みかん',     romaji:'mikan',
+                en:'mandarin orange / satsuma',
+                flavors:['amai', 'suppai'],
+                textures:['ジューシー', 'プチプチ'],
+                season:['冬 winter'],
+                notes:'The defining winter fruit. Eaten under the kotatsu by the boxful. 温州みかん (unshu mikan, seedless and easy-peel) is the standard cultivar. Iyokan and dekopon are the prestige tiers. Often boxed as winter gifts.' },
+              { id:'budou',  kanji:'葡萄',   kana:'ぶどう',     romaji:'budou',
+                en:'grapes',
+                flavors:['amai'],
+                textures:['ぷりぷり', 'ジューシー'],
+                season:['秋 autumn'],
+                notes:'巨峰 (Kyoho — large, deep purple, slip-skin) and 種なしシャインマスカット (seedless Shine Muscat — green, edible-skin, the prestige fruit) lead. Sold one cluster at a time, expensive. A single Ruby Roman grape can sell for ¥10,000.' },
+              { id:'momo',   kanji:'桃',     kana:'もも',       romaji:'momo',
+                en:'peach',
+                flavors:['amai'],
+                textures:['とろとろ', 'ジューシー'],
+                season:['夏 summer'],
+                notes:'山梨 (Yamanashi) and 福島 (Fukushima) are the peach prefectures. 白桃 (hakutou, white peach) is the prized cultivar — extremely fragrant, eaten so ripe the flesh almost melts. Folkloric: Momotaro the Peach Boy was found inside one.' },
+              { id:'meron',  kanji:'',       kana:'メロン',     romaji:'meron',
+                en:'melon',
+                flavors:['amai'],
+                textures:['ジューシー', 'やわらかい'],
+                season:['夏 summer'],
+                notes:'The luxury fruit. 夕張メロン (Yubari melon from Hokkaido — orange-flesh, net-skin) is the gift-fruit ne plus ultra — premium pairs auction for ¥2-3 million. Eaten chilled, sometimes with prosciutto.' },
+              { id:'suika',  kanji:'西瓜',   kana:'すいか',     romaji:'suika',
+                en:'watermelon',
+                flavors:['amai'],
+                textures:['シャリシャリ', 'ジューシー'],
+                season:['夏 summer'],
+                notes:'Summer beach + festival staple. 西瓜割り (suikawari) is the blindfolded watermelon-smashing game played on beaches. Square watermelons (grown in glass cubes for shipping) exist as ¥10,000+ luxury items in Tokyo department stores.' },
+              { id:'banana', kanji:'',       kana:'バナナ',     romaji:'banana',
+                en:'banana',
+                flavors:['amai'],
+                textures:['もちもち', 'クリーミー'],
+                season:['通年 year-round'],
+                notes:'Almost entirely imported (Philippines, Ecuador). The cheapest fruit at the supermarket — usually ¥150 for a hand. A breakfast and post-workout staple; Dole and Del Monte own the shelves.' },
+              { id:'kaki',   kanji:'柿',     kana:'かき',       romaji:'kaki',
+                en:'persimmon',
+                flavors:['amai'],
+                textures:['シャキシャキ', 'とろとろ'],
+                season:['秋 autumn'],
+                notes:'Two cultivars with opposite textures: 富有柿 (Fuyu, eaten crisp like an apple) and 蜂屋柿 (Hachiya, eaten when ultra-ripe and jelly-soft). 干し柿 (hoshigaki — slow-dried, white frost of natural sugar) is a centuries-old delicacy.' },
+              { id:'nashi',  kanji:'梨',     kana:'なし',       romaji:'nashi',
+                en:'Japanese pear / nashi',
+                flavors:['amai', 'suppai'],
+                textures:['シャリシャリ', 'ジューシー'],
+                season:['秋 autumn'],
+                notes:'Round, not pear-shaped. Snow-white flesh that crunches like an apple with the juice of a watermelon. 幸水 (Kousui) and 豊水 (Hosui) are the standard cultivars; 二十世紀梨 (Nijisseiki — "twentieth-century pear", Tottori) is the iconic one.' },
+              { id:'ume', kanji:'梅', kana:'うめ', romaji:'ume',
+                en:'Japanese plum',
+                flavors:['suppai', 'shoppai'],
+                textures:['もちもち', 'やわらかい'],
+                season:['初夏 early summer'],
+                notes:'Never eaten raw — the fruit exists to be preserved. 梅干し (umeboshi, salt-cured red-pink bullet) is the center of the Hinomaru bento (a single ume on white rice = Japanese flag). 梅酒 (umeshu) is the rock-sugar-and-shochu plum liqueur made every June. Harvested green; the blossom is also a major early-spring symbol, beloved before sakura takes over.' },
+              { id:'sakuranbo', kanji:'桜桃', kana:'さくらんぼ', romaji:'sakuranbo',
+                en:'cherry',
+                flavors:['amai', 'suppai'],
+                textures:['ジューシー', 'ぷりぷり'],
+                season:['初夏 early summer'],
+                notes:'山形 (Yamagata) grows ~70% of Japan\'s cherries. 佐藤錦 (Satonishiki) is the prestige cultivar — small, bright, intensely sweet with a hint of tartness. Sold in beautifully arranged single-layer boxes at department stores for ¥10,000+ as midyear gifts (お中元).' },
+              { id:'remon', kanji:'檸檬', kana:'レモン', romaji:'remon',
+                en:'lemon',
+                flavors:['suppai', 'sawayaka'],
+                textures:['ジューシー'],
+                season:['冬 winter'],
+                notes:'広島 (Hiroshima) and the Setouchi inland-sea islands grow most of Japan\'s domestic lemons. 瀬戸内レモン (Setouchi lemon) is the prestige — thin-skinned, fragrant, used unpeeled. The base of レモンサワー (the shochu-and-soda highball that defines izakaya drinking) and squeezed onto karaage, grilled fish, and shabu-shabu ponzu.' },
+              { id:'orenji', kanji:'', kana:'オレンジ', romaji:'orenji',
+                en:'orange',
+                flavors:['amai', 'suppai'],
+                textures:['ジューシー', 'プチプチ'],
+                season:['冬 winter'],
+                notes:'Mostly imported — Florida and Valencia oranges dominate the supermarket. Sold individually or in mesh bags. Squeezed into オレンジジュース (the homemade kind a parent makes for a sick child) or used in fruit baskets and Western-style desserts. Distinct from mikan, which is the native winter satsuma.' },
+              { id:'gureepufuruutsu', kanji:'', kana:'グレープフルーツ', romaji:'gureepufuruutsu',
+                en:'grapefruit',
+                flavors:['suppai', 'nigai'],
+                textures:['ジューシー'],
+                season:['通年 year-round'],
+                notes:'The classic Japanese breakfast fruit — halved and eaten with a serrated spoon. Mostly imported from Florida and South Africa. ピンクグレープフルーツ (pink, sweeter) and 白 (white, more bitter) are the two camps. Also the base flavor for 酎ハイ (chuhai) — the standard izakaya cocktail.' },
+              { id:'kiwi', kanji:'', kana:'キウイ', romaji:'kiwi',
+                en:'kiwi fruit',
+                flavors:['amai', 'suppai'],
+                textures:['ジューシー', 'プチプチ'],
+                season:['冬 winter', '春 spring'],
+                notes:'Mostly Zespri (New Zealand) at the supermarket. ゼスプリ ゴールド (gold kiwi) is sweeter, less acidic, and more expensive than the standard green. Marketed heavily as a vitamin-C health food. Halved and scooped out with a teaspoon is the standard breakfast way.' },
+              { id:'painappuru', kanji:'', kana:'パイナップル', romaji:'painappuru',
+                en:'pineapple',
+                flavors:['amai', 'suppai'],
+                textures:['ジューシー', 'シャキシャキ'],
+                season:['夏 summer'],
+                notes:'沖縄 (Okinawa) is the only Japanese-grown source — Ishigaki and Iriomote islands. Otherwise imported from the Philippines and Taiwan. Sold pre-cut in plastic packs or whole. The Hawaiian-influenced summer fruit; the famous pineapple-on-pizza debate exists in Japan too.' },
+              { id:'mangoo', kanji:'', kana:'マンゴー', romaji:'mangoo',
+                en:'mango',
+                flavors:['amai'],
+                textures:['とろとろ', 'ジューシー'],
+                season:['夏 summer'],
+                notes:'宮崎 (Miyazaki) mango is the luxury fruit-gift — 太陽のタマゴ (Taiyō no Tamago, "egg of the sun") variety can sell for ¥10,000+ per pair at auction. Lower-tier supermarket fruit comes from the Philippines and Thailand. Eaten chilled in slices or layered into 杏仁豆腐 / parfaits with vanilla ice cream.' },
+              { id:'buruuberii', kanji:'', kana:'ブルーベリー', romaji:'buruuberii',
+                en:'blueberry',
+                flavors:['amai', 'suppai'],
+                textures:['プチプチ', 'ジューシー'],
+                season:['夏 summer'],
+                notes:'Topping for yogurt, pancakes, and chiizukeeki. Some domestic production (Tokyo Hachiōji, Nagano), but mostly imported frozen. Marketed heavily for eye health — a Shōwa-era myth conflated with WWII RAF-pilot folklore that took root in Japanese supplement advertising.' },
+              { id:'abokado', kanji:'', kana:'アボカド', romaji:'abokado',
+                en:'avocado',
+                flavors:['oishii'],
+                textures:['とろとろ', 'クリーミー'],
+                season:['通年 year-round'],
+                notes:'Almost entirely imported from Mexico. The defining ingredient of the California Roll (which was invented in LA but reimported to Japan as a sushi norm). Eaten in アボカド丼 (sliced over rice with soy + wasabi), sandwiches, and salads. Marketed as 森のバター (forest butter).' },
+            ]
+          },
+          // ── Yasai (Vegetables) — Phase 3b. ───────────────────────
+          { id:'yasai', kanji:'野菜', kana:'やさい', romaji:'yasai',
+            en:'Vegetables', glyph:'野',
+            items: [
+              { id:'kyabetsu', kanji:'', kana:'キャベツ', romaji:'kyabetsu', en:'cabbage',
+                flavors:['amai'], textures:['シャキシャキ', 'ジューシー'], season:['冬 winter', '春 spring'],
+                notes:'The base of okonomiyaki, the side under tonkatsu, and the heart of gyoza filling. 春キャベツ (spring) is loose-leafed and tender; 冬キャベツ (winter) is tight and crisp.' },
+              { id:'daikon', kanji:'大根', kana:'だいこん', romaji:'daikon', en:'daikon radish',
+                flavors:['karai', 'suppai'], textures:['シャキシャキ', 'ジューシー'], season:['冬 winter'],
+                notes:'White Japanese radish, often a meter long. Eaten raw as 大根おろし (grated, with grilled fish), simmered in oden, or pickled as たくあん. Winter daikon is sweet; summer daikon is peppery.' },
+              { id:'ninjin', kanji:'人参', kana:'にんじん', romaji:'ninjin', en:'carrot',
+                flavors:['amai'], textures:['シャキシャキ'], season:['秋 autumn', '冬 winter'],
+                notes:'The supermarket standard, plus the regional 京人参 (kyō-ninjin, slender deep-red Kyoto cultivar used in kaiseki). Common in nimono (simmered dishes), curry, and bento sides cut into flower shapes for kids.' },
+              { id:'tamanegi', kanji:'玉ねぎ', kana:'たまねぎ', romaji:'tamanegi', en:'onion',
+                flavors:['amai', 'karai'], textures:['シャキシャキ'], season:['春 spring', '秋 autumn'],
+                notes:'The foundation of Japanese curry, gyudon, and sukiyaki. 新玉ねぎ (shin-tamanegi, spring new-crop) is so mild it can be eaten raw in salads — sliced with bonito flakes and ponzu.' },
+              { id:'tomato', kanji:'', kana:'トマト', romaji:'tomato', en:'tomato',
+                flavors:['suppai', 'amai'], textures:['ジューシー'], season:['夏 summer'],
+                notes:'Sweeter than Western tomatoes — Japanese cultivars (桃太郎 Momotaro, アメーラ Amela) are bred for sugar content. Often eaten plain sliced with salt, or chilled whole as 冷やしトマト.' },
+              { id:'kyuuri', kanji:'胡瓜', kana:'きゅうり', romaji:'kyuuri', en:'cucumber',
+                flavors:['sawayaka'], textures:['シャキシャキ'], season:['夏 summer'],
+                notes:'Thinner and crisper than Western cucumbers. Eaten raw with miso (もろきゅう), pickled as 浅漬け (asazuke), or in cold noodle dishes. The classic summer cooling vegetable.' },
+              { id:'nasu', kanji:'茄子', kana:'なす', romaji:'nasu', en:'eggplant',
+                flavors:['amai'], textures:['とろとろ'], season:['夏 summer', '秋 autumn'],
+                notes:'Long, slender Japanese eggplant — sweeter, less bitter than Western varieties. Famous as 茄子の田楽 (miso-glazed), 麻婆茄子 (mapo eggplant), or grilled whole and topped with bonito flakes.' },
+              { id:'shiitake', kanji:'椎茸', kana:'しいたけ', romaji:'shiitake', en:'shiitake mushroom',
+                flavors:['oishii'], textures:['もちもち'], season:['秋 autumn'],
+                notes:'The umami king. Fresh shiitake gets grilled or simmered; dried (干し椎茸 hoshi-shiitake) is rehydrated and its broth becomes the foundation of vegetarian Buddhist dashi.' },
+              { id:'negi', kanji:'葱', kana:'ねぎ', romaji:'negi', en:'Japanese leek',
+                flavors:['karai'], textures:['シャキシャキ'], season:['冬 winter'],
+                notes:'Long white leek-onion hybrid. Sliced into ramen, in miso soup, as a yakitori component (ねぎま — alternating chicken + leek on the skewer), or grilled whole and dipped in tare.' },
+              { id:'hourensou', kanji:'ほうれん草', kana:'ほうれんそう', romaji:'hourensou', en:'spinach',
+                flavors:['oishii'], textures:['やわらかい'], season:['冬 winter'],
+                notes:'Blanched and served as ほうれん草のおひたし (lightly seasoned, with bonito flakes and a drop of soy) — the classic vegetable side of the home meal.' },
+              { id:'jagaimo', kanji:'じゃが芋', kana:'じゃがいも', romaji:'jagaimo', en:'potato',
+                flavors:['oishii', 'amai'], textures:['もちもち', 'やわらかい'], season:['通年 year-round'],
+                notes:'The backbone of 肉じゃが (nikujaga, the home-cooking dish that defines mom\'s cooking), Japanese curry, and コロッケ (korokke). 北海道 (Hokkaido) is the prestige source. メークイン (May Queen — waxy, holds shape in stew) and 男爵 (Danshaku, "Baron" — floury, for mashing). The name comes from ジャガタラ (Jakarta) — Dutch traders brought it from Java.' },
+              { id:'satsumaimo', kanji:'薩摩芋', kana:'さつまいも', romaji:'satsumaimo', en:'sweet potato',
+                flavors:['amai'], textures:['もちもち', 'やわらかい'], season:['秋 autumn'],
+                notes:'The defining autumn root. 焼き芋 (yaki-imo, slow-roasted in a stone-oven truck cruising the neighborhood with a haunting "yaki-imo~" call) is a winter street-food ritual. 紅はるか (Beni Haruka) and 鳴門金時 (Naruto Kintoki) are the prestige cultivars. The name means "Satsuma potato" (Kagoshima\'s old domain name).' },
+              { id:'kabocha', kanji:'南瓜', kana:'かぼちゃ', romaji:'kabocha', en:'Japanese pumpkin',
+                flavors:['amai', 'oishii'], textures:['もちもち', 'やわらかい'], season:['秋 autumn', '冬 winter'],
+                notes:'Dark-green skin, dense bright-orange flesh — sweeter and denser than American pumpkins. Eaten in tempura, simmered as かぼちゃの煮物, or roasted. Traditionally eaten on 冬至 (winter solstice) as a vitamin-rich charm against the cold. The name comes from "Cambodia," the trading route from which it arrived in the 1500s.' },
+              { id:'hakusai', kanji:'白菜', kana:'はくさい', romaji:'hakusai', en:'napa cabbage',
+                flavors:['amai', 'sawayaka'], textures:['シャキシャキ', 'やわらかい'], season:['冬 winter'],
+                notes:'The essential winter nabe vegetable — layered into the bottom of every hot pot to wilt sweetly in the broth. Also the base for kimchi (the Korean import that became a Japanese supermarket staple), 浅漬け (light pickles), and gyoza filling. Sold by the half- or quarter-head in winter — a full one is enormous.' },
+              { id:'shouga', kanji:'生姜', kana:'しょうが', romaji:'shouga', en:'ginger',
+                flavors:['karai', 'sawayaka'], textures:['シャキシャキ'], season:['通年 year-round'],
+                notes:'Grated into nabe dipping sauce, hiyayakko (cold tofu), and the marinade for 生姜焼き (shōgayaki — pork stir-fried in ginger-soy). 紅生姜 (beni-shōga, red-pickled threads) tops takoyaki and gyūdon; ガリ (gari, pink-pickled thin slices) is the sushi-bar palate cleanser. 新生姜 (shin-shōga, young summer ginger) is the seasonal pickle base.' },
+              { id:'ninniku', kanji:'大蒜', kana:'にんにく', romaji:'ninniku', en:'garlic',
+                flavors:['karai', 'oishii'], textures:['シャキシャキ'], season:['通年 year-round'],
+                notes:'青森 (Aomori) grows ~70% of Japan\'s domestic garlic — 福地ホワイト六片 (Fukuchi white six-clove) is the prestige cultivar, with huge cloves and a creamy roasted flavor. The aromatic base of yakiniku marinades, gyoza filling, peperoncino. 黒にんにく (kuro-ninniku, fermented black garlic) is the sweet-balsamic health-food variant.' },
+              { id:'piiman', kanji:'', kana:'ピーマン', romaji:'piiman', en:'green bell pepper',
+                flavors:['nigai', 'sawayaka'], textures:['シャキシャキ'], season:['夏 summer'],
+                notes:'The kids\' nemesis vegetable — slightly bitter, slightly grassy, often the rejected piece on a child\'s plate. Used in 青椒肉絲 (chinjao rōsu, Chinese-style beef and pepper stir-fry), stuffed-pepper bento sides, and chopped into ナポリタン. The sweeter, riper red/yellow cousin is パプリカ.' },
+              { id:'moyashi', kanji:'萌やし', kana:'もやし', romaji:'moyashi', en:'bean sprouts',
+                flavors:['sawayaka'], textures:['シャキシャキ', 'ぷりぷり'], season:['通年 year-round'],
+                notes:'The cheapest vegetable in Japan — usually ¥30 per generous bag. The bulk-up filler in ramen toppings, stir-fries, and student-budget cooking. 緑豆もやし (mungbean sprout) is the standard; 大豆もやし (soybean sprout) is fatter and used in Korean-style bibimbap and nabe.' },
+              { id:'gobou', kanji:'牛蒡', kana:'ごぼう', romaji:'gobou', en:'burdock root',
+                flavors:['oishii', 'nigai'], textures:['シャキシャキ'], season:['秋 autumn', '冬 winter'],
+                notes:'Long brown earth-root with a distinctive woody-mineral flavor. Julienned and stir-fried as きんぴらごぼう (kinpira gobō — soy, mirin, chili, sesame), simmered in 筑前煮 (chikuzen-ni), or shaved into ささがき curls for soba toppings and 豚汁. Almost unknown in Western kitchens.' },
+              { id:'renkon', kanji:'蓮根', kana:'れんこん', romaji:'renkon', en:'lotus root',
+                flavors:['oishii'], textures:['シャキシャキ'], season:['秋 autumn', '冬 winter'],
+                notes:'The cross-section is iconic — a wheel of evenly-spaced holes that Japanese culture reads as 見通しが良い (clear-sight, a good-luck omen). Used in tempura, 筑前煮 (chikuzen-ni), 挟み焼き (hasamiyaki, stuffed with seasoned ground meat and pan-fried), and as a standard お節 (osechi) New Year ingredient.' },
+              { id:'murasaki-tamanegi', kanji:'紫玉ねぎ', kana:'むらさきたまねぎ', romaji:'murasaki-tamanegi', en:'red / purple onion',
+                flavors:['karai', 'sawayaka'], textures:['シャキシャキ'], season:['春 spring', '夏 summer'],
+                notes:'Called 紫 (purple) in Japanese, not "red." Milder and sweeter than the white tamanegi — sliced thin and used raw in salads, sandwiches, and カルパッチョ (carpaccio). The concentric purple rings on the cross-section are the visual appeal.' },
+              { id:'burokkorii', kanji:'', kana:'ブロッコリー', romaji:'burokkorii', en:'broccoli',
+                flavors:['nigai', 'sawayaka'], textures:['シャキシャキ', 'やわらかい'], season:['冬 winter'],
+                notes:'A relatively recent Western import — became standard supermarket stock in the 1980s. Blanched and added to bento as a green spacer, in グラタン (gratin), in pasta, or stir-fried with garlic. Sold in plastic-wrapped heads year-round.' },
+              { id:'kimuchi', kanji:'', kana:'キムチ', romaji:'kimuchi', en:'kimchi',
+                flavors:['karai', 'suppai', 'shoppai'], textures:['シャキシャキ', 'ぷりぷり'], season:['通年 year-round'],
+                notes:'Korean-origin spicy fermented napa cabbage (はくさい), now a Japanese supermarket staple. Eaten as a side, in 豚キムチ炒め (pork-kimchi stir-fry), キムチ鍋 (hot pot), and キムチチャーハン (kimchi fried rice). 宗家 (Jongga) and 牛角 lead the supermarket shelves. See also: はくさい (the base vegetable).' },
+            ]
+          },
+          // ── Niku (Meat) — Phase 3c. ──────────────────────────────
+          { id:'niku', kanji:'肉', kana:'にく', romaji:'niku',
+            en:'Meat', glyph:'肉',
+            items: [
+              { id:'gyuuniku', kanji:'牛肉', kana:'ぎゅうにく', romaji:'gyuuniku', en:'beef',
+                flavors:['oishii'], textures:['とろとろ'], season:['通年 year-round'],
+                notes:'Imported supermarket-grade through legendary wagyu (和牛). 神戸 (Kobe), 松阪 (Matsusaka), 近江 (Omi) are the prestige cultivars. A5 grade marks the highest marbling — the steak melts on the tongue at body temperature.' },
+              { id:'butaniku', kanji:'豚肉', kana:'ぶたにく', romaji:'butaniku', en:'pork',
+                flavors:['oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'The everyday Japanese meat — more common at home than beef. Star of tonkatsu, shabu-shabu, and 豚汁 (tonjiru, pork miso soup). 黒豚 (kuro-buta, Kagoshima) is the prestige breed.' },
+              { id:'toriniku', kanji:'鶏肉', kana:'とりにく', romaji:'toriniku', en:'chicken',
+                flavors:['oishii'], textures:['もちもち', 'ぷりぷり'], season:['通年 year-round'],
+                notes:'Cuts: もも (thigh) for juiciness, 胸 (breast) for leanness, 手羽先 (wings) for grilling. The base of karaage, oyakodon, and yakitori. 比内地鶏 (Hinai-jidori) is the prestige free-range breed.' },
+              { id:'beekon', kanji:'', kana:'ベーコン', romaji:'beekon', en:'bacon',
+                flavors:['shoppai', 'oishii'], textures:['もちもち', 'カリカリ'], season:['通年 year-round'],
+                notes:'Imported via Western influence. Sold pre-cut in vacuum packs; eaten in carbonara, breakfast plates, or 肉巻き-style wrapped around asparagus or rice.' },
+              { id:'hamu', kanji:'', kana:'ハム', romaji:'hamu', en:'ham',
+                flavors:['shoppai'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Pink, sliced sandwich ham — a konbini staple. ロースハム (loin ham) is the standard; プロシュート (prosciutto) is imported for special occasions.' },
+              { id:'sooseeji', kanji:'', kana:'ソーセージ', romaji:'sooseeji', en:'sausage',
+                flavors:['shoppai', 'oishii'], textures:['ぷりぷり'], season:['通年 year-round'],
+                notes:'ウインナー (wiener) is the small-skinned breakfast sausage — a bento staple, often cut into tako-shape (octopus) for kids. Schau Essen and Johsonville lead the supermarket shelves.' },
+              { id:'suteeki', kanji:'', kana:'ステーキ', romaji:'suteeki', en:'steak',
+                flavors:['oishii'], textures:['とろとろ'], season:['通年 year-round'],
+                notes:'Often the celebration meal — birthdays, anniversaries, raises. Wagyu steak is the prestige tier; いきなりステーキ (Ikinari Steak) chains made the experience accessible at lunch.' },
+              { id:'hikiniku', kanji:'挽き肉', kana:'ひきにく', romaji:'hikiniku', en:'ground meat',
+                flavors:['oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'The base of ハンバーグ (hamburger steak — a yōshoku favorite), 麻婆豆腐, gyoza filling, and そぼろ丼 (soboro-don, soy-simmered ground meat over rice). Sold as 牛 / 豚 / 合い挽き (mixed).' },
+              { id:'kamoniku', kanji:'鴨肉', kana:'かもにく', romaji:'kamoniku', en:'duck meat',
+                flavors:['oishii'], textures:['とろとろ'], season:['冬 winter'],
+                notes:'A winter delicacy — 鴨南蛮 (duck-and-leek soba), 鴨ロース (duck breast). Fattier than chicken; the crispy duck-fat-glazed skin is the prized cut at high-end soba shops.' },
+              { id:'ramuniku', kanji:'ラム肉', kana:'らむにく', romaji:'ramuniku', en:'lamb',
+                flavors:['oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Less common than beef/pork in Japanese cuisine, but Hokkaido has a strong lamb tradition: ジンギスカン (Genghis Khan) — lamb grilled at the table on a dome-shaped pan over a charcoal brazier.' },
+              { id:'hanbaagaa', kanji:'', kana:'ハンバーガー', romaji:'hanbaagaa', en:'hamburger',
+                flavors:['oishii', 'shoppai'], textures:['もちもち', 'ぷりぷり'], season:['通年 year-round'],
+                notes:'The Western fast-food burger. McDonald\'s (マック / マクド) and モスバーガー (Mos Burger, Japan-original since 1972) dominate. テリヤキバーガー (teriyaki burger) is the Japanese-original variant — a teriyaki-glazed beef patty that became a McDonald\'s Japan signature. Note: distinct from ハンバーグ (hamburg steak, no bun), which is a separate yōshoku dish.' },
+              { id:'furaido-chikin', kanji:'', kana:'フライドチキン', romaji:'furaido-chikin', en:'fried chicken (Western)',
+                flavors:['oishii', 'shoppai'], textures:['カリカリ', 'ぷりぷり'], season:['通年 year-round'],
+                notes:'Bone-in Western-style fried chicken — KFC (ケンタッキー) is so dominant the chain made fried chicken Japan\'s unofficial Christmas Eve meal. The ad campaign "ケンタッキーでクリスマス" (1974) created the tradition; families now pre-order buckets weeks in advance. Distinct from 唐揚げ (karaage), the smaller boneless Japanese cousin.' },
+            ]
+          },
+          // ── Sakana (Fish & Sea) — Phase 3d. ──────────────────────
+          { id:'sakana', kanji:'魚', kana:'さかな', romaji:'sakana',
+            en:'Fish & Sea', glyph:'魚',
+            items: [
+              { id:'maguro', kanji:'鮪', kana:'まぐろ', romaji:'maguro', en:'tuna',
+                flavors:['oishii'], textures:['とろとろ'], season:['冬 winter'],
+                notes:'The king of sushi. 赤身 (akami, lean red) is the everyday cut; 中トロ (chūtoro, medium-fatty) and 大トロ (ōtoro, fatty belly) climb the price tier. 本マグロ (hon-maguro, Bluefin) tops Toyosu auctions.' },
+              { id:'samon', kanji:'', kana:'サーモン', romaji:'samon', en:'salmon',
+                flavors:['oishii'], textures:['とろとろ', 'ぷりぷり'], season:['秋 autumn'],
+                notes:'Now ubiquitous, but not traditionally Japanese — Norwegian salmon was introduced via Project Japan in 1980. 焼き鮭 (yakizake, grilled salmon) is the standard breakfast protein at ryokan.' },
+              { id:'saba', kanji:'鯖', kana:'さば', romaji:'saba', en:'mackerel',
+                flavors:['oishii'], textures:['もちもち'], season:['秋 autumn'],
+                notes:'Cheap, fatty, oily — the unprincipled fish that nourishes the country. 鯖の味噌煮 (saba simmered in miso) and 〆鯖 (vinegar-cured sashimi-grade) are home staples.' },
+              { id:'tai', kanji:'鯛', kana:'たい', romaji:'tai', en:'sea bream',
+                flavors:['oishii'], textures:['ぷりぷり'], season:['春 spring'],
+                notes:'The celebratory fish — served whole at weddings, baby-naming ceremonies, and New Year. 真鯛 (madai, red sea bream) is the standard. Its name is a pun on めでたい (auspicious).' },
+              { id:'buri', kanji:'鰤', kana:'ぶり', romaji:'buri', en:'yellowtail (mature)',
+                flavors:['oishii'], textures:['とろとろ'], season:['冬 winter'],
+                notes:'The winter prestige fish. Same species as hamachi (the younger fish becomes buri when fully mature). 寒ブリ (kan-buri, cold-season-caught) is the highest grade — fatty, rich, and sweet at the belly.' },
+              { id:'unagi', kanji:'鰻', kana:'うなぎ', romaji:'unagi', en:'eel',
+                flavors:['amai', 'oishii'], textures:['とろとろ'], season:['夏 summer'],
+                notes:'Grilled, glazed in tare (sweet soy), served on rice as うな丼 / うな重. Eaten on 土用の丑の日 (doyō no ushi no hi) — a summer holiday for stamina. Endangered; prices climb yearly.' },
+              { id:'tako', kanji:'蛸', kana:'たこ', romaji:'tako', en:'octopus',
+                flavors:['oishii'], textures:['ぷりぷり'], season:['夏 summer'],
+                notes:'Boiled until tender, eaten as sushi (red and rubbery), takoyaki (Osaka street food), or tako-su (vinegared). 明石 (Akashi, Hyogo) is the prestige source — strong currents give the octopus thicker muscle.' },
+              { id:'ika', kanji:'烏賊', kana:'いか', romaji:'ika', en:'squid',
+                flavors:['oishii'], textures:['ぷりぷり'], season:['通年 year-round'],
+                notes:'Sliced thin as sashimi, deep-fried as ika furai, or simmered with daikon. スルメ (surume, dried squid) is the classic drinking snack. 蛍烏賊 (hotaru-ika, firefly squid) is the spring delicacy.' },
+              { id:'ebi', kanji:'海老', kana:'えび', romaji:'ebi', en:'shrimp / prawn',
+                flavors:['amai', 'oishii'], textures:['ぷりぷり'], season:['通年 year-round'],
+                notes:'車海老 (kuruma-ebi, prawn) for tempura and sushi nigiri. 甘海老 (ama-ebi, sweet shrimp) eaten raw — the only shrimp better sweet than savory. ぼたん海老 (botan-ebi) is the prestige sashimi-grade.' },
+              { id:'kani', kanji:'蟹', kana:'かに', romaji:'kani', en:'crab',
+                flavors:['amai'], textures:['ぷりぷり'], season:['冬 winter'],
+                notes:'冬の王様 (king of winter). タラバガニ (king crab), 毛蟹 (kegani, hairy crab from Hokkaido), and ズワイガニ (zuwai, snow crab from the Japan Sea) are the three prestige cultivars.' },
+            ]
+          },
+          // ── Kokumotsu (Grains) — Phase 3e. ───────────────────────
+          { id:'kokumotsu', kanji:'穀物', kana:'こくもつ', romaji:'kokumotsu',
+            en:'Grains', glyph:'穀',
+            items: [
+              { id:'gohan', kanji:'ご飯', kana:'ごはん', romaji:'gohan', en:'cooked rice',
+                flavors:['amai', 'oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Just "rice" — and also literally the word for "meal." Short-grain japonica, sticky when cooked. Premium cultivars: コシヒカリ (Koshihikari), あきたこまち (Akita-Komachi), 新潟魚沼 (Niigata Uonuma).' },
+              { id:'onigiri', kanji:'御握り', kana:'おにぎり', romaji:'onigiri', en:'rice ball',
+                flavors:['shoppai', 'oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Triangular rice ball wrapped in nori. Classic fillings: 梅 (ume plum), 鮭 (salmon), 昆布 (kombu), おかか (bonito flakes). The cheapest food in Japan; konbini chains sell millions a day.' },
+              { id:'mochi', kanji:'餅', kana:'もち', romaji:'mochi', en:'rice cake',
+                flavors:['amai', 'oishii'], textures:['もちもち'], season:['冬 winter'],
+                notes:'Pounded sticky rice. Eaten grilled with shoyu, in 雑煮 (zōni, New Year soup), or as the wrapper for daifuku. 餅つき (mochi-tsuki) is a New Year ritual — pound the rice in a stone mortar with wooden mallets.' },
+              { id:'pan', kanji:'', kana:'パン', romaji:'pan', en:'bread',
+                flavors:['amai'], textures:['ふわふわ', 'もちもち'], season:['通年 year-round'],
+                notes:'Japanese bread is famously soft + sweet — softer than its European cousins. 菓子パン (kashi-pan, sweet bread), あんパン (anpan, red-bean-filled), クリームパン (cream-filled). The word comes from Portuguese "pão" via 16th-century traders.' },
+              { id:'shokupan', kanji:'食パン', kana:'しょくパン', romaji:'shokupan', en:'Japanese milk bread',
+                flavors:['amai'], textures:['ふわふわ', 'もちもち'], season:['通年 year-round'],
+                notes:'The thick-sliced cottony white loaf. Sold in 6-slice or 8-slice packs at the bakery. Eaten toasted with butter, in 卵サンド (egg-salad sandwich), or as the base for fruit sando.' },
+              { id:'udon', kanji:'饂飩', kana:'うどん', romaji:'udon', en:'udon noodles',
+                flavors:['oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Thick wheat noodles in dashi broth. 讃岐うどん (Sanuki, Kagawa prefecture) is the prestige cultivar — chewy and square-cut. Eaten hot as かけうどん or cold as ざるうどん.' },
+              { id:'soba', kanji:'蕎麦', kana:'そば', romaji:'soba', en:'soba noodles',
+                flavors:['oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Buckwheat noodles, thinner than udon. 信州そば (Shinshu, Nagano) and 出雲そば (Izumo, Shimane) are prestige. ざるそば (cold dipping) in summer, かけそば (hot broth) in winter. 年越しそば eaten on New Year\'s Eve.' },
+              { id:'raamen', kanji:'', kana:'ラーメン', romaji:'raamen', en:'ramen',
+                flavors:['oishii', 'shoppai'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'The national obsession. Four base broths: 塩 (shio, salt), 醤油 (shoyu, soy), 味噌 (miso), 豚骨 (tonkotsu, pork bone). Each region carries its own variant. The standard salaryman lunch.' },
+              { id:'pasuta', kanji:'', kana:'パスタ', romaji:'pasuta', en:'pasta',
+                flavors:['oishii'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Imported via the post-war era and thoroughly Japanized. 和風スパゲッティ (wafū spaghetti — mentaiko, shiso, mushrooms), ナポリタン (Napolitan, ketchup-based) are the homegrown standards.' },
+              { id:'genmai', kanji:'玄米', kana:'げんまい', romaji:'genmai', en:'brown rice',
+                flavors:['oishii'], textures:['もちもち', 'シャキシャキ'], season:['通年 year-round'],
+                notes:'Unpolished rice. Chewier, nuttier, more nutritious than white rice. Common in health-food restaurants and macrobiotic cuisine; sold in the same bags as white rice at supermarkets.' },
+              { id:'nattou', kanji:'納豆', kana:'なっとう', romaji:'nattou', en:'fermented soybeans',
+                flavors:['oishii', 'nigai'], textures:['ねばねば', 'ぷちぷち'], season:['通年 year-round'],
+                notes:'The famously divisive Japanese breakfast — fermented soybeans webbed in sticky threads (糸 ito), eaten over rice with soy and the mustard packet that comes in the styrofoam cup. 茨城 (Ibaraki) is the historical heartland. Stir vigorously with chopsticks until foamy — that\'s when the umami opens up. Pairs naturally with ご飯, たまご (TKG-style), and ねぎ.' },
+            ]
+          },
+          // ── Nyuuseihin (Dairy & Eggs) — Phase 3f. ────────────────
+          { id:'nyuuseihin', kanji:'乳製品', kana:'にゅうせいひん', romaji:'nyuuseihin',
+            en:'Dairy & Eggs', glyph:'乳',
+            items: [
+              { id:'tamago', kanji:'卵', kana:'たまご', romaji:'tamago', en:'egg',
+                flavors:['oishii'], textures:['とろとろ'], season:['通年 year-round'],
+                notes:'Eaten raw in 卵かけご飯 (TKG — raw egg over hot rice + soy), in tamagoyaki (sweet rolled omelet), or as the topping on gyudon, oyakodon, sukiyaki. Japanese eggs are salmonella-tested for safe raw consumption — the brown supermarket egg is the standard.' },
+              { id:'gyuunyuu', kanji:'牛乳', kana:'ぎゅうにゅう', romaji:'gyuunyuu', en:'milk',
+                flavors:['amai', 'oishii'], textures:['クリーミー'], season:['通年 year-round'],
+                notes:'Drunk plain after a bath at a sentō (public bath) is a Shōwa-era ritual — hand on hip, glass on chest. Hokkaido milk (especially 北海道牛乳) is the prestige cultivar — richer, less processed.' },
+              { id:'bataa', kanji:'', kana:'バター', romaji:'bataa', en:'butter',
+                flavors:['oishii'], textures:['クリーミー', 'とろとろ'], season:['通年 year-round'],
+                notes:'Often melted on Sapporo-style miso ramen, on hot corn (バターコーン), or on grilled Hokkaido scallops. The classic Japanese-toast topping: butter + honey + thick shokupan. Yotsuba (Hokkaido) is the prestige brand.' },
+              { id:'chiizu', kanji:'', kana:'チーズ', romaji:'chiizu', en:'cheese',
+                flavors:['oishii', 'shoppai'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'6P チーズ (Yukijirushi six-wedge round) is the childhood snack. Used in modern recipes: チーズタッカルビ (cheese dak galbi), gratin, pizza. Less central than in Western cuisines but rising — natural-cheese imports doubled in the last decade.' },
+              { id:'yooguruto', kanji:'', kana:'ヨーグルト', romaji:'yooguruto', en:'yogurt',
+                flavors:['suppai'], textures:['クリーミー', 'とろとろ'], season:['通年 year-round'],
+                notes:'Eaten plain or with fruit for breakfast. R-1 (Meiji) ヨーグルト is the immune-boosting probiotic the country goes through. プレーン (no sugar), 砂糖入り (sweetened), or アロエ (with aloe) are the standard supermarket options.' },
+              { id:'namakuriimu', kanji:'生クリーム', kana:'なまクリーム', romaji:'namakuriimu', en:'whipped cream',
+                flavors:['amai'], textures:['ふわふわ', 'クリーミー'], season:['通年 year-round'],
+                notes:'On strawberry shortcake (the Japanese Christmas cake), fruit sando, and parfaits. Often whipped less stiff than Western versions — lighter, airier, less sweetened. The shortcake-cream layer between sponges is half the dessert\'s identity.' },
+              { id:'purin', kanji:'', kana:'プリン', romaji:'purin', en:'pudding',
+                flavors:['amai'], textures:['とろとろ', 'もちもち'], season:['通年 year-round'],
+                notes:'Caramel custard. The konbini standard is Morinaga or Glico. プッチンプリン (Pucchin Purin, Glico) is the iconic shape — invert the cup, pull the tab at the bottom, and a dome plops onto the plate with a satisfying suction-snap.' },
+              { id:'aisukuriimu', kanji:'', kana:'アイスクリーム', romaji:'aisukuriimu', en:'ice cream',
+                flavors:['amai', 'tsumetai'], textures:['クリーミー', 'やわらかい'], season:['夏 summer'],
+                notes:'抹茶 (matcha) and 黒ごま (black sesame) are the iconic Japanese flavors. Haagen-Dazs is omnipresent. ソフトクリーム (soft-serve, often Hokkaido lavender or Yubari melon) sits alongside it at every farm stand and tourist spot.' },
+              { id:'tounyuu', kanji:'豆乳', kana:'とうにゅう', romaji:'tounyuu', en:'soy milk',
+                flavors:['oishii'], textures:['クリーミー'], season:['通年 year-round'],
+                notes:'Not technically dairy, but shelved with milk. The base for tofu — also drunk as a beverage. キッコーマン (Kikkoman) makes flavored versions: 抹茶, 紅茶, ココア, バナナ, even コーンスープ. A coffee-shop alternative milk staple.' },
+              { id:'mayoneezu', kanji:'', kana:'マヨネーズ', romaji:'mayoneezu', en:'mayonnaise',
+                flavors:['oishii'], textures:['クリーミー'], season:['通年 year-round'],
+                notes:'Kewpie マヨネーズ (since 1925) is the national brand — egg-yolk-only (no whites), more umami than Western mayo, packaged in the iconic red-cap squeeze bottle. Squeezed onto okonomiyaki, takoyaki, fried chicken, sandwiches, and famously onto pizza.' },
+            ]
+          },
+          // ── Kashi (Sweets) — Phase 3g. ───────────────────────────
+          { id:'kashi', kanji:'菓子', kana:'かし', romaji:'kashi',
+            en:'Sweets', glyph:'菓',
+            items: [
+              { id:'dango', kanji:'団子', kana:'だんご', romaji:'dango', en:'rice dumplings',
+                flavors:['amai'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'Three-color dango on a skewer: pink (cherry), white (plain), green (mugwort) — the classic 花見 (cherry-blossom-viewing) spring sweet. みたらし団子 (mitarashi, sweet soy glaze) is the year-round version.' },
+              { id:'daifuku', kanji:'大福', kana:'だいふく', romaji:'daifuku', en:'mochi with red bean',
+                flavors:['amai'], textures:['もちもち'], season:['通年 year-round'],
+                notes:'White mochi ball with sweet red bean (あんこ) filling. 苺大福 (strawberry daifuku) is the modern variation — a whole strawberry inside the bean paste. Sold at every wagashi shop in Japan.' },
+              { id:'dorayaki', kanji:'銅鑼焼き', kana:'どらやき', romaji:'dorayaki', en:'pancake sandwich with anko',
+                flavors:['amai'], textures:['ふわふわ', 'もちもち'], season:['通年 year-round'],
+                notes:'Two pancakes sandwiching anko. Doraemon\'s favorite food — the cartoon cat made the sweet internationally famous. The name comes from 銅鑼 (dora, a gong) which the round shape resembles.' },
+              { id:'taiyaki', kanji:'鯛焼き', kana:'たいやき', romaji:'taiyaki', en:'fish-shaped pastry',
+                flavors:['amai'], textures:['もちもち', 'カリカリ'], season:['冬 winter'],
+                notes:'Fish-shaped pastry filled with anko (or custard, chocolate). Originated in 1909 Tokyo. Eaten hot off the iron, often by the dozen on winter festival nights. The 尾 (tail) is the prized last bite.' },
+              { id:'ohagi', kanji:'御萩', kana:'おはぎ', romaji:'ohagi', en:'sticky rice with sweet bean',
+                flavors:['amai'], textures:['もちもち'], season:['秋 autumn'],
+                notes:'Inverse daifuku — sticky rice on the OUTSIDE, anko coating it from the OUTSIDE. Eaten at 彼岸 (higan, the equinox) as an ancestor offering. Same dessert as 牡丹餅 (botamochi) but with a seasonal name swap.' },
+              { id:'manjuu', kanji:'饅頭', kana:'まんじゅう', romaji:'manjuu', en:'steamed bun',
+                flavors:['amai'], textures:['もちもち', 'ふわふわ'], season:['通年 year-round'],
+                notes:'Steamed bun with sweet filling — anko, kuri (chestnut), or matcha. 温泉まんじゅう (onsen manjū) is the souvenir bought at every hot-spring town, sold by the boxful.' },
+              { id:'youkan', kanji:'羊羹', kana:'ようかん', romaji:'youkan', en:'jellied red bean',
+                flavors:['amai'], textures:['ねばねば'], season:['通年 year-round'],
+                notes:'Jellied red-bean paste cut into rectangular blocks. Dense, chewy, intensely sweet. 練りようかん (neri-yōkan) is the standard; 水ようかん (mizu-yōkan) is the lighter, jelly-soft summer version.' },
+              { id:'kakigoori', kanji:'かき氷', kana:'かきごおり', romaji:'kakigoori', en:'shaved ice',
+                flavors:['amai', 'tsumetai'], textures:['シャリシャリ'], season:['夏 summer'],
+                notes:'Shaved ice with colored syrup — strawberry, melon, blue Hawaii, matcha. The summer festival staple. 宇治金時 (Uji-kintoki, matcha syrup + anko + condensed milk) is the kaiseki-tier version.' },
+              { id:'warabimochi', kanji:'蕨餅', kana:'わらびもち', romaji:'warabimochi', en:'bracken starch jelly',
+                flavors:['amai'], textures:['もちもち', 'とろとろ'], season:['夏 summer'],
+                notes:'Bracken-starch jelly cubes coated in kinako (toasted soybean flour) and drizzled with kuromitsu (black-sugar syrup). 京都 (Kyoto) is the prestige source — the Daitoku-ji area has shops 400 years old.' },
+              { id:'anmitsu', kanji:'餡蜜', kana:'あんみつ', romaji:'anmitsu', en:'agar + bean + fruit dessert',
+                flavors:['amai'], textures:['シャキシャキ', 'もちもち'], season:['夏 summer'],
+                notes:'A bowl of agar cubes (寒天 kanten), fruit, anko, and a drizzle of kuromitsu. The summer cafe specialty — kiwi, mandarin, cherry, banana, mochi balls, and a glossy anko mound, all chilled. Often topped with matcha ice cream for the deluxe version (クリームあんみつ).' },
+              // Note: poppukoon, furaido-poteto, poteto-chippusu, piinattsu
+              // were removed from the kashi category — they're industrial
+              // snacks (mostly potatoes + popcorn + peanuts) that don't fit
+              // the traditional-Japanese-sweets framing. The images are
+              // still wired into FLAVOR_EXAMPLES.shoppai for the flavor
+              // immersion view.
+            ]
+          },
+          // ── Nomimono (Drinks) — Phase 3h. ────────────────────────
+          // All 10 drinks now have images. The 3 I originally misread
+          // as sweets in batch 6 turned out to be juusu (the file
+          // I'd named daifuku-variant), tansansui (was anmitsu), and
+          // ocha (was kakigoori-variant — the amber-tinted glass with
+          // wheat decoration; user to verify the image content matches
+          // the ocha intent, as the AI generated it amber-leaning).
+          { id:'nomimono', kanji:'飲み物', kana:'のみもの', romaji:'nomimono',
+            en:'Drinks', glyph:'飲',
+            items: [
+              { id:'ocha', kanji:'お茶', kana:'おちゃ', romaji:'ocha', en:'green tea',
+                flavors:['oishii', 'nigai'], textures:['さらさら'], season:['通年 year-round'],
+                notes:'Just "tea" — almost always sencha (green) or hōjicha (roasted green). Served free with the meal at restaurants, hot in winter and cold in summer. Bottled ocha (Iyemon, 伊右衛門 / Oi Ocha, おーいお茶) lines every konbini fridge.' },
+              { id:'maccha', kanji:'抹茶', kana:'まっちゃ', romaji:'maccha', en:'matcha',
+                flavors:['nigai', 'oishii'], textures:['クリーミー'], season:['通年 year-round'],
+                notes:'Powdered green tea, whisked into hot water with a 茶筅 (chasen, bamboo whisk) until it froths. The center of 茶道 (sadō, the tea ceremony). 宇治 (Uji, Kyoto) is the prestige source — Yamamasa, Marukyu-Koyamaen, Ippodo are the canonical houses. Modern uses: lattes, ice cream, sweets, pasta.' },
+              { id:'mugicha', kanji:'麦茶', kana:'むぎちゃ', romaji:'mugicha', en:'barley tea',
+                flavors:['oishii'], textures:['さらさら'], season:['夏 summer'],
+                notes:'Roasted barley tea, drunk cold in summer from pitchers in every Japanese fridge. Caffeine-free, served to kids and adults alike. The taste of every Japanese childhood summer afternoon.' },
+              { id:'uuroncha', kanji:'烏龍茶', kana:'ウーロンちゃ', romaji:'uuroncha', en:'oolong tea',
+                flavors:['tsumetai', 'nigai'], textures:['さらさら'], season:['通年 year-round'],
+                notes:'Chinese-origin partially-oxidized tea. Drunk hot in winter, cold from vending machines in summer. The default izakaya non-alcoholic order paired with greasy food — cuts through the oil.' },
+              { id:'mizu', kanji:'水', kana:'みず', romaji:'mizu', en:'water',
+                flavors:['tsumetai'], textures:['さらさら'], season:['通年 year-round'],
+                notes:'Free at restaurants — served alongside hot tea before you order. Japanese tap water is safe and drinkable nationwide; bottled water is for portability rather than quality. 南アルプス天然水 (Suntory) and いろはす (Coca-Cola) dominate the konbini shelves.' },
+              { id:'koohii', kanji:'', kana:'コーヒー', romaji:'koohii', en:'coffee',
+                flavors:['nigai', 'oishii'], textures:['クリーミー'], season:['通年 year-round'],
+                notes:'From Portuguese "café" via 18th-century Dutch traders. Japanese coffee culture spans the smoke-filled 喫茶店 (kissaten, Showa-era jazz coffee shops), the omnipresent vending-machine canned coffee (Boss, Wonda, Georgia), and the modern third-wave Tokyo specialty scene.' },
+              { id:'nihonshu', kanji:'日本酒', kana:'にほんしゅ', romaji:'nihonshu', en:'sake / rice wine',
+                flavors:['oishii'], textures:['さらさら'], season:['通年 year-round'],
+                notes:'Brewed rice wine. 純米 (junmai, no added alcohol), 吟醸 (ginjō, ≤60% rice polish), 大吟醸 (daiginjō, ≤50%) are the polish-grade tiers — more polished = clearer, more delicate. Served warm (kan) in winter, cold (reishu) in summer, in a 徳利 (tokkuri flask) + お猪口 (ochoko cup).' },
+              { id:'biiru', kanji:'', kana:'ビール', romaji:'biiru', en:'beer',
+                flavors:['nigai', 'oishii'], textures:['さらさら'], season:['夏 summer', '通年 year-round'],
+                notes:'Japan\'s four major breweries: アサヒ (Asahi), キリン (Kirin), サッポロ (Sapporo), サントリー (Suntory). All crisp dry lagers, served ice cold. "とりあえず生" ("a draft to start") is the unofficial opening line of every izakaya order.' },
+              { id:'juusu', kanji:'', kana:'ジュース', romaji:'juusu', en:'juice',
+                flavors:['amai', 'suppai'], textures:['ジューシー'], season:['通年 year-round'],
+                notes:'Usually orange juice in default reference (オレンジジュース) — the breakfast staple at family restaurants and business hotels. 100% no-sugar-added cartons line the konbini shelves; ミニッツメイド and カゴメ are the dominant brands.' },
+              { id:'tansansui', kanji:'炭酸水', kana:'たんさんすい', romaji:'tansansui', en:'sparkling water',
+                flavors:['tsumetai'], textures:['さらさら'], season:['通年 year-round'],
+                notes:'Plain or lemon-flavored carbonated water. ウィルキンソン (Wilkinson, since 1904) is the iconic Japanese sparkling-water brand — also the standard Highball mixer at home (whisky + Wilkinson + lemon = the canonical Japanese highball).' },
+            ]
+          },
+        ]
+      },
+      // Textures — Phase 2 placeholder. Sits below edibles in the sidebar
+      // order (was previously between flavors and edibles; moved here to
+      // group the populated books — flavors + edibles — together and
+      // keep the coming-soon placeholder out of the way until Phase 2
+      // ships). Phase 2 will replace this with a real textures book
+      // carrying the doubled-kana onomatopoeia (もちもち, さくさく,
+      // ねばねば, ぱりぱり, さらさら, ふわふわ, とろとろ, シャキシャキ,
+      // ぷりぷり, カリカリ) and the brush-motion-line signature
+      // treatment per DESIGN.md §5.4.
+      { id:'textures', titleJa:'しょっかん', titleEn:'Textures', glyph:'食感', primaryLevel:'N4', pages:[], isExperience:true, isComingSoon:true },
       // Fast food chains — direct launch into a specific restaurant's
       // scene flow (not random). `isFastFood:true` puts them in their
       // own sidebar group between Interactive and Books; `restaurantId`
@@ -736,11 +1282,28 @@ window.VOCAB_CLASSES = [
               { kanji:'生ビール',     kana:'なまびーる', en:'draft beer',          price:500, foodImg:'drink-beer.webp' },
               { kanji:'ハイボール',   kana:'はいぼーる', en:'highball',            price:480, foodImg:'drink-highball.webp' },
               { kanji:'日本酒',       kana:'にほんしゅ', en:'sake',                price:600, foodImg:'drink-sake.webp' },
-              { kanji:'焼き鳥',       kana:'やきとり',   en:'grilled chicken skewers', price:600, foodImg:'dish-yakitori.webp' },
+              // ── Yakitori (skewer) menu — the izakaya core. Pulls from
+              // FOOD_GALLERY.yakitori so each shows up in the visual
+              // header above grouped under "焼き鳥 · Yakitori".
+              { kanji:'もも',         kana:'もも',       en:'momo — chicken thigh',     price:280, foodImg:'yakitori-momo.webp' },
+              { kanji:'ねぎま',       kana:'ねぎま',     en:'negima — thigh + leek',    price:300, foodImg:'yakitori-negima.webp' },
+              { kanji:'皮',           kana:'かわ',       en:'kawa — crispy skin',       price:240, foodImg:'yakitori-kawa.webp' },
+              { kanji:'ささみ',       kana:'ささみ',     en:'sasami — tenderloin',      price:280, foodImg:'yakitori-sasami.webp' },
+              { kanji:'手羽先',       kana:'てばさき',   en:'tebasaki — chicken wings', price:420, foodImg:'yakitori-tebasaki.webp' },
+              { kanji:'つくね',       kana:'つくね',     en:'tsukune — chicken meatball', price:320, foodImg:'yakitori-tsukune.webp' },
+              // ── Dumplings (餃子) — three gyoza forms + shumai. Pulls
+              // from FOOD_GALLERY.dumplings.
+              { kanji:'焼き餃子',     kana:'やきぎょうざ', en:'yaki-gyoza (pan-fried)',  price:520, foodImg:'dish-gyoza.webp' },
+              { kanji:'水餃子',       kana:'すいぎょうざ', en:'sui-gyoza (boiled)',      price:540, foodImg:'dumpling-gyoza-sui.webp' },
+              { kanji:'揚げ餃子',     kana:'あげぎょうざ', en:'age-gyoza (deep-fried)',  price:560, foodImg:'dumpling-gyoza-age.webp' },
+              { kanji:'焼売',         kana:'しゅうまい',   en:'shumai — open-top steamed', price:480, foodImg:'dumpling-shumai.webp' },
+              // ── Other yōshoku / izakaya staples. Tonkatsu and tempura
+              // come from FOOD_GALLERY.other; the rest are izakaya-original.
               { kanji:'枝豆',         kana:'えだまめ',   en:'edamame',             price:400, foodImg:'dish-edamame.webp' },
-              { kanji:'唐揚げ',       kana:'からあげ',   en:'fried chicken',       price:700, foodImg:'dish-karaage.webp' },
+              { kanji:'唐揚げ',       kana:'からあげ',   en:'karaage (Japanese fried chicken)', price:700, foodImg:'dish-karaage.webp' },
+              { kanji:'とんかつ',     kana:'とんかつ',   en:'tonkatsu (fried pork cutlet)',     price:980, foodImg:'dish-tonkatsu.webp' },
+              { kanji:'天ぷら',       kana:'てんぷら',   en:'tempura (assorted)',  price:880, foodImg:'dish-tempura.webp' },
               { kanji:'刺身盛り合わせ', kana:'さしみもりあわせ', en:'sashimi platter', price:1200, foodImg:'dish-sashimi-platter.webp' },
-              { kanji:'焼き餃子',     kana:'やきぎょうざ', en:'pan-fried gyoza',   price:520, foodImg:'dish-gyoza.webp' },
               { kanji:'冷奴',         kana:'ひややっこ', en:'cold tofu',           price:380, foodImg:'dish-hiyayakko.webp' },
               { kanji:'お新香盛り',   kana:'おしんこもり', en:'pickle assortment', price:450, foodImg:'dish-oshinko.webp' },
             ]
@@ -1963,11 +2526,16 @@ window.FLASHCARD_CLASSES = [
     titleJa: 'とき',
     titleEn: 'Time',
     glyph: '今',
-    // Order: 今 分 時 半 年 先 前 後 春 夏 秋 冬 何 早 遅 朝 昼 夕 夜.
+    // Order: 今 分 時 半 年 [7 day cards] 曜 ◆曜 後 春 夏 秋 冬 何 早 遅 朝 昼 夕 夜 前 先.
     // 今 leads — same kanji as the class glyph, the broad "now" frame
     // that anchors the rest of the deck. Then 分 → 時 (the smaller
     // unit teaches the bigger one — same 半 + 分 pattern that gives
     // 半分). 来 carved out for Verbs (Task 16). 秒 / 昨日 dropped.
+    // 前 / 先 closing the class on purpose: both are bidirectional
+    // time/space markers that read most cleanly once the learner has
+    // met the whole calendar — 午前 / 先週 / 先月 / 名前 collapse into
+    // place at the end rather than sitting awkwardly between 年 and
+    // the seven days where they were originally introduced.
     cards: [
       { id:'now',      kanji:'今', kun:'いま',     on:'コン',   en:'now / present', strokes:4,
         usage:{ ja:'今日', kana:'きょう' },
@@ -2009,10 +2577,6 @@ window.FLASHCARD_CLASSES = [
           {word:'今年',   reading:'kotoshi', meaning:'this year'},
           {word:'来年',   reading:'RAINEN',  meaning:'next year'},
         ] },
-      { id:'ahead',    kanji:'先', kun:'さき',     on:'セン',   en:'ahead / previous / tip', strokes:6,
-        usage:{ ja:'先生', kana:'せんせい' },
-        notes:'先 (sen, ahead) + 生 (sei, life) gives 先生 (sensei) — "one born ahead in life." Honorific for teachers, doctors, professors, and respected experts. Also marks past time: 先週 (last week), 先月 (last month).',
-        examples:[{word:'先生',reading:'SENSEI',meaning:'teacher'},{word:'先月',reading:'SENGETSU',meaning:'last month'},{word:'先端',reading:'SENTAN',meaning:'cutting edge'}] },
       // 7 days of the week — three-glyph compounds anchored by 曜 (the
       // "day-of-week" connector) sandwiched between an elemental kanji
       // (日 月 火 水 木 金 土) and a final 日. The pattern matches the
@@ -2122,12 +2686,6 @@ window.FLASHCARD_CLASSES = [
           { kanji:'金曜日', kun:'きんようび', on:'',  en:'Friday' },
           { kanji:'土曜日', kun:'どようび',   on:'',  en:'Saturday' },
         ] },
-      { id:'before', kanji:'前', kun:'まえ', on:'ゼン', en:'before / front', strokes:9,
-        examples:[
-          {word:'前',   reading:'mae',  meaning:'before / in front'},
-          {word:'午前', reading:'GOZEN', meaning:'morning / AM'},
-          {word:'名前', reading:'namae', meaning:'name'},
-        ] },
       { id:'after', kanji:'後', kun:'うし', on:'ゴ', en:'after / behind', strokes:9,
         examples:[
           {word:'後',   reading:'ato',  meaning:'later / after'},
@@ -2173,6 +2731,24 @@ window.FLASHCARD_CLASSES = [
           {word:'今夜',   reading:'KON\'YA', meaning:'tonight'},
           {word:'夜中',   reading:'yonaka',  meaning:'midnight'},
         ] },
+      // 前 / 先 — closing pair. Both are bidirectional markers that
+      // span time and space (前 = before/in-front; 先 = ahead/previous/
+      // tip), so they sit best at the end of the class, after the
+      // calendar (年 / 7 days / seasons / parts-of-day) has fully
+      // taught the time axis. 前 first because 午前 ↔ 午後 is the
+      // cleanest hand-off from the just-met 後; 先 closes the deck
+      // with 先生 — the honorific that quietly reframes the whole
+      // class as a teacher-student transaction.
+      { id:'before', kanji:'前', kun:'まえ', on:'ゼン', en:'before / front', strokes:9,
+        examples:[
+          {word:'前',   reading:'mae',  meaning:'before / in front'},
+          {word:'午前', reading:'GOZEN', meaning:'morning / AM'},
+          {word:'名前', reading:'namae', meaning:'name'},
+        ] },
+      { id:'ahead',    kanji:'先', kun:'さき',     on:'セン',   en:'ahead / previous / tip', strokes:6,
+        usage:{ ja:'先生', kana:'せんせい' },
+        notes:'先 (sen, ahead) + 生 (sei, life) gives 先生 (sensei) — "one born ahead in life." Honorific for teachers, doctors, professors, and respected experts. Also marks past time: 先週 (last week), 先月 (last month).',
+        examples:[{word:'先生',reading:'SENSEI',meaning:'teacher'},{word:'先月',reading:'SENGETSU',meaning:'last month'},{word:'先端',reading:'SENTAN',meaning:'cutting edge'}] },
     ],
   },
   {

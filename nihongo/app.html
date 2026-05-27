@@ -4735,6 +4735,59 @@
   }
   .food-section { margin: 0 0 32px; }
   .food-section:last-child { margin-bottom: 4px; }
+
+  /* Visual food-gallery header that sits at the top of every menu
+     page (menu-reference). Mirrors the food vocabulary page style —
+     image-heavy cards grouped by section — so the learner sees the
+     dish before reading the row label below. Tighter spacing than
+     the standalone food vocab page because it sits inside a menu
+     frame, sharing real estate with the row list beneath. */
+  .menu-food-gallery {
+    margin: 18px 0 24px;
+  }
+  .menu-food-section {
+    margin: 0 0 22px;
+  }
+  .menu-food-section:last-child {
+    margin-bottom: 4px;
+  }
+  .menu-food-section-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 0 0 12px;
+    padding: 0 0 6px;
+    border-bottom: 1px dashed rgba(141,102,48,0.22);
+    font-weight: 500;
+  }
+  .menu-food-section-head .ja {
+    font-family: var(--font-title);
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .menu-food-section-head .en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  .menu-food-section-head .count {
+    margin-left: auto;
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  /* Slightly tighter cards than the standalone food gallery grid so
+     the header doesn't dominate the menu page. The food-card base
+     styles still apply — this just overrides the grid density. */
+  .menu-food-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  @media (max-width: 760px) {
+    .menu-food-grid {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+    }
+  }
   .food-section-head {
     display: flex; align-items: baseline; gap: 12px;
     margin: 0 0 16px;
@@ -4855,6 +4908,1537 @@
     .food-nav { gap: 4px; }
     .food-nav-chip { padding: 4px 10px; font-size: 12px; }
   }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Flavors page (Phase 1 of the Flavors & Textures sub-system).
+
+     Two states, one page: bento (default, 10 cards) and immersion
+     (per-flavor full-bleed color flood). The page is rendered by
+     flavorsPageHTML() in app.html; both states live inside the same
+     .flavors-frame container and the active state is gated by
+     data-mode="bento" | "immersion" on that container.
+
+     The signature decision: color floods the entire viewport when
+     immersion is active. The flood IS the encoding of the flavor —
+     yellow IS suppai, not "yellow because lemons are yellow."
+
+     See:
+       docs/superpowers/specs/2026-05-26-flavors-textures.PRODUCT.md
+       docs/superpowers/specs/2026-05-26-flavors-textures.DESIGN.md
+     ───────────────────────────────────────────────────────────────── */
+
+  /* Container shell. Sits inside #vocab-page-content; expands to fill
+     the available width like the other interactive surfaces. The
+     padding here is intentionally generous — editorial breathing room
+     per the brief. Mobile reclaims most of it. */
+  .flavors-frame {
+    --flood:        var(--paper-2);
+    --ink-on-flood: var(--ink);
+    --chip:         var(--gold-soft);
+    position: relative;
+    min-height: 60vh;
+    padding: 24px 32px 48px;
+  }
+  @media (max-width: 760px) {
+    .flavors-frame { padding: 16px 16px 32px; }
+  }
+
+  /* ── Bento state ─────────────────────────────────────────────────
+     The "encounter" surface. 10 paper cards at-a-glance.
+     Grid: 5×2 desktop, 4×3 tablet, 2×5 mobile (never one column —
+     pagination is banned per PRODUCT.md restriction #4).
+
+     The two state-wraps are MUTUALLY EXCLUSIVE: bento mode shows the
+     entire .flavors-bento-wrap (header + grid) and hides the immersion
+     wrap; immersion mode does the inverse. The whole bento collapses,
+     not just the card grid — otherwise the page title would leak
+     through into the immersion view. */
+  .flavors-frame[data-mode="bento"]    .flavors-immersion-wrap { display: none; }
+  .flavors-frame[data-mode="immersion"] .flavors-bento-wrap     { display: none; }
+
+  /* Bento sizing system — viewport-proportional clamps so the bento
+     scales fluidly between narrow + wide viewports without hard-pixel
+     breakpoints. Tuned so on a 1280×800 viewport the bento header
+     plus the full first row of 5 cards fit above the fold, with the
+     top edge of the second row peeking in as a "scroll for more"
+     affordance. The clamps use vw for the rhythm and rem-anchored
+     floor/ceiling so the design never collapses or balloons. */
+  .flavors-bento-wrap {
+    --bento-gap:        clamp(10px, 1.1vw, 18px);
+    --bento-pad:        clamp(10px, 0.95vw, 14px);
+    --bento-img-gap:    clamp(6px,  0.7vw, 12px);
+    --bento-head-gap:   clamp(2px,  0.35vw, 6px);
+    --bento-head-mb:    clamp(10px, 1.6vw, 24px);
+  }
+  .flavors-bento {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--bento-gap);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1100px) {
+    .flavors-bento { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .flavors-bento { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Bento header — vertical stack with all spacing on the viewport-
+     proportional scale. Title shrinks faster than before so the head
+     stays compact on shorter viewports; subtitle caps at a single
+     line of comfortable reading width. */
+  .flavors-bento-head {
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--bento-head-gap);
+    margin: 0 0 var(--bento-head-mb);
+  }
+  .flavors-bento-eyebrow {
+    font-family: var(--font-menu-en);
+    font-size: clamp(10px, 0.75vw, 12px);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .flavors-bento-title {
+    font-family: var(--font-title);
+    font-size: clamp(1.6rem, 3.2vw + 0.4rem, 3rem);
+    color: var(--ink);
+    line-height: 1.05; margin: 0;
+  }
+  .flavors-bento-title rt {
+    font-size: 0.32em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .flavors-bento-sub {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: clamp(12px, 0.85vw + 4px, 14px);
+    color: var(--ink-2);
+    max-width: 52ch; text-align: center;
+    margin: 0;
+  }
+
+  /* Bento card — every card is its OWN flavor world. The card
+     surface takes the flavor's full --flood color (matching the
+     immersion view's canvas commit), text uses --ink-on-flood (the
+     same contrast pair the immersion kana uses, so contrast is
+     guaranteed by construction for both light + dark floods).
+
+     The card contains TWO sibling buttons (.flavor-bento-enter
+     covers ~95% of the card, .flavor-bento-audio is corner-positioned
+     absolute), keeping HTML valid (no button-inside-button) while
+     reading as one cohesive flavor tile. NO ENGLISH on the front —
+     core pedagogical contract (PRODUCT.md §5 + restriction #1). */
+  .flavor-bento-card {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--flood);
+    color: var(--ink-on-flood);
+    border: 1px solid color-mix(in srgb, var(--ink-on-flood) 12%, transparent);
+    border-radius: 10px;
+    padding: var(--bento-pad, 14px);
+    transition: transform .18s ease-out, box-shadow .18s ease-out;
+    width: 100%;
+    list-style: none;
+  }
+  /* Lift on hover. No background change — the flood IS the card's
+     identity; swapping it on hover would lose that. Shadow is tone-
+     matched to the ink so it reads against both light + dark floods. */
+  .flavor-bento-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--ink-on-flood) 45%, transparent);
+  }
+  .flavor-bento-card:focus-within {
+    outline: 2px solid var(--ink-on-flood);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flavor-bento-card { transition: none; }
+    .flavor-bento-card:hover { transform: none; }
+  }
+
+  /* Inner enter button — the click affordance that drives the card
+     into immersion. Covers the image + kana area. Button reset; the
+     visual card belongs to the parent <li class="flavor-bento-card">. */
+  .flavor-bento-enter {
+    appearance: none;
+    background: transparent; border: 0; padding: 0;
+    margin: 0;
+    color: inherit; font: inherit;
+    text-align: left;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    width: 100%;
+  }
+  .flavor-bento-enter:focus { outline: none; }
+  .flavor-bento-enter:active .flavor-bento-image {
+    transform: scale(0.985);
+  }
+  .flavor-bento-image {
+    transition: transform .12s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flavor-bento-enter:active .flavor-bento-image { transform: none; }
+    .flavor-bento-image { transition: none; }
+  }
+
+  /* Image holder. Aspect-ratio 1:1. The food sits transparent on the
+     flood directly — same as the immersion view's hero treatment, just
+     scaled down. The drop-shadow is tone-matched to the ink-on-flood,
+     so light floods get a dark food-shadow and dark floods get a cream
+     halo — keeps the silhouette readable against either polarity. */
+  .flavor-bento-image {
+    width: 100%; aspect-ratio: 1 / 1;
+    margin-bottom: var(--bento-img-gap, 12px);
+    overflow: hidden;
+  }
+  .flavor-bento-image image-slot {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .flavor-bento-image image-slot::part(img),
+  .flavor-bento-image image-slot::part(frame) {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+  /* Override the image-slot's built-in rgba(0,0,0,.04) frame backdrop —
+     the food silhouette sits directly on the card's flood color, no
+     faint dark rectangle dimming the chip/amai/etc. tint behind it. */
+  .flavor-bento-image image-slot::part(frame) {
+    background: transparent;
+  }
+  .flavor-bento-image image-slot::part(img) {
+    filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--ink-on-flood) 32%, transparent));
+  }
+
+  /* Kana label — the JP form, alone, no English nearby. Sized so the
+     longest 5-char words (しょっぱい, つめたい with a stray, sawayaka)
+     fit on one line at any card width. Color inherits from
+     .flavor-bento-card (--ink-on-flood) so contrast is guaranteed
+     against both light + dark floods. */
+  .flavor-bento-kana {
+    font-family: var(--font-title);
+    /* clamp tuned so 5 kana chars fit on a single line at the 5-col
+       desktop card width. Tracking pulled in slightly to help. */
+    font-size: clamp(1.2rem, 1.5vw, 1.6rem);
+    line-height: 1.2;
+    color: var(--ink-on-flood);
+    margin: 0;
+    letter-spacing: 0.01em;
+    /* Belt-and-suspenders: keep the kana on one line even if a card
+       comes out slightly narrower than expected (e.g., a fonts-not-yet-
+       loaded measurement quirk on first paint). */
+    white-space: nowrap;
+  }
+
+  /* ── Immersion state ─────────────────────────────────────────────
+     The "immerse" surface. Full-bleed color flood, thin rail of 10
+     thumbs at top, hero image + huge kana centerpiece, audio button,
+     related-foods placeholder strip, collapsed English drawer at the
+     bottom. The flood color comes from --flood, --ink-on-flood,
+     --chip — all three set on .flavors-frame as inline styles by the
+     renderer when an immersion is mounted.
+
+     Approach: when immersion is mounted, use :has() to expand the
+     three enclosing containers (.main, .main-inner, .flavors-frame)
+     so the wrap can naturally fill the .main column without
+     positioning tricks. The sidebars (188 + 160 + 160 = 508px to
+     the left) stay reachable; the wrap owns everything from sidebar's
+     right edge to viewport's right edge.
+
+     This is what "fullscreen and immersive" means in practice on a
+     page-not-modal: the canvas commits to the flavor without burying
+     the app nav. */
+  .flavors-immersion-wrap {
+    background: var(--flood);
+    color: var(--ink-on-flood);
+  }
+  /* Three :has() rules expand the ancestor chain ONLY when an
+     immersion is mounted in their descendant tree. They snap back
+     to normal sizing when the bento returns.
+
+     The .main rule uses the FULL ancestor chain
+     (.app.show-vocab-sidebar .main + :has(#main-stepper:empty)) so it
+     beats the line ~189 rule that restores padding-top: var(--pad-page)
+     on stepper-empty vocab pages. That rule includes #main-stepper
+     inside its :has(), giving it (1,4,0) specificity — class-only
+     selectors lose. By chaining both :has() filters PLUS the immersion
+     filter, this rule reaches (1,6,0) and wins.
+
+     The scope is surgical: only matches when on a vocab page (.app.show-
+     vocab-sidebar) with an empty stepper (#main-stepper:empty) AND an
+     immersion-mode flavors frame in the descendant tree. Every other
+     vocab page keeps its normal --pad-page padding. */
+  .app.show-vocab-sidebar
+    .main:has(#main-stepper:empty):has(.flavors-frame[data-mode="immersion"]) {
+    padding: 0;
+  }
+  .main-inner:has(.flavors-frame[data-mode="immersion"]) {
+    max-width: none;
+    margin: 0;
+  }
+  .flavors-frame[data-mode="immersion"] {
+    padding: 0;
+    min-height: 100vh;
+  }
+  /* The wrap itself now owns the canvas. Background = flood, color =
+     ink-on-flood, internal padding = --pad-page so content has the
+     same breathing room every other vocab page gets. */
+  .flavors-frame[data-mode="immersion"] .flavors-immersion-wrap {
+    background: var(--flood);
+    color: var(--ink-on-flood);
+    padding: var(--pad-page) var(--pad-page) calc(var(--pad-page) * 1.2);
+    min-height: 100vh;
+    transition: background 500ms cubic-bezier(0.16, 1, 0.3, 1),
+                color 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (max-width: 760px) {
+    .flavors-frame[data-mode="immersion"] .flavors-immersion-wrap {
+      padding: 14px 16px 32px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flavors-frame[data-mode="immersion"] .flavors-immersion-wrap { transition: none; }
+  }
+
+  /* Sticky top rail — redesigned 2026-05-26.
+     Three-column grid:
+       [back-button at left] [thumbs centered] [kbd hint at right]
+     The 1fr/auto/1fr split keeps the thumbs visually centered
+     regardless of the kbd-hint's content width. Back button at left,
+     hint at right, thumbs in the geometric middle.
+
+     Thumbs all carry a solid paper backing always (no more saturate
+     filter that vanished into light floods). Active state = chip-
+     colored ring + slight scale, so the "you are here" reads from
+     across the rail. */
+  .flavor-rail {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0 14px;
+    position: sticky; top: 0;
+    z-index: 5;
+    background: linear-gradient(to bottom, var(--flood) 82%, transparent 100%);
+  }
+  /* Back button — 2×2 grid icon (NOT a left arrow). Semantically
+     "back to the bento overview of all flavors," distinguished
+     visually from "walk one flavor left." Slightly wider than the
+     thumbs (60×44 vs 44×44) so it reads as the rail's own affordance,
+     not as a flavor sitting in the strip. */
+  .flavor-rail-back {
+    justify-self: start;
+    width: 60px; height: 44px;
+    border-radius: 10px;
+    background: color-mix(in oklch, var(--flood) 65%, var(--ink-on-flood) 18%);
+    border: 1px solid color-mix(in srgb, var(--ink-on-flood) 30%, transparent);
+    color: var(--ink-on-flood);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background .15s ease-out, transform .15s ease-out;
+  }
+  .flavor-rail-back:hover {
+    background: color-mix(in oklch, var(--flood) 50%, var(--ink-on-flood) 28%);
+    transform: translateY(-1px);
+  }
+  .flavor-rail-back svg { width: 22px; height: 22px; }
+  .flavor-rail-back:focus-visible {
+    outline: 2px solid var(--ink-on-flood);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flavor-rail-back { transition: none; }
+    .flavor-rail-back:hover { transform: none; }
+  }
+
+  /* Thumb cluster — centered in the middle grid column. */
+  .flavor-rail-thumbs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    max-width: 100%;
+  }
+  .flavor-rail-thumbs::-webkit-scrollbar { display: none; }
+  /* Every thumb is just the transparent food silhouette sitting on
+     the flood — no paper backing, no border, no rectangle behind it.
+     Only the active thumb carries visual chrome: a chip-colored ring
+     (box-shadow) marks "you are here." Hover gets a subtle scale lift
+     so the click affordance reads without re-introducing the
+     rectangle. */
+  .flavor-rail-thumb {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 4px;
+    /* overflow: hidden clips any baked-in edge artifacts (anti-aliased
+       halos / one-pixel strokes on the source PNGs' canvas boundary)
+       to the thumb's box. The active-state chip ring is a box-shadow,
+       which renders OUTSIDE the element's box and is NOT affected by
+       overflow clipping — so the ring still draws cleanly. */
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: transform .18s ease-out, box-shadow .18s ease-out;
+  }
+  .flavor-rail-thumb:hover {
+    transform: translateY(-1px) scale(1.04);
+  }
+  .flavor-rail-thumb.is-active {
+    /* The chip ring is the ONLY differentiator now — no fill, no
+       border-color, just the stroke around the thumb. */
+    box-shadow: 0 0 0 2px var(--chip),
+                0 4px 12px -4px color-mix(in srgb, var(--ink-on-flood) 24%, transparent);
+    transform: scale(1.06);
+  }
+  .flavor-rail-thumb image-slot,
+  .flavor-rail-thumb image-slot::part(img),
+  .flavor-rail-thumb image-slot::part(frame) {
+    width: 100%; height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+  /* Same image-slot frame backdrop override — let the thumb's own
+     paper backing show through unobstructed. */
+  .flavor-rail-thumb image-slot::part(frame) {
+    background: transparent;
+  }
+  .flavor-rail-thumb:focus-visible {
+    outline: 2px solid var(--chip);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flavor-rail-thumb { transition: none; }
+    .flavor-rail-thumb:hover { transform: none; }
+    .flavor-rail-thumb.is-active { transform: none; }
+  }
+
+  /* Keyboard hint — sits on the right of the rail. Only the walking
+     keys live here; ESC + SPACE are in the bottom hint. The kbd
+     elements visually echo physical keys (paper-on-ink chip).
+     Hidden on touch-only devices and narrow viewports. */
+  .flavor-rail-keys {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-menu-en);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--ink-on-flood) 60%, transparent);
+    white-space: nowrap;
+  }
+  .flavor-rail-keys kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    font-size: 11px;
+    min-width: 20px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: color-mix(in oklch, var(--flood) 65%, var(--ink-on-flood) 18%);
+    border: 1px solid color-mix(in srgb, var(--ink-on-flood) 28%, transparent);
+    color: var(--ink-on-flood);
+    line-height: 1;
+  }
+  .flavor-rail-keys-sep {
+    opacity: 0.55;
+    margin: 0 2px;
+  }
+  @media (hover: none) {
+    .flavor-rail-keys { display: none; }
+    .flavor-rail { grid-template-columns: auto 1fr; }
+  }
+  @media (max-width: 900px) {
+    .flavor-rail-keys { display: none; }
+    .flavor-rail { grid-template-columns: auto 1fr; }
+  }
+
+  /* Immersion body — hero image left, kana centerpiece right.
+     Stacked on mobile.
+
+     Sizing system: viewport-proportional clamps (same approach as the
+     bento) so the layout adapts fluidly. The previous min-height:50vh
+     was forcing the body to fill half the viewport, which pushed the
+     "この 味の 食べ物" row below the fold. Removed — the body now
+     collapses to its natural content height, so the cards row reads
+     above the fold on standard viewports. */
+  .flavors-immersion-wrap {
+    --imm-pad-top:    clamp(8px,  1.4vw, 20px);
+    --imm-col-gap:    clamp(20px, 3vw,   40px);
+    --imm-stack-gap:  clamp(8px,  1.2vw, 18px);
+    --imm-img-cap:    clamp(220px, 28vw, 360px);
+    --imm-kana-size:  clamp(2.5rem, 6vw, 6rem);
+  }
+  .flavors-immersion-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--imm-col-gap);
+    align-items: center;
+    max-width: 1280px;
+    margin: var(--imm-pad-top) auto 0;
+    /* The element carries tabindex="-1" so the JS focus()-on-mount can
+       arm the keyboard handlers without requiring a click. tabindex=-1
+       means the user can't tab TO it, so suppressing the visible focus
+       outline is safe — there's no focus-indicator-missing a11y risk. */
+    outline: none;
+  }
+  @media (max-width: 900px) {
+    .flavors-immersion-body {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Hero image. With transparent food images at images/vocab/*.webp,
+     the food sits DIRECTLY on the flood — no paper card around it.
+     This is the committal version of the brief's "color flood as
+     encoding" rule: the food and the flavor share one canvas, not
+     paper-on-flood with a food card on top.
+
+     A CSS filter drop-shadow on the rendered <img> gives the food a
+     soft cast shadow against the flood — depth without chrome.
+
+     Sized via --imm-img-cap so the hero proportionally shrinks on
+     shorter viewports — the cards row can sit fully above the fold. */
+  .flavor-immersion-image {
+    width: 100%; max-width: var(--imm-img-cap, 360px);
+    aspect-ratio: 1 / 1;
+    justify-self: end;
+    /* No background, no border-radius, no box-shadow — the food
+       silhouette IS the visual element. */
+  }
+  @media (max-width: 900px) {
+    .flavor-immersion-image { justify-self: center; max-width: 280px; }
+  }
+  .flavor-immersion-image image-slot,
+  .flavor-immersion-image image-slot::part(img),
+  .flavor-immersion-image image-slot::part(frame) {
+    width: 100%; height: 100%;
+    display: block;
+    /* contain (not cover) so the food's transparent edges aren't
+       cropped — the silhouette breathes into the flood. */
+    object-fit: contain;
+  }
+  /* Override the image-slot's built-in rgba(0,0,0,.04) frame backdrop
+     so the food silhouette sits clean on the flood, not on a faint
+     dark rectangle. */
+  .flavor-immersion-image image-slot::part(frame) {
+    background: transparent;
+  }
+  /* Drop-shadow goes on the inner <img> (filter, not box-shadow) so
+     it follows the food's silhouette, not a rectangular bounding box.
+     Subtle: the same ink color as the rest of the chrome, mixed into
+     the flood for a tone-matched shadow rather than a hard black. */
+  .flavor-immersion-image image-slot::part(img) {
+    filter: drop-shadow(0 12px 24px color-mix(in srgb, var(--ink-on-flood) 28%, transparent));
+  }
+
+  /* Kana centerpiece — the huge JP form. Sized via clamp so the
+     character lands as a *visual gestalt* at any viewport — a
+     learner sees a shape, not a string to decode.
+
+     One-line guarantee: the kana element uses white-space: nowrap so
+     5-char words (しょっぱい, つめたい, さわやか) never wrap to a
+     second line, even on narrow viewports. The clamp ceiling is
+     calibrated so 5 kana × 0.95em per char ≈ 4.75 × 6rem (96px) =
+     ~456px wide, which fits comfortably in the right column of a
+     1280px-max body grid (column = ~580px after gap). */
+  .flavor-immersion-identity {
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: var(--imm-stack-gap, 18px);
+    color: var(--ink-on-flood);
+  }
+  @media (max-width: 900px) {
+    .flavor-immersion-identity { align-items: center; text-align: center; }
+  }
+  .flavor-immersion-kana {
+    font-family: var(--font-title);
+    font-size: var(--imm-kana-size, clamp(2.5rem, 6vw, 6rem));
+    line-height: 1;
+    margin: 0;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    /* Kanji + okurigana stack inside this element — use a ruby for
+       any kanji that needs furigana support. */
+  }
+  .flavor-immersion-kana ruby rt {
+    font-family: var(--font-body);
+    font-size: 0.22em;
+    letter-spacing: 0.05em;
+  }
+  .flavor-immersion-food {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    line-height: 1.3;
+    margin: 0;
+    color: color-mix(in srgb, var(--ink-on-flood) 78%, transparent);
+    font-style: italic;
+  }
+
+  /* Audio button — icon-only circle. The speaker glyph is enough —
+     no Japanese label, no English. Sized to match the kana's gravity
+     (56×56 — a focal action, not a chrome control). Same color
+     logic as before (ink-on-flood bg, flood as icon color) for
+     contrast safety; chip ring stays for flavor identity. */
+  .flavor-immersion-audio {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--ink-on-flood);
+    color: var(--flood);
+    border: 1px solid color-mix(in srgb, var(--chip) 70%, var(--ink-on-flood) 30%);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--chip) 22%, transparent);
+    cursor: pointer;
+    transition: transform .15s ease-out, box-shadow .15s ease-out;
+  }
+  .flavor-immersion-audio:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--chip) 36%, transparent);
+  }
+  .flavor-immersion-audio:focus-visible {
+    outline: 2px solid var(--ink-on-flood);
+    outline-offset: 4px;
+  }
+  .flavor-immersion-audio svg { width: 22px; height: 22px; }
+  @media (prefers-reduced-motion: reduce) {
+    .flavor-immersion-audio { transition: none; }
+    .flavor-immersion-audio:hover { transform: none; }
+  }
+
+  /* Related-foods placeholder strip. Phase 3 will populate this
+     with real edible thumbnails (the reverse-browse cross-link).
+     Phase 1 ships an honest "Phase 3 coming" notice rather than
+     leaving the section empty. */
+  .flavor-related {
+    max-width: 1280px;
+    margin: 48px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid color-mix(in srgb, var(--ink-on-flood) 18%, transparent);
+  }
+  .flavor-related-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 14px;
+    font-family: var(--font-menu-en);
+    color: color-mix(in srgb, var(--ink-on-flood) 70%, transparent);
+  }
+  .flavor-related-head .ja {
+    font-family: var(--font-title);
+    font-size: 18px;
+    color: var(--ink-on-flood);
+  }
+  .flavor-related-head .en {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .flavor-related-placeholder {
+    padding: 22px;
+    border: 1px dashed color-mix(in srgb, var(--ink-on-flood) 28%, transparent);
+    border-radius: 8px;
+    font-family: var(--font-menu-en); font-style: italic;
+    color: color-mix(in srgb, var(--ink-on-flood) 60%, transparent);
+    font-size: 14px;
+    text-align: center;
+  }
+  /* Cross-link row from flavor immersion → edibles detail. The cards
+     sit on the flood, with a paper-cream backing so the food images
+     (transparent PNGs) have something to lift off against. Click any
+     card to jump straight into that edible's detail spread.
+
+     Grid auto-fills as many ~120px cards per row as the canvas can
+     hold, wrapping to additional rows when more cards exist. No
+     horizontal scroll — every related food is visible at a glance. */
+  .flavor-related-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+  .flavor-related-card {
+    display: flex; flex-direction: column; gap: 8px;
+    background: color-mix(in oklch, var(--paper-2) 88%, var(--flood) 12%);
+    border: 1px solid color-mix(in srgb, var(--ink-on-flood) 18%, transparent);
+    border-radius: 8px;
+    padding: 10px 10px 12px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s;
+    text-align: left;
+    font: inherit; color: inherit;
+  }
+  .flavor-related-card:hover {
+    background: var(--paper-2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--ink-on-flood) 40%, transparent);
+  }
+  .flavor-related-card:focus-visible {
+    outline: 2px solid var(--ink-on-flood);
+    outline-offset: 2px;
+  }
+  /* Example variant — standalone PNG references that don't live in
+     the edibles database (mazui's rotten/moldy set is the canonical
+     case). Rendered as non-clickable <div>, so cursor/hover/focus
+     affordances are suppressed; the card is purely informational. */
+  .flavor-related-card.is-example {
+    cursor: default;
+  }
+  .flavor-related-card.is-example:hover {
+    background: color-mix(in oklch, var(--paper-2) 88%, var(--flood) 12%);
+    transform: none;
+    box-shadow: none;
+  }
+  /* Verb-prefix split on example cards. The verb (kusatta/kabita/
+     shioreta) renders slightly smaller and color-tinted so the
+     learner sees at a glance which "gone-bad" form pairs with the
+     food. The noun keeps the default ink weight — that's the actual
+     food name they're learning. */
+  .flavor-related-name .example-verb {
+    font-family: var(--font-title);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    display: inline;
+    margin-right: 2px;
+  }
+  .flavor-related-name .example-noun {
+    font-family: var(--font-title);
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    display: inline;
+  }
+  /* Verb color tokens — three classes shared by the example-card
+     verb prefix AND the chip in the verb-notes section below. The
+     hues are chosen for legibility against the mazui flood (a pale
+     yellow-green #d8d9b0): yellow-green sits in the warm side of
+     the spectrum, teal stretches cooler, forest-green grounds it. */
+  .verb-kusatta  { color: #8a7a14; }   /* mustardy yellow-green */
+  .verb-kabita   { color: #1e7575; }   /* teal */
+  .verb-shioreta { color: #3e7a30; }   /* forest green */
+
+  /* Verb-grammar notes section. Sits below the FLAVOR_EXAMPLES row,
+     explaining the three "this food has gone bad" verbs the cards
+     are labeled with. Each row carries an inline chip in the verb's
+     tinted color matching the card labels above, plus the meaning
+     and what kinds of food the verb pairs with. */
+  .flavor-verb-notes {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: color-mix(in oklch, var(--paper-2) 92%, var(--flood) 8%);
+    border: 1px solid color-mix(in srgb, var(--ink-on-flood) 14%, transparent);
+    border-radius: 8px;
+  }
+  .flavor-verb-intro {
+    margin: 0 0 12px;
+    font-family: var(--font-menu-en);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .flavor-verb-list {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    gap: 10px;
+  }
+  .flavor-verb-row {
+    display: grid;
+    grid-template-columns: minmax(120px, auto) 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+  }
+  @media (max-width: 760px) {
+    .flavor-verb-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+  .flavor-verb-chip {
+    display: inline-flex; align-items: baseline;
+    gap: 8px;
+    padding: 4px 10px;
+    background: var(--paper);
+    border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .flavor-verb-kanji {
+    font-family: var(--font-title);
+    font-size: 16px;
+  }
+  .flavor-verb-romaji {
+    font-family: var(--font-menu-en);
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: color-mix(in srgb, currentColor 70%, var(--ink-2));
+  }
+  .flavor-verb-meaning {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .flavor-verb-pairs {
+    font-family: var(--font-menu-en);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-3);
+    text-align: right;
+  }
+  @media (max-width: 760px) {
+    .flavor-verb-pairs { text-align: left; }
+  }
+  .flavor-related-image {
+    width: 100%; aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .flavor-related-image image-slot,
+  .flavor-related-image image-slot::part(img),
+  .flavor-related-image image-slot::part(frame) {
+    width: 100%; height: 100%; display: block;
+    object-fit: contain;
+  }
+  .flavor-related-image image-slot::part(frame) {
+    background: transparent;
+  }
+  .flavor-related-image image-slot::part(img) {
+    filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--ink) 18%, transparent));
+  }
+  .flavor-related-name {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .flavor-related-name .ja {
+    font-family: var(--font-title);
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flavor-related-card { transition: none; }
+    .flavor-related-card:hover { transform: none; }
+  }
+
+  /* Drawer — collapsed English + cultural notes. Native <details>
+     so a11y is free. Sits at the bottom of the immersion view.
+     Opening it raises the visual weight: surface-200 paper-deep,
+     stronger border. */
+  .flavor-drawer {
+    max-width: 1280px;
+    margin: 32px auto 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink-on-flood) 14%, transparent);
+    padding-top: 16px;
+  }
+  .flavor-drawer-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    font-family: var(--font-menu-en);
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--ink-on-flood) 70%, transparent);
+    list-style: none;
+    user-select: none;
+    padding: 6px 0;
+  }
+  .flavor-drawer-toggle::-webkit-details-marker { display: none; }
+  .flavor-drawer-toggle::before {
+    content: '▸';
+    transition: transform .2s ease-out;
+    display: inline-block;
+    font-size: 14px;
+  }
+  .flavor-drawer[open] .flavor-drawer-toggle::before {
+    transform: rotate(90deg);
+  }
+  .flavor-drawer-body {
+    margin-top: 12px;
+    padding: 18px 22px;
+    background: color-mix(in oklch, var(--flood) 75%, var(--ink-on-flood) 8%);
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--ink-on-flood) 14%, transparent);
+    display: grid; gap: 12px;
+    max-width: 70ch;
+  }
+  .flavor-drawer-body .en-gloss {
+    font-family: var(--font-menu-en);
+    font-size: 18px; font-weight: 500;
+    color: var(--ink-on-flood);
+    margin: 0;
+  }
+  .flavor-drawer-body .notes {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 15px; line-height: 1.6;
+    color: color-mix(in srgb, var(--ink-on-flood) 85%, transparent);
+    margin: 0;
+  }
+
+  /* Keyboard hint — small footer note, visible only on desktop
+     pointer devices. Mobile users don't have keys. */
+  .flavor-keys-hint {
+    max-width: 1280px;
+    margin: 28px auto 0;
+    padding-top: 12px;
+    font-family: var(--font-menu-en);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--ink-on-flood) 50%, transparent);
+    text-align: center;
+  }
+  @media (hover: none) {
+    .flavor-keys-hint { display: none; }
+  }
+
+  /* Cross-fade transition between bento and immersion. Applied by
+     the renderer briefly during state swap (.is-fading-out → swap
+     → fade-in via default opacity:1 transition). Targets the actual
+     wrap elements rendered by flavorsPageHTML — .flavors-bento-wrap
+     and .flavors-immersion-wrap. */
+  .flavors-frame.is-fading-out > .flavors-bento-wrap,
+  .flavors-frame.is-fading-out > .flavors-immersion-wrap {
+    opacity: 0;
+    transition: opacity 240ms cubic-bezier(0.4, 0, 1, 1);
+  }
+  .flavors-frame > .flavors-bento-wrap,
+  .flavors-frame > .flavors-immersion-wrap {
+    opacity: 1;
+    transition: opacity 260ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flavors-frame.is-fading-out > .flavors-bento-wrap,
+    .flavors-frame.is-fading-out > .flavors-immersion-wrap,
+    .flavors-frame > .flavors-bento-wrap,
+    .flavors-frame > .flavors-immersion-wrap {
+      transition: none;
+      opacity: 1;
+    }
+  }
+
+  /* ── End Flavors page ────────────────────────────────────────── */
+
+  /* ─────────────────────────────────────────────────────────────────
+     Edibles database (Phase 3 of the Flavors & Textures sub-system).
+     Three views in one container, gated by data-mode:
+       data-mode="categories"  → 8 category tiles
+       data-mode="items"       → grid of items in the active category
+       data-mode="detail"      → single item spread w/ flavor + texture
+                                 badges, season, notes drawer
+
+     Unlike the Flavors page, this surface does NOT flood color — the
+     items live on the paper canvas, with chip-tinted highlights for
+     flavor/texture badges. Editorial chrome inherited from the wider
+     app; no signature decisions specific to the database, by design
+     (browse + lookup, not contemplation).
+     ───────────────────────────────────────────────────────────────── */
+  .edibles-frame {
+    padding: 24px 32px 48px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  @media (max-width: 760px) {
+    .edibles-frame { padding: 16px 16px 32px; }
+  }
+
+  /* View gating — show one view at a time. */
+  .edibles-frame[data-mode="categories"] .edibles-items,
+  .edibles-frame[data-mode="categories"] .edibles-detail,
+  .edibles-frame[data-mode="items"]      .edibles-categories,
+  .edibles-frame[data-mode="items"]      .edibles-detail,
+  .edibles-frame[data-mode="detail"]     .edibles-categories,
+  .edibles-frame[data-mode="detail"]     .edibles-items {
+    display: none;
+  }
+
+  /* Page header — eyebrow + title + scene line. Shared across the
+     categories view and the items view (suppressed in detail view
+     where the item spread is its own thing). */
+  .edibles-head {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 6px; margin: 0 0 32px;
+  }
+  .edibles-eyebrow {
+    font-family: var(--font-menu-en);
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .edibles-title {
+    font-family: var(--font-title);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    color: var(--ink); margin: 0; line-height: 1;
+  }
+  .edibles-sub {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 14px; color: var(--ink-2);
+    max-width: 52ch; text-align: center;
+  }
+  .edibles-frame[data-mode="detail"] .edibles-head { display: none; }
+  @media (max-width: 760px) {
+    .edibles-head { margin-bottom: 22px; }
+  }
+
+  /* Container for the row of back buttons on the detail spread. On
+     normal arrival, it carries one button (back to category). When
+     the user came from a flavor's "foods that taste like X" row, a
+     second button appears next to it labeled with the flavor's kana
+     + chip color. Both wrap to a new line on narrow viewports. */
+  .edibles-detail-backs {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 18px;
+  }
+  /* Flavor-variant back button: same pill shape as the category one,
+     leading flavorball image tinted in the source flavor's color. The
+     button is otherwise identical so it sits cleanly next to the
+     category back button without competing for attention. */
+  .edibles-back.edibles-back-to-flavor {
+    margin: 0;
+  }
+  .edibles-back-ball {
+    width: 22px; height: 22px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+  .edibles-back.edibles-back-to-flavor:hover {
+    background: color-mix(in oklch, var(--paper) 80%, var(--chip) 20%);
+    color: var(--ink);
+    border-color: var(--chip);
+  }
+  /* Kana variant — used in the detail-view back row where labels are
+     Japanese (category kana + flavor kana). Drops uppercase / wide
+     letter-spacing (both ugly applied to hiragana), swaps to the title
+     font, and locks a uniform pill height so the two buttons line up
+     even though one carries a 16px arrow and the other a 22px ball. */
+  .edibles-back.edibles-back-kana {
+    font-family: var(--font-title);
+    font-size: 16px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    min-height: 40px;
+    padding: 6px 14px 6px 10px;
+    color: var(--ink);
+  }
+  .edibles-back.edibles-back-kana svg {
+    width: 18px; height: 18px;
+  }
+
+  /* ── Back button — shared across items and detail views. ──
+     A grid icon for items→categories ("back to all categories"),
+     a left chevron for detail→items ("back to this category"). The
+     two are styled identically and absolutely positioned at the top-
+     left of the .edibles-frame body. */
+  .edibles-back {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin: 0 0 18px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 999px;
+    padding: 8px 14px 8px 10px;
+    color: var(--ink-2);
+    font-family: var(--font-menu-en);
+    font-size: 12px; letter-spacing: 0.10em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background .15s, color .15s, transform .15s;
+  }
+  .edibles-back:hover {
+    background: var(--paper);
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .edibles-back svg { width: 16px; height: 16px; }
+  .edibles-back:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-back { transition: none; }
+    .edibles-back:hover { transform: none; }
+  }
+
+  /* ── View 1: Category browse ──────────────────────────────────
+     8 paper tiles, 4×2 grid on desktop. Empty categories (items.length
+     === 0) render dimmed with a coming-soon badge. */
+  .edibles-categories {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 1100px) {
+    .edibles-categories { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .edibles-categories { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  }
+  .edibles-category-tile {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 10px;
+    padding: 22px 18px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s;
+    text-align: center;
+    font: inherit; color: inherit;
+    position: relative;
+  }
+  .edibles-category-tile:hover {
+    background: var(--paper);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px -6px rgba(60, 40, 10, 0.18);
+  }
+  .edibles-category-tile:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .edibles-category-tile.is-empty {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .edibles-category-tile.is-empty:hover {
+    transform: none; box-shadow: none; background: var(--paper-2);
+  }
+
+  /* Stacked item thumbnails — three representative items per category.
+     Transparent PNGs sit directly on the tile (no white card, no border).
+     A drop-shadow filter follows the silhouette so the depth still
+     reads. Center thumb is largest and z-index frontmost; left/right
+     are smaller, offset, and rotated. */
+  .edibles-category-stack {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+  }
+  .edibles-category-stack-img {
+    position: absolute;
+    width: 77px; height: 77px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    filter: drop-shadow(0 3px 6px rgba(60, 40, 10, 0.28));
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .25s cubic-bezier(.2,.7,.2,1);
+    will-change: transform;
+  }
+  .edibles-category-stack-img image-slot {
+    width: 100%; height: 100%; display: block;
+  }
+  .edibles-category-stack-img image-slot::part(frame) {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+  .edibles-category-stack-img[data-pos="left"]   {
+    transform: translateX(-36px) rotate(-9deg);
+    z-index: 1;
+  }
+  .edibles-category-stack-img[data-pos="right"]  {
+    transform: translateX(36px)  rotate(9deg);
+    z-index: 2;
+  }
+  .edibles-category-stack-img[data-pos="center"] {
+    transform: translateY(-4px);
+    z-index: 3;
+    width: 86px; height: 86px;
+    filter: drop-shadow(0 4px 9px rgba(60, 40, 10, 0.32));
+  }
+  .edibles-category-tile:hover .edibles-category-stack-img[data-pos="left"]   {
+    transform: translateX(-48px) translateY(-2px) rotate(-12deg);
+  }
+  .edibles-category-tile:hover .edibles-category-stack-img[data-pos="right"]  {
+    transform: translateX(48px)  translateY(-2px) rotate(12deg);
+  }
+  .edibles-category-tile:hover .edibles-category-stack-img[data-pos="center"] {
+    transform: translateY(-7px) scale(1.04);
+  }
+  .edibles-category-tile.is-empty .edibles-category-stack { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-category-stack-img { transition: none; }
+    .edibles-category-tile:hover .edibles-category-stack-img[data-pos="left"],
+    .edibles-category-tile:hover .edibles-category-stack-img[data-pos="right"],
+    .edibles-category-tile:hover .edibles-category-stack-img[data-pos="center"] {
+      transform: none;
+    }
+    .edibles-category-stack-img[data-pos="left"]   { transform: translateX(-36px) rotate(-9deg); }
+    .edibles-category-stack-img[data-pos="right"]  { transform: translateX(36px)  rotate(9deg); }
+    .edibles-category-stack-img[data-pos="center"] { transform: translateY(-4px); }
+  }
+  .edibles-category-glyph {
+    font-family: var(--font-title);
+    font-size: 56px;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .edibles-category-furigana {
+    font-family: var(--font-body);
+    font-size: 20px; letter-spacing: 0.05em;
+    color: var(--ink-2);
+    margin-top: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-category-tile { transition: none; }
+    .edibles-category-tile:hover { transform: none; }
+  }
+
+  /* ── View 2: Item grid in a category ──────────────────────────
+     Denser than the categories grid — items are smaller, more per
+     row. Each card carries image + kana + 2-3 small flavor chips.  */
+  .edibles-items {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) {
+    .edibles-items { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .edibles-items { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  }
+  .edibles-item-card {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 10px;
+    padding: 12px 12px 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s;
+    text-align: left;
+    font: inherit; color: inherit;
+  }
+  .edibles-item-card:hover {
+    background: var(--paper);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px -6px rgba(60, 40, 10, 0.18);
+  }
+  .edibles-item-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .edibles-item-image {
+    width: 100%; aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .edibles-item-image image-slot,
+  .edibles-item-image image-slot::part(img),
+  .edibles-item-image image-slot::part(frame) {
+    width: 100%; height: 100%; display: block;
+    object-fit: contain;
+  }
+  /* Override the image-slot's built-in rgba(0,0,0,.04) frame backdrop —
+     we want the transparent food to sit directly on the card's paper
+     surface, no faint dark rectangle behind it. */
+  .edibles-item-image image-slot::part(frame) {
+    background: transparent;
+  }
+  .edibles-item-image image-slot::part(img) {
+    filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--ink) 18%, transparent));
+  }
+  .edibles-item-name {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .edibles-item-kana {
+    font-family: var(--font-title);
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .edibles-item-chips {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 2px;
+  }
+  /* Small chip pip — flavorball image + kana label. The flavorball
+     PNG (transparent, circular, color built into the asset) sits as
+     a tiny visual identifier of which flavor this item carries.
+     Browser scales the PNG down at render — Phase 3 polish can
+     re-export the flavorballs at 32×32 to drop the per-page weight. */
+  .edibles-item-pip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-body); font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1;
+  }
+  .edibles-item-pip-ball {
+    width: 22px; height: 22px;
+    display: inline-block;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-item-card { transition: none; }
+    .edibles-item-card:hover { transform: none; }
+  }
+
+  /* ── View 3: Item detail spread ──────────────────────────────
+     Two-column on desktop: hero image left (large square),
+     identity + badges + notes on the right. Stacked on mobile. */
+  .edibles-detail {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .edibles-detail { grid-template-columns: 1fr; gap: 28px; }
+  }
+  .edibles-detail-hero {
+    width: 100%; max-width: 480px;
+    aspect-ratio: 1 / 1;
+    justify-self: end;
+  }
+  @media (max-width: 900px) {
+    .edibles-detail-hero { justify-self: center; max-width: 360px; }
+  }
+  .edibles-detail-hero image-slot,
+  .edibles-detail-hero image-slot::part(img),
+  .edibles-detail-hero image-slot::part(frame) {
+    width: 100%; height: 100%; display: block;
+    object-fit: contain;
+  }
+  /* Override the image-slot's built-in rgba(0,0,0,.04) frame backdrop —
+     the detail hero is a clean spread; the food silhouette floats on
+     the canvas paper, not on a faint dark rectangle. */
+  .edibles-detail-hero image-slot::part(frame) {
+    background: transparent;
+  }
+  .edibles-detail-hero image-slot::part(img) {
+    filter: drop-shadow(0 16px 28px color-mix(in srgb, var(--ink) 24%, transparent));
+  }
+
+  .edibles-detail-body {
+    display: flex; flex-direction: column; gap: 20px;
+    min-width: 0;
+  }
+  /* Identity stack: kanji huge, kana below, romaji small, en italic. */
+  .edibles-detail-identity {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .edibles-detail-kanji {
+    font-family: var(--font-title);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1;
+    color: var(--ink); margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .edibles-detail-kanji ruby rt {
+    font-family: var(--font-body);
+    font-size: 0.25em;
+    letter-spacing: 0.05em;
+  }
+  /* When there's no kanji, render the kana big instead (loanwords). */
+  .edibles-detail-kanji.is-kana-only {
+    font-size: clamp(2.5rem, 5vw, 4.2rem);
+  }
+  .edibles-detail-kana {
+    font-family: var(--font-title);
+    font-size: 22px;
+    color: var(--ink-2);
+    margin: 0;
+  }
+  .edibles-detail-romaji {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 14px; color: var(--ink-3);
+    margin: 0;
+    letter-spacing: 0.04em;
+  }
+
+  /* Badge rows — flavor (clickable, dot + kana) and texture (display
+     only, kana on tinted paper). Season is a third row. */
+  .edibles-detail-badges {
+    display: flex; flex-direction: column; gap: 14px;
+    padding: 16px 18px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 10px;
+  }
+  .edibles-badge-row {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 8px;
+  }
+  .edibles-badge-label {
+    font-family: var(--font-menu-en);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-3);
+    flex-shrink: 0;
+    min-width: 64px;
+  }
+  /* Flavor badge: chip-color dot + kana label, clickable, jumps to
+     the flavor immersion. The dot color comes from the flavor's own
+     --chip token (looked up by id in the renderer). */
+  .edibles-flavor-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px 6px 8px;
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .15s;
+  }
+  .edibles-flavor-badge:hover {
+    background: color-mix(in oklch, var(--paper) 80%, var(--badge-chip, var(--gold-soft)) 20%);
+    border-color: var(--badge-chip, var(--gold-soft));
+    transform: translateY(-1px);
+  }
+  .edibles-flavor-badge:focus-visible {
+    outline: 2px solid var(--badge-chip, var(--accent));
+    outline-offset: 2px;
+  }
+  .edibles-flavor-badge-ball {
+    width: 28px; height: 28px;
+    display: inline-block;
+    object-fit: contain;
+    flex-shrink: 0;
+    /* Slight negative margin lets the ball overhang the padding so the
+       round shape reads at full size against the badge's pill outline. */
+    margin: -4px 0;
+  }
+  /* Texture badge: display only (no click target — Phase 2 wires the
+     textures page). Kana on a slightly tinted background. */
+  .edibles-texture-badge {
+    padding: 6px 12px;
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+  }
+  /* Season chip: even quieter. */
+  .edibles-season-chip {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px dashed color-mix(in srgb, var(--ink-3) 50%, transparent);
+    border-radius: 4px;
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-flavor-badge { transition: none; }
+    .edibles-flavor-badge:hover { transform: none; }
+  }
+
+  /* Notes block — long-form prose about the item. Editorial body
+     copy: serif italic English, comfortable measure. */
+  .edibles-detail-notes {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 64ch;
+    margin: 0;
+  }
+
+  /* ── Similar items reverse-browse row (Phase 4) ─────────────
+     Items elsewhere in the database sharing a flavor or texture
+     with the current item. Same paper-tile aesthetic as the items
+     grid, but compact (110px wide cards) and horizontally scrolling
+     so a wider connective set can sit in a single row. */
+  .edibles-detail-similar {
+    margin-top: 16px;
+  }
+  .edibles-similar-head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .edibles-similar-head .ja {
+    font-family: var(--font-title);
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .edibles-similar-head .en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .edibles-similar-row {
+    display: flex; gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--paper-edge) transparent;
+  }
+  .edibles-similar-card {
+    flex: 0 0 120px;
+    display: flex; flex-direction: column; gap: 8px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    padding: 10px 10px 12px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s;
+    text-align: left;
+    font: inherit; color: inherit;
+  }
+  .edibles-similar-card:hover {
+    background: var(--paper);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px -6px rgba(60, 40, 10, 0.20);
+  }
+  .edibles-similar-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .edibles-similar-image {
+    width: 100%; aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .edibles-similar-image image-slot,
+  .edibles-similar-image image-slot::part(img),
+  .edibles-similar-image image-slot::part(frame) {
+    width: 100%; height: 100%; display: block;
+    object-fit: contain;
+  }
+  .edibles-similar-image image-slot::part(frame) {
+    background: transparent;
+  }
+  .edibles-similar-image image-slot::part(img) {
+    filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--ink) 18%, transparent));
+  }
+  .edibles-similar-name {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .edibles-similar-name .ja {
+    font-family: var(--font-title);
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+  .edibles-similar-name .en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 11px;
+    color: var(--ink-3);
+    overflow-wrap: anywhere;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-similar-card { transition: none; }
+    .edibles-similar-card:hover { transform: none; }
+  }
+
+  /* Empty-state for unpopulated categories (when the user clicks a
+     coming-soon tile). */
+  .edibles-empty-grid {
+    padding: 48px 24px;
+    text-align: center;
+    font-family: var(--font-menu-en); font-style: italic;
+    color: var(--ink-3);
+    background: var(--paper-2);
+    border: 1px dashed var(--paper-edge);
+    border-radius: 10px;
+  }
+  /* ── End Edibles page ────────────────────────────────────────── */
 
   /* ── Food card dialog ────────────────────────────────────────────
      Backdrop dims the page, modal sits centered with the dish image,
@@ -11988,6 +13572,30 @@ const APP = {
     return v;
   })(),
   vocabPageIdx: 0,
+  // Flavors page (Phase 1 of the Flavors & Textures sub-system). Holds
+  // the active flavor id when the user has drilled into a flavor's
+  // immersion view; null when the bento map is showing. Persisted so
+  // a session-resume lands the user back in the flavor they were
+  // sitting with — the page is a contemplative surface, not a quiz,
+  // and breaking immersion across reloads would break the contract.
+  flavorId:     lsGet('jp:flavorId', null),
+  // Edibles database (Phase 3 of the sub-system). Two state slots
+  // drive three views:
+  //   edibleCategory=null, edibleItem=null   → category-browse (8 tiles)
+  //   edibleCategory='kudamono', item=null   → item-grid in that category
+  //   edibleCategory='kudamono', item='ringo'→ item-detail spread
+  // Both persisted; reload resumes wherever the user was.
+  edibleCategory: lsGet('jp:edibleCategory', null),
+  edibleItem:     lsGet('jp:edibleItem', null),
+  // Cross-link breadcrumb: when the user navigates from a flavor's
+  // "foods that taste like X" row into an edible detail, this slot
+  // records which flavor they came from. The edible-detail spread
+  // renders a second back button labeled with the flavor's kana so
+  // the user can bounce back to that flavor's color world. Cleared
+  // when the user navigates up out of detail view (or jumps into a
+  // different flavor via a badge); preserved when walking sideways
+  // through "similar items" since the flavor context still applies.
+  edibleFromFlavor: lsGet('jp:edibleFromFlavor', null),
   // Migrate legacy class ids: 'weather' → 'nature', 'doors' → 'rooms'.
   flashClassId: (() => {
     const v = lsGet('jp:flashClass', 'basic');
@@ -13864,6 +15472,54 @@ function renderMain() {
   else if (APP.section === 'dictionary') renderDictionary(el);
 }
 
+// Reset every piece of book-local state. Called whenever the user
+// clicks a book card in either sidebar (the books-strip column on the
+// left, or the per-class books sidebar). The contract is "clicking a
+// menu item lands you at page 1 of that flow" — that's only true if
+// the previous flow's drill-state is wiped first. Without this
+// helper, switching to Flavors would resume on whatever flavor
+// immersion the user last looked at; switching to Edibles would
+// resume on the item-detail page they last opened; switching to a
+// restaurant would resume on whatever scene step they were on.
+//
+// Fields reset:
+//   vocabPageIdx       — pager position inside a paged book → step 1
+//   flavorId           → null (back to the bento map)
+//   edibleCategory     → null (back to the 8-tile category browse)
+//   edibleItem         → null
+//   edibleFromFlavor   → null (clears the cross-link breadcrumb)
+//   APP.scenes[bookId] — the restaurant scene flow → fresh state
+//
+// Same handler covers both clicking a different book AND re-clicking
+// the currently-active one — the "menu click = fresh start" contract
+// is uniform.
+function resetBookEntryState(bookId) {
+  APP.vocabPageIdx = 0;
+  if (APP.flavorId !== null) {
+    APP.flavorId = null;
+    lsSet('jp:flavorId', null);
+  }
+  if (APP.edibleCategory !== null) {
+    APP.edibleCategory = null;
+    lsSet('jp:edibleCategory', null);
+  }
+  if (APP.edibleItem !== null) {
+    APP.edibleItem = null;
+    lsSet('jp:edibleItem', null);
+  }
+  if (APP.edibleFromFlavor !== null) {
+    APP.edibleFromFlavor = null;
+    lsSet('jp:edibleFromFlavor', null);
+  }
+  // Restaurant scene flows live in APP.scenes[bookId]. Reset only the
+  // clicked book's scene — leave other restaurants' progress intact
+  // so the user can resume them later.
+  if (APP.scenes && bookId && APP.scenes[bookId] && typeof freshSceneState === 'function') {
+    APP.scenes[bookId] = freshSceneState();
+    if (typeof saveSceneState === 'function') saveSceneState();
+  }
+}
+
 // ── Vocab sidebar ───────────────────────────────────────────────────────
 function renderVocabSidebar() {
   const el = document.getElementById('vocab-sidebar');
@@ -13977,9 +15633,12 @@ function renderVocabBooksSidebar() {
 
   el.querySelectorAll('[data-vocab-book]').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.vocabBook === APP.vocabBookId) return;
-      APP.vocabBookId = btn.dataset.vocabBook;
-      APP.vocabPageIdx = 0;
+      // No early-return on same-book clicks — the contract is that
+      // every sidebar click resets the flow to page 1. Re-clicking
+      // the active book is a deliberate "start over" gesture.
+      const newId = btn.dataset.vocabBook;
+      APP.vocabBookId = newId;
+      resetBookEntryState(newId);
       lsSet('jp:vocabBook', APP.vocabBookId);
       renderVocab(document.getElementById('main-inner'));
       renderVocabBooksSidebar();
@@ -14087,11 +15746,28 @@ function renderVocab(container) {
     renderVocabPage(book, page);
   } else {
     // Interactive books are routed by their own flag:
+    //  - isComingSoon → renders the empty-state notice; takes
+    //    precedence over the other flags so an `isExperience` book
+    //    can still be visually grouped with the interactive entries
+    //    in the sidebar while showing "coming soon" in the body.
+    //  - isFlavorsPage → the bento → drill-in immersion engine for
+    //    the Flavors page (Phase 1 of the Flavors & Textures sub-
+    //    system). Phase 2 textures will reuse the same engine via an
+    //    isTexturesPage flag.
     //  - isFoodGallery → the food-SVG reference gallery
     //  - isExperience → the random-restaurant scene engine
     // Anything else with no pages shows "coming soon".
     const pageEl = document.getElementById('vocab-page-content');
-    if (book && book.isFoodGallery) {
+    if (book && book.isComingSoon) {
+      pageEl.innerHTML =
+        `<div class="empty-state">${escHTML(book.titleEn)} — coming soon.</div>`;
+    } else if (book && book.isFlavorsPage) {
+      pageEl.innerHTML = flavorsPageHTML(book);
+      wireFlavorsPageHandlers(book);
+    } else if (book && book.isEdiblesPage) {
+      pageEl.innerHTML = ediblesPageHTML(book);
+      wireEdiblesPageHandlers(book);
+    } else if (book && book.isFoodGallery) {
       pageEl.innerHTML = foodGalleryHTML();
     } else if (book && book.isExperience) {
       renderExperience();
@@ -14114,8 +15790,12 @@ function renderVocab(container) {
   });
   container.querySelectorAll('[data-book]').forEach(btn => {
     btn.addEventListener('click', () => {
-      APP.vocabBookId = btn.dataset.book;
-      APP.vocabPageIdx = 0;
+      // Always reset the book's flow state — every menu click is a
+      // "page 1" gesture, even when re-clicking the active book. See
+      // resetBookEntryState() for the full list of slots wiped.
+      const newId = btn.dataset.book;
+      APP.vocabBookId = newId;
+      resetBookEntryState(newId);
       lsSet('jp:vocabBook', APP.vocabBookId);
       renderVocab(container);
     });
@@ -14371,6 +16051,106 @@ function explanationHTML(book, page, expBtn) {
 // category, with a small food-SVG thumb on the left when available.
 // Not interactive — pure reference. Reuses the existing scene-menu
 // row visual so it reads like "what you'd see on a real menu here."
+// Build the visual food-gallery header that sits at the top of every
+// menu page. Scans the menu's items[].foodImg values against the
+// FOOD_GALLERY data (a parallel set keyed by image filename). Any
+// match is rendered as a `.food-card` — the same image-heavy card the
+// food vocabulary page uses — grouped by FOOD_GALLERY section
+// (ramen, sushi, dumplings, drinks, etc.). Clicks open the same
+// cultural-note dialog the food gallery uses, because the click
+// delegation watches `[data-food-section][data-food-idx]` on the
+// shared `#vocab-page-content` root.
+//
+// Cross-restaurant pull-in: items in the "dumplings" or "other"
+// FOOD_GALLERY sections that appear on a restaurant's menu (gyoza on
+// the ramen-ya and izakaya menus, yakitori platter on izakaya, etc.)
+// flow into this header alongside the restaurant's primary section.
+// One image is shown at most once per page — the first-matched
+// section wins, so a sushi-platter image on the omakase menu shows
+// under omakase's bucket, not the "other" bucket.
+//
+// Returns '' when no menu rows carry a matching foodImg — the menu
+// then renders without a visual header, falling through to the row
+// list directly.
+function menuFoodGalleryHeaderHTML(menuItems) {
+  if (!Array.isArray(menuItems) || !menuItems.length) return '';
+  // Stem-aware match — drink-beer.webp on a menu matches drink-beer.svg
+  // in FOOD_GALLERY (drinks are intentionally flat illustrations in the
+  // gallery, but photographed on menu rows). Drops the extension on
+  // both sides before comparing.
+  const stem = (f) => (f || '').replace(/\.[^.]+$/, '');
+  const matchedBySection = new Map();
+  const seenStems = new Set();
+  for (const m of menuItems) {
+    if (!m.foodImg) continue;
+    const mStem = stem(m.foodImg);
+    if (seenStems.has(mStem)) continue;
+    for (const sec of FOOD_GALLERY) {
+      const idx = sec.items.findIndex(g => stem(g.file) === mStem);
+      if (idx >= 0) {
+        seenStems.add(mStem);
+        if (!matchedBySection.has(sec.id)) {
+          matchedBySection.set(sec.id, { sec, hits: [] });
+        }
+        matchedBySection.get(sec.id).hits.push({ idx, item: sec.items[idx] });
+        break;
+      }
+    }
+  }
+  if (!matchedBySection.size) return '';
+
+  const sectionsHTML = Array.from(matchedBySection.values()).map(({ sec, hits }) => `
+    <section class="menu-food-section">
+      <h3 class="menu-food-section-head">
+        <span class="ja">${escHTML(sec.titleJa)}</span>
+        <span class="en">${escHTML(sec.titleEn)}</span>
+        <span class="count">${hits.length}</span>
+      </h3>
+      <div class="food-grid menu-food-grid">
+        ${hits.map(({ idx, item }) => `
+          <button class="food-card"
+                  data-food-section="${escAttr(sec.id)}"
+                  data-food-idx="${idx}"
+                  aria-label="${escAttr(item.ja)} — ${escAttr(item.en)}"
+                  type="button">
+            <div class="food-svg-frame">
+              <img class="food-svg" src="images/food/${escAttr(item.file)}" alt="" loading="lazy" />
+            </div>
+            <div class="food-card-name">
+              <span class="ja">${escHTML(item.ja)}</span>
+              <span class="en">${escHTML(item.en)}</span>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    </section>
+  `).join('');
+
+  // Ensure the food-card click delegation is wired. The food gallery
+  // page wires the same listener on the same root with the same
+  // dataset guard — calling this again is a no-op when the gallery
+  // page rendered first, and sets up the listener when the menu page
+  // is the user's entry point. Idempotent.
+  queueMicrotask(() => {
+    const root = document.getElementById('vocab-page-content');
+    if (!root || root.dataset.foodClicksWired) return;
+    root.dataset.foodClicksWired = '1';
+    root.addEventListener('click', e => {
+      const card = e.target.closest('[data-food-section]');
+      if (!card) return;
+      const s = FOOD_GALLERY.find(x => x.id === card.dataset.foodSection);
+      const it = s && s.items[+card.dataset.foodIdx];
+      if (it) openFoodDialog(s, it);
+    });
+  });
+
+  return `
+    <div class="menu-food-gallery">
+      ${sectionsHTML}
+    </div>
+  `;
+}
+
 function menuReferenceHTML(book, page, expBtn) {
   // Two image fields for menu rows:
   //   - foodSvg: 'name'      → resolves to images/food/name.svg (legacy)
@@ -14412,6 +16192,7 @@ function menuReferenceHTML(book, page, expBtn) {
         </h2>
         ${expBtn}
       </div>
+      ${menuFoodGalleryHeaderHTML(page.items)}
       <ul class="menu-ref-list">${rowsHTML}</ul>
     </div>
   `;
@@ -14834,22 +16615,22 @@ const FOOD_GALLERY = [
   },
   { id:'yakitori', titleJa:'焼き鳥', titleEn:'Yakitori',
     items: [
-      { file:'yakitori-momo.svg',     ja:'もも',     kana:'momo',     en:'momo — chicken thigh',
+      { file:'yakitori-momo.webp',    ja:'もも',     kana:'momo',     en:'momo — chicken thigh',
         explainJa: "鶏のもも肉。一番人気の部位。ジューシーで、備長炭の火でも焼きやすい。「タレ」（甘い醤油のタレ）か「塩」（塩だけ）を選べる。通は塩派が多い。",
         explain: "Thigh meat — the most popular cut. Juicy, forgiving on the binchōtan charcoal grill, hard to overcook. Comes in two seasonings: tare (sweet soy glaze) or shio (just salt). Salt is purists' preference for tasting the meat." },
-      { file:'yakitori-negima.svg',   ja:'ねぎま',   kana:'negima',   en:'negima — chicken + scallion',
+      { file:'yakitori-negima.webp',  ja:'ねぎま',   kana:'negima',   en:'negima — chicken + scallion',
         explainJa: "もも肉と長ねぎを交互に串に刺したもの。鶏の脂で長ねぎが甘くなる。江戸（東京）の定番の組み合わせ。何を頼むか迷ったらこれ。",
         explain: "Thigh alternated with chunks of Japanese leek (negi) on the skewer. The leek caramelizes and softens against the chicken fat — the classic Edo (Tokyo) yakitori combination. Order one if you're unsure where to start." },
-      { file:'yakitori-kawa.svg',     ja:'皮',       kana:'kawa',     en:'kawa — crispy chicken skin',
+      { file:'yakitori-kawa.webp',    ja:'皮',       kana:'kawa',     en:'kawa — crispy chicken skin',
         explainJa: "鶏の皮を串に巻いて、カリカリに焼く。安くて、脂っこくて、ビールに合う。脂の多い串の間に食べると口の中がリセットされる。",
         explain: "Chicken skin wound onto a skewer and grilled until shatter-crisp. Cheap, fatty, addictive. Often eaten between richer skewers as a palate cleanser — or with a beer, as a snack on its own." },
-      { file:'yakitori-sasami.svg',   ja:'ささみ',   kana:'sasami',   en:'sasami — breast tenderloin',
+      { file:'yakitori-sasami.webp',  ja:'ささみ',   kana:'sasami',   en:'sasami — breast tenderloin',
         explainJa: "胸肉の内側の柔らかい部分。中がほんのりピンクのまま、さっと焼く。しそと梅干しを添えるのが定番。脂っこい串の合間にちょうどいい。",
         explain: "The lean inner fillet of the breast. Grilled briefly so the inside stays slightly pink and very tender. Usually topped with shiso leaf and umeboshi (pickled plum) — a clean, almost herbal counterpoint to the fattier skewers." },
-      { file:'yakitori-tebasaki.svg', ja:'手羽先',   kana:'tebasaki', en:'tebasaki — chicken wings',
+      { file:'yakitori-tebasaki.webp', ja:'手羽先',  kana:'tebasaki', en:'tebasaki — chicken wings',
         explainJa: "鶏の手羽。焼くか揚げる。名古屋名物で、塩こしょうの甘辛タレで味付けする。手で食べるのが普通。「世界の山ちゃん」のチェーン店で全国に広まった。",
         explain: "Whole chicken wings, grilled or deep-fried. Nagoya is famous for its tebasaki style: a sweet-soy glaze with black pepper, eaten with fingers. Sekai-no-Yamachan is the chain that made it nationally famous." },
-      { file:'yakitori-tsukune.svg',  ja:'つくね',   kana:'tsukune',  en:'tsukune — chicken meatball',
+      { file:'yakitori-tsukune.webp', ja:'つくね',   kana:'tsukune',  en:'tsukune — chicken meatball',
         explainJa: "鶏のひき肉を、軟骨や時にしそ・椎茸と一緒にこねて作る団子。東京では生の卵黄を添えて、つけて食べる。他の地域では甘いタレを塗ったもの。",
         explain: "Ground chicken kneaded with cartilage for texture, sometimes shiso and shiitake. In Tokyo, served with a raw egg yolk on the side — you roll each bite through the yolk before eating. Other regions just glaze it with tare." },
     ],
@@ -14859,13 +16640,13 @@ const FOOD_GALLERY = [
       { file:'dish-gyoza.webp',         ja:'焼き餃子',  kana:'yaki-gyōza', en:'yaki — pan-fried',
         explainJa: "日本の標準。下はカリカリに焼いて、水を入れて蓋をして上を蒸す。もとは中国の餃子で、戦後、満州から帰ってきた日本兵が技術を持ち帰った。宇都宮と浜松が「餃子の街」を争う。",
         explain: "The standard Japanese gyoza. Pan-fried until the bottom is crisp and golden, then steamed with a splash of water under a lid. Originally Chinese (jiaozi), Japanese soldiers returning from Manchuria after WWII brought back the technique — Utsunomiya and Hamamatsu both claim the title of \"gyoza capital.\"" },
-      { file:'dumpling-gyoza-sui.svg', ja:'水餃子',    kana:'sui-gyōza',  en:'sui — boiled in broth',
+      { file:'dumpling-gyoza-sui.webp', ja:'水餃子',   kana:'sui-gyōza',  en:'sui — boiled in broth',
         explainJa: "中国の本場のスタイル。塩水かスープで茹でる。皮が柔らかくてつるっとしている。醤油・酢・ラー油のたれにつけて食べる。日本では焼き餃子より少ないが、中華料理店の定番。",
         explain: "Closer to the original Chinese style. Boiled in salted water or broth, served soft and slippery with a dipping sauce of soy + vinegar + chili oil. Less common in Japan than the pan-fried version, but standard in Chinese restaurants." },
-      { file:'dumpling-gyoza-age.svg', ja:'揚げ餃子',  kana:'age-gyōza',  en:'age — deep-fried',
+      { file:'dumpling-gyoza-age.webp', ja:'揚げ餃子', kana:'age-gyōza',  en:'age — deep-fried',
         explainJa: "全部揚げる。表も中もカリカリ。サイズが小さくて乾いていて、ご飯のおかずというよりお酒のおつまみ。居酒屋のメニューによくある。",
         explain: "Deep-fried all the way through — crunchy edge to edge, no soft side. Usually a pub snack rather than a meal: smaller, drier, made for beer pairing. Not as common as yaki-gyoza in Japan, but a fixture on izakaya menus." },
-      { file:'dumpling-shumai.svg',    ja:'焼売',      kana:'shūmai',     en:'shūmai — open-top steamed',
+      { file:'dumpling-shumai.webp',   ja:'焼売',      kana:'shūmai',     en:'shūmai — open-top steamed',
         explainJa: "上が開いた蒸し餃子。発祥は中国・内モンゴル（フフホト）。横浜中華街の「崎陽軒」は横浜駅で月に約100万個売る — 日本人にとっての焼売はこの形。",
         explain: "Open-topped steamed dumpling, originally from Inner Mongolia (Hohhot). The Yokohama Chinatown chain Kiyoken sells about a million boxes a month at Yokohama Station — they're the canonical Japanese shūmai for most people." },
     ],
@@ -14900,13 +16681,13 @@ const FOOD_GALLERY = [
   },
   { id:'other', titleJa:'一品', titleEn:'Other dishes',
     items: [
-      { file:'dish-tonkatsu.svg', ja:'とんかつ', kana:'tonkatsu', en:'fried pork cutlet',
+      { file:'dish-tonkatsu.webp', ja:'とんかつ', kana:'tonkatsu', en:'fried pork cutlet',
         explainJa: "明治時代の洋食。豚のロースかヒレ肉に、パン粉の衣をつけて油で揚げる。千切りキャベツ、ご飯、味噌汁と一緒に、とんかつソース（りんご、トマト、ウスターソースが入った濃いソース）をかけて食べる。",
         explain: "A Western-influenced (\"yōshoku\") dish from the late 1800s. Pork loin or fillet, breaded in panko, deep-fried in lard or oil. Served with finely shredded raw cabbage, rice, miso soup, and tonkatsu sauce — a thick brown sauce with apple, tomato, and Worcestershire notes." },
-      { file:'dish-sushi.svg',    ja:'寿司',     kana:'sushi',    en:'sushi — assorted plate',
+      { file:'dish-sushi.webp',   ja:'寿司',     kana:'sushi',    en:'sushi — assorted plate',
         explainJa: "寿司の総称。にぎり（酢飯にネタをのせる）、巻き、ちらし（酢飯の上に散らす）、いなり（油揚げに詰める）など色々ある。普通の寿司屋は江戸前 — 酢飯に一切れの魚をのせる形。",
         explain: "The umbrella term — covers nigiri (the rice + topping form), maki (rolls), chirashi (scattered on rice), inari (in tofu pockets), and more. Most casual sushi shops are Edomae-style: vinegared rice with a single fish piece on top." },
-      { file:'dish-tempura.svg',  ja:'天ぷら',   kana:'tenpura',  en:'battered & fried',
+      { file:'dish-tempura.webp', ja:'天ぷら',   kana:'tenpura',  en:'battered & fried',
         explainJa: "魚や野菜に衣をつけて揚げた料理。16世紀にポルトガルの宣教師が技術を伝えた（「天ぷら」の語源はラテン語の「tempora」 — 四旬節の断食日のこと）。日本では薄くて軽い衣に進化した。塩か天つゆで食べる。",
         explain: "Battered and deep-fried seafood and vegetables. Portuguese missionaries introduced the technique in the 16th century (the word \"tempura\" probably comes from Latin \"tempora\" — Lent fasting days). Japan refined it into a light, almost lacy batter, eaten with salt or a soy-mirin dip." },
       { file:'dish-yakitori.webp', ja:'焼き鳥',   kana:'yakitori', en:'assorted grilled chicken skewers',
@@ -14915,6 +16696,1110 @@ const FOOD_GALLERY = [
     ],
   },
 ];
+
+// ── Flavors page ─────────────────────────────────────────────────────
+// Phase 1 of the Flavors & Textures sub-system. Renders the bento +
+// drill-in immersion engine. Dispatched from the renderVocab() empty-
+// state branch when a book carries isFlavorsPage:true. The book also
+// carries a `flavors` array of 10 sensory primitives with their kana,
+// kanji, romaji, canonical food, color tokens, and english+notes.
+//
+// Two states share one container:
+//   data-mode="bento"     → 10-card scan grid (encounter)
+//   data-mode="immersion" → full-bleed color flood, one flavor at a time
+// The active state is set from APP.flavorId (null = bento, string = drill-in).
+//
+// Spec: docs/superpowers/specs/2026-05-26-flavors-textures.{PRODUCT,DESIGN}.md
+//
+// Pedagogical contract: NO ENGLISH on the bento card front. English
+// only surfaces inside the immersion view's collapsed <details> drawer.
+// Color floods the canvas (not a hero card) because the color IS the
+// encoding of the flavor — yellow IS suppai, not "yellow because lemons."
+function flavorsPageHTML(book) {
+  const flavors = book.flavors || [];
+  // Resolve current flavor — defensive against stale localStorage that
+  // references a flavor id no longer in the book.
+  const currentFlavor = APP.flavorId && flavors.find(f => f.id === APP.flavorId);
+  const mode = currentFlavor ? 'immersion' : 'bento';
+
+  // ── Bento HTML ──
+  const bentoHTML = `
+    <header class="flavors-bento-head">
+      <div class="flavors-bento-eyebrow">flavors · 味</div>
+      <h1 class="flavors-bento-title"><ruby>味<rt>あじ</rt></ruby>の <ruby>世界<rt>せかい</rt></ruby></h1>
+      <p class="flavors-bento-sub">
+        Tap a card to enter that flavor's world. No English on the cards
+        — listen, look, feel. The translation waits in the drawer.
+      </p>
+    </header>
+    <ul class="flavors-bento" role="list">
+      ${flavors.map(f => `
+        <li class="flavor-bento-card"
+            style="--chip:${escAttr(f.chip)}; --flood:${escAttr(f.flood)}; --ink-on-flood:${escAttr(f.ink)};">
+          <button class="flavor-bento-enter"
+                  data-flavor-id="${escAttr(f.id)}"
+                  aria-label="${escAttr(f.kana)} — enter this flavor's world"
+                  type="button">
+            <div class="flavor-bento-image">
+              <image-slot image-key="vocab/${escAttr(f.id)}" readonly></image-slot>
+            </div>
+            <p class="flavor-bento-kana">${escHTML(f.kana)}</p>
+          </button>
+        </li>
+      `).join('')}
+    </ul>
+  `;
+
+  // ── Immersion HTML ──
+  // Only rendered with real content when a flavor is active; otherwise
+  // it's an empty shell that the CSS hides via data-mode="bento".
+  const immersionHTML = currentFlavor
+    ? renderFlavorImmersionInner(currentFlavor, flavors)
+    : '';
+
+  return `
+    <div class="flavors-frame"
+         data-mode="${mode}"
+         data-book-id="${escAttr(book.id)}"
+         ${currentFlavor ? `style="
+           --flood:${escAttr(currentFlavor.flood)};
+           --ink-on-flood:${escAttr(currentFlavor.ink)};
+           --chip:${escAttr(currentFlavor.chip)};
+         "` : ''}>
+      <div class="flavors-bento-wrap">${bentoHTML}</div>
+      <div class="flavors-immersion-wrap">${immersionHTML}</div>
+    </div>
+  `;
+}
+
+// Renders the inner content of an immersion view for one flavor. Split
+// out so we can re-render JUST this fragment when the user walks between
+// flavors via the rail or arrow keys, without rebuilding the whole page.
+function renderFlavorImmersionInner(flavor, allFlavors) {
+  // The 10-thumb rail. Order matches the book's flavors array; the
+  // active flavor's thumb is highlighted, the rest are ghosted (CSS).
+  const railHTML = allFlavors.map(f => `
+    <button class="flavor-rail-thumb ${f.id === flavor.id ? 'is-active' : ''}"
+            data-flavor-id="${escAttr(f.id)}"
+            type="button"
+            aria-label="${escAttr(f.kana)}"
+            ${f.id === flavor.id ? 'aria-current="true"' : ''}>
+      <image-slot image-key="vocab/${escAttr(f.id)}" readonly></image-slot>
+    </button>
+  `).join('');
+
+  // Kana centerpiece — if a kanji exists, render as ruby so furigana
+  // sits above the kanji at small size. Otherwise just the kana plain.
+  // The clamp-sized type is set in CSS on .flavor-immersion-kana.
+  const kanaHTML = flavor.kanji
+    ? `<ruby>${escHTML(flavor.kanji)}<rt>${escHTML(flavor.kana)}</rt></ruby>`
+    : escHTML(flavor.kana);
+
+  return `
+    <nav class="flavor-rail" aria-label="Flavors">
+      <button class="flavor-rail-back"
+              data-flavor-back
+              type="button"
+              aria-label="Back to all flavors (bento overview)"
+              title="Back to the bento (ESC)">
+        <!-- 2×2 grid icon = "back to the grid of all flavors", visually
+             distinct from a left arrow so it doesn't read as
+             "walk one left". -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true">
+          <rect x="3"  y="3"  width="7" height="7" rx="1.2"/>
+          <rect x="14" y="3"  width="7" height="7" rx="1.2"/>
+          <rect x="3"  y="14" width="7" height="7" rx="1.2"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.2"/>
+        </svg>
+      </button>
+      <div class="flavor-rail-thumbs" role="tablist">${railHTML}</div>
+      <div class="flavor-rail-keys" aria-hidden="true">
+        <kbd>←</kbd><kbd>→</kbd>
+        <span class="flavor-rail-keys-sep">/</span>
+        <kbd>A</kbd><kbd>D</kbd>
+        <span>walk</span>
+      </div>
+    </nav>
+
+    <div class="flavors-immersion-body" tabindex="-1">
+      <div class="flavor-immersion-image">
+        <image-slot image-key="vocab/${escAttr(flavor.id)}" readonly></image-slot>
+      </div>
+      <div class="flavor-immersion-identity">
+        <p class="flavor-immersion-kana">${kanaHTML}</p>
+        <p class="flavor-immersion-food">${escHTML(flavor.canonicalFood.ja)}</p>
+        <button class="flavor-immersion-audio"
+                data-speak="${escAttr(flavor.kana)}"
+                data-flavor-audio="${escAttr(flavor.id)}"
+                type="button"
+                aria-label="Hear ${escAttr(flavor.kana)} pronounced">
+          ${speakerIconSVG()}
+        </button>
+      </div>
+    </div>
+
+    <section class="flavor-related" aria-label="Foods that carry this flavor">
+      <header class="flavor-related-head">
+        <span class="ja">この 味の 食べ物</span>
+        <span class="en">foods that taste like ${escHTML(flavor.kana)}</span>
+      </header>
+      ${(() => {
+        // Phase 3+ cross-link: foods from the edibles database whose
+        // flavors[] includes this flavor's id. Each card opens that
+        // edible's detail spread when clicked — the same navigation
+        // path the items grid uses, just initiated from the flavors
+        // immersion view. The flavor + paper aesthetic is preserved:
+        // small image-slot cards on a flood-tinted paper backing.
+        //
+        // Standalone FLAVOR_EXAMPLES are appended after carriers so
+        // the row works even for flavors no edible carries (mazui has
+        // zero carriers; its examples are the rotten/moldy set).
+        // Example cards are non-clickable divs — no detail to open.
+        // No explicit limit — the function caps at 100 internally,
+        // which is well above the total edibles set size. All items
+        // carrying this flavor (across all 8 categories) surface here.
+        const carriers = findEdiblesWithFlavor(flavor.id);
+        const examples = findFlavorExamples(flavor.id);
+        if (!carriers.length && !examples.length) {
+          return `
+            <div class="flavor-related-placeholder">
+              No edibles in the database yet carry ${escHTML(flavor.kana)}.
+              Add them in the Edibles section and they'll appear here.
+            </div>
+          `;
+        }
+        const carriersHTML = carriers.map(({ item, cat, book }) => `
+          <button class="flavor-related-card"
+                  data-flavor-to-edible="${escAttr(book.id)}/${escAttr(cat.id)}/${escAttr(item.id)}"
+                  type="button"
+                  aria-label="Open ${escAttr(item.kana)} — ${escAttr(item.en)}">
+            <div class="flavor-related-image">
+              <image-slot image-key="vocab/${escAttr(item.id)}" readonly></image-slot>
+            </div>
+            <div class="flavor-related-name">
+              <span class="ja">${escHTML(item.kana)}</span>
+            </div>
+          </button>
+        `).join('');
+        const examplesHTML = examples.map(ex => {
+          // Split label into colored verb prefix + noun. Mazui examples
+          // carry verbKana + nounKana so the verb (kusatta / kabita /
+          // shioreta) renders smaller and tinted while the noun keeps
+          // the default ink weight. Falls back to a single .ja span
+          // for examples that only carry a flat .kana (other flavors).
+          const labelHTML = (ex.verbKana && ex.nounKana)
+            ? `<span class="example-verb verb-${escAttr(ex.verb || '')}">${escHTML(ex.verbKana)}</span><span class="example-noun">${escHTML(ex.nounKana)}</span>`
+            : `<span class="ja">${escHTML(ex.kana || '')}</span>`;
+          const aria = (ex.verbKana && ex.nounKana)
+            ? ex.verbKana + ex.nounKana
+            : (ex.kana || '');
+          return `
+            <div class="flavor-related-card is-example"
+                 role="img"
+                 aria-label="Example: ${escAttr(aria)}">
+              <div class="flavor-related-image">
+                <image-slot image-key="vocab/${escAttr(ex.id)}" readonly></image-slot>
+              </div>
+              <div class="flavor-related-name">
+                ${labelHTML}
+              </div>
+            </div>
+          `;
+        }).join('');
+        // Verb-grammar notes that explain the three "gone bad" verbs
+        // beneath the mazui row. Each row carries the same color class
+        // as the card labels (verb-kusatta / verb-kabita / verb-shioreta)
+        // so the visual cue is consistent: yellowy-green kana on the
+        // card matches the yellowy-green chip in the notes.
+        const verbNotes = findFlavorVerbNotes(flavor.id);
+        const verbNotesHTML = verbNotes ? `
+          <section class="flavor-verb-notes" aria-label="Verb grammar reference">
+            <p class="flavor-verb-intro">${escHTML(verbNotes.intro || '')}</p>
+            <ul class="flavor-verb-list" role="list">
+              ${verbNotes.verbs.map(v => `
+                <li class="flavor-verb-row">
+                  <span class="flavor-verb-chip verb-${escAttr(v.verb)}">
+                    <span class="flavor-verb-kanji">${escHTML(v.kanji)}</span>
+                    <span class="flavor-verb-romaji">${escHTML(v.romaji)}</span>
+                  </span>
+                  <span class="flavor-verb-meaning">${escHTML(v.meaning)}</span>
+                  <span class="flavor-verb-pairs">${escHTML(v.pairs)}</span>
+                </li>
+              `).join('')}
+            </ul>
+          </section>
+        ` : '';
+        return `
+          <div class="flavor-related-row">
+            ${carriersHTML}${examplesHTML}
+          </div>
+          ${verbNotesHTML}
+        `;
+      })()}
+    </section>
+
+    <details class="flavor-drawer">
+      <summary class="flavor-drawer-toggle">
+        English &amp; notes
+      </summary>
+      <div class="flavor-drawer-body">
+        <p class="en-gloss">${escHTML(flavor.en)}</p>
+        <p class="notes">${escHTML(flavor.notes || '')}</p>
+      </div>
+    </details>
+
+    <p class="flavor-keys-hint">esc returns · space hears the word</p>
+  `;
+}
+
+// Attaches click + keyboard handlers to the flavors page DOM. Called
+// after flavorsPageHTML() has been written into #vocab-page-content.
+function wireFlavorsPageHandlers(book) {
+  const frame = document.querySelector('.flavors-frame[data-book-id="' + book.id + '"]');
+  if (!frame) return;
+
+  // ── Bento card click → enter immersion ──
+  // Use event delegation on the bento <ul> so the listener survives
+  // any inner re-render that swaps the cards.
+  //
+  // The audio button (.flavor-bento-audio with [data-flavor-audio]) is
+  // a SIBLING of the enter button (.flavor-bento-enter with
+  // [data-flavor-id]) — they're not nested. So when the user clicks
+  // audio, the click bubbles up here but doesn't match
+  // [data-flavor-id], and we early-return without entering immersion.
+  // The document-level [data-speak] delegate (line ~13399) then fires
+  // TTS on the same bubble. Don't stopPropagation — that would suppress
+  // the TTS too.
+  const bento = frame.querySelector('.flavors-bento');
+  if (bento) {
+    bento.addEventListener('click', e => {
+      const enterBtn = e.target.closest('[data-flavor-id]');
+      if (!enterBtn) return;       // clicked the audio button or the chip or empty space
+      enterFlavorImmersion(book, enterBtn.dataset.flavorId);
+    });
+  }
+
+  // ── Immersion: rail thumb / back / drawer / arrows ──
+  // Attached to the frame so the listener survives between fragment
+  // re-renders. The handlers check what was clicked.
+  frame.addEventListener('click', e => {
+    // Back to bento
+    if (e.target.closest('[data-flavor-back]')) {
+      exitFlavorImmersion(book);
+      return;
+    }
+    // Switch flavor via rail thumb
+    const thumb = e.target.closest('.flavor-rail-thumb');
+    if (thumb && thumb.dataset.flavorId) {
+      // No re-enter if user clicked the already-active thumb
+      if (thumb.dataset.flavorId === APP.flavorId) return;
+      switchFlavor(book, thumb.dataset.flavorId);
+      return;
+    }
+    // Cross-link: foods-that-carry-this-flavor card → jump into the
+    // edibles book's item-detail spread. data-flavor-to-edible carries
+    // "<bookId>/<catId>/<itemId>" so we know which edible to open.
+    const relatedBtn = e.target.closest('[data-flavor-to-edible]');
+    if (relatedBtn) {
+      const [edibleBookId, catId, itemId] = relatedBtn.dataset.flavorToEdible.split('/');
+      // Record the flavor we came from so the edible detail spread
+      // can render a second back button labeled with this flavor's
+      // kana — letting the user bounce straight back to the flavor's
+      // color world without going through the sidebar.
+      APP.edibleFromFlavor = APP.flavorId;
+      lsSet('jp:edibleFromFlavor', APP.edibleFromFlavor);
+      // Clear flavor immersion state — the flavor breadcrumb above
+      // is the only thing that carries forward; coming back here via
+      // sidebar should land in bento, not in the previous immersion.
+      APP.flavorId = null;
+      lsSet('jp:flavorId', null);
+      // Switch the active vocab book to the edibles book and land
+      // directly in the chosen item's detail spread.
+      APP.vocabBookId = edibleBookId;
+      APP.edibleCategory = catId;
+      APP.edibleItem = itemId;
+      lsSet('jp:vocabBook', edibleBookId);
+      lsSet('jp:edibleCategory', catId);
+      lsSet('jp:edibleItem', itemId);
+      const inner = document.getElementById('main-inner');
+      if (inner) renderVocab(inner);
+      if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+  });
+
+  // ── Keyboard handler ──
+  // Bound to document, but self-cleans when the immersion frame leaves
+  // the DOM (user navigated to a different book / page / app section).
+  if (!flavorsPageHandlersWired._keyBound) {
+    flavorsPageHandlersWired._keyBound = true;
+    document.addEventListener('keydown', flavorsKeyHandler);
+  }
+
+  // ── Mount focus ──
+  // If immersion just landed, focus the body so arrow keys work even
+  // without a click. tabindex=-1 in the HTML makes it focusable without
+  // entering the tab order.
+  if (frame.dataset.mode === 'immersion') {
+    const body = frame.querySelector('.flavors-immersion-body');
+    if (body && document.activeElement === document.body) {
+      // Don't yank focus if the user has already focused something else
+      // (search bar, sidebar item). Only grab focus when nothing else
+      // claimed it.
+      requestAnimationFrame(() => body.focus({ preventScroll: false }));
+    }
+  }
+}
+// Module-private flag — used to avoid double-binding the keyboard
+// handler across re-renders. Stored on the function itself so it
+// survives without leaking into global scope.
+const flavorsPageHandlersWired = wireFlavorsPageHandlers;
+
+// Global keydown handler for the flavors immersion. Self-removes when
+// the immersion frame is no longer in the DOM (page navigated away).
+function flavorsKeyHandler(e) {
+  const frame = document.querySelector('.flavors-frame[data-mode="immersion"]');
+  if (!frame) {
+    // Self-clean: nothing to handle. Tear down so we don't leak into
+    // other pages' keyboard handling.
+    document.removeEventListener('keydown', flavorsKeyHandler);
+    flavorsPageHandlersWired._keyBound = false;
+    return;
+  }
+  // Don't fight an open modal / dialog / contenteditable.
+  const ae = document.activeElement;
+  if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+  // Find the book + flavor list. The frame carries the book id.
+  const book = findFlavorsBook(frame.dataset.bookId);
+  if (!book) return;
+
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    exitFlavorImmersion(book);
+  } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'd' || e.key === 'D') {
+    // Right / Down / D — walk to the next flavor. WASD-style D supports
+    // the right-hand-on-mouse, left-hand-on-keyboard learner.
+    e.preventDefault();
+    walkFlavor(book, +1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'a' || e.key === 'A') {
+    // Left / Up / A — walk to the previous flavor.
+    e.preventDefault();
+    walkFlavor(book, -1);
+  } else if (e.key === ' ' || e.key === 'Enter') {
+    // Space / Enter plays the current flavor's audio. Native TTS
+    // through the same [data-speak] route the audio button uses.
+    const flavor = book.flavors.find(f => f.id === APP.flavorId);
+    if (!flavor || !window.speechSynthesis) return;
+    e.preventDefault();
+    // Reuse the global [data-speak] delegate: synthesise a click on
+    // the immersion-audio button. Simpler than calling into the TTS
+    // helper directly and keeps one code path.
+    const audioBtn = frame.querySelector('.flavor-immersion-audio[data-speak]');
+    if (audioBtn) audioBtn.click();
+  }
+}
+
+// Locate the book in VOCAB_CLASSES by id. Used by the keyboard handler
+// since it doesn't carry a closure reference to the book.
+function findFlavorsBook(bookId) {
+  for (const cls of (window.VOCAB_CLASSES || [])) {
+    const b = (cls.books || []).find(b => b.id === bookId && b.isFlavorsPage);
+    if (b) return b;
+  }
+  return null;
+}
+
+// Standalone example items for the flavor immersion "foods" row.
+// These are visual examples that don't live in the edibles database —
+// either because they don't fit any category cleanly (rotten food
+// isn't a "dairy", "fruit", etc. — it's the spoiled-form of any of
+// them), or because adding them as real edibles would pollute the
+// grid. Image files live at images/vocab/<id>.png and are referenced
+// by image-slot like the rest. Rendered as non-clickable cards (no
+// detail spread to navigate to).
+const FLAVOR_EXAMPLES = {
+  mazui: [
+    { id: 'kusatta-tamago',    verb: 'kusatta',  verbKana: 'くさった', nounKana: 'たまご' },
+    { id: 'kusatta-gyuunyuu',  verb: 'kusatta',  verbKana: 'くさった', nounKana: 'ぎゅうにゅう' },
+    { id: 'kabita-pan',        verb: 'kabita',   verbKana: 'カビた',   nounKana: 'パン' },
+    { id: 'kabita-ichigo',     verb: 'kabita',   verbKana: 'カビた',   nounKana: 'いちご' },
+    { id: 'kusatta-banana',    verb: 'kusatta',  verbKana: 'くさった', nounKana: 'バナナ' },
+    { id: 'kusatta-sakana',    verb: 'kusatta',  verbKana: 'くさった', nounKana: 'さかな' },
+    { id: 'kusatta-yooguruto', verb: 'kusatta',  verbKana: 'くさった', nounKana: 'ヨーグルト' },
+    { id: 'kabita-onigiri',    verb: 'kabita',   verbKana: 'カビた',   nounKana: 'おにぎり' },
+    { id: 'shioreta-retasu',   verb: 'shioreta', verbKana: 'しおれた', nounKana: 'レタス' },
+    { id: 'kabita-chiizu',     verb: 'kabita',   verbKana: 'カビた',   nounKana: 'チーズ' },
+  ],
+  tsumetai: [
+    { id: 'zaru-soba',      kana: 'ざるそば' },
+    { id: 'hiyashi-chuuka', kana: '冷やし中華' },
+    { id: 'hiyayakko',      kana: '冷奴' },
+  ],
+  atsui: [
+    { id: 'misoshiru',   kana: 'みそしる' },
+    { id: 'nabe',        kana: 'なべ' },
+    { id: 'oden',        kana: 'おでん' },
+    { id: 'nikuman',     kana: 'にくまん' },
+    { id: 'chawanmushi', kana: 'ちゃわんむし' },
+  ],
+  karai: [
+    { id: 'tougarashi', kana: 'とうがらし' },
+    { id: 'shishitou',  kana: 'ししとう' },
+  ],
+  // Industrial snacks — removed from the edibles category (they didn't
+  // fit the traditional-sweets framing of kashi) but still useful as
+  // visual examples of the shoppai (salty) flavor world. These render
+  // alongside the carrier-based shoppai cards (onigiri, ham, bacon,
+  // sausage) on the shoppai immersion view.
+  shoppai: [
+    { id: 'poppukoon',       kana: 'ポップコーン' },
+    { id: 'furaido-poteto',  kana: 'フライドポテト' },
+    { id: 'poteto-chippusu', kana: 'ポテトチップス' },
+    { id: 'piinattsu',       kana: 'ピーナッツ' },
+  ],
+};
+function findFlavorExamples(flavorId) {
+  return FLAVOR_EXAMPLES[flavorId] || [];
+}
+
+// Verb-grammar notes shown beneath the FLAVOR_EXAMPLES row. The mazui
+// world is built on three "this food has gone bad" verbs in past-tense
+// adjectival form — kusatta / kabita / shioreta — each pairing with a
+// distinct kind of food. Surfacing the distinction below the example
+// cards turns the row from a vocabulary list into a small mini-grammar
+// lesson: the learner sees that kabita pairs with bread, not banana,
+// and the example cards above visually anchor that pairing.
+//
+// Color tokens match the .example-verb tints baked into the cards —
+// so the chip in the explanation reads as the same word the learner
+// just saw labeled on the picture.
+const FLAVOR_VERB_NOTES = {
+  mazui: {
+    intro: 'Three "this food has gone bad" verbs — pick by what kind of food it is.',
+    verbs: [
+      { verb: 'kusatta',  kanji: '腐った',  kana: 'くさった',  romaji: 'kusatta',
+        meaning: 'biologically spoiled — bacterial, smelly',
+        pairs: 'proteins, dairy, fruit going off' },
+      { verb: 'kabita',   kanji: 'カビた',  kana: 'カビた',    romaji: 'kabita',
+        meaning: 'visibly moldy (fungal fuzz, spots)',
+        pairs: 'bread, cheese, soft surfaces' },
+      { verb: 'shioreta', kanji: '萎れた',  kana: 'しおれた',  romaji: 'shioreta',
+        meaning: 'wilted — lost rigidity, drooped',
+        pairs: 'leafy greens and herbs' },
+    ],
+  },
+};
+function findFlavorVerbNotes(flavorId) {
+  return FLAVOR_VERB_NOTES[flavorId] || null;
+}
+
+// Walk every edibles book in VOCAB_CLASSES and return all items whose
+// flavors[] array includes the given flavorId. Used by the flavors
+// immersion view to populate the "foods that carry this flavor"
+// reverse-browse row. Returns [{ item, cat, book }] so the click
+// handler can navigate to that edible's detail view.
+//
+// Limit defaults to 100 — effectively uncapped against the current
+// edibles set (~95 total items). A previous 12-item cap was clipping
+// popular flavors silently: 'oishii' had 52 carriers but only the
+// first 12 (kudamono + yasai + 4 of niku) ever rendered; everything
+// in kokumotsu (onigiri, mochi, nattou…), nyuuseihin, and kashi was
+// invisible. The clip wasn't categorical — it was the linear walk
+// order hitting the cap before later categories. Raising the ceiling
+// to 100 ensures any new edibles item with a flavor tag surfaces on
+// its flavor's immersion view automatically, no matter which
+// category it sits in.
+//
+// If the total ever climbs past 100, raise the constant — but the
+// row layout (grid auto-fill) gracefully wraps to multiple rows, so
+// the only downside of more matches is more vertical scroll.
+function findEdiblesWithFlavor(flavorId, limit = 100) {
+  const results = [];
+  for (const cls of (window.VOCAB_CLASSES || [])) {
+    for (const book of (cls.books || [])) {
+      if (!book.isEdiblesPage) continue;
+      for (const cat of (book.categories || [])) {
+        for (const item of (cat.items || [])) {
+          if ((item.flavors || []).includes(flavorId)) {
+            results.push({ item, cat, book });
+            if (results.length >= limit) return results;
+          }
+        }
+      }
+    }
+  }
+  return results;
+}
+
+// ── State transitions ──
+// All three (enter / exit / switch) go through the same cross-fade
+// helper so the transition is uniform regardless of trigger (click vs
+// arrow vs rail thumb).
+function enterFlavorImmersion(book, flavorId) {
+  if (APP.flavorId === flavorId) return; // already there
+  fadeFlavorsThen(() => {
+    APP.flavorId = flavorId;
+    lsSet('jp:flavorId', flavorId);
+    rerenderFlavorsPage(book);
+  });
+}
+
+function exitFlavorImmersion(book) {
+  if (APP.flavorId == null) return;
+  fadeFlavorsThen(() => {
+    APP.flavorId = null;
+    lsSet('jp:flavorId', null);
+    rerenderFlavorsPage(book);
+  });
+}
+
+function switchFlavor(book, flavorId) {
+  if (APP.flavorId === flavorId) return;
+  // No full fade for within-immersion swaps — the color transition
+  // alone reads as state change. Faster than a full opacity fade and
+  // matches the immersive feel of walking through the flavors.
+  APP.flavorId = flavorId;
+  lsSet('jp:flavorId', flavorId);
+  rerenderFlavorsPage(book);
+}
+
+function walkFlavor(book, dir) {
+  const flavors = book.flavors || [];
+  const idx = flavors.findIndex(f => f.id === APP.flavorId);
+  if (idx < 0) return;
+  const next = flavors[(idx + dir + flavors.length) % flavors.length];
+  switchFlavor(book, next.id);
+}
+
+// Cross-fade helper. Applies .is-fading-out to the frame, waits one
+// transition cycle, runs the swap callback (which re-renders), then
+// removes the class so the new content fades in. prefers-reduced-motion
+// short-circuits to an instant swap (CSS overrides the transition).
+function fadeFlavorsThen(swap) {
+  const frame = document.querySelector('.flavors-frame');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!frame || reduced) {
+    swap();
+    return;
+  }
+  frame.classList.add('is-fading-out');
+  setTimeout(() => {
+    swap();
+    // After re-render the .flavors-frame is a NEW element — the new
+    // frame fades in via its own .opacity:1 default transition.
+  }, 240);
+}
+
+// Re-render the flavors page in place by calling the existing renderer.
+// Used after every state transition.
+function rerenderFlavorsPage(book) {
+  const pageEl = document.getElementById('vocab-page-content');
+  if (!pageEl) return;
+  pageEl.innerHTML = flavorsPageHTML(book);
+  wireFlavorsPageHandlers(book);
+}
+
+// ── Edibles database ─────────────────────────────────────────────────
+// Phase 3 of the Flavors & Textures sub-system. Renders three views
+// in one container, gated by APP.edibleCategory and APP.edibleItem.
+//
+// View 1 — category-browse: 8 paper tiles, click → category-grid.
+//          Empty categories (items.length === 0) render as "coming soon."
+// View 2 — item-grid: N items in the active category, click → item-detail.
+// View 3 — item-detail: hero image + identity stack + flavor/texture
+//          badges + notes drawer. Flavor badges cross-link to the
+//          Flavors immersion view (Phase 1) via the global
+//          ediblesToFlavor helper.
+//
+// Spec: docs/superpowers/specs/2026-05-26-flavors-textures.{PRODUCT,DESIGN}.md
+function ediblesPageHTML(book) {
+  const categories = book.categories || [];
+  // Resolve current state defensively against stale localStorage.
+  const cat = APP.edibleCategory && categories.find(c => c.id === APP.edibleCategory);
+  const item = cat && APP.edibleItem && (cat.items || []).find(i => i.id === APP.edibleItem);
+
+  let mode = 'categories';
+  if (cat && item) mode = 'detail';
+  else if (cat)  mode = 'items';
+
+  return `
+    <div class="edibles-frame" data-mode="${mode}" data-book-id="${escAttr(book.id)}">
+      ${ediblesCategoriesHTML(categories)}
+      ${cat ? ediblesItemsHTML(cat) : '<div class="edibles-items"></div>'}
+      ${item ? ediblesDetailHTML(cat, item, categories) : '<div class="edibles-detail"></div>'}
+    </div>
+  `;
+}
+
+// View 1 — category browse.
+function ediblesCategoriesHTML(categories) {
+  const tilesHTML = categories.map(c => {
+    const isEmpty = !c.items || c.items.length === 0;
+    const furigana = c.kana && c.kanji ? c.kana : '';
+    // Pick three representative items for the stack. Spread across the
+    // list so the trio feels varied even if first three happen to be
+    // visually similar (all reds, all greens, etc).
+    const items = c.items || [];
+    let stackIds = [];
+    if (items.length >= 3) {
+      stackIds = [
+        items[0].id,
+        items[Math.floor(items.length / 2)].id,
+        items[items.length - 1].id,
+      ];
+    } else if (items.length > 0) {
+      // Defensive: tile has fewer than 3 items. Repeat to fill.
+      stackIds = [items[0].id, items[items.length > 1 ? 1 : 0].id, items[0].id];
+    }
+    const stackHTML = stackIds.length === 3 ? `
+      <div class="edibles-category-stack" aria-hidden="true">
+        <div class="edibles-category-stack-img" data-pos="left">
+          <image-slot image-key="vocab/${escAttr(stackIds[0])}" readonly></image-slot>
+        </div>
+        <div class="edibles-category-stack-img" data-pos="right">
+          <image-slot image-key="vocab/${escAttr(stackIds[2])}" readonly></image-slot>
+        </div>
+        <div class="edibles-category-stack-img" data-pos="center">
+          <image-slot image-key="vocab/${escAttr(stackIds[1])}" readonly></image-slot>
+        </div>
+      </div>
+    ` : '';
+    return `
+      <button class="edibles-category-tile ${isEmpty ? 'is-empty' : ''}"
+              data-category-id="${escAttr(c.id)}"
+              type="button"
+              ${isEmpty ? 'disabled aria-disabled="true"' : ''}
+              aria-label="${escAttr(c.en)}">
+        ${stackHTML}
+        <span class="edibles-category-glyph">${escHTML(c.kanji || c.kana)}</span>
+        ${furigana ? `<span class="edibles-category-furigana">${escHTML(furigana)}</span>` : ''}
+      </button>
+    `;
+  }).join('');
+  return `
+    <div class="edibles-categories">
+      <header class="edibles-head" style="grid-column:1/-1">
+        <div class="edibles-eyebrow">edibles · 食材</div>
+        <h1 class="edibles-title">食材の 世界</h1>
+        <p class="edibles-sub">
+          Browse foods by category. Each carries its flavor profile —
+          click a flavor badge inside an item to walk back to that
+          flavor's world.
+        </p>
+      </header>
+      ${tilesHTML}
+    </div>
+  `;
+}
+
+// View 2 — items in the active category.
+function ediblesItemsHTML(cat) {
+  const items = cat.items || [];
+  if (items.length === 0) {
+    return `
+      <div class="edibles-items-wrap">
+        <button class="edibles-back" data-edibles-back="categories" type="button"
+                aria-label="Back to all categories">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1.2"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.2"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.2"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.2"/>
+          </svg>
+          <span>all categories</span>
+        </button>
+        <header class="edibles-head">
+          <div class="edibles-eyebrow">${escHTML(cat.en)} · ${escHTML(cat.kanji || cat.kana)}</div>
+          <h1 class="edibles-title">${escHTML(cat.kanji || cat.kana)}</h1>
+        </header>
+        <div class="edibles-empty-grid">
+          ${escHTML(cat.en)} content arrives in a future Phase 3 commit.
+        </div>
+      </div>
+    `;
+  }
+  const cardsHTML = items.map(it => {
+    return `
+      <button class="edibles-item-card"
+              data-item-id="${escAttr(it.id)}"
+              type="button"
+              aria-label="${escAttr(it.kana)} — ${escAttr(it.en)}">
+        <div class="edibles-item-image">
+          <image-slot image-key="vocab/${escAttr(it.id)}" readonly></image-slot>
+        </div>
+        <div class="edibles-item-name">
+          <span class="edibles-item-kana">${escHTML(it.kana)}</span>
+        </div>
+        ${(it.flavors && it.flavors.length) ? `
+          <div class="edibles-item-chips">
+            ${it.flavors.slice(0, 2).map(fid => {
+              const fkana = lookupFlavorKana(fid) || fid;
+              return `
+                <span class="edibles-item-pip">
+                  <img class="edibles-item-pip-ball"
+                       src="images/vocab/flavorballs/${escAttr(fid)}.png"
+                       alt=""
+                       aria-hidden="true"
+                       loading="lazy">
+                  ${escHTML(fkana)}
+                </span>
+              `;
+            }).join('')}
+          </div>
+        ` : ''}
+      </button>
+    `;
+  }).join('');
+  return `
+    <div class="edibles-items">
+      <div style="grid-column:1/-1">
+        <button class="edibles-back" data-edibles-back="categories" type="button"
+                aria-label="Back to all categories">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1.2"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.2"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.2"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.2"/>
+          </svg>
+          <span>all categories</span>
+        </button>
+        <header class="edibles-head">
+          <div class="edibles-eyebrow">${escHTML(cat.en)} · ${escHTML(cat.kanji || cat.kana)}</div>
+          <h1 class="edibles-title">${escHTML(cat.kanji || cat.kana)}</h1>
+          <p class="edibles-sub">${items.length} item${items.length === 1 ? '' : 's'}</p>
+        </header>
+      </div>
+      ${cardsHTML}
+    </div>
+  `;
+}
+
+// View 3 — single item detail spread.
+function ediblesDetailHTML(cat, item, allCategories) {
+  // Kanji block — ruby with furigana when there's a kanji, plain
+  // kana when the word is a loanword (no kanji).
+  const isKanaOnly = !item.kanji;
+  const kanjiHTML = isKanaOnly
+    ? escHTML(item.kana)
+    : `<ruby>${escHTML(item.kanji)}<rt>${escHTML(item.kana)}</rt></ruby>`;
+
+  // Flavor badges — clickable, jump to flavor immersion via
+  // ediblesToFlavor handler. The flavorball image replaces what used
+  // to be a chip-colored dot; --badge-chip is still passed so the
+  // hover tint on the badge surface picks up the flavor's color.
+  const flavorBadges = (item.flavors || []).map(fid => {
+    const chip = lookupFlavorChip(fid);
+    const fkana = lookupFlavorKana(fid) || fid;
+    return `
+      <button class="edibles-flavor-badge"
+              data-edible-to-flavor="${escAttr(fid)}"
+              style="--badge-chip:${escAttr(chip)}"
+              type="button"
+              aria-label="Walk to the ${escAttr(fkana)} flavor world">
+        <img class="edibles-flavor-badge-ball"
+             src="images/vocab/flavorballs/${escAttr(fid)}.png"
+             alt=""
+             aria-hidden="true"
+             loading="lazy">
+        ${escHTML(fkana)}
+      </button>
+    `;
+  }).join('');
+
+  // Texture badges — display only for now (Phase 2 wires the
+  // textures page). Each item.textures entry is a kana string.
+  const textureBadges = (item.textures || []).map(t => `
+    <span class="edibles-texture-badge">${escHTML(t)}</span>
+  `).join('');
+
+  // Season chips — display only.
+  const seasonChips = (item.season || []).map(s => `
+    <span class="edibles-season-chip">${escHTML(s)}</span>
+  `).join('');
+
+  // Optional flavor-back breadcrumb — rendered next to the category
+  // back button when the user arrived via the "foods that taste like X"
+  // row on a flavor immersion view. The colored dot picks up the
+  // flavor's chip color so the back-target reads instantly.
+  const fromFlavorId = APP.edibleFromFlavor;
+  const fromFlavorKana = fromFlavorId ? lookupFlavorKana(fromFlavorId) : null;
+  const fromFlavorChip = fromFlavorId ? lookupFlavorChip(fromFlavorId) : null;
+
+  return `
+    <div class="edibles-detail">
+      <div class="edibles-detail-backs" style="grid-column:1/-1">
+        <button class="edibles-back edibles-back-kana" data-edibles-back="items" type="button"
+                aria-label="Back to ${escAttr(cat.en)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5"/>
+            <path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span>${escHTML(cat.kana || cat.kanji || cat.en)}</span>
+        </button>
+        ${fromFlavorId && fromFlavorKana ? `
+          <button class="edibles-back edibles-back-kana edibles-back-to-flavor"
+                  data-edibles-back-to-flavor="${escAttr(fromFlavorId)}"
+                  style="--chip:${escAttr(fromFlavorChip)};"
+                  type="button"
+                  aria-label="Back to the ${escAttr(fromFlavorKana)} flavor world">
+            <img class="edibles-back-ball"
+                 src="images/vocab/flavorballs/${escAttr(fromFlavorId)}.png"
+                 alt=""
+                 aria-hidden="true"
+                 loading="lazy">
+            <span>${escHTML(fromFlavorKana)}</span>
+          </button>
+        ` : ''}
+      </div>
+      <div class="edibles-detail-hero">
+        <image-slot image-key="vocab/${escAttr(item.id)}" readonly></image-slot>
+      </div>
+      <div class="edibles-detail-body">
+        <div class="edibles-detail-identity">
+          <h1 class="edibles-detail-kanji ${isKanaOnly ? 'is-kana-only' : ''}">${kanjiHTML}</h1>
+          ${item.kanji ? `<p class="edibles-detail-kana">${escHTML(item.kana)}</p>` : ''}
+          <p class="edibles-detail-romaji">${escHTML(item.romaji || '')}</p>
+        </div>
+        ${(flavorBadges || textureBadges || seasonChips) ? `
+          <div class="edibles-detail-badges">
+            ${flavorBadges ? `
+              <div class="edibles-badge-row">
+                <span class="edibles-badge-label">flavors</span>
+                ${flavorBadges}
+              </div>
+            ` : ''}
+            ${textureBadges ? `
+              <div class="edibles-badge-row">
+                <span class="edibles-badge-label">textures</span>
+                ${textureBadges}
+              </div>
+            ` : ''}
+            ${seasonChips ? `
+              <div class="edibles-badge-row">
+                <span class="edibles-badge-label">season</span>
+                ${seasonChips}
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+        ${item.notes ? `
+          <p class="edibles-detail-notes">${escHTML(item.notes)}</p>
+        ` : ''}
+        ${(() => {
+          // Reverse-browse row: items sharing a flavor or texture with
+          // this one (Phase 4). Cross-links go through the same
+          // edibles-frame state-swap as the within-category card
+          // clicks, so the user can keep walking the database.
+          const similar = findSimilarEdibles(item, allCategories || []);
+          if (!similar.length) return '';
+          return `
+            <section class="edibles-detail-similar">
+              <header class="edibles-similar-head">
+                <span class="ja">似ている 食材</span>
+                <span class="en">items sharing a flavor or texture</span>
+              </header>
+              <div class="edibles-similar-row">
+                ${similar.map(({ item: si, cat: sc }) => `
+                  <button class="edibles-similar-card"
+                          data-similar-to="${escAttr(sc.id)}/${escAttr(si.id)}"
+                          type="button"
+                          aria-label="Open ${escAttr(si.kana)} — ${escAttr(si.en)}">
+                    <div class="edibles-similar-image">
+                      <image-slot image-key="vocab/${escAttr(si.id)}" readonly></image-slot>
+                    </div>
+                    <div class="edibles-similar-name">
+                      <span class="ja">${escHTML(si.kana)}</span>
+                      <span class="en">${escHTML(si.en)}</span>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+            </section>
+          `;
+        })()}
+      </div>
+    </div>
+  `;
+}
+
+// Phase 4 cross-link helper — find items elsewhere in the database
+// that share a flavor or texture with the current item. Scored by
+// overlap: shared flavors weight 2× (more specific signal — only 10
+// flavors total), shared textures weight 1× (less specific — same
+// kana texture word can appear on many items). Returns top N.
+function findSimilarEdibles(currentItem, allCategories, limit = 6) {
+  const targetFlavors  = new Set(currentItem.flavors || []);
+  const targetTextures = new Set(currentItem.textures || []);
+  if (targetFlavors.size === 0 && targetTextures.size === 0) return [];
+
+  const candidates = [];
+  for (const cat of allCategories) {
+    for (const item of (cat.items || [])) {
+      if (item.id === currentItem.id) continue;
+      let score = 0;
+      const sharedF = [];
+      const sharedT = [];
+      for (const f of (item.flavors || [])) {
+        if (targetFlavors.has(f)) { score += 2; sharedF.push(f); }
+      }
+      for (const t of (item.textures || [])) {
+        if (targetTextures.has(t)) { score += 1; sharedT.push(t); }
+      }
+      if (score > 0) {
+        candidates.push({ item, cat, score, sharedF, sharedT });
+      }
+    }
+  }
+  // Higher score first; stable order for ties (deterministic across renders).
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates.slice(0, limit);
+}
+
+// Helpers — look up a flavor's chip color and kana by id, from the
+// Flavors book sitting elsewhere in VOCAB_CLASSES.
+function lookupFlavorChip(flavorId) {
+  for (const cls of (window.VOCAB_CLASSES || [])) {
+    for (const book of (cls.books || [])) {
+      if (!book.isFlavorsPage) continue;
+      const f = (book.flavors || []).find(x => x.id === flavorId);
+      if (f) return f.chip;
+    }
+  }
+  return 'var(--ink-4)';
+}
+function lookupFlavorKana(flavorId) {
+  for (const cls of (window.VOCAB_CLASSES || [])) {
+    for (const book of (cls.books || [])) {
+      if (!book.isFlavorsPage) continue;
+      const f = (book.flavors || []).find(x => x.id === flavorId);
+      if (f) return f.kana;
+    }
+  }
+  return null;
+}
+
+// Wire handlers — category tile click, item card click, back buttons,
+// flavor badge cross-links.
+function wireEdiblesPageHandlers(book) {
+  const frame = document.querySelector('.edibles-frame[data-book-id="' + book.id + '"]');
+  if (!frame) return;
+
+  frame.addEventListener('click', e => {
+    // Cross-link: flavor badge → flavors immersion view.
+    const flavorBtn = e.target.closest('[data-edible-to-flavor]');
+    if (flavorBtn) {
+      ediblesToFlavor(flavorBtn.dataset.edibleToFlavor);
+      return;
+    }
+    // Back button: takes a `data-edibles-back` of either "categories"
+    // (from item-grid view) or "items" (from item-detail view).
+    const backBtn = e.target.closest('[data-edibles-back]');
+    if (backBtn) {
+      const target = backBtn.dataset.ediblesBack;
+      if (target === 'categories') {
+        APP.edibleCategory = null;
+        APP.edibleItem = null;
+        lsSet('jp:edibleCategory', null);
+        lsSet('jp:edibleItem', null);
+      } else if (target === 'items') {
+        APP.edibleItem = null;
+        lsSet('jp:edibleItem', null);
+      }
+      // Going up out of detail view drops the flavor breadcrumb —
+      // the cross-link context only makes sense inside an item-detail
+      // spread (where the back button can be rendered).
+      APP.edibleFromFlavor = null;
+      lsSet('jp:edibleFromFlavor', null);
+      rerenderEdibles(book);
+      return;
+    }
+    // Back to the flavor we came from. This is the second back button
+    // rendered next to the category one when edibleFromFlavor is set.
+    const flavorBackBtn = e.target.closest('[data-edibles-back-to-flavor]');
+    if (flavorBackBtn) {
+      const flavorId = flavorBackBtn.dataset.ediblesBackToFlavor;
+      APP.vocabBookId = 'flavors';
+      APP.flavorId = flavorId;
+      APP.edibleFromFlavor = null;
+      lsSet('jp:vocabBook', 'flavors');
+      lsSet('jp:flavorId', flavorId);
+      lsSet('jp:edibleFromFlavor', null);
+      const inner = document.getElementById('main-inner');
+      if (inner) renderVocab(inner);
+      if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    // Category tile click — enter that category's item-grid. Empty
+    // tiles are disabled in the HTML, so no need to filter here.
+    const catTile = e.target.closest('[data-category-id]');
+    if (catTile && !catTile.disabled) {
+      APP.edibleCategory = catTile.dataset.categoryId;
+      APP.edibleItem = null;
+      lsSet('jp:edibleCategory', APP.edibleCategory);
+      lsSet('jp:edibleItem', null);
+      rerenderEdibles(book);
+      return;
+    }
+    // Item card click — open detail spread.
+    const itemBtn = e.target.closest('[data-item-id]');
+    if (itemBtn) {
+      APP.edibleItem = itemBtn.dataset.itemId;
+      lsSet('jp:edibleItem', APP.edibleItem);
+      rerenderEdibles(book);
+      return;
+    }
+    // Phase 4 cross-link: similar-item card on a detail spread.
+    // data-similar-to carries "<catId>/<itemId>" so a single click
+    // walks the user from one item's detail straight into another
+    // item's detail (potentially in a different category).
+    const simBtn = e.target.closest('[data-similar-to]');
+    if (simBtn) {
+      const [catId, itemId] = simBtn.dataset.similarTo.split('/');
+      APP.edibleCategory = catId;
+      APP.edibleItem = itemId;
+      lsSet('jp:edibleCategory', catId);
+      lsSet('jp:edibleItem', itemId);
+      rerenderEdibles(book);
+      // Scroll to top so the user lands on the new item's hero, not
+      // mid-page where the previous similar-row used to be.
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+  });
+}
+
+function rerenderEdibles(book) {
+  const pageEl = document.getElementById('vocab-page-content');
+  if (!pageEl) return;
+  pageEl.innerHTML = ediblesPageHTML(book);
+  wireEdiblesPageHandlers(book);
+}
+
+// Cross-link: jump from an edible's flavor badge → the Flavors book's
+// immersion view for that flavor. Switches the active vocab book and
+// sets the flavor id, then triggers a re-render. The user's edible
+// category + item are preserved in localStorage so they can come
+// back to them via the sidebar.
+function ediblesToFlavor(flavorId) {
+  APP.vocabBookId = 'flavors';
+  APP.flavorId = flavorId;
+  // Going to a flavor consumes the edible→flavor breadcrumb; the
+  // user is at a flavor now, no need to back-button to one.
+  APP.edibleFromFlavor = null;
+  lsSet('jp:vocabBook', 'flavors');
+  lsSet('jp:flavorId', flavorId);
+  lsSet('jp:edibleFromFlavor', null);
+  const inner = document.getElementById('main-inner');
+  if (inner) renderVocab(inner);
+  if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
+}
 
 function foodGalleryHTML() {
   // Plain <img> tags. Earlier version used fetch() + inline-svg so the
