@@ -16188,21 +16188,19 @@ function menuFoodGalleryHeaderHTML(menuItems) {
 }
 
 function menuReferenceHTML(book, page, expBtn) {
-  // Three image fields for menu rows:
-  //   - foodImg:  'name.webp' → images/food/name.webp (full filename).
-  //                            For purpose-built menu artwork.
-  //   - foodSvg:  'name'      → images/food/name.svg (legacy, no ext).
-  //   - vocabImg: 'name.webp' → images/vocab/name.webp (full filename).
-  //                            Reuses the same illustrated PNGs the
-  //                            edibles + flavor system uses (onigiri,
-  //                            nikuman, oden, purin, etc) — avoids
-  //                            duplicating files across both folders.
-  // When multiple are set, the order above wins (foodImg > foodSvg >
-  // vocabImg).
+  // Four image fields for menu rows:
+  //   - foodImg:    'name.webp' → images/food/name.webp (full filename)
+  //   - foodSvg:    'name'      → images/food/name.svg (legacy, no ext)
+  //   - vocabImg:   'name.webp' → images/vocab/name.webp
+  //   - konbiniImg: 'name.webp' → images/konbini/name.webp (the
+  //                              dedicated konbini-shelf artwork
+  //                              folder; one image per scene item id)
+  // First non-null match wins, in the order above.
   const resolveSrc = (item) => {
-    if (item.foodImg)  return `images/food/${item.foodImg}`;
-    if (item.foodSvg)  return `images/food/${item.foodSvg}.svg`;
-    if (item.vocabImg) return `images/vocab/${item.vocabImg}`;
+    if (item.foodImg)    return `images/food/${item.foodImg}`;
+    if (item.foodSvg)    return `images/food/${item.foodSvg}.svg`;
+    if (item.vocabImg)   return `images/vocab/${item.vocabImg}`;
+    if (item.konbiniImg) return `images/konbini/${item.konbiniImg}`;
     return null;
   };
   const rowsHTML = (page.items || []).map(item => {

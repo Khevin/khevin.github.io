@@ -1388,7 +1388,9 @@ window.VOCAB_CLASSES = [
           {
             id:'aisles', type:'cheatsheet',
             title:'コンビニの中', subtitle:'Inside the konbini — the aisles and the cooler',
-            imageSlotId:'sheet-konbini-aisles',
+            // Renderer probes images/vocab/<book.id>-<imageSlotId>.webp →
+            // images/vocab/konbini-sheet-aisles.webp
+            imageSlotId:'sheet-aisles',
             // Spot coords tightened against the rendered artwork — the
             // store layout reads roughly: コンビニ sign across the top;
             // left wall has the bento + onigiri + sandwich cases stacked
@@ -1426,7 +1428,8 @@ window.VOCAB_CLASSES = [
           {
             id:'register', type:'cheatsheet',
             title:'レジで', subtitle:'At the counter — the register and the services',
-            imageSlotId:'sheet-konbini-register',
+            // Renderer probes images/vocab/konbini-sheet-register.webp
+            imageSlotId:'sheet-register',
             // Spot coords tightened against the rendered artwork. The
             // composition: customer back-view foreground-left; clerk
             // mid-frame behind the counter; register + scanner on the
@@ -1470,49 +1473,56 @@ window.VOCAB_CLASSES = [
                 en:'Beyond food, the konbini is a one-stop civic counter: withdraw cash at the ATM, photocopy at the multi-function machine, ship a package, pay taxes and utility bills, buy concert tickets, use the restroom. "You can do everything at the konbini" is a quiet pillar of Japanese daily life.' },
             ]
           },
-          // ── Page 4 — Menu reference (the actual konbini shelf) ────
-          // Pulls directly from KONBINI_SECTIONS — the same item set
-          // the Eating Out experience uses for the konbini scene flow.
-          // Filtered to only items where matching artwork exists on
-          // disk (per the rule "if there's no image, the row doesn't
-          // ship"). The non-food misc shelf (tabako, lighter, etc.)
-          // is dropped entirely; the snack variants without dedicated
-          // images (Pocky, gummy, chocolate bar, frankfurt, korokke)
-          // are dropped; pocari sport drink dropped (no image).
+          // ── Page 4 — Menu reference (the full konbini shelf) ──────
+          // Pulls every item from KONBINI_SECTIONS — the same set the
+          // Eating Out scene flow uses for the konbini experience.
+          // Every row resolves to a real .webp in images/konbini/ via
+          // konbiniImg (the resolver's fourth lookup field).
           //
-          // Image routing: foodImg → images/food/, vocabImg →
-          // images/vocab/ (added to the resolver so the menu can
-          // reuse the rich illustrated set already in vocab/).
-          // Onigiri variants all share the generic onigiri.webp —
-          // the differentiator on the row is the kanji + kana label
-          // (filling type), the image just identifies "it's a rice
-          // ball." Same convention the Eating Out scene uses.
+          // Note on the misc shelf — these are NON-FOOD items (cigarettes,
+          // lighter, batteries, umbrella, phone charger, band-aids). They
+          // were dropped from a previous version of this menu because no
+          // images existed; with artwork now in place they're restored
+          // because they're a real and culturally distinct part of the
+          // konbini experience (the konbini is a one-stop civic counter,
+          // not just a food store — per the intro page).
           {
             id:'menu', type:'menu-reference',
             title:'コンビニの棚', subtitleEn:"What's on the konbini shelves",
             items: [
-              // ── おにぎり (5 variants, share onigiri.webp) ─────────
-              { kanji:'ツナマヨおにぎり', kana:'つなまよおにぎり',   en:'tuna mayo (best-seller)', price:160, vocabImg:'onigiri.webp' },
-              { kanji:'鮭おにぎり',       kana:'しゃけおにぎり',     en:'grilled salmon',          price:170, vocabImg:'onigiri.webp' },
-              { kanji:'明太子おにぎり',   kana:'めんたいこおにぎり', en:'spicy pollack roe',       price:190, vocabImg:'onigiri.webp' },
-              { kanji:'梅おにぎり',       kana:'うめおにぎり',       en:'pickled plum',            price:130, vocabImg:'onigiri.webp' },
-              { kanji:'昆布おにぎり',     kana:'こんぶおにぎり',     en:'simmered kelp',           price:140, vocabImg:'onigiri.webp' },
-              // ── ホットフード (3 — drops frankfurt + korokke) ─────
-              { kanji:'肉まん',           kana:'にくまん',           en:'steamed pork bun',        price:150, vocabImg:'nikuman.webp' },
-              { kanji:'からあげ',         kana:'からあげ',           en:'fried chicken bites',     price:200, foodImg:'dish-karaage.webp' },
-              { kanji:'おでん',           kana:'おでん',             en:'oden (simmered stew)',    price:220, vocabImg:'oden.webp' },
-              // ── 飲み物 (5 — drops pocari, no image) ─────────────
-              { kanji:'お茶',             kana:'おちゃ',             en:'green tea (bottle)',      price:150, foodImg:'drink-ocha.webp' },
-              { kanji:'コーヒー',         kana:'こーひー',           en:'canned coffee',           price:130, vocabImg:'koohii.webp' },
-              { kanji:'お水',             kana:'おみず',             en:'bottled water',           price:110, foodImg:'drink-water.svg' },
-              { kanji:'ジュース',         kana:'じゅーす',           en:'orange juice',            price:170, vocabImg:'juusu.webp' },
-              { kanji:'ビール',           kana:'びーる',             en:'beer (can)',              price:280, foodImg:'drink-beer.webp' },
-              // ── お菓子 (3 — drops Pocky, choco, gummy) ──────────
-              { kanji:'ハーゲンダッツ',   kana:'はーげんだっつ',     en:'Häagen-Dazs ice cream',   price:340, vocabImg:'aisukuriimu.webp' },
-              { kanji:'プリン',           kana:'ぷりん',             en:'caramel pudding',         price:180, vocabImg:'purin.webp' },
-              { kanji:'大福',             kana:'だいふく',           en:'mochi with red bean',     price:150, vocabImg:'daifuku.webp' },
-              // ── 雑貨 (dropped entirely — no images for tabako,
-              //    lighter, batteries, umbrella, charger, bandaids).
+              // ── おにぎり (5) ──────────────────────────────────────
+              { kanji:'ツナマヨおにぎり', kana:'つなまよおにぎり',   en:'tuna mayo (best-seller)', price:160, konbiniImg:'onigiri-tunamayo.webp' },
+              { kanji:'鮭おにぎり',       kana:'しゃけおにぎり',     en:'grilled salmon',          price:170, konbiniImg:'onigiri-sake.webp' },
+              { kanji:'明太子おにぎり',   kana:'めんたいこおにぎり', en:'spicy pollack roe',       price:190, konbiniImg:'onigiri-mentaiko.webp' },
+              { kanji:'梅おにぎり',       kana:'うめおにぎり',       en:'pickled plum',            price:130, konbiniImg:'onigiri-ume.webp' },
+              { kanji:'昆布おにぎり',     kana:'こんぶおにぎり',     en:'simmered kelp',           price:140, konbiniImg:'onigiri-kombu.webp' },
+              // ── ホットフード (5) ────────────────────────────────
+              { kanji:'肉まん',           kana:'にくまん',           en:'steamed pork bun',        price:150, konbiniImg:'hot-nikuman.webp' },
+              { kanji:'からあげ',         kana:'からあげ',           en:'fried chicken bites',     price:200, konbiniImg:'hot-karaage.webp' },
+              { kanji:'おでん',           kana:'おでん',             en:'oden (simmered stew)',    price:220, konbiniImg:'hot-oden.webp' },
+              { kanji:'フランク',         kana:'ふらんく',           en:'frankfurter on a stick',  price:180, konbiniImg:'hot-frankfurt.webp' },
+              { kanji:'コロッケ',         kana:'ころっけ',           en:'potato croquette',        price:130, konbiniImg:'hot-korokke.webp' },
+              // ── 飲み物 (6) ──────────────────────────────────────
+              { kanji:'お茶',             kana:'おちゃ',             en:'green tea (bottle)',      price:150, konbiniImg:'drink-ocha.webp' },
+              { kanji:'コーヒー',         kana:'こーひー',           en:'canned coffee',           price:130, konbiniImg:'drink-coffee.webp' },
+              { kanji:'お水',             kana:'おみず',             en:'bottled water',           price:110, konbiniImg:'drink-water.webp' },
+              { kanji:'ポカリ',           kana:'ぽかり',             en:'Pocari Sweat (sports)',   price:160, konbiniImg:'drink-pocari.webp' },
+              { kanji:'オレンジ',         kana:'おれんじじゅーす',   en:'orange juice',            price:170, konbiniImg:'drink-juice.webp' },
+              { kanji:'ビール',           kana:'びーる',             en:'beer (can)',              price:280, konbiniImg:'drink-beer.webp' },
+              // ── お菓子 (6) ──────────────────────────────────────
+              { kanji:'ポッキー',         kana:'ぽっきー',           en:'Pocky',                   price:160, konbiniImg:'sweet-pocky.webp' },
+              { kanji:'ハーゲンダッツ',   kana:'はーげんだっつ',     en:'Häagen-Dazs (ice cream)', price:340, konbiniImg:'sweet-haagen.webp' },
+              { kanji:'プリン',           kana:'ぷりん',             en:'caramel pudding',         price:180, konbiniImg:'sweet-purin.webp' },
+              { kanji:'大福',             kana:'だいふく',           en:'mochi with red bean',     price:150, konbiniImg:'sweet-daifuku.webp' },
+              { kanji:'チョコ',           kana:'ちょこ',             en:'chocolate bar',           price:140, konbiniImg:'sweet-choco.webp' },
+              { kanji:'グミ',             kana:'ぐみ',               en:'gummy candy',             price:120, konbiniImg:'sweet-gummy.webp' },
+              // ── 雑貨 (6) — non-food, konbini-as-civic-counter ────
+              { kanji:'タバコ',           kana:'たばこ',             en:'cigarettes',              price:600,  konbiniImg:'misc-tabako.webp' },
+              { kanji:'ライター',         kana:'らいたー',           en:'lighter',                 price:100,  konbiniImg:'misc-lighter.webp' },
+              { kanji:'電池',             kana:'でんち',             en:'AA batteries (4-pack)',   price:380,  konbiniImg:'misc-denchi.webp' },
+              { kanji:'傘',               kana:'かさ',               en:'plastic umbrella',        price:500,  konbiniImg:'misc-kasa.webp' },
+              { kanji:'充電器',           kana:'じゅうでんき',       en:'phone charger',           price:1200, konbiniImg:'misc-charger.webp' },
+              { kanji:'絆創膏',           kana:'ばんそうこう',       en:'band-aids',               price:280,  konbiniImg:'misc-bandaid.webp' },
             ]
           },
         ]
