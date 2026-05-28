@@ -6983,6 +6983,47 @@
     ruby.hover-furigana::after { transition: none; }
   }
 
+  /* Sibling pattern for English glosses on non-canonical texture
+     descriptors (ジューシー, やわらかい, etc. — items not in the
+     textures book). Reads from data-tooltip instead of data-fur, uses
+     italic Garamond English so the tooltip reads as a translation,
+     not as a furigana reading. Same paper-tinted chip + same hover/
+     focus reveal pattern as .hover-furigana, scoped to a different
+     class so the two can coexist on a card without stylistic
+     collision. */
+  .has-en-tooltip {
+    position: relative;
+    cursor: help;
+  }
+  .has-en-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--ink-2);
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease-out;
+    z-index: 20;
+    box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--ink) 26%, transparent);
+  }
+  .has-en-tooltip:hover::after,
+  .has-en-tooltip:focus-visible::after {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .has-en-tooltip::after { transition: none; }
+  }
+
   /* Top-right "?" legend — a small icon button that on hover/focus
      reveals a tooltip mapping each kanji label to its English
      translation. Always reachable, never in the way. */
@@ -18877,6 +18918,26 @@ function ediblesItemsHTML(cat) {
 }
 
 // View 3 — single item detail spread.
+// Glosses for the "extra" texture descriptors that aren't part of the
+// canonical 10 onomatopoeia (those have their own immersion pages, so
+// clicking the pill is the path-to-explanation). These extras live in
+// items' textures[] arrays as freeform descriptors; the detail card
+// shows them as display-only spans, and this glossary surfaces their
+// meaning as a tooltip on hover. Short English-only gloss — keeps the
+// pill itself Japanese, the tooltip is the "what does that mean?"
+// answer for learners.
+const EXTRA_TEXTURE_GLOSSES = {
+  'ジューシー'  : 'juicy — releases liquid when bitten',
+  'やわらかい'  : 'soft / tender',
+  'プチプチ'   : 'popping — like fish roe bursting',
+  'ぷちぷち'   : 'popping — like fish roe bursting',
+  'シャリシャリ': 'granular crunch — like shaved ice',
+  'クリーミー'  : 'creamy / rich',
+  'つるつる'   : 'smooth-slippery — slurped noodles',
+  'なめらか'   : 'smooth / silky',
+  'ぷるぷる'   : 'jiggly / wobbly — like jelly or soft tofu',
+};
+
 function ediblesDetailHTML(cat, item, allCategories) {
   // Kanji block — ruby with furigana when there's a kanji, plain
   // kana when the word is a loanword (no kanji).
@@ -18939,6 +19000,17 @@ function ediblesDetailHTML(cat, item, allCategories) {
                 <span class="edibles-texture-badge-glyph" aria-hidden="true">${textureMotionLineSVG(tex.motionShape)}</span>
                 <span class="edibles-texture-badge-kana">${escHTML(t)}</span>
               </button>`;
+    }
+    // Display-only fallback (texture not in the textures book). If
+    // we have an English gloss for it, attach a hover tooltip so the
+    // learner can see what the descriptor means — ジューシー = juicy,
+    // やわらかい = soft, etc. tabindex makes it keyboard-reachable
+    // for users who tab through.
+    const gloss = EXTRA_TEXTURE_GLOSSES[t];
+    if (gloss) {
+      return `<span class="edibles-texture-badge has-en-tooltip"
+                    data-tooltip="${escAttr(gloss)}"
+                    tabindex="0">${escHTML(t)}</span>`;
     }
     return `<span class="edibles-texture-badge">${escHTML(t)}</span>`;
   }).join('');
