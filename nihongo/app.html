@@ -6907,8 +6907,13 @@
   }
 
   /* Badge rows — flavor (clickable, dot + kana) and texture (display
-     only, kana on tinted paper). Season is a third row. */
+     only, kana on tinted paper). Season is a third row. The row
+     labels are now Japanese kanji + furigana (味 / 食感 / 季節) so
+     the card teaches the words the learner needs; a small `?` legend
+     in the top-right corner of the badges box maps each kanji to its
+     English counterpart for first-time visitors. */
   .edibles-detail-badges {
+    position: relative;
     display: flex; flex-direction: column; gap: 14px;
     padding: 16px 18px;
     background: var(--paper-2);
@@ -6920,11 +6925,92 @@
     gap: 8px;
   }
   .edibles-badge-label {
-    font-family: var(--font-menu-en);
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink-3);
+    font-family: var(--font-title);
+    font-size: 15px;
+    color: var(--ink);
     flex-shrink: 0;
     min-width: 64px;
+    line-height: 1.15;
+    /* Reset inherited English-label styling. */
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .edibles-badge-label rt {
+    font-size: 0.42em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+
+  /* Top-right "?" legend — a small icon button that on hover/focus
+     reveals a tooltip mapping each kanji label to its English
+     translation. Always reachable, never in the way. */
+  .edibles-badge-legend {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 22px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    appearance: none;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    border-radius: 50%;
+    padding: 0;
+    cursor: help;
+    color: var(--ink-3);
+    font-family: var(--font-menu-en);
+    font-size: 12px;
+    line-height: 1;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .edibles-badge-legend:hover,
+  .edibles-badge-legend:focus-visible {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--ink-3);
+    outline: none;
+  }
+  .edibles-badge-legend-icon {
+    display: block;
+    pointer-events: none;
+  }
+  .edibles-badge-legend-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--ink) 28%, transparent);
+    text-align: left;
+    cursor: default;
+    z-index: 5;
+  }
+  .edibles-badge-legend:hover .edibles-badge-legend-tooltip,
+  .edibles-badge-legend:focus-visible .edibles-badge-legend-tooltip,
+  .edibles-badge-legend:focus-within .edibles-badge-legend-tooltip {
+    display: flex;
+  }
+  .edibles-badge-legend-tooltip .legend-row {
+    display: flex; align-items: baseline;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  .edibles-badge-legend-tooltip .legend-ja {
+    font-family: var(--font-title);
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .edibles-badge-legend-tooltip .legend-en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
   }
   /* Flavor badge: chip-color dot + kana label, clickable, jumps to
      the flavor immersion. The dot color comes from the flavor's own
@@ -6964,7 +7050,14 @@
        the textures book — e.g. やわらかい which doesn't have a
        texture page).
      - Clickable button (.is-link) — opens the textures immersion
-       view for that texture. Adds hover lift + pointer cursor. */
+       view for that texture. Now carries a motion-line brushstroke
+       glyph in front of the kana plus the texture's own pattern
+       wallpaper as the badge background, so the pill becomes a
+       miniature of the textures-page spotlight identity.
+     The pattern is mix-blended via the ::before pseudo-element so the
+     tint-colored base shows through where the pattern is transparent
+     (same approach as the spotlight card). Children sit above via
+     z-index. */
   .edibles-texture-badge {
     padding: 6px 12px;
     background: var(--paper);
@@ -6975,14 +7068,48 @@
     color: var(--ink);
   }
   button.edibles-texture-badge.is-link {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex; align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 6px;
+    background: color-mix(in srgb, var(--tint, var(--paper)) 70%, var(--paper) 30%);
+    border-color: color-mix(in srgb, var(--ink) 14%, var(--paper-edge));
     cursor: pointer;
-    transition: transform .12s ease-out, background .15s, border-color .15s;
+    transition: transform .12s ease-out, box-shadow .15s, border-color .15s;
     font: inherit;
   }
+  button.edibles-texture-badge.is-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--texture-pattern, none);
+    background-repeat: repeat;
+    background-size: 120px auto;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .edibles-texture-badge-glyph {
+    position: relative; z-index: 1;
+    width: 28px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--ink);
+  }
+  .edibles-texture-badge-glyph .texture-motion-line {
+    width: 100%; height: 100%;
+  }
+  .edibles-texture-badge-kana {
+    position: relative; z-index: 1;
+    line-height: 1.2;
+  }
   button.edibles-texture-badge.is-link:hover {
-    background: var(--paper-2);
-    border-color: color-mix(in srgb, var(--ink) 25%, var(--paper-edge));
+    border-color: color-mix(in srgb, var(--ink) 35%, var(--paper-edge));
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--ink) 25%, transparent);
   }
   button.edibles-texture-badge.is-link:focus-visible {
     outline: 2px solid var(--ink-2);
@@ -6991,6 +7118,9 @@
   @media (prefers-reduced-motion: reduce) {
     button.edibles-texture-badge.is-link { transition: none; }
     button.edibles-texture-badge.is-link:hover { transform: none; }
+  }
+  @media (prefers-contrast: more) {
+    button.edibles-texture-badge.is-link::before { display: none; }
   }
   /* Season chip: even quieter. */
   .edibles-season-chip {
@@ -18755,10 +18885,19 @@ function ediblesDetailHTML(cat, item, allCategories) {
   const textureBadges = (item.textures || []).map(t => {
     const tex = texturesBook && (texturesBook.textures || []).find(x => x.kana === t);
     if (tex) {
+      // Improved pill: motion-line SVG glyph in front, kana label
+      // beside it, and the texture's pattern wallpaper as a faint
+      // background. Together they make the pill instantly recognizable
+      // — the brushstroke shape IS the texture, the pattern locks
+      // the visual identity established on the textures page.
       return `<button class="edibles-texture-badge is-link"
                       data-edible-to-texture="${escAttr(tex.id)}"
                       type="button"
-                      aria-label="Open ${escAttr(t)} texture page">${escHTML(t)}</button>`;
+                      style="--tint:${escAttr(tex.tint)}; --texture-pattern:url('images/bg/textures/${escAttr(tex.id)}.webp');"
+                      aria-label="Open ${escAttr(t)} texture page">
+                <span class="edibles-texture-badge-glyph" aria-hidden="true">${textureMotionLineSVG(tex.motionShape)}</span>
+                <span class="edibles-texture-badge-kana">${escHTML(t)}</span>
+              </button>`;
     }
     return `<span class="edibles-texture-badge">${escHTML(t)}</span>`;
   }).join('');
@@ -18817,21 +18956,36 @@ function ediblesDetailHTML(cat, item, allCategories) {
         ` : ''}
         ${(flavorBadges || textureBadges || seasonChips) ? `
           <div class="edibles-detail-badges">
+            <button class="edibles-badge-legend" type="button"
+                    aria-label="Show English translations of the row labels">
+              <span class="edibles-badge-legend-icon" aria-hidden="true">?</span>
+              <span class="edibles-badge-legend-tooltip" role="tooltip">
+                <span class="legend-row"><span class="legend-ja">味</span><span class="legend-en">flavors</span></span>
+                <span class="legend-row"><span class="legend-ja">食感</span><span class="legend-en">textures</span></span>
+                <span class="legend-row"><span class="legend-ja">季節</span><span class="legend-en">season</span></span>
+              </span>
+            </button>
             ${flavorBadges ? `
               <div class="edibles-badge-row">
-                <span class="edibles-badge-label">flavors</span>
+                <span class="edibles-badge-label">
+                  <ruby>味<rt>あじ</rt></ruby>
+                </span>
                 ${flavorBadges}
               </div>
             ` : ''}
             ${textureBadges ? `
               <div class="edibles-badge-row">
-                <span class="edibles-badge-label">textures</span>
+                <span class="edibles-badge-label">
+                  <ruby>食感<rt>しょっかん</rt></ruby>
+                </span>
                 ${textureBadges}
               </div>
             ` : ''}
             ${seasonChips ? `
               <div class="edibles-badge-row">
-                <span class="edibles-badge-label">season</span>
+                <span class="edibles-badge-label">
+                  <ruby>季節<rt>きせつ</rt></ruby>
+                </span>
                 ${seasonChips}
               </div>
             ` : ''}
