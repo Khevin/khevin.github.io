@@ -1367,7 +1367,121 @@ window.VOCAB_CLASSES = [
         ]
       },
 
-      { id:'konbini',    titleJa:'コンビニ', titleEn:'Conbini',     glyph:'便', primaryLevel:'N5', pages:[] },
+      // ── Konbini (コンビニ) — 4-page hub ─────────────────────────
+      // Two cheatsheets (the aisles + the counter), one explanation
+      // (the cultural role of the konbini in Japan), one menu-reference
+      // (typical prices on the items learners would actually buy). The
+      // two cheatsheets each carry their own illustrated panel — the
+      // first an aisle-wide view of products on shelves, the second a
+      // close-up of the register counter. Spot coords are approximate;
+      // the renderer will overlay numbered hotspots at the marked %
+      // positions and the user can tighten them after the images
+      // arrive.
+      { id:'konbini', titleJa:'コンビニ', titleEn:'Conbini', glyph:'便', primaryLevel:'N5',
+        isCategoryHub:true, randomCategory:'konbini',
+        pages: [
+          // ── Page 1 — Inside the konbini (the aisles + cooler) ─────
+          // A wide illustrated panel of the konbini interior with 10
+          // numbered hotspots. Mostly product nouns the learner sees
+          // through the door: prepared food cases, drink cooler,
+          // snack aisle, freezer, magazine rack.
+          {
+            id:'aisles', type:'cheatsheet',
+            title:'コンビニの中', subtitle:'Inside the konbini — the aisles and the cooler',
+            imageSlotId:'sheet-konbini-aisles',
+            items: [
+              { num:1,  kanji:'コンビニ',     kana:'こんびに',     romaji:'konbini',     en:'convenience store',
+                spot:{ x:50, y:8 },  note:'Shortened from "convenience store" (コンビニエンスストア). 7-Eleven, ローソン (Lawson), ファミマ (Family Mart) are the big three. ~55,000 locations nationwide, most open 24/7.' },
+              { num:2,  kanji:'お弁当',       kana:'おべんとう',   romaji:'obentou',     en:'bento box meal',
+                spot:{ x:25, y:38 }, note:'Sits in the heated case near the register. Konbini bento is famously good — a full meal (rice, protein, two or three sides) for ¥500-700. The clerk asks 「温めますか？」 (warm it up?) at checkout.' },
+              { num:3,  kanji:'おにぎり',     kana:'おにぎり',     romaji:'onigiri',     en:'rice ball',
+                spot:{ x:38, y:38 }, note:'Triangular rice ball in the chilled case. Classic fillings: 鮭 (salmon), 梅 (ume plum), ツナマヨ (tuna-mayo), 昆布 (kombu). 7-Eleven sells over 2 billion onigiri a year.' },
+              { num:4,  kanji:'サンドイッチ', kana:'さんどいっち', romaji:'sandoicchi',  en:'sandwich (crustless)',
+                spot:{ x:52, y:38 }, note:'Japanese konbini sandwiches are crustless, triangular, and sealed in plastic. Iconic fillings: 卵 (egg-salad), ハム (ham), ツナ (tuna), フルーツサンド (fruit sando — whipped cream + fruit).' },
+              { num:5,  kanji:'お菓子',       kana:'おかし',       romaji:'okashi',      en:'snacks / sweets aisle',
+                spot:{ x:70, y:30 }, note:'The snack aisle. Pocky, KitKat (Japan-exclusive flavors), potato chips (Calbee, Koikeya), and seasonal limited editions rotating every few weeks.' },
+              { num:6,  kanji:'パン',         kana:'ぱん',         romaji:'pan',         en:'bread / pastry',
+                spot:{ x:82, y:38 }, note:'Japanese konbini bread — soft, sweet, often filled. メロンパン (melon pan), あんパン (anko-filled), カレーパン (curry-filled). Always near the rice products.' },
+              { num:7,  kanji:'ジュース',     kana:'じゅーす',     romaji:'juusu',       en:'juice / soft drink',
+                spot:{ x:88, y:55 }, note:'In the standing drink cooler at the back wall. Includes juice, sodas, sports drinks. Cans are 100-160円, plastic bottles 130-180円.' },
+              { num:8,  kanji:'お茶',         kana:'おちゃ',       romaji:'ocha',        en:'bottled tea',
+                spot:{ x:78, y:55 }, note:'Bottled green tea — 伊右衛門 (Iyemon), おーいお茶 (Oi Ocha), 綾鷹 (Ayataka). Always cold in summer, warm in winter (look for the red 「あったかい」 sticker).' },
+              { num:9,  kanji:'アイス',       kana:'あいす',       romaji:'aisu',        en:'ice cream',
+                spot:{ x:14, y:62 }, note:'The freezer case near the entrance. Gari-Gari-kun (the iconic blue popsicle), Pino (mini-cones), Häagen-Dazs, ハーゲンダッツ 抹茶 (matcha — Japan-only).' },
+              { num:10, kanji:'雑誌',         kana:'ざっし',       romaji:'zasshi',      en:'magazines',
+                spot:{ x:90, y:78 }, note:'Magazine rack near the front window — manga, fashion, news weeklies. Customers stand and read (立ち読み tachiyomi) without buying; konbini have mostly tolerated this since the 1980s.' },
+            ]
+          },
+          // ── Page 2 — At the counter (the register + services) ────
+          // Close-up of the register area. Less product, more action —
+          // the verbs and the service vocabulary the learner needs
+          // when actually checking out.
+          {
+            id:'register', type:'cheatsheet',
+            title:'レジで', subtitle:'At the counter — the register and the services',
+            imageSlotId:'sheet-konbini-register',
+            items: [
+              { num:1,  kanji:'レジ',         kana:'れじ',         romaji:'reji',        en:'register / checkout',
+                spot:{ x:50, y:50 }, note:'From English "register." The single counter at the front of every konbini. In rush hours one clerk runs it; quiet hours sometimes self-checkout (セルフレジ).' },
+              { num:2,  kanji:'店員',         kana:'てんいん',     romaji:'ten\'in',     en:'store clerk',
+                spot:{ x:35, y:35 }, note:'いらっしゃいませ (irasshaimase, "welcome") greets every customer on entry. Often a part-time worker (バイト) or a foreign-trainee. Famously polite even at 3am.' },
+              { num:3,  kanji:'お客',         kana:'おきゃく',     romaji:'okyaku',      en:'customer',
+                spot:{ x:65, y:55 }, note:'The honorific お+客. Used by clerks addressing the buyer ("お客様"). The customer-side word is just 自分 (jibun, "myself") — never "okyaku" about oneself.' },
+              { num:4,  kanji:'バーコード',   kana:'ばーこーど',   romaji:'baakoodo',    en:'barcode',
+                spot:{ x:42, y:48 }, note:'Beep-beep ピッピッ. From English. Every product scanned at the konbini register; the price flashes on the small customer-facing display.' },
+              { num:5,  kanji:'温める',       kana:'あたためる',   romaji:'atatameru',   en:'warm up (microwave)',
+                spot:{ x:25, y:25 }, note:'The clerk asks 「温めますか？」 (atatamemasu ka? = "warm it up?") when scanning a bento or pasta. Yes = the microwave behind the counter (秒数 30s-1m). Always offered, never automatic.' },
+              { num:6,  kanji:'お箸',         kana:'おはし',       romaji:'ohashi',      en:'chopsticks',
+                spot:{ x:38, y:65 }, note:'「お箸はおつけしますか？」 (do you need chopsticks?). The clerk asks; you say はい (yes, please) or いりません (no thanks). Comes with a tiny wet napkin.' },
+              { num:7,  kanji:'袋',           kana:'ふくろ',       romaji:'fukuro',      en:'bag',
+                spot:{ x:60, y:75 }, note:'Since July 2020 plastic bags are paid (3-5円). The clerk asks 「袋はいりますか？」 (do you need a bag?). Saying 「袋いりません」 (no bag) saves a few yen and a small carbon receipt.' },
+              { num:8,  kanji:'支払い',       kana:'しはらい',     romaji:'shiharai',    en:'payment',
+                spot:{ x:48, y:80 }, note:'Cash (現金), card, PayPay, Suica, iD, 楽天ペイ — every konbini takes everything. The clerk asks 「お支払いは？」 (how are you paying?). Just hold up the method you want.' },
+              { num:9,  kanji:'レシート',     kana:'れしーと',     romaji:'reshiito',    en:'receipt',
+                spot:{ x:70, y:62 }, note:'From English. Always offered; you can refuse with 「レシートいりません」. Carries a thin paper QR for the chain\'s loyalty program (T-Point, Ponta, dPoint).' },
+              { num:10, kanji:'ATM',         kana:'えーてぃーえむ', romaji:'ATM',         en:'ATM machine',
+                spot:{ x:85, y:25 }, note:'In the corner of every konbini. 7-Eleven\'s セブン銀行 ATM is the most foreign-card-friendly in Japan (works with most overseas Visa/Mastercard for cash withdrawal in JPY, 24/7, fee 110-220円).' },
+            ]
+          },
+          // ── Page 3 — Explanation (the cultural role) ──────────────
+          {
+            id:'intro', type:'explanation',
+            title:'コンビニについて', subtitleEn:'About the konbini',
+            heroImageSrc:'images/covers/konbini.webp',
+            sections: [
+              { ja:'コンビニは「コンビニエンスストア」の略 — 24時間、年中無休、半径500メートル以内に最低一つはある日本の生活インフラ。セブンイレブン、ローソン、ファミマの三社が全国約55,000店を独占する。',
+                en:'"Konbini" is short for "convenience store" — 24-hour, 365-day, the kind of place a typical Japanese city block has at least one of every 500 meters. The big three — 7-Eleven, Lawson, FamilyMart — dominate ~55,000 stores nationwide.' },
+              { ja:'食べ物の質は世界的に有名。お弁当、おにぎり、サンドイッチ、パン — どれもまともなレストランに匹敵する。冬は肉まん、おでん、ホット飲料。夏はかき氷、冷たい麺、アイス。新商品は2週ごとに入れ替わる。',
+                en:'The food is internationally famous. Bento, onigiri, sandwiches, pastries — all of restaurant-grade quality at street-snack prices. Winter brings nikuman, oden, hot drinks; summer brings shaved ice, cold noodles, ice cream. The product mix rotates every two weeks.' },
+              { ja:'食べ物以外でもなんでもできる場所：ATMでお金を下ろす、コピー機で印刷、宅配便を出す、税金や公共料金を払う、チケットを買う、トイレを借りる。「コンビニで全部できる」は日本生活の合言葉。',
+                en:'Beyond food, the konbini is a one-stop civic counter: withdraw cash at the ATM, photocopy at the multi-function machine, ship a package, pay taxes and utility bills, buy concert tickets, use the restroom. "You can do everything at the konbini" is a quiet pillar of Japanese daily life.' },
+            ]
+          },
+          // ── Page 4 — Menu reference (typical konbini purchases) ───
+          // Standard menu-reference format. Items the learner is most
+          // likely to actually buy, with representative prices.
+          // foodImg references existing FOOD_GALLERY artwork where
+          // possible (onigiri.webp, drink-ocha.webp, etc).
+          {
+            id:'menu', type:'menu-reference',
+            title:'コンビニの値段', subtitleEn:'What you might buy at the konbini',
+            items: [
+              { kanji:'おにぎり',     kana:'おにぎり',     en:'onigiri (rice ball)',     price:130, foodImg:'onigiri.webp' },
+              { kanji:'お弁当',       kana:'おべんとう',   en:'bento meal',              price:580, foodImg:'dish-tonkatsu.webp' },
+              { kanji:'サンドイッチ', kana:'さんどいっち', en:'sandwich (crustless)',    price:280, foodImg:'shokupan.webp' },
+              { kanji:'肉まん',       kana:'にくまん',     en:'steamed pork bun',        price:160, foodImg:'nikuman.webp' },
+              { kanji:'パン',         kana:'ぱん',         en:'sweet pastry',            price:180, foodImg:'pan.webp' },
+              { kanji:'お茶',         kana:'おちゃ',       en:'bottled tea (500ml)',     price:150, foodImg:'drink-ocha.webp' },
+              { kanji:'ジュース',     kana:'じゅーす',     en:'juice (500ml)',           price:160, foodImg:'juusu.webp' },
+              { kanji:'コーヒー',     kana:'こーひー',     en:'hot/cold coffee',         price:120, foodImg:'koohii.webp' },
+              { kanji:'アイス',       kana:'あいす',       en:'ice cream',               price:200, foodImg:'aisukuriimu.webp' },
+              { kanji:'お菓子',       kana:'おかし',       en:'snack pack',              price:200, foodImg:'poteto-chippusu.webp' },
+              { kanji:'袋',           kana:'ふくろ',       en:'plastic bag (since 2020)', price:5 },
+              { kanji:'ATM手数料',    kana:'えーてぃーえむてすうりょう', en:'ATM withdrawal fee', price:110 },
+            ]
+          },
+        ]
+      },
       // Fast Food hub — single book that holds McDonald's + KFC as
       // selectable pages. Custom renderer (isFastFoodHub) shows the
       // chains as cards at the top, an "experience" launch button per
