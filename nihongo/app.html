@@ -16491,6 +16491,13 @@ function toggleAudioSettingsPopover(evt) {
   const pop = document.getElementById('audio-settings-popover');
   if (!pop) return;
   if (pop.hasAttribute('hidden')) {
+    // Move the popover element to <body> so its z-index escapes any
+    // stacking context the sidebar ancestor (transform / overflow /
+    // isolation) has created. Idempotent — if already a body child,
+    // this is a no-op re-insert at the same point in the tree.
+    if (pop.parentElement !== document.body) {
+      document.body.appendChild(pop);
+    }
     renderAudioSettingsPopover();
     positionAudioSettingsPopover(pop);
     pop.removeAttribute('hidden');
