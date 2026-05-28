@@ -18401,11 +18401,54 @@ function ediblesPageHTML(book) {
 // [first, middle, last] from the category's items, which works for
 // most tiles but produces dull pairs when the underlying alphabetical
 // order isn't visually balanced. For categories listed here, the
-// override is used in [left, center-front, right] order — pick a trio
-// that shows the category's range at a glance. Categories not listed
-// fall back to the auto-picker. Add an entry here whenever a category
-// gains a stronger third exemplar after a new image lands.
+// override is used in [left, center-front, right] order — pick a
+// trio that shows the category's range at a glance, with the strongest
+// instantly-readable exemplar in the center. Categories not listed
+// fall back to the auto-picker.
+//
+// Pattern: prefer (1) color/shape variety across the trio so the tile
+// doesn't read as "three things that look the same", (2) a single
+// canonical anchor in the center-front slot, (3) Japan-coded items
+// over Western imports unless the category's identity is the
+// Western-Japan fusion (e.g. kashi's wagashi-anchored + cafe-modern
+// flanks). Re-curate any entry whenever a stronger third exemplar
+// lands.
 const EDIBLES_CATEGORY_STACK_OVERRIDES = {
+  // 果物 (kudamono, fruits): budou left (purple cluster — color +
+  // shape contrast), ichigo center (the Japanese-Christmas-cake
+  // hero, bright red rounded-triangle, the most instantly
+  // recognizable Japanese fruit), meron right (the luxury gift
+  // fruit — green/yellow, large round, totally different silhouette
+  // from the other two). Three premium fruits, three distinct
+  // palettes (purple / red / green-yellow).
+  kudamono: ['budou', 'ichigo', 'meron'],
+
+  // 野菜 (yasai, vegetables): daikon left (long white radish — the
+  // most iconic Japanese-pantry vegetable), nasu center (Japanese
+  // eggplant — slim purple, the shape is unmistakable), shiitake
+  // right (the umami-king mushroom, brown cap). Three earthy
+  // distinct palettes (white / purple / brown), all reading as a
+  // Japanese kitchen.
+  yasai: ['daikon', 'nasu', 'shiitake'],
+
+  // 肉 (niku, meat): butaniku left (pork — the everyday Japanese
+  // workhorse meat, central to tonkatsu/shabu-shabu/豚汁),
+  // gyuuniku center (wagyu beef — the prestige anchor that defines
+  // Japanese meat globally), toriniku right (chicken — versatile,
+  // base of karaage/yakitori/oyakodon). The three principal meats
+  // of Japanese home cooking, beef centered as the cultural
+  // prestige.
+  niku: ['butaniku', 'gyuuniku', 'toriniku'],
+
+  // 魚 (sakana, fish & sea): ebi left (shrimp's curled pink form —
+  // distinctive silhouette), maguro center (tuna — the king of
+  // sushi, the most iconic seafood in Japanese cuisine), tako right
+  // (octopus — very Japan-coded via takoyaki and sushi, multi-
+  // tentacle purple-pink shape). Three sushi-bar canon proteins,
+  // three distinct shapes (curl / slab / tentacles), three palettes
+  // (pink / deep red / purple-pink).
+  sakana: ['ebi', 'maguro', 'tako'],
+
   // 菓子 (kashi, sweets): hottokeeki left, daifuku center-front
   // (the wagashi anchor — soft mochi-ball reads instantly as
   // "Japanese sweet"), buraunii right. Western-origin pair flanks
