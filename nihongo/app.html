@@ -7199,6 +7199,26 @@
     font-size: 14px;
     color: var(--ink);
   }
+  /* Icon-bearing variant of the display-only pill — non-canonical
+     textures with a registered icon get a small image in front of
+     their kana, the same way the clickable canonical pills carry
+     their brushstroke glyph. inline-flex aligns the image baseline
+     with the text. Image is shipped pre-trimmed (sharp's trim() in
+     scripts) so no surrounding transparent halo. */
+  .edibles-texture-badge.has-extra-icon {
+    display: inline-flex; align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 6px;
+  }
+  .edibles-texture-badge .extra-texture-icon {
+    width: 24px; height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+  }
+  .edibles-texture-badge .extra-texture-kana {
+    line-height: 1.2;
+  }
   button.edibles-texture-badge.is-link {
     position: relative;
     isolation: isolate;
@@ -16529,20 +16549,16 @@ function renderVocabBooksSidebar() {
   const books = cls ? (cls.books || []) : [];
   if (!books.length) { el.innerHTML = ''; return; }
 
-  // Split experience-flagged books from regular vocab books so the
-  // sidebar can present the interactive entry visually distinctly. When
-  // a category has no experience, only the books section renders.
-  const experiences = books.filter(b => b.isExperience);
-  const vocabBooks  = books.filter(b => !b.isExperience);
-
-  // Group non-experience books by their `section` field so classes can
-  // sub-divide their book list into named sub-categories (e.g. Internet
-  // → "websites" + "mobile apps"). Books without a `section` fall into
-  // the default 'books' bucket. Section order follows first-appearance
-  // in the class's books array, which is what the data author intended.
+  // Group every book by its sidebar section. Experience books
+  // (isExperience:true) fall into the 'interactive' section; everything
+  // else uses its `section` field or defaults to 'books'. Map iteration
+  // order = insertion order, so groups appear in the order their first
+  // member appears in the source array — authors control sidebar
+  // ordering by ordering books in data.js (no hardcoded
+  // experience-always-first anymore).
   const sectionMap = new Map();
-  for (const b of vocabBooks) {
-    const sec = b.section || 'books';
+  for (const b of books) {
+    const sec = b.isExperience ? 'interactive' : (b.section || 'books');
     if (!sectionMap.has(sec)) sectionMap.set(sec, []);
     sectionMap.get(sec).push(b);
   }
@@ -16568,28 +16584,25 @@ function renderVocabBooksSidebar() {
     </li>`;
   };
 
-  // Render each non-experience section under its own header. The first
-  // header skips the with-divider class if no experiences sit above it.
-  let hasPrior = experiences.length > 0;
+  // Render every section in the order it first appeared in the books
+  // array. The 'interactive' section gets the cat-list-exp class so
+  // experience books keep their distinctive launcher styling; other
+  // sections render with the plain cat-list class. The first section
+  // doesn't draw the divider above it; every subsequent one does.
+  let hasPrior = false;
   const sectionsHTML = [];
   for (const [secTitle, secBooks] of sectionMap) {
+    const isExpSection = secTitle === 'interactive';
     sectionsHTML.push(`
       <div class="flash-sidebar-head ${hasPrior ? 'with-divider' : ''}">${escHTML(secTitle)}</div>
-      <ul class="cat-list">
-        ${secBooks.map(b => cardHTML(b, false)).join('')}
+      <ul class="cat-list ${isExpSection ? 'cat-list-exp' : ''}">
+        ${secBooks.map(b => cardHTML(b, isExpSection)).join('')}
       </ul>
     `);
     hasPrior = true;
   }
 
-  el.innerHTML = `
-    ${experiences.length ? `
-      <div class="flash-sidebar-head">interactive</div>
-      <ul class="cat-list cat-list-exp">
-        ${experiences.map(b => cardHTML(b, true)).join('')}
-      </ul>
-    ` : ''}
-    ${sectionsHTML.join('')}`;
+  el.innerHTML = sectionsHTML.join('');
 
   el.querySelectorAll('[data-vocab-book]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -18976,16 +18989,22 @@ function ediblesItemsHTML(cat) {
 // meaning as a tooltip on hover. Short English-only gloss — keeps the
 // pill itself Japanese, the tooltip is the "what does that mean?"
 // answer for learners.
+// Glosses + (optional) icons for the non-canonical texture descriptors.
+// Each entry is either a plain string (just an English gloss) or an
+// object with { en, icon } — icon is the filename in
+// images/bg/texture-icons/ minus the extension. The renderer reads
+// both shapes for backward compatibility; entries without icons stay
+// label-only on the pill.
 const EXTRA_TEXTURE_GLOSSES = {
-  'ジューシー'  : 'juicy — releases liquid when bitten',
-  'やわらかい'  : 'soft / tender',
-  'プチプチ'   : 'popping — like fish roe bursting',
-  'ぷちぷち'   : 'popping — like fish roe bursting',
-  'シャリシャリ': 'granular crunch — like shaved ice',
-  'クリーミー'  : 'creamy / rich',
-  'つるつる'   : 'smooth-slippery — slurped noodles',
-  'なめらか'   : 'smooth / silky',
-  'ぷるぷる'   : 'jiggly / wobbly — like jelly or soft tofu',
+  'ジューシー'  : { en: 'juicy — releases liquid when bitten', icon: 'juushii' },
+  'やわらかい'  : { en: 'soft / tender',                       icon: 'yawarakai' },
+  'プチプチ'   : { en: 'popping — like fish roe bursting' },
+  'ぷちぷち'   : { en: 'popping — like fish roe bursting' },
+  'シャリシャリ': { en: 'granular crunch — like shaved ice',    icon: 'sharishari' },
+  'クリーミー'  : { en: 'creamy / rich' },
+  'つるつる'   : { en: 'smooth-slippery — slurped noodles' },
+  'なめらか'   : { en: 'smooth / silky',                       icon: 'nameraka' },
+  'ぷるぷる'   : { en: 'jiggly / wobbly — like jelly or soft tofu', icon: 'purupuru' },
 };
 
 function ediblesDetailHTML(cat, item, allCategories) {
@@ -19052,15 +19071,27 @@ function ediblesDetailHTML(cat, item, allCategories) {
               </button>`;
     }
     // Display-only fallback (texture not in the textures book). If
-    // we have an English gloss for it, attach a hover tooltip so the
+    // we have a gloss entry for it, attach a hover tooltip so the
     // learner can see what the descriptor means — ジューシー = juicy,
-    // やわらかい = soft, etc. tabindex makes it keyboard-reachable
-    // for users who tab through.
-    const gloss = EXTRA_TEXTURE_GLOSSES[t];
-    if (gloss) {
-      return `<span class="edibles-texture-badge has-en-tooltip"
-                    data-tooltip="${escAttr(gloss)}"
-                    tabindex="0">${escHTML(t)}</span>`;
+    // やわらかい = soft, etc. If an icon is registered for it too,
+    // render the icon in front of the kana so the pill carries some
+    // visual identity (mirrors the brushstroke glyph on the canonical
+    // textures' pills). tabindex makes the pill keyboard-reachable.
+    const glossEntry = EXTRA_TEXTURE_GLOSSES[t];
+    if (glossEntry) {
+      const en   = typeof glossEntry === 'string' ? glossEntry : glossEntry.en;
+      const icon = (typeof glossEntry === 'object') ? glossEntry.icon : null;
+      const iconHTML = icon
+        ? `<img class="extra-texture-icon"
+                src="images/bg/texture-icons/${escAttr(icon)}.webp"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                onerror="this.style.display='none'">`
+        : '';
+      return `<span class="edibles-texture-badge has-en-tooltip ${icon ? 'has-extra-icon' : ''}"
+                    data-tooltip="${escAttr(en)}"
+                    tabindex="0">${iconHTML}<span class="extra-texture-kana">${escHTML(t)}</span></span>`;
     }
     return `<span class="edibles-texture-badge">${escHTML(t)}</span>`;
   }).join('');

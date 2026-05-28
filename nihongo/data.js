@@ -456,16 +456,10 @@ window.VOCAB_CLASSES = [
     pageTitleJa: '食べ物の 世界',
     pageTitleEn: 'Food vocabulary, flavors, edibles, and dining',
     books: [
-      // The Eating Out book — previously titled "Experience." Same
-      // mechanics (rolls a random restaurant from EATING_OUT_RESTAURANTS
-      // and runs the scene flow), but the framing now reads as the
-      // category it belongs to. The book id stays 'experience' because
-      // it's referenced by name throughout the codebase (book.id ===
-      // 'experience' in handlers; APP.vocabBookId = 'experience' in
-      // the launch helpers); changing the id would force a coordinated
-      // rename across dozens of call sites. Glyph swap: 体 (body /
-      // experience) → 外 (outside — as in 外食 gaishoku, "eating out").
-      { id:'experience',   titleJa:'がいしょく', titleEn:'Eating Out',     glyph:'外', primaryLevel:'N4', pages:[], isExperience:true },
+      // (Eating Out book moved further down — sits between the
+      // reference-Books section and the restaurant-Places section
+      // so the sidebar reads as a story: Books → Interactive
+      // (Eating Out) → Places.)
       // Food vocabulary gallery removed from sidebar — its content now
       // lives directly on each restaurant's menu page (the visual food-
       // gallery header above the menu rows pulls from the FOOD_GALLERY
@@ -484,7 +478,7 @@ window.VOCAB_CLASSES = [
       // brief's pedagogical rule (multi-channel encoding, English last).
       { id:'flavors', titleJa:'あじ', titleEn:'Flavors',
         glyph:'味', primaryLevel:'N4', pages:[],
-        isExperience:true, isFlavorsPage:true,
+        isFlavorsPage:true,
         // Order (user-set):
         //   oishii → amai → karai → tsumetai → suppai → nigai →
         //   sawayaka → atsui → shoppai → mazui
@@ -565,7 +559,7 @@ window.VOCAB_CLASSES = [
       // (Phase 2 will turn them into FK ids when Textures ships).
       { id:'edibles', titleJa:'しょくざい', titleEn:'Edibles',
         glyph:'食材', primaryLevel:'N4', pages:[],
-        isExperience:true, isEdiblesPage:true,
+        isEdiblesPage:true,
         categories: [
           // ── Kudamono (Fruits) — Phase 3a populated. ──────────────
           { id:'kudamono', kanji:'果物', kana:'くだもの', romaji:'kudamono',
@@ -1087,7 +1081,7 @@ window.VOCAB_CLASSES = [
       // docs/superpowers/specs/2026-05-26-flavors-textures.PRODUCT.md §7.2
       // and DESIGN.md texture-treatments for the full contract.
       { id:'textures', titleJa:'しょっかん', titleEn:'Textures', glyph:'食感', primaryLevel:'N4', pages:[],
-        isExperience:true, isTexturesPage:true,
+        isTexturesPage:true,
         // Phase 2.2 schema (post-redesign): each texture now carries
         // additional fields for the new single-page-scrollable surface
         // — staple (the canonical food id for the spectrum tile),
@@ -1284,14 +1278,23 @@ window.VOCAB_CLASSES = [
             notes:'The hard crunch of bacon cooked extra-crispy, the edges of karaage, deep-fried croutons, well-toasted bread crusts. Heavier and louder than さくさく — カリカリ takes work, requires the molars. The signature texture of bar food (karaage, fries, bacon) and snack food (chips, popcorn).' },
         ],
       },
-      // Fast food chains — direct launch into a specific restaurant's
-      // scene flow (not random). `isFastFood:true` puts them in their
-      // own sidebar group between Interactive and Books; `restaurantId`
-      // tells the renderer which EATING_OUT_RESTAURANTS entry to load.
-      // (No interactive McDonald's/KFC books here anymore — they moved
-      // into the `fast-food` hub book in the Books group below, with a
-      // card selector at the top of the page instead of the bottom
-      // pager.)
+      // ── Eating Out — the single experience launcher ─────────────
+      // Rolls a random restaurant from EATING_OUT_RESTAURANTS and
+      // runs the scene flow. Sits between the reference Books
+      // (Flavors / Edibles / Textures, above) and the Places (the
+      // specific restaurants, below) so the sidebar reads as a
+      // story: Books → Interactive → Places. isExperience:true
+      // routes the click to the scene-flow renderer and places this
+      // book in the "interactive" sidebar group. Glyph 外 (outside —
+      // as in 外食 gaishoku, "eating out"). The book id stays
+      // 'experience' because it's referenced by name throughout the
+      // codebase (book.id === 'experience' in handlers).
+      { id:'experience', titleJa:'がいしょく', titleEn:'Eating Out', glyph:'外', primaryLevel:'N4', pages:[], isExperience:true },
+
+      // ── Places — specific restaurant types. Each book lives in
+      // its own sidebar section ('places') below the Interactive
+      // launcher. `section:'places'` puts them together; first-
+      // appearance order in this array drives the sidebar order.
       // ── Yatai (Street Food) — chain-selector hub ───────────────
       // 4 establishment types on a 1-row card selector. No per-page
       // restaurantId — the experience button rolls a random yatai.
@@ -1299,7 +1302,7 @@ window.VOCAB_CLASSES = [
       // approachable entry point for beginners (no reservations, no
       // ordering script, eat outside with your hands).
       { id:'yatai', titleJa:'やたい', titleEn:'Street Food', glyph:'屋', primaryLevel:'N5',
-        isCategoryHub:true, randomCategory:'yatai',
+        section:'places', isCategoryHub:true, randomCategory:'yatai',
         pages: [
           // Street Food pages auto-resolve their big-image + selector
           // thumbnail to images/vocab/<page.id>.png. Drop a PNG with
@@ -1384,7 +1387,7 @@ window.VOCAB_CLASSES = [
       // ── Sushi (寿司) — single-restaurant hub ──────────────────────
       // 3 pages: vocab cheatsheet → explanation → menu reference.
       // The experience button rolls a random sushi restaurant.
-      { id:'sushi-ya', titleJa:'すしや', titleEn:'Sushi', glyph:'寿', primaryLevel:'N5',
+      { id:'sushi-ya', titleJa:'すしや', titleEn:'Sushi', glyph:'寿', primaryLevel:'N5', section:'places',
         isCategoryHub:true, randomCategory:'sushi',
         pages: [
           {
@@ -1442,7 +1445,7 @@ window.VOCAB_CLASSES = [
       },
 
       // ── Omakase (おまかせ) — single-restaurant hub ──────────────
-      { id:'omakase', titleJa:'おまかせ', titleEn:'Omakase', glyph:'板', primaryLevel:'N4',
+      { id:'omakase', titleJa:'おまかせ', titleEn:'Omakase', glyph:'板', primaryLevel:'N4', section:'places',
         isCategoryHub:true, randomCategory:'omakase',
         pages: [
           {
@@ -1512,7 +1515,7 @@ window.VOCAB_CLASSES = [
       },
 
       // ── Izakaya (居酒屋) — single-restaurant hub ────────────────
-      { id:'izakaya', titleJa:'いざかや', titleEn:'Izakaya', glyph:'串', primaryLevel:'N5',
+      { id:'izakaya', titleJa:'いざかや', titleEn:'Izakaya', glyph:'串', primaryLevel:'N5', section:'places',
         isCategoryHub:true, randomCategory:'izakaya',
         pages: [
           {
@@ -1587,7 +1590,7 @@ window.VOCAB_CLASSES = [
       },
 
       // ── Ramen (ラーメン) — single-restaurant hub ────────────────
-      { id:'ramen-ya', titleJa:'ラーメン', titleEn:'Ramen', glyph:'麺', primaryLevel:'N5',
+      { id:'ramen-ya', titleJa:'ラーメン', titleEn:'Ramen', glyph:'麺', primaryLevel:'N5', section:'places',
         isCategoryHub:true, randomCategory:'ramen',
         pages: [
           {
@@ -1652,7 +1655,7 @@ window.VOCAB_CLASSES = [
       // the renderer will overlay numbered hotspots at the marked %
       // positions and the user can tighten them after the images
       // arrive.
-      { id:'konbini', titleJa:'コンビニ', titleEn:'Conbini', glyph:'便', primaryLevel:'N5',
+      { id:'konbini', titleJa:'コンビニ', titleEn:'Conbini', glyph:'便', primaryLevel:'N5', section:'places',
         isCategoryHub:true, randomCategory:'konbini',
         pages: [
           // ── Page 1 — Inside the konbini (the aisles + cooler) ─────
@@ -1810,7 +1813,7 @@ window.VOCAB_CLASSES = [
       // titleJa uses '\n' to split ファスト | フード across two lines in the
       // sidebar card — keeps FU DO from getting broken in half by the
       // narrow column width.
-      { id:'fast-food', titleJa:'ファスト\nフード', titleEn:'Fast Food', glyph:'速', primaryLevel:'N5', isCategoryHub:true,
+      { id:'fast-food', titleJa:'ファスト\nフード', titleEn:'Fast Food', glyph:'速', primaryLevel:'N5', section:'places', isCategoryHub:true,
         pages: [
           {
             id:'mcdonalds',
