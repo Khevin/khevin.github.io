@@ -5834,12 +5834,26 @@
   .flavor-rail-thumbs {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 8px;
     overflow-x: auto;
     scrollbar-width: none;
     max-width: 100%;
   }
   .flavor-rail-thumbs::-webkit-scrollbar { display: none; }
+  /* Ghost spacers at the start + end of the rail. Reserve interior
+     space so the first/last thumb's active-state ring (2px box-shadow)
+     and 1.06× scale don't clip against the scroll container's edge.
+     Width matches the gap between thumbs so the spacing feel stays
+     uniform across the row — the visible thumbs read as evenly
+     buffered on both sides whether the active one sits in the middle
+     or at an edge. aria-hidden + no interaction keeps them invisible
+     to assistive tech and keyboard nav. */
+  .flavor-rail-spacer {
+    flex: 0 0 8px;
+    height: 44px;     /* match .flavor-rail-thumb height */
+    pointer-events: none;
+  }
   /* Every thumb is just the transparent food silhouette sitting on
      the flood — no paper backing, no border, no rectangle behind it.
      Only the active thumb carries visual chrome: a chip-colored ring
@@ -6099,19 +6113,31 @@
     padding-top: 24px;
     border-top: 1px solid color-mix(in srgb, var(--ink-on-flood) 18%, transparent);
   }
-  .flavor-related-head {
-    display: flex; align-items: baseline; justify-content: space-between;
-    margin-bottom: 14px;
+  /* English notes sit above the food-cards row, where the Japanese +
+     English header used to live. The notes used to live in a closed
+     drawer at the bottom of the page — moving them up promotes them
+     from "click to read" to "always-visible context" without
+     introducing new chrome. Width capped to a comfortable reading
+     measure so long .notes paragraphs don't stretch across the full
+     immersion width. */
+  .flavor-related-notes {
+    margin: 0 0 20px;
+    max-width: 70ch;
+    display: grid;
+    gap: 8px;
+  }
+  .flavor-related-notes .en-gloss {
     font-family: var(--font-menu-en);
-    color: color-mix(in srgb, var(--ink-on-flood) 70%, transparent);
-  }
-  .flavor-related-head .ja {
-    font-family: var(--font-title);
-    font-size: 18px;
+    font-size: 18px; font-weight: 500;
     color: var(--ink-on-flood);
+    margin: 0;
+    line-height: 1.3;
   }
-  .flavor-related-head .en {
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  .flavor-related-notes .notes {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 15px; line-height: 1.65;
+    color: color-mix(in srgb, var(--ink-on-flood) 80%, transparent);
+    margin: 0;
   }
   .flavor-related-placeholder {
     padding: 22px;
@@ -17553,7 +17579,11 @@ function renderFlavorImmersionInner(flavor, allFlavors) {
           <rect x="14" y="14" width="7" height="7" rx="1.2"/>
         </svg>
       </button>
-      <div class="flavor-rail-thumbs" role="tablist">${railHTML}</div>
+      <div class="flavor-rail-thumbs" role="tablist">
+        <span class="flavor-rail-spacer" aria-hidden="true"></span>
+        ${railHTML}
+        <span class="flavor-rail-spacer" aria-hidden="true"></span>
+      </div>
       <div class="flavor-rail-keys" aria-hidden="true">
         <kbd>←</kbd><kbd>→</kbd>
         <span class="flavor-rail-keys-sep">/</span>
@@ -17580,10 +17610,10 @@ function renderFlavorImmersionInner(flavor, allFlavors) {
     </div>
 
     <section class="flavor-related" aria-label="Foods that carry this flavor">
-      <header class="flavor-related-head">
-        <span class="ja">この 味の 食べ物</span>
-        <span class="en">foods that taste like ${escHTML(flavor.kana)}</span>
-      </header>
+      <div class="flavor-related-notes">
+        <p class="en-gloss">${escHTML(flavor.en)}</p>
+        ${flavor.notes ? `<p class="notes">${escHTML(flavor.notes)}</p>` : ''}
+      </div>
       ${(() => {
         // Phase 3+ cross-link: foods from the edibles database whose
         // flavors[] includes this flavor's id. Each card opens that
@@ -17678,16 +17708,6 @@ function renderFlavorImmersionInner(flavor, allFlavors) {
         `;
       })()}
     </section>
-
-    <details class="flavor-drawer">
-      <summary class="flavor-drawer-toggle">
-        English &amp; notes
-      </summary>
-      <div class="flavor-drawer-body">
-        <p class="en-gloss">${escHTML(flavor.en)}</p>
-        <p class="notes">${escHTML(flavor.notes || '')}</p>
-      </div>
-    </details>
 
     <p class="flavor-keys-hint">esc returns · space hears the word</p>
   `;
