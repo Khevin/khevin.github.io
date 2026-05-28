@@ -6665,71 +6665,57 @@
     100% { opacity: 0; transform: scale(0.88) translateY(-12px); }
   }
 
-  /* Phase B base — every entering element starts hidden via
-     animation-fill-mode: both so the delay window doesn't flash the
-     final state. Each element below sets its own animation +
-     animation-delay. */
-  .flavors-frame.is-entering .flavors-immersion-wrap,
-  .flavors-frame.is-entering .flavor-immersion-image,
-  .flavors-frame.is-entering .flavor-immersion-kana,
-  .flavors-frame.is-entering .flavor-immersion-food,
-  .flavors-frame.is-entering .flavor-immersion-audio,
-  .flavors-frame.is-entering .flavor-related-notes,
-  .flavors-frame.is-entering .flavor-related-card,
-  .flavors-frame.is-entering .flavor-rail-back,
-  .flavors-frame.is-entering .flavor-rail-thumb,
-  .flavors-frame.is-entering .flavor-rail-keys {
-    animation-fill-mode: both;
-  }
+  /* Phase B — every entering element gets `both` as the last token in
+     the animation shorthand so animation-fill-mode is applied as part
+     of the shorthand itself (NOT as a separate rule — the shorthand
+     resets all unspecified animation properties to their defaults,
+     which would wipe a standalone fill-mode declaration that comes
+     before it). With `both` set, each element holds its 0% keyframe
+     state during the animation-delay window (so no flash of fully-
+     visible content before the cue), and holds its 100% keyframe
+     state after the animation finishes (so the page stays settled).
 
-  /* Flood — the immersion wrap fades in over 400ms, carrying the
+     Flood — the immersion wrap fades in over 400ms, carrying the
      flavor's flood color with it (the wrap already has --flood
-     applied as background). 300ms delay so phase A's tail blends
+     applied as background). Starts at 0ms so phase A's tail blends
      into phase B's head — by the time the bento's last cards finish
      fading, the new color is already half in. */
   .flavors-frame.is-entering .flavors-immersion-wrap {
-    animation: flavors-flood-in 400ms cubic-bezier(0.16, 1, 0.3, 1);
-    animation-delay: 0ms;
+    animation: flavors-flood-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 0ms both;
   }
   @keyframes flavors-flood-in {
     0%   { opacity: 0; transform: translateY(8px); }
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  /* Hero image — the staple food (onigiri / lemon / strawberry slice
-     / etc.) dissolves in with a gentle scale. Starts 100ms after the
-     flood begins so the user's eye lands on the color first, the
-     hero second. */
+  /* Hero image — the staple food dissolves in with a gentle scale.
+     Starts 100ms after the flood begins so the eye lands on color
+     first, hero second. */
   .flavors-frame.is-entering .flavor-immersion-image {
-    animation: flavors-hero-in 360ms cubic-bezier(0.16, 1, 0.3, 1);
-    animation-delay: 100ms;
+    animation: flavors-hero-in 360ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
   }
   @keyframes flavors-hero-in {
     0%   { opacity: 0; transform: scale(0.92); }
     100% { opacity: 1; transform: scale(1); }
   }
 
-  /* Kana title — the big おいしい / 甘い / etc. rises from below with
-     a fast-easing curve so the headword feels like it lands with a
-     small flourish (the curve overshoots slightly via cubic-bezier
-     y2 > 1 for a subtle bounce). */
+  /* Kana title rises with a subtle bezier overshoot (y2 > 1) for a
+     cute landing flourish. */
   .flavors-frame.is-entering .flavor-immersion-kana {
-    animation: flavors-kana-in 320ms cubic-bezier(0.34, 1.4, 0.64, 1);
-    animation-delay: 300ms;
+    animation: flavors-kana-in 320ms cubic-bezier(0.34, 1.4, 0.64, 1) 300ms both;
   }
   @keyframes flavors-kana-in {
     0%   { opacity: 0; transform: translateY(24px); }
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  /* Romaji + audio — sequential, 120ms apart, both gentle slide-ups. */
+  /* Romaji + audio — sequential, 100ms apart, both gentle slide-ups
+     (audio with a soft scale-overshoot to land like a button press). */
   .flavors-frame.is-entering .flavor-immersion-food {
-    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
-    animation-delay: 420ms;
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both;
   }
   .flavors-frame.is-entering .flavor-immersion-audio {
-    animation: flavors-audio-in 280ms cubic-bezier(0.34, 1.4, 0.64, 1);
-    animation-delay: 520ms;
+    animation: flavors-audio-in 280ms cubic-bezier(0.34, 1.4, 0.64, 1) 520ms both;
   }
   @keyframes flavors-soft-in {
     0%   { opacity: 0; transform: translateY(12px); }
@@ -6740,19 +6726,15 @@
     100% { opacity: 1; transform: scale(1); }
   }
 
-  /* Notes (English gloss + cultural note) — quiet fade-up, lower in
-     the hierarchy so it arrives after the headword has settled. */
+  /* Notes (English gloss + cultural note) — quiet fade-up. */
   .flavors-frame.is-entering .flavor-related-notes {
-    animation: flavors-soft-in 320ms cubic-bezier(0.16, 1, 0.3, 1);
-    animation-delay: 620ms;
+    animation: flavors-soft-in 320ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
   }
 
   /* Food cards — cascade from below with per-card stagger via
-     --enter-i. Starting at 700ms means the cards begin appearing
-     while the notes are still settling. 40ms × ~12 cards = ~480ms
-     wave for the cascade. */
+     --enter-i. 40ms × ~12 cards = ~480ms wave for the cascade. */
   .flavors-frame.is-entering .flavor-related-card {
-    animation: flavors-card-in 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: flavors-card-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: calc(700ms + var(--enter-i, 0) * 40ms);
   }
   @keyframes flavors-card-in {
@@ -6762,18 +6744,15 @@
 
   /* Top rail — last to arrive. Back button + key-hint fade in
      together; the 10 flavor thumbs slide in from the right one at a
-     time. 55ms × 10 thumbs = 550ms wave; total rail finish ~1850ms,
-     just under the 2200ms cleanup window. */
+     time. 55ms × 10 thumbs = 550ms wave. */
   .flavors-frame.is-entering .flavor-rail-back {
-    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
-    animation-delay: 1100ms;
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1) 1100ms both;
   }
   .flavors-frame.is-entering .flavor-rail-keys {
-    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
-    animation-delay: 1200ms;
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1) 1200ms both;
   }
   .flavors-frame.is-entering .flavor-rail-thumb {
-    animation: flavors-rail-thumb-in 380ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: flavors-rail-thumb-in 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: calc(1300ms + var(--enter-i, 0) * 55ms);
   }
   @keyframes flavors-rail-thumb-in {
