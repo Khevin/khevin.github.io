@@ -12242,11 +12242,14 @@
 
   /* ── 設定 link in the sidebar bottom ───────────────────────────── */
   .settings-link {
+    position: relative;
     margin-top: auto;
     padding: 14px 14px 18px;
     border-top: 1px dashed rgba(141,102,48,0.3);
+    display: flex; align-items: center;
+    gap: 10px;
   }
-  .settings-link button {
+  .settings-link button#settings-open {
     background: none;
     border: none;
     cursor: pointer;
@@ -12258,9 +12261,199 @@
     transition: color .15s, background .15s;
     border-radius: 4px;
   }
-  .settings-link button:hover {
+  .settings-link button#settings-open:hover {
     color: var(--ink);
     background: var(--gold-soft);
+  }
+  /* Audio-settings trigger — small speaker icon to the right of 設定.
+     Same hover treatment as the text button, but icon-shaped so the
+     two affordances read as distinct without competing for label space. */
+  .audio-settings-btn {
+    appearance: none;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    padding: 0;
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: color .15s, background .15s, border-color .15s;
+  }
+  .audio-settings-btn:hover {
+    color: var(--ink);
+    background: var(--gold-soft);
+    border-color: color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .audio-settings-btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .audio-settings-btn svg { width: 18px; height: 18px; }
+
+  /* Audio-settings popover — paper-tinted floating panel anchored to
+     the sidebar's settings row. Opens upward (bottom anchored on the
+     button row, panel grows above it) because the sidebar lives at
+     the bottom of the page; opening downward would clip off-screen.
+     Internal rows: volume slider, rate slider, voice dropdown, test
+     button. Three distinct controls but they share the same row
+     shape (label + control + value-readout) so they read as a set. */
+  .audio-settings-popover {
+    position: absolute;
+    bottom: calc(100% - 6px);
+    right: 12px;
+    width: 280px;
+    max-width: calc(100vw - 24px);
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px -12px color-mix(in srgb, var(--ink) 36%, transparent);
+    padding: 14px 16px 16px;
+    z-index: 1100;
+    color: var(--ink);
+  }
+  .audio-settings-popover[hidden] { display: none; }
+  .audio-settings-pop-head {
+    display: flex; align-items: baseline;
+    gap: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .audio-settings-pop-title {
+    font-family: var(--font-title);
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .audio-settings-pop-title rt {
+    font-size: 0.42em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .audio-settings-pop-en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  .audio-settings-row {
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .audio-settings-row-voice {
+    grid-template-columns: 70px 1fr;
+  }
+  .audio-settings-label {
+    display: inline-flex; flex-direction: column;
+    line-height: 1.1;
+    min-width: 0;
+  }
+  .audio-settings-label ruby {
+    font-family: var(--font-title);
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .audio-settings-label rt {
+    font-size: 0.42em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .audio-settings-label-en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .audio-settings-slider {
+    -webkit-appearance: none; appearance: none;
+    width: 100%;
+    height: 4px;
+    background: color-mix(in srgb, var(--ink) 14%, transparent);
+    border-radius: 999px;
+    outline: none;
+    cursor: pointer;
+  }
+  .audio-settings-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px;
+    background: var(--gold);
+    border: 2px solid var(--paper);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 30%, transparent);
+    cursor: pointer;
+  }
+  .audio-settings-slider::-moz-range-thumb {
+    width: 18px; height: 18px;
+    background: var(--gold);
+    border: 2px solid var(--paper);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 30%, transparent);
+    cursor: pointer;
+  }
+  .audio-settings-value {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 12px;
+    color: var(--ink-2);
+    min-width: 38px;
+    text-align: right;
+    letter-spacing: 0.02em;
+  }
+  .audio-settings-select {
+    width: 100%;
+    padding: 6px 8px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .audio-settings-select:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+  }
+  .audio-settings-test-row {
+    display: flex; align-items: center;
+    gap: 10px;
+    padding-top: 12px;
+    margin-top: 6px;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .audio-settings-test {
+    appearance: none;
+    display: inline-flex; align-items: center;
+    gap: 6px;
+    padding: 6px 12px 6px 10px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 999px;
+    color: var(--ink);
+    font-family: var(--font-title);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .15s;
+  }
+  .audio-settings-test:hover {
+    background: var(--paper);
+    border-color: color-mix(in srgb, var(--ink) 24%, var(--paper-edge));
+    transform: translateY(-1px);
+  }
+  .audio-settings-test svg { width: 14px; height: 14px; color: var(--ink-2); }
+  .audio-settings-test-hint {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--ink-3);
+    font-style: italic;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .audio-settings-test { transition: none; }
+    .audio-settings-test:hover { transform: none; }
   }
 
   /* ── Settings modal ────────────────────────────────────────────── */
@@ -14828,6 +15021,9 @@ const APP = {
   // Speech rate. 0.85 reads slightly slower than the SpeechSynthesis
   // default; that's better for learners catching unfamiliar kanji.
   ttsRate:          lsGet('jp:ttsRate', 0.85),
+  // Speech volume 0-1. Default 1.0 (full). Adjusted via the audio-
+  // settings popover in the sidebar; persists via localStorage.
+  ttsVolume:        lsGet('jp:ttsVolume', 1.0),
   // Autoplay NPC dialogue in the immersive (restaurant scene) flow.
   ttsAutoplay:      lsGet('jp:ttsAutoplay', true),
   // Delay before autoplay fires after a scene step renders, in seconds.
@@ -15031,6 +15227,11 @@ const TTS = (function () {
     const u = new SpeechSynthesisUtterance(clean_);
     u.lang = 'ja-JP';
     u.rate = +APP.ttsRate || 0.85;
+    // Volume 0-1, clamped defensively. The popover slider writes to
+    // APP.ttsVolume; this read applies the most recent value to the
+    // next utterance — no need to re-instantiate the TTS module.
+    const vol = +APP.ttsVolume;
+    u.volume = (Number.isFinite(vol) ? Math.max(0, Math.min(1, vol)) : 1);
     const v = pickVoice();
     if (v) { u.voice = v; u.lang = v.lang || 'ja-JP'; }
     window.speechSynthesis.speak(u);
@@ -15047,6 +15248,11 @@ const TTS = (function () {
 })();
 // Expose for inline handlers (speaker buttons use onclick="TTS.speak(...)")
 window.TTS = TTS;
+// Backwards-compat alias — several wireXxxHandlers blocks call a
+// non-existent `speakJapanese()` function via typeof guards (which
+// silently no-op'd the audio). Aliasing it here makes those buttons
+// actually fire the speech synth.
+window.speakJapanese = (text) => TTS.speak(text);
 
 // Reusable speaker glyph for any TTS trigger button. Small Lucide-style
 // icon — outline only, picks up currentColor.
@@ -16171,13 +16377,28 @@ function renderSidebar() {
       </ul>
       <div class="settings-link">
         <button type="button" id="settings-open" aria-label="設定 (settings)">設定</button>
+        <button type="button"
+                id="audio-settings-open"
+                class="audio-settings-btn"
+                aria-label="音声 (voice, volume, speed)"
+                title="音声 — voice, volume, speed">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+            <path d="M19.07 4.93a10 10 0 010 14.14"/>
+            <path d="M15.54 8.46a5 5 0 010 7.07"/>
+          </svg>
+        </button>
       </div>
+      <div id="audio-settings-popover" class="audio-settings-popover" hidden></div>
     </div>`;
   sidebar.querySelectorAll('[data-section]').forEach(btn => {
     btn.addEventListener('click', () => setSection(btn.dataset.section));
   });
   const openBtn = sidebar.querySelector('#settings-open');
   if (openBtn) openBtn.addEventListener('click', openSettingsModal);
+  const audioBtn = sidebar.querySelector('#audio-settings-open');
+  if (audioBtn) audioBtn.addEventListener('click', toggleAudioSettingsPopover);
 }
 
 function updateSidebar() {
@@ -16252,6 +16473,155 @@ function initSettings() {
   });
   document.addEventListener('click', e => {
     if (!panel.contains(e.target) && e.target !== btn) panel.setAttribute('hidden', '');
+  });
+}
+
+// ── Audio settings popover ──────────────────────────────────────────────
+// Light-weight popover anchored next to the 設定 button. Three controls:
+//   - Volume      (0-100 → 0-1 stored in APP.ttsVolume)
+//   - Speed       (0.5-1.5 stored in APP.ttsRate)
+//   - Voice       (dropdown of Japanese voices from window.speechSynthesis)
+// Plus a small "テスト" play button that fires a sample phrase so the user
+// can hear their settings without leaving the popover. All three persist
+// to localStorage immediately on change. The popover is dismissed by
+// clicking outside or pressing Escape — same pattern as the existing
+// dictionary-card popovers. Used for every TTS call across the site
+// (the TTS module reads APP.* on each speak()).
+function toggleAudioSettingsPopover(evt) {
+  if (evt) evt.stopPropagation();
+  const pop = document.getElementById('audio-settings-popover');
+  if (!pop) return;
+  if (pop.hasAttribute('hidden')) {
+    renderAudioSettingsPopover();
+    pop.removeAttribute('hidden');
+    // Close on outside-click / escape — one-shot listeners so they
+    // self-detach when the popover closes. Outside-click ignores the
+    // open button itself so the same click doesn't re-toggle.
+    const closeOnOutside = (e) => {
+      if (pop.contains(e.target) || e.target.closest('#audio-settings-open')) return;
+      pop.setAttribute('hidden', '');
+      document.removeEventListener('click', closeOnOutside);
+      document.removeEventListener('keydown', closeOnEsc);
+    };
+    const closeOnEsc = (e) => {
+      if (e.key !== 'Escape') return;
+      pop.setAttribute('hidden', '');
+      document.removeEventListener('click', closeOnOutside);
+      document.removeEventListener('keydown', closeOnEsc);
+    };
+    // Defer the listener attachment so the current click that opened
+    // the popover doesn't immediately close it.
+    setTimeout(() => {
+      document.addEventListener('click', closeOnOutside);
+      document.addEventListener('keydown', closeOnEsc);
+    }, 0);
+  } else {
+    pop.setAttribute('hidden', '');
+  }
+}
+
+function renderAudioSettingsPopover() {
+  const pop = document.getElementById('audio-settings-popover');
+  if (!pop) return;
+  // Ensure the voice list is populated — on first open the browser
+  // may have queued voices behind onvoiceschanged. ensureVoices()
+  // both retrieves and triggers a refresh if empty.
+  if (window.TTS && typeof window.TTS.ensureVoices === 'function') {
+    window.TTS.ensureVoices();
+  }
+  const jaVoices = (window.TTS && window.TTS.listJa) ? window.TTS.listJa() : [];
+  const currentVoiceURI = APP.ttsVoiceURI || '';
+  const vol  = Math.max(0, Math.min(1, +APP.ttsVolume || 1));
+  const rate = Math.max(0.5, Math.min(1.5, +APP.ttsRate || 0.85));
+
+  const voiceOpts = [
+    `<option value="">${escHTML('Auto (best Japanese voice)')}</option>`,
+    ...jaVoices.map(v => {
+      const sel = v.voiceURI === currentVoiceURI ? ' selected' : '';
+      return `<option value="${escAttr(v.voiceURI)}"${sel}>${escHTML(v.name || v.voiceURI)}</option>`;
+    })
+  ].join('');
+
+  pop.innerHTML = `
+    <div class="audio-settings-pop-head">
+      <span class="audio-settings-pop-title">
+        <ruby>音声<rt>おんせい</rt></ruby>
+      </span>
+      <span class="audio-settings-pop-en">voice &amp; volume</span>
+    </div>
+    <label class="audio-settings-row">
+      <span class="audio-settings-label">
+        <ruby>音量<rt>おんりょう</rt></ruby>
+        <span class="audio-settings-label-en">volume</span>
+      </span>
+      <input class="audio-settings-slider" type="range" min="0" max="1" step="0.05"
+             id="audio-vol-slider" value="${vol}">
+      <span class="audio-settings-value" id="audio-vol-value">${Math.round(vol * 100)}%</span>
+    </label>
+    <label class="audio-settings-row">
+      <span class="audio-settings-label">
+        <ruby>速度<rt>そくど</rt></ruby>
+        <span class="audio-settings-label-en">speed</span>
+      </span>
+      <input class="audio-settings-slider" type="range" min="0.5" max="1.5" step="0.05"
+             id="audio-rate-slider" value="${rate}">
+      <span class="audio-settings-value" id="audio-rate-value">${rate.toFixed(2)}×</span>
+    </label>
+    <label class="audio-settings-row audio-settings-row-voice">
+      <span class="audio-settings-label">
+        <ruby>声<rt>こえ</rt></ruby>
+        <span class="audio-settings-label-en">voice</span>
+      </span>
+      <select class="audio-settings-select" id="audio-voice-select">
+        ${voiceOpts}
+      </select>
+    </label>
+    <div class="audio-settings-test-row">
+      <button type="button" class="audio-settings-test" id="audio-test-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+          <path d="M19.07 4.93a10 10 0 010 14.14"/>
+          <path d="M15.54 8.46a5 5 0 010 7.07"/>
+        </svg>
+        <span>テスト</span>
+      </button>
+      <span class="audio-settings-test-hint">こんにちは、おいしいです。</span>
+    </div>`;
+
+  // Live-update each control: slider input event writes immediately so
+  // dragging gives audible/visual feedback; localStorage write happens
+  // on every event so a refresh mid-drag still preserves the last set
+  // value (writes are cheap, debounce unnecessary).
+  const volSlider = pop.querySelector('#audio-vol-slider');
+  const volValue  = pop.querySelector('#audio-vol-value');
+  volSlider.addEventListener('input', e => {
+    const v = +e.target.value;
+    APP.ttsVolume = v;
+    lsSet('jp:ttsVolume', v);
+    volValue.textContent = Math.round(v * 100) + '%';
+  });
+
+  const rateSlider = pop.querySelector('#audio-rate-slider');
+  const rateValue  = pop.querySelector('#audio-rate-value');
+  rateSlider.addEventListener('input', e => {
+    const v = +e.target.value;
+    APP.ttsRate = v;
+    lsSet('jp:ttsRate', v);
+    rateValue.textContent = v.toFixed(2) + '×';
+  });
+
+  const voiceSel = pop.querySelector('#audio-voice-select');
+  voiceSel.addEventListener('change', e => {
+    const v = e.target.value || null;
+    APP.ttsVoiceURI = v;
+    lsSet('jp:ttsVoiceURI', v);
+  });
+
+  const testBtn = pop.querySelector('#audio-test-btn');
+  testBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (window.TTS) window.TTS.speak('こんにちは、おいしいです。');
   });
 }
 
