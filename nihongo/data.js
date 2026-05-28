@@ -684,7 +684,9 @@ window.VOCAB_CLASSES = [
               { id:'ichijiku', kanji:'無花果', kana:'いちじく', romaji:'ichijiku',
                 en:'fig',
                 flavors:['amai'],
-                textures:['とろとろ', 'プチプチ', 'やわらかい'],
+                // Velvety wall + the seed pop + a touch of chew —
+                // とろとろ (melty/runny) was wrong; figs aren't liquid.
+                textures:['なめらか', 'もちもち', 'プチプチ', 'やわらかい'],
                 season:['夏 summer', '秋 autumn'],
                 notes:'Purple-skinned, red-fleshed, seed-studded — the seeds give the プチプチ pop against the soft とろとろ flesh. The kanji 無花果 reads literally as "no-flower fruit" (the flowers bloom inside the fruit, invisible from outside). Eaten halved with a spoon, wrapped in 生ハム (prosciutto) as the modern bistro starter, or simmered in red wine + honey + spice for a dessert compote. 桝井ドーフィン (Masui-Dauphine) is the dominant Japanese cultivar — 80% of domestic figs. 愛知 (Aichi) and 和歌山 (Wakayama) are the prestige sources.' },
               { id:'doragon-furuutsu', kanji:'', kana:'ドラゴンフルーツ', romaji:'doragon-furuutsu',
