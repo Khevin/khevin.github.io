@@ -18397,17 +18397,37 @@ function ediblesPageHTML(book) {
   `;
 }
 
+// Per-category curated stack overrides. The default auto-picker takes
+// [first, middle, last] from the category's items, which works for
+// most tiles but produces dull pairs when the underlying alphabetical
+// order isn't visually balanced. For categories listed here, the
+// override is used in [left, center-front, right] order — pick a trio
+// that shows the category's range at a glance. Categories not listed
+// fall back to the auto-picker. Add an entry here whenever a category
+// gains a stronger third exemplar after a new image lands.
+const EDIBLES_CATEGORY_STACK_OVERRIDES = {
+  // 菓子 (kashi, sweets): hottokeeki left, daifuku center-front
+  // (the wagashi anchor — soft mochi-ball reads instantly as
+  // "Japanese sweet"), buraunii right. Western-origin pair flanks
+  // the canonical wagashi.
+  kashi: ['hottokeeki', 'daifuku', 'buraunii'],
+};
+
 // View 1 — category browse.
 function ediblesCategoriesHTML(categories) {
   const tilesHTML = categories.map(c => {
     const isEmpty = !c.items || c.items.length === 0;
     const furigana = c.kana && c.kanji ? c.kana : '';
-    // Pick three representative items for the stack. Spread across the
-    // list so the trio feels varied even if first three happen to be
-    // visually similar (all reds, all greens, etc).
+    // Pick three representative items for the stack. Curated override
+    // wins if present; otherwise spread across the list (first +
+    // middle + last) so the trio feels varied even if the first three
+    // items happen to be visually similar.
     const items = c.items || [];
     let stackIds = [];
-    if (items.length >= 3) {
+    const override = EDIBLES_CATEGORY_STACK_OVERRIDES[c.id];
+    if (override && override.length === 3) {
+      stackIds = override.slice();
+    } else if (items.length >= 3) {
       stackIds = [
         items[0].id,
         items[Math.floor(items.length / 2)].id,
