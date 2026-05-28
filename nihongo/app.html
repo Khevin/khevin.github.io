@@ -7393,17 +7393,25 @@
     position: relative;
     will-change: transform, opacity;
   }
-  /* The similar-row container uses overflow-x: auto for horizontal
-     scrolling, which (per CSS spec) forces overflow-y to clip too —
-     the hopping card was visibly contained inside its box. Override
-     the row to overflow: visible for the 460ms animation window so
-     the card escapes properly. The .edibles-detail-similar parent
-     also gets visible just in case any container clipping cascades
-     down. JS removes the class right after the swap, so the scroll
-     behavior comes back the moment the new frame mounts. */
-  .edibles-frame.is-launching-similar .edibles-detail-similar,
+  /* The similar-row uses overflow-x: auto for horizontal scrolling,
+     which (per CSS spec) clamps overflow-y to clip too — the hopping
+     card was pinned inside its box. Naïvely switching to overflow:
+     visible fixed that but also exposed ALL cards that were
+     scroll-hidden off the right edge (the user saw them flash in
+     during the animation window).
+     The right tool here is clip-path: a final masking step that
+     ignores overflow's "both axes must agree" rule. Combine:
+       overflow: visible       — render children beyond the box
+       clip-path: inset(...)   — clip horizontally at the row's edges
+                                 but EXPAND vertically (negative
+                                 inset = clip extends outward) so the
+                                 hop can rise above the row.
+     inset() order is top right bottom left; -120px top gives the
+     card room to translate -50px + scale up; -40px bottom is a
+     small buffer in case the bouncy curve dips slightly. */
   .edibles-frame.is-launching-similar .edibles-similar-row {
     overflow: visible;
+    clip-path: inset(-120px 0 -40px 0);
   }
   @keyframes edibles-similar-hop-out {
     0%   { opacity: 1; transform: translateY(0)    scale(1); }
