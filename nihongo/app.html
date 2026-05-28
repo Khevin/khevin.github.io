@@ -20971,15 +20971,19 @@ function ediblesItemsHTML(cat) {
 // images/bg/texture-icons/ minus the extension. The renderer reads
 // both shapes for backward compatibility; entries without icons stay
 // label-only on the pill.
+// Icon names must match files under images/bg/texture-icons/<icon>.webp.
+// Every gloss entry should carry one if a matching file exists — without
+// it, the badge falls back to a kana-only pill (which is what triggered
+// the user-reported "プチプチ has no icon" bug).
 const EXTRA_TEXTURE_GLOSSES = {
-  'ジューシー'  : { en: 'juicy — releases liquid when bitten', icon: 'juushii' },
-  'やわらかい'  : { en: 'soft / tender',                       icon: 'yawarakai' },
-  'プチプチ'   : { en: 'popping — like fish roe bursting' },
-  'ぷちぷち'   : { en: 'popping — like fish roe bursting' },
-  'シャリシャリ': { en: 'granular crunch — like shaved ice',    icon: 'sharishari' },
-  'クリーミー'  : { en: 'creamy / rich' },
-  'つるつる'   : { en: 'smooth-slippery — slurped noodles' },
-  'なめらか'   : { en: 'smooth / silky',                       icon: 'nameraka' },
+  'ジューシー'  : { en: 'juicy — releases liquid when bitten',     icon: 'juushii' },
+  'やわらかい'  : { en: 'soft / tender',                            icon: 'yawarakai' },
+  'プチプチ'   : { en: 'popping — like fish roe bursting',         icon: 'puchipuchi' },
+  'ぷちぷち'   : { en: 'popping — like fish roe bursting',         icon: 'puchipuchi' },
+  'シャリシャリ': { en: 'granular crunch — like shaved ice',        icon: 'sharishari' },
+  'クリーミー'  : { en: 'creamy / rich',                            icon: 'kuriimii' },
+  'つるつる'   : { en: 'smooth-slippery — slurped noodles',         icon: 'tsurutsuru' },
+  'なめらか'   : { en: 'smooth / silky',                            icon: 'nameraka' },
   'ぷるぷる'   : { en: 'jiggly / wobbly — like jelly or soft tofu', icon: 'purupuru' },
 };
 
