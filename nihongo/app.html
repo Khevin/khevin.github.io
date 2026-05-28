@@ -5619,11 +5619,16 @@
     .extra-texture-row-audio { transition: none; }
     .extra-texture-row-audio:hover { transform: none; }
   }
-  /* On flipped rows the body is right-aligned via align-items:
-     flex-end; the inline-flex headword keeps button-after-word
-     order, so the button sits at the rightmost edge with the
-     headword to its left. Reads naturally right-to-left on the
-     flipped side. */
+  /* On flipped rows: reverse the visual order of [headword + audio]
+     so the speaker button sits on the LEFT of the headword (closest
+     to the body's text column) instead of crowding the right edge
+     between the headword and the image. flex-direction: row-reverse
+     keeps the DOM order (word, button) consistent — only the visual
+     flips — so screen-reader reading order remains "headword, then
+     audio control." */
+  .extra-texture-row.is-flipped .extra-texture-row-head {
+    flex-direction: row-reverse;
+  }
   .extra-texture-row-kana {
     font-family: var(--font-title);
     font-size: 16px;
