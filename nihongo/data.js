@@ -1115,7 +1115,14 @@ window.VOCAB_CLASSES = [
           { id:'torotoro',  kana:'とろとろ', kanji:'',  romaji:'torotoro',
             en:'thick-creamy / melting',
             tint:'#F6E8C9', motionShape:'thick-melt',
-            staple:'tamago', stapleLabel:'melty', softness:2,
+            // `staple` is the slider/spectrum-tile image (a clean
+            // single-ingredient anchor — egg yolk). `spotlightStaple`
+            // overrides the spotlight-card image with a richer dish
+            // shot — omurice, where the molten-yolk motion is the
+            // hero. Only とろとろ uses the override right now; other
+            // textures fall back to `staple` for both surfaces.
+            staple:'tamago', spotlightStaple:'omoraisu',
+            stapleLabel:'melty', softness:2,
             foodPool:['tamago','namakuriimu','purin','aisukuriimu','bataa','gyuunyuu','unagi','anmitsu'],
             feelsLike:['melty','rich','creamy','とろける','贅沢'],
             moods:[

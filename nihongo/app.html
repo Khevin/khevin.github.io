@@ -5045,99 +5045,7 @@
     max-width: 70ch;
   }
 
-  /* ── 2. Bento (10 motion-line SVG brushstroke cards) ─────────── */
-  .textures-bento-section {
-    margin: 0 0 clamp(28px, 3.2vw, 48px);
-  }
-  .textures-bento {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: clamp(10px, 1.1vw, 16px);
-    list-style: none; padding: 0; margin: 0;
-  }
-  @media (max-width: 1100px) {
-    .textures-bento { grid-template-columns: repeat(4, 1fr); }
-  }
-  @media (max-width: 760px) {
-    .textures-bento { grid-template-columns: repeat(2, 1fr); }
-  }
-  .texture-bento-card {
-    position: relative;
-    display: flex; flex-direction: column;
-    background: var(--tint, var(--paper-2));
-    color: var(--ink);
-    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
-    border-radius: 10px;
-    padding: clamp(10px, 0.95vw, 14px);
-    transition: transform .18s ease-out, box-shadow .18s ease-out, border-color .15s;
-    list-style: none;
-  }
-  .texture-bento-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--ink) 32%, transparent);
-  }
-  .texture-bento-card.is-active {
-    border-color: var(--ink);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 18%, transparent),
-                0 10px 24px -10px color-mix(in srgb, var(--ink) 36%, transparent);
-    transform: translateY(-2px);
-  }
-  .texture-bento-card:focus-within {
-    outline: 2px solid var(--ink);
-    outline-offset: 3px;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .texture-bento-card,
-    .texture-bento-card:hover,
-    .texture-bento-card.is-active { transition: none; transform: none; }
-  }
-  .texture-bento-enter {
-    appearance: none;
-    background: transparent; border: 0; padding: 0;
-    margin: 0; color: inherit; font: inherit;
-    text-align: left; cursor: pointer;
-    display: flex; flex-direction: column;
-    gap: 6px;
-    width: 100%;
-  }
-  .texture-bento-enter:focus { outline: none; }
-  .texture-bento-glyph {
-    width: 100%; aspect-ratio: 1 / 0.6;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--ink);
-  }
-  .texture-bento-glyph .texture-motion-line {
-    width: 100%; height: 100%; max-height: 80px;
-  }
-  .texture-bento-kana {
-    font-family: var(--font-title);
-    font-size: clamp(18px, 1.4vw + 4px, 24px);
-    color: var(--ink);
-    line-height: 1.1;
-    text-align: center;
-    letter-spacing: 0.02em;
-  }
-  .texture-bento-audio {
-    position: absolute;
-    top: 8px; right: 8px;
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    padding: 0;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: color-mix(in srgb, var(--ink) 8%, transparent);
-    color: var(--ink);
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity .15s, background .15s;
-  }
-  .texture-bento-card:hover .texture-bento-audio,
-  .texture-bento-card.is-active .texture-bento-audio,
-  .texture-bento-audio:focus-visible { opacity: 1; }
-  .texture-bento-audio:hover { background: color-mix(in srgb, var(--ink) 16%, transparent); }
-  .texture-bento-audio svg   { width: 14px; height: 14px; }
-
-  /* ── 3. Spectrum (soft → hard) ───────────────────────────────── */
+  /* ── 2. Spectrum (soft → hard) ───────────────────────────────── */
   .textures-spectrum {
     margin: 0 0 clamp(28px, 3.2vw, 48px);
   }
@@ -5180,6 +5088,16 @@
     .spectrum-edge-hard { order: 3; }
   }
 
+  /* The middle column of .textures-spectrum-row. Holds the tile row
+     and the dot line stacked vertically — keeping them in the same
+     parent column means they share the same width and inner padding,
+     which is the only way to make the dot grid math line up with the
+     tile grid math at every breakpoint. */
+  .spectrum-mid {
+    display: flex; flex-direction: column;
+    gap: clamp(8px, 0.9vw, 14px);
+    min-width: 0;
+  }
   .textures-spectrum-tiles {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
@@ -5265,22 +5183,23 @@
     width: 100%; height: auto; max-height: 22px;
   }
 
-  /* Soft→hard indicator line. Renders a horizontal gradient bar with
-     10 dots aligned to the tile columns above. The active dot is
-     filled with --tint and outlined with --ink. */
+  /* Soft→hard indicator line. Sits inside .spectrum-mid so it shares
+     the tile row's exact column width. The dot grid mirrors the tile
+     grid exactly — same repeat(10, 1fr), same gap — which means dot N
+     and tile N share the same vertical centerline, regardless of how
+     the soft/hard edge labels wrap or how the viewport stretches. */
   .textures-spectrum-line {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     gap: clamp(4px, 0.55vw, 10px);
-    margin: clamp(10px, 1vw, 16px) 0 0;
-    padding: 0 calc(64px + clamp(12px, 1.4vw, 24px));
     position: relative;
+    align-items: center;
+    padding: 6px 0;
   }
   .textures-spectrum-line::before {
     content: '';
     position: absolute;
-    left: calc(64px + clamp(12px, 1.4vw, 24px));
-    right: calc(64px + clamp(12px, 1.4vw, 24px));
+    left: 0; right: 0;
     top: 50%; transform: translateY(-50%);
     height: 2px;
     background: linear-gradient(90deg,
@@ -5350,13 +5269,23 @@
     gap: clamp(10px, 1vw, 14px);
     min-width: 0;
   }
-  /* Brushstroke signature above the kana — wide, hand-drawn, the
-     visual frame the surface lost when the image's enclosing square
-     was stripped. Capped at 56px tall so it reads as a signature
-     stroke, not a banner. */
+  /* Image-column wrapper — stacks the photo above the brushstroke
+     signature so the two share the same column width and centerline.
+     The brushstroke sits below the image because the image column is
+     where the visual weight lives; pairing the glyph there keeps the
+     info column free for the text hierarchy. */
+  .textures-spotlight-imagecol {
+    display: flex; flex-direction: column;
+    gap: clamp(8px, 0.9vw, 14px);
+    min-width: 0;
+  }
+  /* Brushstroke under the image — the signature that pairs with this
+     texture. Capped at 56px tall so it reads as a stroke, not a
+     banner. Tinted slightly lighter than full ink so the photo above
+     stays the strongest visual element. */
   .textures-spotlight-glyph {
-    width: 100%; max-width: 360px;
-    color: var(--ink);
+    width: 100%;
+    color: color-mix(in srgb, var(--ink) 88%, transparent);
     margin: 0;
   }
   .textures-spotlight-glyph .texture-motion-line {
@@ -18171,13 +18100,14 @@ function textureStapleImgSrc(id) {
 
 // Phase 2.2 — single scrollable page (no bento mode).
 // Sections, top-to-bottom:
-//   1. Header  (eyebrow + title + intro)
-//   2. Bento   (10 motion-line SVG brushstroke cards — kana below)
-//   3. Spectrum row (soft → hard, all 10 textures w/ staple food tile)
-//   4. Spotlight (selected texture: image, kana, feelsLike, examples,
-//      mood, paragraph description)
-//   5. Food collage (foodPool grid — more foods that share this texture)
-//   6. English drawer (collapsed gloss + cultural note)
+//   1. Header (eyebrow + title + intro)
+//   2. Spectrum row (soft → hard, all 10 textures w/ staple food tile;
+//      each tile carries its brushstroke glyph so the bento layer is
+//      no longer needed)
+//   3. Spotlight (selected texture: image + brushstroke under it,
+//      kana, feelsLike, examples, mood, paragraph description)
+//   4. Food collage (foodPool grid — more foods that share this texture)
+//   5. English drawer (collapsed gloss + cultural note)
 function texturesPageHTML(book) {
   const textures = book.textures || [];
   // Default-select first texture by softness if nothing chosen yet.
@@ -18204,49 +18134,12 @@ function texturesPageHTML(book) {
       </p>
     </header>`;
 
-  // ── 2. Bento (10 motion-line SVG glyph cards) ─────────────────
-  // Seed order, not softness order — the bento is the "encounter at
-  // a glance" surface and seed order is the editorial sequence the
-  // brief intends. Each card carries the texture's tint as a faint
-  // paper-wash; the brushstroke glyph lives inside.
-  const bentoHTML = `
-    <section class="textures-bento-section" aria-label="All textures">
-      <header class="textures-section-head">
-        <span class="section-num">1.</span>
-        <h2 class="section-title">食感の筆 — Ten brushstrokes</h2>
-        <p class="section-sub">
-          Each card is a single ink stroke shaped like the texture it
-          names. Tap any to spotlight it below.
-        </p>
-      </header>
-      <ul class="textures-bento" role="list">
-        ${textures.map(t => `
-          <li class="texture-bento-card ${t.id === currentTex.id ? 'is-active' : ''}"
-              style="--tint:${escAttr(t.tint)};">
-            <button class="texture-bento-enter"
-                    data-bento-texture="${escAttr(t.id)}"
-                    type="button"
-                    aria-label="${escAttr(t.kana + ' — ' + t.en)}">
-              <span class="texture-bento-glyph">${textureMotionLineSVG(t.motionShape)}</span>
-              <span class="texture-bento-kana">${escHTML(t.kana)}</span>
-            </button>
-            <button class="texture-bento-audio"
-                    data-speak="${escAttr(t.kana)}"
-                    type="button"
-                    aria-label="Hear ${escAttr(t.kana)} pronunciation">
-              ${textureSpeakerSVG()}
-            </button>
-          </li>
-        `).join('')}
-      </ul>
-    </section>`;
-
-  // ── 3. Spectrum (soft → hard) ─────────────────────────────────
+  // ── 2. Spectrum (soft → hard) ─────────────────────────────────
   const spectrumOrder = [...textures].sort((a, b) => (a.softness || 5) - (b.softness || 5));
   const spectrumHTML = `
     <section class="textures-spectrum" aria-label="Texture spectrum from soft to hard">
       <header class="textures-section-head">
-        <span class="section-num">2.</span>
+        <span class="section-num">1.</span>
         <h2 class="section-title">食感のスペクトラム</h2>
         <p class="section-sub">
           食べものの「かたさ・弾力・なめらかさ」の違い、いろんな表現があるよ。食感の世界をたのしんでみよう。
@@ -18257,35 +18150,37 @@ function texturesPageHTML(book) {
           <span class="spectrum-edge-ja">やわらかい</span>
           <span class="spectrum-edge-en">SOFT</span>
         </span>
-        <ul class="textures-spectrum-tiles" role="list">
-          ${spectrumOrder.map(t => `
-            <li class="textures-spectrum-tile-wrap">
-              <button class="textures-spectrum-tile ${t.id === currentTex.id ? 'is-active' : ''}"
-                      data-spectrum-texture="${escAttr(t.id)}"
-                      style="--tint:${escAttr(t.tint)};"
-                      type="button"
-                      aria-label="${escAttr(t.kana + ' — ' + t.en)}">
-                <span class="spectrum-tile-image">
-                  <img src="${escAttr(textureStapleImgSrc(t.staple))}"
-                       alt="" loading="lazy"
-                       onerror="this.style.display='none'" />
-                </span>
-                <span class="spectrum-tile-kana">${formatSpectrumKana(t.kana)}</span>
-                <span class="spectrum-tile-glyph">${textureMotionLineSVG(t.motionShape)}</span>
-              </button>
-            </li>
-          `).join('')}
-        </ul>
+        <div class="spectrum-mid">
+          <ul class="textures-spectrum-tiles" role="list">
+            ${spectrumOrder.map(t => `
+              <li class="textures-spectrum-tile-wrap">
+                <button class="textures-spectrum-tile ${t.id === currentTex.id ? 'is-active' : ''}"
+                        data-spectrum-texture="${escAttr(t.id)}"
+                        style="--tint:${escAttr(t.tint)};"
+                        type="button"
+                        aria-label="${escAttr(t.kana + ' — ' + t.en)}">
+                  <span class="spectrum-tile-image">
+                    <img src="${escAttr(textureStapleImgSrc(t.staple))}"
+                         alt="" loading="lazy"
+                         onerror="this.style.display='none'" />
+                  </span>
+                  <span class="spectrum-tile-glyph">${textureMotionLineSVG(t.motionShape)}</span>
+                  <span class="spectrum-tile-kana">${formatSpectrumKana(t.kana)}</span>
+                </button>
+              </li>
+            `).join('')}
+          </ul>
+          <div class="textures-spectrum-line" aria-hidden="true">
+            ${spectrumOrder.map(t => `
+              <span class="spectrum-line-dot ${t.id === currentTex.id ? 'is-active' : ''}"
+                    style="--tint:${escAttr(t.tint)};"></span>
+            `).join('')}
+          </div>
+        </div>
         <span class="spectrum-edge spectrum-edge-hard">
           <span class="spectrum-edge-ja">かたい</span>
           <span class="spectrum-edge-en">HARD</span>
         </span>
-      </div>
-      <div class="textures-spectrum-line" aria-hidden="true">
-        ${spectrumOrder.map(t => `
-          <span class="spectrum-line-dot ${t.id === currentTex.id ? 'is-active' : ''}"
-                style="--tint:${escAttr(t.tint)};"></span>
-        `).join('')}
       </div>
     </section>`;
 
@@ -18297,7 +18192,7 @@ function texturesPageHTML(book) {
   const collageHTML = poolItems.length ? `
     <section class="textures-collage-section" aria-label="More foods with this texture">
       <header class="textures-section-head">
-        <span class="section-num">4.</span>
+        <span class="section-num">3.</span>
         <h2 class="section-title">この食感の食べもの</h2>
         <p class="section-sub">
           ${escHTML(currentTex.kana)}と感じる食べものたち。タップして詳しく見る。
@@ -18335,7 +18230,6 @@ function texturesPageHTML(book) {
     <div class="textures-page" tabindex="-1"
          style="--tint:${escAttr(currentTex.tint)};">
       ${headerHTML}
-      ${bentoHTML}
       ${spectrumHTML}
       ${spotlightHTML}
       ${collageHTML}
@@ -18345,7 +18239,11 @@ function texturesPageHTML(book) {
 }
 
 function renderTextureSpotlight(texture) {
-  const stapleSrc = textureStapleImgSrc(texture.staple);
+  // `spotlightStaple` lets a texture nominate a richer dish image for
+  // the spotlight while keeping a cleaner single-ingredient anchor in
+  // the spectrum tile. Currently used only by とろとろ (egg in the
+  // spectrum, omurice in the spotlight).
+  const stapleSrc = textureStapleImgSrc(texture.spotlightStaple || texture.staple);
   const feelsHTML = (texture.feelsLike || []).map(p => `
     <span class="spotlight-pill">${escHTML(p)}</span>
   `).join('');
@@ -18365,18 +18263,20 @@ function renderTextureSpotlight(texture) {
     <section class="textures-spotlight" aria-label="Spotlight on ${escAttr(texture.kana)}"
              style="--tint:${escAttr(texture.tint)};">
       <header class="textures-section-head">
-        <span class="section-num">3.</span>
+        <span class="section-num">2.</span>
         <h2 class="section-title">今月の食感スポットライト</h2>
       </header>
       <div class="textures-spotlight-body">
-        <div class="textures-spotlight-image">
-          ${stapleSrc ? `<img src="${escAttr(stapleSrc)}" alt="${escAttr(texture.kana)}" loading="eager"
-                              onerror="this.style.display='none'" />` : ''}
-        </div>
-        <div class="textures-spotlight-info">
+        <div class="textures-spotlight-imagecol">
+          <div class="textures-spotlight-image">
+            ${stapleSrc ? `<img src="${escAttr(stapleSrc)}" alt="${escAttr(texture.kana)}" loading="eager"
+                                onerror="this.style.display='none'" />` : ''}
+          </div>
           <div class="textures-spotlight-glyph" aria-hidden="true">
             ${textureMotionLineSVG(texture.motionShape)}
           </div>
+        </div>
+        <div class="textures-spotlight-info">
           <h3 class="spotlight-kana">${escHTML(texture.kana)}</h3>
           <p class="spotlight-romaji">${escHTML(texture.romaji)}</p>
           <button class="textures-spotlight-audio"
@@ -18451,15 +18351,6 @@ function rerenderTexturesPage(book) {
 function wireTexturesPageHandlers(book) {
   const root = document.getElementById('vocab-page-content');
   if (!root) return;
-
-  // Bento card click → switch texture. Same destination as the
-  // spectrum-tile click; the bento and spectrum are two views of
-  // the same selection state.
-  root.querySelectorAll('[data-bento-texture]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      switchTexture(book, btn.dataset.bentoTexture);
-    });
-  });
 
   // Spectrum tile click → switch texture (updates spotlight in place)
   root.querySelectorAll('[data-spectrum-texture]').forEach(btn => {
