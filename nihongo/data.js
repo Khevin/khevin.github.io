@@ -721,6 +721,9 @@ window.VOCAB_CLASSES = [
               { id:'shiitake', kanji:'椎茸', kana:'しいたけ', romaji:'shiitake', en:'shiitake mushroom',
                 flavors:['oishii'], textures:['もちもち'], season:['秋 autumn'],
                 notes:'The umami king. Fresh shiitake gets grilled or simmered; dried (干し椎茸 hoshi-shiitake) is rehydrated and its broth becomes the foundation of vegetarian Buddhist dashi.' },
+              { id:'shimeji', kanji:'湿地', kana:'しめじ', romaji:'shimeji', en:'shimeji mushroom',
+                flavors:['oishii'], textures:['もちもち', 'シャキシャキ'], season:['秋 autumn'],
+                notes:'Slender clustered mushrooms with brown caps and creamy stems, sold as bound bunches at every supermarket. ぶなしめじ (buna-shimeji, beech mushroom) is the cultivar you actually buy; 本しめじ (hon-shimeji) is the wild prestige version. Eaten in nabe, miso soup, foil-wrapped grilled with butter and shoyu (ホイル焼き). 「香り松茸、味しめじ」— the proverb pairs the prized matsutake (for aroma) with shimeji (for taste). See also: 椎茸 (shiitake, the umami king).' },
               { id:'negi', kanji:'葱', kana:'ねぎ', romaji:'negi', en:'Japanese leek',
                 flavors:['karai'], textures:['シャキシャキ'], season:['冬 winter'],
                 notes:'Long white leek-onion hybrid. Sliced into ramen, in miso soup, as a yakitori component (ねぎま — alternating chicken + leek on the skewer), or grilled whole and dipped in tare.' },
@@ -748,6 +751,9 @@ window.VOCAB_CLASSES = [
               { id:'piiman', kanji:'', kana:'ピーマン', romaji:'piiman', en:'green bell pepper',
                 flavors:['nigai', 'sawayaka'], textures:['シャキシャキ'], season:['夏 summer'],
                 notes:'The kids\' nemesis vegetable — slightly bitter, slightly grassy, often the rejected piece on a child\'s plate. Used in 青椒肉絲 (chinjao rōsu, Chinese-style beef and pepper stir-fry), stuffed-pepper bento sides, and chopped into ナポリタン. The sweeter, riper red/yellow cousin is パプリカ.' },
+              { id:'papurika', kanji:'', kana:'パプリカ', romaji:'papurika', en:'sweet bell pepper',
+                flavors:['amai', 'sawayaka'], textures:['シャキシャキ', 'ジューシー'], season:['夏 summer'],
+                notes:'The sweeter, thicker-walled cousin of ピーマン — red, yellow, and orange varieties replace the bitter green grassiness with juicy sweetness. Sold by the single fruit (each one the size of a fist) rather than the bag. Eaten raw in salads, sliced over carpaccio, charred and peeled for マリネ (marinade), or stuffed and baked. 韓国産 (Korean imports) dominate the supermarket; ハンガリー産 (Hungarian) carries the prestige label for paprika-powder applications. See also: ピーマン (the green bitter cousin).' },
               { id:'moyashi', kanji:'萌やし', kana:'もやし', romaji:'moyashi', en:'bean sprouts',
                 flavors:['sawayaka'], textures:['シャキシャキ', 'ぷりぷり'], season:['通年 year-round'],
                 notes:'The cheapest vegetable in Japan — usually ¥30 per generous bag. The bulk-up filler in ramen toppings, stir-fries, and student-budget cooking. 緑豆もやし (mungbean sprout) is the standard; 大豆もやし (soybean sprout) is fatter and used in Korean-style bibimbap and nabe.' },
@@ -988,6 +994,18 @@ window.VOCAB_CLASSES = [
               { id:'anmitsu', kanji:'餡蜜', kana:'あんみつ', romaji:'anmitsu', en:'agar + bean + fruit dessert',
                 flavors:['amai'], textures:['シャキシャキ', 'もちもち'], season:['夏 summer'],
                 notes:'A bowl of agar cubes (寒天 kanten), fruit, anko, and a drizzle of kuromitsu. The summer cafe specialty — kiwi, mandarin, cherry, banana, mochi balls, and a glossy anko mound, all chilled. Often topped with matcha ice cream for the deluxe version (クリームあんみつ).' },
+              // Western-origin sweets that now live in the Japanese
+              // dessert vocabulary — sit in kashi after the wagashi
+              // block because that's where users will look for them.
+              { id:'hottokeeki', kanji:'', kana:'ホットケーキ', romaji:'hottokeeki', en:'fluffy pancakes',
+                flavors:['amai', 'oishii'], textures:['ふわふわ', 'もちもち', 'とろとろ'], season:['通年 year-round'],
+                notes:'Japanese-style pancakes — thicker and fluffier than American IHOP, served as a 2-stack or 3-stack with a knob of butter melting into maple syrup. The 喫茶店 (kissaten) signature, especially the famous スフレパンケーキ (souffle pancakes) at しあわせのパンケーキ and カフェ・カイラ. パンケーキ (pankeeki) is the modern cafe variant; ホットケーキ is the Showa-era homemade-mix word (森永 Morinaga and 雪印 Yukijirushi sell the boxed mixes that every Japanese kitchen still keeps). See also: パン (the bread family), ふわふわ (the canonical texture).' },
+              { id:'kukkii', kanji:'', kana:'クッキー', romaji:'kukkii', en:'cookie',
+                flavors:['amai'], textures:['さくさく', 'カリカリ'], season:['通年 year-round'],
+                notes:'Western cookie — biscuit-style flat rounds, distinct from the Japanese ビスケット (bisuketto, drier and harder). チョコチップクッキー (chocolate chip), クッキー&クリーム (cookies-and-cream as the iconic ice-cream flavor). 不二家 (Fujiya) and 森永 (Morinaga) sell the supermarket classics; ステラおばさん (Aunt Stella\'s) is the dedicated cookie-shop chain in train stations. The さくさく shatter is iconic — marketing on the box almost always uses the word. Pair: お茶 (tea), 牛乳 (milk).' },
+              { id:'buraunii', kanji:'', kana:'ブラウニー', romaji:'buraunii', en:'brownie',
+                flavors:['amai', 'oishii'], textures:['もちもち', 'とろとろ'], season:['通年 year-round'],
+                notes:'Dense fudgy chocolate squares — Western-origin, embraced by Japanese cafes and the home-baking scene. Often paired with バニラアイスクリーム (vanilla ice cream) as ブラウニー・ア・ラ・モード, served warm so the ice cream slumps into the still-warm chocolate. The home-baking variant uses 板チョコ (a bar of cooking chocolate, usually Meiji or Lotte) melted with butter. Pair: アイスクリーム (the canonical pairing), コーヒー.' },
               // Note: poppukoon, furaido-poteto, poteto-chippusu, piinattsu
               // were removed from the kashi category — they're industrial
               // snacks (mostly potatoes + popcorn + peanuts) that don't fit
@@ -1065,7 +1083,7 @@ window.VOCAB_CLASSES = [
             en:'chewy / sticky-soft',
             tint:'#F5E8E4', motionShape:'soft-bounce',
             staple:'mochi', stapleLabel:'chewy', softness:6,
-            foodPool:['mochi','daifuku','ohagi','taiyaki','dango','manjuu','pan','shokupan'],
+            foodPool:['mochi','daifuku','buraunii','ohagi','taiyaki','dango','manjuu','pan','shokupan'],
             feelsLike:['chewy','springy','弾力','やさしい','満足感'],
             moods:[
               { icon:'cup',    label:'ほっとする' },
@@ -1079,7 +1097,10 @@ window.VOCAB_CLASSES = [
             en:'crisp / flaky',
             tint:'#F2E9D1', motionShape:'crisp-angular',
             staple:'ebi-tempura', stapleLabel:'crisp', softness:8,
-            foodPool:['ebi-tempura','yasai-tempura','furaido-poteto','poteto-chippusu','beekon','taiyaki'],
+            // kukkii leads — the package marketing literally writes
+            // さくさく on every Japanese cookie box. beekon dropped
+            // because its texture is heavier (it belongs in カリカリ).
+            foodPool:['kukkii','ebi-tempura','yasai-tempura','furaido-poteto','poteto-chippusu','taiyaki'],
             feelsLike:['crisp','flaky','light','軽やか','うきうき'],
             moods:[
               { icon:'spark',  label:'軽快' },
@@ -1144,7 +1165,11 @@ window.VOCAB_CLASSES = [
             en:'fluffy / airy',
             tint:'#F5EDD8', motionShape:'airy-cloud',
             staple:'shokupan', stapleLabel:'fluffy', softness:3,
-            foodPool:['pan','shokupan','namakuriimu','taiyaki','dorayaki','manjuu','purin'],
+            // hottokeeki leads — Japanese fluffy pancakes are the
+            // canonical ふわふわ exemplar in modern usage (every
+            // souffle-pancake cafe sign uses the word). purin
+            // dropped because its texture is とろとろ, not ふわふわ.
+            foodPool:['hottokeeki','pan','shokupan','namakuriimu','taiyaki','dorayaki','manjuu'],
             feelsLike:['fluffy','airy','soft','ふんわり','幸せ'],
             moods:[
               { icon:'cup',    label:'カフェタイム' },
@@ -1179,7 +1204,7 @@ window.VOCAB_CLASSES = [
             en:'crisp-fresh, vegetal',
             tint:'#E6EEDE', motionShape:'vegetal-snap',
             staple:'kyabetsu', stapleLabel:'veggie-snap', softness:9,
-            foodPool:['kyabetsu','daikon','ninjin','kyuuri','tomato','ringo','nashi','kaki','renkon','gobou'],
+            foodPool:['kyabetsu','papurika','daikon','ninjin','kyuuri','tomato','ringo','nashi','kaki','renkon','gobou'],
             feelsLike:['veggie-snap','crisp','fresh','新鮮','元気'],
             moods:[
               { icon:'leaf',   label:'フレッシュ' },
@@ -1193,7 +1218,7 @@ window.VOCAB_CLASSES = [
             en:'plump-bouncy, seafood',
             tint:'#F4E4DA', motionShape:'plump-bounce',
             staple:'ebi', stapleLabel:'plump', softness:5,
-            foodPool:['ebi','tako','ika','kani','sooseeji','toriniku','hikiniku'],
+            foodPool:['ebi','tako','ika','kani','shimeji','sooseeji','toriniku','hikiniku'],
             feelsLike:['plump','bouncy','taut','新鮮','食べごたえ'],
             moods:[
               { icon:'drop',   label:'鮮度' },
