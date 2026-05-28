@@ -1118,7 +1118,11 @@ window.VOCAB_CLASSES = [
             en:'smooth-flowing',
             tint:'#F7F4EE', motionShape:'smooth-flow',
             staple:'ocha', stapleLabel:'flowing', softness:1,
-            foodPool:['gohan','genmai','ocha','mizu','uuroncha','tansansui','soba','udon'],
+            // gohan + genmai dropped — they're moist-and-sticky, not
+            // flowing-smooth; さらさら is about liquids and slurped
+            // noodles, so そば and うどん earn the slots. Order also
+            // matters now that the spotlight examples row caps at 6.
+            foodPool:['ocha','mizu','uuroncha','tansansui','soba','udon'],
             feelsLike:['flowing','smooth','clean','静か','涼しい'],
             moods:[
               { icon:'drop',   label:'清涼' },
