@@ -4955,348 +4955,500 @@
      padding here is intentionally generous — editorial breathing room
      per the brief. Mobile reclaims most of it. */
   /* ─────────────────────────────────────────────────────────────────
-     TEXTURES PAGE (Phase 2 of the Flavors & Textures sub-system)
+     TEXTURES PAGE (Phase 2 — single scrollable page, no bento)
      ─────────────────────────────────────────────────────────────────
-     Three brief-level departures from the flavors-page pattern:
-       1. Bento card image = brushed motion-line glyph, NOT a food photo
-       2. Immersion view = left/right split (kana | food collage), NOT
-          centered single-hero
-       3. Color = a whisper (paper-tint @ ~92%+ lightness), NOT a flood
+     One scrollable surface with five stacked sections:
+       1. Page head    (eyebrow · ruby title · italic sub)
+       2. Spectrum     (10 staple-food tiles laid out soft→hard,
+                        with edge labels and a gradient indicator line)
+       3. Spotlight    (selected texture: image + kana + audio + pills)
+       4. Collage      (more foods that share this texture)
+       5. Drawer       (English gloss + cultural notes)
+
+     Color rule (DESIGN.md): per-texture tint is a whisper, scoped to
+     surfaces that need to identify (active tile, line dot, spotlight
+     card background at low opacity). It never floods the viewport —
+     that's what the flavors page does. Tint is wired via --tint on
+     .textures-page (current texture) and overridden on each tile/dot.
+
      Spec: docs/superpowers/specs/2026-05-26-flavors-textures.PRODUCT.md §7.2
   */
-  .textures-frame {
+  .textures-page {
     --tint: var(--paper-2);
     position: relative;
-    min-height: 60vh;
-    padding: clamp(16px, 1.8vw, 32px) clamp(16px, 2.4vw, 40px) clamp(24px, 3vw, 48px);
+    padding: clamp(20px, 2.2vw, 40px) clamp(16px, 2.4vw, 40px) clamp(40px, 4vw, 64px);
+    max-width: 1280px;
+    margin: 0 auto;
+    outline: none;
   }
-  .textures-frame[data-mode="bento"]    .textures-immersion-wrap { display: none; }
-  .textures-frame[data-mode="immersion"] .textures-bento-wrap    { display: none; }
+  .textures-page:focus { outline: none; }
 
-  /* ── Bento header ─────────────────────────────────────────────── */
-  .textures-bento-wrap {
-    --bento-gap:      clamp(10px, 1.1vw, 18px);
-    --bento-pad:      clamp(10px, 0.95vw, 14px);
-    --bento-head-mb:  clamp(10px, 1.6vw, 24px);
-  }
-  .textures-bento-head {
+  /* ── 1. Page head ─────────────────────────────────────────────── */
+  .textures-page-head {
     display: flex; flex-direction: column; align-items: center;
-    gap: clamp(2px, 0.35vw, 6px);
-    margin: 0 0 var(--bento-head-mb);
+    gap: clamp(4px, 0.45vw, 8px);
+    margin: 0 0 clamp(20px, 2.6vw, 40px);
+    text-align: center;
   }
-  .textures-bento-eyebrow {
+  .textures-page-eyebrow {
     font-family: var(--font-menu-en);
     font-size: clamp(10px, 0.75vw, 12px);
     letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--ink-3);
   }
-  .textures-bento-title {
+  .textures-page-title {
     font-family: var(--font-title);
-    font-size: clamp(1.6rem, 3.2vw + 0.4rem, 3rem);
+    font-size: clamp(1.8rem, 3.2vw + 0.5rem, 3.2rem);
     color: var(--ink);
     line-height: 1.05; margin: 0;
   }
-  .textures-bento-title rt {
+  .textures-page-title rt {
     font-size: 0.32em;
     font-family: var(--font-body);
     color: var(--ink-3);
     letter-spacing: 0.02em;
   }
-  .textures-bento-sub {
+  .textures-page-sub {
     font-family: var(--font-menu-en); font-style: italic;
-    font-size: clamp(12px, 0.85vw + 4px, 14px);
+    font-size: clamp(13px, 0.85vw + 4px, 15px);
     color: var(--ink-2);
-    max-width: 56ch; text-align: center;
+    max-width: 64ch;
     margin: 0;
+    line-height: 1.55;
   }
 
-  /* ── Bento grid (5×2 desktop) ────────────────────────────────── */
-  .textures-bento {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: var(--bento-gap);
-    max-width: 1280px;
-    margin: 0 auto;
-    list-style: none;
-    padding: 0;
+  /* ── Shared section header (numbered) ─────────────────────────── */
+  .textures-section-head {
+    display: flex; flex-direction: column;
+    gap: 4px;
+    margin: 0 0 clamp(14px, 1.6vw, 22px);
+    padding-bottom: clamp(8px, 0.9vw, 14px);
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
   }
-  @media (max-width: 1100px) {
-    .textures-bento { grid-template-columns: repeat(4, 1fr); }
+  .textures-section-head .section-num {
+    font-family: var(--font-menu-en);
+    font-size: 11px; letter-spacing: 0.18em;
+    color: var(--ink-3);
+  }
+  .textures-section-head .section-title {
+    font-family: var(--font-title);
+    font-size: clamp(1.2rem, 1.6vw + 0.4rem, 1.7rem);
+    color: var(--ink);
+    margin: 0; line-height: 1.2;
+  }
+  .textures-section-head .section-sub {
+    font-family: var(--font-body);
+    font-size: clamp(13px, 0.7vw + 6px, 14px);
+    color: var(--ink-2);
+    line-height: 1.6;
+    margin: 4px 0 0;
+    max-width: 70ch;
+  }
+
+  /* ── 2. Spectrum (soft → hard) ───────────────────────────────── */
+  .textures-spectrum {
+    margin: 0 0 clamp(28px, 3.2vw, 48px);
+  }
+  .textures-spectrum-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: stretch;
+    gap: clamp(12px, 1.4vw, 24px);
   }
   @media (max-width: 760px) {
-    .textures-bento { grid-template-columns: repeat(2, 1fr); }
+    .textures-spectrum-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+  .spectrum-edge {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px;
+    min-width: 64px;
+    padding: 6px 4px;
+    color: var(--ink-2);
+  }
+  .spectrum-edge-ja {
+    font-family: var(--font-title);
+    font-size: clamp(15px, 1vw + 4px, 18px);
+    color: var(--ink);
+    line-height: 1.1;
+    writing-mode: horizontal-tb;
+  }
+  .spectrum-edge-en {
+    font-family: var(--font-menu-en);
+    font-size: 10px; letter-spacing: 0.22em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+  @media (max-width: 760px) {
+    .spectrum-edge { flex-direction: row; gap: 8px; }
+    .spectrum-edge-soft { order: 1; }
+    .spectrum-edge-hard { order: 3; }
   }
 
-  /* Texture bento card — paper canvas, tint as subtle wash. The
-     motion-line glyph fills the image slot; kana below. NO photo. */
-  .texture-bento-card {
-    position: relative;
-    display: flex; flex-direction: column;
+  .textures-spectrum-tiles {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: clamp(4px, 0.55vw, 10px);
+    list-style: none; padding: 0; margin: 0;
+    min-width: 0;
+  }
+  @media (max-width: 1100px) {
+    .textures-spectrum-tiles { grid-template-columns: repeat(5, 1fr); }
+  }
+  @media (max-width: 540px) {
+    .textures-spectrum-tiles { grid-template-columns: repeat(2, 1fr); }
+  }
+  .textures-spectrum-tile-wrap {
+    display: flex;
+    min-width: 0;
+  }
+  .textures-spectrum-tile {
+    appearance: none;
     background: var(--tint, var(--paper-2));
-    color: var(--ink);
-    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
     border-radius: 10px;
-    padding: var(--bento-pad, 14px);
-    transition: transform .18s ease-out, box-shadow .18s ease-out;
-    list-style: none;
+    padding: 8px 6px 10px;
+    cursor: pointer;
+    color: var(--ink);
+    width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px;
+    transition: transform .15s ease-out, box-shadow .15s ease-out, border-color .15s;
+    font: inherit;
   }
-  .texture-bento-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--ink) 32%, transparent);
+  .textures-spectrum-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--ink) 30%, transparent);
   }
-  .texture-bento-card:focus-within {
+  .textures-spectrum-tile:focus-visible {
     outline: 2px solid var(--ink);
-    outline-offset: 3px;
+    outline-offset: 2px;
+  }
+  .textures-spectrum-tile.is-active {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 18%, transparent),
+                0 8px 20px -8px color-mix(in srgb, var(--ink) 35%, transparent);
+    transform: translateY(-2px);
   }
   @media (prefers-reduced-motion: reduce) {
-    .texture-bento-card,
-    .texture-bento-card:hover { transition: none; transform: none; }
+    .textures-spectrum-tile,
+    .textures-spectrum-tile:hover,
+    .textures-spectrum-tile.is-active { transition: none; transform: none; }
   }
-  .texture-bento-enter {
-    appearance: none;
-    background: transparent; border: 0; padding: 0;
-    margin: 0; color: inherit; font: inherit;
-    text-align: left; cursor: pointer;
-    display: flex; flex-direction: column;
-    width: 100%;
-  }
-  .texture-bento-enter:focus { outline: none; }
-  .texture-bento-glyph {
-    width: 100%; aspect-ratio: 1 / 0.6;
+  .spectrum-tile-image {
+    width: 100%; aspect-ratio: 1 / 1;
     display: flex; align-items: center; justify-content: center;
-    color: var(--ink);
-    margin-bottom: 4px;
+    overflow: hidden;
   }
-  .texture-bento-glyph .texture-motion-line {
-    width: 100%; height: 100%; max-height: 80px;
+  .spectrum-tile-image img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--ink) 15%, transparent));
   }
-  .texture-bento-kana {
+  .spectrum-tile-kana {
     font-family: var(--font-title);
-    font-size: clamp(18px, 1.4vw + 4px, 24px);
+    font-size: clamp(11px, 0.7vw + 4px, 14px);
     color: var(--ink);
     line-height: 1.1;
     text-align: center;
-    letter-spacing: 0.02em;
+    overflow-wrap: anywhere;
   }
-  .texture-bento-audio {
-    position: absolute;
-    top: 8px; right: 8px;
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    padding: 0;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: color-mix(in srgb, var(--ink) 8%, transparent);
-    color: var(--ink);
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity .15s, background .15s;
+  .spectrum-tile-label {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 10px;
+    color: var(--ink-3);
+    text-align: center;
+    line-height: 1.2;
   }
-  .texture-bento-card:hover .texture-bento-audio,
-  .texture-bento-audio:focus-visible { opacity: 1; }
-  .texture-bento-audio:hover { background: color-mix(in srgb, var(--ink) 16%, transparent); }
-  .texture-bento-audio svg   { width: 14px; height: 14px; }
 
-  /* ── Top rail in immersion view (grid icon + 10 thumbs) ──────── */
-  .texture-rail {
-    display: flex; align-items: center;
-    gap: 12px;
-    margin-bottom: clamp(16px, 1.8vw, 28px);
-  }
-  .texture-rail-exit {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 40px; height: 40px;
-    background: var(--paper-2);
-    border: 1px solid var(--paper-edge);
-    border-radius: 10px;
-    color: var(--ink-2);
-    cursor: pointer;
-    transition: background .15s, color .15s;
-    padding: 0;
-  }
-  .texture-rail-exit:hover { background: var(--paper); color: var(--ink); }
-  .texture-rail-exit svg   { width: 18px; height: 18px; }
-  .texture-rail-thumbs {
-    display: flex;
-    gap: clamp(4px, 0.5vw, 8px);
-    flex: 1; min-width: 0;
-    overflow-x: auto;
-    list-style: none; padding: 0; margin: 0;
-  }
-  .texture-rail-thumb {
-    flex: 0 0 auto;
-    width: 56px; height: 40px;
-    background: var(--tint, var(--paper-2));
-    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
-    border-radius: 8px;
-    padding: 4px 6px;
-    cursor: pointer;
-    color: var(--ink);
-    transition: transform .12s, border-color .15s;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .texture-rail-thumb:hover { transform: translateY(-1px); }
-  .texture-rail-thumb.is-active {
-    border-color: var(--ink);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 14%, transparent);
-  }
-  .texture-rail-glyph .texture-motion-line { width: 100%; height: 100%; }
-
-  /* ── Immersion body — two-column split (kana | collage) ──────── */
-  .textures-immersion-body {
+  /* Soft→hard indicator line. Renders a horizontal gradient bar with
+     10 dots aligned to the tile columns above. The active dot is
+     filled with --tint and outlined with --ink. */
+  .textures-spectrum-line {
     display: grid;
-    grid-template-columns: 45% 55%;
-    gap: clamp(20px, 3vw, 48px);
-    align-items: center;
-    max-width: 1280px;
-    margin: clamp(8px, 1.4vw, 20px) auto 0;
-    background: var(--tint, var(--paper-2));
-    border-radius: 12px;
-    padding: clamp(20px, 2.4vw, 36px);
-    outline: none;
+    grid-template-columns: repeat(10, 1fr);
+    gap: clamp(4px, 0.55vw, 10px);
+    margin: clamp(10px, 1vw, 16px) 0 0;
+    padding: 0 calc(64px + clamp(12px, 1.4vw, 24px));
+    position: relative;
   }
-  @media (max-width: 900px) {
-    .textures-immersion-body {
+  .textures-spectrum-line::before {
+    content: '';
+    position: absolute;
+    left: calc(64px + clamp(12px, 1.4vw, 24px));
+    right: calc(64px + clamp(12px, 1.4vw, 24px));
+    top: 50%; transform: translateY(-50%);
+    height: 2px;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--ink) 14%, transparent) 0%,
+      color-mix(in srgb, var(--ink) 30%, transparent) 50%,
+      color-mix(in srgb, var(--ink) 14%, transparent) 100%);
+    z-index: 0;
+  }
+  @media (max-width: 1100px) {
+    .textures-spectrum-line { display: none; }
+  }
+  .spectrum-line-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--tint, var(--paper-2));
+    border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+    justify-self: center;
+    position: relative; z-index: 1;
+    transition: transform .15s, border-color .15s, box-shadow .15s;
+  }
+  .spectrum-line-dot.is-active {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 16%, transparent);
+    transform: scale(1.3);
+  }
+
+  /* ── 3. Spotlight (selected texture detail card) ─────────────── */
+  .textures-spotlight {
+    margin: 0 0 clamp(28px, 3.2vw, 48px);
+    background: color-mix(in srgb, var(--tint, var(--paper-2)) 78%, var(--paper-2) 22%);
+    border-radius: 14px;
+    padding: clamp(20px, 2.4vw, 36px);
+    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .textures-spotlight .textures-section-head {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: clamp(16px, 1.8vw, 24px);
+  }
+  .textures-spotlight-body {
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: clamp(20px, 2.6vw, 40px);
+    align-items: start;
+  }
+  @media (max-width: 780px) {
+    .textures-spotlight-body {
       grid-template-columns: 1fr;
-      gap: 24px;
+      gap: 20px;
     }
   }
-
-  /* Left column — doubled kana huge + motion-line below + audio */
-  .texture-immersion-left {
+  .textures-spotlight-image {
+    width: 100%; aspect-ratio: 1 / 1;
+    display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--paper-2) 85%, var(--tint, var(--paper-2)) 15%);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: clamp(12px, 1.6vw, 24px);
+  }
+  .textures-spotlight-image img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--ink) 22%, transparent));
+  }
+  .textures-spotlight-info {
     display: flex; flex-direction: column;
-    align-items: flex-start;
-    gap: clamp(12px, 1.4vw, 22px);
-    color: var(--ink);
+    gap: clamp(10px, 1vw, 14px);
+    min-width: 0;
   }
-  @media (max-width: 900px) {
-    .texture-immersion-left { align-items: center; text-align: center; }
-  }
-  .texture-immersion-kana {
+  .spotlight-kana {
     font-family: var(--font-title);
-    font-size: clamp(3rem, 8vw, 7rem);
+    font-size: clamp(2rem, 4vw + 0.4rem, 3.4rem);
     color: var(--ink);
-    line-height: 1; margin: 0;
-    white-space: nowrap;
+    margin: 0; line-height: 1;
     letter-spacing: -0.01em;
   }
-  .texture-immersion-motion {
-    width: 100%; max-width: 360px;
-    color: color-mix(in srgb, var(--ink) 75%, transparent);
-  }
-  .texture-immersion-motion .texture-motion-line {
-    width: 100%; height: auto;
-  }
-  .texture-immersion-meta {
-    margin: 0;
-  }
-  .texture-immersion-romaji {
+  .spotlight-romaji {
     font-family: var(--font-menu-en); font-style: italic;
-    font-size: clamp(13px, 0.9vw + 6px, 16px);
-    color: color-mix(in srgb, var(--ink) 70%, transparent);
-    margin: 0;
+    font-size: clamp(13px, 0.8vw + 6px, 16px);
+    color: var(--ink-3);
+    margin: -4px 0 0;
     letter-spacing: 0.04em;
   }
-  .texture-immersion-audio {
-    width: 56px; height: 56px;
+  .textures-spotlight-audio {
+    align-self: flex-start;
+    width: 44px; height: 44px;
     border-radius: 50%;
     padding: 0;
     display: inline-flex; align-items: center; justify-content: center;
     background: var(--ink);
-    color: var(--tint);
-    border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 12%, transparent);
+    color: var(--paper);
+    border: none;
     cursor: pointer;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 12%, transparent);
     transition: transform .15s, box-shadow .15s;
   }
-  .texture-immersion-audio:hover {
+  .textures-spotlight-audio:hover {
     transform: translateY(-1px);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 20%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 22%, transparent);
   }
-  .texture-immersion-audio:focus-visible {
+  .textures-spotlight-audio:focus-visible {
     outline: 2px solid var(--ink);
-    outline-offset: 4px;
+    outline-offset: 3px;
   }
-  .texture-immersion-audio svg { width: 22px; height: 22px; }
+  .textures-spotlight-audio svg { width: 18px; height: 18px; }
   @media (prefers-reduced-motion: reduce) {
-    .texture-immersion-audio { transition: none; }
-    .texture-immersion-audio:hover { transform: none; }
+    .textures-spotlight-audio { transition: none; }
+    .textures-spotlight-audio:hover { transform: none; }
+  }
+  .spotlight-description {
+    font-family: var(--font-body);
+    font-size: clamp(13px, 0.7vw + 6px, 15px);
+    color: var(--ink-2);
+    line-height: 1.65;
+    margin: 4px 0 0;
   }
 
-  /* Right column — 2×4 collage of food-pool items */
-  .texture-immersion-right { min-width: 0; }
-  .texture-immersion-collage {
+  .textures-spotlight-attrs {
+    display: flex; flex-direction: column;
+    gap: clamp(10px, 1.1vw, 14px);
+    margin: clamp(8px, 1vw, 14px) 0 0;
+    padding: clamp(12px, 1.4vw, 18px) 0 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .spotlight-attr {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: clamp(8px, 0.9vw, 14px);
+    grid-template-columns: 96px 1fr;
+    align-items: baseline;
+    gap: clamp(8px, 1vw, 14px);
+    margin: 0;
+  }
+  @media (max-width: 580px) {
+    .spotlight-attr { grid-template-columns: 1fr; }
+  }
+  .spotlight-attr-label {
+    display: flex; flex-direction: column;
+    gap: 2px;
+    line-height: 1.1;
+  }
+  .spotlight-attr-label .ja {
+    font-family: var(--font-title);
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .spotlight-attr-label .en {
+    font-family: var(--font-menu-en);
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+  .spotlight-attr-pills {
+    display: flex; flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    min-width: 0;
+  }
+  .spotlight-pill {
+    display: inline-flex; align-items: center;
+    padding: 4px 10px;
+    background: color-mix(in srgb, var(--paper-2) 90%, var(--ink) 6%);
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.4;
+  }
+  .spotlight-pill.spotlight-example {
+    font-family: var(--font-title);
+    background: color-mix(in srgb, var(--tint, var(--paper-2)) 70%, var(--paper-2) 30%);
+    color: var(--ink);
+    font-size: 13px;
+    border-color: color-mix(in srgb, var(--ink) 16%, transparent);
+  }
+  .spotlight-mood {
+    display: inline-flex; align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 8px;
+    background: var(--paper-2);
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    border-radius: 999px;
+  }
+  .spotlight-mood .mood-icon {
+    width: 14px; height: 14px;
+    color: var(--ink-2);
+    flex-shrink: 0;
+  }
+  .spotlight-mood-label {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.2;
+  }
+
+  /* ── 4. Food collage ─────────────────────────────────────────── */
+  .textures-collage-section {
+    margin: 0 0 clamp(28px, 3.2vw, 48px);
+  }
+  .textures-pool-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: clamp(10px, 1.1vw, 16px);
   }
   @media (max-width: 1100px) {
-    .texture-immersion-collage { grid-template-columns: repeat(3, 1fr); }
+    .textures-pool-grid { grid-template-columns: repeat(4, 1fr); }
   }
-  @media (max-width: 600px) {
-    .texture-immersion-collage { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 640px) {
+    .textures-pool-grid { grid-template-columns: repeat(3, 1fr); }
   }
-  .texture-collage-card {
+  @media (max-width: 420px) {
+    .textures-pool-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .texture-pool-card {
+    appearance: none;
     display: flex; flex-direction: column;
-    background: color-mix(in oklch, var(--paper-2) 88%, var(--tint) 12%);
-    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-    border-radius: 8px;
-    padding: 8px;
+    gap: 6px;
+    background: color-mix(in srgb, var(--paper-2) 90%, var(--tint, var(--paper-2)) 10%);
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    border-radius: 10px;
+    padding: 10px;
     cursor: pointer;
+    color: inherit; font: inherit;
     transition: transform .15s, box-shadow .15s, background .15s;
-    text-align: left;
-    font: inherit; color: inherit;
-    gap: 4px;
+    text-align: center;
   }
-  .texture-collage-card:hover {
+  .texture-pool-card:hover {
     background: var(--paper-2);
     transform: translateY(-2px);
-    box-shadow: 0 5px 14px -6px color-mix(in srgb, var(--ink) 35%, transparent);
+    box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--ink) 32%, transparent);
   }
-  .texture-collage-card:focus-visible {
+  .texture-pool-card:focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
-  .texture-collage-image {
+  @media (prefers-reduced-motion: reduce) {
+    .texture-pool-card,
+    .texture-pool-card:hover { transition: none; transform: none; }
+  }
+  .texture-pool-image {
     width: 100%; aspect-ratio: 1 / 1;
     overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
   }
-  .texture-collage-image image-slot,
-  .texture-collage-image image-slot::part(img),
-  .texture-collage-image image-slot::part(frame) {
+  .texture-pool-image image-slot,
+  .texture-pool-image image-slot::part(img),
+  .texture-pool-image image-slot::part(frame) {
     width: 100%; height: 100%; display: block;
     object-fit: contain;
   }
-  .texture-collage-image image-slot::part(frame) { background: transparent; }
-  .texture-collage-image image-slot::part(img) {
-    filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--ink) 18%, transparent));
+  .texture-pool-image image-slot::part(frame) { background: transparent; }
+  .texture-pool-image image-slot::part(img) {
+    filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--ink) 18%, transparent));
   }
-  .texture-collage-name {
+  .texture-pool-name {
     display: flex; flex-direction: column;
+    align-items: center;
     min-width: 0;
   }
-  .texture-collage-name .ja {
+  .texture-pool-name .ja {
     font-family: var(--font-title);
-    font-size: 14px;
+    font-size: 13px;
     color: var(--ink);
     line-height: 1.2;
     overflow-wrap: anywhere;
   }
-  .texture-immersion-empty {
-    padding: 24px;
-    background: color-mix(in srgb, var(--ink) 4%, transparent);
-    border: 1px dashed color-mix(in srgb, var(--ink) 16%, transparent);
-    border-radius: 8px;
-    font-family: var(--font-menu-en); font-style: italic;
-    font-size: 14px;
-    color: var(--ink-2);
-    text-align: center;
-  }
 
-  /* English drawer + keyboard hint footer */
+  /* ── 5. English drawer + keyboard hint footer ────────────────── */
   .texture-drawer {
-    margin: clamp(16px, 2vw, 28px) auto 0;
-    max-width: 1280px;
+    margin: 0 0 clamp(16px, 1.8vw, 24px);
   }
   .texture-drawer-toggle {
     font-family: var(--font-menu-en);
@@ -5325,13 +5477,12 @@
   }
   .texture-drawer-body .notes {
     font-family: var(--font-body);
-    font-size: 14px; line-height: 1.6;
+    font-size: 14px; line-height: 1.65;
     color: var(--ink-2);
     margin: 0;
   }
   .texture-keys-hint {
-    max-width: 1280px;
-    margin: clamp(16px, 1.6vw, 22px) auto 0;
+    margin: clamp(12px, 1.4vw, 20px) 0 0;
     font-family: var(--font-menu-en); font-style: italic;
     font-size: 11px; letter-spacing: 0.06em;
     color: var(--ink-4);
@@ -17847,184 +17998,274 @@ function textureMotionLineSVG(motionShape) {
     </svg>`;
 }
 
-function texturesPageHTML(book) {
-  const textures = book.textures || [];
-  const currentTex = APP.textureId && textures.find(t => t.id === APP.textureId);
-  const mode = currentTex ? 'immersion' : 'bento';
-
-  // ── Bento HTML ──
-  const bentoHTML = `
-    <header class="textures-bento-head">
-      <div class="textures-bento-eyebrow">textures · 食感</div>
-      <h1 class="textures-bento-title"><ruby>食感<rt>しょっかん</rt></ruby>の <ruby>世界<rt>せかい</rt></ruby></h1>
-      <p class="textures-bento-sub">
-        Tap a card to enter that texture's world. Each card is the
-        brushstroke that IS the texture — soft sine for もちもち,
-        sharp sawtooth for さくさく.
-      </p>
-    </header>
-    <ul class="textures-bento" role="list">
-      ${textures.map(t => `
-        <li class="texture-bento-card" style="--tint:${escAttr(t.tint)};">
-          <button class="texture-bento-enter"
-                  data-texture-id="${escAttr(t.id)}"
-                  type="button"
-                  aria-label="${escAttr(t.kana + ' — ' + t.en)}">
-            <div class="texture-bento-glyph">${textureMotionLineSVG(t.motionShape)}</div>
-            <div class="texture-bento-kana">${escHTML(t.kana)}</div>
-          </button>
-          <button class="texture-bento-audio"
-                  data-speak="${escAttr(t.kana)}"
-                  aria-label="Hear ${escAttr(t.kana)}"
-                  type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-              <path d="M19.07 4.93a10 10 0 010 14.14"/>
-              <path d="M15.54 8.46a5 5 0 010 7.07"/>
-            </svg>
-          </button>
-        </li>
-      `).join('')}
-    </ul>`;
-
-  // ── Immersion HTML (only when a texture is selected) ──
-  let immersionHTML = '';
-  if (currentTex) {
-    immersionHTML = renderTextureImmersionInner(book, currentTex);
-  }
-
-  return `
-    <div class="textures-frame" data-mode="${mode}">
-      <div class="textures-bento-wrap">${bentoHTML}</div>
-      <div class="textures-immersion-wrap">${immersionHTML}</div>
-    </div>`;
+// Inline ink-on-paper icons for the MOOD chips. Hand-tuned tiny SVGs;
+// stroke="currentColor" so they inherit the chip's ink color. No
+// emojis (project hard rule). Keys map to the `moods[].icon` field.
+function textureMoodIconSVG(key) {
+  const icons = {
+    cup:       '<path d="M5 10h11v6a3 3 0 01-3 3H8a3 3 0 01-3-3v-6z"/><path d="M16 12h2a2 2 0 010 4h-2"/><path d="M8 4c.4 1 0 1.8-.4 2.4-.4.6-.4 1.1 0 1.6"/><path d="M11 4c.4 1 0 1.8-.4 2.4-.4.6-.4 1.1 0 1.6"/>',
+    heart:     '<path d="M12 19s-7-4.3-7-9.3a3.7 3.7 0 016.5-2.4 3.7 3.7 0 016.5 2.4c0 5-7 9.3-7 9.3z"/>',
+    gift:      '<rect x="4" y="9" width="16" height="11" rx="1"/><path d="M2 9h20"/><path d="M12 9v11"/><path d="M12 9c-1-3-5-3-5-1s2 1 5 1z"/><path d="M12 9c1-3 5-3 5-1s-2 1-5 1z"/>',
+    sakura:    '<circle cx="12" cy="12" r="1.5"/><path d="M12 6c1.4 1.5 1.4 3.5 0 5"/><path d="M12 18c-1.4-1.5-1.4-3.5 0-5"/><path d="M6 12c1.5-1.4 3.5-1.4 5 0"/><path d="M18 12c-1.5 1.4-3.5 1.4-5 0"/><path d="M8.2 8.2c1.6.3 2.7 1.4 3 3"/><path d="M15.8 15.8c-1.6-.3-2.7-1.4-3-3"/><path d="M8.2 15.8c.3-1.6 1.4-2.7 3-3"/><path d="M15.8 8.2c-.3 1.6-1.4 2.7-3 3"/>',
+    sun:       '<circle cx="12" cy="12" r="4"/><path d="M12 3v2"/><path d="M12 19v2"/><path d="M3 12h2"/><path d="M19 12h2"/><path d="M5.6 5.6l1.4 1.4"/><path d="M17 17l1.4 1.4"/><path d="M5.6 18.4L7 17"/><path d="M17 7l1.4-1.4"/>',
+    leaf:      '<path d="M5 19c0-9 6-15 15-15 0 9-6 15-15 15z"/><path d="M5 19c5-5 9-9 14-14"/>',
+    drop:      '<path d="M12 3c-3 5-6 8-6 12a6 6 0 0012 0c0-4-3-7-6-12z"/>',
+    spark:     '<path d="M12 4l1.7 5L19 11l-5.3 2L12 18l-1.7-5L5 11l5.3-2L12 4z"/>',
+    sparkbig:  '<path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2 2-7z"/>',
+  };
+  const inner = icons[key] || icons.spark;
+  return `<svg class="mood-icon" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
 }
 
-function renderTextureImmersionInner(book, texture) {
+// Generic speaker-SVG used by audio buttons across the textures page.
+function textureSpeakerSVG() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+            <path d="M19.07 4.93a10 10 0 010 14.14"/>
+            <path d="M15.54 8.46a5 5 0 010 7.07"/>
+          </svg>`;
+}
+
+// Resolve an edible id → its image src for use in the spectrum tile.
+// Two storage conventions coexist in the project: vocab items live
+// under images/vocab/<id>.webp, and FOOD_GALLERY / menu dishes (the
+// ones whose ids carry a 'dish-' prefix) live under images/food/.
+// Direct <img src=...> probe — the image-slot probe chain isn't in
+// play here because we deliberately use a plain <img> for the spectrum
+// tiles so they can `display:none` themselves on error without
+// disturbing the layout.
+function textureStapleImgSrc(id) {
+  if (!id) return '';
+  if (id.startsWith('dish-')) return `images/food/${id}.webp`;
+  return `images/vocab/${id}.webp`;
+}
+
+// Phase 2.2 — single scrollable page (no bento mode).
+// Sections, top-to-bottom:
+//   1. Header (eyebrow + title + intro)
+//   2. Spectrum row (soft → hard, all 10 textures w/ staple food tile)
+//   3. Spotlight (selected texture: image, kana, feelsLike, examples,
+//      mood, paragraph description)
+//   4. Food collage (foodPool grid — more foods that share this texture)
+//   5. English drawer (collapsed gloss + cultural note)
+function texturesPageHTML(book) {
   const textures = book.textures || [];
-  const idx = textures.findIndex(t => t.id === texture.id);
-  const prevTex = textures[(idx - 1 + textures.length) % textures.length];
-  const nextTex = textures[(idx + 1) % textures.length];
+  // Default-select first texture by softness if nothing chosen yet.
+  let currentTex = APP.textureId && textures.find(t => t.id === APP.textureId);
+  if (!currentTex && textures.length) {
+    const sorted = [...textures].sort((a, b) => (a.softness || 5) - (b.softness || 5));
+    currentTex = sorted[0];
+  }
+  if (!currentTex) {
+    return `<div class="empty-state">No textures registered.</div>`;
+  }
 
-  // Top rail — 10 small motion-line glyphs, current highlighted.
-  const railHTML = `
-    <nav class="texture-rail" aria-label="All textures">
-      <button class="texture-rail-exit" data-texture-exit type="button"
-              aria-label="Back to all textures">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="3" width="7" height="7" rx="1.2"/>
-          <rect x="14" y="3" width="7" height="7" rx="1.2"/>
-          <rect x="3" y="14" width="7" height="7" rx="1.2"/>
-          <rect x="14" y="14" width="7" height="7" rx="1.2"/>
-        </svg>
-      </button>
-      <ul class="texture-rail-thumbs" role="list">
-        ${textures.map(t => `
-          <li>
-            <button class="texture-rail-thumb ${t.id === texture.id ? 'is-active' : ''}"
-                    data-rail-texture="${escAttr(t.id)}"
-                    style="--tint:${escAttr(t.tint)};"
-                    aria-label="${escAttr(t.kana)}"
-                    type="button">
-              <span class="texture-rail-glyph">${textureMotionLineSVG(t.motionShape)}</span>
-            </button>
-          </li>
-        `).join('')}
-      </ul>
-    </nav>`;
+  // ── 1. Header ─────────────────────────────────────────────────
+  const headerHTML = `
+    <header class="textures-page-head">
+      <div class="textures-page-eyebrow">textures · 食感</div>
+      <h1 class="textures-page-title">
+        <ruby>食感<rt>しょっかん</rt></ruby>の <ruby>世界<rt>せかい</rt></ruby>
+      </h1>
+      <p class="textures-page-sub">
+        Each texture is a brushstroke that IS the feel — soft sine for
+        もちもち, sharp sawtooth for さくさく. Tap a food on the spectrum
+        below to land in that texture's world.
+      </p>
+    </header>`;
 
-  // Left column — doubled kana huge + motion-line + audio button.
-  const leftHTML = `
-    <div class="texture-immersion-left">
-      <h1 class="texture-immersion-kana">${escHTML(texture.kana)}</h1>
-      <div class="texture-immersion-motion">${textureMotionLineSVG(texture.motionShape)}</div>
-      <div class="texture-immersion-meta">
-        <p class="texture-immersion-romaji">${escHTML(texture.romaji)}</p>
+  // ── 2. Spectrum (soft → hard) ─────────────────────────────────
+  const spectrumOrder = [...textures].sort((a, b) => (a.softness || 5) - (b.softness || 5));
+  const spectrumHTML = `
+    <section class="textures-spectrum" aria-label="Texture spectrum from soft to hard">
+      <header class="textures-section-head">
+        <span class="section-num">2.</span>
+        <h2 class="section-title">食感のスペクトラム</h2>
+        <p class="section-sub">
+          食べものの「かたさ・弾力・なめらかさ」の違い、いろんな表現があるよ。食感の世界をたのしんでみよう。
+        </p>
+      </header>
+      <div class="textures-spectrum-row">
+        <span class="spectrum-edge spectrum-edge-soft">
+          <span class="spectrum-edge-ja">やわらかい</span>
+          <span class="spectrum-edge-en">SOFT</span>
+        </span>
+        <ul class="textures-spectrum-tiles" role="list">
+          ${spectrumOrder.map(t => `
+            <li class="textures-spectrum-tile-wrap">
+              <button class="textures-spectrum-tile ${t.id === currentTex.id ? 'is-active' : ''}"
+                      data-spectrum-texture="${escAttr(t.id)}"
+                      style="--tint:${escAttr(t.tint)};"
+                      type="button"
+                      aria-label="${escAttr(t.kana + ' — ' + t.en)}">
+                <span class="spectrum-tile-image">
+                  <img src="${escAttr(textureStapleImgSrc(t.staple))}"
+                       alt="" loading="lazy"
+                       onerror="this.style.display='none'" />
+                </span>
+                <span class="spectrum-tile-kana">${escHTML(t.kana)}</span>
+                <span class="spectrum-tile-label">${escHTML(t.stapleLabel || '')}</span>
+              </button>
+            </li>
+          `).join('')}
+        </ul>
+        <span class="spectrum-edge spectrum-edge-hard">
+          <span class="spectrum-edge-ja">かたい</span>
+          <span class="spectrum-edge-en">HARD</span>
+        </span>
       </div>
-      <button class="texture-immersion-audio"
-              data-speak="${escAttr(texture.kana)}"
-              aria-label="Hear ${escAttr(texture.kana)} pronunciation"
-              type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-          <path d="M19.07 4.93a10 10 0 010 14.14"/>
-          <path d="M15.54 8.46a5 5 0 010 7.07"/>
-        </svg>
-      </button>
-    </div>`;
+      <div class="textures-spectrum-line" aria-hidden="true">
+        ${spectrumOrder.map(t => `
+          <span class="spectrum-line-dot ${t.id === currentTex.id ? 'is-active' : ''}"
+                style="--tint:${escAttr(t.tint)};"></span>
+        `).join('')}
+      </div>
+    </section>`;
 
-  // Right column — 2×4 collage of foodPool items.
-  const poolItems = lookupEdiblesByIds(texture.foodPool || []);
+  // ── 3. Spotlight (selected texture) ───────────────────────────
+  const spotlightHTML = renderTextureSpotlight(currentTex);
+
+  // ── 4. Food collage (more foods with this texture) ────────────
+  const poolItems = lookupEdiblesByIds(currentTex.foodPool || []);
   const collageHTML = poolItems.length ? `
-    <div class="texture-immersion-collage">
-      ${poolItems.slice(0, 8).map(({ item, cat, book }) => `
-        <button class="texture-collage-card"
-                data-texture-to-edible="${escAttr(book.id)}/${escAttr(cat.id)}/${escAttr(item.id)}"
-                type="button"
-                aria-label="Open ${escAttr(item.kana)} — ${escAttr(item.en)}">
-          <div class="texture-collage-image">
-            <image-slot image-key="vocab/${escAttr(item.id)}" readonly></image-slot>
-          </div>
-          <div class="texture-collage-name">
-            <span class="ja">${escHTML(item.kana)}</span>
-          </div>
-        </button>
-      `).join('')}
-    </div>
-  ` : `
-    <div class="texture-immersion-empty">
-      No edibles tagged with ${escHTML(texture.kana)} yet. The food
-      pool fills as items get their textures wired.
-    </div>`;
+    <section class="textures-collage-section" aria-label="More foods with this texture">
+      <header class="textures-section-head">
+        <span class="section-num">4.</span>
+        <h2 class="section-title">この食感の食べもの</h2>
+        <p class="section-sub">
+          ${escHTML(currentTex.kana)}と感じる食べものたち。タップして詳しく見る。
+        </p>
+      </header>
+      <div class="textures-pool-grid">
+        ${poolItems.slice(0, 12).map(({ item, cat, book }) => `
+          <button class="texture-pool-card"
+                  data-texture-to-edible="${escAttr(book.id)}/${escAttr(cat.id)}/${escAttr(item.id)}"
+                  type="button"
+                  aria-label="Open ${escAttr(item.kana)} — ${escAttr(item.en)}">
+            <div class="texture-pool-image">
+              <image-slot image-key="vocab/${escAttr(item.id)}" readonly></image-slot>
+            </div>
+            <div class="texture-pool-name">
+              <span class="ja">${escHTML(item.kana)}</span>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    </section>
+  ` : '';
 
-  // English drawer at the bottom.
+  // ── 5. English & notes drawer ─────────────────────────────────
   const drawerHTML = `
     <details class="texture-drawer">
-      <summary class="texture-drawer-toggle">English &amp; notes</summary>
+      <summary class="texture-drawer-toggle">English &amp; cultural notes</summary>
       <div class="texture-drawer-body">
-        <p class="en-gloss">${escHTML(texture.en)}</p>
-        <p class="notes">${escHTML(texture.notes || '')}</p>
+        <p class="en-gloss">${escHTML(currentTex.en)}</p>
+        <p class="notes">${escHTML(currentTex.notes || '')}</p>
       </div>
     </details>`;
 
   return `
-    ${railHTML}
-    <div class="textures-immersion-body" tabindex="-1"
-         style="--tint:${escAttr(texture.tint)};">
-      ${leftHTML}
-      <div class="texture-immersion-right">${collageHTML}</div>
-    </div>
-    ${drawerHTML}
-    <p class="texture-keys-hint">esc returns · space hears the word · ← → walks the row</p>`;
+    <div class="textures-page" tabindex="-1"
+         style="--tint:${escAttr(currentTex.tint)};">
+      ${headerHTML}
+      ${spectrumHTML}
+      ${spotlightHTML}
+      ${collageHTML}
+      ${drawerHTML}
+      <p class="texture-keys-hint">space hears the word · ← → walks the spectrum</p>
+    </div>`;
+}
+
+function renderTextureSpotlight(texture) {
+  const stapleSrc = textureStapleImgSrc(texture.staple);
+  const feelsHTML = (texture.feelsLike || []).map(p => `
+    <span class="spotlight-pill">${escHTML(p)}</span>
+  `).join('');
+  const examplesHTML = (texture.foodPool || []).slice(0, 4).map(id => {
+    const found = lookupEdiblesByIds([id])[0];
+    if (!found) return '';
+    return `<span class="spotlight-pill spotlight-example">${escHTML(found.item.kana)}</span>`;
+  }).join('');
+  const moodsHTML = (texture.moods || []).map(m => `
+    <span class="spotlight-mood">
+      ${textureMoodIconSVG(m.icon)}
+      <span class="spotlight-mood-label">${escHTML(m.label)}</span>
+    </span>
+  `).join('');
+
+  return `
+    <section class="textures-spotlight" aria-label="Spotlight on ${escAttr(texture.kana)}"
+             style="--tint:${escAttr(texture.tint)};">
+      <header class="textures-section-head">
+        <span class="section-num">3.</span>
+        <h2 class="section-title">今月の食感スポットライト</h2>
+      </header>
+      <div class="textures-spotlight-body">
+        <div class="textures-spotlight-image">
+          ${stapleSrc ? `<img src="${escAttr(stapleSrc)}" alt="${escAttr(texture.kana)}" loading="eager"
+                              onerror="this.style.display='none'" />` : ''}
+        </div>
+        <div class="textures-spotlight-info">
+          <h3 class="spotlight-kana">${escHTML(texture.kana)}</h3>
+          <p class="spotlight-romaji">${escHTML(texture.romaji)}</p>
+          <button class="textures-spotlight-audio"
+                  data-speak="${escAttr(texture.kana)}"
+                  aria-label="Hear ${escAttr(texture.kana)} pronunciation"
+                  type="button">
+            ${textureSpeakerSVG()}
+          </button>
+          <p class="spotlight-description">${escHTML(texture.notes || '')}</p>
+          <dl class="textures-spotlight-attrs">
+            <div class="spotlight-attr">
+              <dt class="spotlight-attr-label">
+                <span class="ja">印象</span>
+                <span class="en">FEELS LIKE</span>
+              </dt>
+              <dd class="spotlight-attr-pills">${feelsHTML}</dd>
+            </div>
+            <div class="spotlight-attr">
+              <dt class="spotlight-attr-label">
+                <span class="ja">例</span>
+                <span class="en">EXAMPLES</span>
+              </dt>
+              <dd class="spotlight-attr-pills">${examplesHTML}</dd>
+            </div>
+            <div class="spotlight-attr">
+              <dt class="spotlight-attr-label">
+                <span class="ja">気分・シーン</span>
+                <span class="en">MOOD</span>
+              </dt>
+              <dd class="spotlight-attr-pills spotlight-moods">${moodsHTML}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>`;
 }
 
 // ── State transitions for textures ──
-function enterTextureImmersion(book, textureId) {
-  if (APP.textureId === textureId) return;
-  APP.textureId = textureId;
-  lsSet('jp:textureId', textureId);
-  rerenderTexturesPage(book);
-}
-
-function exitTextureImmersion(book) {
-  if (APP.textureId == null) return;
-  APP.textureId = null;
-  lsSet('jp:textureId', null);
-  rerenderTexturesPage(book);
-}
-
+// No more bento↔immersion split — there's only one page. switchTexture
+// updates the spotlight in place. enterTextureImmersion / exit are
+// dead but kept as no-ops for any external callers.
 function switchTexture(book, textureId) {
   if (APP.textureId === textureId) return;
   APP.textureId = textureId;
   lsSet('jp:textureId', textureId);
   rerenderTexturesPage(book);
+  // Scroll to spotlight so the new texture is visible.
+  queueMicrotask(() => {
+    const spot = document.querySelector('.textures-spotlight');
+    if (spot) spot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
+function enterTextureImmersion(book, textureId) { switchTexture(book, textureId); }
+function exitTextureImmersion(book) { /* no-op — no bento to return to */ }
 
 function walkTexture(book, direction) {
-  const textures = book.textures || [];
+  const textures = [...(book.textures || [])].sort((a, b) => (a.softness || 5) - (b.softness || 5));
   const idx = textures.findIndex(t => t.id === APP.textureId);
   if (idx < 0) return;
   const next = textures[(idx + direction + textures.length) % textures.length];
@@ -18036,51 +18277,35 @@ function rerenderTexturesPage(book) {
   if (!el) return;
   el.innerHTML = texturesPageHTML(book);
   wireTexturesPageHandlers(book);
-  // Focus the immersion body so keyboard nav works without a click.
-  const body = el.querySelector('.textures-immersion-body');
-  if (body) body.focus({ preventScroll: true });
+  const page = el.querySelector('.textures-page');
+  if (page) page.focus({ preventScroll: true });
 }
 
 function wireTexturesPageHandlers(book) {
   const root = document.getElementById('vocab-page-content');
   if (!root) return;
 
-  // Bento card click → enter immersion
-  root.querySelectorAll('[data-texture-id]').forEach(btn => {
+  // Spectrum tile click → switch texture (updates spotlight in place)
+  root.querySelectorAll('[data-spectrum-texture]').forEach(btn => {
     btn.addEventListener('click', () => {
-      enterTextureImmersion(book, btn.dataset.textureId);
+      switchTexture(book, btn.dataset.spectrumTexture);
     });
   });
 
-  // Rail thumb click → switch texture
-  root.querySelectorAll('[data-rail-texture]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      switchTexture(book, btn.dataset.railTexture);
-    });
-  });
-
-  // Exit button → back to bento
-  root.querySelectorAll('[data-texture-exit]').forEach(btn => {
-    btn.addEventListener('click', () => exitTextureImmersion(book));
-  });
-
-  // Collage card click → open edible detail via the existing edibles
-  // book routing (mirror of the flavor-to-edible cross-link).
+  // Food collage card click → open edible detail via the existing
+  // edibles book routing (mirror of the flavor-to-edible cross-link).
   root.querySelectorAll('[data-texture-to-edible]').forEach(btn => {
     btn.addEventListener('click', () => {
       const [bookId, catId, itemId] = btn.dataset.textureToEdible.split('/');
       const ediblesBook = (window.VOCAB_CLASSES || [])
         .flatMap(c => c.books || []).find(b => b.id === bookId && b.isEdiblesPage);
       if (!ediblesBook) return;
-      // Remember the texture context for the back-link chip on detail.
       APP.edibleFromTexture = APP.textureId;
       lsSet('jp:edibleFromTexture', APP.textureId);
       APP.edibleCategory = catId;
       APP.edibleItem = itemId;
-      APP.textureId = null;
       lsSet('jp:edibleCategory', catId);
       lsSet('jp:edibleItem', itemId);
-      lsSet('jp:textureId', null);
       APP.vocabBookId = ediblesBook.id;
       lsSet('jp:vocabBook', ediblesBook.id);
       renderVocab(document.getElementById('main-inner'));
@@ -18095,12 +18320,12 @@ function wireTexturesPageHandlers(book) {
     });
   });
 
-  // Keyboard navigation in immersion view: ← → walks, esc exits, space speaks.
-  const body = root.querySelector('.textures-immersion-body');
-  if (body) {
-    body.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { e.preventDefault(); exitTextureImmersion(book); }
-      else if (e.key === 'ArrowLeft')  { e.preventDefault(); walkTexture(book, -1); }
+  // Keyboard navigation: ← → walks spectrum (in softness order),
+  // space speaks the current texture.
+  const page = root.querySelector('.textures-page');
+  if (page) {
+    page.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')       { e.preventDefault(); walkTexture(book, -1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); walkTexture(book, +1); }
       else if (e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault();
