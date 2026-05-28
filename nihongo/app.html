@@ -5509,6 +5509,41 @@
     padding-bottom: clamp(28px, 3.4vw, 56px);
     border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
   }
+
+  /* Colored band behind each row. The renderer attaches:
+       --row-tint        — solid color under the tile
+       --row-bg-image    — url(...) tile of the closest canonical texture
+       --row-bg-opacity  — 0..1 layer opacity
+     Only rows with .has-bg get the pseudo. The band breaks out
+     horizontally to fill the .main column via 100vw + transform centering;
+     .main has overflow-x: hidden so it clips to the content area
+     (sidebar stays clean). top:0 / bottom:0 fills the row's full box,
+     which already includes its padding-bottom + border-bottom — so the
+     band reaches the hairline divider beneath each entry. */
+  .extra-texture-row.has-bg {
+    position: relative;
+    isolation: isolate;
+    /* Extra top padding so the band has room to breathe above the
+       headline. Replaces the gap-only spacing the list normally has. */
+    padding-top: clamp(24px, 2.6vw, 40px);
+  }
+  .extra-texture-row.has-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background-color: var(--row-tint, transparent);
+    background-image: var(--row-bg-image, none);
+    background-size: 240px auto;
+    background-repeat: repeat;
+    background-blend-mode: multiply;
+    opacity: var(--row-bg-opacity, 0.32);
+    z-index: -1;
+    pointer-events: none;
+  }
   .textures-extras-list { gap: clamp(28px, 3.4vw, 56px); }
   .extra-texture-row:last-child {
     padding-bottom: 0;
@@ -7176,10 +7211,16 @@
     animation-delay: calc(var(--enter-i, 0) * 10ms);
   }
   .edibles-frame.is-zoom-out-items .edibles-item-card.is-zoom-target {
-    animation: edibles-card-hop-out 380ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    /* Smooth ease curve (no overshoot). The previous (0.34, 1.4, 0.64, 1)
+       had y2 > 1, which combined with a 3-point keyframe (0 → 45% → 100%)
+       made the card overshoot mid-flight and "settle" between frames —
+       reading as a stutter. Save the bouncy curve for the land-hop on
+       the way back (where the rebound is earned). */
+    animation: edibles-card-hop-out 380ms cubic-bezier(0.32, 0.72, 0, 1) both;
     animation-delay: 0ms;
     z-index: 10;
     position: relative;
+    transform-origin: center bottom;
   }
   .edibles-frame.is-zoom-out-items .edibles-back {
     animation: edibles-soft-out 220ms cubic-bezier(0.7, 0, 0.84, 0) both;
@@ -7188,10 +7229,12 @@
     from { opacity: 1; transform: translateY(0)   scale(1); }
     to   { opacity: 0; transform: translateY(10px) scale(0.94); }
   }
+  /* Monotonic 0 → 100%: card lifts and scales continuously while
+     fading. No mid-point keyframe so the smooth ease curve isn't
+     fighting an intermediate target. */
   @keyframes edibles-card-hop-out {
-    0%   { opacity: 1; transform: translateY(0)    scale(1); }
-    45%  { opacity: 1; transform: translateY(-14px) scale(1.18); }
-    100% { opacity: 0; transform: translateY(-34px) scale(1.36); }
+    from { opacity: 1; transform: translateY(0)    scale(1); }
+    to   { opacity: 0; transform: translateY(-34px) scale(1.32); }
   }
 
   /* Phase B — detail entering. Hero settles from 1.18 → 1.0 to read
@@ -7963,6 +8006,17 @@
   }
   .edibles-item-image image-slot::part(img) {
     filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--ink) 18%, transparent));
+  }
+  /* Hard-coded multiply-blend escape hatch — see EDIBLES_MULTIPLY_IDS
+     in JS. For items whose PNG has a baked-in soft shadow or a light
+     body that fights the drop-shadow filter (bananas), we drop the
+     drop-shadow and let mix-blend-mode: multiply melt the halo into
+     the paper. Same rule applies to the detail hero and similar cards. */
+  .edibles-item-image[data-blend="multiply"] image-slot::part(img),
+  .edibles-detail-hero[data-blend="multiply"] image-slot::part(img),
+  .edibles-similar-image[data-blend="multiply"] image-slot::part(img) {
+    mix-blend-mode: multiply;
+    filter: none;
   }
   .edibles-item-name {
     display: flex; flex-direction: column; gap: 2px;
@@ -20089,44 +20143,65 @@ function texturesPageHTML(book) {
 // reading) when one exists, a simple JP sentence describing what the
 // texture feels like, the EN translation, and 4-6 example food ids
 // pulled from the edibles database.
+// Each extra-texture row picks the closest canonical texture from the
+// spectrum to use as its repeating background tile (images/bg/textures/
+// <id>.webp), plus a soft solid tint behind that tile. The combination
+// is rendered at ~30% opacity so the row stays readable while gaining
+// a sense of "what world does this texture live in."
+//
+//   bgTexture — canonical texture id; null means no tile (solid only)
+//   bgTint    — hex/rgba color for the solid behind the tile
+//   bgOpacity — 0..1 layer opacity (default 0.32)
+//
+// つるつる is an explicit exception — the user asked for it to read as
+// "light" (off-white / beige / yellowish), so it skips the texture
+// tile and uses a pale cream solid instead.
 const EXTRA_TEXTURE_EXPLAINERS = [
   { kana:'やわらかい', kanji:'柔らかい', kanjiRt:'やわ',
     icon:'yawarakai',
+    bgTexture:'fuwafuwa', bgTint:'#F4DDD4', bgOpacity:0.38,
     ja:'やわらかい ものは、おしたら すぐ かたちが かわります。',
     en:'Soft things change shape easily when pressed.',
     examples:['shokupan','jagaimo','hourensou','toofu','hanbaagaa'] },
   { kana:'なめらか', kanji:'滑らか', kanjiRt:'なめ',
     icon:'nameraka',
+    bgTexture:'sarasara', bgTint:'#DDE5E8', bgOpacity:0.42,
     ja:'なめらかは、ざらざらしない、つるっとした かんじです。',
     en:'Nameraka is the feeling of no roughness — clean and gliding.',
     examples:['purin','wasabi','toofu','namakuriimu','yooguruto'] },
   { kana:'つるつる',
     icon:'tsurutsuru',
+    bgTexture:null, bgTint:'#F6EFD9', bgOpacity:0.55,
     ja:'つるつるは、すべるような、なめらかな かんじです。うどんを つるつると すすります。',
     en:'Tsurutsuru is a slippery, sliding feel — we slurp udon and ramen this way.',
     examples:['udon','soba','raamen','wakame'] },
   { kana:'ぷるぷる',
     icon:'purupuru',
+    bgTexture:'mochimochi', bgTint:'#F2D6D5', bgOpacity:0.38,
     ja:'ぷるぷるは、ゆれる、やわらかい かんじです。ゼリーや 豆腐が ぷるぷるです。',
     en:'Purupuru is the wobbly, jiggly feel — jelly and tofu are purupuru.',
     examples:['purin','toofu','warabimochi'] },
   { kana:'プチプチ',
     icon:'puchipuchi',
+    bgTexture:'puripuri', bgTint:'#F4C7AA', bgOpacity:0.34,
     ja:'プチプチは、ちいさい つぶが はじける かんじです。いくらや なっとうが プチプチです。',
     en:'Puchipuchi is tiny grains bursting — salmon roe and natto are puchipuchi.',
     examples:['nattou','mikan','orenji','buruuberii','kiwi'] },
   { kana:'シャリシャリ',
     icon:'sharishari',
+    bgTexture:'sakusaku', bgTint:'#EFE2A8', bgOpacity:0.36,
     ja:'シャリシャリは、こおりや ざらざらした かんじです。かき氷や なしが シャリシャリです。',
     en:'Sharishari is icy and granular — shaved ice and Japanese pear are sharishari.',
     examples:['kakigoori','nashi','genmai','suika'] },
   { kana:'クリーミー',
     icon:'kuriimii',
+    bgTexture:'torotoro', bgTint:'#F8EBC4', bgOpacity:0.42,
     ja:'クリーミーは、こくがあって、なめらかな かんじです。バターや 生クリームが クリーミーです。',
     en:'Creamy is rich and smooth — butter and whipped cream are creamy.',
     examples:['gyuunyuu','namakuriimu','aisukuriimu','bataa','chiizu','maccha'] },
   { kana:'ジューシー',
     icon:'juushii',
+    bgTexture:'puripuri', bgTint:'#F2B9A3', bgOpacity:0.34,
     ja:'ジューシーは、かむと しるが あふれる かんじです。りんごや ももが ジューシーです。',
     en:'Juicy is when liquid overflows on bite — apples and peaches are juicy.',
     examples:['ringo','momo','meron','suika','tomato','sakuranbo'] },
@@ -20174,8 +20249,21 @@ function renderExtraTexturesSection() {
           <span class="extra-texture-example-kana">${escHTML(item.kana)}</span>
         </span>`;
     }).join('');
+    // Per-row background style. The colored band sits behind the row
+    // and breaks out to fill the .main column (see .extra-texture-row::before
+    // in CSS). bgTexture is the canonical texture id whose tile we
+    // reuse as a repeating pattern; bgTint is a solid color underneath.
+    // つるつる uses bgTexture:null to opt out of the tile for a clean
+    // light-only band.
+    const bgImgUrl = ex.bgTexture ? `images/bg/textures/${ex.bgTexture}.webp` : null;
+    const rowStyle = [
+      ex.bgTint     ? `--row-tint:${escAttr(ex.bgTint)}` : null,
+      bgImgUrl      ? `--row-bg-image:url('${escAttr(bgImgUrl)}')` : null,
+      ex.bgOpacity != null ? `--row-bg-opacity:${escAttr(String(ex.bgOpacity))}` : null,
+    ].filter(Boolean).join(';');
     return `
-      <article class="extra-texture-row ${i % 2 === 1 ? 'is-flipped' : ''}">
+      <article class="extra-texture-row ${i % 2 === 1 ? 'is-flipped' : ''}${ex.bgTexture || ex.bgTint ? ' has-bg' : ''}"
+               ${rowStyle ? `style="${rowStyle};"` : ''}>
         <div class="extra-texture-row-image">
           <img src="images/bg/texture-icons/${escAttr(ex.icon)}.webp"
                alt=""
@@ -20612,6 +20700,18 @@ function ediblesPageHTML(book) {
 // Western-Japan fusion (e.g. kashi's wagashi-anchored + cafe-modern
 // flanks). Re-curate any entry whenever a stronger third exemplar
 // lands.
+// Hard-coded list of item ids whose PNGs render with a baked-in soft
+// shadow or have a light/yellow body that fights the global drop-shadow
+// filter (the shadow ends up reading as a dirty bottom edge — bananas
+// were the canonical example). For these items we drop the drop-shadow
+// and switch to `mix-blend-mode: multiply`, which makes the off-white
+// halo melt into the paper surface and reuses the PNG's own shading
+// for depth. Add an id here when you spot the symptom: a hard / muddy
+// shadow under a light-toned food on the items grid or detail hero.
+const EDIBLES_MULTIPLY_IDS = new Set([
+  'banana',
+]);
+
 const EDIBLES_CATEGORY_STACK_OVERRIDES = {
   // 果物 (kudamono, fruits): budou left (purple cluster — color +
   // shape contrast), ichigo center (the Japanese-Christmas-cake
@@ -20759,13 +20859,14 @@ function ediblesItemsHTML(cat) {
   }
   const cardsHTML = items.map((it, _i) => {
     const cardIndex = _i;
+    const blendAttr = EDIBLES_MULTIPLY_IDS.has(it.id) ? ' data-blend="multiply"' : '';
     return `
       <button class="edibles-item-card"
               data-item-id="${escAttr(it.id)}"
               type="button"
               style="--enter-i:${cardIndex};"
               aria-label="${escAttr(it.kana)} — ${escAttr(it.en)}">
-        <div class="edibles-item-image">
+        <div class="edibles-item-image"${blendAttr}>
           <image-slot image-key="vocab/${escAttr(it.id)}" readonly></image-slot>
         </div>
         <div class="edibles-item-name">
@@ -21016,7 +21117,7 @@ function ediblesDetailHTML(cat, item, allCategories) {
           </button>
         ` : ''}
       </div>
-      <div class="edibles-detail-hero">
+      <div class="edibles-detail-hero"${EDIBLES_MULTIPLY_IDS.has(item.id) ? ' data-blend="multiply"' : ''}>
         <image-slot image-key="vocab/${escAttr(item.id)}" readonly></image-slot>
       </div>
       <div class="edibles-detail-body">
@@ -21086,7 +21187,7 @@ function ediblesDetailHTML(cat, item, allCategories) {
                           data-similar-to="${escAttr(sc.id)}/${escAttr(si.id)}"
                           type="button"
                           aria-label="Open ${escAttr(si.kana)} — ${escAttr(si.en)}">
-                    <div class="edibles-similar-image">
+                    <div class="edibles-similar-image"${EDIBLES_MULTIPLY_IDS.has(si.id) ? ' data-blend="multiply"' : ''}>
                       <image-slot image-key="vocab/${escAttr(si.id)}" readonly></image-slot>
                     </div>
                     <div class="edibles-similar-name">
@@ -21242,6 +21343,13 @@ function wireEdiblesPageHandlers(book) {
       // its siblings stagger-fade in. Mark the returning card by
       // data-item-id BEFORE adding the entering class so the keyframe
       // selector targets it specifically (vs the sibling cascade).
+      //
+      // IMPORTANT: strip is-zoom-target from the returning card AFTER
+      // the entrance animation finishes. If we leave it on, the next
+      // item click would tag a NEW card with is-zoom-target while the
+      // old one still carries it — both match the .is-zoom-target
+      // selector and BOTH animate as targets, which reads as a shaky
+      // double-hop. (This was the bug the user reported.)
       if (target === 'items' && ediFrame && !reduced) {
         if (window.__ediblesAnimating) return;
         window.__ediblesAnimating = true;
@@ -21261,6 +21369,7 @@ function wireEdiblesPageHandlers(book) {
             next.classList.add('is-zoom-in-items');
             setTimeout(() => {
               next.classList.remove('is-zoom-in-items');
+              if (returningCard) returningCard.classList.remove('is-zoom-target');
               window.__ediblesAnimating = false;
             }, 1000);
           } else {
@@ -21368,6 +21477,14 @@ function wireEdiblesPageHandlers(book) {
       }
       if (window.__ediblesAnimating) return;
       window.__ediblesAnimating = true;
+      // Defensive: strip is-zoom-target from any sibling card that
+      // might still carry it from a prior back-from-detail flow. The
+      // back path adds the class then strips it in its inner timeout,
+      // but if the timing windows ever overlap (or a future path
+      // forgets), we'd double-tag here and the keyframe selector
+      // would fire on two cards = the "shaky double hop" bug.
+      ediFrame.querySelectorAll('.edibles-item-card.is-zoom-target')
+        .forEach(c => c.classList.remove('is-zoom-target'));
       // Tag the clicked card so the CSS hops it up (vs the siblings
       // which fade-shrink). z-index lift comes via the class — the
       // hop card needs to render above its neighbors when scaling up.
