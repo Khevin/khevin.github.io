@@ -5280,16 +5280,17 @@
     min-width: 0;
   }
   /* Brushstroke under the image — the signature that pairs with this
-     texture. Capped at 56px tall so it reads as a stroke, not a
-     banner. Tinted slightly lighter than full ink so the photo above
-     stays the strongest visual element. */
+     texture. Capped at 112px tall (doubled from the previous 56px)
+     so the stroke reads at the same visual weight as the photo
+     above it. Tinted slightly lighter than full ink so the photo
+     above stays the strongest visual element. */
   .textures-spotlight-glyph {
     width: 100%;
     color: color-mix(in srgb, var(--ink) 88%, transparent);
     margin: 0;
   }
   .textures-spotlight-glyph .texture-motion-line {
-    width: 100%; height: auto; max-height: 56px;
+    width: 100%; height: auto; max-height: 112px;
   }
   .spotlight-kana {
     font-family: var(--font-title);
@@ -5339,84 +5340,69 @@
     margin: 4px 0 0;
   }
 
-  .textures-spotlight-attrs {
-    display: flex; flex-direction: column;
-    gap: clamp(10px, 1.1vw, 14px);
-    margin: clamp(8px, 1vw, 14px) 0 0;
-    padding: clamp(12px, 1.4vw, 18px) 0 0;
+  /* Bottom-of-card examples row — image-and-name, no card chrome.
+     Sits below the spotlight body, divided by a hairline so the row
+     reads as a coda to the texture's introduction rather than as a
+     second section. Six items fit cleanly on desktop; flex shrinks
+     each item so they fit on narrow viewports without wrapping. */
+  .textures-spotlight-examples {
+    display: flex;
+    gap: clamp(8px, 1vw, 16px);
+    margin-top: clamp(20px, 2.2vw, 32px);
+    padding-top: clamp(14px, 1.6vw, 22px);
     border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    align-items: flex-start;
+    justify-content: space-around;
   }
-  .spotlight-attr {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    align-items: baseline;
-    gap: clamp(8px, 1vw, 14px);
+  .spotlight-example-item {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 0;
     margin: 0;
-  }
-  @media (max-width: 580px) {
-    .spotlight-attr { grid-template-columns: 1fr; }
-  }
-  .spotlight-attr-label {
+    cursor: pointer;
     display: flex; flex-direction: column;
-    gap: 2px;
-    line-height: 1.1;
-  }
-  .spotlight-attr-label .ja {
-    font-family: var(--font-title);
-    font-size: 14px;
-    color: var(--ink);
-  }
-  .spotlight-attr-label .en {
-    font-family: var(--font-menu-en);
-    font-size: 10px; letter-spacing: 0.18em;
-    color: var(--ink-3);
-    text-transform: uppercase;
-  }
-  .spotlight-attr-pills {
-    display: flex; flex-wrap: wrap;
+    align-items: center;
     gap: 6px;
-    margin: 0;
     min-width: 0;
+    flex: 1 1 0;
+    max-width: 120px;
+    color: inherit; font: inherit;
+    text-align: center;
+    transition: transform .15s ease-out;
   }
-  .spotlight-pill {
-    display: inline-flex; align-items: center;
-    padding: 4px 10px;
-    background: color-mix(in srgb, var(--paper-2) 90%, var(--ink) 6%);
-    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-    border-radius: 999px;
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--ink-2);
-    line-height: 1.4;
+  .spotlight-example-item:hover {
+    transform: translateY(-2px);
   }
-  .spotlight-pill.spotlight-example {
+  .spotlight-example-item:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spotlight-example-item,
+    .spotlight-example-item:hover { transition: none; transform: none; }
+  }
+  .spotlight-example-image {
+    width: 100%; max-width: 88px;
+    aspect-ratio: 1 / 1;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .spotlight-example-image img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--ink) 16%, transparent));
+  }
+  .spotlight-example-name {
     font-family: var(--font-title);
-    background: color-mix(in srgb, var(--tint, var(--paper-2)) 70%, var(--paper-2) 30%);
+    font-size: clamp(11px, 0.65vw + 4px, 13px);
     color: var(--ink);
-    font-size: 13px;
-    border-color: color-mix(in srgb, var(--ink) 16%, transparent);
-  }
-  .spotlight-mood {
-    display: inline-flex; align-items: center;
-    gap: 6px;
-    padding: 4px 10px 4px 8px;
-    background: var(--paper-2);
-    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-    border-radius: 999px;
-  }
-  .spotlight-mood .mood-icon {
-    width: 14px; height: 14px;
-    color: var(--ink-2);
-    flex-shrink: 0;
-  }
-  .spotlight-mood-label {
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--ink-2);
     line-height: 1.2;
+    overflow-wrap: anywhere;
   }
 
-  /* ── 4. Food collage ─────────────────────────────────────────── */
+  /* ── 3. Food collage ─────────────────────────────────────────── */
   .textures-collage-section {
     margin: 0 0 clamp(28px, 3.2vw, 48px);
   }
@@ -18192,7 +18178,7 @@ function texturesPageHTML(book) {
   const collageHTML = poolItems.length ? `
     <section class="textures-collage-section" aria-label="More foods with this texture">
       <header class="textures-section-head">
-        <span class="section-num">3.</span>
+        <span class="section-num">2.</span>
         <h2 class="section-title">この食感の食べもの</h2>
         <p class="section-sub">
           ${escHTML(currentTex.kana)}と感じる食べものたち。タップして詳しく見る。
@@ -18244,28 +18230,36 @@ function renderTextureSpotlight(texture) {
   // the spectrum tile. Currently used only by とろとろ (egg in the
   // spectrum, omurice in the spotlight).
   const stapleSrc = textureStapleImgSrc(texture.spotlightStaple || texture.staple);
-  const feelsHTML = (texture.feelsLike || []).map(p => `
-    <span class="spotlight-pill">${escHTML(p)}</span>
-  `).join('');
-  const examplesHTML = (texture.foodPool || []).slice(0, 4).map(id => {
-    const found = lookupEdiblesByIds([id])[0];
-    if (!found) return '';
-    return `<span class="spotlight-pill spotlight-example">${escHTML(found.item.kana)}</span>`;
-  }).join('');
-  const moodsHTML = (texture.moods || []).map(m => `
-    <span class="spotlight-mood">
-      ${textureMoodIconSVG(m.icon)}
-      <span class="spotlight-mood-label">${escHTML(m.label)}</span>
-    </span>
-  `).join('');
+
+  // Bottom-of-card examples row — 4-6 foods from the texture's pool,
+  // rendered as image + name with no card chrome (per editorial brief:
+  // photo on paper, no UI box). Click-through goes to the edible's
+  // detail page via the same data-texture-to-edible bridge the bigger
+  // collage section uses below. We cap at 6 so the row never wraps;
+  // images that 404 hide their entire item via onerror so a stray
+  // missing asset doesn't leave a ghost slot.
+  const examplePool = lookupEdiblesByIds((texture.foodPool || []).slice(0, 6));
+  const examplesRowHTML = examplePool.length ? `
+    <div class="textures-spotlight-examples">
+      ${examplePool.map(({ item, cat, book }) => `
+        <button class="spotlight-example-item"
+                data-texture-to-edible="${escAttr(book.id)}/${escAttr(cat.id)}/${escAttr(item.id)}"
+                type="button"
+                aria-label="Open ${escAttr(item.kana)} — ${escAttr(item.en)}">
+          <span class="spotlight-example-image">
+            <img src="${escAttr(textureStapleImgSrc(item.id))}"
+                 alt="" loading="lazy"
+                 onerror="this.closest('.spotlight-example-item').style.display='none'" />
+          </span>
+          <span class="spotlight-example-name">${escHTML(item.kana)}</span>
+        </button>
+      `).join('')}
+    </div>
+  ` : '';
 
   return `
     <section class="textures-spotlight" aria-label="Spotlight on ${escAttr(texture.kana)}"
              style="--tint:${escAttr(texture.tint)};">
-      <header class="textures-section-head">
-        <span class="section-num">2.</span>
-        <h2 class="section-title">今月の食感スポットライト</h2>
-      </header>
       <div class="textures-spotlight-body">
         <div class="textures-spotlight-imagecol">
           <div class="textures-spotlight-image">
@@ -18286,31 +18280,9 @@ function renderTextureSpotlight(texture) {
             ${textureSpeakerSVG()}
           </button>
           <p class="spotlight-description">${escHTML(texture.notes || '')}</p>
-          <dl class="textures-spotlight-attrs">
-            <div class="spotlight-attr">
-              <dt class="spotlight-attr-label">
-                <span class="ja">印象</span>
-                <span class="en">FEELS LIKE</span>
-              </dt>
-              <dd class="spotlight-attr-pills">${feelsHTML}</dd>
-            </div>
-            <div class="spotlight-attr">
-              <dt class="spotlight-attr-label">
-                <span class="ja">例</span>
-                <span class="en">EXAMPLES</span>
-              </dt>
-              <dd class="spotlight-attr-pills">${examplesHTML}</dd>
-            </div>
-            <div class="spotlight-attr">
-              <dt class="spotlight-attr-label">
-                <span class="ja">気分・シーン</span>
-                <span class="en">MOOD</span>
-              </dt>
-              <dd class="spotlight-attr-pills spotlight-moods">${moodsHTML}</dd>
-            </div>
-          </dl>
         </div>
       </div>
+      ${examplesRowHTML}
     </section>`;
 }
 
