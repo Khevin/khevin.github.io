@@ -5506,8 +5506,12 @@
     grid-template-columns: minmax(140px, 200px) 1fr;
     gap: clamp(20px, 2.4vw, 40px);
     align-items: center;
-    padding-bottom: clamp(28px, 3.4vw, 56px);
-    border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    /* Each row carries balanced internal padding now that the bands
+       are continuous (no hairline dividers, no list gap). The band
+       fills top:0 → bottom:0 of the row box, so this padding IS the
+       band's interior breathing room. */
+    padding-top: clamp(28px, 3.2vw, 48px);
+    padding-bottom: clamp(28px, 3.2vw, 48px);
   }
 
   /* Colored band behind each row. The renderer attaches:
@@ -5517,15 +5521,10 @@
      Only rows with .has-bg get the pseudo. The band breaks out
      horizontally to fill the .main column via 100vw + transform centering;
      .main has overflow-x: hidden so it clips to the content area
-     (sidebar stays clean). top:0 / bottom:0 fills the row's full box,
-     which already includes its padding-bottom + border-bottom — so the
-     band reaches the hairline divider beneath each entry. */
+     (sidebar stays clean). top:0 / bottom:0 fills the row's full box. */
   .extra-texture-row.has-bg {
     position: relative;
     isolation: isolate;
-    /* Extra top padding so the band has room to breathe above the
-       headline. Replaces the gap-only spacing the list normally has. */
-    padding-top: clamp(24px, 2.6vw, 40px);
   }
   .extra-texture-row.has-bg::before {
     content: '';
@@ -5544,11 +5543,10 @@
     z-index: -1;
     pointer-events: none;
   }
-  .textures-extras-list { gap: clamp(28px, 3.4vw, 56px); }
-  .extra-texture-row:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
-  }
+  /* Continuous bands — list gap zeroed and hairlines gone so each row's
+     colored band touches the next, reading as horizontal stripes rather
+     than dividers + whitespace. */
+  .textures-extras-list { gap: 0; }
   .extra-texture-row.is-flipped {
     grid-template-columns: 1fr minmax(140px, 200px);
   }
@@ -17921,6 +17919,13 @@ const SECTION_BGS = {
   'eating-out':        ['images/bg/eating-out/bg1.webp',
                         'images/bg/eating-out/bg2.webp',
                         'images/bg/eating-out/bg3.webp'],
+  // Per-book deterministic overrides inside the eating-out class. Each
+  // of the three "data" books (flavors / edibles / textures) gets its
+  // own fixed bg so the atmosphere matches the page's identity. Books
+  // not listed here fall back to the random 'eating-out' pool above.
+  'vocab-flavors':     ['images/bg/eating-out/bg3.webp'],
+  'vocab-edibles':     ['images/bg/eating-out/bg1.webp'],
+  'vocab-textures':    ['images/bg/eating-out/bg2.webp'],
   // Each writing subpage carries one specific bg — the brush + ink
   // aesthetics map to the subject they teach.
   'writing-kana':               ['images/bg/writing/bg-shodo.webp'],            // calligraphy → hiragana/katakana
@@ -17975,7 +17980,14 @@ function pickSectionBg(key) {
 // the global pool is empty.
 function currentBgContextKey() {
   // Section-class / subpage specific overrides come first.
-  if (APP.section === 'vocab' && APP.vocabClassId === 'eating-out') return 'eating-out';
+  if (APP.section === 'vocab' && APP.vocabClassId === 'eating-out') {
+    // Per-book overrides: flavors / edibles / textures each get a
+    // deterministic bg. Other eating-out books fall back to the
+    // random three-image pool below.
+    const bookKey = `vocab-${APP.vocabBookId}`;
+    if ((SECTION_BGS[bookKey] || []).length) return bookKey;
+    return 'eating-out';
+  }
   if (APP.section === 'writing') {
     // Writing has four subpages, each gets its own bg mapping. Falls
     // back to 'global' if a subpage isn't registered.
