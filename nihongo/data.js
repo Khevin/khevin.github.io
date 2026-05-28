@@ -691,6 +691,18 @@ window.VOCAB_CLASSES = [
                 textures:['とろとろ', 'クリーミー'],
                 season:['通年 year-round'],
                 notes:'Almost entirely imported from Mexico. The defining ingredient of the California Roll (which was invented in LA but reimported to Japan as a sushi norm). Eaten in アボカド丼 (sliced over rice with soy + wasabi), sandwiches, and salads. Marketed as 森のバター (forest butter).' },
+              { id:'ichijiku', kanji:'無花果', kana:'いちじく', romaji:'ichijiku',
+                en:'fig',
+                flavors:['amai'],
+                textures:['とろとろ', 'プチプチ', 'やわらかい'],
+                season:['夏 summer', '秋 autumn'],
+                notes:'Purple-skinned, red-fleshed, seed-studded — the seeds give the プチプチ pop against the soft とろとろ flesh. The kanji 無花果 reads literally as "no-flower fruit" (the flowers bloom inside the fruit, invisible from outside). Eaten halved with a spoon, wrapped in 生ハム (prosciutto) as the modern bistro starter, or simmered in red wine + honey + spice for a dessert compote. 桝井ドーフィン (Masui-Dauphine) is the dominant Japanese cultivar — 80% of domestic figs. 愛知 (Aichi) and 和歌山 (Wakayama) are the prestige sources.' },
+              { id:'doragon-furuutsu', kanji:'', kana:'ドラゴンフルーツ', romaji:'doragon-furuutsu',
+                en:'dragonfruit / pitaya',
+                flavors:['amai', 'sawayaka'],
+                textures:['シャキシャキ', 'プチプチ', 'ジューシー'],
+                season:['夏 summer'],
+                notes:'Pink-scaled exterior, snow-white flesh peppered with edible black seeds (the プチプチ texture punctuates each bite). Mostly imported from Vietnam and Taiwan; 沖縄 (Okinawa) grows small domestic crops. Mild sweetness, refreshing — often layered into smoothie bowls and parfaits, or simply halved and scooped with a spoon. The Instagram-era fruit, photogenic enough that デパ地下 (department-store basement food halls) feature it prominently in summer. レッドピタヤ (red-fleshed) is the sweeter, magenta-fleshed variant.' },
             ]
           },
           // ── Yasai (Vegetables) — Phase 3b. ───────────────────────
@@ -793,6 +805,9 @@ window.VOCAB_CLASSES = [
               { id:'yasai-tempura', kanji:'野菜天ぷら', kana:'やさいてんぷら', romaji:'yasai-tempura', en:'vegetable tempura',
                 flavors:['oishii'], textures:['さくさく', 'カリカリ'], season:['通年 year-round'],
                 notes:'The vegetable half of the tempura tray. なすの天ぷら (eggplant — molten-soft inside, crisp outside), さつまいもの天ぷら (sweet potato — caramel-sweet), 椎茸の天ぷら (shiitake — concentrated umami), かぼちゃの天ぷら (kabocha pumpkin — winter-solstice classic), shishito, lotus root, asparagus. かき揚げ (kakiage) is the mixed-vegetable fritter variant, often featuring 玉ねぎ + 人参 + 三つ葉. Lighter than ebi-tempura, often what the kaiseki tempura counter opens with before the seafood. Pair: 海老天ぷら, 茄子, さつまいも, 椎茸.' },
+              { id:'toumorokoshi', kanji:'玉蜀黍', kana:'とうもろこし', romaji:'toumorokoshi', en:'corn',
+                flavors:['amai'], textures:['シャキシャキ', 'プチプチ', 'ジューシー'], season:['夏 summer'],
+                notes:'The defining summer-festival snack — 焼きとうもろこし (yaki-tōmorokoshi, grilled and shoyu-brushed cobs) sold from stalls at matsuri. 北海道 (Hokkaido) is the prestige source — sweet, juicy cultivars like ピュアホワイト (Pure White) and 味来 (Mirai) eat raw enough to be sliced into salads. The kernel-burst (プチプチ) under the tooth is the textural signature; sweet corn (スイートコーン) varieties have replaced the older starchier breeds entirely. Used in ラーメン toppings (especially 札幌味噌ラーメン), butter-corn (バターコーン on hot iron plate), and コーンスープ as the comforting cafe staple. Pair: バター, 醤油, ラーメン.' },
             ]
           },
           // ── Niku (Meat) — Phase 3c. ──────────────────────────────
@@ -901,6 +916,9 @@ window.VOCAB_CLASSES = [
               { id:'shokupan', kanji:'食パン', kana:'しょくパン', romaji:'shokupan', en:'Japanese milk bread',
                 flavors:['amai'], textures:['ふわふわ', 'もちもち'], season:['通年 year-round'],
                 notes:'The thick-sliced cottony white loaf. Sold in 6-slice or 8-slice packs at the bakery. Eaten toasted with butter, in 卵サンド (egg-salad sandwich), or as the base for fruit sando.' },
+              { id:'toosuto', kanji:'', kana:'トースト', romaji:'toosuto', en:'toast',
+                flavors:['oishii', 'amai'], textures:['さくさく', 'カリカリ'], season:['通年 year-round'],
+                notes:'Toasted thick-cut 食パン (shokupan) — the canonical Japanese breakfast carb. The thicker the slice the better the インスタ映え (Instagram-photo-worthy) cross-section: 4-slice (atsugiri, 1-inch thick) is the prestige cut, browned-crisp outside and steam-soft inside. Standard toppings: バター + 蜂蜜 (butter and honey), あんバター (sweet red bean with butter — the Showa-cafe classic), マヨネーズ + チーズ (mayo and cheese, broiled), or just shoyu-butter on a fresh slice. The さくさく shatter on the crust is the textural payoff that makes toast worth the toaster. Pair: 食パン (the bread it\'s made from), バター, 蜂蜜, ジャム.' },
               { id:'udon', kanji:'饂飩', kana:'うどん', romaji:'udon', en:'udon noodles',
                 flavors:['oishii'], textures:['もちもち'], season:['通年 year-round'],
                 notes:'Thick wheat noodles in dashi broth. 讃岐うどん (Sanuki, Kagawa prefecture) is the prestige cultivar — chewy and square-cut. Eaten hot as かけうどん or cold as ざるうどん.' },
@@ -1097,10 +1115,12 @@ window.VOCAB_CLASSES = [
             en:'crisp / flaky',
             tint:'#F2E9D1', motionShape:'crisp-angular',
             staple:'ebi-tempura', stapleLabel:'crisp', softness:8,
-            // kukkii leads — the package marketing literally writes
-            // さくさく on every Japanese cookie box. beekon dropped
-            // because its texture is heavier (it belongs in カリカリ).
-            foodPool:['kukkii','ebi-tempura','yasai-tempura','furaido-poteto','poteto-chippusu','taiyaki'],
+            // kukkii + toosuto lead — both are explicit さくさく
+            // exemplars in everyday Japanese (cookie boxes literally
+            // write the word; the toast-crust crackle is the canonical
+            // breakfast さくさく moment). taiyaki dropped — its outer
+            // shell is closer to crisp-thin than crisp-shatter.
+            foodPool:['kukkii','toosuto','ebi-tempura','yasai-tempura','furaido-poteto','poteto-chippusu'],
             feelsLike:['crisp','flaky','light','軽やか','うきうき'],
             moods:[
               { icon:'spark',  label:'軽快' },
@@ -1232,7 +1252,10 @@ window.VOCAB_CLASSES = [
             en:'crunchy-hard, deep-fried',
             tint:'#E8D8B8', motionShape:'hard-crunch',
             staple:'furaido-chikin', stapleLabel:'crunchy', softness:10,
-            foodPool:['furaido-chikin','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','ebi-tempura'],
+            // toosuto added — the well-done crust hits the heavier
+            // カリカリ side of the spectrum (the user explicitly
+            // flagged toast for the crunchier-hard textures).
+            foodPool:['furaido-chikin','toosuto','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','ebi-tempura'],
             feelsLike:['crunchy','hard','満足感','ご褒美','充実感'],
             moods:[
               { icon:'gift',   label:'ご褒美' },
