@@ -7279,6 +7279,102 @@
     100% { opacity: 1; transform: translateY(0)     scale(1); }
   }
 
+  /* ─────────────────────────────────────────────────────────────────
+     Detail ↔ Detail walk: slide carousel.
+     The ONLY edibles transition that doesn't use the shared-element
+     hop. Walk = sequential cycling, so it should read as "the
+     carousel scrolled" — current frame slides off one side, next
+     frame slides in from the opposite side.
+
+     The .edibles-detail container animates as a whole — its internal
+     elements come along for the ride. This is intentionally simpler
+     than the multi-phase enter/exit cascades elsewhere: walking is
+     about pace and continuity, not theater.
+     ───────────────────────────────────────────────────────────────── */
+  .edibles-frame.is-sliding-out-left .edibles-detail {
+    animation: edibles-detail-slide-out-left 320ms cubic-bezier(0.65, 0, 0.35, 1) both;
+    will-change: transform, opacity;
+  }
+  .edibles-frame.is-sliding-out-right .edibles-detail {
+    animation: edibles-detail-slide-out-right 320ms cubic-bezier(0.65, 0, 0.35, 1) both;
+    will-change: transform, opacity;
+  }
+  .edibles-frame.is-sliding-in-from-right .edibles-detail {
+    animation: edibles-detail-slide-in-from-right 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: transform, opacity;
+  }
+  .edibles-frame.is-sliding-in-from-left .edibles-detail {
+    animation: edibles-detail-slide-in-from-left 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: transform, opacity;
+  }
+  @keyframes edibles-detail-slide-out-left {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(-32%); }
+  }
+  @keyframes edibles-detail-slide-out-right {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(32%); }
+  }
+  @keyframes edibles-detail-slide-in-from-right {
+    from { opacity: 0; transform: translateX(32%); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes edibles-detail-slide-in-from-left {
+    from { opacity: 0; transform: translateX(-32%); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Similar-card click — same shared-element pattern as items → detail.
+     The clicked similar card is the same picture as the next hero;
+     it hops UP and scales while the rest of the detail page fades
+     down around it. Then the regular .is-zoom-in-detail handles the
+     arrival on the new detail frame.
+
+     The :not(.is-zoom-target) qualifier on the sibling-cascade rule
+     is what lets the target card opt-out of the fade-down and run
+     the hop-out keyframe instead. Without it, both rules would
+     match the target (same specificity sans the negation), with
+     unpredictable source-order winner.
+     ───────────────────────────────────────────────────────────────── */
+  .edibles-frame.is-launching-similar .edibles-detail-hero,
+  .edibles-frame.is-launching-similar .edibles-detail-backs,
+  .edibles-frame.is-launching-similar .edibles-detail-identity,
+  .edibles-frame.is-launching-similar .edibles-detail-notes,
+  .edibles-frame.is-launching-similar .edibles-detail-badges,
+  .edibles-frame.is-launching-similar .edibles-similar-head,
+  .edibles-frame.is-launching-similar .edibles-similar-card:not(.is-zoom-target) {
+    animation: edibles-detail-drop 320ms cubic-bezier(0.7, 0, 0.84, 0) both;
+  }
+  .edibles-frame.is-launching-similar .edibles-similar-card.is-zoom-target {
+    animation: edibles-similar-hop-out 460ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    z-index: 10;
+    position: relative;
+    will-change: transform, opacity;
+  }
+  @keyframes edibles-similar-hop-out {
+    0%   { opacity: 1; transform: translateY(0)    scale(1); }
+    45%  { opacity: 1; transform: translateY(-22px) scale(1.22); }
+    100% { opacity: 0; transform: translateY(-50px) scale(1.4); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-frame.is-sliding-out-left .edibles-detail,
+    .edibles-frame.is-sliding-out-right .edibles-detail,
+    .edibles-frame.is-sliding-in-from-right .edibles-detail,
+    .edibles-frame.is-sliding-in-from-left .edibles-detail,
+    .edibles-frame.is-launching-similar .edibles-detail-hero,
+    .edibles-frame.is-launching-similar .edibles-detail-backs,
+    .edibles-frame.is-launching-similar .edibles-detail-identity,
+    .edibles-frame.is-launching-similar .edibles-detail-notes,
+    .edibles-frame.is-launching-similar .edibles-detail-badges,
+    .edibles-frame.is-launching-similar .edibles-similar-head,
+    .edibles-frame.is-launching-similar .edibles-similar-card,
+    .edibles-frame.is-launching-similar .edibles-similar-card.is-zoom-target {
+      animation: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .edibles-frame.is-zoom-out-items .edibles-item-card,
     .edibles-frame.is-zoom-out-items .edibles-item-card.is-zoom-target,
@@ -21298,40 +21394,105 @@ function wireEdiblesPageHandlers(book) {
     }
     // Walk button (前 / 次): cycle to the previous or next item in the
     // same category, wrapping at either end. data-target-item carries
-    // the destination id (already wrap-computed by the renderer) so
-    // the handler stays trivially simple.
+    // the destination id (already wrap-computed by the renderer).
     //
-    // INTENTIONAL: no exit-then-enter choreography here. Walk-through
-    // navigation should feel fast; wrapping it in the 700ms shared-
-    // element flow would make stepping through 20 items insufferable.
-    // The instant rerender is the right tradeoff. Same for the
-    // similar-item card handler below.
+    // Choreography: this is the ONLY edibles transition that does NOT
+    // use the shared-element hop pattern. Walk = carousel. Current
+    // detail slides off-screen in one direction, swap, new detail
+    // slides in from the OPPOSITE direction — the eye reads "the
+    // carousel scrolled."
+    //   click 次 (next) → current slides LEFT, new comes from RIGHT
+    //   click 前 (prev) → current slides RIGHT, new comes from LEFT
+    // Direction comes from the button's class (.edibles-back-walk-next
+    // / -prev), set by the renderer at line ~20879.
     const walkBtn = e.target.closest('[data-edibles-walk]');
     if (walkBtn) {
       const targetId = walkBtn.dataset.targetItem;
-      if (targetId) {
+      if (!targetId) return;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const ediFrame = document.querySelector('.edibles-frame');
+      if (!ediFrame || reduced) {
         APP.edibleItem = targetId;
         lsSet('jp:edibleItem', targetId);
         rerenderEdibles(book);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
       }
+      if (window.__ediblesAnimating) return;
+      window.__ediblesAnimating = true;
+      const isNext = walkBtn.classList.contains('edibles-back-walk-next');
+      const outClass = isNext ? 'is-sliding-out-left' : 'is-sliding-out-right';
+      const inClass  = isNext ? 'is-sliding-in-from-right' : 'is-sliding-in-from-left';
+      ediFrame.classList.add(outClass);
+      setTimeout(() => {
+        APP.edibleItem = targetId;
+        lsSet('jp:edibleItem', targetId);
+        rerenderEdibles(book);
+        const next = document.querySelector('.edibles-frame');
+        if (next) {
+          void next.offsetWidth;
+          next.classList.add(inClass);
+          setTimeout(() => {
+            next.classList.remove(inClass);
+            window.__ediblesAnimating = false;
+          }, 420);
+        } else {
+          window.__ediblesAnimating = false;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 320);
       return;
     }
     // Phase 4 cross-link: similar-item card on a detail spread.
     // data-similar-to carries "<catId>/<itemId>" so a single click
-    // walks the user from one item's detail straight into another
-    // item's detail (potentially in a different category).
+    // walks the user from one similar card into that item's full detail.
+    //
+    // Choreography: same "shared element" pattern as the items-grid →
+    // detail flow — the clicked similar card is the same picture as
+    // the next hero, so the eye tracks it through the swap. The card
+    // hops up + scales (mirroring the items-grid hop-out), the rest
+    // of the detail page fades down around it, swap, then the new
+    // detail's hero settles in from scale 1.18 (the same arrival
+    // shape as a fresh item click).
     const simBtn = e.target.closest('[data-similar-to]');
     if (simBtn) {
       const [catId, itemId] = simBtn.dataset.similarTo.split('/');
-      APP.edibleCategory = catId;
-      APP.edibleItem = itemId;
-      lsSet('jp:edibleCategory', catId);
-      lsSet('jp:edibleItem', itemId);
-      rerenderEdibles(book);
-      // Scroll to top so the user lands on the new item's hero, not
-      // mid-page where the previous similar-row used to be.
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const ediFrame = document.querySelector('.edibles-frame');
+      if (!ediFrame || reduced) {
+        APP.edibleCategory = catId;
+        APP.edibleItem = itemId;
+        lsSet('jp:edibleCategory', catId);
+        lsSet('jp:edibleItem', itemId);
+        rerenderEdibles(book);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      if (window.__ediblesAnimating) return;
+      window.__ediblesAnimating = true;
+      simBtn.classList.add('is-zoom-target');
+      ediFrame.classList.add('is-launching-similar');
+      setTimeout(() => {
+        APP.edibleCategory = catId;
+        APP.edibleItem = itemId;
+        lsSet('jp:edibleCategory', catId);
+        lsSet('jp:edibleItem', itemId);
+        rerenderEdibles(book);
+        const next = document.querySelector('.edibles-frame');
+        if (next) {
+          void next.offsetWidth;
+          next.classList.add('is-zoom-in-detail');
+          setTimeout(() => {
+            next.classList.remove('is-zoom-in-detail');
+            window.__ediblesAnimating = false;
+          }, 1000);
+        } else {
+          window.__ediblesAnimating = false;
+        }
+        // Scroll to top so the user lands on the new item's hero, not
+        // mid-page where the previous similar-row used to be.
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 420);
       return;
     }
   });
