@@ -5234,50 +5234,60 @@
   }
 
   /* ── 3. Spotlight (selected texture detail card) ─────────────── */
-  /* Background stack, top → bottom:
-       1. A translucent paper veil (top layer) — masks the pattern so
-          kana + body copy read cleanly. 78% opacity is the legibility
-          sweet spot: enough opaque paper to anchor text contrast,
-          enough transparency that the pattern reads through as a
-          living surface rather than a flat fill.
-       2. The per-texture pattern (--spotlight-pattern) tiled across
-          the card. Each texture ships its own watercolor pattern
-          (mochi rounds for もちもち, zigzag crumbs for カリカリ, soft
-          stringy strands for ねばねば, etc.) so the card feels like
-          it lives in the world of that texture, not in a neutral box.
-       3. The tinted paper base — the original whisper of color that
-          identifies the texture, now showing through the pattern's
-          transparent areas.
-     The pattern image's own watercolor is muted by design; with the
-     veil on top, the result is a barely-perceptible textural backdrop
-     that adds immersion without competing for attention. */
+  /* The card has personality from TWO sources:
+       1. The strong per-texture tint as the paper-color base. This is
+          what gave the card its identity before patterns existed —
+          it's preserved here at full strength.
+       2. The per-texture pattern layered ON TOP via a ::before
+          pseudo-element using mix-blend-mode: multiply. Multiply
+          means the pattern's white/cream background DOESN'T fight
+          the tint (white × tint = tint, unchanged), and only the
+          pattern's darker shapes (mochi-blob outlines, crumb zigzags,
+          string strands) darken the tint where they overlap —
+          producing tinted pattern elements that read as the texture's
+          motif sitting on the texture's color.
+     Direct children get z-index: 1 so the kana, romaji, audio,
+     description, and examples row all sit cleanly above the pattern
+     layer. The pattern is decorative — pointer-events: none keeps
+     mouse interaction landing on the content underneath. */
   .textures-spotlight {
+    position: relative;
     margin: 0 0 clamp(28px, 3.2vw, 48px);
-    background:
-      linear-gradient(
-        color-mix(in srgb, var(--paper-2) 78%, transparent),
-        color-mix(in srgb, var(--paper-2) 78%, transparent)
-      ),
-      var(--spotlight-pattern, none),
-      color-mix(in srgb, var(--tint, var(--paper-2)) 78%, var(--paper-2) 22%);
-    background-repeat: no-repeat, repeat, no-repeat;
-    background-size: cover, 240px auto, cover;
+    background: color-mix(in srgb, var(--tint, var(--paper-2)) 78%, var(--paper-2) 22%);
     border-radius: 14px;
     padding: clamp(20px, 2.4vw, 36px);
     border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    overflow: hidden;     /* clip the pattern to the rounded corners */
+    isolation: isolate;   /* contain the blend-mode to this card */
   }
+  .textures-spotlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--spotlight-pattern, none);
+    background-repeat: repeat;
+    background-size: 360px auto;
+    /* Multiply blend: pattern's cream background ≈ no change,
+       pattern shapes darken the tinted base where they overlap. The
+       result reads as "the texture's motif printed onto its own
+       colored paper" rather than a transparency overlay. */
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* Children sit above the pattern layer. */
+  .textures-spotlight > * { position: relative; z-index: 1; }
+
   /* Mobile: shrink the tile so the pattern doesn't dwarf the card. */
   @media (max-width: 760px) {
-    .textures-spotlight { background-size: cover, 180px auto, cover; }
+    .textures-spotlight::before { background-size: 220px auto; }
   }
-  /* Respect prefers-reduced-motion isn't relevant here (static
-     pattern), but for high-contrast modes drop the pattern entirely
-     so the veil + tint hold the card alone. */
+  /* High-contrast modes: drop the pattern entirely so the tint holds
+     the card alone — patterned surfaces hurt low-vision users with
+     high-contrast modes turned on. */
   @media (prefers-contrast: more) {
-    .textures-spotlight {
-      background:
-        color-mix(in srgb, var(--paper-2) 92%, var(--tint, var(--paper-2)) 8%);
-    }
+    .textures-spotlight::before { display: none; }
   }
   .textures-spotlight .textures-section-head {
     border-bottom: none;
