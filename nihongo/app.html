@@ -5465,7 +5465,160 @@
     overflow-wrap: anywhere;
   }
 
-  /* ── 3. English drawer + keyboard hint footer ────────────────── */
+  /* ── 4. Extra textures explainer (non-canonical) ───────────────
+     Zig-zag scrollable list of the 8 descriptors that don't have a
+     spectrum slot (やわらかい, なめらか, つるつる, ぷるぷる, プチプチ,
+     シャリシャリ, クリーミー, ジューシー). Supporting cast — quieter
+     than the spotlight: no card chrome, no patterned background, no
+     audio button. Watercolor icon on one side, JP-first text + EN
+     translation + example pills on the other. The side alternates
+     row-by-row so the page has rhythm rather than a column-stack
+     of left-aligned images. */
+  .textures-extras {
+    margin: clamp(28px, 3.2vw, 48px) 0;
+  }
+  .textures-extras .textures-section-head {
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    padding-bottom: clamp(12px, 1.4vw, 20px);
+    margin-bottom: clamp(20px, 2.4vw, 32px);
+  }
+  .textures-extras .section-sub {
+    line-height: 1.7;
+  }
+  .textures-extras .section-sub-en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 0.92em;
+    color: var(--ink-3);
+  }
+  .textures-extras-list {
+    display: flex; flex-direction: column;
+    gap: clamp(28px, 3.4vw, 56px);
+  }
+  /* Each row is a 2-col grid: image + body. .is-flipped swaps the
+     visual order on every other row to produce the zig-zag rhythm
+     without changing DOM order (so reading order stays consistent
+     for screen readers). On mobile both rows stack image-first; the
+     zig-zag is a desktop affordance. */
+  .extra-texture-row {
+    display: grid;
+    grid-template-columns: minmax(140px, 200px) 1fr;
+    gap: clamp(20px, 2.4vw, 40px);
+    align-items: center;
+  }
+  .extra-texture-row.is-flipped {
+    grid-template-columns: 1fr minmax(140px, 200px);
+  }
+  .extra-texture-row.is-flipped .extra-texture-row-image {
+    grid-column: 2; grid-row: 1;
+  }
+  .extra-texture-row.is-flipped .extra-texture-row-body {
+    grid-column: 1; grid-row: 1;
+    text-align: right;
+  }
+  .extra-texture-row.is-flipped .extra-texture-row-examples {
+    justify-content: flex-end;
+  }
+  @media (max-width: 720px) {
+    .extra-texture-row,
+    .extra-texture-row.is-flipped {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      text-align: left;
+    }
+    .extra-texture-row.is-flipped .extra-texture-row-image,
+    .extra-texture-row.is-flipped .extra-texture-row-body {
+      grid-column: 1; grid-row: auto;
+      text-align: left;
+    }
+    .extra-texture-row.is-flipped .extra-texture-row-examples {
+      justify-content: flex-start;
+    }
+  }
+  /* Image cell — watercolor icon floats on paper. No frame, no
+     background, no shadow. The icon's own painted shadow + the
+     pre-trimmed transparent border are the only chrome. */
+  .extra-texture-row-image {
+    display: flex; align-items: center; justify-content: center;
+  }
+  .extra-texture-row-image img {
+    width: 100%; max-width: 200px;
+    height: auto;
+    display: block;
+  }
+  .extra-texture-row-body {
+    display: flex; flex-direction: column;
+    gap: clamp(6px, 0.8vw, 10px);
+    min-width: 0;
+  }
+  /* Headword — kana big (brush title font); when a kanji exists the
+     headword is the kanji with rt furigana, with the kana repeated
+     below as a smaller reading subtitle. */
+  .extra-texture-row-head {
+    font-family: var(--font-title);
+    font-size: clamp(1.6rem, 2.6vw + 0.4rem, 2.4rem);
+    color: var(--ink);
+    margin: 0; line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  .extra-texture-row-head rt {
+    font-size: 0.32em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .extra-texture-row-kana {
+    font-family: var(--font-title);
+    font-size: 16px;
+    color: var(--ink-2);
+    margin: 0;
+  }
+  .extra-texture-row-ja {
+    font-family: var(--font-body);
+    font-size: clamp(14px, 0.8vw + 6px, 15px);
+    line-height: 1.7;
+    color: var(--ink);
+    margin: clamp(2px, 0.4vw, 6px) 0 0;
+  }
+  .extra-texture-row-en {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: clamp(12px, 0.55vw + 6px, 13.5px);
+    line-height: 1.55;
+    color: var(--ink-3);
+    margin: 0;
+    max-width: 56ch;
+  }
+  /* Example list — small inline pills with image + kana, similar to
+     the spotlight examples row but smaller. Wraps naturally; the
+     is-flipped variant justifies them to the right edge to match
+     the right-aligned text block. */
+  .extra-texture-row-examples {
+    display: flex; flex-wrap: wrap;
+    gap: clamp(8px, 1vw, 14px);
+    margin-top: clamp(8px, 1vw, 14px);
+    justify-content: flex-start;
+  }
+  .extra-texture-example {
+    display: inline-flex; align-items: center;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .extra-texture-example-img {
+    width: 48px; height: 48px;
+    object-fit: contain;
+    display: block;
+  }
+  .extra-texture-example-kana {
+    font-family: var(--font-title);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  /* ── 5. English drawer + keyboard hint footer ──────────────────
+     (Section number shifted from 4 → 5 to make room for the extra
+     textures section above.) */
   .texture-drawer {
     margin: 0 0 clamp(16px, 1.8vw, 24px);
   }
@@ -18498,7 +18651,10 @@ function texturesPageHTML(book) {
   // the food browsing job, so a second grid below the card became
   // redundant.
 
-  // ── 4. English & notes drawer ─────────────────────────────────
+  // ── 4. Extra textures explainer (non-canonical) ──────────────
+  const extrasHTML = renderExtraTexturesSection();
+
+  // ── 5. English & notes drawer ─────────────────────────────────
   const drawerHTML = `
     <details class="texture-drawer">
       <summary class="texture-drawer-toggle">English &amp; cultural notes</summary>
@@ -18514,9 +18670,147 @@ function texturesPageHTML(book) {
       ${headerHTML}
       ${spectrumHTML}
       ${spotlightHTML}
+      ${extrasHTML}
       ${drawerHTML}
       <p class="texture-keys-hint">space hears the word · ← → walks the spectrum</p>
     </div>`;
+}
+
+// ── Extra textures explainer ───────────────────────────────────
+// The 8 non-canonical texture descriptors that don't have their own
+// immersion page get a quiet zig-zag explainer at the foot of the
+// textures page. Each row is image-on-one-side, JP-first text on the
+// other, with the side alternating row-by-row. Supporting cast tone:
+// no audio, no big hero, no patterned background — just paper, a
+// watercolor icon, and a short JP sentence with EN translation.
+//
+// Each entry carries its kana headword, the kanji form (with rt
+// reading) when one exists, a simple JP sentence describing what the
+// texture feels like, the EN translation, and 4-6 example food ids
+// pulled from the edibles database.
+const EXTRA_TEXTURE_EXPLAINERS = [
+  { kana:'やわらかい', kanji:'柔らかい', kanjiRt:'やわ',
+    icon:'yawarakai',
+    ja:'やわらかい ものは、おしたら すぐ かたちが かわります。',
+    en:'Soft things change shape easily when pressed.',
+    examples:['shokupan','jagaimo','hourensou','toofu','hanbaagaa'] },
+  { kana:'なめらか', kanji:'滑らか', kanjiRt:'なめ',
+    icon:'nameraka',
+    ja:'なめらかは、ざらざらしない、つるっとした かんじです。',
+    en:'Nameraka is the feeling of no roughness — clean and gliding.',
+    examples:['purin','wasabi','toofu','namakuriimu','yooguruto'] },
+  { kana:'つるつる',
+    icon:'tsurutsuru',
+    ja:'つるつるは、すべるような、なめらかな かんじです。うどんを つるつると すすります。',
+    en:'Tsurutsuru is a slippery, sliding feel — we slurp udon and ramen this way.',
+    examples:['udon','soba','raamen','wakame'] },
+  { kana:'ぷるぷる',
+    icon:'purupuru',
+    ja:'ぷるぷるは、ゆれる、やわらかい かんじです。ゼリーや 豆腐が ぷるぷるです。',
+    en:'Purupuru is the wobbly, jiggly feel — jelly and tofu are purupuru.',
+    examples:['purin','toofu','warabimochi'] },
+  { kana:'プチプチ',
+    icon:'puchipuchi',
+    ja:'プチプチは、ちいさい つぶが はじける かんじです。いくらや なっとうが プチプチです。',
+    en:'Puchipuchi is tiny grains bursting — salmon roe and natto are puchipuchi.',
+    examples:['nattou','mikan','orenji','buruuberii','kiwi'] },
+  { kana:'シャリシャリ',
+    icon:'sharishari',
+    ja:'シャリシャリは、こおりや ざらざらした かんじです。かき氷や なしが シャリシャリです。',
+    en:'Sharishari is icy and granular — shaved ice and Japanese pear are sharishari.',
+    examples:['kakigoori','nashi','genmai','suika'] },
+  { kana:'クリーミー',
+    icon:'kuriimii',
+    ja:'クリーミーは、こくがあって、なめらかな かんじです。バターや 生クリームが クリーミーです。',
+    en:'Creamy is rich and smooth — butter and whipped cream are creamy.',
+    examples:['gyuunyuu','namakuriimu','aisukuriimu','bataa','chiizu','maccha'] },
+  { kana:'ジューシー',
+    icon:'juushii',
+    ja:'ジューシーは、かむと しるが あふれる かんじです。りんごや ももが ジューシーです。',
+    en:'Juicy is when liquid overflows on bite — apples and peaches are juicy.',
+    examples:['ringo','momo','meron','suika','tomato','sakuranbo'] },
+];
+
+function renderExtraTexturesSection() {
+  // Walk every edibles book once to build an id → item map so the
+  // example-pill row can resolve kana labels without a per-row
+  // re-walk. Quiet failure mode: a stale example id silently drops
+  // out of the rendered row (no slot reserved).
+  const ediblesIndex = new Map();
+  for (const cls of (window.VOCAB_CLASSES || [])) {
+    for (const book of (cls.books || [])) {
+      if (!book.isEdiblesPage) continue;
+      for (const cat of (book.categories || [])) {
+        for (const it of (cat.items || [])) ediblesIndex.set(it.id, it);
+      }
+    }
+  }
+
+  const rowsHTML = EXTRA_TEXTURE_EXPLAINERS.map((ex, i) => {
+    // Kanji block: ruby with rt furigana when a kanji exists; just
+    // the kana headword when it's a katakana loanword (ジューシー)
+    // or a pure-kana onomatopoeia (つるつる, ぷるぷる, etc.).
+    const headWordHTML = ex.kanji
+      ? `<ruby>${escHTML(ex.kanji)}<rt>${escHTML(ex.kanjiRt || '')}</rt></ruby>`
+      : escHTML(ex.kana);
+    // Show the secondary form line only when kanji is the main head
+    // (the kana sits as the reading subtitle). For pure-kana words
+    // the headword IS the kana — no subtitle needed.
+    const subKanaHTML = ex.kanji
+      ? `<p class="extra-texture-row-kana">${escHTML(ex.kana)}</p>`
+      : '';
+    const examplesHTML = (ex.examples || []).map(id => {
+      const item = ediblesIndex.get(id);
+      if (!item) return '';
+      return `
+        <span class="extra-texture-example">
+          <img class="extra-texture-example-img"
+               src="images/vocab/${escAttr(id)}.webp"
+               alt=""
+               aria-hidden="true"
+               loading="lazy"
+               onerror="this.style.display='none'">
+          <span class="extra-texture-example-kana">${escHTML(item.kana)}</span>
+        </span>`;
+    }).join('');
+    return `
+      <article class="extra-texture-row ${i % 2 === 1 ? 'is-flipped' : ''}">
+        <div class="extra-texture-row-image">
+          <img src="images/bg/texture-icons/${escAttr(ex.icon)}.webp"
+               alt=""
+               aria-hidden="true"
+               loading="lazy">
+        </div>
+        <div class="extra-texture-row-body">
+          <h3 class="extra-texture-row-head">${headWordHTML}</h3>
+          ${subKanaHTML}
+          <p class="extra-texture-row-ja" lang="ja">${escHTML(ex.ja)}</p>
+          <p class="extra-texture-row-en">${escHTML(ex.en)}</p>
+          ${examplesHTML ? `
+            <div class="extra-texture-row-examples">
+              ${examplesHTML}
+            </div>
+          ` : ''}
+        </div>
+      </article>`;
+  }).join('');
+
+  return `
+    <section class="textures-extras" aria-label="Other texture descriptors">
+      <header class="textures-section-head">
+        <span class="section-num">3.</span>
+        <h2 class="section-title">
+          <ruby>他<rt>ほか</rt></ruby>の <ruby>食感<rt>しょっかん</rt></ruby>
+        </h2>
+        <p class="section-sub">
+          スペクトラムに のっていない、よく つかう 食感の ことば。<br>
+          <span class="section-sub-en">Other texture descriptors that didn't make the spectrum — useful supporting vocabulary.</span>
+        </p>
+      </header>
+      <div class="textures-extras-list">
+        ${rowsHTML}
+      </div>
+    </section>`;
 }
 
 function renderTextureSpotlight(texture) {
