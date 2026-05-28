@@ -5069,6 +5069,10 @@
     padding: 6px 4px;
     color: var(--ink-2);
   }
+  /* Hiragana stays as the primary label — readable first-glance form,
+     matches the readiness the learner is building. The kanji subtitle
+     sits beneath in a smaller weight so the eye lands on hiragana
+     first and picks up the kanji as the deeper layer. */
   .spectrum-edge-ja {
     font-family: var(--font-title);
     font-size: clamp(15px, 1vw + 4px, 18px);
@@ -5076,11 +5080,11 @@
     line-height: 1.1;
     writing-mode: horizontal-tb;
   }
-  .spectrum-edge-en {
-    font-family: var(--font-menu-en);
-    font-size: 10px; letter-spacing: 0.22em;
+  .spectrum-edge-kanji {
+    font-family: var(--font-title);
+    font-size: clamp(10px, 0.55vw + 4px, 12px);
     color: var(--ink-3);
-    text-transform: uppercase;
+    line-height: 1.2;
   }
   @media (max-width: 760px) {
     .spectrum-edge { flex-direction: row; gap: 8px; }
@@ -5156,19 +5160,22 @@
   .spectrum-tile-image img {
     width: 100%; height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--ink) 15%, transparent));
   }
   /* Slightly smaller so 4-char kana (もちもち, さらさら, ふわふわ, etc.)
-     sit comfortably on a single line at the desktop tile width; 6-char
-     kana (シャキシャキ) split into a symmetric 3+3 stack via the
-     formatSpectrumKana helper's <br>. */
+     sit on a single line at the desktop tile width. `white-space:
+     nowrap` is the explicit guarantee — the browser's default
+     character-level wrapping was occasionally breaking 4-char kana
+     mid-word at narrow widths. The 6-char exception (シャキシャキ)
+     gets its symmetric 3+3 stack from an explicit <br> injected by
+     formatSpectrumKana; <br> bypasses nowrap so the stack still
+     renders. */
   .spectrum-tile-kana {
     font-family: var(--font-title);
     font-size: clamp(10px, 0.55vw + 4px, 12px);
     color: var(--ink);
     line-height: 1.15;
     text-align: center;
-    white-space: normal;
+    white-space: nowrap;
   }
   /* Brushstroke glyph below the kana — the visual signature of the
      texture. Replaces the old English stapleLabel; the kana names it,
@@ -5262,7 +5269,6 @@
   .textures-spotlight-image img {
     width: 100%; height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--ink) 22%, transparent));
   }
   .textures-spotlight-info {
     display: flex; flex-direction: column;
@@ -5392,7 +5398,6 @@
   .spotlight-example-image img {
     width: 100%; height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--ink) 16%, transparent));
   }
   .spotlight-example-name {
     font-family: var(--font-title);
@@ -5459,7 +5464,7 @@
   }
   .texture-pool-image image-slot::part(frame) { background: transparent; }
   .texture-pool-image image-slot::part(img) {
-    filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--ink) 18%, transparent));
+    /* No filter — images sit flat on paper per the editorial brief. */
   }
   .texture-pool-name {
     display: flex; flex-direction: column;
@@ -18134,7 +18139,7 @@ function texturesPageHTML(book) {
       <div class="textures-spectrum-row">
         <span class="spectrum-edge spectrum-edge-soft">
           <span class="spectrum-edge-ja">やわらかい</span>
-          <span class="spectrum-edge-en">SOFT</span>
+          <span class="spectrum-edge-kanji">柔らかい</span>
         </span>
         <div class="spectrum-mid">
           <ul class="textures-spectrum-tiles" role="list">
@@ -18165,7 +18170,7 @@ function texturesPageHTML(book) {
         </div>
         <span class="spectrum-edge spectrum-edge-hard">
           <span class="spectrum-edge-ja">かたい</span>
-          <span class="spectrum-edge-en">HARD</span>
+          <span class="spectrum-edge-kanji">硬い</span>
         </span>
       </div>
     </section>`;

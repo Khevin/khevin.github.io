@@ -766,6 +766,20 @@ window.VOCAB_CLASSES = [
               { id:'kimuchi', kanji:'', kana:'キムチ', romaji:'kimuchi', en:'kimchi',
                 flavors:['karai', 'suppai', 'shoppai'], textures:['シャキシャキ', 'ぷりぷり'], season:['通年 year-round'],
                 notes:'Korean-origin spicy fermented napa cabbage (はくさい), now a Japanese supermarket staple. Eaten as a side, in 豚キムチ炒め (pork-kimchi stir-fry), キムチ鍋 (hot pot), and キムチチャーハン (kimchi fried rice). 宗家 (Jongga) and 牛角 lead the supermarket shelves. See also: はくさい (the base vegetable).' },
+              // Sea vegetables — nori + wakame live in yasai (野菜)
+              // because Japanese cooking treats 海藻 (seaweed) as a
+              // vegetable category rather than a sea-animal one. Both
+              // get cross-referenced from the textures page (nori is
+              // the new staple for ぱりぱり; wakame is silky-soft).
+              { id:'nori', kanji:'海苔', kana:'のり', romaji:'nori', en:'dried seaweed sheet',
+                flavors:['oishii', 'shoppai'], textures:['ぱりぱり'], season:['通年 year-round'],
+                notes:'Pressed-and-dried sheets of 海苔 (laver). Wraps お握り (onigiri), garnishes ラーメン and 蕎麦, and gets cut into thin strips (きざみ海苔) over chirashi-zushi. 焼海苔 (yaki-nori, toasted) is the sushi-grade; 味付け海苔 (ajitsuke-nori, soy-and-mirin glazed) is the breakfast-rice topper. 有明 (Ariake Sea, Kyushu) is the prestige source. The texture defines ぱりぱり — a thin sheet that snaps into shards. Pair: お握り, ご飯, 蕎麦.' },
+              { id:'wakame', kanji:'若布', kana:'わかめ', romaji:'wakame', en:'wakame seaweed',
+                flavors:['oishii'], textures:['つるつる', 'やわらかい'], season:['春 spring'],
+                notes:'Soft green seaweed leaves, rehydrated from dried strips. The default in 味噌汁 (miso soup — wakame + tofu is the canonical pairing) and 酢の物 (sunomono, vinegared seaweed salad). 鳴門 (Naruto, Tokushima) and 三陸 (Sanriku, Iwate) are the prestige sources; wakame is harvested in early spring when the leaves are tender. Pair: 味噌汁, 豆腐, 酢の物.' },
+              { id:'wasabi', kanji:'山葵', kana:'わさび', romaji:'wasabi', en:'Japanese horseradish',
+                flavors:['karai'], textures:['なめらか'], season:['春 spring'],
+                notes:'Native Japanese root, grated fresh into a green paste that hits the sinuses rather than the tongue (the heat is volatile and fades fast). The dab between fish and rice at the sushi counter — 真葵 (hon-wasabi, fresh-grated) is the kaiseki grade; the tube paste in every supermarket is mostly horseradish dyed green. 静岡 (Shizuoka) and 長野 (Nagano) are the prestige sources, grown in cold mountain streams. Pair: 寿司, 刺身, そば.' },
             ]
           },
           // ── Niku (Meat) — Phase 3c. ──────────────────────────────
@@ -844,6 +858,14 @@ window.VOCAB_CLASSES = [
               { id:'kani', kanji:'蟹', kana:'かに', romaji:'kani', en:'crab',
                 flavors:['amai'], textures:['ぷりぷり'], season:['冬 winter'],
                 notes:'冬の王様 (king of winter). タラバガニ (king crab), 毛蟹 (kegani, hairy crab from Hokkaido), and ズワイガニ (zuwai, snow crab from the Japan Sea) are the three prestige cultivars.' },
+              // Tempura sits in sakana (魚介) rather than niku because
+              // shrimp is the hero ingredient and 海老の天ぷら is the
+              // canonical pair. Also the staple image for さくさく on
+              // the textures page — the shattering-batter motion is
+              // exactly what さくさく names.
+              { id:'tempura', kanji:'天ぷら', kana:'てんぷら', romaji:'tempura', en:'tempura',
+                flavors:['oishii', 'shoppai'], textures:['さくさく', 'カリカリ'], season:['通年 year-round'],
+                notes:'Battered-and-fried seafood + vegetables. Portuguese-origin technique (天 from têmporas, the abstinence days when 16th-century traders ate fish-only meals), thoroughly Japanized. 海老の天ぷら (shrimp) is the canonical hero; かき揚げ (kakiage, mixed-vegetable patties), なすの天ぷら (eggplant), さつまいもの天ぷら (sweet potato) round out the platter. Dipped in 天つゆ (dashi-shoyu-mirin) with grated daikon, or sprinkled with 抹茶塩 (matcha salt) at the prestige bars. 銀座 天ぷら近藤 and 山の上ホテル 天ぷらと和食 山の上 are kaiseki-grade tempura counters. Pair: 海老, 蕎麦, お米.' },
             ]
           },
           // ── Kokumotsu (Grains) — Phase 3e. ───────────────────────
@@ -916,6 +938,9 @@ window.VOCAB_CLASSES = [
               { id:'tounyuu', kanji:'豆乳', kana:'とうにゅう', romaji:'tounyuu', en:'soy milk',
                 flavors:['oishii'], textures:['クリーミー'], season:['通年 year-round'],
                 notes:'Not technically dairy, but shelved with milk. The base for tofu — also drunk as a beverage. キッコーマン (Kikkoman) makes flavored versions: 抹茶, 紅茶, ココア, バナナ, even コーンスープ. A coffee-shop alternative milk staple.' },
+              { id:'toofu', kanji:'豆腐', kana:'とうふ', romaji:'toofu', en:'tofu',
+                flavors:['oishii'], textures:['やわらかい', 'ぷるぷる', 'なめらか'], season:['通年 year-round'],
+                notes:'Pressed soy curd. 絹ごし (kinugoshi, "silken" — soft, custardy) for 冷奴 (hiyayakko, cold cube topped with ginger + scallion + bonito + shoyu in summer); 木綿 (momen, "cotton" — firmer) for 麻婆豆腐 (mapo dōfu), miso soup, and 湯豆腐 (yu-dōfu, the simmered Kyoto winter dish). Not dairy, but shelved next to it because it lives in the fresh-cold case. Pair: 豆乳 (tōnyū, the soy milk it\'s pressed from), 納豆 (nattō, the fermented soybean cousin).' },
               { id:'mayoneezu', kanji:'', kana:'マヨネーズ', romaji:'mayoneezu', en:'mayonnaise',
                 flavors:['oishii'], textures:['クリーミー'], season:['通年 year-round'],
                 notes:'Kewpie マヨネーズ (since 1925) is the national brand — egg-yolk-only (no whites), more umami than Western mayo, packaged in the iconic red-cap squeeze bottle. Squeezed onto okonomiyaki, takoyaki, fried chicken, sandwiches, and famously onto pizza.' },
@@ -1045,8 +1070,8 @@ window.VOCAB_CLASSES = [
           { id:'sakusaku', kana:'さくさく', kanji:'',  romaji:'sakusaku',
             en:'crisp / flaky',
             tint:'#F2E9D1', motionShape:'crisp-angular',
-            staple:'dish-tempura', stapleLabel:'crisp', softness:8,
-            foodPool:['furaido-poteto','poteto-chippusu','beekon','taiyaki','dorayaki','dish-tempura'],
+            staple:'tempura', stapleLabel:'crisp', softness:8,
+            foodPool:['tempura','furaido-poteto','poteto-chippusu','beekon','taiyaki','dorayaki'],
             feelsLike:['crisp','flaky','light','軽やか','うきうき'],
             moods:[
               { icon:'spark',  label:'軽快' },
@@ -1073,8 +1098,13 @@ window.VOCAB_CLASSES = [
           { id:'paripari',  kana:'ぱりぱり', kanji:'',  romaji:'paripari',
             en:'crunchy / thin-crisp',
             tint:'#E5E8E0', motionShape:'sharp-thin',
-            staple:'poteto-chippusu', stapleLabel:'snap-crisp', softness:7,
-            foodPool:['onigiri','beekon','taiyaki','poteto-chippusu','dish-tempura'],
+            // staple swapped to nori — ぱりぱり is the sound of dry
+            // sheet seaweed snapping (the konbini-onigiri fold-package
+            // exists specifically to keep the nori ぱりぱり until you
+            // bite it). Potato chips moved to the foodPool as a
+            // secondary example.
+            staple:'nori', stapleLabel:'crisp-sheet', softness:7,
+            foodPool:['nori','onigiri','poteto-chippusu','beekon','taiyaki'],
             feelsLike:['snap-crisp','brittle','thin','軽い','歯切れ良い'],
             moods:[
               { icon:'spark',  label:'おやつ時間' },
@@ -1165,7 +1195,7 @@ window.VOCAB_CLASSES = [
             en:'crunchy-hard, deep-fried',
             tint:'#E8D8B8', motionShape:'hard-crunch',
             staple:'furaido-chikin', stapleLabel:'crunchy', softness:10,
-            foodPool:['furaido-chikin','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','dish-tempura'],
+            foodPool:['furaido-chikin','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','tempura'],
             feelsLike:['crunchy','hard','満足感','ご褒美','充実感'],
             moods:[
               { icon:'gift',   label:'ご褒美' },
