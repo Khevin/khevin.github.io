@@ -6551,6 +6551,56 @@
     width: 18px; height: 18px;
   }
 
+  /* Walk buttons (前 / 次) — cycle through items in the same category,
+     wrap at either end. Sit beside the back button on the same row.
+     Each carries the neighbor's image thumbnail (so the user previews
+     where they're going) plus a brushy kanji ruby for the direction
+     word and a thin arrow on the outer edge. The image is small (28px)
+     so the whole pill stays a peer of the back button, not a competing
+     hero. */
+  .edibles-back.edibles-back-walk {
+    display: inline-flex; align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 8px;
+    font-family: var(--font-title);
+    font-size: 15px;
+    text-transform: none;
+    letter-spacing: 0;
+    min-height: 40px;
+    color: var(--ink);
+  }
+  .edibles-back-walk .walk-arrow {
+    font-family: var(--font-menu-en);
+    font-size: 16px;
+    color: var(--ink-3);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .edibles-back-walk .walk-img {
+    width: 28px; height: 28px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+  .edibles-back-walk .walk-label {
+    font-family: var(--font-title);
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .edibles-back-walk .walk-label rt {
+    font-size: 0.42em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .edibles-back-walk:hover .walk-arrow { color: var(--ink); }
+  /* Asymmetric padding: a touch more on the side the arrow lives on
+     so the chevron breathes against the rounded edge. */
+  .edibles-back-walk-next {
+    padding: 4px 8px 4px 12px;
+  }
+
   /* ── Back button — shared across items and detail views. ──
      A grid icon for items→categories ("back to all categories"),
      a left chevron for detail→items ("back to this category"). The
@@ -19028,6 +19078,17 @@ function ediblesDetailHTML(cat, item, allCategories) {
   const fromFlavorKana = fromFlavorId ? lookupFlavorKana(fromFlavorId) : null;
   const fromFlavorChip = fromFlavorId ? lookupFlavorChip(fromFlavorId) : null;
 
+  // Prev / Next walk buttons — cycle through items in the same
+  // category, wrapping at the end (last → first). Each carries the
+  // neighbor's image thumbnail so the user previews where they're
+  // walking. Only renders when there are >=2 items in the category;
+  // a single-item category has nowhere to walk.
+  const catItems = cat.items || [];
+  const itemIndex = catItems.findIndex(x => x.id === item.id);
+  const hasWalk = catItems.length >= 2 && itemIndex >= 0;
+  const prevItem = hasWalk ? catItems[(itemIndex - 1 + catItems.length) % catItems.length] : null;
+  const nextItem = hasWalk ? catItems[(itemIndex + 1) % catItems.length] : null;
+
   return `
     <div class="edibles-detail">
       <div class="edibles-detail-backs" style="grid-column:1/-1">
@@ -19040,6 +19101,36 @@ function ediblesDetailHTML(cat, item, allCategories) {
           </svg>
           <span>${escHTML(cat.kana || cat.kanji || cat.en)}</span>
         </button>
+        ${hasWalk ? `
+          <button class="edibles-back edibles-back-walk edibles-back-walk-prev"
+                  data-edibles-walk
+                  data-target-item="${escAttr(prevItem.id)}"
+                  type="button"
+                  aria-label="Previous: ${escAttr(prevItem.kana)} — ${escAttr(prevItem.en)}">
+            <span class="walk-arrow" aria-hidden="true">←</span>
+            <img class="walk-img"
+                 src="images/vocab/${escAttr(prevItem.id)}.webp"
+                 alt=""
+                 aria-hidden="true"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            <ruby class="walk-label">前<rt>まえ</rt></ruby>
+          </button>
+          <button class="edibles-back edibles-back-walk edibles-back-walk-next"
+                  data-edibles-walk
+                  data-target-item="${escAttr(nextItem.id)}"
+                  type="button"
+                  aria-label="Next: ${escAttr(nextItem.kana)} — ${escAttr(nextItem.en)}">
+            <ruby class="walk-label">次<rt>つぎ</rt></ruby>
+            <img class="walk-img"
+                 src="images/vocab/${escAttr(nextItem.id)}.webp"
+                 alt=""
+                 aria-hidden="true"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            <span class="walk-arrow" aria-hidden="true">→</span>
+          </button>
+        ` : ''}
         ${fromFlavorId && fromFlavorKana ? `
           <button class="edibles-back edibles-back-kana edibles-back-to-flavor"
                   data-edibles-back-to-flavor="${escAttr(fromFlavorId)}"
@@ -19285,12 +19376,30 @@ function wireEdiblesPageHandlers(book) {
       rerenderEdibles(book);
       return;
     }
-    // Item card click — open detail spread.
+    // Item card click — open detail spread. Scroll the page back to
+    // the top so the user lands on the hero, not at whatever scroll
+    // offset the items grid was sitting at when they clicked.
     const itemBtn = e.target.closest('[data-item-id]');
     if (itemBtn) {
       APP.edibleItem = itemBtn.dataset.itemId;
       lsSet('jp:edibleItem', APP.edibleItem);
       rerenderEdibles(book);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    // Walk button (前 / 次): cycle to the previous or next item in the
+    // same category, wrapping at either end. data-target-item carries
+    // the destination id (already wrap-computed by the renderer) so
+    // the handler stays trivially simple.
+    const walkBtn = e.target.closest('[data-edibles-walk]');
+    if (walkBtn) {
+      const targetId = walkBtn.dataset.targetItem;
+      if (targetId) {
+        APP.edibleItem = targetId;
+        lsSet('jp:edibleItem', targetId);
+        rerenderEdibles(book);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       return;
     }
     // Phase 4 cross-link: similar-item card on a detail spread.
