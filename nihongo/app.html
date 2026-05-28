@@ -16255,6 +16255,63 @@ function renderRandomCategoryRestaurant(categoryId) {
   return renderForcedRestaurant(pick.id);
 }
 
+// Route an "experience ___" button click through the existing
+// Experience book (book.id = 'experience') rather than rendering a
+// divergent scene flow into vocab-page-content directly. The forked
+// renderRandomCategoryRestaurant() / renderForcedRestaurant() paths
+// had their own subtle bugs (no sidebar update, no scene-state
+// hygiene, no back-navigation context). Funneling through the
+// Experience book gets us a single canonical entry point that
+// handles all of that for free.
+//
+// State changes per click:
+//   - APP.experience.restaurantId  → the target restaurant id
+//   - APP.experience.completed     → false (clear any "you finished
+//                                    the receipt" flag so a re-entry
+//                                    starts fresh at the cover)
+//   - APP.scenes[restaurantId]     → reset to fresh scene state, so
+//                                    the user always lands at step 1
+//                                    even if they were mid-flow there
+//                                    previously
+//   - APP.vocabBookId              → 'experience' (book switch)
+function launchExperienceWithRestaurant(restaurantId) {
+  if (!restaurantId) return;
+  if (typeof experienceState === 'function') {
+    const state = experienceState();
+    state.restaurantId = restaurantId;
+    state.completed = false;
+    if (typeof saveExperienceState === 'function') saveExperienceState();
+  }
+  // Reset that restaurant's scene flow so we always land on the cover.
+  // The flow's natural progression resumes from here as if it's a
+  // fresh visit — matches the convention the bottom-bar back button
+  // and sidebar-click reset already use elsewhere.
+  if (APP.scenes && APP.scenes[restaurantId] && typeof freshSceneState === 'function') {
+    APP.scenes[restaurantId] = freshSceneState();
+    if (typeof saveSceneState === 'function') saveSceneState();
+  }
+  // Switch into the Experience book + persist.
+  APP.vocabBookId = 'experience';
+  APP.vocabPageIdx = 0;
+  lsSet('jp:vocabBook', 'experience');
+  // Re-render: renderVocab dispatches to renderExperience() for the
+  // experience book; renderVocabSidebar / renderVocabBooksSidebar
+  // refresh the sidebar highlight so the active book card is correct.
+  renderVocab(document.getElementById('main-inner'));
+  if (typeof renderVocabSidebar      === 'function') renderVocabSidebar();
+  if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
+}
+
+// Pick the FIRST restaurant in a category (deterministic — not the
+// random roll). The user's request was to use the first option so
+// the experience launch is predictable rather than surprise-random,
+// which is what the previous renderRandomCategoryRestaurant did.
+function launchExperienceWithFirstInCategory(categoryId) {
+  const all = (window.EATING_OUT_RESTAURANTS || []).filter(r => r.category === categoryId);
+  if (!all.length) return;
+  launchExperienceWithRestaurant(all[0].id);
+}
+
 function wireFastFoodHubHandlers(book) {
   const root = document.getElementById('vocab-page-content');
   if (!root) return;
@@ -16265,14 +16322,18 @@ function wireFastFoodHubHandlers(book) {
       renderVocab(document.getElementById('main-inner'));
     });
   });
+  // Specific-restaurant launch (Fast Food chains: McDonald's / KFC
+  // each have their own page → their own restaurantId).
   root.querySelectorAll('[data-ff-experience]').forEach(btn => {
     btn.addEventListener('click', () => {
-      renderForcedRestaurant(btn.dataset.ffExperience);
+      launchExperienceWithRestaurant(btn.dataset.ffExperience);
     });
   });
+  // Category-launch (Sushi / Omakase / Izakaya / Ramen / Konbini /
+  // Yatai books) — picks the first restaurant in the category.
   root.querySelectorAll('[data-ff-random]').forEach(btn => {
     btn.addEventListener('click', () => {
-      renderRandomCategoryRestaurant(btn.dataset.ffRandom);
+      launchExperienceWithFirstInCategory(btn.dataset.ffRandom);
     });
   });
 }
