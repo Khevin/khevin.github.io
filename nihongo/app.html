@@ -5398,11 +5398,17 @@
     .textures-spotlight-audio { transition: none; }
     .textures-spotlight-audio:hover { transform: none; }
   }
+  /* Spotlight description — now carries the simple Japanese learning
+     sentences (see texture.notesJa in data.js). Japanese text wants a
+     touch more vertical breathing room than English in the same body
+     font, so line-height bumps from 1.65 → 1.85. Font-size also
+     bumps slightly (14-17px vs 13-15px) so the kana/kanji read
+     comfortably at didactic-text size rather than caption size. */
   .spotlight-description {
     font-family: var(--font-body);
-    font-size: clamp(13px, 0.7vw + 6px, 15px);
+    font-size: clamp(14px, 0.8vw + 6px, 17px);
     color: var(--ink-2);
-    line-height: 1.65;
+    line-height: 1.85;
     margin: 4px 0 0;
   }
 
@@ -18279,7 +18285,7 @@ function renderTextureSpotlight(texture) {
                   type="button">
             ${textureSpeakerSVG()}
           </button>
-          <p class="spotlight-description">${escHTML(texture.notes || '')}</p>
+          <p class="spotlight-description" lang="ja">${escHTML(texture.notesJa || texture.notes || '')}</p>
         </div>
       </div>
       ${examplesRowHTML}
