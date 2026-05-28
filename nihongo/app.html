@@ -5234,12 +5234,50 @@
   }
 
   /* ── 3. Spotlight (selected texture detail card) ─────────────── */
+  /* Background stack, top → bottom:
+       1. A translucent paper veil (top layer) — masks the pattern so
+          kana + body copy read cleanly. 78% opacity is the legibility
+          sweet spot: enough opaque paper to anchor text contrast,
+          enough transparency that the pattern reads through as a
+          living surface rather than a flat fill.
+       2. The per-texture pattern (--spotlight-pattern) tiled across
+          the card. Each texture ships its own watercolor pattern
+          (mochi rounds for もちもち, zigzag crumbs for カリカリ, soft
+          stringy strands for ねばねば, etc.) so the card feels like
+          it lives in the world of that texture, not in a neutral box.
+       3. The tinted paper base — the original whisper of color that
+          identifies the texture, now showing through the pattern's
+          transparent areas.
+     The pattern image's own watercolor is muted by design; with the
+     veil on top, the result is a barely-perceptible textural backdrop
+     that adds immersion without competing for attention. */
   .textures-spotlight {
     margin: 0 0 clamp(28px, 3.2vw, 48px);
-    background: color-mix(in srgb, var(--tint, var(--paper-2)) 78%, var(--paper-2) 22%);
+    background:
+      linear-gradient(
+        color-mix(in srgb, var(--paper-2) 78%, transparent),
+        color-mix(in srgb, var(--paper-2) 78%, transparent)
+      ),
+      var(--spotlight-pattern, none),
+      color-mix(in srgb, var(--tint, var(--paper-2)) 78%, var(--paper-2) 22%);
+    background-repeat: no-repeat, repeat, no-repeat;
+    background-size: cover, 240px auto, cover;
     border-radius: 14px;
     padding: clamp(20px, 2.4vw, 36px);
     border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  /* Mobile: shrink the tile so the pattern doesn't dwarf the card. */
+  @media (max-width: 760px) {
+    .textures-spotlight { background-size: cover, 180px auto, cover; }
+  }
+  /* Respect prefers-reduced-motion isn't relevant here (static
+     pattern), but for high-contrast modes drop the pattern entirely
+     so the veil + tint hold the card alone. */
+  @media (prefers-contrast: more) {
+    .textures-spotlight {
+      background:
+        color-mix(in srgb, var(--paper-2) 92%, var(--tint, var(--paper-2)) 8%);
+    }
   }
   .textures-spotlight .textures-section-head {
     border-bottom: none;
@@ -18194,9 +18232,17 @@ function renderTextureSpotlight(texture) {
     </div>
   ` : '';
 
+  // Each texture ships a tileable watercolor pattern as a card
+  // background — mochi rounds for もちもち, zigzag crumbs for カリカリ,
+  // etc. The renderer hands the file URL through a CSS variable so
+  // the per-texture pattern swaps in alongside the tint. CSS layers
+  // a translucent paper veil over the pattern so the kana + body
+  // copy stay readable.
+  const patternUrl = `images/bg/textures/${texture.id}.webp`;
+
   return `
     <section class="textures-spotlight" aria-label="Spotlight on ${escAttr(texture.kana)}"
-             style="--tint:${escAttr(texture.tint)};">
+             style="--tint:${escAttr(texture.tint)}; --spotlight-pattern:url('${escAttr(patternUrl)}');">
       <div class="textures-spotlight-body">
         <div class="textures-spotlight-imagecol">
           <div class="textures-spotlight-image">
