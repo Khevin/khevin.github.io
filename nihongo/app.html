@@ -18812,6 +18812,9 @@ function ediblesDetailHTML(cat, item, allCategories) {
           ${item.kanji ? `<p class="edibles-detail-kana">${escHTML(item.kana)}</p>` : ''}
           <p class="edibles-detail-romaji">${escHTML(item.romaji || '')}</p>
         </div>
+        ${item.notes ? `
+          <p class="edibles-detail-notes">${escHTML(item.notes)}</p>
+        ` : ''}
         ${(flavorBadges || textureBadges || seasonChips) ? `
           <div class="edibles-detail-badges">
             ${flavorBadges ? `
@@ -18833,9 +18836,6 @@ function ediblesDetailHTML(cat, item, allCategories) {
               </div>
             ` : ''}
           </div>
-        ` : ''}
-        ${item.notes ? `
-          <p class="edibles-detail-notes">${escHTML(item.notes)}</p>
         ` : ''}
         ${(() => {
           // Reverse-browse row: items sharing a flavor or texture with
