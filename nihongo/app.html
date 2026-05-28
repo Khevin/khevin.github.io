@@ -6760,6 +6760,135 @@
     100% { opacity: 1; transform: translateX(0)    scale(1); }
   }
 
+  /* ── Reverse choreography: immersion → bento (exitFlavorImmersion) */
+  /* Phase A: is-leaving-immersion — the immersion content unwinds.
+     Rail thumbs slide right + fade out with REVERSE stagger (the
+     last-rendered thumb leaves first via 9 - --enter-i × 30ms);
+     hero + identity collapse, food cards drop + fade, wrap fades
+     toward the underlying paper. Each shorthand carries `both` to
+     hold the FROM keyframe state through any inherent setup window. */
+  .flavors-frame.is-leaving-immersion .flavor-rail-thumb {
+    animation: flavors-rail-thumb-out 280ms cubic-bezier(0.55, 0, 0.7, 0.2) both;
+    animation-delay: calc((9 - var(--enter-i, 0)) * 25ms);
+  }
+  @keyframes flavors-rail-thumb-out {
+    0%   { opacity: 1; transform: translateX(0)    scale(1); }
+    100% { opacity: 0; transform: translateX(40px) scale(0.85); }
+  }
+  .flavors-frame.is-leaving-immersion .flavor-rail-back,
+  .flavors-frame.is-leaving-immersion .flavor-rail-keys {
+    animation: flavors-fade-down 220ms cubic-bezier(0.55, 0, 0.7, 0.2) both;
+    animation-delay: 50ms;
+  }
+  .flavors-frame.is-leaving-immersion .flavor-related-card {
+    animation: flavors-card-out 240ms cubic-bezier(0.55, 0, 0.7, 0.2) both;
+    /* Reverse stagger: tail cards leave first. Capped at index 14
+       so a 30-item flavor doesn't push the wave past phase B. */
+    animation-delay: calc(min(var(--enter-i, 0), 14) * 18ms);
+  }
+  @keyframes flavors-card-out {
+    0%   { opacity: 1; transform: translateY(0)    scale(1); }
+    100% { opacity: 0; transform: translateY(16px) scale(0.96); }
+  }
+  .flavors-frame.is-leaving-immersion .flavor-related-notes {
+    animation: flavors-fade-down 240ms cubic-bezier(0.55, 0, 0.7, 0.2) 100ms both;
+  }
+  .flavors-frame.is-leaving-immersion .flavor-immersion-audio {
+    animation: flavors-audio-out 220ms cubic-bezier(0.55, 0, 0.7, 0.2) 160ms both;
+  }
+  @keyframes flavors-audio-out {
+    0%   { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.6); }
+  }
+  .flavors-frame.is-leaving-immersion .flavor-immersion-food {
+    animation: flavors-fade-down 240ms cubic-bezier(0.55, 0, 0.7, 0.2) 180ms both;
+  }
+  .flavors-frame.is-leaving-immersion .flavor-immersion-kana {
+    animation: flavors-kana-out 280ms cubic-bezier(0.55, 0, 0.7, 0.2) 200ms both;
+  }
+  @keyframes flavors-kana-out {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(18px); }
+  }
+  .flavors-frame.is-leaving-immersion .flavor-immersion-image {
+    animation: flavors-hero-out 280ms cubic-bezier(0.55, 0, 0.7, 0.2) 220ms both;
+  }
+  @keyframes flavors-hero-out {
+    0%   { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.92); }
+  }
+  .flavors-frame.is-leaving-immersion .flavors-immersion-wrap {
+    animation: flavors-flood-out 340ms cubic-bezier(0.55, 0, 0.7, 0.2) 160ms both;
+  }
+  @keyframes flavors-flood-out {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(6px); }
+  }
+  @keyframes flavors-fade-down {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(10px); }
+  }
+
+  /* Phase B: is-entering-bento — bento cards cascade in (reverse of
+     the bento-card-exit they did on the way to immersion). Header
+     rises gently above. */
+  .flavors-frame.is-entering-bento .flavors-bento-head {
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1) 0ms both;
+  }
+  .flavors-frame.is-entering-bento .flavor-bento-card {
+    animation: flavors-bento-card-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(80ms + var(--exit-i, 0) * 28ms);
+  }
+  @keyframes flavors-bento-card-in {
+    0%   { opacity: 0; transform: scale(0.92) translateY(16px); }
+    100% { opacity: 1; transform: scale(1)    translateY(0); }
+  }
+
+  /* ── Within-immersion swap: switchFlavor (rail click, arrow keys) */
+  /* Phase A: is-switching-out — body content exits (no rail). */
+  .flavors-frame.is-switching-out .flavor-related-card {
+    animation: flavors-card-out 220ms cubic-bezier(0.55, 0, 0.7, 0.2) both;
+    animation-delay: calc(min(var(--enter-i, 0), 14) * 14ms);
+  }
+  .flavors-frame.is-switching-out .flavor-related-notes {
+    animation: flavors-fade-down 200ms cubic-bezier(0.55, 0, 0.7, 0.2) 40ms both;
+  }
+  .flavors-frame.is-switching-out .flavor-immersion-audio {
+    animation: flavors-audio-out 200ms cubic-bezier(0.55, 0, 0.7, 0.2) 80ms both;
+  }
+  .flavors-frame.is-switching-out .flavor-immersion-food {
+    animation: flavors-fade-down 200ms cubic-bezier(0.55, 0, 0.7, 0.2) 90ms both;
+  }
+  .flavors-frame.is-switching-out .flavor-immersion-kana {
+    animation: flavors-kana-out 220ms cubic-bezier(0.55, 0, 0.7, 0.2) 110ms both;
+  }
+  .flavors-frame.is-switching-out .flavor-immersion-image {
+    animation: flavors-hero-out 220ms cubic-bezier(0.55, 0, 0.7, 0.2) 130ms both;
+  }
+
+  /* Phase B: is-switching-in — body content re-enters. Rail does
+     NOT animate (it just updates its is-active state on the new
+     render). Shorter cascade than the full bento→immersion entry. */
+  .flavors-frame.is-switching-in .flavor-immersion-image {
+    animation: flavors-hero-in 320ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both;
+  }
+  .flavors-frame.is-switching-in .flavor-immersion-kana {
+    animation: flavors-kana-in 300ms cubic-bezier(0.34, 1.4, 0.64, 1) 160ms both;
+  }
+  .flavors-frame.is-switching-in .flavor-immersion-food {
+    animation: flavors-soft-in 260ms cubic-bezier(0.16, 1, 0.3, 1) 240ms both;
+  }
+  .flavors-frame.is-switching-in .flavor-immersion-audio {
+    animation: flavors-audio-in 260ms cubic-bezier(0.34, 1.4, 0.64, 1) 300ms both;
+  }
+  .flavors-frame.is-switching-in .flavor-related-notes {
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1) 360ms both;
+  }
+  .flavors-frame.is-switching-in .flavor-related-card {
+    animation: flavors-card-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(420ms + min(var(--enter-i, 0), 14) * 30ms);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .flavors-frame.is-fading-out > .flavors-bento-wrap,
     .flavors-frame.is-fading-out > .flavors-immersion-wrap,
@@ -6768,11 +6897,10 @@
       transition: none;
       opacity: 1;
     }
-    /* All choreography keyframes are zeroed so users on the
-       reduced-motion preference get an instant swap with no
-       movement. The JS skips the .is-entering tagging entirely on
-       reduced-motion (see enterFlavorImmersion), but this is a
-       belt-and-suspenders guard in case anything sneaks through. */
+    /* All choreography keyframes are zeroed so reduced-motion users
+       get instant swaps. JS skips the class-add tagging entirely
+       (see enterFlavorImmersion / exitFlavorImmersion / switchFlavor),
+       this is the belt-and-suspenders guard. */
     .flavors-frame.is-leaving-bento .flavor-bento-card,
     .flavors-frame.is-entering .flavors-immersion-wrap,
     .flavors-frame.is-entering .flavor-immersion-image,
@@ -6783,12 +6911,121 @@
     .flavors-frame.is-entering .flavor-related-card,
     .flavors-frame.is-entering .flavor-rail-back,
     .flavors-frame.is-entering .flavor-rail-keys,
-    .flavors-frame.is-entering .flavor-rail-thumb {
+    .flavors-frame.is-entering .flavor-rail-thumb,
+    .flavors-frame.is-leaving-immersion .flavor-rail-thumb,
+    .flavors-frame.is-leaving-immersion .flavor-rail-back,
+    .flavors-frame.is-leaving-immersion .flavor-rail-keys,
+    .flavors-frame.is-leaving-immersion .flavor-related-card,
+    .flavors-frame.is-leaving-immersion .flavor-related-notes,
+    .flavors-frame.is-leaving-immersion .flavor-immersion-audio,
+    .flavors-frame.is-leaving-immersion .flavor-immersion-food,
+    .flavors-frame.is-leaving-immersion .flavor-immersion-kana,
+    .flavors-frame.is-leaving-immersion .flavor-immersion-image,
+    .flavors-frame.is-leaving-immersion .flavors-immersion-wrap,
+    .flavors-frame.is-entering-bento .flavors-bento-head,
+    .flavors-frame.is-entering-bento .flavor-bento-card,
+    .flavors-frame.is-switching-out .flavor-related-card,
+    .flavors-frame.is-switching-out .flavor-related-notes,
+    .flavors-frame.is-switching-out .flavor-immersion-audio,
+    .flavors-frame.is-switching-out .flavor-immersion-food,
+    .flavors-frame.is-switching-out .flavor-immersion-kana,
+    .flavors-frame.is-switching-out .flavor-immersion-image,
+    .flavors-frame.is-switching-in .flavor-immersion-image,
+    .flavors-frame.is-switching-in .flavor-immersion-kana,
+    .flavors-frame.is-switching-in .flavor-immersion-food,
+    .flavors-frame.is-switching-in .flavor-immersion-audio,
+    .flavors-frame.is-switching-in .flavor-related-notes,
+    .flavors-frame.is-switching-in .flavor-related-card {
       animation: none;
     }
   }
 
   /* ── End Flavors page ────────────────────────────────────────── */
+
+  /* ─────────────────────────────────────────────────────────────────
+     Edibles choreography (mirrors the flavors bento↔immersion idea
+     but scaled down — no flood-color, no kana glyph fly-in, just a
+     stagger swap between two grids). Two pairs:
+       categories → items  (.is-leaving-categories / .is-entering-items)
+       items → categories  (.is-leaving-items / .is-entering-categories)
+     Every animation shorthand keeps `both` as the last token so the
+     element starts at its keyframe `from` state during animation-delay.
+     Forgetting that token = elements visible behind the animation.
+     ───────────────────────────────────────────────────────────────── */
+
+  /* Phase A: leaving categories — tiles fall away with a small lift+fade,
+     forward stagger so the first tile leaves first. */
+  .edibles-frame.is-leaving-categories .edibles-category-tile {
+    animation: edibles-tile-out 280ms cubic-bezier(0.7, 0, 0.84, 0) both;
+    animation-delay: calc(var(--enter-i, 0) * 22ms);
+  }
+  .edibles-frame.is-leaving-categories .edibles-head {
+    animation: edibles-soft-out 240ms cubic-bezier(0.7, 0, 0.84, 0) both;
+  }
+  /* Phase B: entering items — cards rise and fade in with a forward
+     stagger. Capped at 14 so long item lists don't slow the page. */
+  .edibles-frame.is-entering-items .edibles-item-card {
+    animation: edibles-card-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(min(var(--enter-i, 0), 14) * 28ms);
+  }
+  .edibles-frame.is-entering-items .edibles-back {
+    animation: edibles-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* Phase A: leaving items — reverse stagger so the last item leaves
+     first (mirrors the entry stagger backwards). */
+  .edibles-frame.is-leaving-items .edibles-item-card {
+    animation: edibles-card-out 240ms cubic-bezier(0.7, 0, 0.84, 0) both;
+    animation-delay: calc((14 - min(var(--enter-i, 0), 14)) * 18ms);
+  }
+  .edibles-frame.is-leaving-items .edibles-back {
+    animation: edibles-soft-out 220ms cubic-bezier(0.7, 0, 0.84, 0) both;
+  }
+  /* Phase B: entering categories — tiles cascade back in. */
+  .edibles-frame.is-entering-categories .edibles-category-tile {
+    animation: edibles-tile-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--enter-i, 0) * 28ms);
+  }
+  .edibles-frame.is-entering-categories .edibles-head {
+    animation: edibles-soft-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes edibles-tile-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(-14px) scale(0.965); }
+  }
+  @keyframes edibles-tile-in {
+    from { opacity: 0; transform: translateY(18px) scale(0.94); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes edibles-card-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(20px) scale(0.96); }
+  }
+  @keyframes edibles-card-in {
+    from { opacity: 0; transform: translateY(22px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes edibles-soft-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes edibles-soft-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-frame.is-leaving-categories .edibles-category-tile,
+    .edibles-frame.is-leaving-categories .edibles-head,
+    .edibles-frame.is-entering-items .edibles-item-card,
+    .edibles-frame.is-entering-items .edibles-back,
+    .edibles-frame.is-leaving-items .edibles-item-card,
+    .edibles-frame.is-leaving-items .edibles-back,
+    .edibles-frame.is-entering-categories .edibles-category-tile,
+    .edibles-frame.is-entering-categories .edibles-head {
+      animation: none;
+    }
+  }
 
   /* ─────────────────────────────────────────────────────────────────
      Edibles database (Phase 3 of the Flavors & Textures sub-system).
@@ -19634,21 +19871,66 @@ function enterFlavorImmersion(book, flavorId) {
 
 function exitFlavorImmersion(book) {
   if (APP.flavorId == null) return;
-  fadeFlavorsThen(() => {
+  const frame = document.querySelector('.flavors-frame');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!frame || reduced) {
     APP.flavorId = null;
     lsSet('jp:flavorId', null);
     rerenderFlavorsPage(book);
-  });
+    return;
+  }
+  // Two-phase reverse choreography:
+  //   1. is-leaving-immersion (~500ms): rail thumbs slide out to the
+  //      right (reverse stagger so the last-rendered thumb leaves
+  //      first), food cards drop + fade, identity collapses, hero
+  //      scales out, wrap fades to paper.
+  //   2. swap → is-entering-bento (~500ms): bento cards cascade in
+  //      with stagger (the reverse of the bento-card-exit they did
+  //      on the way out).
+  frame.classList.add('is-leaving-immersion');
+  setTimeout(() => {
+    APP.flavorId = null;
+    lsSet('jp:flavorId', null);
+    rerenderFlavorsPage(book);
+    const next = document.querySelector('.flavors-frame');
+    if (next) {
+      void next.offsetWidth;
+      next.classList.add('is-entering-bento');
+      setTimeout(() => next.classList.remove('is-entering-bento'), 1000);
+    }
+  }, 500);
 }
 
 function switchFlavor(book, flavorId) {
   if (APP.flavorId === flavorId) return;
-  // No full fade for within-immersion swaps — the color transition
-  // alone reads as state change. Faster than a full opacity fade and
-  // matches the immersive feel of walking through the flavors.
-  APP.flavorId = flavorId;
-  lsSet('jp:flavorId', flavorId);
-  rerenderFlavorsPage(book);
+  const frame = document.querySelector('.flavors-frame');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!frame || reduced) {
+    APP.flavorId = flavorId;
+    lsSet('jp:flavorId', flavorId);
+    rerenderFlavorsPage(book);
+    return;
+  }
+  // Two-phase within-immersion swap. Lighter than the full bento→
+  // immersion entry — the rail stays put (it just updates its
+  // is-active state on the new render), only the immersion body
+  // content cycles out and back in.
+  //   1. is-switching-out (~280ms): hero, kana, identity, notes,
+  //      food cards exit (no rail).
+  //   2. swap → is-switching-in (~700ms): same elements re-enter
+  //      with a shorter cascade than the full entry.
+  frame.classList.add('is-switching-out');
+  setTimeout(() => {
+    APP.flavorId = flavorId;
+    lsSet('jp:flavorId', flavorId);
+    rerenderFlavorsPage(book);
+    const next = document.querySelector('.flavors-frame');
+    if (next) {
+      void next.offsetWidth;
+      next.classList.add('is-switching-in');
+      setTimeout(() => next.classList.remove('is-switching-in'), 900);
+    }
+  }, 280);
 }
 
 function walkFlavor(book, dir) {
@@ -19783,7 +20065,8 @@ const EDIBLES_CATEGORY_STACK_OVERRIDES = {
 
 // View 1 — category browse.
 function ediblesCategoriesHTML(categories) {
-  const tilesHTML = categories.map(c => {
+  const tilesHTML = categories.map((c, _i) => {
+    const tileIndex = _i;
     const isEmpty = !c.items || c.items.length === 0;
     const furigana = c.kana && c.kanji ? c.kana : '';
     // Pick three representative items for the stack. Curated override
@@ -19821,6 +20104,7 @@ function ediblesCategoriesHTML(categories) {
     return `
       <button class="edibles-category-tile ${isEmpty ? 'is-empty' : ''}"
               data-category-id="${escAttr(c.id)}"
+              style="--enter-i:${tileIndex};"
               type="button"
               ${isEmpty ? 'disabled aria-disabled="true"' : ''}
               aria-label="${escAttr(c.en)}">
@@ -19878,11 +20162,13 @@ function ediblesItemsHTML(cat) {
       </div>
     `;
   }
-  const cardsHTML = items.map(it => {
+  const cardsHTML = items.map((it, _i) => {
+    const cardIndex = _i;
     return `
       <button class="edibles-item-card"
               data-item-id="${escAttr(it.id)}"
               type="button"
+              style="--enter-i:${cardIndex};"
               aria-label="${escAttr(it.kana)} — ${escAttr(it.en)}">
         <div class="edibles-item-image">
           <image-slot image-key="vocab/${escAttr(it.id)}" readonly></image-slot>
@@ -20320,6 +20606,31 @@ function wireEdiblesPageHandlers(book) {
     const backBtn = e.target.closest('[data-edibles-back]');
     if (backBtn) {
       const target = backBtn.dataset.ediblesBack;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const ediFrame = document.querySelector('.edibles-frame');
+
+      // items → categories transition gets the reverse choreography:
+      // existing item cards stagger out, then categories stagger in.
+      if (target === 'categories' && ediFrame && !reduced) {
+        ediFrame.classList.add('is-leaving-items');
+        setTimeout(() => {
+          APP.edibleCategory = null;
+          APP.edibleItem = null;
+          lsSet('jp:edibleCategory', null);
+          lsSet('jp:edibleItem', null);
+          APP.edibleFromFlavor = null;
+          lsSet('jp:edibleFromFlavor', null);
+          rerenderEdibles(book);
+          const next = document.querySelector('.edibles-frame');
+          if (next) {
+            void next.offsetWidth;
+            next.classList.add('is-entering-categories');
+            setTimeout(() => next.classList.remove('is-entering-categories'), 900);
+          }
+        }, 360);
+        return;
+      }
+
       if (target === 'categories') {
         APP.edibleCategory = null;
         APP.edibleItem = null;
@@ -20356,13 +20667,35 @@ function wireEdiblesPageHandlers(book) {
     }
     // Category tile click — enter that category's item-grid. Empty
     // tiles are disabled in the HTML, so no need to filter here.
+    // Wraps the swap in a stagger choreography: categories leave,
+    // then items slide in. Mirrors the flavors bento→immersion feel.
     const catTile = e.target.closest('[data-category-id]');
     if (catTile && !catTile.disabled) {
-      APP.edibleCategory = catTile.dataset.categoryId;
-      APP.edibleItem = null;
-      lsSet('jp:edibleCategory', APP.edibleCategory);
-      lsSet('jp:edibleItem', null);
-      rerenderEdibles(book);
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const ediFrame = document.querySelector('.edibles-frame');
+      const nextCatId = catTile.dataset.categoryId;
+      if (!ediFrame || reduced) {
+        APP.edibleCategory = nextCatId;
+        APP.edibleItem = null;
+        lsSet('jp:edibleCategory', APP.edibleCategory);
+        lsSet('jp:edibleItem', null);
+        rerenderEdibles(book);
+        return;
+      }
+      ediFrame.classList.add('is-leaving-categories');
+      setTimeout(() => {
+        APP.edibleCategory = nextCatId;
+        APP.edibleItem = null;
+        lsSet('jp:edibleCategory', APP.edibleCategory);
+        lsSet('jp:edibleItem', null);
+        rerenderEdibles(book);
+        const next = document.querySelector('.edibles-frame');
+        if (next) {
+          void next.offsetWidth;
+          next.classList.add('is-entering-items');
+          setTimeout(() => next.classList.remove('is-entering-items'), 900);
+        }
+      }, 360);
       return;
     }
     // Item card click — open detail spread. Scroll the page back to
