@@ -780,6 +780,13 @@ window.VOCAB_CLASSES = [
               { id:'wasabi', kanji:'山葵', kana:'わさび', romaji:'wasabi', en:'Japanese horseradish',
                 flavors:['karai'], textures:['なめらか'], season:['春 spring'],
                 notes:'Native Japanese root, grated fresh into a green paste that hits the sinuses rather than the tongue (the heat is volatile and fades fast). The dab between fish and rice at the sushi counter — 真葵 (hon-wasabi, fresh-grated) is the kaiseki grade; the tube paste in every supermarket is mostly horseradish dyed green. 静岡 (Shizuoka) and 長野 (Nagano) are the prestige sources, grown in cold mountain streams. Pair: 寿司, 刺身, そば.' },
+              // Yasai-tempura — the vegetable half of the tempura
+              // platter, paired with ebi-tempura under sakana. Lives
+              // here because the hero is the vegetable itself; ebi-
+              // tempura over there is hero'd on the shrimp.
+              { id:'yasai-tempura', kanji:'野菜天ぷら', kana:'やさいてんぷら', romaji:'yasai-tempura', en:'vegetable tempura',
+                flavors:['oishii'], textures:['さくさく', 'カリカリ'], season:['通年 year-round'],
+                notes:'The vegetable half of the tempura tray. なすの天ぷら (eggplant — molten-soft inside, crisp outside), さつまいもの天ぷら (sweet potato — caramel-sweet), 椎茸の天ぷら (shiitake — concentrated umami), かぼちゃの天ぷら (kabocha pumpkin — winter-solstice classic), shishito, lotus root, asparagus. かき揚げ (kakiage) is the mixed-vegetable fritter variant, often featuring 玉ねぎ + 人参 + 三つ葉. Lighter than ebi-tempura, often what the kaiseki tempura counter opens with before the seafood. Pair: 海老天ぷら, 茄子, さつまいも, 椎茸.' },
             ]
           },
           // ── Niku (Meat) — Phase 3c. ──────────────────────────────
@@ -858,14 +865,15 @@ window.VOCAB_CLASSES = [
               { id:'kani', kanji:'蟹', kana:'かに', romaji:'kani', en:'crab',
                 flavors:['amai'], textures:['ぷりぷり'], season:['冬 winter'],
                 notes:'冬の王様 (king of winter). タラバガニ (king crab), 毛蟹 (kegani, hairy crab from Hokkaido), and ズワイガニ (zuwai, snow crab from the Japan Sea) are the three prestige cultivars.' },
-              // Tempura sits in sakana (魚介) rather than niku because
-              // shrimp is the hero ingredient and 海老の天ぷら is the
-              // canonical pair. Also the staple image for さくさく on
-              // the textures page — the shattering-batter motion is
-              // exactly what さくさく names.
-              { id:'tempura', kanji:'天ぷら', kana:'てんぷら', romaji:'tempura', en:'tempura',
+              // Ebi-tempura — shrimp tempura, the canonical seafood-
+              // hero version. Lives in sakana because 海老 is the
+              // hero. Also the staple image for さくさく on the
+              // textures page (the shattering-batter motion is what
+              // さくさく names). Paired with the yasai-tempura entry
+              // under yasai for the vegetable version.
+              { id:'ebi-tempura', kanji:'海老天ぷら', kana:'えびてんぷら', romaji:'ebi-tempura', en:'shrimp tempura',
                 flavors:['oishii', 'shoppai'], textures:['さくさく', 'カリカリ'], season:['通年 year-round'],
-                notes:'Battered-and-fried seafood + vegetables. Portuguese-origin technique (天 from têmporas, the abstinence days when 16th-century traders ate fish-only meals), thoroughly Japanized. 海老の天ぷら (shrimp) is the canonical hero; かき揚げ (kakiage, mixed-vegetable patties), なすの天ぷら (eggplant), さつまいもの天ぷら (sweet potato) round out the platter. Dipped in 天つゆ (dashi-shoyu-mirin) with grated daikon, or sprinkled with 抹茶塩 (matcha salt) at the prestige bars. 銀座 天ぷら近藤 and 山の上ホテル 天ぷらと和食 山の上 are kaiseki-grade tempura counters. Pair: 海老, 蕎麦, お米.' },
+                notes:'Battered-and-fried shrimp — the seafood-hero half of the tempura platter. Portuguese-origin technique (天 from têmporas, the 16th-century trader\'s fish-only abstinence days), thoroughly Japanized. 車海老 (kuruma-ebi, prawn) is the prestige cultivar — its sweetness survives the high oil temperature better than ama-ebi or botan-ebi. Dipped in 天つゆ (dashi-shoyu-mirin) with grated daikon, or sprinkled with 抹茶塩 (matcha salt) at the prestige bars. 銀座 天ぷら近藤 and 山の上ホテル 天ぷらと和食 山の上 are the kaiseki-grade tempura counters. Pair: 海老, 蕎麦, お米, 野菜天ぷら.' },
             ]
           },
           // ── Kokumotsu (Grains) — Phase 3e. ───────────────────────
@@ -1070,8 +1078,8 @@ window.VOCAB_CLASSES = [
           { id:'sakusaku', kana:'さくさく', kanji:'',  romaji:'sakusaku',
             en:'crisp / flaky',
             tint:'#F2E9D1', motionShape:'crisp-angular',
-            staple:'tempura', stapleLabel:'crisp', softness:8,
-            foodPool:['tempura','furaido-poteto','poteto-chippusu','beekon','taiyaki','dorayaki'],
+            staple:'ebi-tempura', stapleLabel:'crisp', softness:8,
+            foodPool:['ebi-tempura','yasai-tempura','furaido-poteto','poteto-chippusu','beekon','taiyaki'],
             feelsLike:['crisp','flaky','light','軽やか','うきうき'],
             moods:[
               { icon:'spark',  label:'軽快' },
@@ -1199,7 +1207,7 @@ window.VOCAB_CLASSES = [
             en:'crunchy-hard, deep-fried',
             tint:'#E8D8B8', motionShape:'hard-crunch',
             staple:'furaido-chikin', stapleLabel:'crunchy', softness:10,
-            foodPool:['furaido-chikin','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','tempura'],
+            foodPool:['furaido-chikin','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','ebi-tempura'],
             feelsLike:['crunchy','hard','満足感','ご褒美','充実感'],
             moods:[
               { icon:'gift',   label:'ご褒美' },

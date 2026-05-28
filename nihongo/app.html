@@ -6399,6 +6399,16 @@
     font-size: clamp(2rem, 4vw, 3.2rem);
     color: var(--ink); margin: 0; line-height: 1;
   }
+  /* Furigana on the edibles title — small kana above the kanji. The
+     0.32em ratio matches the textures-page-title rt pattern so both
+     editorial titles read the same way (eye lands on the kanji,
+     reading sits above as a hint). */
+  .edibles-title rt {
+    font-size: 0.32em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
   .edibles-sub {
     font-family: var(--font-menu-en); font-style: italic;
     font-size: 14px; color: var(--ink-2);
@@ -6478,6 +6488,37 @@
     transform: translateY(-1px);
   }
   .edibles-back svg { width: 16px; height: 16px; }
+  /* New "← 食材の世界" composition. The button keeps the 4-square
+     grid icon on the left as the surface-context affordance ("you
+     are leaving the items grid, back to the categories grid"), then
+     a left arrow as the back-direction signal, then the destination
+     name in Japanese. The label has to override the parent's English-
+     ALL-CAPS styling (uppercase + wide letter-spacing wreck Japanese
+     glyphs) and switch to the brush title font. */
+  .edibles-back-grid { flex-shrink: 0; }
+  .edibles-back-arrow {
+    font-family: var(--font-menu-en);
+    font-size: 16px; font-weight: 600;
+    line-height: 1;
+    color: var(--ink-2);
+    margin: 0 2px;
+  }
+  .edibles-back-label {
+    font-family: var(--font-title);
+    font-size: 15px;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+  }
+  .edibles-back-label rt {
+    font-size: 0.42em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .edibles-back:hover .edibles-back-arrow,
+  .edibles-back:hover .edibles-back-label { color: var(--ink); }
   .edibles-back:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -18405,7 +18446,9 @@ function ediblesCategoriesHTML(categories) {
     <div class="edibles-categories">
       <header class="edibles-head" style="grid-column:1/-1">
         <div class="edibles-eyebrow">edibles · 食材</div>
-        <h1 class="edibles-title">食材の 世界</h1>
+        <h1 class="edibles-title">
+          <ruby>食材<rt>しょくざい</rt></ruby>の <ruby>世界<rt>せかい</rt></ruby>
+        </h1>
         <p class="edibles-sub">
           Browse foods by category. Each carries its flavor profile —
           click a flavor badge inside an item to walk back to that
@@ -18424,15 +18467,18 @@ function ediblesItemsHTML(cat) {
     return `
       <div class="edibles-items-wrap">
         <button class="edibles-back" data-edibles-back="categories" type="button"
-                aria-label="Back to all categories">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                aria-label="食材の世界に戻る (back to all categories)">
+          <svg class="edibles-back-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="3" width="7" height="7" rx="1.2"/>
             <rect x="14" y="3" width="7" height="7" rx="1.2"/>
             <rect x="3" y="14" width="7" height="7" rx="1.2"/>
             <rect x="14" y="14" width="7" height="7" rx="1.2"/>
           </svg>
-          <span>all categories</span>
+          <span class="edibles-back-arrow" aria-hidden="true">←</span>
+          <span class="edibles-back-label">
+            <ruby>食材<rt>しょくざい</rt></ruby>の<ruby>世界<rt>せかい</rt></ruby>
+          </span>
         </button>
         <header class="edibles-head">
           <div class="edibles-eyebrow is-kana">${escHTML(cat.kana || cat.kanji || '')}</div>
@@ -18480,15 +18526,18 @@ function ediblesItemsHTML(cat) {
     <div class="edibles-items">
       <div style="grid-column:1/-1">
         <button class="edibles-back" data-edibles-back="categories" type="button"
-                aria-label="Back to all categories">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                aria-label="食材の世界に戻る (back to all categories)">
+          <svg class="edibles-back-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="3" width="7" height="7" rx="1.2"/>
             <rect x="14" y="3" width="7" height="7" rx="1.2"/>
             <rect x="3" y="14" width="7" height="7" rx="1.2"/>
             <rect x="14" y="14" width="7" height="7" rx="1.2"/>
           </svg>
-          <span>all categories</span>
+          <span class="edibles-back-arrow" aria-hidden="true">←</span>
+          <span class="edibles-back-label">
+            <ruby>食材<rt>しょくざい</rt></ruby>の<ruby>世界<rt>せかい</rt></ruby>
+          </span>
         </button>
         <header class="edibles-head">
           <div class="edibles-eyebrow is-kana">${escHTML(cat.kana || cat.kanji || '')}</div>
