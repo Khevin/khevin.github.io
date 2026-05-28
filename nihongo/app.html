@@ -5578,6 +5578,8 @@
     color: var(--ink);
     margin: 0; line-height: 1.1;
     letter-spacing: 0.01em;
+    display: inline-flex; align-items: center;
+    gap: clamp(8px, 0.9vw, 14px);
   }
   .extra-texture-row-head rt {
     font-size: 0.32em;
@@ -5585,6 +5587,43 @@
     color: var(--ink-3);
     letter-spacing: 0.02em;
   }
+  /* Small speaker button next to the headword — clicks fire the
+     existing [data-speak] handler that wireTexturesPageHandlers
+     already registers. Quieter than the spotlight audio (28px vs
+     44px, paper background vs ink) because the extras section is
+     supporting cast — the audio is an aid, not a hero affordance. */
+  .extra-texture-row-audio {
+    appearance: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--paper-2);
+    color: var(--ink-2);
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .15s, color .15s, transform .15s;
+  }
+  .extra-texture-row-audio:hover {
+    background: var(--paper);
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .extra-texture-row-audio:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .extra-texture-row-audio svg { width: 14px; height: 14px; }
+  @media (prefers-reduced-motion: reduce) {
+    .extra-texture-row-audio { transition: none; }
+    .extra-texture-row-audio:hover { transform: none; }
+  }
+  /* On flipped rows the body is right-aligned via align-items:
+     flex-end; the inline-flex headword keeps button-after-word
+     order, so the button sits at the rightmost edge with the
+     headword to its left. Reads naturally right-to-left on the
+     flipped side. */
   .extra-texture-row-kana {
     font-family: var(--font-title);
     font-size: 16px;
@@ -18689,8 +18728,8 @@ function texturesPageHTML(book) {
       ${headerHTML}
       ${spectrumHTML}
       ${spotlightHTML}
-      ${extrasHTML}
       ${drawerHTML}
+      ${extrasHTML}
       <p class="texture-keys-hint">space hears the word · ← → walks the spectrum</p>
     </div>`;
 }
@@ -18801,7 +18840,15 @@ function renderExtraTexturesSection() {
                loading="lazy">
         </div>
         <div class="extra-texture-row-body">
-          <h3 class="extra-texture-row-head">${headWordHTML}</h3>
+          <h3 class="extra-texture-row-head">
+            <span class="extra-texture-row-head-word">${headWordHTML}</span>
+            <button class="extra-texture-row-audio"
+                    data-speak="${escAttr(ex.kana)}"
+                    type="button"
+                    aria-label="Hear ${escAttr(ex.kana)} pronounced">
+              ${textureSpeakerSVG()}
+            </button>
+          </h3>
           ${subKanaHTML}
           <p class="extra-texture-row-ja" lang="ja">${escHTML(ex.ja)}</p>
           <p class="extra-texture-row-en">${escHTML(ex.en)}</p>
@@ -18817,7 +18864,6 @@ function renderExtraTexturesSection() {
   return `
     <section class="textures-extras" aria-label="Other texture descriptors">
       <header class="textures-section-head">
-        <span class="section-num">3.</span>
         <h2 class="section-title">
           <ruby>他<rt>ほか</rt></ruby>の <ruby>食感<rt>しょっかん</rt></ruby>
         </h2>
