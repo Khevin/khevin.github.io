@@ -12291,17 +12291,16 @@
   }
   .audio-settings-btn svg { width: 18px; height: 18px; }
 
-  /* Audio-settings popover — paper-tinted floating panel anchored to
-     the sidebar's settings row. Opens upward (bottom anchored on the
-     button row, panel grows above it) because the sidebar lives at
-     the bottom of the page; opening downward would clip off-screen.
-     Internal rows: volume slider, rate slider, voice dropdown, test
-     button. Three distinct controls but they share the same row
-     shape (label + control + value-readout) so they read as a set. */
+  /* Audio-settings popover — paper-tinted floating panel anchored via
+     JS to the audio-settings button's viewport position (computed each
+     time the popover opens). Uses position: fixed so it escapes any
+     overflow / transform / position-context constraints from ancestor
+     elements — the popover lands wherever the JS sets top/left,
+     regardless of where in the DOM it lives. Opens upward (above the
+     button) because the sidebar's settings row lives at the bottom of
+     the viewport; opening downward would push the panel off-screen. */
   .audio-settings-popover {
-    position: absolute;
-    bottom: calc(100% - 6px);
-    right: 12px;
+    position: fixed;
     width: 280px;
     max-width: calc(100vw - 24px);
     background: var(--paper);
@@ -16493,6 +16492,7 @@ function toggleAudioSettingsPopover(evt) {
   if (!pop) return;
   if (pop.hasAttribute('hidden')) {
     renderAudioSettingsPopover();
+    positionAudioSettingsPopover(pop);
     pop.removeAttribute('hidden');
     // Close on outside-click / escape — one-shot listeners so they
     // self-detach when the popover closes. Outside-click ignores the
@@ -16518,6 +16518,40 @@ function toggleAudioSettingsPopover(evt) {
   } else {
     pop.setAttribute('hidden', '');
   }
+}
+
+// Position the popover above the audio-settings button using
+// position: fixed coordinates so it always lands at the button
+// regardless of DOM ancestry, scroll offsets, or transforms. Anchor:
+// 8px gap above the button, popover's right edge aligned to the
+// button's right edge. Falls back to viewport-margin if computed
+// position would push the panel off-screen on either side.
+function positionAudioSettingsPopover(pop) {
+  const btn = document.getElementById('audio-settings-open');
+  if (!btn) return;
+  const r = btn.getBoundingClientRect();
+  const POP_W = 280;     // matches the CSS width
+  const GAP   = 8;
+  const MARGIN = 12;     // min viewport margin
+  // Pre-measure popover height by reading offsetHeight after a
+  // visibility:hidden mount — but to avoid that flicker, just guess
+  // a sane height (350px) for the upward offset; the popover content
+  // is bounded by its 4 rows + header + test row.
+  const POP_H_EST = 340;
+  // Default: above the button (sidebar lives at bottom of viewport).
+  let top  = r.top - POP_H_EST - GAP;
+  let left = r.right - POP_W;
+  // If above doesn't fit (panel would clip off the top), drop below.
+  if (top < MARGIN) top = r.bottom + GAP;
+  // Horizontal clamp — keep within viewport.
+  if (left < MARGIN) left = MARGIN;
+  if (left + POP_W > window.innerWidth - MARGIN) {
+    left = window.innerWidth - POP_W - MARGIN;
+  }
+  pop.style.top    = top  + 'px';
+  pop.style.left   = left + 'px';
+  pop.style.right  = 'auto';
+  pop.style.bottom = 'auto';
 }
 
 function renderAudioSettingsPopover() {
