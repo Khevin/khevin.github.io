@@ -7137,6 +7137,165 @@
   }
 
   /* ─────────────────────────────────────────────────────────────────
+     Items ↔ Detail "shared element" choreography. The clicked card and
+     the detail hero are the same picture rendered twice; the animation
+     simulates one item picked up out of the grid and brought close.
+
+     Outbound (items → detail): the clicked card hops UP and scales to
+     ~1.18 while sibling cards fade+shrink around it (so the eye stays
+     on the hero), then swap, then the detail hero "settles" from 1.18
+     down to 1.0 — visually continuous with the card's last frame.
+
+     Inbound (detail → items): hero shrinks back toward the card size,
+     swap, the matching card "lands" with a soft hop while its siblings
+     stagger-fade back in.
+
+     Implementation notes:
+       • The clicked card carries `.is-zoom-target` so its keyframe
+         overrides the sibling-cascade rule (specificity ties broken
+         by source order — the target rule MUST come after the
+         sibling rule). z-index lift via the target class so the hop
+         renders above neighbors.
+       • The detail-hero scale tail-frame (1.0) matches its static
+         resting transform exactly, so when the class clears there's
+         no snap.
+       • Every animation shorthand keeps `both` as the last token so
+         animation-fill-mode is held during the delay/post-anim window.
+     ───────────────────────────────────────────────────────────────── */
+
+  /* Phase A — items leaving (sibling fade + hop on the target) */
+  .edibles-frame.is-zoom-out-items .edibles-item-card {
+    animation: edibles-card-fall-out 260ms cubic-bezier(0.7, 0, 0.84, 0) both;
+    animation-delay: calc(var(--enter-i, 0) * 10ms);
+  }
+  .edibles-frame.is-zoom-out-items .edibles-item-card.is-zoom-target {
+    animation: edibles-card-hop-out 380ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    animation-delay: 0ms;
+    z-index: 10;
+    position: relative;
+  }
+  .edibles-frame.is-zoom-out-items .edibles-back {
+    animation: edibles-soft-out 220ms cubic-bezier(0.7, 0, 0.84, 0) both;
+  }
+  @keyframes edibles-card-fall-out {
+    from { opacity: 1; transform: translateY(0)   scale(1); }
+    to   { opacity: 0; transform: translateY(10px) scale(0.94); }
+  }
+  @keyframes edibles-card-hop-out {
+    0%   { opacity: 1; transform: translateY(0)    scale(1); }
+    45%  { opacity: 1; transform: translateY(-14px) scale(1.18); }
+    100% { opacity: 0; transform: translateY(-34px) scale(1.36); }
+  }
+
+  /* Phase B — detail entering. Hero settles from 1.18 → 1.0 to read
+     as "the card we just picked up". Body cluster stagger-rises after. */
+  .edibles-frame.is-zoom-in-detail .edibles-detail-hero {
+    animation: edibles-hero-settle 560ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both;
+  }
+  .edibles-frame.is-zoom-in-detail .edibles-detail-backs {
+    animation: edibles-soft-in 360ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+  }
+  .edibles-frame.is-zoom-in-detail .edibles-detail-identity {
+    animation: edibles-detail-rise 460ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+  }
+  .edibles-frame.is-zoom-in-detail .edibles-detail-notes {
+    animation: edibles-detail-rise 460ms cubic-bezier(0.16, 1, 0.3, 1) 300ms both;
+  }
+  .edibles-frame.is-zoom-in-detail .edibles-detail-badges {
+    animation: edibles-detail-rise 460ms cubic-bezier(0.16, 1, 0.3, 1) 380ms both;
+  }
+  .edibles-frame.is-zoom-in-detail .edibles-detail-similar {
+    animation: edibles-detail-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 480ms both;
+  }
+  @keyframes edibles-hero-settle {
+    0%   { opacity: 0; transform: scale(1.18); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes edibles-detail-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Phase A — detail leaving (mirror of zoom-in). Hero shrinks back
+     down, body cluster drops + fades. */
+  .edibles-frame.is-zoom-out-detail .edibles-detail-hero {
+    animation: edibles-hero-shrink 320ms cubic-bezier(0.7, 0, 0.84, 0) 40ms both;
+  }
+  .edibles-frame.is-zoom-out-detail .edibles-detail-backs {
+    animation: edibles-soft-out 200ms cubic-bezier(0.7, 0, 0.84, 0) both;
+  }
+  .edibles-frame.is-zoom-out-detail .edibles-detail-identity {
+    animation: edibles-detail-drop 240ms cubic-bezier(0.7, 0, 0.84, 0) both;
+  }
+  .edibles-frame.is-zoom-out-detail .edibles-detail-notes {
+    animation: edibles-detail-drop 240ms cubic-bezier(0.7, 0, 0.84, 0) 40ms both;
+  }
+  .edibles-frame.is-zoom-out-detail .edibles-detail-badges {
+    animation: edibles-detail-drop 240ms cubic-bezier(0.7, 0, 0.84, 0) 80ms both;
+  }
+  .edibles-frame.is-zoom-out-detail .edibles-detail-similar {
+    animation: edibles-detail-drop 240ms cubic-bezier(0.7, 0, 0.84, 0) 100ms both;
+  }
+  @keyframes edibles-hero-shrink {
+    0%   { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.2); }
+  }
+  @keyframes edibles-detail-drop {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(10px); }
+  }
+
+  /* Phase B — items entering from detail back. The returning card
+     lands first with a hop (mirror of hop-out), then siblings cascade.
+     The hop starts from 1.36/translateY(-34px) — the same end-state
+     the hop-out reached — so the eye perceives continuity. */
+  .edibles-frame.is-zoom-in-items .edibles-item-card {
+    animation: edibles-card-fall-in 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(180ms + var(--enter-i, 0) * 12ms);
+  }
+  .edibles-frame.is-zoom-in-items .edibles-item-card.is-zoom-target {
+    animation: edibles-card-land-hop 560ms cubic-bezier(0.34, 1.5, 0.64, 1) both;
+    animation-delay: 0ms;
+    z-index: 10;
+    position: relative;
+  }
+  .edibles-frame.is-zoom-in-items .edibles-back {
+    animation: edibles-soft-in 360ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both;
+  }
+  @keyframes edibles-card-fall-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+  @keyframes edibles-card-land-hop {
+    0%   { opacity: 0; transform: translateY(-34px) scale(1.36); }
+    60%  { opacity: 1; transform: translateY(-6px)  scale(1.06); }
+    100% { opacity: 1; transform: translateY(0)     scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-frame.is-zoom-out-items .edibles-item-card,
+    .edibles-frame.is-zoom-out-items .edibles-item-card.is-zoom-target,
+    .edibles-frame.is-zoom-out-items .edibles-back,
+    .edibles-frame.is-zoom-in-detail .edibles-detail-hero,
+    .edibles-frame.is-zoom-in-detail .edibles-detail-backs,
+    .edibles-frame.is-zoom-in-detail .edibles-detail-identity,
+    .edibles-frame.is-zoom-in-detail .edibles-detail-notes,
+    .edibles-frame.is-zoom-in-detail .edibles-detail-badges,
+    .edibles-frame.is-zoom-in-detail .edibles-detail-similar,
+    .edibles-frame.is-zoom-out-detail .edibles-detail-hero,
+    .edibles-frame.is-zoom-out-detail .edibles-detail-backs,
+    .edibles-frame.is-zoom-out-detail .edibles-detail-identity,
+    .edibles-frame.is-zoom-out-detail .edibles-detail-notes,
+    .edibles-frame.is-zoom-out-detail .edibles-detail-badges,
+    .edibles-frame.is-zoom-out-detail .edibles-detail-similar,
+    .edibles-frame.is-zoom-in-items .edibles-item-card,
+    .edibles-frame.is-zoom-in-items .edibles-item-card.is-zoom-target,
+    .edibles-frame.is-zoom-in-items .edibles-back {
+      animation: none;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
      Textures page-entry choreography (.is-entering-textures).
      Editorial register — slow, deliberate, ink-settling. Total window
      ~2.6s; the user is here to read, not to scan. Each phase clears
@@ -20934,6 +21093,33 @@ function wireEdiblesPageHandlers(book) {
         return;
       }
 
+      // Detail → items: mirror of the item-card click choreography.
+      // The detail hero shrinks down toward the card's resting size,
+      // then we swap, then the matching card "lands with a hop" while
+      // its siblings stagger-fade in. Mark the returning card by
+      // data-item-id BEFORE adding the entering class so the keyframe
+      // selector targets it specifically (vs the sibling cascade).
+      if (target === 'items' && ediFrame && !reduced) {
+        const returningItemId = APP.edibleItem;
+        ediFrame.classList.add('is-zoom-out-detail');
+        setTimeout(() => {
+          APP.edibleItem = null;
+          lsSet('jp:edibleItem', null);
+          APP.edibleFromFlavor = null;
+          lsSet('jp:edibleFromFlavor', null);
+          rerenderEdibles(book);
+          const next = document.querySelector('.edibles-frame');
+          if (next) {
+            const returningCard = next.querySelector(`[data-item-id="${returningItemId}"]`);
+            if (returningCard) returningCard.classList.add('is-zoom-target');
+            void next.offsetWidth;
+            next.classList.add('is-zoom-in-items');
+            setTimeout(() => next.classList.remove('is-zoom-in-items'), 1000);
+          }
+        }, 320);
+        return;
+      }
+
       if (target === 'categories') {
         APP.edibleCategory = null;
         APP.edibleItem = null;
@@ -21004,12 +21190,42 @@ function wireEdiblesPageHandlers(book) {
     // Item card click — open detail spread. Scroll the page back to
     // the top so the user lands on the hero, not at whatever scroll
     // offset the items grid was sitting at when they clicked.
+    //
+    // Choreography simulates a "shared element transition" between
+    // the same item in two representations. The clicked card hops up
+    // and scales (~1.18) while its siblings fade-shrink around it,
+    // then the swap fires, and the detail hero "settles" from a
+    // larger scale down to 1.0 — visually continuous with the card's
+    // last frame. The reverse handler below mirrors this.
     const itemBtn = e.target.closest('[data-item-id]');
     if (itemBtn) {
-      APP.edibleItem = itemBtn.dataset.itemId;
-      lsSet('jp:edibleItem', APP.edibleItem);
-      rerenderEdibles(book);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const itemId = itemBtn.dataset.itemId;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const ediFrame = document.querySelector('.edibles-frame');
+      if (!ediFrame || reduced) {
+        APP.edibleItem = itemId;
+        lsSet('jp:edibleItem', itemId);
+        rerenderEdibles(book);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      // Tag the clicked card so the CSS hops it up (vs the siblings
+      // which fade-shrink). z-index lift comes via the class — the
+      // hop card needs to render above its neighbors when scaling up.
+      itemBtn.classList.add('is-zoom-target');
+      ediFrame.classList.add('is-zoom-out-items');
+      setTimeout(() => {
+        APP.edibleItem = itemId;
+        lsSet('jp:edibleItem', itemId);
+        rerenderEdibles(book);
+        const next = document.querySelector('.edibles-frame');
+        if (next) {
+          void next.offsetWidth;
+          next.classList.add('is-zoom-in-detail');
+          setTimeout(() => next.classList.remove('is-zoom-in-detail'), 1000);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 380);
       return;
     }
     // Walk button (前 / 次): cycle to the previous or next item in the
