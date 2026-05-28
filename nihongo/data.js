@@ -446,18 +446,26 @@ window.VOCAB_CLASSES = [
     books: HOME_BOOKS,
   },
   {
+    // id stays 'eating-out' for backward compat — localStorage keys
+    // (jp:vocabClass) and click-handler selectors elsewhere depend on
+    // it. Only the display strings shift to the new "Food" framing.
     id: 'eating-out',
     glyph: '食',
-    titleJa: 'がいしょく',
-    titleEn: 'Eating Out',
-    pageTitleJa: '食べに 出かける',
-    pageTitleEn: 'Words for sitting down somewhere',
+    titleJa: 'たべもの',
+    titleEn: 'Food',
+    pageTitleJa: '食べ物の 世界',
+    pageTitleEn: 'Food vocabulary, flavors, edibles, and dining',
     books: [
-      // The Experience — sits at the top, rolls a random restaurant from
-      // EATING_OUT_RESTAURANTS and runs you through an interactive scene.
-      // The other 6 books are normal vocab books that will get
-      // cheatsheet/usage/sentences pages over time.
-      { id:'experience',   titleJa:'体験',    titleEn:'Experience',     glyph:'体', primaryLevel:'N4', pages:[], isExperience:true },
+      // The Eating Out book — previously titled "Experience." Same
+      // mechanics (rolls a random restaurant from EATING_OUT_RESTAURANTS
+      // and runs the scene flow), but the framing now reads as the
+      // category it belongs to. The book id stays 'experience' because
+      // it's referenced by name throughout the codebase (book.id ===
+      // 'experience' in handlers; APP.vocabBookId = 'experience' in
+      // the launch helpers); changing the id would force a coordinated
+      // rename across dozens of call sites. Glyph swap: 体 (body /
+      // experience) → 外 (outside — as in 外食 gaishoku, "eating out").
+      { id:'experience',   titleJa:'がいしょく', titleEn:'Eating Out',     glyph:'外', primaryLevel:'N4', pages:[], isExperience:true },
       // Food vocabulary gallery removed from sidebar — its content now
       // lives directly on each restaurant's menu page (the visual food-
       // gallery header above the menu rows pulls from the FOOD_GALLERY
