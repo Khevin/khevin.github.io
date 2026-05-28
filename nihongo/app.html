@@ -5498,12 +5498,21 @@
      visual order on every other row to produce the zig-zag rhythm
      without changing DOM order (so reading order stays consistent
      for screen readers). On mobile both rows stack image-first; the
-     zig-zag is a desktop affordance. */
+     zig-zag is a desktop affordance. A hairline divider beneath each
+     row (except the last) separates the entries so the section reads
+     as a list, not as one continuous run-on flow. */
   .extra-texture-row {
     display: grid;
     grid-template-columns: minmax(140px, 200px) 1fr;
     gap: clamp(20px, 2.4vw, 40px);
     align-items: center;
+    padding-bottom: clamp(28px, 3.4vw, 56px);
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .textures-extras-list { gap: clamp(28px, 3.4vw, 56px); }
+  .extra-texture-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
   }
   .extra-texture-row.is-flipped {
     grid-template-columns: 1fr minmax(140px, 200px);
@@ -5511,8 +5520,17 @@
   .extra-texture-row.is-flipped .extra-texture-row-image {
     grid-column: 2; grid-row: 1;
   }
+  /* align-items: flex-end on the body is the actual fix here —
+     text-align: right alone wasn't enough because .extra-texture-row-en
+     carries a max-width: 56ch cap; with the cap, the EN block sized to
+     56ch and ANCHORED at the left edge of the body, leaving the text
+     right-aligned within the block but the block itself stranded far
+     left of the kanji/JA above. flex-end lets each child block size
+     to its content and align to the right edge of the body, so the
+     EN block sits flush right next to its row's right margin. */
   .extra-texture-row.is-flipped .extra-texture-row-body {
     grid-column: 1; grid-row: 1;
+    align-items: flex-end;
     text-align: right;
   }
   .extra-texture-row.is-flipped .extra-texture-row-examples {
@@ -5528,6 +5546,7 @@
     .extra-texture-row.is-flipped .extra-texture-row-image,
     .extra-texture-row.is-flipped .extra-texture-row-body {
       grid-column: 1; grid-row: auto;
+      align-items: flex-start;
       text-align: left;
     }
     .extra-texture-row.is-flipped .extra-texture-row-examples {
