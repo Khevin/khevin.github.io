@@ -19442,11 +19442,20 @@ function cheatsheetHTML(book, page, opts = {}) {
     </div>`).join('');
 
   // Hotspot overlay — only when at least one item declares a `spot`.
-  // Each hotspot sits over the painted number on the image at the
-  // percent coords from the data. Hover reveals a tooltip with romaji +
-  // cultural note; the same hover also lights up the matching vocab row
-  // (and vice versa — hovering a row pulses its hotspot).
-  const hotspotItems = page.items.filter(it => it.spot);
+  // Hotspot rendering disabled. Each cheatsheet item could carry a
+  // spot:{x,y} percent-coord and we'd overlay a hoverable numbered
+  // circle on the image at that position — but the coords rarely
+  // line up against the actual painted numbers (different artists,
+  // different framings), and any image-size/aspect-ratio change
+  // would have to be paired with a coordinate retune across every
+  // cheatsheet to keep things visually correct. Not worth the
+  // maintenance burden against the small UX win. The CSS rules
+  // (.sheet-hotspot*) and the row↔hotspot sync JS are left intact
+  // in case we ever want to revive this — the data spot:{x,y}
+  // fields are now dormant metadata, safe to leave in or strip
+  // later. For now, the filter resolves to zero items so the
+  // markup below collapses to an empty string.
+  const hotspotItems = [];
   const hotspotsHTML = hotspotItems.length ? `
     <div class="sheet-hotspots" aria-hidden="false">
       ${hotspotItems.map(it => `
