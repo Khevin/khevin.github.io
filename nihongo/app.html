@@ -7028,6 +7028,256 @@
   }
 
   /* ─────────────────────────────────────────────────────────────────
+     Edibles page-entry choreography (.is-entering-edibles).
+     Plays only when the user lands on edibles from the sidebar (or
+     first paint). Bigger production than the in-page categories↔items
+     swap — the head fades up first, then each tile rises with a small
+     3D tilt, then the glyph kanji scales-pop inside it, then the three
+     stack images bloom out from the glyph to their resting positions,
+     then the furigana fades in last.
+
+     Every `animation:` shorthand keeps `both` as the last token so
+     animation-fill-mode is set as part of the shorthand. Forgetting
+     that = elements visible at opacity:1 during their animation-delay
+     window — the same bug we already fixed once on the flavors page.
+     ───────────────────────────────────────────────────────────────── */
+  .edibles-frame.is-entering-edibles .edibles-head {
+    animation: edibles-head-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both;
+  }
+  @keyframes edibles-head-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Tile itself — small rise + tilt-in. Forward stagger. */
+  .edibles-frame.is-entering-edibles .edibles-category-tile {
+    animation: edibles-tile-bloom 540ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    animation-delay: calc(240ms + var(--enter-i, 0) * 70ms);
+    transform-style: preserve-3d;
+    perspective: 800px;
+  }
+  @keyframes edibles-tile-bloom {
+    0%   { opacity: 0; transform: translateY(28px) scale(0.92) rotateX(8deg); }
+    60%  { opacity: 1; transform: translateY(-2px) scale(1.01) rotateX(0); }
+    100% { opacity: 1; transform: translateY(0)    scale(1)    rotateX(0); }
+  }
+
+  /* Kanji glyph — scales in with a soft rebound, anchored to the
+     tile's animation so it lands just as the tile finishes settling. */
+  .edibles-frame.is-entering-edibles .edibles-category-glyph {
+    animation: edibles-glyph-press 480ms cubic-bezier(0.34, 1.5, 0.64, 1) both;
+    animation-delay: calc(420ms + var(--enter-i, 0) * 70ms);
+  }
+  @keyframes edibles-glyph-press {
+    0%   { opacity: 0; transform: scale(0.55); }
+    55%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* The three stack images bloom OUT from the glyph (start at center,
+     slide to their resting positions). Each position uses its own
+     keyframe because the stack-image rule already sets data-pos-specific
+     translate transforms at rest; we have to land back on those values.
+
+     Resting transforms come from the existing styles, captured here so
+     the 100% frame matches the no-animation default exactly. If those
+     resting transforms change, update these `to` frames too. */
+  /* Stack images bloom OUT from the glyph (start at the tile's center
+     scaled small, slide to their resting positions). The resting
+     transforms are hardcoded in the `to` frames so the animation lands
+     exactly where the static rule sits — without that, the element
+     snaps from translate(0,0) to its resting offset the instant the
+     class is removed. If the resting transforms in the static rules
+     above (line ~7593-7606) change, mirror the change here. */
+  .edibles-frame.is-entering-edibles .edibles-category-stack-img[data-pos="left"] {
+    animation: edibles-stack-bloom-left 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(580ms + var(--enter-i, 0) * 70ms);
+  }
+  .edibles-frame.is-entering-edibles .edibles-category-stack-img[data-pos="right"] {
+    animation: edibles-stack-bloom-right 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(640ms + var(--enter-i, 0) * 70ms);
+  }
+  .edibles-frame.is-entering-edibles .edibles-category-stack-img[data-pos="center"] {
+    animation: edibles-stack-bloom-center 540ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    animation-delay: calc(700ms + var(--enter-i, 0) * 70ms);
+  }
+  @keyframes edibles-stack-bloom-left {
+    0%   { opacity: 0; transform: translateX(0)     rotate(0)    scale(0.5); }
+    100% { opacity: 1; transform: translateX(-36px) rotate(-9deg) scale(1); }
+  }
+  @keyframes edibles-stack-bloom-right {
+    0%   { opacity: 0; transform: translateX(0)    rotate(0)   scale(0.5); }
+    100% { opacity: 1; transform: translateX(36px) rotate(9deg) scale(1); }
+  }
+  @keyframes edibles-stack-bloom-center {
+    0%   { opacity: 0; transform: translateY(0)    scale(0.5); }
+    100% { opacity: 1; transform: translateY(-4px) scale(1); }
+  }
+
+  /* Furigana fades in last so the tile feels labeled, not pre-labeled. */
+  .edibles-frame.is-entering-edibles .edibles-category-furigana {
+    animation: edibles-furigana-fade 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(760ms + var(--enter-i, 0) * 70ms);
+  }
+  @keyframes edibles-furigana-fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .edibles-frame.is-entering-edibles .edibles-head,
+    .edibles-frame.is-entering-edibles .edibles-category-tile,
+    .edibles-frame.is-entering-edibles .edibles-category-glyph,
+    .edibles-frame.is-entering-edibles .edibles-category-stack-img[data-pos="left"],
+    .edibles-frame.is-entering-edibles .edibles-category-stack-img[data-pos="right"],
+    .edibles-frame.is-entering-edibles .edibles-category-stack-img[data-pos="center"],
+    .edibles-frame.is-entering-edibles .edibles-category-furigana {
+      animation: none;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Textures page-entry choreography (.is-entering-textures).
+     Editorial register — slow, deliberate, ink-settling. Total window
+     ~2.6s; the user is here to read, not to scan. Each phase clears
+     before the next one starts so the page breathes.
+
+     Phases:
+       0   ms — eyebrow fades up
+       180 ms — title fades up + scales softly
+       420 ms — sub-text fades up
+       640 ms — spectrum hairline DRAWS left → right (scaleX)
+       900 ms — spectrum tiles bloom in, sweeping with the hairline
+      1320 ms — spotlight card lifts; staple-image scales from 1.08 → 1
+      1580 ms — spotlight glyph/kana/audio fade up
+      1820 ms — drawer fades in
+      2020 ms — "Other textures" section head fades up
+      2240 ms — extras section rows rise one by one with their hairlines
+     ───────────────────────────────────────────────────────────────── */
+
+  /* Title cluster */
+  .textures-page.is-entering-textures .textures-page-eyebrow {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) 0ms both;
+  }
+  .textures-page.is-entering-textures .textures-page-title {
+    animation: textures-title-press 700ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+  }
+  .textures-page.is-entering-textures .textures-page-sub {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both;
+  }
+  @keyframes textures-fade-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes textures-title-press {
+    0%   { opacity: 0; transform: translateY(8px) scale(1.04); letter-spacing: 0.04em; }
+    100% { opacity: 1; transform: translateY(0)   scale(1);    letter-spacing: 0; }
+  }
+
+  /* Spectrum — left/right edge labels fade in, the hairline draws
+     across, and the tiles bloom in stagger-following the hairline. */
+  .textures-page.is-entering-textures .spectrum-edge-soft {
+    animation: textures-fade-rise 500ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
+  }
+  .textures-page.is-entering-textures .spectrum-edge-hard {
+    animation: textures-fade-rise 500ms cubic-bezier(0.16, 1, 0.3, 1) 720ms both;
+  }
+  .textures-page.is-entering-textures .textures-spectrum-line {
+    animation: textures-line-draw 800ms cubic-bezier(0.65, 0, 0.35, 1) 640ms both;
+    transform-origin: left center;
+  }
+  @keyframes textures-line-draw {
+    from { opacity: 0; transform: scaleX(0); }
+    to   { opacity: 1; transform: scaleX(1); }
+  }
+  .textures-page.is-entering-textures .textures-spectrum-tile-wrap {
+    animation: textures-tile-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(900ms + var(--enter-i, 0) * 50ms);
+  }
+  @keyframes textures-tile-rise {
+    from { opacity: 0; transform: translateY(14px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  /* Spotlight — the card itself lifts gently, then the staple image
+     does an "ink press" (scale 1.06 → 1.0 with opacity fade), then the
+     info column fades up element-by-element. */
+  .textures-page.is-entering-textures .textures-spotlight {
+    animation: textures-fade-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1320ms both;
+  }
+  .textures-page.is-entering-textures .textures-spotlight-image {
+    animation: textures-ink-press 900ms cubic-bezier(0.16, 1, 0.3, 1) 1420ms both;
+  }
+  @keyframes textures-ink-press {
+    0%   { opacity: 0; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .textures-page.is-entering-textures .textures-spotlight-glyph {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) 1520ms both;
+  }
+  .textures-page.is-entering-textures .spotlight-kana {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) 1580ms both;
+  }
+  .textures-page.is-entering-textures .spotlight-romaji {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) 1680ms both;
+  }
+  .textures-page.is-entering-textures .textures-spotlight-audio {
+    animation: textures-fade-rise 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 1780ms both;
+  }
+  .textures-page.is-entering-textures .spotlight-description {
+    animation: textures-fade-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1820ms both;
+  }
+  .textures-page.is-entering-textures .textures-spotlight-examples {
+    animation: textures-fade-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1960ms both;
+  }
+
+  /* Drawer (En + cultural notes) */
+  .textures-page.is-entering-textures .texture-drawer {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) 1980ms both;
+  }
+
+  /* "Other textures" section — head first, then the zig-zag rows
+     with row-by-row delay. The image + body inside each row fade up
+     together (no per-row internal stagger — keeps the page from
+     dragging past its window). */
+  .textures-page.is-entering-textures .textures-section-head {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) 2020ms both;
+  }
+  .textures-page.is-entering-textures .extra-texture-row {
+    animation: textures-fade-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(2240ms + var(--enter-i, 0) * 90ms);
+  }
+
+  /* Keys hint sits at the very foot of the page; fades in dead last. */
+  .textures-page.is-entering-textures .texture-keys-hint {
+    animation: textures-fade-rise 500ms cubic-bezier(0.16, 1, 0.3, 1) 2600ms both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .textures-page.is-entering-textures .textures-page-eyebrow,
+    .textures-page.is-entering-textures .textures-page-title,
+    .textures-page.is-entering-textures .textures-page-sub,
+    .textures-page.is-entering-textures .spectrum-edge-soft,
+    .textures-page.is-entering-textures .spectrum-edge-hard,
+    .textures-page.is-entering-textures .textures-spectrum-line,
+    .textures-page.is-entering-textures .textures-spectrum-tile-wrap,
+    .textures-page.is-entering-textures .textures-spotlight,
+    .textures-page.is-entering-textures .textures-spotlight-image,
+    .textures-page.is-entering-textures .textures-spotlight-glyph,
+    .textures-page.is-entering-textures .spotlight-kana,
+    .textures-page.is-entering-textures .spotlight-romaji,
+    .textures-page.is-entering-textures .textures-spotlight-audio,
+    .textures-page.is-entering-textures .spotlight-description,
+    .textures-page.is-entering-textures .textures-spotlight-examples,
+    .textures-page.is-entering-textures .texture-drawer,
+    .textures-page.is-entering-textures .textures-section-head,
+    .textures-page.is-entering-textures .extra-texture-row,
+    .textures-page.is-entering-textures .texture-keys-hint {
+      animation: none;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
      Edibles database (Phase 3 of the Flavors & Textures sub-system).
      Three views in one container, gated by data-mode:
        data-mode="categories"  → 8 category tiles
@@ -17481,6 +17731,13 @@ function renderMain() {
 // the currently-active one — the "menu click = fresh start" contract
 // is uniform.
 function resetBookEntryState(bookId) {
+  // Mark this book as "fresh from menu" so the page-entry choreography
+  // fires on the next renderVocab. wireFlavors/Edibles/TexturesPageHandlers
+  // each check this flag, play their entrance animation if it matches
+  // their book, then clear it. Internal re-renders (e.g. flavor switch,
+  // edibles category click) never set this — only the sidebar / strip
+  // menu clicks and the initial page paint do.
+  window.__bookEntranceFlag = bookId;
   APP.vocabPageIdx = 0;
   if (APP.flavorId !== null) {
     APP.flavorId = null;
@@ -19104,6 +19361,23 @@ function wireFlavorsPageHandlers(book) {
       requestAnimationFrame(() => body.focus({ preventScroll: false }));
     }
   }
+
+  // ── Page-entry choreography ──
+  // Fire ONCE when the user lands on this book from the sidebar (or on
+  // first paint after a reload). Re-uses the same .is-entering-bento
+  // cascade the exit-immersion path uses, so the bento cards "drop in"
+  // with stagger every time the user opens flavors fresh. Internal
+  // re-renders (immersion swaps, rail clicks) don't set the entrance
+  // flag, so they skip this entirely. Reduced-motion users skip too.
+  if (window.__bookEntranceFlag === book.id && frame.dataset.mode === 'bento') {
+    window.__bookEntranceFlag = null;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced) {
+      void frame.offsetWidth; // restart from 0 if the class was already there
+      frame.classList.add('is-entering-bento');
+      setTimeout(() => frame.classList.remove('is-entering-bento'), 1100);
+    }
+  }
 }
 // Module-private flag — used to avoid double-binding the keyboard
 // handler across re-renders. Stored on the function itself so it
@@ -19824,6 +20098,35 @@ function wireTexturesPageHandlers(book) {
         if (tex && typeof speakJapanese === 'function') speakJapanese(tex.kana);
       }
     });
+  }
+
+  // ── Page-entry choreography ──
+  // Editorial register: slow, deliberate, ink-settling. The spectrum
+  // line draws across left → right, tiles fade in as it passes, the
+  // spotlight glyph presses down onto paper, paragraphs lift one at a
+  // time with hairline rules drawing in beneath the headings. Total
+  // window ~2.6s — longer than product surfaces because the user is
+  // here to read, not to scan.
+  //
+  // Like the other entrances, fires once per sidebar entry and skips
+  // for reduced-motion + internal swaps (texture rail click).
+  if (page && window.__bookEntranceFlag === book.id) {
+    window.__bookEntranceFlag = null;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced) {
+      void page.offsetWidth;
+      page.classList.add('is-entering-textures');
+      // Per-tile stagger index for the spectrum row (the renderer
+      // doesn't carry an --enter-i, so set it here once at mount).
+      page.querySelectorAll('.textures-spectrum-tile-wrap').forEach((el, i) => {
+        el.style.setProperty('--enter-i', i);
+      });
+      // Per-row stagger for the extras zig-zag rows below.
+      page.querySelectorAll('.extra-texture-row').forEach((el, i) => {
+        el.style.setProperty('--enter-i', i);
+      });
+      setTimeout(() => page.classList.remove('is-entering-textures'), 2800);
+    }
   }
 }
 
@@ -20742,6 +21045,30 @@ function wireEdiblesPageHandlers(book) {
       return;
     }
   });
+
+  // ── Page-entry choreography ──
+  // "Show some love" — bigger production than the categories↔items
+  // swap inside the page. Plays only when the user arrives at edibles
+  // from the sidebar (or first paint), and only in categories mode.
+  //
+  // What animates (see CSS .is-entering-edibles):
+  //   1. Head eyebrow + title + sub fade up, widely staggered.
+  //   2. Each tile rises with a slight 3D tilt — the wave sweeps the
+  //      grid in reading order.
+  //   3. The category glyph (kanji) inside each tile scales-pop on
+  //      arrival, sized down then settling to 1.0 with a soft rebound.
+  //   4. The three stack images per tile bloom out from the glyph
+  //      (each travels to its left/right/center resting position).
+  //   5. Furigana labels fade in last.
+  if (window.__bookEntranceFlag === book.id && frame.dataset.mode === 'categories') {
+    window.__bookEntranceFlag = null;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced) {
+      void frame.offsetWidth;
+      frame.classList.add('is-entering-edibles');
+      setTimeout(() => frame.classList.remove('is-entering-edibles'), 1600);
+    }
+  }
 }
 
 function rerenderEdibles(book) {
@@ -27365,6 +27692,11 @@ document.addEventListener('keydown', (e) => {
 
 // ── Init ─────────────────────────────────────────────────────────────────
 function init() {
+  // Mark the persisted vocab book as fresh-entry so its page-entrance
+  // choreography plays on first paint (matches the feel of clicking it
+  // from the sidebar). Sidebar/strip clicks set this flag too via
+  // resetBookEntryState(). The wire handlers consume + clear it.
+  window.__bookEntranceFlag = APP.vocabBookId;
   applyBodyClasses();
   const appCl = document.querySelector('.app').classList;
   appCl.toggle('show-vocab-sidebar', APP.section === 'vocab');
