@@ -4273,6 +4273,26 @@
     .app.show-writing-sidebar { grid-template-columns: 1fr; }
   }
 
+  /* ─── speaking sidebar (2nd column when on Speaking) ──────────────────
+     Mirrors writing-sidebar styling. Shows the category list (Food first,
+     later Greetings/Travel/Work). Phrase navigation happens inside the
+     main column via the Up Next filmstrip — no third sidebar here. */
+  .speaking-sidebar {
+    display: none;
+    background: color-mix(in srgb, var(--paper-edge) 22%, var(--paper) 78%);
+    border-right: 1px solid rgba(141,102,48,0.15);
+    box-shadow: inset -6px 0 16px -12px rgba(100,72,30,0.10);
+    padding: 16px 10px;
+    position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .app.show-speaking-sidebar .speaking-sidebar { display: block; }
+  .app.show-speaking-sidebar { grid-template-columns: 188px 160px 1fr; }
+  @media (max-width: 760px) {
+    .speaking-sidebar { display: none !important; }
+    .app.show-speaking-sidebar { grid-template-columns: 1fr; }
+  }
+
   /* ─── particles sidebar (3rd column when on Writing → Particles) ──────
      Mirrors vocab-books-sidebar visually: slightly lighter wash than the
      parent writing-sidebar so the eye reads the cascade left-to-right:
@@ -15806,6 +15826,778 @@
     .dt-date-rules       { grid-template-columns: 1fr; gap: 4px 0; }
     .dt-date-rules dt    { padding-top: 12px; }
   }
+
+  /* ═════════════════════════════════════════════════════════════════
+     SPEAKING SUB-SYSTEM
+     Spec: docs/superpowers/specs/2026-05-28-speaking.{PRODUCT,DESIGN}.md
+     Tokens declared inline so the rest of the project's CSS doesn't
+     need to load them. Token names follow the speaking surface's
+     world (--mic, --waveform-ink, --pitch-line).
+     ═════════════════════════════════════════════════════════════════ */
+  .speaking-studio {
+    --mic-default:         #8c6a3a;
+    --mic-default-hover:   #a0794a;
+    --mic-recording:       #c34b30;
+    --mic-recording-pulse: #e26544;
+    --mic-disabled:        #cbbfa8;
+    --waveform-original:   #8c6a3a;
+    --waveform-user:       #7a9a5a;
+    --score-chip:          #3a2e22;
+    --score-dot-filled:    #8c6a3a;
+    --score-dot-empty:     #d3c4ad;
+    --pitch-line:          #1c1a18;
+    --pitch-line-user:     #7a9a5a;
+    --pitch-pattern-heiban:    #a8843c;
+    --pitch-pattern-atamadaka: #c34b30;
+    --pitch-pattern-nakadaka:  #8c6a3a;
+    --pitch-pattern-odaka:     #7a9a5a;
+    display: grid;
+    grid-template-columns: minmax(280px, 0.42fr) 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "head head"
+      "portrait stage"
+      "filmstrip filmstrip";
+    gap: clamp(24px, 2.6vw, 40px);
+    padding: clamp(20px, 2vw, 36px) clamp(20px, 2vw, 36px) clamp(80px, 6vw, 120px);
+    max-width: 1320px;
+    margin: 0 auto;
+    outline: none;
+  }
+  .speaking-studio:focus { outline: none; }
+
+  .speaking-studio-head {
+    grid-area: head;
+    padding-bottom: clamp(8px, 1vw, 16px);
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .speaking-head-title {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    margin: 0;
+    font: inherit;
+  }
+  .speaking-head-en {
+    font-family: var(--font-menu-en);
+    font-size: clamp(15px, 1.4vw, 22px);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  .speaking-head-dot { color: var(--ink-faint); }
+  .speaking-head-ja {
+    font-family: var(--font-title);
+    font-size: clamp(16px, 1.5vw, 22px);
+    color: var(--ink-soft);
+  }
+  .speaking-head-sub {
+    margin: 6px 0 0;
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: clamp(14px, 1.2vw, 16px);
+    color: var(--ink-faint);
+  }
+
+  /* Watercolor portrait — left zone. Brushed-edge frame, vertical 3:4. */
+  .speaking-portrait {
+    grid-area: portrait;
+    align-self: stretch;
+  }
+  .speaking-portrait-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: var(--paper-soft, #ece3d2);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(60,40,10,0.04), inset 0 0 0 1px rgba(141,102,48,0.10);
+  }
+  .speaking-portrait-frame::after {
+    /* A subtle brush-edged inner border to evoke the brushed-edge surface
+       pattern from the rest of the project without an SVG mask asset. */
+    content: '';
+    position: absolute; inset: 6px;
+    border: 1px solid rgba(141,102,48,0.18);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .speaking-portrait-frame image-slot,
+  .speaking-portrait-frame image-slot::part(img),
+  .speaking-portrait-frame image-slot::part(frame) {
+    width: 100%; height: 100%; display: block;
+    object-fit: cover;
+  }
+  .speaking-portrait-frame image-slot::part(frame) {
+    background: transparent;
+  }
+  /* Fallback when portrait file 404s — paper-textured silhouette via
+     gradient + the inherited paper palette. The image-slot's own
+     :not([data-filled]) state shows ?  — override it for this surface. */
+  .speaking-portrait-frame:has(image-slot:not([data-filled]))::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 38%,
+        color-mix(in srgb, var(--ink) 22%, transparent),
+        transparent 65%),
+      radial-gradient(ellipse 40% 50% at 50% 78%,
+        color-mix(in srgb, var(--ink) 18%, transparent),
+        transparent 70%),
+      var(--paper-soft, #ece3d2);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  /* Practice stage — right zone. */
+  .speaking-stage {
+    grid-area: stage;
+    background: var(--paper-soft, #ece3d2);
+    border-radius: 4px;
+    padding: clamp(20px, 2.4vw, 36px);
+    position: relative;
+    box-shadow: inset 0 0 0 1px rgba(141,102,48,0.10);
+    min-width: 0;
+  }
+  .speaking-stage::after {
+    content: ''; position: absolute; inset: 6px;
+    border: 1px solid rgba(141,102,48,0.10);
+    border-radius: 2px; pointer-events: none;
+  }
+  .speaking-stage-eyebrow {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-menu-en);
+    font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+  }
+  .eyebrow-glyph {
+    color: var(--accent-vermilion, #c34b30);
+    font-size: 14px;
+  }
+
+  /* Phrase + pitch contour */
+  .speaking-phrase {
+    display: flex; align-items: flex-start; justify-content: center;
+    gap: clamp(12px, 1.4vw, 22px); flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .phrase-mora-row {
+    display: flex; flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0;
+  }
+  .pitch-mora-row {
+    display: inline-flex;
+    align-items: flex-end;
+    position: relative;
+    padding-top: 28px;   /* room for the contour SVG above the glyphs */
+  }
+  .pitch-contour-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    height: 24px;
+  }
+  .pitch-mora {
+    display: inline-flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 36px;
+    font-family: var(--font-title);
+    font-size: clamp(34px, 4.2vw, 56px);
+    line-height: 1.05;
+    color: var(--ink);
+    text-align: center;
+  }
+  .phrase-chunk-gap {
+    display: inline-block;
+    width: clamp(10px, 1.2vw, 18px);
+  }
+
+  .pitch-pattern-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    font-family: var(--font-menu-en);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    align-self: center;
+    border: 1px solid transparent;
+  }
+  .pitch-pattern-chip[data-pattern="heiban"]    { border-color: var(--pitch-pattern-heiban);    color: color-mix(in srgb, var(--pitch-pattern-heiban) 80%, var(--ink)); }
+  .pitch-pattern-chip[data-pattern="atamadaka"] { border-color: var(--pitch-pattern-atamadaka); color: color-mix(in srgb, var(--pitch-pattern-atamadaka) 80%, var(--ink)); }
+  .pitch-pattern-chip[data-pattern="nakadaka"]  { border-color: var(--pitch-pattern-nakadaka);  color: color-mix(in srgb, var(--pitch-pattern-nakadaka) 80%, var(--ink)); }
+  .pitch-pattern-chip[data-pattern="odaka"]     { border-color: var(--pitch-pattern-odaka);     color: color-mix(in srgb, var(--pitch-pattern-odaka) 80%, var(--ink)); }
+  .pitch-pattern-ja { font-family: var(--font-title); font-size: 12px; color: inherit; }
+  .pitch-pattern-en { font-style: italic; }
+  .pitch-pattern-num { font-family: var(--font-en); font-weight: 600; opacity: 0.85; }
+
+  .speaking-phrase-en {
+    margin: 6px 0 22px;
+    text-align: center;
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: clamp(15px, 1.4vw, 20px);
+    color: var(--ink-soft);
+  }
+
+  /* Mic row */
+  .speaking-mic-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 14px 0 24px;
+  }
+  .speaking-mic {
+    width: 88px; height: 88px;
+    border-radius: 999px;
+    border: none;
+    background: var(--mic-default);
+    color: var(--paper);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s, transform .15s cubic-bezier(0.34, 1.4, 0.64, 1);
+    position: relative;
+    box-shadow: 0 4px 14px -8px color-mix(in srgb, var(--mic-default) 90%, transparent);
+  }
+  .speaking-mic svg { width: 32px; height: 32px; }
+  .speaking-mic:hover { background: var(--mic-default-hover); transform: translateY(-1px); }
+  .speaking-mic:active { transform: translateY(0) scale(0.96); }
+  .speaking-mic:focus-visible {
+    outline: 2px solid var(--accent-vermilion, #c34b30); outline-offset: 4px;
+  }
+  .speaking-mic[data-state="recording"] {
+    background: var(--mic-recording);
+    animation: speaking-mic-pulse 1400ms ease-in-out infinite;
+  }
+  .speaking-mic[data-state="recording"]::before {
+    content: ''; position: absolute; inset: -10px;
+    border-radius: 999px;
+    border: 2px solid var(--mic-recording-pulse);
+    opacity: 0.5;
+    animation: speaking-mic-ring 1400ms ease-out infinite;
+    pointer-events: none;
+  }
+  .speaking-mic[data-state="requesting"] { background: var(--mic-disabled); cursor: wait; }
+  .speaking-mic[data-state="denied"]     { background: var(--mic-disabled); cursor: not-allowed; }
+  @keyframes speaking-mic-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--mic-recording-pulse) 50%, transparent); }
+    50%      { box-shadow: 0 0 0 14px color-mix(in srgb, var(--mic-recording-pulse) 0%, transparent); }
+  }
+  @keyframes speaking-mic-ring {
+    0%   { transform: scale(1); opacity: 0.55; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .speaking-mic, .speaking-mic[data-state="recording"] { animation: none; }
+    .speaking-mic[data-state="recording"]::before { animation: none; opacity: 0.7; }
+  }
+  .speaking-mic-labels {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+  }
+  .mic-label-ja {
+    font-family: var(--font-title);
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .mic-label-en {
+    font-family: var(--font-en);
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  /* Waveform pair */
+  .speaking-waveforms {
+    display: flex; flex-direction: column; gap: 10px;
+    margin: 0 0 22px;
+  }
+  .waveform-row {
+    display: grid;
+    grid-template-columns: 72px 32px 1fr 72px;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+  .waveform-label {
+    display: flex; flex-direction: column;
+    font-family: var(--font-en);
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.2;
+  }
+  .waveform-label .ja {
+    font-family: var(--font-title);
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .waveform-label .en { font-size: 11px; color: var(--ink-faint); }
+  .waveform-play {
+    width: 30px; height: 30px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .waveform-play svg { width: 12px; height: 12px; }
+  .waveform-play:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    color: var(--ink);
+  }
+  .waveform-play:disabled { opacity: 0.35; cursor: not-allowed; }
+  .waveform-svg {
+    width: 100%; height: 40px;
+    display: block;
+  }
+  .waveform-duration {
+    font-family: var(--font-en);
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: right;
+    letter-spacing: 0.04em;
+  }
+
+  /* Score quartet */
+  .speaking-scores {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 80px;
+    gap: 14px;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .score-chip {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    grid-template-rows: auto auto;
+    gap: 4px 10px;
+    align-items: center;
+    min-width: 0;
+  }
+  .score-chip-glyph {
+    grid-row: 1 / span 2;
+    color: var(--ink-soft);
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .score-chip-glyph svg { width: 20px; height: 20px; }
+  .score-chip-label { display: flex; flex-direction: column; min-width: 0; }
+  .score-chip-ja {
+    font-family: var(--font-title);
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .score-chip-en {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-faint);
+    line-height: 1.1;
+  }
+  .score-chip-dots {
+    grid-column: 2; grid-row: 2;
+    display: inline-flex; gap: 5px; align-items: center;
+    margin-top: 2px;
+  }
+  .score-chip-dots .dot {
+    width: 7px; height: 7px;
+    border-radius: 999px;
+    background: var(--score-dot-empty);
+    transition: background .25s;
+  }
+  .score-chip-dots .dot.is-filled { background: var(--score-dot-filled); }
+  .score-overall {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    border-radius: 999px;
+    width: 80px; height: 80px;
+    align-self: end;
+  }
+  .score-overall-num {
+    font-family: var(--font-en);
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--score-chip);
+    line-height: 1;
+  }
+  .score-overall-denom {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 2px;
+  }
+  .score-overall[data-has-score="false"] .score-overall-num { color: var(--ink-faint); font-weight: 400; }
+
+  .speaking-phrase-notes {
+    margin: 22px 0 0;
+    padding: 12px 14px;
+    background: color-mix(in srgb, var(--ink) 3%, transparent);
+    border-left: 2px solid color-mix(in srgb, var(--accent-gold, #a8843c) 60%, transparent);
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  /* Filmstrip */
+  .speaking-filmstrip {
+    grid-area: filmstrip;
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 14px;
+    background: color-mix(in srgb, var(--paper-soft) 80%, var(--paper));
+    border-radius: 4px;
+    margin-top: 8px;
+  }
+  .filmstrip-label {
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+    font-family: var(--font-en);
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: center;
+    line-height: 1.2;
+    padding-right: 8px;
+  }
+  .filmstrip-label .ja {
+    font-family: var(--font-title);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .filmstrip-arrow {
+    width: 32px; height: 32px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background .15s, color .15s;
+  }
+  .filmstrip-arrow svg { width: 14px; height: 14px; }
+  .filmstrip-arrow:hover { background: color-mix(in srgb, var(--ink) 6%, var(--paper)); color: var(--ink); }
+  .filmstrip-track {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink) 14%, transparent) transparent;
+  }
+  .filmstrip-item { flex: 0 0 auto; }
+  .filmstrip-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-radius: 4px;
+    background: var(--paper);
+    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    cursor: pointer;
+    text-align: left;
+    font: inherit; color: inherit;
+    transition: background .15s, transform .15s, border-color .15s;
+    min-width: 0;
+  }
+  .filmstrip-card:hover {
+    background: color-mix(in srgb, var(--ink) 3%, var(--paper));
+    transform: translateY(-1px);
+  }
+  .filmstrip-num {
+    width: 26px; height: 26px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .filmstrip-item.is-current .filmstrip-card {
+    border-color: color-mix(in srgb, var(--accent-vermilion, #c34b30) 50%, transparent);
+    background: color-mix(in srgb, var(--accent-vermilion, #c34b30) 4%, var(--paper));
+  }
+  .filmstrip-item.is-current .filmstrip-num {
+    background: var(--accent-vermilion, #c34b30);
+    color: var(--paper);
+  }
+  .filmstrip-item.is-past .filmstrip-card { opacity: 0.62; }
+  .filmstrip-text { display: flex; flex-direction: column; min-width: 0; }
+  .filmstrip-kana {
+    font-family: var(--font-title);
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.15;
+    white-space: nowrap;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .filmstrip-en {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-faint);
+    line-height: 1.15;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Responsive — collapse portrait under stage on narrow viewports */
+  @media (max-width: 900px) {
+    .speaking-studio {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "head"
+        "portrait"
+        "stage"
+        "filmstrip";
+    }
+    .speaking-portrait-frame { aspect-ratio: 16 / 9; }
+    .speaking-scores { grid-template-columns: 1fr 1fr; }
+    .score-overall { grid-column: 1 / -1; width: 100%; height: 56px; border-radius: 6px; flex-direction: row; gap: 6px; }
+    .score-overall-num { font-size: 24px; }
+  }
+  @media (max-width: 540px) {
+    .pitch-mora { width: 30px; font-size: 32px; }
+    .pitch-mora-row { padding-top: 24px; }
+    .pitch-contour-svg { height: 20px; }
+  }
+
+  /* ─── Pitch & Tones basics page (Writing → Pitch) ───────────────── */
+  .pitch-page {
+    --pitch-line:          #1c1a18;
+    --pitch-line-user:     #7a9a5a;
+    --pitch-pattern-heiban:    #a8843c;
+    --pitch-pattern-atamadaka: #c34b30;
+    --pitch-pattern-nakadaka:  #8c6a3a;
+    --pitch-pattern-odaka:     #7a9a5a;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: clamp(20px, 2.2vw, 40px) clamp(16px, 2.4vw, 40px) clamp(64px, 6vw, 96px);
+  }
+  .pitch-page-head { margin-bottom: clamp(28px, 3vw, 48px); }
+  .pitch-page-eyebrow {
+    font-family: var(--font-menu-en);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .pitch-page-title {
+    font-family: var(--font-title);
+    font-size: clamp(36px, 4.5vw, 52px);
+    margin: 0 0 8px;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .pitch-page-title rt { font-size: 0.35em; color: var(--ink-faint); }
+  .pitch-page-sub {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: clamp(15px, 1.3vw, 17px);
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .pitch-section {
+    margin-top: clamp(32px, 3.6vw, 56px);
+    padding-top: clamp(20px, 2.2vw, 32px);
+    border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .pitch-section-title {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    font: inherit;
+    margin: 0 0 18px;
+  }
+  .pitch-section-title .num {
+    font-family: var(--font-title);
+    font-size: 26px;
+    color: var(--accent-vermilion, #c34b30);
+  }
+  .pitch-section-title .ja {
+    font-family: var(--font-title);
+    font-size: clamp(20px, 2vw, 28px);
+    color: var(--ink);
+  }
+  .pitch-section-title .en {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: clamp(14px, 1.2vw, 17px);
+    color: var(--ink-faint);
+  }
+  .pitch-section-body {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 68ch;
+  }
+  .pitch-section-body p { margin: 0 0 14px; }
+  .pitch-section-body strong { color: var(--ink); font-weight: 600; }
+  .pitch-section-body code {
+    font-family: var(--font-en);
+    background: color-mix(in srgb, var(--ink) 5%, transparent);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  .pitch-trio {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 22px;
+  }
+  .pitch-trio-card {
+    background: var(--paper-soft, #ece3d2);
+    border-radius: 4px;
+    padding: 18px 16px 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    text-align: center;
+  }
+  .pitch-trio-glyph {
+    display: inline-flex; align-items: flex-end;
+  }
+  .pitch-trio-gloss { display: flex; flex-direction: column; gap: 2px; margin: 0; }
+  .pitch-trio-gloss .ja {
+    font-family: var(--font-title);
+    font-size: 22px;
+    color: var(--ink);
+  }
+  .pitch-trio-gloss .en {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+  @media (max-width: 720px) {
+    .pitch-trio { grid-template-columns: 1fr; }
+  }
+  .pitch-examples {
+    display: flex; flex-direction: column;
+    gap: 14px; margin-top: 8px;
+  }
+  .pitch-example {
+    background: var(--paper-soft, #ece3d2);
+    border-radius: 4px;
+    padding: 18px 22px;
+  }
+  .pitch-example-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .pitch-example-play {
+    width: 34px; height: 34px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s;
+  }
+  .pitch-example-play svg { width: 12px; height: 12px; }
+  .pitch-example-play:hover {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    color: var(--ink);
+  }
+  .pitch-example-glyph {
+    display: flex; align-items: flex-end;
+    margin-bottom: 8px;
+  }
+  .pitch-example-en {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 4px 0 8px;
+  }
+  .pitch-example-desc {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .pitch-legend {
+    margin: 22px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px 0;
+  }
+  .pitch-legend-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+  .pitch-legend-row:last-child { border-bottom: none; }
+  .pitch-legend-row dt {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-title);
+    color: var(--ink);
+  }
+  .pitch-legend-row dd {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .pitch-legend-glyph {
+    width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    color: var(--accent-vermilion, #c34b30);
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .pitch-legend-name {
+    font-size: 14px;
+  }
+  @media (max-width: 720px) {
+    .pitch-legend-row { grid-template-columns: 1fr; }
+  }
+  .pitch-section-cta { text-align: center; }
+  .pitch-cta-prompt {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .pitch-cta-btn {
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 2px;
+    padding: 14px 36px;
+    background: var(--accent-vermilion, #c34b30);
+    color: var(--paper);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+  }
+  .pitch-cta-btn:hover { background: color-mix(in srgb, var(--accent-vermilion, #c34b30) 90%, #000); transform: translateY(-1px); }
+  .pitch-cta-btn .ja {
+    font-family: var(--font-title);
+    font-size: 22px;
+  }
+  .pitch-cta-btn .en {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 12px;
+    opacity: 0.85;
+  }
 </style>
 </head>
 <body>
@@ -15817,6 +16609,11 @@
   <aside class="flash-sidebar" id="flash-sidebar"></aside>
   <aside class="writing-sidebar" id="writing-sidebar"></aside>
   <aside class="particles-sidebar" id="particles-sidebar"></aside>
+  <!-- Speaking sub-system: second-rail sidebar showing categories (Food first;
+       later Greetings, Travel, Work). Phrases live in the bottom Up Next
+       filmstrip inside the main column, not in a third sidebar — per the
+       spread-with-bottom-rail layout decision in 2026-05-28-speaking.PRODUCT.md. -->
+  <aside class="speaking-sidebar" id="speaking-sidebar"></aside>
   <main class="main" id="main">
     <!-- Stepper slot — lives OUTSIDE main-inner so vocab pages can place
          the step nav flush to the top while keeping the card content
@@ -15887,13 +16684,19 @@ const SECTIONS = [
   { id: 'writing',    glyph: '基', ja: '基礎',  en: 'Basics' },
   { id: 'flashcards', glyph: '札', ja: '単語札', en: 'Flashcards' },
   { id: 'vocab',      glyph: '語', ja: '語彙',  en: 'Vocabulary' },
+  // Speaking — shadowing studio (Phase 1 of the Speaking sub-system).
+  // 話 = "speak". Sits between Vocabulary (receptive: see/hear/recognize)
+  // and Search (lookup) because the verb shifts here from absorbing to
+  // producing — the learner imitates, records, and is scored against
+  // the model. See docs/superpowers/specs/2026-05-28-speaking.PRODUCT.md.
+  { id: 'speaking',   glyph: '話', ja: 'はなす',  en: 'Speaking' },
   { id: 'search',     glyph: '検', ja: '検索',  en: 'Search' },
   { id: 'dictionary', glyph: '辞', ja: '辞書',   en: 'Dictionary' },
 ];
 
 function hashSection() {
   const h = (location.hash || '').replace('#', '');
-  return ['vocab','writing','flashcards','search','dictionary'].includes(h) ? h : lsGet('jp:section', 'vocab');
+  return ['vocab','writing','flashcards','speaking','search','dictionary'].includes(h) ? h : lsGet('jp:section', 'vocab');
 }
 
 const APP = {
@@ -16044,6 +16847,16 @@ const APP = {
   kanaSizeR: lsGet('jp:kana-size-r', 11),
   kanaFont:     lsGet('jp:kana-font', 'mincho'),
   writingPage:  lsGet('jp:writingPage', 'kana'),
+  // Speaking sub-system state. Single category + single phrase active at a
+  // time. Persisted across reloads so a session resumes where the learner
+  // left it. Permission state for the mic is NOT persisted — every load
+  // re-asks via the browser's native prompt the first time the user taps
+  // record. (We don't try to remember it; the browser already does, per
+  // origin, and pretending we control it would lie to the learner.)
+  speakingCategoryId: lsGet('jp:speakingCategory', null),
+  speakingPhraseId:   lsGet('jp:speakingPhrase', null),
+  speakingScores:     null,  // { rhythm, clarity, pitch, naturalness, overall } | null
+  speakingUserBuffer: null,  // AudioBuffer of the user's last recording — in-memory only, dies on phrase change
   particleIdx:  lsGet('jp:particleIdx', 0),
   // 'quiz' shows the test, 'particle' shows the single-particle lesson.
   particleMode: lsGet('jp:particleMode', 'lessons'),
@@ -16105,6 +16918,7 @@ function setSection(s) {
   scl.toggle('show-vocab-sidebar', s === 'vocab');
   scl.toggle('show-flash-sidebar', s === 'flashcards');
   scl.toggle('show-writing-sidebar', s === 'writing');
+  scl.toggle('show-speaking-sidebar', s === 'speaking');
   scl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
   // Order matters — updateSidebar queues the tier-1 brush into
   // _brushRenderQueue; renderMain then queues tier-2 and tier-3. If
@@ -18057,6 +18871,7 @@ function renderMain() {
   if (APP.section === 'vocab')           { renderVocab(el); renderVocabSidebar(); renderVocabBooksSidebar(); }
   else if (APP.section === 'writing')    { renderWriting(el); renderWritingSidebar(); renderParticlesSidebar(); }
   else if (APP.section === 'flashcards') renderFlashcards(el);
+  else if (APP.section === 'speaking')   { renderSpeaking(el); renderSpeakingSidebar(); }
   else if (APP.section === 'search')     renderSearch(el);
   else if (APP.section === 'dictionary') renderDictionary(el);
 }
@@ -23961,6 +24776,15 @@ const WRITING_PAGES = [
   // (time-of-day) chosen as the JP label because together they signal
   // both halves of the page: the weekly calendar and the clock.
   { id:'datetime',           glyph:'時', ja:'ようび・じこく',     en:'Days & Time' },
+  // Pitch & Tones — the speaking sub-system's teaching companion. Lives
+  // here under Basics rather than under Speaking because it's pure
+  // pedagogy (read, don't perform). 抑 (yoku) + 揚 (you) = "down + up",
+  // the canonical kanji compound for "intonation / pitch accent".
+  // Inherits all writing-section chrome; renders as a single editorial
+  // scroll with worked examples (the four named patterns) + a notation
+  // legend. See docs/superpowers/specs/2026-05-28-speaking.PRODUCT.md
+  // and .DESIGN.md §6.6.
+  { id:'pitch',              glyph:'抑', ja:'よくよう・トーン',   en:'Pitch & Tones' },
 ];
 
 function renderWritingSidebar() {
@@ -24033,6 +24857,7 @@ function renderWriting(container) {
   else if (actual === 'sentence-structure') renderWritingSentenceStructure(container);
   else if (actual === 'colors')             renderWritingColors(container);
   else if (actual === 'datetime')           renderWritingDatetime(container);
+  else if (actual === 'pitch')              renderWritingPitch(container);
 }
 
 function renderWritingKana(container) {
@@ -28315,6 +29140,1071 @@ document.addEventListener('keydown', (e) => {
   openJougoModal(tile);
 });
 
+// ════════════════════════════════════════════════════════════════════════
+// ── SPEAKING SUB-SYSTEM ─────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════
+// New main-nav category sitting between Vocabulary (receptive) and Search
+// (lookup). The Speaking section's verb is PRODUCE — the learner imitates,
+// records, gets scored. Spec: docs/superpowers/specs/2026-05-28-speaking.
+// {PRODUCT,DESIGN}.md.
+//
+// State model: APP.speakingCategoryId + APP.speakingPhraseId. Mic audio
+// lives in APP.speakingUserBuffer (AudioBuffer, RAM-only, dies on phrase
+// change). Scores live in APP.speakingScores (object | null).
+//
+// Pitch data: each phrase carries `chunks[]` where each chunk is { mora,
+// pitch } — `mora` is an array of strings each representing exactly ONE
+// mora (so じょ counts as one entry, not two), and `pitch` is a parallel
+// array of 'H' / 'L' marks. The OJAD-style contour line is computed from
+// these arrays at render time.
+
+window.SPEAKING_CATEGORIES = [
+  {
+    id: 'food',
+    kana: 'たべもの',
+    kanji: '食べ物',
+    en: 'Food & Meals',
+    glyph: '食',
+    portrait: 'food',
+    description: 'Greetings and exchanges at the table — what you say before, during, and after a meal.',
+    phrases: [
+      {
+        id: 'itadakimasu',
+        chunks: [
+          { mora: ['い','た','だ','き','ま','す'], pitch: ['L','H','H','H','L','L'] },
+        ],
+        kanji: '頂きます',
+        romaji: 'itadakimasu',
+        en: 'I humbly receive (said before eating).',
+        pattern: 'nakadaka',
+        accent: 4,
+        notes: 'A formula spoken before every meal — a thanks to everyone who made the food possible. Pitch falls after the 4th mora (き → ま).',
+      },
+      {
+        id: 'gochisousama',
+        chunks: [
+          { mora: ['ご','ち','そ','う','さ','ま','で','し','た'], pitch: ['L','H','H','H','H','H','H','H','H'] },
+        ],
+        kanji: 'ご馳走様でした',
+        romaji: 'gochisousama deshita',
+        en: 'Thank you for the feast (said after eating).',
+        pattern: 'heiban',
+        accent: 0,
+        notes: 'The closing counterpart to いただきます — said as you put down your chopsticks. Heiban — stays high all the way through, no fall.',
+      },
+      {
+        id: 'oishii-desu',
+        chunks: [
+          { mora: ['お','い','し','い'], pitch: ['L','H','L','L'] },
+          { mora: ['で','す'], pitch: ['L','L'] },
+        ],
+        kanji: '美味しいです',
+        romaji: 'oishii desu',
+        en: 'It is delicious.',
+        pattern: 'atamadaka',
+        accent: 2,
+        notes: 'おいしい drops sharply after the second mora — the い (high) → し (low) is the diagnostic. です is unaccented and follows the previous low.',
+      },
+      {
+        id: 'sushi-onegai',
+        chunks: [
+          { mora: ['お','す','し','を'], pitch: ['L','H','L','L'] },
+          { mora: ['お','ね','が','い','し','ま','す'], pitch: ['L','H','H','H','L','L','L'] },
+        ],
+        kanji: 'お寿司を お願いします',
+        romaji: 'osushi o onegai shimasu',
+        en: 'Sushi, please.',
+        pattern: 'nakadaka',
+        accent: 4,
+        notes: 'A polite ordering pattern: noun + を + おねがいします. The pitch drops after the 4th mora of おねがいします (い → し).',
+      },
+      {
+        id: 'mizu-kudasai',
+        chunks: [
+          { mora: ['お','み','ず'], pitch: ['L','H','L'] },
+          { mora: ['を'], pitch: ['L'] },
+          { mora: ['く','だ','さ','い'], pitch: ['L','H','H','L'] },
+        ],
+        kanji: 'お水を ください',
+        romaji: 'omizu o kudasai',
+        en: 'Water, please.',
+        pattern: 'nakadaka',
+        accent: 3,
+        notes: 'おみず is [2] (drop after み). ください is [3]: rises on だ, stays high on さ, falls on い.',
+      },
+      {
+        id: 'kanjou-onegai',
+        chunks: [
+          { mora: ['お','か','ん','じょ','う'], pitch: ['L','H','H','H','H'] },
+          { mora: ['お','ね','が','い','し','ま','す'], pitch: ['L','H','H','H','L','L','L'] },
+        ],
+        kanji: 'お勘定 お願いします',
+        romaji: 'okanjou onegai shimasu',
+        en: 'The bill, please.',
+        pattern: 'heiban',
+        accent: 0,
+        notes: 'おかんじょう (the bill / check) stays high all the way through — heiban. The small ょ in じょ counts as part of じ, not its own mora.',
+      },
+      {
+        id: 'sumimasen',
+        chunks: [
+          { mora: ['す','み','ま','せ','ん'], pitch: ['L','H','H','H','L'] },
+        ],
+        kanji: 'すみません',
+        romaji: 'sumimasen',
+        en: 'Excuse me / sorry (used to get a server\'s attention).',
+        pattern: 'nakadaka',
+        accent: 4,
+        notes: 'Drops after the 4th mora. Universal apology + attention-getter — your most-used Japanese word.',
+      },
+      {
+        id: 'menyu-onegai',
+        chunks: [
+          { mora: ['メ','ニュ','ー'], pitch: ['H','L','L'] },
+          { mora: ['を'], pitch: ['L'] },
+          { mora: ['お','ね','が','い','し','ま','す'], pitch: ['L','H','H','H','L','L','L'] },
+        ],
+        kanji: 'メニューを お願いします',
+        romaji: 'menyu o onegai shimasu',
+        en: 'A menu, please.',
+        pattern: 'atamadaka',
+        accent: 1,
+        notes: 'メニュー is atamadaka [1] — the first mora メ is HIGH, the rest fall. ニュ is one mora (the ュ attaches to ニ). The long mark ー counts as its own mora.',
+      },
+    ],
+  },
+];
+
+// Lookup helpers — keep callers compact.
+function findSpeakingCategory(id) {
+  return (window.SPEAKING_CATEGORIES || []).find(c => c.id === id);
+}
+function findSpeakingPhrase(catId, phraseId) {
+  const cat = findSpeakingCategory(catId);
+  if (!cat) return null;
+  return (cat.phrases || []).find(p => p.id === phraseId);
+}
+function defaultSpeakingCategory() {
+  return (window.SPEAKING_CATEGORIES || [])[0] || null;
+}
+function defaultSpeakingPhrase(cat) {
+  return cat && cat.phrases && cat.phrases[0] || null;
+}
+
+// ── Pitch contour SVG ───────────────────────────────────────────────────
+// Renders the OJAD-style line above a chunk of mora glyphs. Each mora is
+// allotted one column of width COL_W; the line steps between LOW_Y and
+// HIGH_Y depending on the H/L array. Returns an inline SVG string that
+// sits absolutely positioned above the mora row.
+//
+// `chunk` is { mora: [...strings], pitch: [...'H'|'L'] }. `tone` defaults
+// to 'model' (plain ink); 'user' draws the user-pitch overlay in the
+// sage-colored token. Both can coexist by stacking two SVGs.
+function renderPitchContourSVG(chunk, tone = 'model') {
+  const moraCount = (chunk.mora || []).length;
+  if (!moraCount) return '';
+  const COL_W = 36;       // matches the .pitch-mora width below
+  const HIGH_Y = 4;       // top of the SVG canvas — high pitch
+  const LOW_Y  = 18;      // bottom of the canvas — low pitch
+  const W = moraCount * COL_W;
+  const H = 24;
+  // Build a polyline: one point per mora at its column-center.
+  const pts = (chunk.pitch || []).map((p, i) => {
+    const x = i * COL_W + COL_W / 2;
+    const y = p === 'H' ? HIGH_Y : LOW_Y;
+    return `${x},${y}`;
+  }).join(' ');
+  // Color picked from the speaking-* tokens — see speaking.DESIGN.md.
+  const stroke = tone === 'user' ? 'var(--pitch-line-user)' : 'var(--pitch-line)';
+  const opacity = tone === 'user' ? '0.7' : '1';
+  return `
+    <svg class="pitch-contour-svg" viewBox="0 0 ${W} ${H}"
+         width="${W}" height="${H}"
+         preserveAspectRatio="none" aria-hidden="true"
+         style="--contour-tone:${tone}">
+      <polyline points="${pts}"
+                fill="none"
+                stroke="${stroke}"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                opacity="${opacity}" />
+      ${(chunk.pitch || []).map((p, i) => {
+        const x = i * COL_W + COL_W / 2;
+        const y = p === 'H' ? HIGH_Y : LOW_Y;
+        return `<circle cx="${x}" cy="${y}" r="2.2"
+                        fill="${stroke}" opacity="${opacity}"/>`;
+      }).join('')}
+    </svg>`;
+}
+
+// Pattern type chip HTML — small color-coded indicator beside the phrase.
+// Pattern names map to per-pattern color tokens declared in CSS.
+function renderPitchPatternChip(pattern, accent) {
+  if (!pattern) return '';
+  const labels = {
+    heiban:    { ja: '平板', en: 'heiban',    desc: 'flat — no drop' },
+    atamadaka: { ja: '頭高', en: 'atamadaka', desc: 'head-high — drop after mora 1' },
+    nakadaka:  { ja: '中高', en: 'nakadaka',  desc: `middle-high — drop after mora ${accent || '?'}` },
+    odaka:     { ja: '尾高', en: 'odaka',     desc: 'tail-high — drop on particle' },
+  };
+  const l = labels[pattern] || { ja: pattern, en: pattern, desc: '' };
+  return `
+    <span class="pitch-pattern-chip" data-pattern="${escAttr(pattern)}"
+          title="${escAttr(l.en + ' — ' + l.desc)}">
+      <span class="pitch-pattern-ja">${escHTML(l.ja)}</span>
+      <span class="pitch-pattern-en">${escHTML(l.en)}</span>
+      ${accent != null ? `<span class="pitch-pattern-num">[${accent}]</span>` : ''}
+    </span>`;
+}
+
+// ── Mora row renderer — used in both the studio and the pitch basics page.
+function renderMoraRow(chunk, tone = 'model') {
+  return `
+    <span class="pitch-mora-row">
+      ${renderPitchContourSVG(chunk, tone)}
+      ${(chunk.mora || []).map((m, i) => `
+        <span class="pitch-mora" data-pitch="${escAttr(chunk.pitch[i] || 'L')}">${escHTML(m)}</span>
+      `).join('')}
+    </span>`;
+}
+
+// ── Speaking sidebar (categories list) ────────────────────────────────
+function renderSpeakingSidebar() {
+  const el = document.getElementById('speaking-sidebar');
+  if (!el) return;
+  const cats = window.SPEAKING_CATEGORIES || [];
+  el.innerHTML = `
+    <div class="flash-sidebar-head">categories</div>
+    <ul class="cat-list">
+      ${cats.map(c => {
+        const isActive = c.id === APP.speakingCategoryId;
+        return `
+        <li>
+          <button class="cat-item ${isActive ? 'active' : ''}" data-speaking-cat="${escAttr(c.id)}">
+            <span class="cat-glyph">${escHTML(c.glyph)}</span>
+            <span class="cat-label">
+              <span class="cat-ja">${escHTML(c.kana)}</span>
+              <span class="cat-en">${escHTML(c.en)}</span>
+            </span>
+            ${isActive ? activeBrushHTML(2) : ''}
+          </button>
+        </li>`;
+      }).join('')}
+    </ul>`;
+  el.querySelectorAll('[data-speaking-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newId = btn.dataset.speakingCat;
+      if (newId === APP.speakingCategoryId) return;
+      APP.speakingCategoryId = newId;
+      lsSet('jp:speakingCategory', newId);
+      // Reset phrase to first in the new category — sidebar click is a
+      // "start fresh" gesture (matches resetBookEntryState contract in
+      // the vocab sub-system).
+      const cat = findSpeakingCategory(newId);
+      APP.speakingPhraseId = (cat && cat.phrases[0]) ? cat.phrases[0].id : null;
+      lsSet('jp:speakingPhrase', APP.speakingPhraseId);
+      stopAndForgetUserRecording();
+      APP.speakingScores = null;
+      renderSpeaking(document.getElementById('main-inner'));
+      renderSpeakingSidebar();
+    });
+  });
+}
+
+// ── Studio screen ─────────────────────────────────────────────────────
+function renderSpeaking(container) {
+  if (typeof applyContextBg === 'function') applyContextBg();
+  // Resolve current state defensively — persisted ids may be stale.
+  let cat = APP.speakingCategoryId && findSpeakingCategory(APP.speakingCategoryId);
+  if (!cat) cat = defaultSpeakingCategory();
+  if (!cat) { container.innerHTML = `<div class="empty-state">No speaking categories registered.</div>`; return; }
+  if (APP.speakingCategoryId !== cat.id) {
+    APP.speakingCategoryId = cat.id;
+    lsSet('jp:speakingCategory', cat.id);
+  }
+  let phrase = APP.speakingPhraseId && findSpeakingPhrase(cat.id, APP.speakingPhraseId);
+  if (!phrase) phrase = defaultSpeakingPhrase(cat);
+  if (!phrase) { container.innerHTML = `<div class="empty-state">${escHTML(cat.en)} — no phrases yet.</div>`; return; }
+  if (APP.speakingPhraseId !== phrase.id) {
+    APP.speakingPhraseId = phrase.id;
+    lsSet('jp:speakingPhrase', phrase.id);
+  }
+  container.innerHTML = speakingStudioHTML(cat, phrase);
+  wireSpeakingStudio(cat, phrase);
+}
+
+function speakingStudioHTML(cat, phrase) {
+  const phraseIdx = cat.phrases.findIndex(p => p.id === phrase.id);
+  const phraseTotal = cat.phrases.length;
+  const portraitSrc = `images/speaking/portrait-${escAttr(cat.portrait || cat.id)}.webp`;
+  const fullKana = (phrase.chunks || []).map(c => (c.mora || []).join('')).join(' ');
+  // Mora-by-mora chunk rendering for the display phrase. Each chunk shows
+  // the pitch contour SVG above the row of mora glyphs; chunks are spaced
+  // by a small gap so the eye sees word boundaries.
+  const phraseHTML = (phrase.chunks || []).map(chunk => renderMoraRow(chunk, 'model')).join(
+    `<span class="phrase-chunk-gap" aria-hidden="true">&nbsp;</span>`
+  );
+  // Score chips. Filled-dots = round(score / 20), capped at 5.
+  const scores = APP.speakingScores || { rhythm: null, clarity: null, pitch: null, naturalness: null, overall: null };
+  const chipHTML = (k, ja, en, glyph) => {
+    const s = scores[k];
+    const filled = s == null ? 0 : Math.max(0, Math.min(5, Math.round(s / 20)));
+    return `
+      <div class="score-chip" data-score-dim="${k}">
+        <span class="score-chip-glyph" aria-hidden="true">${glyph}</span>
+        <span class="score-chip-label">
+          <span class="score-chip-ja">${escHTML(ja)}</span>
+          <span class="score-chip-en">${escHTML(en)}</span>
+        </span>
+        <span class="score-chip-dots" aria-label="${s == null ? 'not yet scored' : s + ' out of 100'}">
+          ${[0,1,2,3,4].map(i => `<span class="dot ${i < filled ? 'is-filled' : ''}"></span>`).join('')}
+        </span>
+      </div>`;
+  };
+  const overall = scores.overall;
+  // Pre-built glyph SVGs (sumi-e accents — small, ink-only).
+  const G_RHYTHM      = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 12 Q 7 4, 12 12 T 21 12"/></svg>`;
+  const G_CLARITY     = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 4 L13 11 L20 12 L13 13 L12 20 L11 13 L4 12 L11 11 Z"/></svg>`;
+  const G_PITCH       = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 8,17 8,7 15,7 15,17 21,17"/></svg>`;
+  const G_NATURALNESS = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 Q 5 16, 5 10 Q 5 4, 12 3 Q 19 4, 19 10 Q 19 16, 12 21 Z M12 3 Q 12 12, 12 21"/></svg>`;
+  const G_MIC = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="3" width="6" height="11" rx="3"/>
+    <path d="M5 12a7 7 0 0 0 14 0"/>
+    <path d="M12 19v3"/>
+  </svg>`;
+  const G_PLAY = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>`;
+  const G_BACK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>`;
+  // Up Next filmstrip.
+  const filmstripHTML = `
+    <nav class="speaking-filmstrip" aria-label="Up next phrases">
+      <div class="filmstrip-label">
+        <span class="ja">これからの<br>フレーズ</span>
+        <span class="en">Up Next</span>
+      </div>
+      <button class="filmstrip-arrow filmstrip-prev" data-speaking-walk="-1" aria-label="Previous phrase">
+        ${G_BACK}
+      </button>
+      <ol class="filmstrip-track">
+        ${cat.phrases.map((p, i) => {
+          const isCurrent = p.id === phrase.id;
+          const isPast = i < phraseIdx;
+          const enShort = (p.en || '').length > 32 ? (p.en || '').slice(0, 30) + '…' : (p.en || '');
+          const kanaPreview = (p.chunks || []).map(c => (c.mora || []).join('')).join(' ');
+          return `
+            <li class="filmstrip-item ${isCurrent ? 'is-current' : ''} ${isPast ? 'is-past' : ''}">
+              <button class="filmstrip-card" data-speaking-phrase="${escAttr(p.id)}"
+                      type="button"
+                      aria-label="${escAttr(kanaPreview + ' — ' + (p.en || ''))}"
+                      aria-current="${isCurrent ? 'true' : 'false'}">
+                <span class="filmstrip-num" aria-hidden="true">${i + 1}</span>
+                <span class="filmstrip-text">
+                  <span class="filmstrip-kana">${escHTML(kanaPreview)}</span>
+                  <span class="filmstrip-en">${escHTML(enShort)}</span>
+                </span>
+              </button>
+            </li>`;
+        }).join('')}
+      </ol>
+      <button class="filmstrip-arrow filmstrip-next" data-speaking-walk="+1" aria-label="Next phrase">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>
+    </nav>`;
+  return `
+    <div class="speaking-studio" tabindex="-1" data-category-id="${escAttr(cat.id)}" data-phrase-id="${escAttr(phrase.id)}">
+      <header class="speaking-studio-head" style="grid-column:1/-1">
+        <h1 class="speaking-head-title">
+          <span class="speaking-head-en">PHRASE BY PHRASE STUDIO</span>
+          <span class="speaking-head-dot" aria-hidden="true">·</span>
+          <span class="speaking-head-ja">フレーズごとに話す</span>
+        </h1>
+        <p class="speaking-head-sub"><em>Listen, Imitate, Speak Japanese.</em></p>
+      </header>
+
+      <aside class="speaking-portrait" aria-hidden="true">
+        <div class="speaking-portrait-frame">
+          <image-slot image-key="speaking/portrait-${escAttr(cat.portrait || cat.id)}" readonly></image-slot>
+        </div>
+      </aside>
+
+      <section class="speaking-stage" aria-label="Practice stage">
+        <div class="speaking-stage-eyebrow">
+          <span class="eyebrow-glyph" aria-hidden="true">✿</span>
+          <span class="eyebrow-text">PHRASE ${phraseIdx + 1} / ${phraseTotal}</span>
+        </div>
+
+        <div class="speaking-phrase">
+          <div class="phrase-mora-row">${phraseHTML}</div>
+          ${renderPitchPatternChip(phrase.pattern, phrase.accent)}
+        </div>
+        <p class="speaking-phrase-en"><em>${escHTML(phrase.en || '')}</em></p>
+
+        <div class="speaking-mic-row">
+          <button class="speaking-mic" id="speaking-mic" type="button"
+                  data-state="idle"
+                  aria-label="Tap to record">
+            ${G_MIC}
+          </button>
+          <div class="speaking-mic-labels">
+            <span class="mic-label-ja" id="speaking-mic-label-ja">録音する</span>
+            <span class="mic-label-en" id="speaking-mic-label-en">Tap to Record</span>
+          </div>
+        </div>
+
+        <div class="speaking-waveforms" aria-label="Audio waveforms">
+          <div class="waveform-row waveform-original">
+            <div class="waveform-label">
+              <span class="ja">お手本</span>
+              <span class="en"><em>Original</em></span>
+            </div>
+            <button class="waveform-play" id="speaking-play-original" type="button" aria-label="Play the model phrase">
+              ${G_PLAY}
+            </button>
+            <svg class="waveform-svg" id="waveform-original-svg" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true">
+              ${synthesizedWaveformPath(phrase, 'original')}
+            </svg>
+            <div class="waveform-duration" id="waveform-original-duration">00:00 / 00:00</div>
+          </div>
+          <div class="waveform-row waveform-user">
+            <div class="waveform-label">
+              <span class="ja">あなた</span>
+              <span class="en"><em>Your Version</em></span>
+            </div>
+            <button class="waveform-play" id="speaking-play-user" type="button" aria-label="Play your recording" disabled>
+              ${G_PLAY}
+            </button>
+            <svg class="waveform-svg" id="waveform-user-svg" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0,20 L600,20" stroke="var(--waveform-user)" stroke-width="0.8" opacity="0.3" fill="none"/>
+            </svg>
+            <div class="waveform-duration" id="waveform-user-duration">— / —</div>
+          </div>
+        </div>
+
+        <div class="speaking-scores">
+          ${chipHTML('rhythm',      'リズム',     'Rhythm',      G_RHYTHM)}
+          ${chipHTML('clarity',     'はっきりさ', 'Clarity',     G_CLARITY)}
+          ${chipHTML('pitch',       'ピッチ',     'Pitch',       G_PITCH)}
+          ${chipHTML('naturalness', '自然さ',     'Naturalness', G_NATURALNESS)}
+          <div class="score-overall" data-has-score="${overall != null}">
+            <span class="score-overall-num">${overall != null ? overall : '—'}</span>
+            <span class="score-overall-denom">/100</span>
+          </div>
+        </div>
+
+        ${phrase.notes ? `<p class="speaking-phrase-notes">${escHTML(phrase.notes)}</p>` : ''}
+      </section>
+
+      ${filmstripHTML}
+    </div>`;
+}
+
+// ── Synthesized waveform SVG path for the model ──────────────────────────
+// Web Speech API (the TTS the model uses) doesn't expose an audio buffer,
+// so we can't draw the model's REAL waveform. The DESIGN.md §6.2 calls for
+// a deterministic shape derived from the phrase content — looks like a
+// real waveform but generated. We hash the mora count + pitch pattern into
+// a pseudo-random seed, then synthesize 120 amplitude samples that respect
+// the H/L pattern (higher amplitude during 'H' sections) so the shape
+// reads as a real signal that matches the phrase's rhythm.
+function synthesizedWaveformPath(phrase, kind) {
+  const W = 600, H = 40, MID = H / 2;
+  const morasFlat = (phrase.chunks || []).flatMap(c => (c.pitch || []).map(p => p));
+  if (!morasFlat.length) return `<path d="M0,${MID} L${W},${MID}" stroke="var(--waveform-original)" stroke-width="0.8" fill="none"/>`;
+  // Deterministic pseudo-random — same phrase id always → same shape.
+  const seedStr = (phrase.id || 'x') + ':' + kind;
+  let seed = 0;
+  for (let i = 0; i < seedStr.length; i++) seed = (seed * 31 + seedStr.charCodeAt(i)) | 0;
+  function rnd() { seed = (seed * 1103515245 + 12345) | 0; return ((seed >>> 16) & 0x7fff) / 0x7fff; }
+  const SAMPLES = 120;
+  const bars = [];
+  // Build bars: each bar's height comes from (a) which mora it lands on
+  // (H mora → taller, L mora → shorter), and (b) jitter for natural look.
+  for (let i = 0; i < SAMPLES; i++) {
+    const moraIdx = Math.floor((i / SAMPLES) * morasFlat.length);
+    const isHigh = morasFlat[moraIdx] === 'H';
+    const base = isHigh ? 0.55 : 0.30;
+    const jitter = (rnd() - 0.5) * 0.45;
+    const env = Math.sin(Math.PI * (i / SAMPLES));   // amplitude envelope (fade in/out)
+    const amp = Math.max(0.05, (base + jitter) * env);
+    bars.push(amp);
+  }
+  const stroke = kind === 'user' ? 'var(--waveform-user)' : 'var(--waveform-original)';
+  // Render as paired bars (top + bottom) for a symmetric look.
+  const barW = W / SAMPLES;
+  return bars.map((a, i) => {
+    const x = i * barW + barW / 2;
+    const h = a * (H - 6);
+    return `<line x1="${x.toFixed(1)}" y1="${(MID - h / 2).toFixed(1)}"
+                  x2="${x.toFixed(1)}" y2="${(MID + h / 2).toFixed(1)}"
+                  stroke="${stroke}" stroke-width="${(barW * 0.6).toFixed(1)}" stroke-linecap="round"/>`;
+  }).join('');
+}
+
+// Build a REAL waveform SVG path from the user's recorded AudioBuffer.
+// Downsamples the buffer to ~120 amplitude bars; same visual style as
+// the synthesized model waveform so the two rows read as a pair.
+function realWaveformPath(audioBuffer, color) {
+  const W = 600, H = 40, MID = H / 2, SAMPLES = 120;
+  if (!audioBuffer || !audioBuffer.length) return '';
+  const ch = audioBuffer.getChannelData(0);
+  const block = Math.floor(ch.length / SAMPLES) || 1;
+  const bars = [];
+  for (let i = 0; i < SAMPLES; i++) {
+    let max = 0;
+    const start = i * block;
+    const end = Math.min(ch.length, start + block);
+    for (let j = start; j < end; j++) {
+      const v = Math.abs(ch[j]);
+      if (v > max) max = v;
+    }
+    // Boost so quiet phrases still show — cap at 1 to avoid clipping
+    // into the bar's visual space.
+    bars.push(Math.min(1, max * 2.5));
+  }
+  const barW = W / SAMPLES;
+  return bars.map((a, i) => {
+    const x = i * barW + barW / 2;
+    const h = a * (H - 6);
+    return `<line x1="${x.toFixed(1)}" y1="${(MID - h / 2).toFixed(1)}"
+                  x2="${x.toFixed(1)}" y2="${(MID + h / 2).toFixed(1)}"
+                  stroke="${color}" stroke-width="${(barW * 0.6).toFixed(1)}" stroke-linecap="round"/>`;
+  }).join('');
+}
+
+// ── Mic capture + scoring ─────────────────────────────────────────────
+// We capture audio with MediaRecorder, decode into an AudioBuffer for
+// the waveform draw + scoring, then throw the raw blob away. No data
+// persists past the current phrase (per restriction in PRODUCT.md §4).
+
+const SpeakingRecorder = (function () {
+  let mediaStream = null;
+  let mediaRecorder = null;
+  let chunks = [];
+  let startTime = 0;
+  let silenceTimer = null;
+  let analyser = null;
+  let audioCtx = null;
+  let onStop = null;
+
+  function ensureAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  async function start(onDoneCallback) {
+    onStop = onDoneCallback;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('MediaDevices unavailable');
+    }
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    chunks = [];
+    mediaRecorder = new MediaRecorder(mediaStream);
+    mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    mediaRecorder.onstop = async () => {
+      const blob = new Blob(chunks, { type: chunks[0] && chunks[0].type || 'audio/webm' });
+      const arrayBuf = await blob.arrayBuffer();
+      const ctx = ensureAudioCtx();
+      let audioBuffer = null;
+      try { audioBuffer = await ctx.decodeAudioData(arrayBuf.slice(0)); }
+      catch (e) { audioBuffer = null; }
+      cleanup();
+      if (onStop) onStop({ audioBuffer, duration: (Date.now() - startTime) / 1000 });
+    };
+    // Live analyser for the recording-pulse — feeds the mic ring's
+    // size from real input volume rather than a fake animation.
+    const ctx = ensureAudioCtx();
+    const srcNode = ctx.createMediaStreamSource(mediaStream);
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    srcNode.connect(analyser);
+    startTime = Date.now();
+    mediaRecorder.start();
+    // Hard cap at 10s — protects against the user forgetting to stop.
+    silenceTimer = setTimeout(() => stop(), 10000);
+    return { analyser };
+  }
+
+  function stop() {
+    if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    else cleanup();
+  }
+
+  function cleanup() {
+    if (mediaStream) {
+      mediaStream.getTracks().forEach(t => t.stop());
+      mediaStream = null;
+    }
+    mediaRecorder = null;
+    analyser = null;
+  }
+
+  function getAnalyser() { return analyser; }
+  function isRecording() { return mediaRecorder && mediaRecorder.state === 'recording'; }
+
+  return { start, stop, getAnalyser, isRecording };
+})();
+
+function stopAndForgetUserRecording() {
+  if (SpeakingRecorder.isRecording()) SpeakingRecorder.stop();
+  APP.speakingUserBuffer = null;
+  APP.speakingScores = null;
+}
+
+// ── Heuristic scoring engine ─────────────────────────────────────────
+// Each score is 0-100 derived from ONE real signal. No randomness.
+// All four dimensions are intentionally lenient — a learner is here to
+// improve, not to be punished. A relatively-poor attempt scores 55–70;
+// a good attempt 75–90; a model-matching attempt 90+. We never report
+// 100 (no perfect-verdict, per restriction).
+function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
+  if (!audioBuffer) return null;
+  // (1) RHYTHM — duration alignment with model. We estimate the model
+  // duration from the mora count: a comfortable speaking pace in JP
+  // is about 6-8 mora per second, so we use 150ms per mora as a base
+  // plus a small per-chunk pause. Closer the user's duration to this
+  // estimate, higher the rhythm score.
+  const moraCount = (phrase.chunks || []).reduce((n, c) => n + (c.mora || []).length, 0);
+  const chunkGapMs = ((phrase.chunks || []).length - 1) * 120;
+  const expectedSec = (moraCount * 0.15) + (chunkGapMs / 1000);
+  const userSec = durationSec || (audioBuffer.duration);
+  const ratio = userSec / (expectedSec || 0.1);
+  // Score peaks at ratio=1.0 (perfect match); falls off as ratio
+  // diverges either way. Half-credit at ratio=0.5 or ratio=2.0.
+  const rhythm = Math.round(Math.max(45, Math.min(95, 95 - Math.abs(Math.log(ratio)) * 35)));
+
+  // (2) CLARITY — RMS volume envelope. We want a strong signal, but not
+  // clipping (which would suggest the user shouted into the mic).
+  const ch = audioBuffer.getChannelData(0);
+  let sumSq = 0, peak = 0;
+  for (let i = 0; i < ch.length; i++) {
+    const v = ch[i];
+    sumSq += v * v;
+    const a = Math.abs(v); if (a > peak) peak = a;
+  }
+  const rms = Math.sqrt(sumSq / ch.length);
+  // Target RMS ~0.08-0.18 (comfortable speaking volume). Below = quiet,
+  // above 0.35 = probably clipping.
+  let clarity;
+  if (rms < 0.02) clarity = 45;
+  else if (rms < 0.06) clarity = 60 + Math.round((rms / 0.06) * 15);
+  else if (rms < 0.20) clarity = 78 + Math.round(((rms - 0.06) / 0.14) * 14);
+  else if (rms < 0.40) clarity = 92 - Math.round(((rms - 0.20) / 0.20) * 12);
+  else clarity = 70;
+  if (peak > 0.98) clarity = Math.max(55, clarity - 10);  // clipping penalty
+  clarity = Math.max(45, Math.min(95, clarity));
+
+  // (3) PITCH — autocorrelation pitch detection on small windows across
+  // the recording. We derive a coarse H/L sequence for the user and
+  // compare it to the phrase's expected H/L pattern. The agreement rate
+  // becomes the pitch score.
+  const pitchAgree = estimatePitchAgreement(phrase, audioBuffer);
+  // Map agreement (0-1) → score (50-95). Even random alignment with
+  // a binary H/L pattern is ~50% — we anchor 0.5 agreement at 55,
+  // 1.0 agreement at 92.
+  const pitch = Math.round(Math.max(50, Math.min(92, 55 + (pitchAgree - 0.5) * 74)));
+
+  // (4) NATURALNESS — composite of the other three's stddev. Penalize
+  // imbalance: a person scoring 90/90/55/?? is less "natural" overall
+  // than one scoring 75/75/75/??. Encourages even improvement.
+  const trio = [rhythm, clarity, pitch];
+  const meanTrio = trio.reduce((a, b) => a + b, 0) / 3;
+  const sd = Math.sqrt(trio.reduce((a, b) => a + (b - meanTrio) ** 2, 0) / 3);
+  // Lower sd = higher naturalness. Anchor: sd=0 → 92, sd=20 → 60.
+  const naturalness = Math.round(Math.max(50, Math.min(94, 92 - sd * 1.6)));
+
+  const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
+  return { rhythm, clarity, pitch, naturalness, overall };
+}
+
+// Coarse pitch agreement estimator. Slices the audio into windows aligned
+// to the mora sequence, runs a cheap autocorrelation on each, labels each
+// window 'H' or 'L' relative to the median pitch across the whole utterance,
+// then compares to the expected pattern. Returns a 0-1 agreement rate.
+function estimatePitchAgreement(phrase, audioBuffer) {
+  const ch = audioBuffer.getChannelData(0);
+  const sr = audioBuffer.sampleRate;
+  const morasFlat = (phrase.chunks || []).flatMap(c => (c.pitch || []).map(p => p));
+  if (!morasFlat.length || ch.length < sr * 0.2) return 0.5;
+  // Trim leading/trailing silence so the mora windows line up better.
+  const SILENCE = 0.01;
+  let trimStart = 0, trimEnd = ch.length;
+  for (let i = 0; i < ch.length; i++) { if (Math.abs(ch[i]) > SILENCE) { trimStart = i; break; } }
+  for (let i = ch.length - 1; i >= 0; i--) { if (Math.abs(ch[i]) > SILENCE) { trimEnd = i; break; } }
+  const seg = ch.subarray(Math.max(0, trimStart - sr * 0.02), Math.min(ch.length, trimEnd + sr * 0.02));
+  if (seg.length < sr * 0.1) return 0.5;
+  const moraWinLen = Math.floor(seg.length / morasFlat.length);
+  if (moraWinLen < 200) return 0.5;
+  // Per-mora pitch estimate via autocorrelation peak.
+  const pitches = [];
+  for (let i = 0; i < morasFlat.length; i++) {
+    const start = i * moraWinLen;
+    const win = seg.subarray(start, start + moraWinLen);
+    pitches.push(estimatePitchHz(win, sr));
+  }
+  const valid = pitches.filter(p => p > 50 && p < 500);
+  if (valid.length < morasFlat.length / 2) return 0.5;
+  // Use median of valid pitches as the H/L threshold for this speaker —
+  // any window above the median labels as H, below = L. This auto-
+  // calibrates to the user's vocal range (no fixed 200Hz threshold that
+  // would punish bass voices or reward sopranos).
+  const sorted = [...valid].sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  let agree = 0, total = 0;
+  for (let i = 0; i < morasFlat.length; i++) {
+    if (!(pitches[i] > 50 && pitches[i] < 500)) continue;
+    const userLabel = pitches[i] >= median ? 'H' : 'L';
+    if (userLabel === morasFlat[i]) agree++;
+    total++;
+  }
+  return total ? agree / total : 0.5;
+}
+
+// Cheap autocorrelation pitch detector. Returns Hz or 0 if no clear pitch.
+function estimatePitchHz(buf, sr) {
+  if (!buf || buf.length < 100) return 0;
+  const minF = 70, maxF = 400;
+  const minLag = Math.floor(sr / maxF);
+  const maxLag = Math.floor(sr / minF);
+  let bestLag = 0, bestCorr = 0;
+  // Pre-compute energy for normalization.
+  let energy = 0;
+  for (let i = 0; i < buf.length; i++) energy += buf[i] * buf[i];
+  if (energy < 1e-4) return 0;
+  for (let lag = minLag; lag < maxLag && lag < buf.length; lag++) {
+    let corr = 0;
+    for (let i = 0; i < buf.length - lag; i++) corr += buf[i] * buf[i + lag];
+    corr /= (buf.length - lag);
+    if (corr > bestCorr) { bestCorr = corr; bestLag = lag; }
+  }
+  if (bestLag === 0) return 0;
+  return sr / bestLag;
+}
+
+// ── Studio wiring ────────────────────────────────────────────────────
+function wireSpeakingStudio(cat, phrase) {
+  const root = document.querySelector('.speaking-studio');
+  if (!root) return;
+
+  // Auto-play the model once on phrase mount (per pedagogical pillar
+  // §5.1 "Listen first, twice" — auto once, replay on demand).
+  const fullKana = (phrase.chunks || []).map(c => (c.mora || []).join('')).join(' ');
+  // Run after layout settles + voices load.
+  setTimeout(() => {
+    if (typeof TTS !== 'undefined' && TTS.speak) TTS.speak(fullKana);
+  }, 300);
+
+  // Replay-model button.
+  const replayBtn = root.querySelector('#speaking-play-original');
+  if (replayBtn) replayBtn.addEventListener('click', () => {
+    if (typeof TTS !== 'undefined' && TTS.speak) TTS.speak(fullKana);
+  });
+
+  // User-playback (after recording exists).
+  const userPlayBtn = root.querySelector('#speaking-play-user');
+  if (userPlayBtn) userPlayBtn.addEventListener('click', () => {
+    if (!APP.speakingUserBuffer) return;
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ctx.createBufferSource();
+    src.buffer = APP.speakingUserBuffer;
+    src.connect(ctx.destination);
+    src.onended = () => ctx.close();
+    src.start();
+  });
+
+  // Mic button.
+  const micBtn = root.querySelector('#speaking-mic');
+  const micLabelJa = root.querySelector('#speaking-mic-label-ja');
+  const micLabelEn = root.querySelector('#speaking-mic-label-en');
+  const userSvg = root.querySelector('#waveform-user-svg');
+  const userDur = root.querySelector('#waveform-user-duration');
+  if (micBtn) micBtn.addEventListener('click', async () => {
+    if (SpeakingRecorder.isRecording()) {
+      SpeakingRecorder.stop();
+      return;
+    }
+    micBtn.dataset.state = 'requesting';
+    if (micLabelJa) micLabelJa.textContent = '準備中…';
+    if (micLabelEn) micLabelEn.textContent = 'Preparing…';
+    try {
+      await SpeakingRecorder.start(({ audioBuffer, duration }) => {
+        // Recording finished. Compute scores + draw real waveform.
+        APP.speakingUserBuffer = audioBuffer;
+        const scores = scoreSpeakingAttempt(phrase, audioBuffer, duration);
+        APP.speakingScores = scores;
+        if (userSvg && audioBuffer) {
+          userSvg.innerHTML = realWaveformPath(audioBuffer, 'var(--waveform-user)');
+        }
+        if (userDur) {
+          const m = Math.floor(duration / 60), s = Math.round(duration % 60);
+          userDur.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+        if (userPlayBtn) userPlayBtn.disabled = false;
+        // Rerender scores in place (don't full-rerender the studio —
+        // that would lose the user waveform we just drew). Reflect
+        // updated scores into the score chips.
+        updateSpeakingScoresInPlace();
+        micBtn.dataset.state = 'idle';
+        if (micLabelJa) micLabelJa.textContent = '録音する';
+        if (micLabelEn) micLabelEn.textContent = 'Tap to Record';
+      });
+      micBtn.dataset.state = 'recording';
+      if (micLabelJa) micLabelJa.textContent = '録音中…';
+      if (micLabelEn) micLabelEn.textContent = 'Recording';
+    } catch (e) {
+      micBtn.dataset.state = 'denied';
+      if (micLabelJa) micLabelJa.textContent = 'マイク許可なし';
+      if (micLabelEn) micLabelEn.textContent = 'Mic permission needed';
+      console.warn('Mic recording failed:', e);
+    }
+  });
+
+  // Filmstrip clicks.
+  root.querySelectorAll('[data-speaking-phrase]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.speakingPhrase;
+      if (id === APP.speakingPhraseId) return;
+      APP.speakingPhraseId = id;
+      lsSet('jp:speakingPhrase', id);
+      stopAndForgetUserRecording();
+      renderSpeaking(document.getElementById('main-inner'));
+    });
+  });
+  // Walk arrows.
+  root.querySelectorAll('[data-speaking-walk]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dir = parseInt(btn.dataset.speakingWalk, 10) || 0;
+      const idx = cat.phrases.findIndex(p => p.id === phrase.id);
+      const next = cat.phrases[(idx + dir + cat.phrases.length) % cat.phrases.length];
+      if (next && next.id !== phrase.id) {
+        APP.speakingPhraseId = next.id;
+        lsSet('jp:speakingPhrase', next.id);
+        stopAndForgetUserRecording();
+        renderSpeaking(document.getElementById('main-inner'));
+      }
+    });
+  });
+
+  // Keyboard navigation.
+  root.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowLeft')        { e.preventDefault(); root.querySelector('[data-speaking-walk="-1"]').click(); }
+    else if (e.key === 'ArrowRight')  { e.preventDefault(); root.querySelector('[data-speaking-walk="+1"]').click(); }
+    else if (e.key === ' ' || e.key === 'Enter') {
+      // Space / Enter on the practice surface = replay model. Mic activates
+      // via mouse/touch only — accidental spacebar should NOT start the mic.
+      if (document.activeElement === root || document.activeElement === document.body) {
+        e.preventDefault();
+        if (typeof TTS !== 'undefined' && TTS.speak) TTS.speak(fullKana);
+      }
+    }
+  });
+  // Mount focus so the keyboard handler picks up arrow keys.
+  setTimeout(() => { if (root && document.activeElement === document.body) root.focus({ preventScroll: true }); }, 100);
+}
+
+// Update score chips in place after a recording lands — avoids a full
+// re-render that would lose the user's waveform.
+function updateSpeakingScoresInPlace() {
+  const root = document.querySelector('.speaking-studio');
+  if (!root) return;
+  const s = APP.speakingScores || {};
+  ['rhythm','clarity','pitch','naturalness'].forEach(k => {
+    const chip = root.querySelector(`.score-chip[data-score-dim="${k}"]`);
+    if (!chip) return;
+    const dots = chip.querySelectorAll('.dot');
+    const filled = s[k] == null ? 0 : Math.max(0, Math.min(5, Math.round(s[k] / 20)));
+    dots.forEach((d, i) => d.classList.toggle('is-filled', i < filled));
+    const dotsHost = chip.querySelector('.score-chip-dots');
+    if (dotsHost) dotsHost.setAttribute('aria-label', s[k] == null ? 'not yet scored' : s[k] + ' out of 100');
+  });
+  const overallEl = root.querySelector('.score-overall');
+  if (overallEl) {
+    const has = s.overall != null;
+    overallEl.dataset.hasScore = String(has);
+    const num = overallEl.querySelector('.score-overall-num');
+    if (num) num.textContent = has ? s.overall : '—';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// ── Pitch & Tones basics page ───────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════
+// Teaching companion for the speaking sub-system. Single editorial scroll
+// under Writing. Worked examples of the four canonical patterns +
+// notation legend. Spec: 2026-05-28-speaking.DESIGN.md §6.6.
+function renderWritingPitch(container) {
+  const examples = [
+    {
+      pattern: 'heiban', accent: 0,
+      word: { mora: ['さ','く','ら'], pitch: ['L','H','H'] },
+      particle: { mora: ['が'], pitch: ['H'] },
+      headEn: 'sakura — cherry blossom',
+      desc: 'Heiban (平板) is flat — the pitch rises after the first mora and stays high. The following particle stays high too. Most Japanese nouns are heiban.',
+    },
+    {
+      pattern: 'atamadaka', accent: 1,
+      word: { mora: ['は','し'], pitch: ['H','L'] },
+      particle: { mora: ['が'], pitch: ['L'] },
+      headEn: 'hashi [1] — chopsticks',
+      desc: 'Atamadaka (頭高) is head-high — the FIRST mora is high, then drops. The fall comes immediately after mora 1. はし with this pitch means "chopsticks."',
+    },
+    {
+      pattern: 'nakadaka', accent: 2,
+      word: { mora: ['は','し'], pitch: ['L','H'] },
+      particle: { mora: ['が'], pitch: ['L'] },
+      headEn: 'hashi [2] — bridge',
+      desc: 'Nakadaka (中高) drops somewhere in the middle (or at the end of) the word. はし with the drop AFTER mora 2 means "bridge" — the particle が catches the fall.',
+    },
+    {
+      pattern: 'odaka', accent: 2,
+      word: { mora: ['は','し'], pitch: ['L','H'] },
+      particle: { mora: ['が'], pitch: ['L'] },
+      headEn: 'hashi [2] — edge',
+      desc: 'Odaka (尾高) looks identical to nakadaka on the word alone — the drop only reveals itself on the next particle. はし meaning "edge" drops on は the particle. The word pitch alone is ambiguous; you can only tell odaka from heiban when you add a particle and listen for whether it falls.',
+    },
+  ];
+  // Common Japanese pitch-accent / intonation notations the learner will
+  // see in other materials.
+  const notationLegend = [
+    { glyph: '￣', name: 'High plateau', desc: 'The OJAD line above kana marks the high-pitch run. Mora under it are H; mora outside it are L.' },
+    { glyph: '↓', name: 'Down-step',     desc: 'A vertical drop at the end of a high plateau. The next mora is L, even if visually it sits on the same baseline.' },
+    { glyph: '↑', name: 'Rising tone',   desc: 'Question intonation. Add an upward sweep at the END of a sentence to mark it as a question, even without か.' },
+    { glyph: '／', name: 'Pause',         desc: 'A small breath between words or phrases. Written as a space in this app; spoken as a brief silence (~100-150ms).' },
+    { glyph: '＝', name: 'Long sustain',  desc: 'A held vowel or katakana long mark (ー). The mora is held for two beats but stays at the same pitch.' },
+  ];
+
+  container.innerHTML = `
+    <div class="pitch-page">
+      <header class="pitch-page-head">
+        <div class="pitch-page-eyebrow">PITCH ACCENT &amp; TONES · よくよう・トーン</div>
+        <h1 class="pitch-page-title">
+          <ruby>抑揚<rt>よくよう</rt></ruby>とトーン
+        </h1>
+        <p class="pitch-page-sub"><em>How Japanese rises and falls — and why it matters.</em></p>
+      </header>
+
+      <section class="pitch-section">
+        <h2 class="pitch-section-title">
+          <span class="num">一</span>
+          <span class="ja">どうしてピッチが大切？</span>
+          <span class="en"><em>Why pitch matters</em></span>
+        </h2>
+        <div class="pitch-section-body">
+          <p>
+            Japanese is a <strong>mora-timed, pitch-accented</strong> language. Unlike English (which uses stress
+            — louder syllables) Japanese uses <em>pitch</em> — higher or lower mora — to mark meaning. Every word has
+            a pitch pattern, and changing it can change the word entirely.
+          </p>
+          <p>
+            The classic example is <ruby>橋<rt>はし</rt></ruby> (a bridge), <ruby>箸<rt>はし</rt></ruby> (chopsticks),
+            and <ruby>端<rt>はし</rt></ruby> (an edge). All three are pronounced <em>hashi</em>. The pitch decides which.
+          </p>
+        </div>
+        <div class="pitch-trio">
+          ${['edge','bridge','chopsticks'].map((meaning, i) => {
+            const pp = ['heiban','nakadaka','atamadaka'][i];
+            const acc = [0,2,1][i];
+            const wPitch = [['L','H'],['L','H'],['H','L']][i];
+            const partPitch = [['H'],['L'],['L']][i];
+            return `
+              <article class="pitch-trio-card" data-pattern="${pp}">
+                <div class="pitch-trio-glyph">
+                  ${renderMoraRow({ mora:['は','し'], pitch: wPitch })}
+                  <span class="pitch-trio-gap" aria-hidden="true">&nbsp;</span>
+                  ${renderMoraRow({ mora:['が'], pitch: partPitch })}
+                </div>
+                ${renderPitchPatternChip(pp, acc)}
+                <p class="pitch-trio-gloss">
+                  <span class="ja">${escHTML(['端','橋','箸'][i])}</span>
+                  <span class="en"><em>${escHTML(meaning)}</em></span>
+                </p>
+              </article>`;
+          }).join('')}
+        </div>
+      </section>
+
+      <section class="pitch-section">
+        <h2 class="pitch-section-title">
+          <span class="num">二</span>
+          <span class="ja">よっつのパターン</span>
+          <span class="en"><em>The four patterns</em></span>
+        </h2>
+        <div class="pitch-section-body">
+          <p>
+            Tokyo-standard Japanese has exactly four pitch accent patterns. Once you can hear the four, you can hear
+            every word. The number in brackets <code>[n]</code> tells you how many mora are high before the drop —
+            <code>[0]</code> means no drop (heiban), <code>[1]</code> means drop right after the first mora, etc.
+          </p>
+        </div>
+        <div class="pitch-examples">
+          ${examples.map(ex => `
+            <article class="pitch-example" data-pattern="${ex.pattern}">
+              <header class="pitch-example-head">
+                ${renderPitchPatternChip(ex.pattern, ex.accent)}
+                <button class="pitch-example-play" type="button"
+                        data-speak="${escAttr(ex.word.mora.join('') + ex.particle.mora.join(''))}"
+                        aria-label="Play the example">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6,4 20,12 6,20"/></svg>
+                </button>
+              </header>
+              <div class="pitch-example-glyph">
+                ${renderMoraRow(ex.word)}
+                <span class="pitch-example-gap" aria-hidden="true">&nbsp;</span>
+                ${renderMoraRow(ex.particle)}
+              </div>
+              <p class="pitch-example-en"><em>${escHTML(ex.headEn)}</em></p>
+              <p class="pitch-example-desc">${escHTML(ex.desc)}</p>
+            </article>
+          `).join('')}
+        </div>
+      </section>
+
+      <section class="pitch-section">
+        <h2 class="pitch-section-title">
+          <span class="num">三</span>
+          <span class="ja">きごう</span>
+          <span class="en"><em>Notation legend</em></span>
+        </h2>
+        <div class="pitch-section-body">
+          <p>
+            Common marks you'll see across textbooks and dictionaries. This app uses the OJAD-style line above the
+            mora row — high mora sit under the line, low mora outside it.
+          </p>
+        </div>
+        <dl class="pitch-legend">
+          ${notationLegend.map(n => `
+            <div class="pitch-legend-row">
+              <dt><span class="pitch-legend-glyph">${escHTML(n.glyph)}</span><span class="pitch-legend-name">${escHTML(n.name)}</span></dt>
+              <dd>${escHTML(n.desc)}</dd>
+            </div>
+          `).join('')}
+        </dl>
+      </section>
+
+      <section class="pitch-section pitch-section-cta">
+        <p class="pitch-cta-prompt">Ready to practice?</p>
+        <button class="pitch-cta-btn" type="button" data-jump-speaking>
+          <span class="ja">話す</span>
+          <span class="en"><em>Speaking · Shadowing Studio</em></span>
+        </button>
+      </section>
+    </div>`;
+
+  // Wire example play buttons → TTS.
+  container.querySelectorAll('.pitch-example-play[data-speak]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const txt = btn.dataset.speak;
+      if (txt && typeof TTS !== 'undefined' && TTS.speak) TTS.speak(txt);
+    });
+  });
+  // CTA → jump to speaking section.
+  const ctaBtn = container.querySelector('[data-jump-speaking]');
+  if (ctaBtn) ctaBtn.addEventListener('click', () => setSection('speaking'));
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────
 function init() {
   // Mark the persisted vocab book as fresh-entry so its page-entrance
@@ -28327,6 +30217,7 @@ function init() {
   appCl.toggle('show-vocab-sidebar', APP.section === 'vocab');
   appCl.toggle('show-flash-sidebar', APP.section === 'flashcards');
   appCl.toggle('show-writing-sidebar', APP.section === 'writing');
+  appCl.toggle('show-speaking-sidebar', APP.section === 'speaking');
   appCl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
   renderSidebar();
   renderMain();
