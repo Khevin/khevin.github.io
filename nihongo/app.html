@@ -4954,6 +4954,390 @@
      the available width like the other interactive surfaces. The
      padding here is intentionally generous — editorial breathing room
      per the brief. Mobile reclaims most of it. */
+  /* ─────────────────────────────────────────────────────────────────
+     TEXTURES PAGE (Phase 2 of the Flavors & Textures sub-system)
+     ─────────────────────────────────────────────────────────────────
+     Three brief-level departures from the flavors-page pattern:
+       1. Bento card image = brushed motion-line glyph, NOT a food photo
+       2. Immersion view = left/right split (kana | food collage), NOT
+          centered single-hero
+       3. Color = a whisper (paper-tint @ ~92%+ lightness), NOT a flood
+     Spec: docs/superpowers/specs/2026-05-26-flavors-textures.PRODUCT.md §7.2
+  */
+  .textures-frame {
+    --tint: var(--paper-2);
+    position: relative;
+    min-height: 60vh;
+    padding: clamp(16px, 1.8vw, 32px) clamp(16px, 2.4vw, 40px) clamp(24px, 3vw, 48px);
+  }
+  .textures-frame[data-mode="bento"]    .textures-immersion-wrap { display: none; }
+  .textures-frame[data-mode="immersion"] .textures-bento-wrap    { display: none; }
+
+  /* ── Bento header ─────────────────────────────────────────────── */
+  .textures-bento-wrap {
+    --bento-gap:      clamp(10px, 1.1vw, 18px);
+    --bento-pad:      clamp(10px, 0.95vw, 14px);
+    --bento-head-mb:  clamp(10px, 1.6vw, 24px);
+  }
+  .textures-bento-head {
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(2px, 0.35vw, 6px);
+    margin: 0 0 var(--bento-head-mb);
+  }
+  .textures-bento-eyebrow {
+    font-family: var(--font-menu-en);
+    font-size: clamp(10px, 0.75vw, 12px);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .textures-bento-title {
+    font-family: var(--font-title);
+    font-size: clamp(1.6rem, 3.2vw + 0.4rem, 3rem);
+    color: var(--ink);
+    line-height: 1.05; margin: 0;
+  }
+  .textures-bento-title rt {
+    font-size: 0.32em;
+    font-family: var(--font-body);
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .textures-bento-sub {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: clamp(12px, 0.85vw + 4px, 14px);
+    color: var(--ink-2);
+    max-width: 56ch; text-align: center;
+    margin: 0;
+  }
+
+  /* ── Bento grid (5×2 desktop) ────────────────────────────────── */
+  .textures-bento {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--bento-gap);
+    max-width: 1280px;
+    margin: 0 auto;
+    list-style: none;
+    padding: 0;
+  }
+  @media (max-width: 1100px) {
+    .textures-bento { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .textures-bento { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Texture bento card — paper canvas, tint as subtle wash. The
+     motion-line glyph fills the image slot; kana below. NO photo. */
+  .texture-bento-card {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--tint, var(--paper-2));
+    color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    border-radius: 10px;
+    padding: var(--bento-pad, 14px);
+    transition: transform .18s ease-out, box-shadow .18s ease-out;
+    list-style: none;
+  }
+  .texture-bento-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--ink) 32%, transparent);
+  }
+  .texture-bento-card:focus-within {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .texture-bento-card,
+    .texture-bento-card:hover { transition: none; transform: none; }
+  }
+  .texture-bento-enter {
+    appearance: none;
+    background: transparent; border: 0; padding: 0;
+    margin: 0; color: inherit; font: inherit;
+    text-align: left; cursor: pointer;
+    display: flex; flex-direction: column;
+    width: 100%;
+  }
+  .texture-bento-enter:focus { outline: none; }
+  .texture-bento-glyph {
+    width: 100%; aspect-ratio: 1 / 0.6;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .texture-bento-glyph .texture-motion-line {
+    width: 100%; height: 100%; max-height: 80px;
+  }
+  .texture-bento-kana {
+    font-family: var(--font-title);
+    font-size: clamp(18px, 1.4vw + 4px, 24px);
+    color: var(--ink);
+    line-height: 1.1;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .texture-bento-audio {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+    color: var(--ink);
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .15s, background .15s;
+  }
+  .texture-bento-card:hover .texture-bento-audio,
+  .texture-bento-audio:focus-visible { opacity: 1; }
+  .texture-bento-audio:hover { background: color-mix(in srgb, var(--ink) 16%, transparent); }
+  .texture-bento-audio svg   { width: 14px; height: 14px; }
+
+  /* ── Top rail in immersion view (grid icon + 10 thumbs) ──────── */
+  .texture-rail {
+    display: flex; align-items: center;
+    gap: 12px;
+    margin-bottom: clamp(16px, 1.8vw, 28px);
+  }
+  .texture-rail-exit {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 10px;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    padding: 0;
+  }
+  .texture-rail-exit:hover { background: var(--paper); color: var(--ink); }
+  .texture-rail-exit svg   { width: 18px; height: 18px; }
+  .texture-rail-thumbs {
+    display: flex;
+    gap: clamp(4px, 0.5vw, 8px);
+    flex: 1; min-width: 0;
+    overflow-x: auto;
+    list-style: none; padding: 0; margin: 0;
+  }
+  .texture-rail-thumb {
+    flex: 0 0 auto;
+    width: 56px; height: 40px;
+    background: var(--tint, var(--paper-2));
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    border-radius: 8px;
+    padding: 4px 6px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: transform .12s, border-color .15s;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .texture-rail-thumb:hover { transform: translateY(-1px); }
+  .texture-rail-thumb.is-active {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .texture-rail-glyph .texture-motion-line { width: 100%; height: 100%; }
+
+  /* ── Immersion body — two-column split (kana | collage) ──────── */
+  .textures-immersion-body {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    gap: clamp(20px, 3vw, 48px);
+    align-items: center;
+    max-width: 1280px;
+    margin: clamp(8px, 1.4vw, 20px) auto 0;
+    background: var(--tint, var(--paper-2));
+    border-radius: 12px;
+    padding: clamp(20px, 2.4vw, 36px);
+    outline: none;
+  }
+  @media (max-width: 900px) {
+    .textures-immersion-body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
+  /* Left column — doubled kana huge + motion-line below + audio */
+  .texture-immersion-left {
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(12px, 1.4vw, 22px);
+    color: var(--ink);
+  }
+  @media (max-width: 900px) {
+    .texture-immersion-left { align-items: center; text-align: center; }
+  }
+  .texture-immersion-kana {
+    font-family: var(--font-title);
+    font-size: clamp(3rem, 8vw, 7rem);
+    color: var(--ink);
+    line-height: 1; margin: 0;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  .texture-immersion-motion {
+    width: 100%; max-width: 360px;
+    color: color-mix(in srgb, var(--ink) 75%, transparent);
+  }
+  .texture-immersion-motion .texture-motion-line {
+    width: 100%; height: auto;
+  }
+  .texture-immersion-meta {
+    margin: 0;
+  }
+  .texture-immersion-romaji {
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: clamp(13px, 0.9vw + 6px, 16px);
+    color: color-mix(in srgb, var(--ink) 70%, transparent);
+    margin: 0;
+    letter-spacing: 0.04em;
+  }
+  .texture-immersion-audio {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--ink);
+    color: var(--tint);
+    border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 12%, transparent);
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .texture-immersion-audio:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 20%, transparent);
+  }
+  .texture-immersion-audio:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 4px;
+  }
+  .texture-immersion-audio svg { width: 22px; height: 22px; }
+  @media (prefers-reduced-motion: reduce) {
+    .texture-immersion-audio { transition: none; }
+    .texture-immersion-audio:hover { transform: none; }
+  }
+
+  /* Right column — 2×4 collage of food-pool items */
+  .texture-immersion-right { min-width: 0; }
+  .texture-immersion-collage {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(8px, 0.9vw, 14px);
+  }
+  @media (max-width: 1100px) {
+    .texture-immersion-collage { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .texture-immersion-collage { grid-template-columns: repeat(2, 1fr); }
+  }
+  .texture-collage-card {
+    display: flex; flex-direction: column;
+    background: color-mix(in oklch, var(--paper-2) 88%, var(--tint) 12%);
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s;
+    text-align: left;
+    font: inherit; color: inherit;
+    gap: 4px;
+  }
+  .texture-collage-card:hover {
+    background: var(--paper-2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px -6px color-mix(in srgb, var(--ink) 35%, transparent);
+  }
+  .texture-collage-card:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .texture-collage-image {
+    width: 100%; aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .texture-collage-image image-slot,
+  .texture-collage-image image-slot::part(img),
+  .texture-collage-image image-slot::part(frame) {
+    width: 100%; height: 100%; display: block;
+    object-fit: contain;
+  }
+  .texture-collage-image image-slot::part(frame) { background: transparent; }
+  .texture-collage-image image-slot::part(img) {
+    filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--ink) 18%, transparent));
+  }
+  .texture-collage-name {
+    display: flex; flex-direction: column;
+    min-width: 0;
+  }
+  .texture-collage-name .ja {
+    font-family: var(--font-title);
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+  .texture-immersion-empty {
+    padding: 24px;
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--ink) 16%, transparent);
+    border-radius: 8px;
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 14px;
+    color: var(--ink-2);
+    text-align: center;
+  }
+
+  /* English drawer + keyboard hint footer */
+  .texture-drawer {
+    margin: clamp(16px, 2vw, 28px) auto 0;
+    max-width: 1280px;
+  }
+  .texture-drawer-toggle {
+    font-family: var(--font-menu-en);
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3);
+    cursor: pointer;
+    padding: 8px 0;
+    list-style: none;
+  }
+  .texture-drawer-toggle::-webkit-details-marker { display: none; }
+  .texture-drawer-toggle::before {
+    content: '▸ ';
+    transition: transform .15s;
+    display: inline-block;
+  }
+  .texture-drawer[open] .texture-drawer-toggle::before {
+    transform: rotate(90deg);
+  }
+  .texture-drawer-body {
+    padding: 12px 0 0;
+  }
+  .texture-drawer-body .en-gloss {
+    font-family: var(--font-menu-en);
+    font-size: 16px; color: var(--ink-2);
+    margin: 0 0 8px;
+  }
+  .texture-drawer-body .notes {
+    font-family: var(--font-body);
+    font-size: 14px; line-height: 1.6;
+    color: var(--ink-2);
+    margin: 0;
+  }
+  .texture-keys-hint {
+    max-width: 1280px;
+    margin: clamp(16px, 1.6vw, 22px) auto 0;
+    font-family: var(--font-menu-en); font-style: italic;
+    font-size: 11px; letter-spacing: 0.06em;
+    color: var(--ink-4);
+    text-align: center;
+  }
+
   .flavors-frame {
     --flood:        var(--paper-2);
     --ink-on-flood: var(--ink);
@@ -6338,8 +6722,12 @@
        round shape reads at full size against the badge's pill outline. */
     margin: -4px 0;
   }
-  /* Texture badge: display only (no click target — Phase 2 wires the
-     textures page). Kana on a slightly tinted background. */
+  /* Texture badge. Two variants:
+     - Display-only span (defensive fallback for textures not yet in
+       the textures book — e.g. やわらかい which doesn't have a
+       texture page).
+     - Clickable button (.is-link) — opens the textures immersion
+       view for that texture. Adds hover lift + pointer cursor. */
   .edibles-texture-badge {
     padding: 6px 12px;
     background: var(--paper);
@@ -6348,6 +6736,24 @@
     font-family: var(--font-body);
     font-size: 14px;
     color: var(--ink);
+  }
+  button.edibles-texture-badge.is-link {
+    cursor: pointer;
+    transition: transform .12s ease-out, background .15s, border-color .15s;
+    font: inherit;
+  }
+  button.edibles-texture-badge.is-link:hover {
+    background: var(--paper-2);
+    border-color: color-mix(in srgb, var(--ink) 25%, var(--paper-edge));
+    transform: translateY(-1px);
+  }
+  button.edibles-texture-badge.is-link:focus-visible {
+    outline: 2px solid var(--ink-2);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button.edibles-texture-badge.is-link { transition: none; }
+    button.edibles-texture-badge.is-link:hover { transform: none; }
   }
   /* Season chip: even quieter. */
   .edibles-season-chip {
@@ -13615,6 +14021,11 @@ const APP = {
   // sitting with — the page is a contemplative surface, not a quiz,
   // and breaking immersion across reloads would break the contract.
   flavorId:     lsGet('jp:flavorId', null),
+  // Textures page (Phase 2). Same shape as flavorId — when set, the
+  // user is drilled into a texture immersion view; when null, the
+  // textures bento is showing. Persisted across reloads so the page
+  // resumes where the learner left it.
+  textureId:    lsGet('jp:textureId', null),
   // Edibles database (Phase 3 of the sub-system). Two state slots
   // drive three views:
   //   edibleCategory=null, edibleItem=null   → category-browse (8 tiles)
@@ -13632,6 +14043,12 @@ const APP = {
   // different flavor via a badge); preserved when walking sideways
   // through "similar items" since the flavor context still applies.
   edibleFromFlavor: lsGet('jp:edibleFromFlavor', null),
+  // Texture-cross-link breadcrumb — twin of edibleFromFlavor, fires
+  // when the user navigates from a texture's foodPool collage into
+  // an edible's detail spread. Used to render a second back-button
+  // chip labeled with the texture's kana so the user can bounce back
+  // to that texture's brushstroke world.
+  edibleFromTexture: lsGet('jp:edibleFromTexture', null),
   // Migrate legacy class ids: 'weather' → 'nature', 'doors' → 'rooms'.
   flashClassId: (() => {
     const v = lsGet('jp:flashClass', 'basic');
@@ -15535,6 +15952,10 @@ function resetBookEntryState(bookId) {
     APP.flavorId = null;
     lsSet('jp:flavorId', null);
   }
+  if (APP.textureId !== null && APP.textureId !== undefined) {
+    APP.textureId = null;
+    lsSet('jp:textureId', null);
+  }
   if (APP.edibleCategory !== null) {
     APP.edibleCategory = null;
     lsSet('jp:edibleCategory', null);
@@ -15546,6 +15967,10 @@ function resetBookEntryState(bookId) {
   if (APP.edibleFromFlavor !== null) {
     APP.edibleFromFlavor = null;
     lsSet('jp:edibleFromFlavor', null);
+  }
+  if (APP.edibleFromTexture) {
+    APP.edibleFromTexture = null;
+    lsSet('jp:edibleFromTexture', null);
   }
   // Restaurant scene flows live in APP.scenes[bookId]. Reset only the
   // clicked book's scene — leave other restaurants' progress intact
@@ -15800,6 +16225,9 @@ function renderVocab(container) {
     } else if (book && book.isFlavorsPage) {
       pageEl.innerHTML = flavorsPageHTML(book);
       wireFlavorsPageHandlers(book);
+    } else if (book && book.isTexturesPage) {
+      pageEl.innerHTML = texturesPageHTML(book);
+      wireTexturesPageHandlers(book);
     } else if (book && book.isEdiblesPage) {
       pageEl.innerHTML = ediblesPageHTML(book);
       wireEdiblesPageHandlers(book);
@@ -17334,6 +17762,355 @@ function findEdiblesWithFlavor(flavorId, limit = 100) {
   return results;
 }
 
+// Mirror of findEdiblesWithFlavor for the texture cross-link. Walks
+// edibles by their textures[] array (kana strings like 'もちもち',
+// 'シャキシャキ'). Used by the texture immersion view to render its
+// right-column food collage AND by the texture-cards-on-edible-detail
+// to verify a back-link target exists. Defaults to 100; current
+// edibles set is ~95 items so the cap is effectively uncapped.
+function findEdiblesWithTexture(textureKana, limit = 100) {
+  const results = [];
+  for (const cls of (window.VOCAB_CLASSES || [])) {
+    for (const book of (cls.books || [])) {
+      if (!book.isEdiblesPage) continue;
+      for (const cat of (book.categories || [])) {
+        for (const item of (cat.items || [])) {
+          if ((item.textures || []).includes(textureKana)) {
+            results.push({ item, cat, book });
+            if (results.length >= limit) return results;
+          }
+        }
+      }
+    }
+  }
+  return results;
+}
+
+// Look up the edible row from an id list (the foodPool array on each
+// texture). Returns [{ item, cat, book }] in pool-order, dropping
+// missing ids silently. Used by the texture immersion's right-column
+// collage when the brief locks a curated food-pool per texture rather
+// than walking the whole edibles set.
+function lookupEdiblesByIds(ids) {
+  if (!Array.isArray(ids) || !ids.length) return [];
+  const index = new Map();
+  for (const cls of (window.VOCAB_CLASSES || [])) {
+    for (const book of (cls.books || [])) {
+      if (!book.isEdiblesPage) continue;
+      for (const cat of (book.categories || [])) {
+        for (const item of (cat.items || [])) {
+          index.set(item.id, { item, cat, book });
+        }
+      }
+    }
+  }
+  return ids.map(id => index.get(id)).filter(Boolean);
+}
+
+// ── Textures page (Phase 2 of the Flavors & Textures sub-system) ─────
+// Brief: docs/superpowers/specs/2026-05-26-flavors-textures.PRODUCT.md §7.2.
+// Three deliberate departures from the Flavors-page pattern:
+//   1. NO single canonical food per texture. The right-column collage
+//      surfaces 4-8 example foods from the texture's foodPool.
+//   2. The bento card carries an INK MOTION-LINE GLYPH, not a food
+//      image. The texture IS its brushstroke.
+//   3. Color is a WHISPER (~92%+ lightness paper-tint), not a flood.
+//
+// Same engine as flavorsPageHTML: bento (10 cards) → drill-in immersion.
+// Different visual signature, same navigation contract.
+
+// Inline SVG motion-line glyph generator. Each texture gets a
+// 100×60 viewBox brushed stroke that visually IS the texture. Shapes
+// are hand-tuned per the motionShape field — soft sine for もちもち,
+// sawtooth for さくさく, sagging arc with drip for とろとろ, etc.
+// All strokes use the ink color (var(--ink)), 4px width with rounded
+// caps, intentionally hand-drawn rather than geometric-perfect.
+function textureMotionLineSVG(motionShape) {
+  // 100×60 viewBox; the path's y=30 is the visual baseline.
+  const shapes = {
+    'soft-bounce':     'M5,30 Q15,12 25,30 T45,30 T65,30 T85,30 T95,30',
+    'crisp-angular':   'M5,40 L18,12 L24,40 L37,12 L43,40 L56,12 L62,40 L75,12 L81,40 L94,12 L99,40',
+    'wet-drag':        'M5,20 Q20,38 35,20 Q50,2 65,28 Q75,40 85,32 L85,46 M70,30 L70,42 M50,28 L50,40',
+    'sharp-thin':      'M5,40 L5,20 L18,20 L18,40 L31,40 L31,20 L44,20 L44,40 L57,40 L57,20 L70,20 L70,40 L83,40 L83,20 L95,20',
+    'smooth-flow':     'M3,30 Q12,27 22,30 T42,30 T62,30 T82,30 T97,30',
+    'airy-cloud':      'M8,42 Q12,18 22,28 Q30,12 42,28 Q52,14 62,28 Q72,16 82,28 Q92,18 95,42',
+    'thick-melt':      'M5,18 Q25,18 45,30 Q65,42 75,38 L75,52 Q73,55 75,55 Q77,55 75,52 L75,38 Q85,36 95,42',
+    'vegetal-snap':    'M10,12 L10,48 M22,12 L22,48 M34,12 L34,48 M46,12 L46,48 M58,12 L58,48 M70,12 L70,48 M82,12 L82,48 M94,12 L94,48',
+    'plump-bounce':    'M5,30 Q12,12 22,30 Q32,48 42,30 Q52,12 62,30 Q72,48 82,30 Q92,12 99,30',
+    'hard-crunch':     'M5,32 L15,18 L20,42 L30,16 L36,38 L44,22 L52,44 L60,18 L68,40 L76,16 L84,42 L92,20 L98,38',
+  };
+  const d = shapes[motionShape] || shapes['soft-bounce'];
+  return `
+    <svg class="texture-motion-line" viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <path d="${d}" fill="none" stroke="currentColor" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+}
+
+function texturesPageHTML(book) {
+  const textures = book.textures || [];
+  const currentTex = APP.textureId && textures.find(t => t.id === APP.textureId);
+  const mode = currentTex ? 'immersion' : 'bento';
+
+  // ── Bento HTML ──
+  const bentoHTML = `
+    <header class="textures-bento-head">
+      <div class="textures-bento-eyebrow">textures · 食感</div>
+      <h1 class="textures-bento-title"><ruby>食感<rt>しょっかん</rt></ruby>の <ruby>世界<rt>せかい</rt></ruby></h1>
+      <p class="textures-bento-sub">
+        Tap a card to enter that texture's world. Each card is the
+        brushstroke that IS the texture — soft sine for もちもち,
+        sharp sawtooth for さくさく.
+      </p>
+    </header>
+    <ul class="textures-bento" role="list">
+      ${textures.map(t => `
+        <li class="texture-bento-card" style="--tint:${escAttr(t.tint)};">
+          <button class="texture-bento-enter"
+                  data-texture-id="${escAttr(t.id)}"
+                  type="button"
+                  aria-label="${escAttr(t.kana + ' — ' + t.en)}">
+            <div class="texture-bento-glyph">${textureMotionLineSVG(t.motionShape)}</div>
+            <div class="texture-bento-kana">${escHTML(t.kana)}</div>
+          </button>
+          <button class="texture-bento-audio"
+                  data-speak="${escAttr(t.kana)}"
+                  aria-label="Hear ${escAttr(t.kana)}"
+                  type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+              <path d="M19.07 4.93a10 10 0 010 14.14"/>
+              <path d="M15.54 8.46a5 5 0 010 7.07"/>
+            </svg>
+          </button>
+        </li>
+      `).join('')}
+    </ul>`;
+
+  // ── Immersion HTML (only when a texture is selected) ──
+  let immersionHTML = '';
+  if (currentTex) {
+    immersionHTML = renderTextureImmersionInner(book, currentTex);
+  }
+
+  return `
+    <div class="textures-frame" data-mode="${mode}">
+      <div class="textures-bento-wrap">${bentoHTML}</div>
+      <div class="textures-immersion-wrap">${immersionHTML}</div>
+    </div>`;
+}
+
+function renderTextureImmersionInner(book, texture) {
+  const textures = book.textures || [];
+  const idx = textures.findIndex(t => t.id === texture.id);
+  const prevTex = textures[(idx - 1 + textures.length) % textures.length];
+  const nextTex = textures[(idx + 1) % textures.length];
+
+  // Top rail — 10 small motion-line glyphs, current highlighted.
+  const railHTML = `
+    <nav class="texture-rail" aria-label="All textures">
+      <button class="texture-rail-exit" data-texture-exit type="button"
+              aria-label="Back to all textures">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7" rx="1.2"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.2"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.2"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.2"/>
+        </svg>
+      </button>
+      <ul class="texture-rail-thumbs" role="list">
+        ${textures.map(t => `
+          <li>
+            <button class="texture-rail-thumb ${t.id === texture.id ? 'is-active' : ''}"
+                    data-rail-texture="${escAttr(t.id)}"
+                    style="--tint:${escAttr(t.tint)};"
+                    aria-label="${escAttr(t.kana)}"
+                    type="button">
+              <span class="texture-rail-glyph">${textureMotionLineSVG(t.motionShape)}</span>
+            </button>
+          </li>
+        `).join('')}
+      </ul>
+    </nav>`;
+
+  // Left column — doubled kana huge + motion-line + audio button.
+  const leftHTML = `
+    <div class="texture-immersion-left">
+      <h1 class="texture-immersion-kana">${escHTML(texture.kana)}</h1>
+      <div class="texture-immersion-motion">${textureMotionLineSVG(texture.motionShape)}</div>
+      <div class="texture-immersion-meta">
+        <p class="texture-immersion-romaji">${escHTML(texture.romaji)}</p>
+      </div>
+      <button class="texture-immersion-audio"
+              data-speak="${escAttr(texture.kana)}"
+              aria-label="Hear ${escAttr(texture.kana)} pronunciation"
+              type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+          <path d="M19.07 4.93a10 10 0 010 14.14"/>
+          <path d="M15.54 8.46a5 5 0 010 7.07"/>
+        </svg>
+      </button>
+    </div>`;
+
+  // Right column — 2×4 collage of foodPool items.
+  const poolItems = lookupEdiblesByIds(texture.foodPool || []);
+  const collageHTML = poolItems.length ? `
+    <div class="texture-immersion-collage">
+      ${poolItems.slice(0, 8).map(({ item, cat, book }) => `
+        <button class="texture-collage-card"
+                data-texture-to-edible="${escAttr(book.id)}/${escAttr(cat.id)}/${escAttr(item.id)}"
+                type="button"
+                aria-label="Open ${escAttr(item.kana)} — ${escAttr(item.en)}">
+          <div class="texture-collage-image">
+            <image-slot image-key="vocab/${escAttr(item.id)}" readonly></image-slot>
+          </div>
+          <div class="texture-collage-name">
+            <span class="ja">${escHTML(item.kana)}</span>
+          </div>
+        </button>
+      `).join('')}
+    </div>
+  ` : `
+    <div class="texture-immersion-empty">
+      No edibles tagged with ${escHTML(texture.kana)} yet. The food
+      pool fills as items get their textures wired.
+    </div>`;
+
+  // English drawer at the bottom.
+  const drawerHTML = `
+    <details class="texture-drawer">
+      <summary class="texture-drawer-toggle">English &amp; notes</summary>
+      <div class="texture-drawer-body">
+        <p class="en-gloss">${escHTML(texture.en)}</p>
+        <p class="notes">${escHTML(texture.notes || '')}</p>
+      </div>
+    </details>`;
+
+  return `
+    ${railHTML}
+    <div class="textures-immersion-body" tabindex="-1"
+         style="--tint:${escAttr(texture.tint)};">
+      ${leftHTML}
+      <div class="texture-immersion-right">${collageHTML}</div>
+    </div>
+    ${drawerHTML}
+    <p class="texture-keys-hint">esc returns · space hears the word · ← → walks the row</p>`;
+}
+
+// ── State transitions for textures ──
+function enterTextureImmersion(book, textureId) {
+  if (APP.textureId === textureId) return;
+  APP.textureId = textureId;
+  lsSet('jp:textureId', textureId);
+  rerenderTexturesPage(book);
+}
+
+function exitTextureImmersion(book) {
+  if (APP.textureId == null) return;
+  APP.textureId = null;
+  lsSet('jp:textureId', null);
+  rerenderTexturesPage(book);
+}
+
+function switchTexture(book, textureId) {
+  if (APP.textureId === textureId) return;
+  APP.textureId = textureId;
+  lsSet('jp:textureId', textureId);
+  rerenderTexturesPage(book);
+}
+
+function walkTexture(book, direction) {
+  const textures = book.textures || [];
+  const idx = textures.findIndex(t => t.id === APP.textureId);
+  if (idx < 0) return;
+  const next = textures[(idx + direction + textures.length) % textures.length];
+  switchTexture(book, next.id);
+}
+
+function rerenderTexturesPage(book) {
+  const el = document.getElementById('vocab-page-content');
+  if (!el) return;
+  el.innerHTML = texturesPageHTML(book);
+  wireTexturesPageHandlers(book);
+  // Focus the immersion body so keyboard nav works without a click.
+  const body = el.querySelector('.textures-immersion-body');
+  if (body) body.focus({ preventScroll: true });
+}
+
+function wireTexturesPageHandlers(book) {
+  const root = document.getElementById('vocab-page-content');
+  if (!root) return;
+
+  // Bento card click → enter immersion
+  root.querySelectorAll('[data-texture-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      enterTextureImmersion(book, btn.dataset.textureId);
+    });
+  });
+
+  // Rail thumb click → switch texture
+  root.querySelectorAll('[data-rail-texture]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchTexture(book, btn.dataset.railTexture);
+    });
+  });
+
+  // Exit button → back to bento
+  root.querySelectorAll('[data-texture-exit]').forEach(btn => {
+    btn.addEventListener('click', () => exitTextureImmersion(book));
+  });
+
+  // Collage card click → open edible detail via the existing edibles
+  // book routing (mirror of the flavor-to-edible cross-link).
+  root.querySelectorAll('[data-texture-to-edible]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [bookId, catId, itemId] = btn.dataset.textureToEdible.split('/');
+      const ediblesBook = (window.VOCAB_CLASSES || [])
+        .flatMap(c => c.books || []).find(b => b.id === bookId && b.isEdiblesPage);
+      if (!ediblesBook) return;
+      // Remember the texture context for the back-link chip on detail.
+      APP.edibleFromTexture = APP.textureId;
+      lsSet('jp:edibleFromTexture', APP.textureId);
+      APP.edibleCategory = catId;
+      APP.edibleItem = itemId;
+      APP.textureId = null;
+      lsSet('jp:edibleCategory', catId);
+      lsSet('jp:edibleItem', itemId);
+      lsSet('jp:textureId', null);
+      APP.vocabBookId = ediblesBook.id;
+      lsSet('jp:vocabBook', ediblesBook.id);
+      renderVocab(document.getElementById('main-inner'));
+    });
+  });
+
+  // Audio buttons → speak the kana
+  root.querySelectorAll('[data-speak]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.dataset.speak;
+      if (text && typeof speakJapanese === 'function') speakJapanese(text);
+    });
+  });
+
+  // Keyboard navigation in immersion view: ← → walks, esc exits, space speaks.
+  const body = root.querySelector('.textures-immersion-body');
+  if (body) {
+    body.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.preventDefault(); exitTextureImmersion(book); }
+      else if (e.key === 'ArrowLeft')  { e.preventDefault(); walkTexture(book, -1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); walkTexture(book, +1); }
+      else if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        const tex = (book.textures || []).find(t => t.id === APP.textureId);
+        if (tex && typeof speakJapanese === 'function') speakJapanese(tex.kana);
+      }
+    });
+  }
+}
+
 // ── State transitions ──
 // All three (enter / exit / switch) go through the same cross-fade
 // helper so the transition is uniform regardless of trigger (click vs
@@ -17611,11 +18388,31 @@ function ediblesDetailHTML(cat, item, allCategories) {
     `;
   }).join('');
 
-  // Texture badges — display only for now (Phase 2 wires the
-  // textures page). Each item.textures entry is a kana string.
-  const textureBadges = (item.textures || []).map(t => `
-    <span class="edibles-texture-badge">${escHTML(t)}</span>
-  `).join('');
+  // Texture badges — clickable cross-link to the textures immersion
+  // view (Phase 2). Each item.textures entry is a kana string that
+  // looks up its texture id from the textures book. If a match
+  // exists, render a button that opens the texture immersion;
+  // otherwise fall back to a display-only span (defensive against
+  // unmapped kana like 'やわらかい' that the textures seed list
+  // doesn't yet cover).
+  const texturesBook = (() => {
+    for (const cls of (window.VOCAB_CLASSES || [])) {
+      for (const b of (cls.books || [])) {
+        if (b.isTexturesPage) return b;
+      }
+    }
+    return null;
+  })();
+  const textureBadges = (item.textures || []).map(t => {
+    const tex = texturesBook && (texturesBook.textures || []).find(x => x.kana === t);
+    if (tex) {
+      return `<button class="edibles-texture-badge is-link"
+                      data-edible-to-texture="${escAttr(tex.id)}"
+                      type="button"
+                      aria-label="Open ${escAttr(t)} texture page">${escHTML(t)}</button>`;
+    }
+    return `<span class="edibles-texture-badge">${escHTML(t)}</span>`;
+  }).join('');
 
   // Season chips — display only.
   const seasonChips = (item.season || []).map(s => `
@@ -17795,6 +18592,29 @@ function wireEdiblesPageHandlers(book) {
     const flavorBtn = e.target.closest('[data-edible-to-flavor]');
     if (flavorBtn) {
       ediblesToFlavor(flavorBtn.dataset.edibleToFlavor);
+      return;
+    }
+    // Cross-link: texture badge → textures immersion view (mirror of
+    // flavor branch above). Looks up the textures book by isTexturesPage
+    // flag rather than hardcoding the book id so a future textures
+    // book rename doesn't break this jump.
+    const textureBtn = e.target.closest('[data-edible-to-texture]');
+    if (textureBtn) {
+      const texturesBook = (window.VOCAB_CLASSES || [])
+        .flatMap(c => c.books || []).find(b => b.isTexturesPage);
+      if (!texturesBook) return;
+      APP.vocabBookId = texturesBook.id;
+      APP.textureId = textureBtn.dataset.edibleToTexture;
+      APP.edibleFromFlavor = null;
+      APP.edibleFromTexture = null;
+      lsSet('jp:vocabBook', texturesBook.id);
+      lsSet('jp:textureId', APP.textureId);
+      lsSet('jp:edibleFromFlavor', null);
+      lsSet('jp:edibleFromTexture', null);
+      const inner = document.getElementById('main-inner');
+      if (inner) renderVocab(inner);
+      if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     // Back button: takes a `data-edibles-back` of either "categories"

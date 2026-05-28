@@ -163,13 +163,61 @@ The shape of each surface is locked here at the brief level. The component-level
 
 ### 7.2. Textures page (`vocab/eating-out/textures`)
 
-**Same engine, different sensory channel.**
+**Same bento → drill-in engine as Flavors, different sensory channel — and three deliberate departures from the Flavors-page conventions.**
 
-- **Bento state.** 10 paper cards. Each card carries the *texture-canonical food* (mochi for もちもち, tempura for さくさく, natto for ねばねば), the *kana* with reduplication clearly displayed (the doubled syllables that make the word feel like the texture), an *onomatopoeia mouth-feel illustration* (a small brushed waveform or motion line), and a *play-audio* affordance.
-- **Immersion state.** The color flood is *muted* (textures don't map to color the way flavors do); the canvas gets a paper-tint shift instead of a full hue commit. The hero block is the canonical food image; the centerpiece is the doubled kana written huge, often with a brushed motion line under it (もちもち → soft bouncing line; さくさく → crisp angular line). The audio plays slow + normal. The related-foods strip surfaces edibles carrying this texture.
+#### Scene sentence (the brief in one breath)
 
-The texture word list is bounded by what the project actually needs. Phase 2 seeds 10:
-`もちもち` (chewy/sticky-soft), `さくさく` (crisp/flaky), `ねばねば` (sticky/slimy), `ぱりぱり` (crunchy/crisp-thin), `さらさら` (smooth-flowing), `ふわふわ` (fluffy/airy), `とろとろ` (thick-creamy/melting), `シャキシャキ` (crisp-fresh, vegetal), `ぷりぷり` (plump-bouncy, seafood), `カリカリ` (crunchy-hard, deep-fried).
+> *On the train home, app open one-handed, encountering もちもち for the first time — wanting to feel the chewy bounce in the body before the brain reaches for the word "chewy." The doubled kana brushes across the left column; a soft squish plays; a wall of mochi, daifuku, sticky rice, and shokupan radiates across the right column — every food in the world that feels this way.*
+
+This sentence determines every later decision: mobile-first one-handed orientation (touch-only audio button), kana-large left + food-collage right (the two-column immersion split), audio that plays a foley sound between the two readings (the sandwich pattern), no single canonical food (textures live across many foods — the *wall*, not one hero).
+
+#### Three deliberate departures from the Flavors-page pattern
+
+The Textures page is *not* a re-skin of Flavors. Three brief-level decisions diverge:
+
+1. **No canonical food per texture.** Flavors pin one iconic food per word (suppai → lemon, amai → strawberry shortcake). Textures don't — シャキシャキ lives in lettuce *and* daikon *and* cucumber *and* apple; ふわふわ in pancake *and* whipped cream *and* shokupan *and* タイヤキ. Forcing a single anchor would lie about how textures distribute through food. Instead: every texture carries a `food-pool` of 4-8 edibles, surfaced as a collage.
+
+2. **The bento card front carries a brushed motion-line glyph, not a food image.** The 10 bento cards become a wall of ink-on-paper texture-glyphs — もちもち is a soft sine wave, さくさく an angular sawtooth, とろとろ a sagging arc with a drip, シャキシャキ a row of short vertical hatch-lines. *The texture IS its glyph.* The kana label sits below the glyph; no food appears on the bento card front. This is the strongest visual signature in the sub-system: pure brushed ink, no photos, ten different stroke languages on one grid.
+
+3. **Color is a whisper, not a flood.** Flavors commit the whole canvas to one hue (chili crimson for karai, ember red-orange for atsui, espresso brown for nigai). Textures use *subtle paper-tints* — all 10 tints sit above ~92% lightness. The page reads as "the same paper, slightly tinted" rather than "this is the textures world." The motion-line glyph + doubled kana + food collage do the encoding work; the tint is sensory atmosphere, not category encoding.
+
+#### Bento state
+
+Ten paper cards in a 5×2 desktop grid (4×3 tablet, 2×5 mobile). Each card:
+- **Image slot**: the texture's brushed motion-line glyph — a single ink stroke that visually IS the texture (see DESIGN.md `texture-treatments[*].motion-shape` for the 10 specific stroke languages).
+- **Label**: the kana with the reduplication visible (もちもち, not just もち) — the doubling that makes the word *feel like the texture*.
+- **Play-audio affordance**: the same speaker-icon-circle the Flavors bento uses, same sandwich audio pattern when pressed.
+
+No English on the card front. No food image. No color flood — the card sits on the standard paper canvas; the glyph and kana do all the work.
+
+#### Immersion state — the two-column split
+
+Click a card → the page transforms: the bento collapses to a thin top rail of 10 small motion-line-glyph thumbnails (current texture highlighted); the canvas tints with the texture's paper-tint (subtle, ~92% lightness wash); the body splits left/right:
+
+- **Left column (≈45% width)**: the doubled kana written huge (clamp 6rem → 18rem), the brushed motion-line shape below it, the speaker-icon-circle below that. Vertical stack, generous whitespace.
+- **Right column (≈55% width)**: a 2×3 or 2×4 grid of edible thumbnails from the texture's `food-pool` — 6 to 8 foods that carry this texture, each a small image-only card (kana tooltip on hover/long-press). This is the "wall of foods" the scene sentence describes.
+
+The collage is the texture's *answer* to "where does this texture live?" — not as a list of examples but as a saturated visual mosaic that reads "this texture is everywhere."
+
+#### Audio — the sandwich pattern
+
+Three-segment audio plays when the button is pressed (or on first interaction with the immersion view, per restriction #10):
+
+1. **Word, slow** — もちもち read slowly, syllables separated
+2. **Foley sound** — the texture itself: a soft squish for もちもち, a hard crunch for カリカリ, a wet stretch for ねばねば. One foley per texture, sourced/recorded as a Phase 2 build task (see DESIGN.md `texture-treatments[*].audio-foley` for the 10 sound briefs).
+3. **Word, natural** — もちもち again, at speaking speed
+
+The sandwich pattern anchors the meaning *between* the two readings: the brain encodes the word, then encodes the sensory phenomenon, then re-encodes the word now-attached-to-phenomenon. The foley is the channel that makes this page meaningfully different from the Flavors-page audio (which is just slow + natural).
+
+#### Navigation
+
+Same as Flavors. Top-rail thumbnails clickable; keyboard arrows ← → walk through the 10 in seed order; back button returns to full bento; route is `/textures/<id>` (e.g. `/textures/mochimochi`); browser-back works; cross-fade transition between bento and immersion respects `prefers-reduced-motion`.
+
+#### The 10 textures (seed, locked)
+
+`もちもち` (chewy/sticky-soft) · `さくさく` (crisp/flaky) · `ねばねば` (sticky/slimy) · `ぱりぱり` (crunchy/crisp-thin) · `さらさら` (smooth-flowing) · `ふわふわ` (fluffy/airy) · `とろとろ` (thick-creamy/melting) · `シャキシャキ` (crisp-fresh, vegetal) · `ぷりぷり` (plump-bouncy, seafood) · `カリカリ` (crunchy-hard, deep-fried).
+
+Each carries `tint`, `motion-shape`, `food-pool`, and `audio-foley` per DESIGN.md `texture-treatments`. Future additions follow the same five-field shape; the list is bounded by what the project actually needs.
 
 ### 7.3. Edibles Database (`vocab/eating-out/edibles`)
 

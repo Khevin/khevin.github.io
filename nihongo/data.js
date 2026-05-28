@@ -1007,16 +1007,81 @@ window.VOCAB_CLASSES = [
           },
         ]
       },
-      // Textures — Phase 2 placeholder. Sits below edibles in the sidebar
-      // order (was previously between flavors and edibles; moved here to
-      // group the populated books — flavors + edibles — together and
-      // keep the coming-soon placeholder out of the way until Phase 2
-      // ships). Phase 2 will replace this with a real textures book
-      // carrying the doubled-kana onomatopoeia (もちもち, さくさく,
-      // ねばねば, ぱりぱり, さらさら, ふわふわ, とろとろ, シャキシャキ,
-      // ぷりぷり, カリカリ) and the brush-motion-line signature
-      // treatment per DESIGN.md §5.4.
-      { id:'textures', titleJa:'しょっかん', titleEn:'Textures', glyph:'食感', primaryLevel:'N4', pages:[], isExperience:true, isComingSoon:true },
+      // Textures — Phase 2 of the Flavors & Textures sub-system. Ten
+      // doubled-kana onomatopoeia, each with a brushed motion-line glyph
+      // (the bento card image), a subtle paper-tint (immersion canvas
+      // wash), and a food-pool (the collage on the right column of the
+      // immersion view). Departs from flavors on three brief-level
+      // decisions: no single canonical food per texture (textures are
+      // distributed across many foods); the bento card carries an ink
+      // glyph not a photo; the color is a whisper not a flood. See
+      // docs/superpowers/specs/2026-05-26-flavors-textures.PRODUCT.md §7.2
+      // and DESIGN.md texture-treatments for the full contract.
+      { id:'textures', titleJa:'しょっかん', titleEn:'Textures', glyph:'食感', primaryLevel:'N4', pages:[],
+        isExperience:true, isTexturesPage:true,
+        textures:[
+          { id:'mochimochi', kana:'もちもち', kanji:'', romaji:'mochimochi',
+            en:'chewy / sticky-soft',
+            tint:'#F5E8E4', motionShape:'soft-bounce',
+            foodPool:['mochi','daifuku','ohagi','taiyaki','dango','manjuu','pan','shokupan'],
+            audioFoley:'soft squish / chewy-press',
+            notes:'The texture of pressed sweet rice — soft, springy, slightly sticky when you bite. The signature texture of wagashi: mochi, daifuku, dango. Also extends to bread, especially Japanese milk bread (食パン). The word itself bounces — もち + もち is the spring of the rice cake compressed into language.' },
+          { id:'sakusaku', kana:'さくさく', kanji:'',  romaji:'sakusaku',
+            en:'crisp / flaky',
+            tint:'#F2E9D1', motionShape:'crisp-angular',
+            foodPool:['furaido-poteto','poteto-chippusu','beekon','taiyaki','dorayaki','dish-tempura'],
+            audioFoley:'crisp shatter / batter-snap',
+            notes:'The light shatter of tempura batter, the crackle of cookies, the first bite of a freshly fried cutlet. Drier and lighter than カリカリ — さくさく breaks easily, カリカリ requires force. Marketing slogans for snacks use it constantly: さくさく食感.' },
+          { id:'nebaneba', kana:'ねばねば', kanji:'',  romaji:'nebaneba',
+            en:'sticky / slimy / stringy',
+            tint:'#ECE2C2', motionShape:'wet-drag',
+            foodPool:['nattou','youkan','mochi','daifuku','warabimochi','anmitsu'],
+            audioFoley:'wet stretch / stringy pull',
+            notes:'The stringy pull of natto, the slime of okra, the sticky-wet of mountain yam. ねばねば foods are a Japanese health-food category — 「ねばねば食品」 — believed to support digestion. The texture divides foreigners; Japanese eat it daily for breakfast.' },
+          { id:'paripari',  kana:'ぱりぱり', kanji:'',  romaji:'paripari',
+            en:'crunchy / thin-crisp',
+            tint:'#E5E8E0', motionShape:'sharp-thin',
+            foodPool:['onigiri','beekon','taiyaki','poteto-chippusu','dish-tempura'],
+            audioFoley:'thin snap / sheet-crack',
+            notes:'The snap of dry nori, fresh-roasted seaweed, the skin of pan-fried gyoza. Thinner and brittler than さくさく. The classic 「ぱりぱりのり」 is the nori wrapped fresh around an onigiri at the konbini, kept separate from the rice in a clever fold-open package so it stays ぱりぱり until you eat it.' },
+          { id:'sarasara',  kana:'さらさら', kanji:'',  romaji:'sarasara',
+            en:'smooth-flowing',
+            tint:'#F7F4EE', motionShape:'smooth-flow',
+            foodPool:['gohan','genmai','ocha','mizu','uuroncha','tansansui','soba','udon'],
+            audioFoley:'gentle pour / brushed silk',
+            notes:'The flow of loose rice through fingers, the smoothness of just-poured tea, the slip of fresh udon noodles in a cold bowl. さらさら is the absence of texture as a texture — clean, unencumbered, almost silent. Also used for hair, fabric, sand. The brushed-line for さらさら is barely there: a long flat wave with very low amplitude.' },
+          { id:'fuwafuwa',  kana:'ふわふわ', kanji:'',  romaji:'fuwafuwa',
+            en:'fluffy / airy',
+            tint:'#F5EDD8', motionShape:'airy-cloud',
+            foodPool:['pan','shokupan','namakuriimu','taiyaki','dorayaki','manjuu','purin'],
+            audioFoley:'soft puff / cotton-press',
+            notes:'The airy lift of a soufflé pancake, the cloud of whipped cream on strawberry shortcake, the cottony interior of 食パン. Light enough that pressing it leaves an impression that springs back. Japanese pastry culture is built on it — the famously soft Japanese bread is ふわふわ by design, not by accident.' },
+          { id:'torotoro',  kana:'とろとろ', kanji:'',  romaji:'torotoro',
+            en:'thick-creamy / melting',
+            tint:'#F6E8C9', motionShape:'thick-melt',
+            foodPool:['tamago','namakuriimu','purin','aisukuriimu','bataa','gyuunyuu','unagi','anmitsu'],
+            audioFoley:'thick pour / honey-drag',
+            notes:'The slow flow of soft-boiled egg yolk, ankake sauce, melted cheese, custard pudding pulled off the spoon. とろとろ is liquid but only just — the line between liquid and solid where richness lives. The signature texture of high-grade beef on hot rice (とろとろ卵かけご飯), oyako-don, ankake stir-fry sauce.' },
+          { id:'shakishaki',kana:'シャキシャキ', kanji:'',romaji:'shakishaki',
+            en:'crisp-fresh, vegetal',
+            tint:'#E6EEDE', motionShape:'vegetal-snap',
+            foodPool:['kyabetsu','daikon','ninjin','kyuuri','tomato','ringo','nashi','kaki','renkon','gobou'],
+            audioFoley:'vegetable snap / leaf-crunch',
+            notes:'The crisp stand of fresh lettuce, the bite of a just-picked apple, the snap of cucumber, the airy crunch of lotus root. シャキシャキ is the texture of vegetables and fruits that have not lost their water — once they wilt (しおれる), they lose it forever. The texture that says "this is fresh."' },
+          { id:'puripuri',  kana:'ぷりぷり', kanji:'',  romaji:'puripuri',
+            en:'plump-bouncy, seafood',
+            tint:'#F4E4DA', motionShape:'plump-bounce',
+            foodPool:['ebi','tako','ika','kani','sooseeji','toriniku','hikiniku'],
+            audioFoley:'plump-pop / sausage-bite',
+            notes:'The plump, taut spring of cooked shrimp, fresh octopus, scallop, sausage casing. ぷりぷり is the marketing word for seafood freshness — every sushi-shop sign promises ぷりぷりの海老. Also extends to non-seafood: a juicy sausage, a well-cooked chicken thigh, the underside of a perfect chashu slice.' },
+          { id:'karikari',  kana:'カリカリ', kanji:'',  romaji:'karikari',
+            en:'crunchy-hard, deep-fried',
+            tint:'#E8D8B8', motionShape:'hard-crunch',
+            foodPool:['beekon','dish-karaage','furaido-chikin','furaido-poteto','poteto-chippusu','piinattsu','dish-tempura'],
+            audioFoley:'hard crunch / bacon-snap',
+            notes:'The hard crunch of bacon cooked extra-crispy, the edges of karaage, deep-fried croutons, well-toasted bread crusts. Heavier and louder than さくさく — カリカリ takes work, requires the molars. The signature texture of bar food (karaage, fries, bacon) and snack food (chips, popcorn).' },
+        ],
+      },
       // Fast food chains — direct launch into a specific restaurant's
       // scene flow (not random). `isFastFood:true` puts them in their
       // own sidebar group between Interactive and Books; `restaurantId`

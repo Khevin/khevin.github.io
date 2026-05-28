@@ -33,22 +33,90 @@ flavor-worlds:
   sawayaka: { flood: "#c8e6d8", ink: "#1f3a30", chip: "#6ea890" }  # mint-water — refreshing, mid-cool
   tsumetai: { flood: "#c8e0e8", ink: "#1e3a4f", chip: "#7ba8b8" }  # ice cyan — cold without being white
 
-# ── Texture treatments (Phase 2, 10 textures) ──────────────────────────────
-# Textures don't get a full color flood — they get a paper-tint shift plus a
-# brushed motion-line treatment. Each texture carries: --tint (paper-tint
-# applied to the canvas, much subtler than flavor flood), --motion (the
-# brush-line style for the kana centerpiece — soft / angular / wet / dry).
+# ── Texture treatments (Phase 2, 10 textures) — refined 2026-05-27 ─────────
+# Textures DON'T get a full color flood — they get a subtle paper-tint shift
+# plus a brushed motion-line glyph that IS the visual identity. Each texture
+# carries five fields:
+#   tint         — paper-tint applied to immersion canvas. Always above ~92%
+#                  lightness; it's a whisper, not a commit. Sensory-specific
+#                  (mochi pink, nori slate, shrimp coral) rather than amber-
+#                  leaning (the pre-2026-05-27 draft was too yellow across
+#                  all 10 — the world reads as one warm tone).
+#   motion       — the CSS class hint mapping to the brushstroke style.
+#   motion-shape — describes the actual SVG curve. Used at build time to
+#                  generate the brushed motion-line that fills the bento
+#                  card's image slot AND sits under the immersion kana.
+#                  NO food image on the bento card — the texture IS its
+#                  brushed glyph. (Departure from the flavors-page pattern
+#                  where the bento card front carries a canonical food.)
+#   food-pool    — 4-8 edible item ids the right-column collage on the
+#                  immersion view samples from. The collage is the texture's
+#                  visual answer to "where does this texture live in the
+#                  world?" Pool can grow; the field is the seed.
+#   audio-foley  — the texture-sound that plays sandwiched between the two
+#                  spoken-kana readings (audio = word slow + foley + word
+#                  natural). Build task: source/record one per texture.
 texture-treatments:
-  mochimochi:  { tint: "#f0e5d0", motion: "soft-bounce" }    # chewy / sticky-soft
-  sakusaku:    { tint: "#f5e9c8", motion: "crisp-angular" }   # crisp / flaky
-  nebaneba:    { tint: "#e0d6b8", motion: "wet-drag" }        # sticky / slimy
-  paripari:    { tint: "#f4e6b8", motion: "sharp-thin" }      # crunchy / crisp-thin
-  sarasara:    { tint: "#e8e4d8", motion: "smooth-flow" }     # smooth-flowing
-  fuwafuwa:    { tint: "#f8f0e8", motion: "airy-cloud" }      # fluffy / airy
-  torotoro:    { tint: "#f0e0c0", motion: "thick-melt" }      # thick-creamy / melting
-  shakishaki:  { tint: "#e8eed8", motion: "vegetal-snap" }    # crisp-fresh, vegetal
-  puripuri:    { tint: "#f0d8d0", motion: "plump-bounce" }    # plump-bouncy, seafood
-  karikari:    { tint: "#e8d8b8", motion: "hard-crunch" }     # crunchy-hard, deep-fried
+  mochimochi:
+    tint: "#F5E8E4"           # mochi cream-pink — pressed sweet rice blush
+    motion: "soft-bounce"
+    motion-shape: "rounded sine wave, slight squash on the peaks — the bouncy spring of pressed mochi"
+    food-pool: [mochi, daifuku, ohagi, taiyaki, dango, manjuu, pan, shokupan, hikiniku]
+    audio-foley: "soft squish / chewy-press"
+  sakusaku:
+    tint: "#F2E9D1"           # tempura golden — light-fried batter
+    motion: "crisp-angular"
+    motion-shape: "angular sawtooth with sharp downward peaks — the shatter of crisp tempura batter"
+    food-pool: [furaido-poteto, poteto-chippusu, beekon, kabita-pan, taiyaki, dorayaki]
+    audio-foley: "crisp shatter / batter-snap"
+  nebaneba:
+    tint: "#ECE2C2"           # natto amber — fermented soybean
+    motion: "wet-drag"
+    motion-shape: "stretched-thread arcs with sag and drooping strings — the stringy pull of natto / okra"
+    food-pool: [nattou, youkan, mochi, daifuku, warabimochi, anmitsu]
+    audio-foley: "wet stretch / stringy pull"
+  paripari:
+    tint: "#E5E8E0"           # nori slate — dry seaweed muted green-grey
+    motion: "sharp-thin"
+    motion-shape: "zigzag with hard 90° corners, thin stroke — the brittle snap of dry nori"
+    food-pool: [onigiri, beekon, taiyaki, kabita-pan, poteto-chippusu, dish-tempura]
+    audio-foley: "thin snap / sheet-crack"
+  sarasara:
+    tint: "#F7F4EE"           # rice-paper near-default — absence-of-texture as texture
+    motion: "smooth-flow"
+    motion-shape: "long flowing horizontal wave, very low amplitude — the smoothness of loose rice / fine hair / pour-over water"
+    food-pool: [gohan, genmai, ocha, mizu, uuroncha, tansansui, soba, udon]
+    audio-foley: "gentle pour / brushed silk"
+  fuwafuwa:
+    tint: "#F5EDD8"           # pancake cream — airy lift cream-yellow
+    motion: "airy-cloud"
+    motion-shape: "three rising cloud-bumps stacked — the airy lift of pancake / cotton candy / soufflé"
+    food-pool: [pan, shokupan, namakuriimu, taiyaki, dorayaki, manjuu, purin]
+    audio-foley: "soft puff / cotton-press"
+  torotoro:
+    tint: "#F6E8C9"           # yolk pale — soft-boiled egg yolk
+    motion: "thick-melt"
+    motion-shape: "sagging arc with a slow drip on the right — the melt-and-flow of onsen-egg yolk / nikujaga sauce / melted cheese"
+    food-pool: [tamago, namakuriimu, purin, aisukuriimu, bataa, gyuunyuu, unagi, anmitsu]
+    audio-foley: "thick pour / honey-drag"
+  shakishaki:
+    tint: "#E6EEDE"           # vegetable celadon — fresh-green crispness
+    motion: "vegetal-snap"
+    motion-shape: "short vertical hatch-lines, evenly spaced — the crisp-fresh stand of lettuce / daikon / cucumber"
+    food-pool: [kyabetsu, daikon, ninjin, kyuuri, tomato, ringo, nashi, kaki, renkon, gobou]
+    audio-foley: "vegetable snap / leaf-crunch"
+  puripuri:
+    tint: "#F4E4DA"           # shrimp coral — cooked-prawn pink
+    motion: "plump-bounce"
+    motion-shape: "taut rounded bubbles in a row — the plump bounce of shrimp / scallops / sausage"
+    food-pool: [ebi, tako, ika, kani, sooseeji, toriniku, hikiniku, hot-frankfurt]
+    audio-foley: "plump-pop / sausage-bite"
+  karikari:
+    tint: "#E8D8B8"           # bacon toast — crisped golden-brown
+    motion: "hard-crunch"
+    motion-shape: "jagged dry-broken line, snapped mid-stroke — the crunch of bacon / karaage / croutons"
+    food-pool: [beekon, dish-karaage, furaido-chikin, furaido-poteto, poteto-chippusu, piinattsu, dish-tempura]
+    audio-foley: "hard crunch / bacon-snap"
 
 # ── Typography (inherited 3-role system) ───────────────────────────────────
 typography:
