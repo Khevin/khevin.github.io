@@ -6616,7 +6616,9 @@
      the renderer briefly during state swap (.is-fading-out → swap
      → fade-in via default opacity:1 transition). Targets the actual
      wrap elements rendered by flavorsPageHTML — .flavors-bento-wrap
-     and .flavors-immersion-wrap. */
+     and .flavors-immersion-wrap. Used by exitFlavorImmersion (back
+     to bento) — the richer enter choreography below replaces this
+     for bento → immersion entries. */
   .flavors-frame.is-fading-out > .flavors-bento-wrap,
   .flavors-frame.is-fading-out > .flavors-immersion-wrap {
     opacity: 0;
@@ -6627,6 +6629,158 @@
     opacity: 1;
     transition: opacity 260ms cubic-bezier(0, 0, 0.2, 1);
   }
+
+  /* ── Bento → Immersion entrance choreography ──────────────────
+     Sequenced cascade triggered when the user clicks a flavor card.
+     Phase A (handled in JS, ~280ms): bento cards cascade-exit with
+     per-card stagger via --exit-i; the frame's .is-leaving-bento
+     class scopes the exit animation. Phase B (handled in CSS below):
+     after the DOM swap, the new immersion frame mounts with
+     .is-entering and a wave of CSS animations fire with increasing
+     animation-delay values:
+        300ms flood    — color fills the canvas
+        400ms hero     — the staple image dissolves + scales in
+        600ms kana     — the big kanji+furigana rises from below
+        720ms romaji   — canonical-food kana fades in
+        820ms audio    — speaker button springs in
+        920ms notes    — English gloss + cultural note fade in
+       1000ms cards    — food example cards stagger from below
+                         (per-card 40ms via --enter-i)
+       1300ms rail     — flavor thumbs slide in from the right one
+                         at a time (per-thumb 55ms via --enter-i)
+     The class is removed by JS after 2200ms so subsequent flavor
+     switches don't replay this — they get the lighter switchFlavor
+     path (no choreography, just the color shift). */
+
+  /* Phase A: bento card cascade exit. Cards scale down with a slight
+     downward drift + opacity fade, staggered by --exit-i so the wave
+     reads as a deliberate "pages closing" gesture rather than all
+     cards vanishing in sync. */
+  .flavors-frame.is-leaving-bento .flavor-bento-card {
+    animation: flavors-bento-card-exit 280ms cubic-bezier(0.55, 0, 0.7, 0.2) forwards;
+    animation-delay: calc(var(--exit-i, 0) * 14ms);
+  }
+  @keyframes flavors-bento-card-exit {
+    0%   { opacity: 1; transform: scale(1)    translateY(0);   }
+    100% { opacity: 0; transform: scale(0.88) translateY(-12px); }
+  }
+
+  /* Phase B base — every entering element starts hidden via
+     animation-fill-mode: both so the delay window doesn't flash the
+     final state. Each element below sets its own animation +
+     animation-delay. */
+  .flavors-frame.is-entering .flavors-immersion-wrap,
+  .flavors-frame.is-entering .flavor-immersion-image,
+  .flavors-frame.is-entering .flavor-immersion-kana,
+  .flavors-frame.is-entering .flavor-immersion-food,
+  .flavors-frame.is-entering .flavor-immersion-audio,
+  .flavors-frame.is-entering .flavor-related-notes,
+  .flavors-frame.is-entering .flavor-related-card,
+  .flavors-frame.is-entering .flavor-rail-back,
+  .flavors-frame.is-entering .flavor-rail-thumb,
+  .flavors-frame.is-entering .flavor-rail-keys {
+    animation-fill-mode: both;
+  }
+
+  /* Flood — the immersion wrap fades in over 400ms, carrying the
+     flavor's flood color with it (the wrap already has --flood
+     applied as background). 300ms delay so phase A's tail blends
+     into phase B's head — by the time the bento's last cards finish
+     fading, the new color is already half in. */
+  .flavors-frame.is-entering .flavors-immersion-wrap {
+    animation: flavors-flood-in 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: 0ms;
+  }
+  @keyframes flavors-flood-in {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hero image — the staple food (onigiri / lemon / strawberry slice
+     / etc.) dissolves in with a gentle scale. Starts 100ms after the
+     flood begins so the user's eye lands on the color first, the
+     hero second. */
+  .flavors-frame.is-entering .flavor-immersion-image {
+    animation: flavors-hero-in 360ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: 100ms;
+  }
+  @keyframes flavors-hero-in {
+    0%   { opacity: 0; transform: scale(0.92); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Kana title — the big おいしい / 甘い / etc. rises from below with
+     a fast-easing curve so the headword feels like it lands with a
+     small flourish (the curve overshoots slightly via cubic-bezier
+     y2 > 1 for a subtle bounce). */
+  .flavors-frame.is-entering .flavor-immersion-kana {
+    animation: flavors-kana-in 320ms cubic-bezier(0.34, 1.4, 0.64, 1);
+    animation-delay: 300ms;
+  }
+  @keyframes flavors-kana-in {
+    0%   { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Romaji + audio — sequential, 120ms apart, both gentle slide-ups. */
+  .flavors-frame.is-entering .flavor-immersion-food {
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: 420ms;
+  }
+  .flavors-frame.is-entering .flavor-immersion-audio {
+    animation: flavors-audio-in 280ms cubic-bezier(0.34, 1.4, 0.64, 1);
+    animation-delay: 520ms;
+  }
+  @keyframes flavors-soft-in {
+    0%   { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes flavors-audio-in {
+    0%   { opacity: 0; transform: scale(0.6); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Notes (English gloss + cultural note) — quiet fade-up, lower in
+     the hierarchy so it arrives after the headword has settled. */
+  .flavors-frame.is-entering .flavor-related-notes {
+    animation: flavors-soft-in 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: 620ms;
+  }
+
+  /* Food cards — cascade from below with per-card stagger via
+     --enter-i. Starting at 700ms means the cards begin appearing
+     while the notes are still settling. 40ms × ~12 cards = ~480ms
+     wave for the cascade. */
+  .flavors-frame.is-entering .flavor-related-card {
+    animation: flavors-card-in 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: calc(700ms + var(--enter-i, 0) * 40ms);
+  }
+  @keyframes flavors-card-in {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  /* Top rail — last to arrive. Back button + key-hint fade in
+     together; the 10 flavor thumbs slide in from the right one at a
+     time. 55ms × 10 thumbs = 550ms wave; total rail finish ~1850ms,
+     just under the 2200ms cleanup window. */
+  .flavors-frame.is-entering .flavor-rail-back {
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: 1100ms;
+  }
+  .flavors-frame.is-entering .flavor-rail-keys {
+    animation: flavors-soft-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: 1200ms;
+  }
+  .flavors-frame.is-entering .flavor-rail-thumb {
+    animation: flavors-rail-thumb-in 380ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: calc(1300ms + var(--enter-i, 0) * 55ms);
+  }
+  @keyframes flavors-rail-thumb-in {
+    0%   { opacity: 0; transform: translateX(40px) scale(0.85); }
+    100% { opacity: 1; transform: translateX(0)    scale(1); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .flavors-frame.is-fading-out > .flavors-bento-wrap,
     .flavors-frame.is-fading-out > .flavors-immersion-wrap,
@@ -6634,6 +6788,24 @@
     .flavors-frame > .flavors-immersion-wrap {
       transition: none;
       opacity: 1;
+    }
+    /* All choreography keyframes are zeroed so users on the
+       reduced-motion preference get an instant swap with no
+       movement. The JS skips the .is-entering tagging entirely on
+       reduced-motion (see enterFlavorImmersion), but this is a
+       belt-and-suspenders guard in case anything sneaks through. */
+    .flavors-frame.is-leaving-bento .flavor-bento-card,
+    .flavors-frame.is-entering .flavors-immersion-wrap,
+    .flavors-frame.is-entering .flavor-immersion-image,
+    .flavors-frame.is-entering .flavor-immersion-kana,
+    .flavors-frame.is-entering .flavor-immersion-food,
+    .flavors-frame.is-entering .flavor-immersion-audio,
+    .flavors-frame.is-entering .flavor-related-notes,
+    .flavors-frame.is-entering .flavor-related-card,
+    .flavors-frame.is-entering .flavor-rail-back,
+    .flavors-frame.is-entering .flavor-rail-keys,
+    .flavors-frame.is-entering .flavor-rail-thumb {
+      animation: none;
     }
   }
 
@@ -18400,9 +18572,9 @@ function flavorsPageHTML(book) {
       </p>
     </header>
     <ul class="flavors-bento" role="list">
-      ${flavors.map(f => `
+      ${flavors.map((f, i) => `
         <li class="flavor-bento-card"
-            style="--chip:${escAttr(f.chip)}; --flood:${escAttr(f.flood)}; --ink-on-flood:${escAttr(f.ink)};">
+            style="--chip:${escAttr(f.chip)}; --flood:${escAttr(f.flood)}; --ink-on-flood:${escAttr(f.ink)}; --exit-i:${i};">
           <button class="flavor-bento-enter"
                   data-flavor-id="${escAttr(f.id)}"
                   aria-label="${escAttr(f.kana)} — enter this flavor's world"
@@ -18445,9 +18617,10 @@ function flavorsPageHTML(book) {
 function renderFlavorImmersionInner(flavor, allFlavors) {
   // The 10-thumb rail. Order matches the book's flavors array; the
   // active flavor's thumb is highlighted, the rest are ghosted (CSS).
-  const railHTML = allFlavors.map(f => `
+  const railHTML = allFlavors.map((f, i) => `
     <button class="flavor-rail-thumb ${f.id === flavor.id ? 'is-active' : ''}"
             data-flavor-id="${escAttr(f.id)}"
+            style="--enter-i:${i};"
             type="button"
             aria-label="${escAttr(f.kana)}"
             ${f.id === flavor.id ? 'aria-current="true"' : ''}>
@@ -18541,9 +18714,10 @@ function renderFlavorImmersionInner(flavor, allFlavors) {
             </div>
           `;
         }
-        const carriersHTML = carriers.map(({ item, cat, book }) => `
+        const carriersHTML = carriers.map(({ item, cat, book }, i) => `
           <button class="flavor-related-card"
                   data-flavor-to-edible="${escAttr(book.id)}/${escAttr(cat.id)}/${escAttr(item.id)}"
+                  style="--enter-i:${i};"
                   type="button"
                   aria-label="Open ${escAttr(item.kana)} — ${escAttr(item.en)}">
             <div class="flavor-related-image">
@@ -18554,7 +18728,7 @@ function renderFlavorImmersionInner(flavor, allFlavors) {
             </div>
           </button>
         `).join('');
-        const examplesHTML = examples.map(ex => {
+        const examplesHTML = examples.map((ex, i) => {
           // Split label into colored verb prefix + noun. Mazui examples
           // carry verbKana + nounKana so the verb (kusatta / kabita /
           // shioreta) renders smaller and tinted while the noun keeps
@@ -18569,6 +18743,7 @@ function renderFlavorImmersionInner(flavor, allFlavors) {
           return `
             <div class="flavor-related-card is-example"
                  role="img"
+                 style="--enter-i:${carriers.length + i};"
                  aria-label="Example: ${escAttr(aria)}">
               <div class="flavor-related-image">
                 <image-slot image-key="vocab/${escAttr(ex.id)}" readonly></image-slot>
@@ -19442,11 +19617,40 @@ function wireTexturesPageHandlers(book) {
 // arrow vs rail thumb).
 function enterFlavorImmersion(book, flavorId) {
   if (APP.flavorId === flavorId) return; // already there
-  fadeFlavorsThen(() => {
+  const frame = document.querySelector('.flavors-frame');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!frame || reduced) {
     APP.flavorId = flavorId;
     lsSet('jp:flavorId', flavorId);
     rerenderFlavorsPage(book);
-  });
+    return;
+  }
+  // Two-phase choreography:
+  //   1. Tag the current bento with .is-leaving-bento → CSS cascade-
+  //      exits the 10 cards (~14ms stagger × 10 = ~140ms total exit
+  //      tail) plus a paper-base fade. Total exit window 280ms.
+  //   2. After 280ms, swap to immersion. The new frame mounts with
+  //      .is-entering, which triggers a sequenced cascade across the
+  //      immersion view: flood-fill, hero, kana, romaji, audio, notes,
+  //      food cards (per-card stagger), and finally the rail thumbs
+  //      coming in from the right one at a time. The class is removed
+  //      after the longest animation completes (~2.1s) so subsequent
+  //      flavor switches don't replay the entrance.
+  frame.classList.add('is-leaving-bento');
+  setTimeout(() => {
+    APP.flavorId = flavorId;
+    lsSet('jp:flavorId', flavorId);
+    rerenderFlavorsPage(book);
+    const next = document.querySelector('.flavors-frame');
+    if (next) {
+      // Force a reflow before adding the class so the animations
+      // restart from frame 0 even when the browser would otherwise
+      // skip them (e.g. on rapid re-entries).
+      void next.offsetWidth;
+      next.classList.add('is-entering');
+      setTimeout(() => next.classList.remove('is-entering'), 2200);
+    }
+  }, 280);
 }
 
 function exitFlavorImmersion(book) {
