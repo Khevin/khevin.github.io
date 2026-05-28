@@ -15882,8 +15882,12 @@ const APP = {
   density:      lsGet('jp:density', 'comfortable'),
   particlesOn:  lsGet('jp:particles', true),
   // Migrate legacy vocab class ids: 'onomatopoeia' → 'jougo'.
+  // Default for first-time visitors is 'eating-out' (Food) — the
+  // project's headline surface (Flavors, Edibles, Textures) lives
+  // here and now sits first in the sidebar order. Returning visitors
+  // resume whatever class their localStorage carries.
   vocabClassId: (() => {
-    const v = lsGet('jp:vocabClass', 'home');
+    const v = lsGet('jp:vocabClass', 'eating-out');
     if (v === 'onomatopoeia') return 'jougo';
     return v;
   })(),

@@ -435,16 +435,12 @@ const HOME_BOOKS = [
   },
 ];
 
+// Order matches the sidebar reading order: Food first (the project's
+// signature surface — Flavors, Edibles, Textures, restaurants), then
+// Home (room-by-room basics), then Stays, then Internet, then Jougo.
+// `id` strings stay stable across reorders so localStorage keys and
+// click-handler selectors keep matching.
 window.VOCAB_CLASSES = [
-  {
-    id: 'home',
-    glyph: '家',
-    titleJa: 'いえ',
-    titleEn: 'Home',
-    pageTitleJa: '部屋ごとに ことばを 集める',
-    pageTitleEn: 'Vocabulary, gathered room by room',
-    books: HOME_BOOKS,
-  },
   {
     // id stays 'eating-out' for backward compat — localStorage keys
     // (jp:vocabClass) and click-handler selectors elsewhere depend on
@@ -1915,6 +1911,15 @@ window.VOCAB_CLASSES = [
         ]
       },
     ],
+  },
+  {
+    id: 'home',
+    glyph: '家',
+    titleJa: 'いえ',
+    titleEn: 'Home',
+    pageTitleJa: '部屋ごとに ことばを 集める',
+    pageTitleEn: 'Vocabulary, gathered room by room',
+    books: HOME_BOOKS,
   },
   {
     id: 'stays',
