@@ -1157,8 +1157,8 @@ window.VOCAB_CLASSES = [
           { id:'karikari',  kana:'カリカリ', kanji:'',  romaji:'karikari',
             en:'crunchy-hard, deep-fried',
             tint:'#E8D8B8', motionShape:'hard-crunch',
-            staple:'dish-karaage', stapleLabel:'crunchy', softness:10,
-            foodPool:['beekon','dish-karaage','furaido-chikin','furaido-poteto','poteto-chippusu','piinattsu','dish-tempura'],
+            staple:'furaido-chikin', stapleLabel:'crunchy', softness:10,
+            foodPool:['furaido-chikin','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','dish-tempura'],
             feelsLike:['crunchy','hard','満足感','ご褒美','充実感'],
             moods:[
               { icon:'gift',   label:'ご褒美' },
