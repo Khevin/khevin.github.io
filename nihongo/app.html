@@ -7049,12 +7049,19 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Tile itself — small rise + tilt-in. Forward stagger. */
+  /* Tile itself — small rise + tilt-in. Forward stagger. Perspective
+     has to live on the PARENT (the grid) for rotateX on the tile to
+     render as a real 3D tilt; perspective on the rotating element
+     itself has no effect, the rotation collapses to a 2D Y-skew. */
+  .edibles-frame.is-entering-edibles .edibles-categories {
+    perspective: 1100px;
+    perspective-origin: 50% 0%;
+  }
   .edibles-frame.is-entering-edibles .edibles-category-tile {
     animation: edibles-tile-bloom 540ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
     animation-delay: calc(240ms + var(--enter-i, 0) * 70ms);
     transform-style: preserve-3d;
-    perspective: 800px;
+    will-change: transform, opacity;
   }
   @keyframes edibles-tile-bloom {
     0%   { opacity: 0; transform: translateY(28px) scale(0.92) rotateX(8deg); }
@@ -7151,10 +7158,10 @@
      stagger-fade back in.
 
      Implementation notes:
-       • The clicked card carries `.is-zoom-target` so its keyframe
-         overrides the sibling-cascade rule (specificity ties broken
-         by source order — the target rule MUST come after the
-         sibling rule). z-index lift via the target class so the hop
+       • The clicked card carries `.is-zoom-target`; that rule has
+         strictly higher specificity than the sibling-cascade rule
+         (one extra class), so it wins on the clicked card regardless
+         of source order. z-index lift via the target class so the hop
          renders above neighbors.
        • The detail-hero scale tail-frame (1.0) matches its static
          resting transform exactly, so when the class clears there's
@@ -20293,8 +20300,18 @@ function wireTexturesPageHandlers(book) {
 // All three (enter / exit / switch) go through the same cross-fade
 // helper so the transition is uniform regardless of trigger (click vs
 // arrow vs rail thumb).
+// Shared rapid-click guard for the three flavor transition functions.
+// A click while a transition is already mid-flight would queue a
+// second rerenderFlavorsPage and stack a second .is-entering setTimeout
+// on top of the first — visually you'd see a stutter or a class-removal
+// firing on the wrong frame. Setting the flag at function entry and
+// clearing it at the end of the longest setTimeout chain blocks the
+// second click cleanly. Per-target same-id guards stay in place
+// (`APP.flavorId === flavorId` etc.) — this only blocks DIFFERENT-target
+// rapid clicks.
 function enterFlavorImmersion(book, flavorId) {
   if (APP.flavorId === flavorId) return; // already there
+  if (window.__flavorsAnimating) return;  // mid-transition
   const frame = document.querySelector('.flavors-frame');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!frame || reduced) {
@@ -20314,6 +20331,7 @@ function enterFlavorImmersion(book, flavorId) {
   //      coming in from the right one at a time. The class is removed
   //      after the longest animation completes (~2.1s) so subsequent
   //      flavor switches don't replay the entrance.
+  window.__flavorsAnimating = true;
   frame.classList.add('is-leaving-bento');
   setTimeout(() => {
     APP.flavorId = flavorId;
@@ -20326,13 +20344,19 @@ function enterFlavorImmersion(book, flavorId) {
       // skip them (e.g. on rapid re-entries).
       void next.offsetWidth;
       next.classList.add('is-entering');
-      setTimeout(() => next.classList.remove('is-entering'), 2200);
+      setTimeout(() => {
+        next.classList.remove('is-entering');
+        window.__flavorsAnimating = false;
+      }, 2200);
+    } else {
+      window.__flavorsAnimating = false;
     }
   }, 280);
 }
 
 function exitFlavorImmersion(book) {
   if (APP.flavorId == null) return;
+  if (window.__flavorsAnimating) return;
   const frame = document.querySelector('.flavors-frame');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!frame || reduced) {
@@ -20349,6 +20373,7 @@ function exitFlavorImmersion(book) {
   //   2. swap → is-entering-bento (~500ms): bento cards cascade in
   //      with stagger (the reverse of the bento-card-exit they did
   //      on the way out).
+  window.__flavorsAnimating = true;
   frame.classList.add('is-leaving-immersion');
   setTimeout(() => {
     APP.flavorId = null;
@@ -20358,13 +20383,19 @@ function exitFlavorImmersion(book) {
     if (next) {
       void next.offsetWidth;
       next.classList.add('is-entering-bento');
-      setTimeout(() => next.classList.remove('is-entering-bento'), 1000);
+      setTimeout(() => {
+        next.classList.remove('is-entering-bento');
+        window.__flavorsAnimating = false;
+      }, 1000);
+    } else {
+      window.__flavorsAnimating = false;
     }
   }, 500);
 }
 
 function switchFlavor(book, flavorId) {
   if (APP.flavorId === flavorId) return;
+  if (window.__flavorsAnimating) return;
   const frame = document.querySelector('.flavors-frame');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!frame || reduced) {
@@ -20381,6 +20412,7 @@ function switchFlavor(book, flavorId) {
   //      food cards exit (no rail).
   //   2. swap → is-switching-in (~700ms): same elements re-enter
   //      with a shorter cascade than the full entry.
+  window.__flavorsAnimating = true;
   frame.classList.add('is-switching-out');
   setTimeout(() => {
     APP.flavorId = flavorId;
@@ -20390,7 +20422,12 @@ function switchFlavor(book, flavorId) {
     if (next) {
       void next.offsetWidth;
       next.classList.add('is-switching-in');
-      setTimeout(() => next.classList.remove('is-switching-in'), 900);
+      setTimeout(() => {
+        next.classList.remove('is-switching-in');
+        window.__flavorsAnimating = false;
+      }, 900);
+    } else {
+      window.__flavorsAnimating = false;
     }
   }, 280);
 }
@@ -21073,7 +21110,12 @@ function wireEdiblesPageHandlers(book) {
 
       // items → categories transition gets the reverse choreography:
       // existing item cards stagger out, then categories stagger in.
+      // Rapid-click guard: same shared flag as the other edibles
+      // transitions; blocks the second click while the first is still
+      // animating (see comment on enterFlavorImmersion for full rationale).
       if (target === 'categories' && ediFrame && !reduced) {
+        if (window.__ediblesAnimating) return;
+        window.__ediblesAnimating = true;
         ediFrame.classList.add('is-leaving-items');
         setTimeout(() => {
           APP.edibleCategory = null;
@@ -21087,7 +21129,12 @@ function wireEdiblesPageHandlers(book) {
           if (next) {
             void next.offsetWidth;
             next.classList.add('is-entering-categories');
-            setTimeout(() => next.classList.remove('is-entering-categories'), 900);
+            setTimeout(() => {
+              next.classList.remove('is-entering-categories');
+              window.__ediblesAnimating = false;
+            }, 900);
+          } else {
+            window.__ediblesAnimating = false;
           }
         }, 360);
         return;
@@ -21100,6 +21147,8 @@ function wireEdiblesPageHandlers(book) {
       // data-item-id BEFORE adding the entering class so the keyframe
       // selector targets it specifically (vs the sibling cascade).
       if (target === 'items' && ediFrame && !reduced) {
+        if (window.__ediblesAnimating) return;
+        window.__ediblesAnimating = true;
         const returningItemId = APP.edibleItem;
         ediFrame.classList.add('is-zoom-out-detail');
         setTimeout(() => {
@@ -21114,7 +21163,12 @@ function wireEdiblesPageHandlers(book) {
             if (returningCard) returningCard.classList.add('is-zoom-target');
             void next.offsetWidth;
             next.classList.add('is-zoom-in-items');
-            setTimeout(() => next.classList.remove('is-zoom-in-items'), 1000);
+            setTimeout(() => {
+              next.classList.remove('is-zoom-in-items');
+              window.__ediblesAnimating = false;
+            }, 1000);
+          } else {
+            window.__ediblesAnimating = false;
           }
         }, 320);
         return;
@@ -21171,6 +21225,8 @@ function wireEdiblesPageHandlers(book) {
         rerenderEdibles(book);
         return;
       }
+      if (window.__ediblesAnimating) return;
+      window.__ediblesAnimating = true;
       ediFrame.classList.add('is-leaving-categories');
       setTimeout(() => {
         APP.edibleCategory = nextCatId;
@@ -21182,7 +21238,12 @@ function wireEdiblesPageHandlers(book) {
         if (next) {
           void next.offsetWidth;
           next.classList.add('is-entering-items');
-          setTimeout(() => next.classList.remove('is-entering-items'), 900);
+          setTimeout(() => {
+            next.classList.remove('is-entering-items');
+            window.__ediblesAnimating = false;
+          }, 900);
+        } else {
+          window.__ediblesAnimating = false;
         }
       }, 360);
       return;
@@ -21209,6 +21270,8 @@ function wireEdiblesPageHandlers(book) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
+      if (window.__ediblesAnimating) return;
+      window.__ediblesAnimating = true;
       // Tag the clicked card so the CSS hops it up (vs the siblings
       // which fade-shrink). z-index lift comes via the class — the
       // hop card needs to render above its neighbors when scaling up.
@@ -21222,7 +21285,12 @@ function wireEdiblesPageHandlers(book) {
         if (next) {
           void next.offsetWidth;
           next.classList.add('is-zoom-in-detail');
-          setTimeout(() => next.classList.remove('is-zoom-in-detail'), 1000);
+          setTimeout(() => {
+            next.classList.remove('is-zoom-in-detail');
+            window.__ediblesAnimating = false;
+          }, 1000);
+        } else {
+          window.__ediblesAnimating = false;
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 380);
@@ -21232,6 +21300,12 @@ function wireEdiblesPageHandlers(book) {
     // same category, wrapping at either end. data-target-item carries
     // the destination id (already wrap-computed by the renderer) so
     // the handler stays trivially simple.
+    //
+    // INTENTIONAL: no exit-then-enter choreography here. Walk-through
+    // navigation should feel fast; wrapping it in the 700ms shared-
+    // element flow would make stepping through 20 items insufferable.
+    // The instant rerender is the right tradeoff. Same for the
+    // similar-item card handler below.
     const walkBtn = e.target.closest('[data-edibles-walk]');
     if (walkBtn) {
       const targetId = walkBtn.dataset.targetItem;
@@ -21280,6 +21354,15 @@ function wireEdiblesPageHandlers(book) {
     window.__bookEntranceFlag = null;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduced) {
+      // Set --enter-i per tile so the bloom stagger reads left → right
+      // in the source order. The CSS uses var(--enter-i, 0) but the
+      // tile renderer doesn't carry the variable (unlike the items
+      // renderer, which does emit it inline). Without this loop, every
+      // tile fires at delay 0 and the wave promised in the comment
+      // doesn't happen.
+      frame.querySelectorAll('.edibles-category-tile').forEach((el, i) => {
+        el.style.setProperty('--enter-i', i);
+      });
       void frame.offsetWidth;
       frame.classList.add('is-entering-edibles');
       setTimeout(() => frame.classList.remove('is-entering-edibles'), 1600);
@@ -21287,6 +21370,14 @@ function wireEdiblesPageHandlers(book) {
   }
 }
 
+// IMPORTANT: this implementation relies on `pageEl.innerHTML = ...`
+// destroying the old `.edibles-frame` element entirely on each call.
+// All the transition class hygiene (`is-leaving-categories`, etc.) is
+// implicit because the next render gives us a fresh frame with no
+// classes — we never have to explicitly clean up the leaving classes.
+// If someone refactors this into a diff-and-patch path, they MUST
+// either preserve that contract or add explicit classList.remove calls
+// at every setTimeout boundary in wireEdiblesPageHandlers.
 function rerenderEdibles(book) {
   const pageEl = document.getElementById('vocab-page-content');
   if (!pageEl) return;
