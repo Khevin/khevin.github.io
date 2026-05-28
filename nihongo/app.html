@@ -5257,6 +5257,13 @@
     border-radius: 14px;
     padding: clamp(20px, 2.4vw, 36px);
     border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    /* Paper-float shadow stack — two layers for realism: a tight
+       close shadow grounds the card just off the page, a wider soft
+       ambient shadow does the "floating sheet" feeling. Ink-colored
+       (not pure black) so it stays warm against the paper palette. */
+    box-shadow:
+      0 2px 4px -2px color-mix(in srgb, var(--ink) 14%, transparent),
+      0 18px 36px -14px color-mix(in srgb, var(--ink) 22%, transparent);
     overflow: hidden;     /* clip the pattern to the rounded corners */
     isolation: isolate;   /* contain the blend-mode to this card */
   }
