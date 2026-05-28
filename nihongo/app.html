@@ -5240,20 +5240,29 @@
     object-fit: contain;
     filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--ink) 15%, transparent));
   }
+  /* Slightly smaller so 4-char kana (もちもち, さらさら, ふわふわ, etc.)
+     sit comfortably on a single line at the desktop tile width; 6-char
+     kana (シャキシャキ) split into a symmetric 3+3 stack via the
+     formatSpectrumKana helper's <br>. */
   .spectrum-tile-kana {
     font-family: var(--font-title);
-    font-size: clamp(11px, 0.7vw + 4px, 14px);
+    font-size: clamp(10px, 0.55vw + 4px, 12px);
     color: var(--ink);
-    line-height: 1.1;
+    line-height: 1.15;
     text-align: center;
-    overflow-wrap: anywhere;
+    white-space: normal;
   }
-  .spectrum-tile-label {
-    font-family: var(--font-menu-en); font-style: italic;
-    font-size: 10px;
-    color: var(--ink-3);
-    text-align: center;
-    line-height: 1.2;
+  /* Brushstroke glyph below the kana — the visual signature of the
+     texture. Replaces the old English stapleLabel; the kana names it,
+     the photo anchors it, the brushstroke shows what it feels like. */
+  .spectrum-tile-glyph {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: color-mix(in srgb, var(--ink) 78%, transparent);
+    margin-top: 2px;
+  }
+  .spectrum-tile-glyph .texture-motion-line {
+    width: 100%; height: auto; max-height: 22px;
   }
 
   /* Soft→hard indicator line. Renders a horizontal gradient bar with
@@ -5323,13 +5332,13 @@
       gap: 20px;
     }
   }
+  /* Image floats free on the spotlight surface — no enclosing square.
+     The brushstroke is the visual frame; the photo just sits beside
+     it as the staple-food reference. */
   .textures-spotlight-image {
     width: 100%; aspect-ratio: 1 / 1;
     display: flex; align-items: center; justify-content: center;
-    background: color-mix(in srgb, var(--paper-2) 85%, var(--tint, var(--paper-2)) 15%);
-    border-radius: 12px;
     overflow: hidden;
-    padding: clamp(12px, 1.6vw, 24px);
   }
   .textures-spotlight-image img {
     width: 100%; height: 100%;
@@ -5340,6 +5349,18 @@
     display: flex; flex-direction: column;
     gap: clamp(10px, 1vw, 14px);
     min-width: 0;
+  }
+  /* Brushstroke signature above the kana — wide, hand-drawn, the
+     visual frame the surface lost when the image's enclosing square
+     was stripped. Capped at 56px tall so it reads as a signature
+     stroke, not a banner. */
+  .textures-spotlight-glyph {
+    width: 100%; max-width: 360px;
+    color: var(--ink);
+    margin: 0;
+  }
+  .textures-spotlight-glyph .texture-motion-line {
+    width: 100%; height: auto; max-height: 56px;
   }
   .spotlight-kana {
     font-family: var(--font-title);
@@ -18121,6 +18142,19 @@ function textureSpeakerSVG() {
           </svg>`;
 }
 
+// Spectrum-tile kana formatter. Tiles are narrow (one-tenth the row
+// width on desktop) so a 6-character kana like シャキシャキ has to
+// stack to stay legible. Splitting at the half mark keeps the stack
+// symmetric (シャキ / シャキ) instead of an awkward 4+2 wrap that the
+// browser would default to.
+function formatSpectrumKana(kana) {
+  if (typeof kana !== 'string') return '';
+  if (kana.length === 6) {
+    return escHTML(kana.slice(0, 3)) + '<br>' + escHTML(kana.slice(3));
+  }
+  return escHTML(kana);
+}
+
 // Resolve an edible id → its image src for use in the spectrum tile.
 // Two storage conventions coexist in the project: vocab items live
 // under images/vocab/<id>.webp, and FOOD_GALLERY / menu dishes (the
@@ -18236,8 +18270,8 @@ function texturesPageHTML(book) {
                        alt="" loading="lazy"
                        onerror="this.style.display='none'" />
                 </span>
-                <span class="spectrum-tile-kana">${escHTML(t.kana)}</span>
-                <span class="spectrum-tile-label">${escHTML(t.stapleLabel || '')}</span>
+                <span class="spectrum-tile-kana">${formatSpectrumKana(t.kana)}</span>
+                <span class="spectrum-tile-glyph">${textureMotionLineSVG(t.motionShape)}</span>
               </button>
             </li>
           `).join('')}
@@ -18340,6 +18374,9 @@ function renderTextureSpotlight(texture) {
                               onerror="this.style.display='none'" />` : ''}
         </div>
         <div class="textures-spotlight-info">
+          <div class="textures-spotlight-glyph" aria-hidden="true">
+            ${textureMotionLineSVG(texture.motionShape)}
+          </div>
           <h3 class="spotlight-kana">${escHTML(texture.kana)}</h3>
           <p class="spotlight-romaji">${escHTML(texture.romaji)}</p>
           <button class="textures-spotlight-audio"

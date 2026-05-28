@@ -1087,7 +1087,7 @@ window.VOCAB_CLASSES = [
           { id:'sarasara',  kana:'さらさら', kanji:'',  romaji:'sarasara',
             en:'smooth-flowing',
             tint:'#F7F4EE', motionShape:'smooth-flow',
-            staple:'ocha', stapleLabel:'flowing', softness:2,
+            staple:'ocha', stapleLabel:'flowing', softness:1,
             foodPool:['gohan','genmai','ocha','mizu','uuroncha','tansansui','soba','udon'],
             feelsLike:['flowing','smooth','clean','静か','涼しい'],
             moods:[
@@ -1115,7 +1115,7 @@ window.VOCAB_CLASSES = [
           { id:'torotoro',  kana:'とろとろ', kanji:'',  romaji:'torotoro',
             en:'thick-creamy / melting',
             tint:'#F6E8C9', motionShape:'thick-melt',
-            staple:'tamago', stapleLabel:'melty', softness:1,
+            staple:'tamago', stapleLabel:'melty', softness:2,
             foodPool:['tamago','namakuriimu','purin','aisukuriimu','bataa','gyuunyuu','unagi','anmitsu'],
             feelsLike:['melty','rich','creamy','とろける','贅沢'],
             moods:[
