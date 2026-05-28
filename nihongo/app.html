@@ -6942,6 +6942,47 @@
     letter-spacing: 0.02em;
   }
 
+  /* Reusable hover-revealed reading. Add to any ruby that should
+     surface its furigana at large size on hover/focus — paper-tinted
+     chip floats above the kanji. The small rt above stays as the
+     always-visible reading; this tooltip is the "make it bigger"
+     for users who want to confirm the pronunciation without
+     squinting. Used on the detail card's badge labels (味/食感/季節)
+     and the 似ている 食材 header. Generic enough to apply anywhere
+     a ruby element appears. */
+  ruby.hover-furigana {
+    position: relative;
+    cursor: help;
+  }
+  ruby.hover-furigana::after {
+    content: attr(data-fur);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-title);
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease-out;
+    z-index: 20;
+    box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--ink) 26%, transparent);
+  }
+  ruby.hover-furigana:hover::after,
+  ruby.hover-furigana:focus-visible::after {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    ruby.hover-furigana::after { transition: none; }
+  }
+
   /* Top-right "?" legend — a small icon button that on hover/focus
      reveals a tooltip mapping each kanji label to its English
      translation. Always reachable, never in the way. */
@@ -18968,7 +19009,7 @@ function ediblesDetailHTML(cat, item, allCategories) {
             ${flavorBadges ? `
               <div class="edibles-badge-row">
                 <span class="edibles-badge-label">
-                  <ruby>味<rt>あじ</rt></ruby>
+                  <ruby class="hover-furigana" data-fur="あじ" tabindex="0">味<rt>あじ</rt></ruby>
                 </span>
                 ${flavorBadges}
               </div>
@@ -18976,7 +19017,7 @@ function ediblesDetailHTML(cat, item, allCategories) {
             ${textureBadges ? `
               <div class="edibles-badge-row">
                 <span class="edibles-badge-label">
-                  <ruby>食感<rt>しょっかん</rt></ruby>
+                  <ruby class="hover-furigana" data-fur="しょっかん" tabindex="0">食感<rt>しょっかん</rt></ruby>
                 </span>
                 ${textureBadges}
               </div>
@@ -18984,7 +19025,7 @@ function ediblesDetailHTML(cat, item, allCategories) {
             ${seasonChips ? `
               <div class="edibles-badge-row">
                 <span class="edibles-badge-label">
-                  <ruby>季節<rt>きせつ</rt></ruby>
+                  <ruby class="hover-furigana" data-fur="きせつ" tabindex="0">季節<rt>きせつ</rt></ruby>
                 </span>
                 ${seasonChips}
               </div>
@@ -19001,7 +19042,9 @@ function ediblesDetailHTML(cat, item, allCategories) {
           return `
             <section class="edibles-detail-similar">
               <header class="edibles-similar-head">
-                <span class="ja">似ている 食材</span>
+                <span class="ja">
+                  <ruby class="hover-furigana" data-fur="に" tabindex="0">似<rt>に</rt></ruby>ている <ruby class="hover-furigana" data-fur="しょくざい" tabindex="0">食材<rt>しょくざい</rt></ruby>
+                </span>
                 <span class="en">items sharing a flavor or texture</span>
               </header>
               <div class="edibles-similar-row">
