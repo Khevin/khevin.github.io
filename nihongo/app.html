@@ -13656,6 +13656,17 @@
   .settings-test-btn:hover {
     background: color-mix(in srgb, var(--ink) 80%, var(--gold-dark) 20%);
   }
+  /* Inline failure message under the Test button (e.g. a 403 from Cloud TTS). */
+  .settings-test-status {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--accent-vermilion, #c34b30) 9%, var(--paper));
+    border: 1px solid color-mix(in srgb, var(--accent-vermilion, #c34b30) 35%, transparent);
+    font-family: var(--serif); font-size: 12px; line-height: 1.45;
+    color: color-mix(in srgb, var(--accent-vermilion, #c34b30) 55%, var(--ink));
+  }
+  .settings-test-status[hidden] { display: none; }
   .settings-no-voice {
     font-family: var(--serif); font-style: italic;
     font-size: 12px; color: var(--ink-3);
@@ -17254,12 +17265,16 @@ const TTS = (function () {
   }
 
   // Google Cloud neural path. POSTs to the synthesize REST endpoint with
-  // the user's key, gets base64 MP3 back, and plays it. On any failure
-  // (bad key, quota, offline) it falls back to the Web Speech voice so a
-  // tap always produces sound.
-  async function speakCloud(clean_, voiceName) {
+  // the user's key, gets base64 MP3 back, and plays it.
+  //   • Normal playback (strict=false): on ANY failure (bad key, 403, quota,
+  //     offline) it falls back to the Web Speech voice so a tap always makes
+  //     sound — but quietly.
+  //   • Test / diagnostic (strict=true): THROWS a descriptive error (parsed
+  //     from Google's response, e.g. "403 — Requests from referer … are
+  //     blocked") so the caller can show it inline instead of masking it.
+  async function speakCloud(clean_, voiceName, strict) {
     const key = APP.gcloudTtsKey;
-    if (!key) return speakWeb(clean_);
+    if (!key) { if (strict) throw new Error('No Google Cloud key set'); return speakWeb(clean_); }
     cancel();
     try {
       const res = await fetch(
@@ -17274,18 +17289,38 @@ const TTS = (function () {
           }),
         }
       );
-      if (!res.ok) throw new Error('gcloud TTS HTTP ' + res.status);
+      if (!res.ok) {
+        // Pull Google's human-readable reason out of the error body.
+        let detail = 'HTTP ' + res.status;
+        try { const ej = await res.json(); if (ej && ej.error && ej.error.message) detail = res.status + ' — ' + ej.error.message; } catch (e) {}
+        throw new Error(detail);
+      }
       const data = await res.json();
-      if (!data.audioContent) throw new Error('gcloud TTS empty response');
+      if (!data.audioContent) throw new Error('empty audio response');
       const audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
       audio.volume = vol01();
       currentAudio = audio;
       audio.onended = () => { if (currentAudio === audio) currentAudio = null; };
       await audio.play();
     } catch (e) {
+      if (strict) throw e;   // surface it (Test button) instead of masking
       console.warn('Google Cloud TTS failed — falling back to the browser voice:', e);
       speakWeb(clean_);
     }
+  }
+
+  // Like speak(), but for the cloud path it REJECTS (with a detailed error)
+  // instead of silently falling back — used by the Settings "Test voice"
+  // button so a 403 / quota / bad-key shows inline. Returns a promise.
+  function speakStrict(text) {
+    const clean_ = clean(text);
+    if (!clean_) return Promise.resolve();
+    const sel = APP.ttsVoiceURI || '';
+    if (sel.indexOf('gcloud:') === 0 && APP.gcloudTtsKey) {
+      return speakCloud(clean_, sel.slice(7), true);
+    }
+    speakWeb(clean_);
+    return Promise.resolve();
   }
 
   function speak(text) {
@@ -17307,7 +17342,7 @@ const TTS = (function () {
     if (!voices.length) refresh();
     return voices;
   }
-  return { speak, cancel, listJa, refresh, ensureVoices, GCLOUD_VOICES };
+  return { speak, speakStrict, cancel, listJa, refresh, ensureVoices, GCLOUD_VOICES };
 })();
 // Expose for inline handlers (speaker buttons use onclick="TTS.speak(...)")
 window.TTS = TTS;
@@ -18908,6 +18943,7 @@ function openSettingsModal() {
             </select>
           </div>
           <button type="button" class="settings-test-btn" data-test-voice>テスト · Test voice</button>
+          <p class="settings-test-status" id="tts-test-status" role="status" aria-live="polite" hidden></p>
         </section>
 
         <section class="settings-section">
@@ -19014,7 +19050,8 @@ function openSettingsModal() {
       lsSet('jp:ttsRate', APP.ttsRate);
     });
     const testBtn = wrap.querySelector('[data-test-voice]');
-    if (testBtn) testBtn.addEventListener('click', () => {
+    const testStatus = wrap.querySelector('#tts-test-status');
+    if (testBtn) testBtn.addEventListener('click', async () => {
       // Commit whatever's currently selected in the dropdown first, so Test
       // always plays the VISIBLE choice (don't depend on the change event
       // having fired — e.g. picking an option then clicking straight here).
@@ -19023,7 +19060,18 @@ function openSettingsModal() {
         APP.ttsVoiceURI = vs.value || null;
         lsSet('jp:ttsVoiceURI', APP.ttsVoiceURI);
       }
-      TTS.speak('こんにちは。日本語の音声テストです。');
+      if (testStatus) { testStatus.hidden = true; testStatus.textContent = ''; }
+      try {
+        // speakStrict surfaces cloud errors (e.g. 403) instead of silently
+        // falling back to the browser voice.
+        await TTS.speakStrict('こんにちは。日本語の音声テストです。');
+      } catch (e) {
+        if (testStatus) {
+          testStatus.hidden = false;
+          testStatus.textContent = 'Cloud voice failed — ' + (e && e.message ? e.message : 'unknown error') +
+            '. Check the key’s API + HTTP-referrer restrictions for this site, and that the Text-to-Speech API is enabled.';
+        }
+      }
     });
     const autoplay = wrap.querySelector('#set-autoplay');
     if (autoplay) autoplay.addEventListener('click', () => {
