@@ -15845,8 +15845,8 @@
     --score-chip:          #3a2e22;
     --score-dot-filled:    #8c6a3a;
     --score-dot-empty:     #d3c4ad;
-    --pitch-line:          #1c1a18;
-    --pitch-line-user:     #7a9a5a;
+    --pitch-line:          #8f3f2e;
+    --pitch-line-user:     #5e7d3e;
     --pitch-pattern-heiban:    #a8843c;
     --pitch-pattern-atamadaka: #c34b30;
     --pitch-pattern-nakadaka:  #8c6a3a;
@@ -15991,20 +15991,30 @@
     display: inline-flex;
     align-items: flex-end;
     position: relative;
-    padding-top: 32px;   /* room for the contour SVG above the glyphs */
+    /* Small top room — the high bar of the contour sits right at the
+       kana tops, not floating in a separate band above. The contour
+       OVERLAPS the upper portion of the glyphs (per the user's
+       textbook reference, where the line runs over/inside the
+       letters). */
+    padding-top: 8px;
   }
   /* Contour SVG stretches to the FULL width of the mora row (left:0
      right:0) so its proportional viewBox columns line up with the
      equal-width mora glyphs automatically — see renderPitchContourSVG.
      This is what lets the mora kerning widen without the contour
-     drifting. */
+     drifting.
+     It's positioned to OVERLAP the top of the kana: the SVG box runs
+     from the row top down ~36px, so the high line lands at the kana
+     tops and the low line dips ~18px into the upper strokes. z-index
+     keeps the maroon line painting OVER the ink glyphs. */
   .pitch-contour-svg {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     width: 100%;
-    height: 30px;
+    height: 36px;
+    z-index: 2;
     pointer-events: none;
     overflow: visible;
   }
@@ -16397,14 +16407,14 @@
   }
   @media (max-width: 540px) {
     .pitch-mora { width: 38px; font-size: 32px; }
-    .pitch-mora-row { padding-top: 26px; }
-    .pitch-contour-svg { height: 24px; }
+    .pitch-mora-row { padding-top: 6px; }
+    .pitch-contour-svg { height: 26px; }
   }
 
   /* ─── Pitch & Tones basics page (Writing → Pitch) ───────────────── */
   .pitch-page {
-    --pitch-line:          #1c1a18;
-    --pitch-line-user:     #7a9a5a;
+    --pitch-line:          #8f3f2e;
+    --pitch-line-user:     #5e7d3e;
     --pitch-pattern-heiban:    #a8843c;
     --pitch-pattern-atamadaka: #c34b30;
     --pitch-pattern-nakadaka:  #8c6a3a;
@@ -16947,6 +16957,12 @@ function setSection(s) {
   // be missing its tier-2 stroke.
   if (APP.section === 'flashcards' || s === 'flashcards') {
     _lastRenderedFlashClass = null;
+  }
+  // Leaving Speaking → release the mic so the browser indicator turns off.
+  // (The stream is held alive across recordings WITHIN the section so the
+  // permission prompt fires only once — see SpeakingRecorder.)
+  if (APP.section === 'speaking' && s !== 'speaking' && typeof SpeakingRecorder !== 'undefined') {
+    SpeakingRecorder.release();
   }
   APP.section = s;
   location.hash = s;
@@ -29780,17 +29796,26 @@ function realWaveformPath(audioBuffer, color) {
 }
 
 // ── Mic capture + scoring ─────────────────────────────────────────────
-// We capture audio with MediaRecorder, decode into an AudioBuffer for
-// the waveform draw + scoring, then throw the raw blob away. No data
-// persists past the current phrase (per restriction in PRODUCT.md §4).
-
+// Captures audio with MediaRecorder, decodes into an AudioBuffer for the
+// waveform draw + scoring, then throws the raw blob away. No data persists
+// past the current phrase (per restriction in PRODUCT.md §4).
+//
+// Permission: the mic stream is acquired ONCE (getUserMedia → one prompt)
+// and CACHED for the whole speaking session. Subsequent recordings reuse
+// the live stream, so the browser never re-prompts on every tap (the
+// previous version stopped the tracks after each recording, which on
+// file:// re-triggered the permission prompt every single time). The
+// stream is released only when the user leaves the Speaking section
+// (setSection → SpeakingRecorder.release()), turning the browser's mic
+// indicator back off.
 const SpeakingRecorder = (function () {
-  let mediaStream = null;
+  let mediaStream = null;     // cached across recordings within a session
   let mediaRecorder = null;
   let chunks = [];
   let startTime = 0;
-  let silenceTimer = null;
+  let stopTimer = null;
   let analyser = null;
+  let srcNode = null;
   let audioCtx = null;
   let onStop = null;
 
@@ -29800,14 +29825,24 @@ const SpeakingRecorder = (function () {
     return audioCtx;
   }
 
-  async function start(onDoneCallback) {
-    onStop = onDoneCallback;
+  // Acquire the mic stream once, cache it. Reused on every subsequent
+  // record so the permission prompt fires only the first time.
+  async function ensureStream() {
+    if (mediaStream && mediaStream.active) return mediaStream;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       throw new Error('MediaDevices unavailable');
     }
-    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    });
+    return mediaStream;
+  }
+
+  async function start(onDoneCallback) {
+    onStop = onDoneCallback;
+    const stream = await ensureStream();
     chunks = [];
-    mediaRecorder = new MediaRecorder(mediaStream);
+    mediaRecorder = new MediaRecorder(stream);
     mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
     mediaRecorder.onstop = async () => {
       const blob = new Blob(chunks, { type: chunks[0] && chunks[0].type || 'audio/webm' });
@@ -29816,42 +29851,52 @@ const SpeakingRecorder = (function () {
       let audioBuffer = null;
       try { audioBuffer = await ctx.decodeAudioData(arrayBuf.slice(0)); }
       catch (e) { audioBuffer = null; }
-      cleanup();
+      // Tear down the recorder + analyser, but KEEP the stream alive for
+      // the next recording (no re-prompt).
+      teardownRecorder();
       if (onStop) onStop({ audioBuffer, duration: (Date.now() - startTime) / 1000 });
     };
-    // Live analyser for the recording-pulse — feeds the mic ring's
-    // size from real input volume rather than a fake animation.
+    // Live analyser for the recording-pulse — real input volume.
     const ctx = ensureAudioCtx();
-    const srcNode = ctx.createMediaStreamSource(mediaStream);
+    srcNode = ctx.createMediaStreamSource(stream);
     analyser = ctx.createAnalyser();
     analyser.fftSize = 256;
     srcNode.connect(analyser);
     startTime = Date.now();
     mediaRecorder.start();
     // Hard cap at 10s — protects against the user forgetting to stop.
-    silenceTimer = setTimeout(() => stop(), 10000);
+    stopTimer = setTimeout(() => stop(), 10000);
     return { analyser };
   }
 
   function stop() {
-    if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
+    if (stopTimer) { clearTimeout(stopTimer); stopTimer = null; }
     if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-    else cleanup();
   }
 
-  function cleanup() {
+  // Reset the per-recording objects WITHOUT releasing the cached stream.
+  function teardownRecorder() {
+    if (srcNode) { try { srcNode.disconnect(); } catch (e) {} srcNode = null; }
+    analyser = null;
+    mediaRecorder = null;
+  }
+
+  // Fully release the mic — stops the tracks so the browser's recording
+  // indicator turns off. Call when leaving the Speaking section.
+  function release() {
+    if (stopTimer) { clearTimeout(stopTimer); stopTimer = null; }
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') { try { mediaRecorder.stop(); } catch (e) {} }
+    teardownRecorder();
     if (mediaStream) {
       mediaStream.getTracks().forEach(t => t.stop());
       mediaStream = null;
     }
-    mediaRecorder = null;
-    analyser = null;
   }
 
   function getAnalyser() { return analyser; }
   function isRecording() { return mediaRecorder && mediaRecorder.state === 'recording'; }
 
-  return { start, stop, getAnalyser, isRecording };
+  return { start, stop, release, getAnalyser, isRecording };
 })();
 
 function stopAndForgetUserRecording() {
@@ -29888,12 +29933,16 @@ function stopAndForgetUserRecording() {
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-// Frame-level voice-activity analysis. Returns the signals every
-// dimension reads. 20ms frames at any sample rate.
+// Frame-level analysis. Returns the per-frame RMS envelope (10ms hop —
+// fine enough to resolve individual mora nuclei) plus a smoothed copy,
+// the noise floor / voiced threshold, peak, and voiced summary. Every
+// downstream dimension reads from this; the syllable-nucleus detector
+// reads the smoothed envelope.
 function analyzeAudio(audioBuffer) {
   const ch = audioBuffer.getChannelData(0);
   const sr = audioBuffer.sampleRate;
-  const frameLen = Math.max(1, Math.floor(sr * 0.02));
+  const FRAME_SEC = 0.01;                         // 10ms hop
+  const frameLen = Math.max(1, Math.floor(sr * FRAME_SEC));
   const frameRms = [];
   let peak = 0;
   for (let i = 0; i + frameLen <= ch.length; i += frameLen) {
@@ -29908,7 +29957,8 @@ function analyzeAudio(audioBuffer) {
   }
   if (!frameRms.length) {
     return { peak: 0, voicedFrames: 0, voicedRatio: 0, voicedDurationSec: 0,
-             meanVoicedRms: 0, totalDurationSec: ch.length / sr, voicedThreshold: 0.02, frameSec: 0.02 };
+             meanVoicedRms: 0, totalDurationSec: ch.length / sr, voicedThreshold: 0.02,
+             frameSec: FRAME_SEC, frameLen, frameRms: [], smooth: [], noiseFloor: 0 };
   }
   // Noise floor = 15th-percentile frame RMS (the quiet background between
   // or around speech). The voiced threshold sits a margin above it, with
@@ -29921,155 +29971,240 @@ function analyzeAudio(audioBuffer) {
   for (const r of frameRms) {
     if (r > voicedThreshold) { voiced++; voicedSum += r; }
   }
+  // Smoothed envelope (~50ms moving average) for nucleus peak-picking —
+  // removes micro-fluctuation so each syllable reads as one bump.
+  const W = 2; // ±2 frames ≈ 50ms total
+  const smooth = new Array(frameRms.length);
+  for (let i = 0; i < frameRms.length; i++) {
+    let s = 0, c = 0;
+    for (let j = Math.max(0, i - W); j <= Math.min(frameRms.length - 1, i + W); j++) { s += frameRms[j]; c++; }
+    smooth[i] = s / c;
+  }
   return {
     peak,
     voicedFrames: voiced,
     voicedRatio: voiced / frameRms.length,
-    voicedDurationSec: voiced * 0.02,
+    voicedDurationSec: voiced * FRAME_SEC,
     meanVoicedRms: voiced ? voicedSum / voiced : 0,
     totalDurationSec: ch.length / sr,
     voicedThreshold,
-    frameSec: 0.02,
+    noiseFloor,
+    frameRms,
+    smooth,
+    frameLen,
+    frameSec: FRAME_SEC,
   };
 }
 
+// Detect syllable nuclei — the per-mora vowel beats — from the smoothed
+// energy envelope. A nucleus is a local energy peak that reaches a
+// fraction of the loudest peak AND is separated from its neighbour by a
+// genuine valley (a consonant closure dips the energy between vowels).
+// The valley requirement is what stops a single sustained vowel ("WHOA")
+// from registering as several beats, and what lets "i-ta-da-ki-ma-su"
+// register as six. Returns [{ frame, t, energy }] in time order.
+function detectSyllableNuclei(smooth, frameSec) {
+  const n = smooth.length;
+  if (!n) return [];
+  let max = 0;
+  for (let i = 0; i < n; i++) if (smooth[i] > max) max = smooth[i];
+  if (max < 1e-4) return [];
+  const peakThresh = max * 0.20;   // a nucleus must reach 20% of the loudest mora
+  const valleyRatio = 0.70;        // the dip between two nuclei must fall below 70% of the quieter one
+  // Raw local maxima above threshold.
+  const peaks = [];
+  for (let i = 1; i < n - 1; i++) {
+    if (smooth[i] >= peakThresh && smooth[i] >= smooth[i - 1] && smooth[i] > smooth[i + 1]) peaks.push(i);
+  }
+  if (!peaks.length) {
+    // No clear peak but there is energy — count it as a single broad nucleus
+    // at the envelope's argmax (covers a held single vowel).
+    let am = 0; for (let i = 0; i < n; i++) if (smooth[i] > smooth[am]) am = i;
+    return smooth[am] >= peakThresh ? [{ frame: am, t: am * frameSec, energy: smooth[am] }] : [];
+  }
+  // Merge peaks that aren't separated by a real valley → one nucleus each.
+  const merged = [peaks[0]];
+  for (let k = 1; k < peaks.length; k++) {
+    const prev = merged[merged.length - 1];
+    const cur = peaks[k];
+    let valley = Infinity;
+    for (let i = prev; i <= cur; i++) if (smooth[i] < valley) valley = smooth[i];
+    const quieter = Math.min(smooth[prev], smooth[cur]);
+    if (quieter > 0 && valley < quieter * valleyRatio) {
+      merged.push(cur);                                   // real dip → distinct nucleus
+    } else if (smooth[cur] > smooth[prev]) {
+      merged[merged.length - 1] = cur;                    // no dip → keep the louder
+    }
+  }
+  return merged.map(i => ({ frame: i, t: i * frameSec, energy: smooth[i] }));
+}
+
+// The four-dimension scorer. Built around syllable-nucleus structure so
+// it actually responds to WHAT was said, not just whether SOME sound
+// happened. No hard-coded floors — every number flows from a measurement,
+// so silence lands at ~0-2 and a single shouted vowel ("WHOA" for a
+// 6-mora phrase) lands in the low teens, all algorithmically.
 function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
   if (!audioBuffer) return null;
   const a = analyzeAudio(audioBuffer);
-
-  // ── SILENCE GATE ──
-  // Need a meaningful amount of voiced audio AND a clear peak AND a
-  // non-trivial voiced loudness. Pure silence, room tone, a stray tap,
-  // or a held breath all fail this and score a flat zero. This is the
-  // fix for the "silence scored 50-60" bug.
-  const hasSpeech =
-    a.voicedDurationSec >= 0.18 &&
-    a.peak >= 0.045 &&
-    a.meanVoicedRms >= 0.012;
-  if (!hasSpeech) {
-    return { rhythm: 0, clarity: 0, pitch: 0, naturalness: 0, overall: 0, silent: true };
-  }
-
-  // ── PRESENCE RAMP (0..1) ──
-  // Full credit needs ~0.45s of voiced audio, ~0.055 mean voiced RMS,
-  // and a 0.12 peak. A borderline-quiet attempt lands < 1 and pulls
-  // every dimension down proportionally — so "barely audible" reads as
-  // a low score, not a middling one.
-  const presence = clamp(Math.min(
-    a.voicedDurationSec / 0.45,
-    a.meanVoicedRms / 0.055,
-    a.peak / 0.12
-  ), 0, 1);
-
-  // ── (1) RHYTHM — VOICED duration vs expected ──
-  // Use voiced duration (not wall-clock), so leading/trailing silence
-  // can't inflate it. Expected ≈ 150ms/mora + a small gap per chunk.
-  const moraCount = (phrase.chunks || []).reduce((n, c) => n + (c.mora || []).length, 0);
-  const chunkGapSec = ((phrase.chunks || []).length - 1) * 0.12;
-  const expectedSec = (moraCount * 0.15) + chunkGapSec;
-  const ratio = a.voicedDurationSec / (expectedSec || 0.1);
-  // Peaks at ratio 1.0; half-credit near ratio 0.5 / 2.0. Floor 40 so a
-  // real-but-mistimed utterance isn't crushed, then × presence.
-  const rhythmRaw = 96 - Math.abs(Math.log(ratio)) * 40;
-  const rhythm = Math.round(clamp(clamp(rhythmRaw, 40, 95) * presence, 0, 95));
-
-  // ── (2) CLARITY — voiced loudness, penalize clipping ──
-  // Target mean voiced RMS ~0.06-0.20 (comfortable). Quiet → lower;
-  // clipping (peak ≈ 1.0) → penalty.
-  const rms = a.meanVoicedRms;
-  let clarityRaw;
-  if (rms < 0.06)      clarityRaw = 50 + (rms / 0.06) * 30;            // 50→80
-  else if (rms < 0.20) clarityRaw = 80 + ((rms - 0.06) / 0.14) * 13;  // 80→93
-  else if (rms < 0.40) clarityRaw = 93 - ((rms - 0.20) / 0.20) * 16;  // 93→77
-  else                 clarityRaw = 72;
-  if (a.peak > 0.985) clarityRaw -= 14;                                // clipping
-  const clarity = Math.round(clamp(clarityRaw * presence, 0, 95));
-
-  // ── (3) PITCH — per-mora H/L agreement over voiced windows ──
-  const { agreement, coverage } = estimatePitchAgreement(phrase, audioBuffer, a.voicedThreshold);
-  let pitchRaw;
-  if (coverage < 0.34) {
-    // Too few mora had a detectable pitch — can't judge contour. Score
-    // proportional to the little coverage we got, capped low.
-    pitchRaw = 36 * (coverage / 0.34);
-  } else {
-    // Agreement 0.5 (chance) → 50, 1.0 (perfect) → 90. A binary H/L
-    // sequence aligns ~50% by luck, so we anchor chance below the
-    // mid-point and reward real agreement.
-    pitchRaw = 50 + (agreement - 0.5) * 80;
-  }
-  const pitch = Math.round(clamp(pitchRaw * presence, 0, 92));
-
-  // ── (4) NATURALNESS — gated composite ──
-  // Inverse of the spread across the other three (even improvement reads
-  // as more natural than a lopsided 90/90/50). Then × presence so a
-  // faint attempt can't post a high naturalness off a tight-but-low trio.
-  const trio = [rhythm, clarity, pitch];
-  const mean = (trio[0] + trio[1] + trio[2]) / 3;
-  const sd = Math.sqrt(trio.reduce((s, v) => s + (v - mean) ** 2, 0) / 3);
-  const naturalRaw = Math.min(mean + 4, 94 - sd * 1.5);  // can't exceed the trio's own level by much
-  const naturalness = Math.round(clamp(naturalRaw * presence, 0, 94));
-
-  const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
-  return { rhythm, clarity, pitch, naturalness, overall, silent: false };
-}
-
-// Per-mora pitch agreement. Trims to the voiced region using the VAD
-// threshold, splits into one window per mora, runs confident-only
-// autocorrelation per window, labels each detected window H/L relative
-// to the speaker's own median F0 (auto-calibrates to vocal range), then
-// compares to the expected pattern.
-// Returns { agreement: 0..1, coverage: 0..1 } — coverage is the fraction
-// of mora that had a confidently-detected pitch. Low coverage (mumbling,
-// whispering, breath) means we can't judge the contour → caller scores low.
-function estimatePitchAgreement(phrase, audioBuffer, voicedThreshold) {
   const ch = audioBuffer.getChannelData(0);
   const sr = audioBuffer.sampleRate;
-  const morasFlat = (phrase.chunks || []).flatMap(c => (c.pitch || []));
-  const n = morasFlat.length;
-  if (!n) return { agreement: 0, coverage: 0 };
-  const thr = Math.max(0.012, voicedThreshold || 0.014);
-  // Trim to the first/last frame above the voiced threshold.
-  let s = -1, e = -1;
-  for (let i = 0; i < ch.length; i++) { const v = ch[i] < 0 ? -ch[i] : ch[i]; if (v > thr) { s = i; break; } }
-  for (let i = ch.length - 1; i >= 0; i--) { const v = ch[i] < 0 ? -ch[i] : ch[i]; if (v > thr) { e = i; break; } }
-  if (s < 0 || e <= s || (e - s) < sr * 0.12) return { agreement: 0, coverage: 0 };
-  const seg = ch.subarray(s, e);
-  const winLen = Math.floor(seg.length / n);
-  if (winLen < 256) return { agreement: 0, coverage: 0 };
-  // Detect F0 per mora window (null if not confidently voiced).
-  const detected = new Array(n).fill(null);
-  for (let i = 0; i < n; i++) {
-    const w = seg.subarray(i * winLen, (i + 1) * winLen);
-    const { hz, conf } = estimatePitchHz(w, sr);
-    if (conf > 0.30 && hz > 70 && hz < 420) detected[i] = hz;
+
+  const moraCount = (phrase.chunks || []).reduce((n, c) => n + (c.mora || []).length, 0) || 1;
+  const expectedPitch = (phrase.chunks || []).flatMap(c => (c.pitch || []));
+
+  // Voice-activity envelope → syllable nuclei.
+  const nuclei = detectSyllableNuclei(a.smooth, a.frameSec);
+  const N = nuclei.length;
+
+  // Speech-presence confidence (0..1). Drives nothing on its own except
+  // as a multiplier where loudness genuinely matters; structure is
+  // judged by the nuclei, loudness by clarity. This stays continuous so
+  // there's never a hard cliff — quiet real speech still scores, just
+  // lower.
+  const loud = clamp(a.meanVoicedRms / 0.05, 0, 1);
+  const audible = clamp(a.peak / 0.10, 0, 1);
+
+  // ── (1) RHYTHM — mora-structure match ──
+  // Two parts: (a) does the BEAT COUNT match the mora count, and (b) are
+  // the beats EVENLY spaced (Japanese is mora-timed / isochronous).
+  const countErr = Math.abs(N - moraCount) / moraCount;
+  const countScore = clamp(1 - 1.4 * countErr, 0, 1);   // each ~1/mora off costs ~1.4/mora — steep
+  let evenness;
+  if (N >= 3) {
+    const iv = [];
+    for (let i = 1; i < N; i++) iv.push(nuclei[i].t - nuclei[i - 1].t);
+    const m = iv.reduce((s, v) => s + v, 0) / iv.length;
+    const sd = Math.sqrt(iv.reduce((s, v) => s + (v - m) ** 2, 0) / iv.length);
+    const cv = m > 0 ? sd / m : 1;                       // coefficient of variation of beat intervals
+    evenness = clamp(1 - cv, 0, 1);                      // perfectly even → 1
+  } else {
+    evenness = 0;                                        // can't have rhythm with <3 beats
   }
-  const valid = detected.filter(h => h != null);
-  const coverage = valid.length / n;
-  if (valid.length < 2) return { agreement: 0, coverage };
-  // H/L threshold = midpoint between robust-min and robust-max (20th /
-  // 80th percentile of detected F0). The midpoint cleanly separates the
-  // two pitch levels even when the H/L counts are skewed — a median
-  // threshold fails here: for a pattern like L-H-L-L-L (mostly L) the
-  // median lands ON the low value, so every mora ties to H and the
-  // agreement collapses. The midpoint auto-calibrates to the speaker's
-  // own range (no fixed Hz), so a bass and a soprano both score fairly.
-  const sortedV = [...valid].sort((x, y) => x - y);
-  const lo = sortedV[Math.floor(sortedV.length * 0.20)];
-  const hi = sortedV[Math.floor(sortedV.length * 0.80)];
+  const rhythm01 = countScore * 0.72 + evenness * 0.28;
+  const rhythm = Math.round(clamp(rhythm01 * 98, 0, 98));
+
+  // ── (2) CLARITY — articulation crispness ──
+  // Clear speech alternates loud vowels with quieter consonant closures,
+  // so the envelope MODULATES. A mumble or a single held vowel is flat.
+  // Measure the mean relative valley depth between adjacent nuclei, blend
+  // with a signal-above-noise term. (A single loud vowel has high SNR but
+  // ~zero modulation → capped clarity, which is correct: it's loud but
+  // not articulate.)
+  let modDepth = 0;
+  if (N >= 2) {
+    let sum = 0, cnt = 0;
+    for (let i = 1; i < N; i++) {
+      let valley = Infinity;
+      for (let k = nuclei[i - 1].frame; k <= nuclei[i].frame; k++) if (a.smooth[k] < valley) valley = a.smooth[k];
+      const hi = Math.min(nuclei[i - 1].energy, nuclei[i].energy);
+      if (hi > 0) { sum += clamp((hi - valley) / hi, 0, 1); cnt++; }
+    }
+    modDepth = cnt ? sum / cnt : 0;
+  }
+  const snr = a.noiseFloor > 0
+    ? clamp((a.meanVoicedRms - a.noiseFloor) / (a.noiseFloor * 6 + 0.04), 0, 1)
+    : loud;
+  // Articulation (modDepth) dominates — a single loud vowel ("WHOA") has
+  // no inter-mora modulation and so caps low even though it's loud. SNR
+  // and audibility contribute only a minority so a crisp-but-quiet read
+  // still scores decently while a loud monosyllable does not.
+  const clarity01 = clamp(modDepth * 1.4, 0, 1) * 0.70 + snr * 0.20 + audible * 0.10;
+  const clarity = Math.round(clamp(clarity01 * 96, 0, 96));
+
+  // ── (3) PITCH — H/L contour match, sampled AT the nuclei ──
+  // F0 is most stable at vowel centres, so we read pitch at each nucleus
+  // rather than in blind windows. Then label H/L against the speaker's
+  // own range and compare to the expected pattern, aligning the detected
+  // beats to the expected mora positions. If the beat count is way off,
+  // the contour can't really be judged → low.
+  const pitch01 = scorePitchAtNuclei(ch, sr, nuclei, expectedPitch, a.frameLen);
+  const pitch = Math.round(clamp(pitch01 * 95, 0, 95));
+
+  // ── (4) NATURALNESS — rate plausibility + balance ──
+  // A natural delivery sits at a believable speaking rate (mora/sec) and
+  // doesn't have one dimension wildly out of step with the others.
+  const voicedSpan = N >= 2 ? (nuclei[N - 1].t - nuclei[0].t) : a.voicedDurationSec;
+  const rate = voicedSpan > 0.05 ? (N / voicedSpan) : 0;  // beats per second
+  // Comfortable JP speech ≈ 5-9 mora/sec; full credit in 4.5-9.5, falloff outside.
+  let rateScore;
+  if (rate >= 4.5 && rate <= 9.5) rateScore = 1;
+  else if (rate < 4.5) rateScore = clamp(rate / 4.5, 0, 1);
+  else rateScore = clamp(1 - (rate - 9.5) / 8, 0, 1);
+  const trio01 = (rhythm01 + clarity01 + pitch01) / 3;
+  const spread = Math.sqrt(
+    ([rhythm01, clarity01, pitch01].reduce((s, v) => s + (v - trio01) ** 2, 0)) / 3
+  );
+  const balance = clamp(1 - spread * 1.6, 0, 1);
+  // Multiplicative, not additive — naturalness can't exceed the trio's own
+  // level, and rate/balance only MODULATE it. This keeps silence (trio 0)
+  // at 0 instead of leaking a flat balance bonus, and stops a faint or
+  // lopsided attempt from posting a high naturalness off thin air.
+  const naturalness01 = trio01 * (0.70 + 0.18 * rateScore + 0.12 * balance);
+  const naturalness = Math.round(clamp(naturalness01 * 95, 0, 95));
+
+  const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
+  // "silent" flag for the UI hint — fires when there's essentially no
+  // structured speech (no nuclei or a near-zero overall).
+  const silent = (N === 0) || overall < 8;
+  return { rhythm, clarity, pitch, naturalness, overall, silent };
+}
+
+// Pitch-contour score (0..1), sampled at the syllable nuclei. F0 is most
+// stable at vowel centres, so we read pitch in a window centred on each
+// nucleus rather than in blind equal slices. Each detected F0 is labelled
+// H/L against the speaker's own range (midpoint of the 20th/80th-pct of
+// detected F0 — auto-calibrates to any vocal range and survives skewed
+// H/L counts where a median would collapse). The detected beat sequence
+// is aligned to the expected mora positions by proportional index so it
+// works even when the user produced a few too many / too few beats.
+//
+// Structural guard: the score is multiplied by how well the beat count
+// matched the mora count — a 1-beat "WHOA" can't realize a 6-mora
+// contour, so its pitch score stays near zero even if that one beat
+// happens to land on the right side of the threshold.
+function scorePitchAtNuclei(ch, sr, nuclei, expectedPitch, frameLen) {
+  const M = expectedPitch.length;
+  const N = nuclei.length;
+  if (!M || N < 1) return 0;
+  const half = Math.max(256, Math.floor(sr * 0.045)); // 90ms window around each nucleus
+  const f0 = nuclei.map(nu => {
+    const center = nu.frame * frameLen;
+    const lo = Math.max(0, center - half);
+    const hi = Math.min(ch.length, center + half);
+    const { hz, conf } = estimatePitchHz(ch.subarray(lo, hi), sr);
+    return (conf > 0.30 && hz > 70 && hz < 420) ? hz : null;
+  });
+  const valid = f0.filter(x => x != null);
+  const coverage = valid.length / N;
+  // Need at least two confident pitches to define a contour.
+  if (valid.length < 2) {
+    // Maybe a single detectable beat — give a sliver of credit only if the
+    // structure also roughly matched (a 1-mora target, say). Otherwise ~0.
+    return clamp(0.12 * coverage * (N / M), 0, 0.15);
+  }
+  const sorted = [...valid].sort((x, y) => x - y);
+  const lo = sorted[Math.floor(sorted.length * 0.20)];
+  const hi = sorted[Math.floor(sorted.length * 0.80)];
   const threshold = (lo + hi) / 2;
-  // If the speaker is essentially monotone (range < ~6% of pitch), they
-  // can't realize a contour with a fall — only a genuinely flat pattern
-  // (heiban) will match. The threshold logic handles this naturally:
-  // monotone → all mora on one side → matches only flat expected patterns.
+  const userLabels = f0.map(h => (h == null ? null : (h >= threshold ? 'H' : 'L')));
+  // Align: for each expected mora j, pick the proportionally-nearest beat.
   let agree = 0, total = 0;
-  for (let i = 0; i < n; i++) {
-    if (detected[i] == null) continue;
-    const label = detected[i] >= threshold ? 'H' : 'L';
-    if (label === morasFlat[i]) agree++;
+  for (let j = 0; j < M; j++) {
+    const k = N > 1 ? Math.round((j / (M - 1)) * (N - 1)) : 0;
+    if (userLabels[k] == null) continue;
+    if (userLabels[k] === expectedPitch[j]) agree++;
     total++;
   }
-  return { agreement: total ? agree / total : 0, coverage };
+  if (!total) return 0;
+  const agreement = agree / total;        // 0..1
+  // Map agreement so chance (~0.5) sits at ~0.35 and perfect at ~0.95.
+  const agree01 = clamp((agreement - 0.45) / 0.55, 0, 1) * 0.9 + 0.05;
+  // Structural multiplier: beat count vs mora count.
+  const countMatch = clamp(1 - 1.2 * (Math.abs(N - M) / M), 0, 1);
+  // Coverage multiplier: how much of the utterance had detectable pitch.
+  const cov01 = clamp(coverage / 0.7, 0, 1);
+  return clamp(agree01 * (0.45 + 0.55 * countMatch) * (0.6 + 0.4 * cov01), 0, 1);
 }
 
 // Pitch detector via NORMALIZED cross-correlation (NCCF) with an
