@@ -15975,6 +15975,8 @@
     color: var(--accent-vermilion, #c34b30);
     font-size: 14px;
   }
+  /* Pitch-pattern chip rides the eyebrow row, pushed to the right edge. */
+  .speaking-stage-eyebrow .pitch-pattern-chip { margin-left: auto; }
 
   /* Phrase + pitch contour */
   .speaking-phrase {
@@ -16060,6 +16062,7 @@
     font-family: var(--font-menu-en);
     font-size: 11px;
     letter-spacing: 0.06em;
+    text-transform: none;          /* don't inherit the eyebrow's uppercase (keeps "heiban" lowercase) */
     color: var(--ink-soft);
     align-self: center;
     border: 1px solid transparent;
@@ -16262,12 +16265,15 @@
     border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
   }
   .score-chip {
+    position: relative;
     display: grid;
     grid-template-columns: 28px 1fr;
     grid-template-rows: auto auto;
     gap: 4px 10px;
     align-items: center;
     min-width: 0;
+    cursor: help;
+    outline: none;
   }
   .score-chip-glyph {
     grid-row: 1 / span 2;
@@ -16276,24 +16282,58 @@
     display: flex; align-items: center; justify-content: center;
   }
   .score-chip-glyph svg { width: 20px; height: 20px; }
-  .score-chip-label { display: flex; flex-direction: column; min-width: 0; }
   .score-chip-ja {
+    grid-column: 2; grid-row: 1;
     font-family: var(--font-title);
     font-size: 14px;
     color: var(--ink);
     line-height: 1.1;
-  }
-  .score-chip-en {
-    font-family: var(--font-en);
-    font-style: italic;
-    font-size: 11px;
-    color: var(--ink-faint);
-    line-height: 1.1;
+    white-space: nowrap;            /* never break the label across lines */
   }
   .score-chip-dots {
     grid-column: 2; grid-row: 2;
     display: inline-flex; gap: 5px; align-items: center;
     margin-top: 2px;
+  }
+  /* Hover/focus tooltip — English name + hiragana + how the dimension is
+     measured. Sits above the chip; appears on hover or keyboard focus. */
+  .score-chip-tip {
+    position: absolute;
+    left: 50%; bottom: calc(100% + 10px);
+    transform: translateX(-50%) translateY(4px);
+    z-index: 30;
+    width: max-content; max-width: 230px;
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 10px 13px;
+    text-align: left;
+    background: var(--paper, #f4ecd8);
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    border-radius: 6px;
+    box-shadow: 0 8px 22px rgba(60, 40, 10, 0.18);
+    opacity: 0; pointer-events: none;
+    transition: opacity .16s ease, transform .16s ease;
+  }
+  .score-chip-tip::after {       /* caret */
+    content: '';
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--paper, #f4ecd8);
+    filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--ink) 14%, transparent));
+  }
+  .score-chip:hover .score-chip-tip,
+  .score-chip:focus-visible .score-chip-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .score-chip-tip .tip-ja {
+    font-family: var(--font-title); font-size: 14px; color: var(--ink); line-height: 1.2;
+  }
+  .score-chip-tip .tip-en {
+    font-family: var(--font-en); font-style: italic; font-size: 12px; color: var(--ink-soft); line-height: 1.2;
+  }
+  .score-chip-tip .tip-desc {
+    font-family: var(--font-body); font-size: 12px; line-height: 1.5; color: var(--ink-soft);
+    margin-top: 3px;
   }
   .score-chip-dots .dot {
     width: 7px; height: 7px;
@@ -16359,7 +16399,7 @@
     grid-area: filmstrip;
     display: flex; flex-direction: column;
     min-height: 0;                          /* let the track scroll inside the row */
-    background: color-mix(in srgb, var(--paper-soft) 80%, var(--paper));
+    background: var(--paper-soft, #ece3d2); /* match the portrait + stage panels */
     border-radius: 4px;
     padding: 14px 12px 10px;
     box-shadow: inset 0 0 0 1px rgba(141,102,48,0.10);
@@ -29778,18 +29818,24 @@ function speakingStudioHTML(cat, phrase) {
   );
   // Score chips. Filled-dots = round(score / 20), capped at 5.
   const scores = APP.speakingScores || { rhythm: null, clarity: null, pitch: null, naturalness: null, overall: null };
-  const chipHTML = (k, ja, en, glyph) => {
+  // Score chip — shows ONLY the Japanese label; the English name + a plain-
+  // language note on HOW the dimension is measured live in a hover/focus
+  // tooltip (keeps the row clean and stops the longer labels from wrapping).
+  const chipHTML = (k, ja, en, desc, glyph) => {
     const s = scores[k];
     const filled = s == null ? 0 : Math.max(0, Math.min(5, Math.round(s / 20)));
     return `
-      <div class="score-chip" data-score-dim="${k}">
+      <div class="score-chip" data-score-dim="${k}" tabindex="0"
+           aria-label="${escAttr(en + ' (' + ja + '). ' + desc)}">
         <span class="score-chip-glyph" aria-hidden="true">${glyph}</span>
-        <span class="score-chip-label">
-          <span class="score-chip-ja">${escHTML(ja)}</span>
-          <span class="score-chip-en">${escHTML(en)}</span>
-        </span>
+        <span class="score-chip-ja">${escHTML(ja)}</span>
         <span class="score-chip-dots" aria-label="${s == null ? 'not yet scored' : s + ' out of 100'}">
           ${[0,1,2,3,4].map(i => `<span class="dot ${i < filled ? 'is-filled' : ''}"></span>`).join('')}
+        </span>
+        <span class="score-chip-tip" role="tooltip" aria-hidden="true">
+          <span class="tip-ja">${escHTML(ja)}</span>
+          <span class="tip-en">${escHTML(en)}</span>
+          <span class="tip-desc">${escHTML(desc)}</span>
         </span>
       </div>`;
   };
@@ -29869,11 +29915,11 @@ function speakingStudioHTML(cat, phrase) {
         <div class="speaking-stage-eyebrow">
           <span class="eyebrow-glyph" aria-hidden="true">✿</span>
           <span class="eyebrow-text">PHRASE ${phraseIdx + 1} / ${phraseTotal}</span>
+          ${renderPitchPatternChip(phrase.pattern, phrase.accent)}
         </div>
 
         <div class="speaking-phrase">
           <div class="phrase-mora-row">${phraseHTML}</div>
-          ${renderPitchPatternChip(phrase.pattern, phrase.accent)}
         </div>
 
         <div class="speaking-mic-row">
@@ -29932,10 +29978,10 @@ function speakingStudioHTML(cat, phrase) {
         </div>
 
         <div class="speaking-scores">
-          ${chipHTML('rhythm',      'リズム',     'Rhythm',      G_RHYTHM)}
-          ${chipHTML('clarity',     'はっきりさ', 'Clarity',     G_CLARITY)}
-          ${chipHTML('pitch',       'ピッチ',     'Pitch',       G_PITCH)}
-          ${chipHTML('naturalness', '自然さ',     'Naturalness', G_NATURALNESS)}
+          ${chipHTML('rhythm',      'リズム',  'Rhythm',      'Whether your beats match the phrase’s mora count and even, mora-timed spacing.', G_RHYTHM)}
+          ${chipHTML('clarity',     'はっきり', 'Clarity',     'How crisply each syllable is articulated — read from the energy dips between morae.', G_CLARITY)}
+          ${chipHTML('pitch',       'ピッチ',  'Pitch',       'Whether your high–low pitch contour follows the phrase’s accent pattern.', G_PITCH)}
+          ${chipHTML('naturalness', '自然',    'Naturalness', 'Overall delivery — a believable speaking rate with the other three in balance.', G_NATURALNESS)}
           <div class="score-overall" data-has-score="${overall != null}">
             <span class="score-overall-num">${overall != null ? overall : '—'}</span>
             <span class="score-overall-denom">/100</span>
