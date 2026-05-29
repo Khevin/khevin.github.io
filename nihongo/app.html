@@ -30227,6 +30227,62 @@ function analyzeAudio(audioBuffer) {
   };
 }
 
+// A zero-copy, context-free stand-in for an AudioBuffer over a slice of an
+// existing channel. Every downstream analyzer reads only getChannelData(0),
+// sampleRate, length and duration — so a thin view is enough, and it avoids
+// allocating a real AudioBuffer (which would need an AudioContext) just to
+// score a cropped window. `subarray` shares memory, so no samples are copied.
+function makeBufferView(srcCh, sr, s, e) {
+  const slice = srcCh.subarray(s, e);
+  return {
+    sampleRate: sr,
+    length: slice.length,
+    duration: slice.length / sr,
+    numberOfChannels: 1,
+    getChannelData: () => slice,
+  };
+}
+
+// Endpoint detection — crop the leading/trailing silence so only the part
+// that actually carries speech is scored. We almost always pause briefly
+// before and after speaking; that dead air skews the noise floor, the
+// speaking rate, and the rhythm windows, making a good attempt look worse
+// than it is. Standard energy VAD: a frame is "speech" when its RMS clears
+// ~3× the noise floor (15th-percentile frame RMS) with an absolute minimum
+// so true silence can't self-trigger. We keep a ~60ms pad on each side so
+// the onset consonant and the final release aren't clipped.
+// Returns { buffer, trimmed, startSec, endSec }. On all-silence or a clip
+// that's already tight, returns the original buffer untouched.
+function trimSilence(audioBuffer) {
+  const ch = audioBuffer.getChannelData(0);
+  const sr = audioBuffer.sampleRate;
+  const n = ch.length;
+  const frameLen = Math.max(1, Math.floor(sr * 0.01));   // 10ms frames
+  const rms = [];
+  for (let i = 0; i + frameLen <= n; i += frameLen) {
+    let s = 0;
+    for (let j = i; j < i + frameLen; j++) s += ch[j] * ch[j];
+    rms.push(Math.sqrt(s / frameLen));
+  }
+  if (rms.length < 3) return { buffer: audioBuffer, trimmed: false };
+  const sorted = [...rms].sort((a, b) => a - b);
+  const noiseFloor = sorted[Math.floor(sorted.length * 0.15)] || 0;
+  const thr = Math.max(0.012, noiseFloor * 3);
+  let first = -1, last = -1;
+  for (let i = 0; i < rms.length; i++) {
+    if (rms[i] > thr) { if (first < 0) first = i; last = i; }
+  }
+  if (first < 0) return { buffer: audioBuffer, trimmed: false };   // pure silence — let the gate handle it
+  const padF = 6;                                                  // ±60ms
+  const sFrame = Math.max(0, first - padF);
+  const eFrame = Math.min(rms.length - 1, last + padF);
+  const s = sFrame * frameLen;
+  const e = Math.min(n, (eFrame + 1) * frameLen);
+  // Don't bother if there was barely anything to remove (<80ms total).
+  if ((n - (e - s)) < frameLen * 8) return { buffer: audioBuffer, trimmed: false };
+  return { buffer: makeBufferView(ch, sr, s, e), trimmed: true, startSec: s / sr, endSec: e / sr };
+}
+
 // Detect syllable nuclei — the per-mora vowel beats — from the smoothed
 // energy envelope. A nucleus is a local energy peak that reaches a
 // fraction of the loudest peak AND is separated from its neighbour by a
@@ -30523,9 +30579,14 @@ function transcriptAccuracy(transcript, phrase) {
 // opts.sttAvailable  — whether SpeechRecognition ran at all
 function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
   if (!audioBuffer) return null;
-  const a = analyzeAudio(audioBuffer);
-  const ch = audioBuffer.getChannelData(0);
-  const sr = audioBuffer.sampleRate;
+  // Crop leading/trailing silence so only the spoken part is scored — the
+  // pre-speech pause was skewing the rate and rhythm windows. Everything
+  // below works on this trimmed view; the full take is kept elsewhere for
+  // playback/waveform.
+  const work = trimSilence(audioBuffer).buffer;
+  const a = analyzeAudio(work);
+  const ch = work.getChannelData(0);
+  const sr = work.sampleRate;
 
   const moraCount = (phrase.chunks || []).reduce((n, c) => n + (c.mora || []).length, 0) || 1;
   const expectedPitch = (phrase.chunks || []).flatMap(c => (c.pitch || []));
@@ -30551,18 +30612,30 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
   const formantAccuracy = vowelSequenceAccuracy(userVowels, expectedVowels);
   // Speech-to-text content accuracy (preferred when available — it
   // actually recognizes the WORDS, far more reliable than guessing
-  // vowels from formants). Blend: STT leads, formant supports (so a
-  // single STT mis-hear doesn't fully sink a good attempt). Fall back to
-  // formant-only when STT didn't run / heard nothing.
+  // vowels from formants).
   const sttAccuracy = transcriptAccuracy(opts.transcript, phrase);
-  const accuracy = (sttAccuracy != null)
-    ? clamp(0.75 * sttAccuracy + 0.25 * formantAccuracy, 0, 1)
-    : formantAccuracy;
-  // Map accuracy → a 0..1 gate. STT/formant on FLOWING speech is noisier
-  // than ideal, so a correct attempt saturates the gate by acc ≈ 0.8 —
-  // effort isn't punished for recognizer slack. Below ~0.15 (gibberish /
-  // the wrong phrase) the gate is near zero, collapsing the score.
-  const accFactor = clamp((accuracy - 0.12) / 0.68, 0, 1);
+  // ── CONTENT (0..1): how much of the RIGHT phrase did you actually say? ──
+  // This is the signal that separates a real attempt from gibberish. It is
+  // intentionally FORGIVING at the top: the Web Speech recognizer drops or
+  // mis-hears a mora or two even on a clean read, and string-distance on
+  // flowing kana rarely exceeds ~0.8 for a genuinely correct attempt — so
+  // we map "0.80 similarity" up to "essentially correct" rather than
+  // punishing the recognizer's slack as if it were the speaker's error.
+  let content01;
+  if (sttAccuracy != null) {
+    // STT recognized words — primary signal. forgive(0.12→0, 0.80→1).
+    const sttForgiven = clamp((sttAccuracy - 0.12) / 0.68, 0, 1);
+    // Formant vowels support: they can nudge a low STT (a mis-hear) up a
+    // little, but STT leads. The wrong phrase tanks BOTH → content craters.
+    content01 = clamp(0.80 * sttForgiven + 0.20 * formantAccuracy, 0, 1);
+  } else {
+    // No transcript (STT off, or it heard nothing). Lean on the formant
+    // vowel-sequence, but it's a weak instrument — keep a modest floor so
+    // an STT-less browser doesn't unfairly crater a good delivery, while
+    // gibberish (low formant match) still pulls content down.
+    content01 = clamp(0.30 + 0.55 * formantAccuracy, 0, 1);
+  }
+  const accuracy = content01;
 
   // Speech-presence confidence (0..1). Drives nothing on its own except
   // as a multiplier where loudness genuinely matters; structure is
@@ -30576,7 +30649,11 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
   // Two parts: (a) does the BEAT COUNT match the mora count, and (b) are
   // the beats EVENLY spaced (Japanese is mora-timed / isochronous).
   const countErr = Math.abs(N - moraCount) / moraCount;
-  const countScore = clamp(1 - 1.4 * countErr, 0, 1);   // each ~1/mora off costs ~1.4/mora — steep
+  // The nucleus detector is good but not perfect — ±1 beat on a 5-6 mora
+  // phrase is essentially correct, so the penalty is gentle (1.0/mora, not
+  // the old punishing 1.4) and a one-off detection slip no longer halves
+  // the rhythm score.
+  const countScore = clamp(1 - 1.0 * countErr, 0, 1);
   let evenness;
   if (N >= 3) {
     const iv = [];
@@ -30584,11 +30661,13 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
     const m = iv.reduce((s, v) => s + v, 0) / iv.length;
     const sd = Math.sqrt(iv.reduce((s, v) => s + (v - m) ** 2, 0) / iv.length);
     const cv = m > 0 ? sd / m : 1;                       // coefficient of variation of beat intervals
-    evenness = clamp(1 - cv, 0, 1);                      // perfectly even → 1
+    // Real mora-timed speech still has cv ≈ 0.3-0.4 (morae aren't metronomic),
+    // so we don't demand cv = 0 for full marks: cv ≤ 0.15 → 1, cv ≥ 0.85 → 0.
+    evenness = clamp(1 - (cv - 0.15) / 0.70, 0, 1);
   } else {
     evenness = 0;                                        // can't have rhythm with <3 beats
   }
-  const rhythm01 = countScore * 0.72 + evenness * 0.28;
+  const rhythm01 = countScore * 0.60 + evenness * 0.40;
 
   // ── (2) CLARITY — articulation crispness ──
   // Clear speech alternates loud vowels with quieter consonant closures,
@@ -30615,7 +30694,7 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
   // no inter-mora modulation and so caps low even though it's loud. SNR
   // and audibility contribute only a minority so a crisp-but-quiet read
   // still scores decently while a loud monosyllable does not.
-  const clarity01 = clamp(modDepth * 1.4, 0, 1) * 0.70 + snr * 0.20 + audible * 0.10;
+  const clarity01 = clamp(modDepth * 1.6, 0, 1) * 0.72 + snr * 0.18 + audible * 0.10;
 
   // ── (3) PITCH — H/L contour match, sampled AT the nuclei ──
   // F0 is most stable at vowel centres, so we read pitch at each nucleus
@@ -30644,23 +30723,35 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
   // level, and rate/balance only MODULATE it.
   const naturalness01 = trio01 * (0.70 + 0.18 * rateScore + 0.12 * balance);
 
-  // ── Fold CONTENT into the displayed dimensions (the user's "multiply"
-  // request). Each acoustic 0..1 measure is multiplied by an
-  // accuracy-weighted factor before scaling to 0..100:
-  //   • Rhythm  — mostly timing, lightly content-tinted (well-timed
-  //     gibberish still earns some rhythm; but the WRONG phrase usually
-  //     mismatches the beat count too, so rhythm01 already drops).
-  //   • Clarity — "clear pronunciation of the RIGHT words." Heavily
-  //     content-gated, per the user: gibberish reads loud-but-wrong → low.
-  //   • Pitch   — right contour on the right words; content-gated.
-  //   • Naturalness — fully content-gated.
-  // Because every shown dimension carries the content factor, the OVERALL
-  // (their mean) collapses for wrong words without an extra multiply that
-  // would double-count.
-  const rhythm      = Math.round(clamp(rhythm01      * (0.50 + 0.50 * accFactor) * 98, 0, 98));
-  const clarity     = Math.round(clamp(clarity01     * (0.18 + 0.82 * accFactor) * 96, 0, 96));
-  const pitch       = Math.round(clamp(pitch01       * (0.40 + 0.60 * accFactor) * 95, 0, 95));
-  const naturalness = Math.round(clamp(naturalness01 * (0.35 + 0.65 * accFactor) * 95, 0, 95));
+  // ── CONTENT GATE — multiply delivery by correctness (the user's model:
+  // "100 for one, 50 for the other → send out 50"). A smooth logistic in
+  // content01 rather than the old steep linear ramp: it SATURATES near 1
+  // for a correct attempt (so recognizer slack never punishes real effort)
+  // and drops STEEPLY below ~0.4 (so the wrong phrase / gibberish craters).
+  // Normalized so perfect content → exactly 1.
+  const gate = (() => {
+    const k = 8, c0 = 0.40;
+    const g = 1 / (1 + Math.exp(-(content01 - c0) * k));
+    const gMax = 1 / (1 + Math.exp(-(1 - c0) * k));
+    return clamp(g / gMax, 0, 1);
+  })();
+  // Gentle ease (gamma 0.85) lifts genuinely-good acoustic measures toward
+  // the top of the range without inflating mediocre ones — a clean delivery
+  // reads in the high 80s instead of being permanently capped in the 70s.
+  const ease = x => Math.pow(clamp(x, 0, 1), 0.85);
+  // Per-dimension gate weighting:
+  //   • Rhythm — timing is partly content-independent (well-timed gibberish
+  //     keeps a little), so it carries the gate only ~65%.
+  //   • Clarity / Naturalness — "clear, natural delivery of the RIGHT words":
+  //     almost fully gated.
+  //   • Pitch — right contour on the right words: heavily gated.
+  // Because every shown dimension carries the gate, OVERALL (their mean)
+  // collapses for the wrong words without any extra multiply that would
+  // double-count.
+  const rhythm      = Math.round(clamp(ease(rhythm01)      * (0.35 + 0.65 * gate) * 99, 0, 99));
+  const clarity     = Math.round(clamp(ease(clarity01)     * (0.12 + 0.88 * gate) * 97, 0, 97));
+  const pitch       = Math.round(clamp(ease(pitch01)       * (0.15 + 0.85 * gate) * 96, 0, 96));
+  const naturalness = Math.round(clamp(ease(naturalness01) * (0.12 + 0.88 * gate) * 97, 0, 97));
 
   const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
   // Status flags for the UI ("heard" line + hints):
@@ -30693,22 +30784,35 @@ function scorePitchAtNuclei(ch, sr, nuclei, expectedPitch, frameLen) {
   const M = expectedPitch.length;
   const N = nuclei.length;
   if (!M || N < 1) return 0;
-  const half = Math.max(256, Math.floor(sr * 0.045)); // 90ms window around each nucleus
-  const f0 = nuclei.map(nu => {
+  // A wider window (±60ms ≈ 120ms) packs more pitch periods, which the
+  // normalized autocorrelation needs to lock confidently onto F0 —
+  // especially after the mic's noise-suppression / AGC has scrubbed some
+  // of the signal's periodicity. (This was the bug behind a flat 0 pitch:
+  // a 90ms window rarely cleared the confidence bar on processed audio, so
+  // fewer than two F0 readings survived and the score fell straight to ~0.)
+  const half = Math.max(256, Math.floor(sr * 0.060));
+  const raw = nuclei.map(nu => {
     const center = nu.frame * frameLen;
     const lo = Math.max(0, center - half);
     const hi = Math.min(ch.length, center + half);
-    const { hz, conf } = estimatePitchHz(ch.subarray(lo, hi), sr);
-    return (conf > 0.30 && hz > 70 && hz < 420) ? hz : null;
+    return estimatePitchHz(ch.subarray(lo, hi), sr);  // { hz, conf }
   });
+  // Two-pass confidence gate: take the clearly-voiced readings first; if
+  // that leaves fewer than two beats (common on quiet / processed input),
+  // relax the bar rather than collapsing the whole dimension to zero.
+  function pick(confMin) {
+    return raw.map(r => (r.conf > confMin && r.hz > 70 && r.hz < 450) ? r.hz : null);
+  }
+  let f0 = pick(0.30);
+  if (f0.filter(x => x != null).length < 2) f0 = pick(0.20);
   const valid = f0.filter(x => x != null);
   const coverage = valid.length / N;
-  // Need at least two confident pitches to define a contour.
-  if (valid.length < 2) {
-    // Maybe a single detectable beat — give a sliver of credit only if the
-    // structure also roughly matched (a 1-mora target, say). Otherwise ~0.
-    return clamp(0.12 * coverage * (N / M), 0, 0.15);
-  }
+  // Genuinely couldn't read a contour (e.g. one short beat). Give a small,
+  // structure-scaled sliver rather than a hard zero — you DID voice it.
+  if (valid.length < 2) return clamp(0.18 * (1 + coverage), 0.05, 0.30);
+  // H/L threshold from the speaker's own range. Midpoint of the 20th/80th
+  // percentile auto-calibrates to any voice and survives a skewed H/L split
+  // (where a plain median would collapse onto one level).
   const sorted = [...valid].sort((x, y) => x - y);
   const lo = sorted[Math.floor(sorted.length * 0.20)];
   const hi = sorted[Math.floor(sorted.length * 0.80)];
@@ -30722,15 +30826,21 @@ function scorePitchAtNuclei(ch, sr, nuclei, expectedPitch, frameLen) {
     if (userLabels[k] === expectedPitch[j]) agree++;
     total++;
   }
-  if (!total) return 0;
-  const agreement = agree / total;        // 0..1
-  // Map agreement so chance (~0.5) sits at ~0.35 and perfect at ~0.95.
-  const agree01 = clamp((agreement - 0.45) / 0.55, 0, 1) * 0.9 + 0.05;
-  // Structural multiplier: beat count vs mora count.
-  const countMatch = clamp(1 - 1.2 * (Math.abs(N - M) / M), 0, 1);
-  // Coverage multiplier: how much of the utterance had detectable pitch.
-  const cov01 = clamp(coverage / 0.7, 0, 1);
-  return clamp(agree01 * (0.45 + 0.55 * countMatch) * (0.6 + 0.4 * cov01), 0, 1);
+  if (!total) return clamp(0.18 * (1 + coverage), 0.05, 0.30);
+  const agreement = agree / total;        // 0..1, chance ≈ 0.5 for binary H/L
+  // Map agreement → shape score. Binary chance (0.5) sits at a modest 0.32
+  // (you produced voiced pitch, just not a matching contour) and a clean
+  // match (≈0.9+) reaches ~0.92. This is deliberately more generous than
+  // before — Japanese pitch steps are only a few semitones, so even a good
+  // speaker's H/L labelling lands around 0.8, which should read as good.
+  const agree01 = clamp((agreement - 0.50) / 0.50, 0, 1);   // 0.5→0, 1.0→1
+  const pitchShape = 0.30 + 0.62 * agree01;
+  // Gentle structural / coverage modulation — they trim a poor contour but
+  // no longer crush a good one (the old 1.2× count penalty + hard coverage
+  // ramp were a big part of why pitch read near zero).
+  const countMatch = clamp(1 - 0.8 * (Math.abs(N - M) / M), 0, 1);
+  const cov01 = clamp(coverage / 0.6, 0, 1);
+  return clamp(pitchShape * (0.60 + 0.40 * countMatch) * (0.70 + 0.30 * cov01), 0, 1);
 }
 
 // Pitch detector via NORMALIZED cross-correlation (NCCF) with an
@@ -30771,7 +30881,10 @@ function estimatePitchHz(buf, sr) {
   }
   let gmax = 0;
   for (let lag = minLag; lag <= maxLag; lag++) if (nccf[lag] > gmax) gmax = nccf[lag];
-  if (gmax < 0.30) return { hz: 0, conf: gmax };
+  // Compute the period down to a low confidence and let the CALLER decide
+  // the cutoff (scorePitchAtNuclei runs a strict pass then a relaxed one).
+  // Returning hz:0 too eagerly here was starving that relaxed pass.
+  if (gmax < 0.18) return { hz: 0, conf: gmax };
   const thresh = 0.80 * gmax;
   let chosen = 0;
   for (let lag = minLag + 1; lag < maxLag; lag++) {
