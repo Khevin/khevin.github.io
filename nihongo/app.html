@@ -15853,13 +15853,12 @@
     --pitch-pattern-odaka:     #7a9a5a;
     display: grid;
     grid-template-columns: minmax(280px, 0.42fr) 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto 1fr;
     grid-template-areas:
-      "head     head"
       "portrait stage"
       "filmstrip stage";
     gap: clamp(24px, 2.6vw, 40px);
-    padding: clamp(20px, 2vw, 36px) clamp(20px, 2vw, 36px) clamp(40px, 4vw, 72px);
+    padding: clamp(18px, 1.8vw, 30px) clamp(20px, 2vw, 36px) clamp(40px, 4vw, 72px);
     max-width: 1320px;
     margin: 0 auto;
     outline: none;
@@ -16254,6 +16253,25 @@
     text-align: right;
     letter-spacing: 0.04em;
   }
+  /* Voice picker — sits in the model row's right column (where the model
+     clock used to be). Opens the shared voice/volume/speed popover. */
+  .waveform-voice {
+    justify-self: end;
+    width: 30px; height: 30px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .waveform-voice svg { width: 16px; height: 16px; }
+  .waveform-voice:hover {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    color: var(--ink);
+    border-color: color-mix(in srgb, var(--accent-gold, #a8843c) 50%, transparent);
+  }
 
   /* Score quartet */
   .speaking-scores {
@@ -16507,9 +16525,8 @@
   @media (max-width: 900px) {
     .speaking-studio {
       grid-template-columns: 1fr;
-      grid-template-rows: auto auto auto auto;
+      grid-template-rows: auto auto auto;
       grid-template-areas:
-        "head"
         "portrait"
         "stage"
         "filmstrip";
@@ -18533,10 +18550,13 @@ function initSettings() {
 // clicking outside or pressing Escape — same pattern as the existing
 // dictionary-card popovers. Used for every TTS call across the site
 // (the TTS module reads APP.* on each speak()).
-function toggleAudioSettingsPopover(evt) {
+function toggleAudioSettingsPopover(evt, anchorEl) {
   if (evt) evt.stopPropagation();
   const pop = document.getElementById('audio-settings-popover');
   if (!pop) return;
+  // Anchor the popover to whichever control opened it (sidebar speaker by
+  // default, or the Shadowing studio's voice icon when passed).
+  const anchor = anchorEl || document.getElementById('audio-settings-open');
   if (pop.hasAttribute('hidden')) {
     // Move the popover element to <body> so its z-index escapes any
     // stacking context the sidebar ancestor (transform / overflow /
@@ -18546,13 +18566,13 @@ function toggleAudioSettingsPopover(evt) {
       document.body.appendChild(pop);
     }
     renderAudioSettingsPopover();
-    positionAudioSettingsPopover(pop);
+    positionAudioSettingsPopover(pop, anchor);
     pop.removeAttribute('hidden');
     // Close on outside-click / escape — one-shot listeners so they
     // self-detach when the popover closes. Outside-click ignores the
-    // open button itself so the same click doesn't re-toggle.
+    // anchor that opened it so the same click doesn't re-toggle.
     const closeOnOutside = (e) => {
-      if (pop.contains(e.target) || e.target.closest('#audio-settings-open')) return;
+      if (pop.contains(e.target) || (anchor && anchor.contains(e.target)) || e.target.closest('#audio-settings-open')) return;
       pop.setAttribute('hidden', '');
       document.removeEventListener('click', closeOnOutside);
       document.removeEventListener('keydown', closeOnEsc);
@@ -18580,8 +18600,8 @@ function toggleAudioSettingsPopover(evt) {
 // 8px gap above the button, popover's right edge aligned to the
 // button's right edge. Falls back to viewport-margin if computed
 // position would push the panel off-screen on either side.
-function positionAudioSettingsPopover(pop) {
-  const btn = document.getElementById('audio-settings-open');
+function positionAudioSettingsPopover(pop, anchorEl) {
+  const btn = anchorEl || document.getElementById('audio-settings-open');
   if (!btn) return;
   const r = btn.getBoundingClientRect();
   const POP_W = 280;     // matches the CSS width
@@ -30018,15 +30038,6 @@ function speakingStudioHTML(cat, phrase) {
     </nav>`;
   return `
     <div class="speaking-studio" tabindex="-1" data-category-id="${escAttr(cat.id)}" data-phrase-id="${escAttr(phrase.id)}">
-      <header class="speaking-studio-head" style="grid-column:1/-1">
-        <h1 class="speaking-head-title">
-          <span class="speaking-head-en">PHRASE BY PHRASE STUDIO</span>
-          <span class="speaking-head-dot" aria-hidden="true">·</span>
-          <span class="speaking-head-ja">フレーズごとに<ruby>話<rt>はな</rt></ruby>す</span>
-        </h1>
-        <p class="speaking-head-sub"><em>Listen, Imitate, Speak Japanese.</em></p>
-      </header>
-
       <aside class="speaking-portrait" aria-hidden="true">
         <div class="speaking-portrait-frame">
           <image-slot image-key="speaking/portrait-${escAttr(cat.portrait || cat.id)}" readonly></image-slot>
@@ -30083,6 +30094,16 @@ function speakingStudioHTML(cat, phrase) {
             <svg class="waveform-svg" id="waveform-original-svg" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true">
               ${synthesizedWaveformPath(phrase, 'original')}
             </svg>
+            <button class="waveform-voice" id="speaking-voice-open" type="button"
+                    aria-label="再生する声を選ぶ (choose playback voice)" title="声を選ぶ · Choose voice"
+                    aria-haspopup="dialog">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="8" r="3.2"/>
+                <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/>
+                <path d="M17.4 8.6a3 3 0 0 1 0 6.8"/>
+                <path d="M19.4 6.4a6 6 0 0 1 0 11.2"/>
+              </svg>
+            </button>
           </div>
           <div class="waveform-row waveform-user">
             <div class="waveform-label">
@@ -31276,6 +31297,14 @@ function wireSpeakingStudio(cat, phrase) {
   if (replayBtn) replayBtn.addEventListener('click', () => {
     if (typeof TTS !== 'undefined' && TTS.speak) TTS.speak(fullKana);
   });
+
+  // Voice picker — opens the shared voice/volume/speed popover anchored to
+  // the icon. It reads/writes APP.ttsVoiceURI, so the choice is the same
+  // default the Settings voice dropdown uses (changing one changes both).
+  const voiceOpenBtn = root.querySelector('#speaking-voice-open');
+  if (voiceOpenBtn && typeof toggleAudioSettingsPopover === 'function') {
+    voiceOpenBtn.addEventListener('click', (e) => toggleAudioSettingsPopover(e, voiceOpenBtn));
+  }
 
   // User-playback (after recording exists).
   const userPlayBtn = root.querySelector('#speaking-play-user');
