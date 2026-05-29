@@ -19605,7 +19605,8 @@ const SECTION_BGS = {
   // not listed here fall back to the random 'eating-out' pool above.
   'vocab-flavors':     ['images/bg/eating-out/bg3.webp'],
   'vocab-edibles':     ['images/bg/eating-out/bg1.webp'],
-  'vocab-textures':    ['images/bg/eating-out/bg2.webp'],
+  // 'vocab-textures' intentionally omitted — the Textures book suppresses its
+  // context bg (see currentBgContextKey) so it doesn't double up on texture.
   // Each writing subpage carries one specific bg — the brush + ink
   // aesthetics map to the subject they teach.
   'writing-kana':               ['images/bg/writing/bg-shodo.webp'],            // calligraphy → hiragana/katakana
@@ -19659,6 +19660,10 @@ function pickSectionBg(key) {
 // least-specific (the global fallback pool). Returns null only if even
 // the global pool is empty.
 function currentBgContextKey() {
+  // The Textures book is itself a wall of food-texture imagery — a second
+  // textured page background behind it just reads as two competing textures.
+  // Suppress the context bg entirely so the paper shows through cleanly.
+  if (APP.section === 'vocab' && APP.vocabBookId === 'textures') return null;
   // Section-class / subpage specific overrides come first.
   if (APP.section === 'vocab' && APP.vocabClassId === 'eating-out') {
     // Per-book overrides: flavors / edibles / textures each get a
@@ -22142,13 +22147,11 @@ function wireTexturesPageHandlers(book) {
   // examples row no longer carries the attribute (the examples are
   // now non-interactive reference cards, not links).
 
-  // Audio buttons → speak the kana
-  root.querySelectorAll('[data-speak]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const text = btn.dataset.speak;
-      if (text && typeof speakJapanese === 'function') speakJapanese(text);
-    });
-  });
+  // Audio buttons → speak the kana. NOTE: do NOT wire a click listener
+  // here — the global document-level [data-speak] delegate (see
+  // ~line 18372) already speaks on click. A second listener here made the
+  // textures-page audio play twice (TTS.speak + speakJapanese on one click).
+  // The delegate is the single source of truth for [data-speak] clicks.
 
   // Keyboard navigation: ← → walks spectrum (in softness order),
   // space speaks the current texture.
@@ -30319,6 +30322,59 @@ window.SPEAKING_CATEGORIES = [
         pattern: 'atamadaka',
         accent: 1,
         notes: 'おすすめ stays high all the way through (heiban), and は keeps that high. The question word なん is [1] — high on な, dropping on ん; ですか trails low. In speech か lifts again as a question rise, separate from the lexical accent.',
+      },
+      {
+        id: 'kore-nani',
+        chunks: [
+          { mora: ['こ','れ','は'], pitch: ['L','H','H'] },
+          { mora: ['な','ん','で','す','か'], pitch: ['H','L','L','L','L'] },
+        ],
+        kanji: 'これは 何ですか',
+        romaji: 'kore wa nan desu ka',
+        en: 'What is this?',
+        pattern: 'atamadaka',
+        accent: 1,
+        notes: 'Point at an unfamiliar dish and ask. これは is heiban (こ→れ rises, は stays high); なん is [1] — high on な, drop on ん. The simplest N5 way to find out what something is.',
+      },
+      {
+        id: 'kore-ikura',
+        chunks: [
+          { mora: ['こ','れ','は'], pitch: ['L','H','H'] },
+          { mora: ['い','く','ら','で','す','か'], pitch: ['H','L','L','L','L','L'] },
+        ],
+        kanji: 'これは いくらですか',
+        romaji: 'kore wa ikura desu ka',
+        en: 'How much is this?',
+        pattern: 'atamadaka',
+        accent: 1,
+        notes: 'The price question. いくら (how much) is [1] — high on い, then drops, and ですか trails low. Pair it with これは to ask the cost of a specific item.',
+      },
+      {
+        id: 'okawari-kudasai',
+        chunks: [
+          { mora: ['お','か','わ','り'], pitch: ['L','H','L','L'] },
+          { mora: ['く','だ','さ','い'], pitch: ['L','H','H','L'] },
+        ],
+        kanji: 'おかわり ください',
+        romaji: 'okawari kudasai',
+        en: 'Seconds, please. (a refill)',
+        pattern: 'nakadaka',
+        accent: 3,
+        notes: 'おかわり is a second helping or refill — rice, tea, a drink. It is [2] (drop after か). ください is [3]. The cheerful opposite of もう けっこうです.',
+      },
+      {
+        id: 'mou-kekkou',
+        chunks: [
+          { mora: ['も','う'], pitch: ['H','L'] },
+          { mora: ['け','っ','こ','う'], pitch: ['L','H','H','L'] },
+          { mora: ['で','す'], pitch: ['L','L'] },
+        ],
+        kanji: 'もう 結構です',
+        romaji: 'mou kekkou desu',
+        en: 'No thank you — I\'ve had enough.',
+        pattern: 'nakadaka',
+        accent: 3,
+        notes: 'The polite way to decline more food, usually with a small hand-wave in front of the face. もう = "already / now"; けっこう (enough, fine) is [3] — falls on the final う. Softer and warmer than a flat "no".',
       },
     ],
   },
