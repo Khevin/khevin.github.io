@@ -16072,15 +16072,6 @@
   .pitch-pattern-en { font-style: italic; }
   .pitch-pattern-num { font-family: var(--font-en); font-weight: 600; opacity: 0.85; }
 
-  .speaking-phrase-en {
-    margin: 6px 0 22px;
-    text-align: center;
-    font-family: var(--font-en);
-    font-style: italic;
-    font-size: clamp(15px, 1.4vw, 20px);
-    color: var(--ink-soft);
-  }
-
   /* Mic row */
   .speaking-mic-row {
     display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -16165,27 +16156,36 @@
   /* "Heard" line — the STT transcript (or an explanatory message) shown
      above the waveforms so the learner sees what the recognizer caught. */
   .speaking-heard {
-    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
-    margin: 0 0 14px;
-    padding: 8px 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    text-align: center;
+    margin: 0 auto 16px;
+    padding: 10px 16px;
     border-radius: 6px;
     background: color-mix(in srgb, var(--ink) 4%, transparent);
-    border-left: 2px solid color-mix(in srgb, var(--accent-gold, #a8843c) 55%, transparent);
   }
   .speaking-heard[hidden] { display: none; }
+  /* Stacked label — hiragana over English, matching the waveform/mic labels. */
   .speaking-heard-label {
-    font-family: var(--font-menu-en);
+    display: flex; flex-direction: column; line-height: 1.2;
+  }
+  .speaking-heard-label .ja {
+    font-family: var(--font-title);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .speaking-heard-label .en {
+    font-family: var(--font-en);
+    font-style: italic;
     font-size: 11px;
-    letter-spacing: 0.08em;
     color: var(--ink-faint);
-    flex-shrink: 0;
   }
   .speaking-heard-text {
     font-family: var(--font-title);
-    font-size: 18px;
+    font-size: 20px;
     color: var(--ink);
-    line-height: 1.3;
+    line-height: 1.4;
   }
+  .speaking-heard-text ruby rt { font-size: 0.42em; color: var(--ink-faint); }
   /* Non-transcript states read as a quieter note, not a headword. */
   .speaking-heard[data-state="nowords"],
   .speaking-heard[data-state="unavailable"] {
@@ -16330,6 +16330,21 @@
     padding: 12px 14px;
     background: color-mix(in srgb, var(--ink) 3%, transparent);
     border-left: 2px solid color-mix(in srgb, var(--accent-gold, #a8843c) 60%, transparent);
+  }
+  /* The phrase meaning — the headline of the note, sat above a hairline. */
+  .speaking-note-en {
+    margin: 0 0 9px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: clamp(15px, 1.4vw, 18px);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  /* The pitch/usage explanation beneath it. */
+  .speaking-note-detail {
+    margin: 0;
     font-family: var(--font-body);
     font-size: 13px;
     line-height: 1.55;
@@ -29735,6 +29750,21 @@ function renderSpeaking(container) {
   wireSpeakingStudio(cat, phrase);
 }
 
+// Furigana for the recognized transcript. When the recognizer returned the
+// phrase's own kanji form, align ruby against the KNOWN reading (exact); if
+// it returned other text with kanji, fall back to best-effort per-character
+// readings; pure kana passes through untouched. Returns escaped HTML.
+function furiganaTranscript(transcript, phrase) {
+  const t = (transcript || '').trim();
+  if (!t) return '';
+  const norm = s => (s || '').replace(/[\s　、。，．・!?！？「」『』,.]/g, '');
+  const kanji = (phrase && phrase.kanji) || '';
+  const kana = phrase ? (phrase.chunks || []).flatMap(c => c.mora || []).join('') : '';
+  if (kanji && norm(t) === norm(kanji)) return withFurigana(kanji, kana);   // exact, aligned to known reading
+  if (/[㐀-鿿]/.test(t)) return withFurigana(t);                            // other kanji → per-char best effort
+  return escHTML(t);                                                         // pure kana
+}
+
 function speakingStudioHTML(cat, phrase) {
   const phraseIdx = cat.phrases.findIndex(p => p.id === phrase.id);
   const phraseTotal = cat.phrases.length;
@@ -29824,7 +29854,7 @@ function speakingStudioHTML(cat, phrase) {
         <h1 class="speaking-head-title">
           <span class="speaking-head-en">PHRASE BY PHRASE STUDIO</span>
           <span class="speaking-head-dot" aria-hidden="true">·</span>
-          <span class="speaking-head-ja">フレーズごとに話す</span>
+          <span class="speaking-head-ja">フレーズごとに<ruby>話<rt>はな</rt></ruby>す</span>
         </h1>
         <p class="speaking-head-sub"><em>Listen, Imitate, Speak Japanese.</em></p>
       </header>
@@ -29845,7 +29875,6 @@ function speakingStudioHTML(cat, phrase) {
           <div class="phrase-mora-row">${phraseHTML}</div>
           ${renderPitchPatternChip(phrase.pattern, phrase.accent)}
         </div>
-        <p class="speaking-phrase-en"><em>${escHTML(phrase.en || '')}</em></p>
 
         <div class="speaking-mic-row">
           <button class="speaking-mic" id="speaking-mic" type="button"
@@ -29854,7 +29883,7 @@ function speakingStudioHTML(cat, phrase) {
             ${G_MIC}
           </button>
           <div class="speaking-mic-labels">
-            <span class="mic-label-ja" id="speaking-mic-label-ja">録音する</span>
+            <span class="mic-label-ja" id="speaking-mic-label-ja"><ruby>録音<rt>ろくおん</rt></ruby>する</span>
             <span class="mic-label-en" id="speaking-mic-label-en">Tap to Record</span>
           </div>
           <p class="speaking-silent-hint" id="speaking-silent-hint" role="status" aria-live="polite" hidden>
@@ -29867,14 +29896,17 @@ function speakingStudioHTML(cat, phrase) {
              recording so the learner can SEE what the recognizer caught.
              Hidden until a recording lands. -->
         <div class="speaking-heard" id="speaking-heard" role="status" aria-live="polite" hidden>
-          <span class="speaking-heard-label">きこえた · <em>Heard</em></span>
+          <span class="speaking-heard-label">
+            <span class="ja">きこえた</span>
+            <span class="en"><em>Heard</em></span>
+          </span>
           <span class="speaking-heard-text" id="speaking-heard-text"></span>
         </div>
 
         <div class="speaking-waveforms" aria-label="Audio waveforms">
           <div class="waveform-row waveform-original">
             <div class="waveform-label">
-              <span class="ja">お手本</span>
+              <span class="ja">お<ruby>手本<rt>てほん</rt></ruby></span>
               <span class="en"><em>Original</em></span>
             </div>
             <button class="waveform-play" id="speaking-play-original" type="button" aria-label="Play the model phrase">
@@ -29883,7 +29915,6 @@ function speakingStudioHTML(cat, phrase) {
             <svg class="waveform-svg" id="waveform-original-svg" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true">
               ${synthesizedWaveformPath(phrase, 'original')}
             </svg>
-            <div class="waveform-duration" id="waveform-original-duration">00:00 / 00:00</div>
           </div>
           <div class="waveform-row waveform-user">
             <div class="waveform-label">
@@ -29911,7 +29942,11 @@ function speakingStudioHTML(cat, phrase) {
           </div>
         </div>
 
-        ${phrase.notes ? `<p class="speaking-phrase-notes">${escHTML(phrase.notes)}</p>` : ''}
+        ${(phrase.en || phrase.notes) ? `
+        <div class="speaking-phrase-notes">
+          ${phrase.en ? `<p class="speaking-note-en"><em>${escHTML(phrase.en)}</em></p>` : ''}
+          ${phrase.notes ? `<p class="speaking-note-detail">${escHTML(phrase.notes)}</p>` : ''}
+        </div>` : ''}
       </section>
 
       ${filmstripHTML}
@@ -31022,7 +31057,7 @@ function wireSpeakingStudio(cat, phrase) {
       return;
     }
     micBtn.dataset.state = 'requesting';
-    if (micLabelJa) micLabelJa.textContent = '準備中…';
+    if (micLabelJa) micLabelJa.innerHTML = '<ruby>準備<rt>じゅんび</rt></ruby><ruby>中<rt>ちゅう</rt></ruby>…';
     if (micLabelEn) micLabelEn.textContent = 'Preparing…';
     try {
       await SpeakingRecorder.start(({ audioBuffer, duration, transcript, sttAvailable }) => {
@@ -31052,7 +31087,7 @@ function wireSpeakingStudio(cat, phrase) {
           } else if (scores.transcript) {
             heard.hidden = false;
             heard.dataset.state = 'ok';
-            heardText.textContent = '「' + scores.transcript + '」';
+            heardText.innerHTML = '「' + furiganaTranscript(scores.transcript, phrase) + '」';
           } else if (scores.noWords) {
             heard.hidden = false;
             heard.dataset.state = 'nowords';
@@ -31069,7 +31104,7 @@ function wireSpeakingStudio(cat, phrase) {
         // that would lose the user waveform we just drew).
         updateSpeakingScoresInPlace();
         micBtn.dataset.state = 'idle';
-        if (micLabelJa) micLabelJa.textContent = '録音する';
+        if (micLabelJa) micLabelJa.innerHTML = '<ruby>録音<rt>ろくおん</rt></ruby>する';
         if (micLabelEn) micLabelEn.textContent = 'Tap to Record';
       });
       // Clear any prior hints when a new recording starts.
@@ -31078,11 +31113,11 @@ function wireSpeakingStudio(cat, phrase) {
       const heardReset = root.querySelector('#speaking-heard');
       if (heardReset) heardReset.hidden = true;
       micBtn.dataset.state = 'recording';
-      if (micLabelJa) micLabelJa.textContent = '録音中…';
+      if (micLabelJa) micLabelJa.innerHTML = '<ruby>録音<rt>ろくおん</rt></ruby><ruby>中<rt>ちゅう</rt></ruby>…';
       if (micLabelEn) micLabelEn.textContent = 'Recording';
     } catch (e) {
       micBtn.dataset.state = 'denied';
-      if (micLabelJa) micLabelJa.textContent = 'マイク許可なし';
+      if (micLabelJa) micLabelJa.innerHTML = 'マイク<ruby>許可<rt>きょか</rt></ruby>なし';
       if (micLabelEn) micLabelEn.textContent = 'Mic permission needed';
       console.warn('Mic recording failed:', e);
     }
