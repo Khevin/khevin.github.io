@@ -15853,13 +15853,13 @@
     --pitch-pattern-odaka:     #7a9a5a;
     display: grid;
     grid-template-columns: minmax(280px, 0.42fr) 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto 1fr;
     grid-template-areas:
-      "head head"
+      "head     head"
       "portrait stage"
-      "filmstrip filmstrip";
+      "filmstrip stage";
     gap: clamp(24px, 2.6vw, 40px);
-    padding: clamp(20px, 2vw, 36px) clamp(20px, 2vw, 36px) clamp(80px, 6vw, 120px);
+    padding: clamp(20px, 2vw, 36px) clamp(20px, 2vw, 36px) clamp(40px, 4vw, 72px);
     max-width: 1320px;
     margin: 0 auto;
     outline: none;
@@ -16337,114 +16337,122 @@
   }
 
   /* Filmstrip */
+  /* Up Next — vertical list in the bottom-left rail. Fills the grid's 1fr
+     bottom row (the space below the portrait, beside the tall stage) and
+     scrolls internally so it never grows the page. */
   .speaking-filmstrip {
     grid-area: filmstrip;
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px 14px;
+    display: flex; flex-direction: column;
+    min-height: 0;                          /* let the track scroll inside the row */
     background: color-mix(in srgb, var(--paper-soft) 80%, var(--paper));
     border-radius: 4px;
-    margin-top: 8px;
+    padding: 14px 12px 10px;
+    box-shadow: inset 0 0 0 1px rgba(141,102,48,0.10);
   }
-  .filmstrip-label {
-    display: flex; flex-direction: column;
+  .filmstrip-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px;
     flex-shrink: 0;
-    font-family: var(--font-en);
-    font-size: 11px;
-    color: var(--ink-faint);
-    text-align: center;
-    line-height: 1.2;
-    padding-right: 8px;
+    padding: 0 4px 10px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
   }
+  .filmstrip-label { display: flex; flex-direction: column; line-height: 1.25; }
   .filmstrip-label .ja {
     font-family: var(--font-title);
-    font-size: 12px;
+    font-size: 14px;
     color: var(--ink-soft);
   }
+  .filmstrip-label .en {
+    font-family: var(--font-menu-en);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 1px;
+  }
+  .filmstrip-nav { display: flex; gap: 6px; flex-shrink: 0; }
   .filmstrip-arrow {
-    width: 32px; height: 32px;
+    width: 28px; height: 28px;
     border-radius: 999px;
     border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
     background: var(--paper);
     color: var(--ink-soft);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
     transition: background .15s, color .15s;
   }
   .filmstrip-arrow svg { width: 14px; height: 14px; }
   .filmstrip-arrow:hover { background: color-mix(in srgb, var(--ink) 6%, var(--paper)); color: var(--ink); }
+
   .filmstrip-track {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; gap: 8px;
-    overflow-x: auto;
-    flex: 1;
+    list-style: none; margin: 0; padding: 2px;
+    position: relative;                     /* offsetParent for auto-scroll-to-current */
+    display: flex; flex-direction: column; gap: 4px;
+    flex: 1 1 0; min-height: 0;
+    overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--ink) 14%, transparent) transparent;
   }
   .filmstrip-item { flex: 0 0 auto; }
   .filmstrip-card {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 14px;
+    width: 100%;
+    padding: 9px 10px;
     border-radius: 4px;
-    background: var(--paper);
-    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    background: transparent;
+    border: 1px solid transparent;
     cursor: pointer;
     text-align: left;
     font: inherit; color: inherit;
-    transition: background .15s, transform .15s, border-color .15s;
+    transition: background .15s, border-color .15s;
     min-width: 0;
   }
-  .filmstrip-card:hover {
-    background: color-mix(in srgb, var(--ink) 3%, var(--paper));
-    transform: translateY(-1px);
-  }
+  .filmstrip-card:hover { background: color-mix(in srgb, var(--ink) 4%, var(--paper)); }
   .filmstrip-num {
-    width: 26px; height: 26px;
+    width: 24px; height: 24px;
     border-radius: 999px;
     background: color-mix(in srgb, var(--ink) 6%, transparent);
     color: var(--ink-soft);
     display: flex; align-items: center; justify-content: center;
     font-family: var(--font-en);
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 12px; font-weight: 500;
     flex-shrink: 0;
   }
   .filmstrip-item.is-current .filmstrip-card {
-    border-color: color-mix(in srgb, var(--accent-vermilion, #c34b30) 50%, transparent);
-    background: color-mix(in srgb, var(--accent-vermilion, #c34b30) 4%, var(--paper));
+    border-color: color-mix(in srgb, var(--accent-vermilion, #c34b30) 45%, transparent);
+    background: color-mix(in srgb, var(--accent-vermilion, #c34b30) 5%, var(--paper));
   }
   .filmstrip-item.is-current .filmstrip-num {
     background: var(--accent-vermilion, #c34b30);
     color: var(--paper);
   }
-  .filmstrip-item.is-past .filmstrip-card { opacity: 0.62; }
-  .filmstrip-text { display: flex; flex-direction: column; min-width: 0; }
+  .filmstrip-item.is-past .filmstrip-card { opacity: 0.6; }
+  .filmstrip-item.is-past:hover .filmstrip-card { opacity: 0.9; }
+  .filmstrip-text { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
   .filmstrip-kana {
     font-family: var(--font-title);
     font-size: 15px;
     color: var(--ink);
-    line-height: 1.15;
-    white-space: nowrap;
-    max-width: 240px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .filmstrip-en {
     font-family: var(--font-en);
     font-style: italic;
     font-size: 11px;
     color: var(--ink-faint);
-    line-height: 1.15;
-    max-width: 240px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  /* Responsive — collapse portrait under stage on narrow viewports */
+  /* Responsive — single column: portrait, stage, then Up Next at the
+     bottom. The list is no longer height-driven by a sibling, so cap it and
+     let it scroll on its own. */
   @media (max-width: 900px) {
     .speaking-studio {
       grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto auto;
       grid-template-areas:
         "head"
         "portrait"
@@ -16452,6 +16460,8 @@
         "filmstrip";
     }
     .speaking-portrait-frame { aspect-ratio: 16 / 9; }
+    .speaking-filmstrip { max-height: 360px; }
+    .filmstrip-track { flex: 0 1 auto; }
     .speaking-scores { grid-template-columns: 1fr 1fr; }
     .score-overall { grid-column: 1 / -1; width: 100%; height: 56px; border-radius: 6px; flex-direction: row; gap: 6px; }
     .score-overall-num { font-size: 24px; }
@@ -29765,22 +29775,32 @@ function speakingStudioHTML(cat, phrase) {
     <path d="M12 19v3"/>
   </svg>`;
   const G_PLAY = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>`;
-  const G_BACK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>`;
-  // Up Next filmstrip.
+  // Up Next — vertical list living in the bottom-left rail (beneath the
+  // portrait, left of the audio tracks). Fills the empty left-column space
+  // and scrolls internally so the page doesn't grow.
   const filmstripHTML = `
     <nav class="speaking-filmstrip" aria-label="Up next phrases">
-      <div class="filmstrip-label">
-        <span class="ja">これからの<br>フレーズ</span>
-        <span class="en">Up Next</span>
+      <div class="filmstrip-head">
+        <div class="filmstrip-label">
+          <span class="ja">これからのフレーズ</span>
+          <span class="en">Up Next</span>
+        </div>
+        <div class="filmstrip-nav">
+          <button class="filmstrip-arrow" data-speaking-walk="-1" type="button" aria-label="Previous phrase">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+          </button>
+          <button class="filmstrip-arrow" data-speaking-walk="+1" type="button" aria-label="Next phrase">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </div>
       </div>
-      <button class="filmstrip-arrow filmstrip-prev" data-speaking-walk="-1" aria-label="Previous phrase">
-        ${G_BACK}
-      </button>
       <ol class="filmstrip-track">
         ${cat.phrases.map((p, i) => {
           const isCurrent = p.id === phrase.id;
           const isPast = i < phraseIdx;
-          const enShort = (p.en || '').length > 32 ? (p.en || '').slice(0, 30) + '…' : (p.en || '');
+          const enShort = (p.en || '').length > 40 ? (p.en || '').slice(0, 38) + '…' : (p.en || '');
           const kanaPreview = (p.chunks || []).map(c => (c.mora || []).join('')).join(' ');
           return `
             <li class="filmstrip-item ${isCurrent ? 'is-current' : ''} ${isPast ? 'is-past' : ''}">
@@ -29797,10 +29817,6 @@ function speakingStudioHTML(cat, phrase) {
             </li>`;
         }).join('')}
       </ol>
-      <button class="filmstrip-arrow filmstrip-next" data-speaking-walk="+1" aria-label="Next phrase">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-      </button>
     </nav>`;
   return `
     <div class="speaking-studio" tabindex="-1" data-category-id="${escAttr(cat.id)}" data-phrase-id="${escAttr(phrase.id)}">
@@ -31083,6 +31099,15 @@ function wireSpeakingStudio(cat, phrase) {
       renderSpeaking(document.getElementById('main-inner'));
     });
   });
+  // Center the current phrase in the vertical Up Next list (scroll the
+  // track itself, not the page).
+  (() => {
+    const track = root.querySelector('.filmstrip-track');
+    const cur = root.querySelector('.filmstrip-item.is-current');
+    if (track && cur) {
+      track.scrollTop = Math.max(0, cur.offsetTop - track.clientHeight / 2 + cur.offsetHeight / 2);
+    }
+  })();
   // Walk arrows.
   root.querySelectorAll('[data-speaking-walk]').forEach(btn => {
     btn.addEventListener('click', () => {
