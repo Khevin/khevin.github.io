@@ -30480,12 +30480,16 @@ const SpeakingRecorder = (function () {
       const blob = new Blob(chunks, { type: chunks[0] && chunks[0].type || 'audio/webm' });
       const arrayBuf = await blob.arrayBuffer();
       const ctx = ensureAudioCtx();
-      let audioBuffer = null;
-      try { audioBuffer = await ctx.decodeAudioData(arrayBuf.slice(0)); }
-      catch (e) { audioBuffer = null; }
-      // Crop leading/trailing silence so the displayed waveform + playback
-      // show only the spoken part.
-      if (audioBuffer) audioBuffer = trimToRealBuffer(audioBuffer, ctx);
+      let fullBuffer = null;
+      try { fullBuffer = await ctx.decodeAudioData(arrayBuf.slice(0)); }
+      catch (e) { fullBuffer = null; }
+      // Trimmed copy (leading/trailing silence cropped) for the displayed
+      // waveform, playback, and scoring. NOTE: do NOT feed this to Cloud STT
+      // — the trailing-silence trim clips devoiced endings (the final す in
+      // です/ます is whispered = near-silent), which made the recognizer miss
+      // word endings. STT gets the FULL buffer below; its natural trailing
+      // silence also helps the recognizer mark end-of-utterance.
+      const audioBuffer = fullBuffer ? trimToRealBuffer(fullBuffer, ctx) : null;
       // Tear down the recorder + analyser, but KEEP the stream + recognizer
       // alive for the next take (no re-prompt).
       teardownRecorder();
@@ -30494,12 +30498,13 @@ const SpeakingRecorder = (function () {
         if (onStop) onStop({ audioBuffer, duration, transcript, sttAvailable });
       };
       if (useCloud) {
-        // Transcribe the recorded clip with Cloud STT. On a transport / key /
-        // quota error, mark STT unavailable so scoring falls back to the
-        // acoustic measures rather than reporting "no words."
+        // Transcribe the FULL (untrimmed) clip with Cloud STT so devoiced
+        // endings survive. On a transport / key / quota error, mark STT
+        // unavailable so scoring falls back to the acoustic measures rather
+        // than reporting "no words."
         let transcript = '', sttAvailable = true;
-        if (audioBuffer) {
-          try { transcript = await cloudRecognizeJa(audioBuffer); }
+        if (fullBuffer) {
+          try { transcript = await cloudRecognizeJa(fullBuffer); }
           catch (e) { console.warn('Cloud STT failed — scoring on sound only:', e); sttAvailable = false; }
         }
         deliver(transcript, sttAvailable);
