@@ -30248,6 +30248,105 @@ document.addEventListener('keydown', (e) => {
 
 window.SPEAKING_CATEGORIES = [
   {
+    id: 'greetings',
+    kana: 'あいさつ',
+    kanji: '挨拶',
+    en: 'Greetings',
+    glyph: '挨',
+    description: 'The first words of any exchange — hello, good morning, and how to introduce yourself.',
+    phrases: [
+      {
+        id: 'konnichiwa',
+        chunks: [
+          { mora: ['こ','ん','に','ち','は'], pitch: ['L','H','H','H','H'] },
+        ],
+        kanji: 'こんにちは',
+        romaji: 'konnichiwa',
+        en: 'Hello / Good afternoon.',
+        pattern: 'heiban',
+        accent: 0,
+        notes: 'The all-purpose daytime hello. The final は is written ha but said “wa” — a leftover topic particle. Stays high and even.',
+      },
+      {
+        id: 'ohayou',
+        chunks: [
+          { mora: ['お','は','よ','う'], pitch: ['L','H','H','H'] },
+          { mora: ['ご','ざ','い','ま','す'], pitch: ['L','H','H','H','L'] },
+        ],
+        kanji: 'おはよう ございます',
+        romaji: 'ohayou gozaimasu',
+        en: 'Good morning. (polite)',
+        pattern: 'nakadaka',
+        accent: 4,
+        notes: 'The polite morning greeting. Drop ございます for a casual おはよう with friends and family.',
+      },
+      {
+        id: 'konbanwa',
+        chunks: [
+          { mora: ['こ','ん','ば','ん','は'], pitch: ['L','H','H','H','H'] },
+        ],
+        kanji: 'こんばんは',
+        romaji: 'konbanwa',
+        en: 'Good evening.',
+        pattern: 'heiban',
+        accent: 0,
+        notes: 'The evening counterpart to こんにちは. Again the final は is said “wa.”',
+      },
+      {
+        id: 'hajimemashite',
+        chunks: [
+          { mora: ['は','じ','め','ま','し','て'], pitch: ['L','H','H','H','L','L'] },
+        ],
+        kanji: 'はじめまして',
+        romaji: 'hajimemashite',
+        en: 'Nice to meet you. (first time)',
+        pattern: 'nakadaka',
+        accent: 4,
+        notes: 'Said at a first meeting, before you give your name — literally “for the first time.” Usually paired with a bow.',
+      },
+      {
+        id: 'ore-kenshin',
+        chunks: [
+          { mora: ['お','れ','は'], pitch: ['L','H','H'] },
+          { mora: ['ケ','ン','シ','ン'], pitch: ['L','H','H','H'] },
+          { mora: ['で','す'], pitch: ['L','L'] },
+        ],
+        kanji: 'おれは ケンシンです',
+        romaji: 'ore wa Kenshin desu',
+        en: 'I am Kenshin.',
+        pattern: 'heiban',
+        accent: 0,
+        notes: 'おれ is a rough, masculine “I” — fitting for a wandering swordsman. Names are written in katakana: ケンシン. Swap in your own name.',
+      },
+      {
+        id: 'kaoru-iimasu',
+        chunks: [
+          { mora: ['カ','オ','ル','と'], pitch: ['L','H','H','H'] },
+          { mora: ['い','い','ま','す'], pitch: ['L','H','H','L'] },
+        ],
+        kanji: 'カオルと いいます',
+        romaji: 'Kaoru to iimasu',
+        en: 'My name is Kaoru.',
+        pattern: 'heiban',
+        accent: 0,
+        notes: 'A softer, polite way to give your name than 〜です. と marks the name being quoted; カオル is katakana. Use your own name in place of カオル.',
+      },
+      {
+        id: 'yoroshiku',
+        chunks: [
+          { mora: ['よ','ろ','し','く'], pitch: ['L','H','H','H'] },
+          { mora: ['お','ね','が','い','し','ま','す'], pitch: ['L','H','H','H','L','L','L'] },
+        ],
+        kanji: 'よろしく おねがいします',
+        romaji: 'yoroshiku onegai shimasu',
+        en: 'Please be kind to me.',
+        pattern: 'nakadaka',
+        accent: 4,
+        notes: 'The phrase that closes almost every introduction — roughly “please treat me well.” There’s no clean English equivalent; the bow carries the rest.',
+      },
+    ],
+  },
+  {
     id: 'food',
     kana: 'たべもの',
     kanji: '食べ物',
@@ -30269,18 +30368,6 @@ window.SPEAKING_CATEGORIES = [
         notes: 'A formula spoken before every meal — a thanks to everyone who made the food possible. Pitch falls after the 4th mora (き → ま).',
       },
       {
-        id: 'gochisousama',
-        chunks: [
-          { mora: ['ご','ち','そ','う','さ','ま','で','し','た'], pitch: ['L','H','H','H','H','H','H','H','H'] },
-        ],
-        kanji: 'ご馳走様でした',
-        romaji: 'gochisousama deshita',
-        en: 'Thank you for the feast (said after eating).',
-        pattern: 'heiban',
-        accent: 0,
-        notes: 'The closing counterpart to いただきます — said as you put down your chopsticks. Heiban — stays high all the way through, no fall.',
-      },
-      {
         id: 'oishii-desu',
         chunks: [
           { mora: ['お','い','し','い'], pitch: ['L','H','L','L'] },
@@ -30292,6 +30379,18 @@ window.SPEAKING_CATEGORIES = [
         pattern: 'atamadaka',
         accent: 2,
         notes: 'おいしい drops sharply after the second mora — the い (high) → し (low) is the diagnostic. です is unaccented and follows the previous low.',
+      },
+      {
+        id: 'gochisousama',
+        chunks: [
+          { mora: ['ご','ち','そ','う','さ','ま','で','し','た'], pitch: ['L','H','H','H','H','H','H','H','H'] },
+        ],
+        kanji: 'ご馳走様でした',
+        romaji: 'gochisousama deshita',
+        en: 'Thank you for the feast (said after eating).',
+        pattern: 'heiban',
+        accent: 0,
+        notes: 'The closing counterpart to いただきます — said as you put down your chopsticks. Heiban — stays high all the way through, no fall.',
       },
       {
         id: 'sushi-onegai',
@@ -30437,6 +30536,19 @@ window.SPEAKING_CATEGORIES = [
         pattern: 'nakadaka',
         accent: 3,
         notes: 'The polite way to decline more food, usually with a small hand-wave in front of the face. もう = "already / now"; けっこう (enough, fine) is [3] — falls on the final う. Softer and warmer than a flat "no".',
+      },
+      {
+        id: 'kekkou-desu',
+        chunks: [
+          { mora: ['け','っ','こ','う'], pitch: ['L','H','H','L'] },
+          { mora: ['で','す'], pitch: ['L','L'] },
+        ],
+        kanji: '結構です',
+        romaji: 'kekkou desu',
+        en: 'No, thank you.',
+        pattern: 'nakadaka',
+        accent: 3,
+        notes: 'Use this when food (or anything) is offered and you want to decline — “I’m fine, thank you.” The small hand-wave makes it unmistakable. Without もう it refuses the offer itself, not just seconds.',
       },
     ],
   },
