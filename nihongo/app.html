@@ -30159,11 +30159,216 @@ function detectSyllableNuclei(smooth, frameSec) {
   return merged.map(i => ({ frame: i, t: i * frameSec, energy: smooth[i] }));
 }
 
-// The four-dimension scorer. Built around syllable-nucleus structure so
-// it actually responds to WHAT was said, not just whether SOME sound
-// happened. No hard-coded floors — every number flows from a measurement,
-// so silence lands at ~0-2 and a single shouted vowel ("WHOA" for a
-// 6-mora phrase) lands in the low teens, all algorithmically.
+// ══════════════════════════════════════════════════════════════════════
+// CONTENT ANALYSIS — did you say the RIGHT WORDS?
+// ══════════════════════════════════════════════════════════════════════
+// Structure (mora count, rhythm, pitch shape) isn't enough: gibberish
+// with six even beats passes all of it. The missing signal is WHAT was
+// said. Without cloud speech-to-text we can't transcribe, but we CAN
+// check the VOWEL SEQUENCE — every Japanese mora carries one of five
+// vowels (a/i/u/e/o), and the vowel is identifiable from its formants
+// (F1/F2, the two lowest resonances of the vocal tract). So:
+//   1. estimate F1/F2 at each syllable nucleus (cepstrally-smoothed FFT),
+//   2. classify each into a/i/u/e/o,
+//   3. DTW-align the detected vowel sequence against the phrase's
+//      expected vowel sequence (with confusion-aware costs),
+//   4. the alignment similarity is the content-accuracy (0..1).
+// "itadakimasu" (i-a-a-i-a-u) vs "yoroshiku onegaishimasu"
+// (o-o-i-u-o-e-a-i-i-a-u) overlap only at the tail → low accuracy.
+// This is an approximation, not transcription — but it's enough to make
+// the wrong words cost real points.
+
+// In-place iterative radix-2 FFT. `inverse` divides by N at the end.
+function fftRadix2(re, im, inverse) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) { const tr = re[i]; re[i] = re[j]; re[j] = tr; const ti = im[i]; im[i] = im[j]; im[j] = ti; }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = (inverse ? 2 : -2) * Math.PI / len;
+    const wr = Math.cos(ang), wi = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let cwr = 1, cwi = 0;
+      for (let k = 0; k < len / 2; k++) {
+        const ar = re[i + k], ai = im[i + k];
+        const br = re[i + k + len / 2], bi = im[i + k + len / 2];
+        const vr = br * cwr - bi * cwi, vi = br * cwi + bi * cwr;
+        re[i + k] = ar + vr; im[i + k] = ai + vi;
+        re[i + k + len / 2] = ar - vr; im[i + k + len / 2] = ai - vi;
+        const ncwr = cwr * wr - cwi * wi; cwi = cwr * wi + cwi * wr; cwr = ncwr;
+      }
+    }
+  }
+  if (inverse) for (let i = 0; i < n; i++) { re[i] /= n; im[i] /= n; }
+}
+
+// Estimate the first two formants (F1, F2) of a vowel window. Downsamples
+// to ~8kHz (formants live below ~3.5kHz), Hamming-windows, cepstrally
+// smooths the magnitude spectrum to remove the F0 harmonic ripple, then
+// peak-picks F1 in 200-1000Hz and F2 in 800-3000Hz. Returns { f1, f2,
+// strength } or null if no clear vowel.
+function estimateFormants(ch, centerSample, sr) {
+  const halfWin = Math.floor(sr * 0.05);                 // ±50ms
+  const lo = Math.max(0, centerSample - halfWin);
+  const hi = Math.min(ch.length, centerSample + halfWin);
+  if (hi - lo < sr * 0.03) return null;
+  // Downsample to ~8kHz with a box-average anti-alias.
+  const TARGET = 8000;
+  const ratio = sr / TARGET;
+  const box = Math.max(1, Math.round(ratio));
+  const ds = [];
+  for (let x = lo; x + box <= hi; x += ratio) {
+    const s = Math.floor(x);
+    let sum = 0; for (let k = 0; k < box; k++) sum += ch[s + k];
+    ds.push(sum / box);
+  }
+  if (ds.length < 64) return null;
+  const N = 1024;
+  const re = new Float64Array(N), im = new Float64Array(N);
+  const M = Math.min(ds.length, N);
+  let energy = 0;
+  for (let i = 0; i < M; i++) {
+    const w = 0.54 - 0.46 * Math.cos(2 * Math.PI * i / (M - 1)); // Hamming
+    re[i] = ds[i] * w;
+    energy += ds[i] * ds[i];
+  }
+  if (energy < 1e-6) return null;
+  fftRadix2(re, im, false);
+  // Log-magnitude spectrum (first half).
+  const half = N / 2;
+  const logmag = new Float64Array(N);
+  for (let k = 0; k < N; k++) {
+    const kk = k <= half ? k : N - k;
+    const mag = Math.hypot(re[kk], im[kk]);
+    logmag[k] = Math.log(mag + 1e-6);
+  }
+  // Cepstral smoothing: IFFT(logmag) → lifter low quefrency → FFT back.
+  const cre = Float64Array.from(logmag), cim = new Float64Array(N);
+  fftRadix2(cre, cim, true);
+  const L = 30;                                          // lifter cutoff (quefrency bins)
+  for (let k = L; k < N - L; k++) { cre[k] = 0; cim[k] = 0; }
+  fftRadix2(cre, cim, false);                            // cre ≈ smoothed log spectrum
+  const binHz = TARGET / N;
+  // Peak-pick on the smoothed envelope.
+  function peakIn(f0, f1) {
+    const a = Math.max(2, Math.floor(f0 / binHz));
+    const b = Math.min(half - 2, Math.floor(f1 / binHz));
+    let bestK = -1, bestV = -Infinity;
+    for (let k = a; k <= b; k++) {
+      if (cre[k] >= cre[k - 1] && cre[k] >= cre[k + 1] && cre[k] > bestV) { bestV = cre[k]; bestK = k; }
+    }
+    return bestK > 0 ? bestK * binHz : 0;
+  }
+  const f1 = peakIn(200, 1000);
+  const f2 = peakIn(850, 3000);
+  if (!f1 || !f2 || f2 <= f1) return null;
+  return { f1, f2, strength: energy };
+}
+
+// Vowel prototypes (Japanese, approximate Hz). Classification is in log
+// space so it tolerates speaker-size differences (the RELATIVE layout —
+// i high-F2, a high-F1, o low-everything — holds across voices).
+const VOWEL_PROTOTYPES = [
+  { v: 'a', f1: 750, f2: 1250 },
+  { v: 'i', f1: 320, f2: 2300 },
+  { v: 'u', f1: 350, f2: 1250 },
+  { v: 'e', f1: 480, f2: 1900 },
+  { v: 'o', f1: 480, f2: 850 },
+];
+function classifyVowel(f1, f2) {
+  let best = null, bestD = Infinity;
+  for (const p of VOWEL_PROTOTYPES) {
+    const d = (Math.log(f1) - Math.log(p.f1)) ** 2 + (Math.log(f2) - Math.log(p.f2)) ** 2;
+    if (d < bestD) { bestD = d; best = p.v; }
+  }
+  return best;
+}
+
+// Kana → vowel. Keyed on the LAST kana of a mora (small kana fused, so
+// きょ → ょ → o). Katakana normalized to hiragana by codepoint shift.
+const KANA_VOWEL = (function () {
+  const rows = {
+    a: 'あかさたなはまやらわがざだばぱぁゃゎ',
+    i: 'いきしちにひみりゐぎじぢびぴぃ',
+    u: 'うくすつぬふむゆるぐずづぶぷぅゅゔ',
+    e: 'えけせてねへめれゑげぜでべぺぇ',
+    o: 'おこそとのほもよろをごぞどぼぽぉょ',
+  };
+  const map = {};
+  for (const v in rows) for (const ch of rows[v]) map[ch] = v;
+  map['ん'] = 'N';
+  map['っ'] = 'Q';
+  return map;
+})();
+function moraVowel(moraStr, prevVowel) {
+  let last = moraStr[moraStr.length - 1];
+  if (last === 'ー' || last === 'ｰ') return prevVowel || null;   // long mark repeats
+  // Katakana → hiragana.
+  const code = last.charCodeAt(0);
+  if (code >= 0x30A1 && code <= 0x30F6) last = String.fromCharCode(code - 0x60);
+  return KANA_VOWEL[last] || null;
+}
+// The phrase's expected clear-vowel backbone (dropping ん and っ, which
+// don't form clear vowel nuclei the detector keys on).
+function expectedVowelSequence(phrase) {
+  const mora = (phrase.chunks || []).flatMap(c => (c.mora || []));
+  const seq = [];
+  let prev = 'a';
+  for (const m of mora) {
+    const v = moraVowel(m, prev);
+    if (!v || v === 'Q' || v === 'N') continue;
+    seq.push(v);
+    prev = v;
+  }
+  return seq;
+}
+
+// Confusion-aware cost between two vowels (0 = identical, 1 = unrelated).
+// Acoustically close pairs (i↔e high-front, u↔o back) cost less so a
+// classifier near-miss isn't fully penalized.
+function vowelCost(a, b) {
+  if (a === b) return 0;
+  const pair = a < b ? a + b : b + a;
+  // Only the truly adjacent pairs (high-front i↔e, back u↔o) get partial
+  // forgiveness — a classifier near-miss between those is plausible. Every
+  // other swap is a real error and costs full, so wrong vowels actually
+  // tank the accuracy instead of riding generous partial credit.
+  const close = { ei: 0.5, ou: 0.5 };
+  return close[pair] != null ? close[pair] : 1.0;
+}
+// DTW similarity (0..1) between the user's detected vowels and the
+// expected sequence. Insertions/deletions cost a gap; substitutions cost
+// the confusion distance. Normalized by the longer length.
+function vowelSequenceAccuracy(userV, expV) {
+  const n = userV.length, m = expV.length;
+  if (!m) return 0.5;            // nothing to compare against → neutral
+  if (n < 2) return 0.15;        // basically no vowels detected → very low
+  const GAP = 0.8, INF = 1e9;
+  const D = Array.from({ length: n + 1 }, () => new Float64Array(m + 1).fill(INF));
+  D[0][0] = 0;
+  for (let i = 1; i <= n; i++) D[i][0] = i * GAP;
+  for (let j = 1; j <= m; j++) D[0][j] = j * GAP;
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      const sub = D[i - 1][j - 1] + vowelCost(userV[i - 1], expV[j - 1]);
+      const del = D[i - 1][j] + GAP;
+      const ins = D[i][j - 1] + GAP;
+      D[i][j] = Math.min(sub, del, ins);
+    }
+  }
+  const pathLen = Math.max(n, m);
+  return clamp(1 - D[n][m] / pathLen, 0, 1);
+}
+
+// The four-dimension scorer. Built around syllable-nucleus structure AND
+// vowel-sequence content so it responds to WHAT was said, not just whether
+// SOME sound happened. No hard-coded floors — every number flows from a
+// measurement, so silence lands at ~0-2, a single shouted vowel ("WHOA")
+// lands in the teens, and the WRONG phrase (right rhythm, wrong vowels)
+// craters because the content multiplier collapses, all algorithmically.
 function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
   if (!audioBuffer) return null;
   const a = analyzeAudio(audioBuffer);
@@ -30176,6 +30381,28 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
   // Voice-activity envelope → syllable nuclei.
   const nuclei = detectSyllableNuclei(a.smooth, a.frameSec);
   const N = nuclei.length;
+
+  // ── CONTENT ACCURACY — did you say the right vowels? ──
+  // Classify the vowel at each nucleus, compare the sequence to the
+  // phrase's expected vowels via DTW. This is the signal that makes
+  // gibberish / the wrong phrase cost real points (it was missing
+  // before — "WHOA" and "yoroshiku…" both scored too high).
+  const expectedVowels = expectedVowelSequence(phrase);
+  const userVowels = [];
+  for (const nu of nuclei) {
+    const f = estimateFormants(ch, nu.frame * a.frameLen, sr);
+    if (f) {
+      const v = classifyVowel(f.f1, f.f2);
+      if (v) userVowels.push(v);
+    }
+  }
+  const accuracy = vowelSequenceAccuracy(userVowels, expectedVowels);
+  // Map accuracy → a 0..1 gate. Formant classification on FLOWING speech
+  // is noisier than on isolated vowels, so even a correct attempt tops out
+  // around acc 0.8 — the map saturates to 1.0 by then so effort isn't
+  // punished for the classifier's own slack. Below ~0.15 (gibberish / the
+  // wrong phrase) the gate is near zero, collapsing the score.
+  const accFactor = clamp((accuracy - 0.12) / 0.68, 0, 1);
 
   // Speech-presence confidence (0..1). Drives nothing on its own except
   // as a multiplier where loudness genuinely matters; structure is
@@ -30202,7 +30429,6 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
     evenness = 0;                                        // can't have rhythm with <3 beats
   }
   const rhythm01 = countScore * 0.72 + evenness * 0.28;
-  const rhythm = Math.round(clamp(rhythm01 * 98, 0, 98));
 
   // ── (2) CLARITY — articulation crispness ──
   // Clear speech alternates loud vowels with quieter consonant closures,
@@ -30230,7 +30456,6 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
   // and audibility contribute only a minority so a crisp-but-quiet read
   // still scores decently while a loud monosyllable does not.
   const clarity01 = clamp(modDepth * 1.4, 0, 1) * 0.70 + snr * 0.20 + audible * 0.10;
-  const clarity = Math.round(clamp(clarity01 * 96, 0, 96));
 
   // ── (3) PITCH — H/L contour match, sampled AT the nuclei ──
   // F0 is most stable at vowel centres, so we read pitch at each nucleus
@@ -30239,7 +30464,6 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
   // beats to the expected mora positions. If the beat count is way off,
   // the contour can't really be judged → low.
   const pitch01 = scorePitchAtNuclei(ch, sr, nuclei, expectedPitch, a.frameLen);
-  const pitch = Math.round(clamp(pitch01 * 95, 0, 95));
 
   // ── (4) NATURALNESS — rate plausibility + balance ──
   // A natural delivery sits at a believable speaking rate (mora/sec) and
@@ -30257,17 +30481,32 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
   );
   const balance = clamp(1 - spread * 1.6, 0, 1);
   // Multiplicative, not additive — naturalness can't exceed the trio's own
-  // level, and rate/balance only MODULATE it. This keeps silence (trio 0)
-  // at 0 instead of leaking a flat balance bonus, and stops a faint or
-  // lopsided attempt from posting a high naturalness off thin air.
+  // level, and rate/balance only MODULATE it.
   const naturalness01 = trio01 * (0.70 + 0.18 * rateScore + 0.12 * balance);
-  const naturalness = Math.round(clamp(naturalness01 * 95, 0, 95));
+
+  // ── Fold CONTENT into the displayed dimensions (the user's "multiply"
+  // request). Each acoustic 0..1 measure is multiplied by an
+  // accuracy-weighted factor before scaling to 0..100:
+  //   • Rhythm  — mostly timing, lightly content-tinted (well-timed
+  //     gibberish still earns some rhythm; but the WRONG phrase usually
+  //     mismatches the beat count too, so rhythm01 already drops).
+  //   • Clarity — "clear pronunciation of the RIGHT words." Heavily
+  //     content-gated, per the user: gibberish reads loud-but-wrong → low.
+  //   • Pitch   — right contour on the right words; content-gated.
+  //   • Naturalness — fully content-gated.
+  // Because every shown dimension carries the content factor, the OVERALL
+  // (their mean) collapses for wrong words without an extra multiply that
+  // would double-count.
+  const rhythm      = Math.round(clamp(rhythm01      * (0.50 + 0.50 * accFactor) * 98, 0, 98));
+  const clarity     = Math.round(clamp(clarity01     * (0.18 + 0.82 * accFactor) * 96, 0, 96));
+  const pitch       = Math.round(clamp(pitch01       * (0.40 + 0.60 * accFactor) * 95, 0, 95));
+  const naturalness = Math.round(clamp(naturalness01 * (0.35 + 0.65 * accFactor) * 95, 0, 95));
 
   const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
   // "silent" flag for the UI hint — fires when there's essentially no
   // structured speech (no nuclei or a near-zero overall).
   const silent = (N === 0) || overall < 8;
-  return { rhythm, clarity, pitch, naturalness, overall, silent };
+  return { rhythm, clarity, pitch, naturalness, overall, silent, accuracy };
 }
 
 // Pitch-contour score (0..1), sampled at the syllable nuclei. F0 is most
