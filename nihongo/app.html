@@ -16962,7 +16962,15 @@ const APP = {
   fontMenu2:        lsGet('jp:fontMenu2', 'garamond'),
   // The voiceURI of the user-picked TTS voice. null = auto-pick the
   // best available Japanese voice (prefers Google → Kyoko → others).
+  // May also hold a `gcloud:<voiceName>` value when a Google Cloud voice
+  // is selected (see gcloudTtsKey below).
   ttsVoiceURI:      lsGet('jp:ttsVoiceURI', null),
+  // Optional Google Cloud Text-to-Speech API key. When set, the premium
+  // neural voices (the same ones Google Translate uses) become selectable.
+  // Stored ONLY in this browser's localStorage — never committed, never
+  // sent anywhere except Google's synthesize endpoint. Lock it to your
+  // domain in the Google Cloud console (HTTP-referrer restriction).
+  gcloudTtsKey:     lsGet('jp:gcloudTtsKey', null),
   // Speech rate. 0.85 reads slightly slower than the SpeechSynthesis
   // default; that's better for learners catching unfamiliar kanji.
   ttsRate:          lsGet('jp:ttsRate', 0.85),
@@ -17192,32 +17200,92 @@ const TTS = (function () {
       .replace(/\s+/g, ' ')
       .trim();
   }
-  function speak(text) {
-    if (!window.speechSynthesis || !text) return;
-    const clean_ = clean(text);
-    if (!clean_) return;
+  // Google Cloud Text-to-Speech neural voices (the same engine family
+  // Google Translate uses — far better Japanese pitch accent than the
+  // browser's built-in "Google 日本語"). Only offered when the user has
+  // pasted an API key in Settings. Voice names per Google's catalog.
+  const GCLOUD_VOICES = [
+    { id: 'ja-JP-Neural2-B', label: 'Google Cloud · Neural2 B (female)' },
+    { id: 'ja-JP-Neural2-C', label: 'Google Cloud · Neural2 C (male)' },
+    { id: 'ja-JP-Neural2-D', label: 'Google Cloud · Neural2 D (male, deep)' },
+    { id: 'ja-JP-Wavenet-A', label: 'Google Cloud · WaveNet A (female)' },
+    { id: 'ja-JP-Wavenet-C', label: 'Google Cloud · WaveNet C (male)' },
+  ];
+  let currentAudio = null;   // the <Audio> playing a cloud clip, so we can stop it
+
+  function vol01() {
+    const vol = +APP.ttsVolume;
+    return Number.isFinite(vol) ? Math.max(0, Math.min(1, vol)) : 1;
+  }
+
+  // Browser Web Speech path (free, on-device / Google standard voice).
+  function speakWeb(clean_) {
+    if (!window.speechSynthesis || !clean_) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(clean_);
     u.lang = 'ja-JP';
     u.rate = +APP.ttsRate || 0.85;
-    // Volume 0-1, clamped defensively. The popover slider writes to
-    // APP.ttsVolume; this read applies the most recent value to the
-    // next utterance — no need to re-instantiate the TTS module.
-    const vol = +APP.ttsVolume;
-    u.volume = (Number.isFinite(vol) ? Math.max(0, Math.min(1, vol)) : 1);
+    u.volume = vol01();
     const v = pickVoice();
     if (v) { u.voice = v; u.lang = v.lang || 'ja-JP'; }
     window.speechSynthesis.speak(u);
   }
+
+  // Google Cloud neural path. POSTs to the synthesize REST endpoint with
+  // the user's key, gets base64 MP3 back, and plays it. On any failure
+  // (bad key, quota, offline) it falls back to the Web Speech voice so a
+  // tap always produces sound.
+  async function speakCloud(clean_, voiceName) {
+    const key = APP.gcloudTtsKey;
+    if (!key) return speakWeb(clean_);
+    cancel();
+    try {
+      const res = await fetch(
+        'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + encodeURIComponent(key),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            input: { text: clean_ },
+            voice: { languageCode: 'ja-JP', name: voiceName },
+            audioConfig: { audioEncoding: 'MP3', speakingRate: +APP.ttsRate || 1.0 },
+          }),
+        }
+      );
+      if (!res.ok) throw new Error('gcloud TTS HTTP ' + res.status);
+      const data = await res.json();
+      if (!data.audioContent) throw new Error('gcloud TTS empty response');
+      const audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
+      audio.volume = vol01();
+      currentAudio = audio;
+      audio.onended = () => { if (currentAudio === audio) currentAudio = null; };
+      await audio.play();
+    } catch (e) {
+      console.warn('Google Cloud TTS failed — falling back to the browser voice:', e);
+      speakWeb(clean_);
+    }
+  }
+
+  function speak(text) {
+    const clean_ = clean(text);
+    if (!clean_) return;
+    const sel = APP.ttsVoiceURI || '';
+    if (sel.indexOf('gcloud:') === 0 && APP.gcloudTtsKey) {
+      speakCloud(clean_, sel.slice(7));
+    } else {
+      speakWeb(clean_);
+    }
+  }
   function cancel() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
+    if (currentAudio) { try { currentAudio.pause(); } catch (e) {} currentAudio = null; }
   }
   // Re-query voices on demand (some browsers populate the list lazily).
   function ensureVoices() {
     if (!voices.length) refresh();
     return voices;
   }
-  return { speak, cancel, listJa, refresh, ensureVoices };
+  return { speak, cancel, listJa, refresh, ensureVoices, GCLOUD_VOICES };
 })();
 // Expose for inline handlers (speaker buttons use onclick="TTS.speak(...)")
 window.TTS = TTS;
@@ -18756,41 +18824,53 @@ function openSettingsModal() {
             <span class="ja">音声</span>
             <span class="en">Voice · text-to-speech</span>
           </div>
-          ${voices.length === 0 ? `
+          <div class="settings-field">
+            <label class="settings-field-label" for="gcloud-key">
+              Premium voice — Google Cloud key
+              <span class="hint">Optional. Paste a Google Cloud Text-to-Speech API key to unlock Translate-quality neural voices. Stored only in this browser; restrict it to your domain in the Cloud console.</span>
+            </label>
+            <input type="password" id="gcloud-key" placeholder="AIza…" autocomplete="off" spellcheck="false"
+                   value="${escAttr(APP.gcloudTtsKey || '')}" />
+          </div>
+          <div class="settings-field">
+            <label class="settings-field-label" for="tts-voice">
+              Voice
+              <span class="hint">${voices.length} browser voice${voices.length === 1 ? '' : 's'}${APP.gcloudTtsKey ? ' + Google Cloud neural' : ''} — Google preferred</span>
+            </label>
+            <select id="tts-voice">
+              <option value="">Auto (best available)</option>
+              ${APP.gcloudTtsKey ? `<optgroup label="Google Cloud · neural (Translate quality)">
+                ${TTS.GCLOUD_VOICES.map(g => `
+                  <option value="gcloud:${escAttr(g.id)}" ${APP.ttsVoiceURI === 'gcloud:' + g.id ? 'selected' : ''}>${escHTML(g.label)}</option>
+                `).join('')}
+              </optgroup>` : ''}
+              ${voices.length ? `<optgroup label="Browser voices">
+                ${voices.map(v => `
+                  <option value="${escAttr(v.voiceURI)}" ${v.voiceURI === APP.ttsVoiceURI ? 'selected' : ''}>${escHTML(v.name)} ${v.localService ? '· local' : '· cloud'}</option>
+                `).join('')}
+              </optgroup>` : ''}
+            </select>
+          </div>
+          ${(voices.length === 0 && !APP.gcloudTtsKey) ? `
             <div class="settings-no-voice">
               No Japanese voice installed on this device. On macOS / iOS, install Kyoko via
-              System Settings → Accessibility → Spoken Content → Voices. On Android Chrome,
-              Google's Japanese voice is included by default. Refresh after installing.
+              System Settings → Accessibility → Spoken Content → Voices; on Android Chrome
+              Google's voice is built in. Or paste a Google Cloud key above. Refresh after installing.
             </div>
-          ` : `
-            <div class="settings-field">
-              <label class="settings-field-label" for="tts-voice">
-                Voice
-                <span class="hint">${voices.length} available — Google preferred when present</span>
-              </label>
-              <select id="tts-voice">
-                <option value="">Auto (best available)</option>
-                ${voices.map(v => `
-                  <option value="${escAttr(v.voiceURI)}" ${v.voiceURI === APP.ttsVoiceURI ? 'selected' : ''}>
-                    ${escHTML(v.name)} ${v.localService ? '· local' : '· cloud'}
-                  </option>
-                `).join('')}
-              </select>
-            </div>
-            <div class="settings-field">
-              <label class="settings-field-label" for="tts-rate">
-                Speech rate
-                <span class="hint">1.0 = default · 0.85 reads cleaner</span>
-              </label>
-              <select id="tts-rate">
-                <option value="0.7"  ${+APP.ttsRate === 0.7  ? 'selected' : ''}>Slow (0.7×)</option>
-                <option value="0.85" ${+APP.ttsRate === 0.85 ? 'selected' : ''}>Comfortable (0.85×)</option>
-                <option value="1.0"  ${+APP.ttsRate === 1.0  ? 'selected' : ''}>Normal (1.0×)</option>
-                <option value="1.15" ${+APP.ttsRate === 1.15 ? 'selected' : ''}>Fast (1.15×)</option>
-              </select>
-            </div>
-            <button type="button" class="settings-test-btn" data-test-voice>テスト · Test voice</button>
-          `}
+          ` : ''}
+          <div class="settings-field">
+            <label class="settings-field-label" for="tts-rate">
+              Speech rate
+              <span class="hint">1.0 = default · 0.85 reads cleaner</span>
+            </label>
+            <select id="tts-rate">
+              <option value="0.7"  ${+APP.ttsRate === 0.7  ? 'selected' : ''}>Slow (0.7×)</option>
+              <option value="0.85" ${+APP.ttsRate === 0.85 ? 'selected' : ''}>Comfortable (0.85×)</option>
+              <option value="1.0"  ${+APP.ttsRate === 1.0  ? 'selected' : ''}>Normal (1.0×)</option>
+              <option value="1.15" ${+APP.ttsRate === 1.15 ? 'selected' : ''}>Fast (1.15×)</option>
+            </select>
+          </div>
+          <button type="button" class="settings-test-btn" data-test-voice>テスト · Test voice</button>
         </section>
 
         <section class="settings-section">
@@ -18874,6 +18954,15 @@ function openSettingsModal() {
     if (voiceSel) voiceSel.addEventListener('change', () => {
       APP.ttsVoiceURI = voiceSel.value || null;
       lsSet('jp:ttsVoiceURI', APP.ttsVoiceURI);
+    });
+    // Google Cloud TTS key — save on commit (change/blur) and re-render so
+    // the neural voices appear in the picker. Kept only in localStorage.
+    const gkey = wrap.querySelector('#gcloud-key');
+    if (gkey) gkey.addEventListener('change', () => {
+      const v = gkey.value.trim();
+      APP.gcloudTtsKey = v || null;
+      lsSet('jp:gcloudTtsKey', APP.gcloudTtsKey);
+      renderInside();
     });
     const rateSel = wrap.querySelector('#tts-rate');
     if (rateSel) rateSel.addEventListener('change', () => {
