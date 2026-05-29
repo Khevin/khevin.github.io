@@ -17680,6 +17680,12 @@ const TTS = (function () {
     { id: 'ja-JP-Wavenet-C', label: 'Google Cloud · WaveNet C (male)' },
   ];
   let currentAudio = null;   // the <Audio> playing a cloud clip, so we can stop it
+  // Monotonic request token. Bumped on every cancel()/new speak so an
+  // in-flight cloud fetch that resolves AFTER it was superseded knows not
+  // to play — otherwise two quick taps (or a tap during fetch latency)
+  // produce two overlapping clips, since cancel() can only stop a clip that
+  // already exists, not a fetch still in the air.
+  let speakGen = 0;
 
   function vol01() {
     const vol = +APP.ttsVolume;
@@ -17711,6 +17717,7 @@ const TTS = (function () {
     const key = APP.gcloudTtsKey;
     if (!key) { if (strict) throw new Error('No Google Cloud key set'); return speakWeb(clean_); }
     cancel();
+    const myGen = speakGen;   // captured AFTER cancel()'s bump — see speakGen
     try {
       const res = await fetch(
         'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + encodeURIComponent(key),
@@ -17732,6 +17739,9 @@ const TTS = (function () {
       }
       const data = await res.json();
       if (!data.audioContent) throw new Error('empty audio response');
+      // A newer speak()/cancel() ran while we were fetching — drop this
+      // stale clip so the two don't overlap.
+      if (myGen !== speakGen) return;
       const audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
       audio.volume = vol01();
       currentAudio = audio;
@@ -17739,6 +17749,8 @@ const TTS = (function () {
       await audio.play();
     } catch (e) {
       if (strict) throw e;   // surface it (Test button) instead of masking
+      // Same staleness guard for the fallback voice.
+      if (myGen !== speakGen) return;
       console.warn('Google Cloud TTS failed — falling back to the browser voice:', e);
       speakWeb(clean_);
     }
@@ -17761,6 +17773,7 @@ const TTS = (function () {
   function speak(text) {
     const clean_ = clean(text);
     if (!clean_) return;
+    cancel();   // stop anything playing + invalidate any in-flight cloud fetch
     const sel = APP.ttsVoiceURI || '';
     if (sel.indexOf('gcloud:') === 0 && APP.gcloudTtsKey) {
       speakCloud(clean_, sel.slice(7));
@@ -17769,6 +17782,7 @@ const TTS = (function () {
     }
   }
   function cancel() {
+    speakGen++;   // invalidate any cloud fetch still in flight
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     if (currentAudio) { try { currentAudio.pause(); } catch (e) {} currentAudio = null; }
   }
@@ -21943,12 +21957,10 @@ function renderExtraTexturesSection() {
     const headWordHTML = ex.kanji
       ? `<ruby>${escHTML(ex.kanji)}<rt>${escHTML(ex.kanjiRt || '')}</rt></ruby>`
       : escHTML(ex.kana);
-    // Show the secondary form line only when kanji is the main head
-    // (the kana sits as the reading subtitle). For pure-kana words
-    // the headword IS the kana — no subtitle needed.
-    const subKanaHTML = ex.kanji
-      ? `<p class="extra-texture-row-kana">${escHTML(ex.kana)}</p>`
-      : '';
+    // No kana subtitle: when the headword is kanji, its <rt> furigana
+    // already spells the reading (柔らかい → やわ), so a separate
+    // やわらかい / なめらか line just repeats it. Pure-kana words never
+    // had one. (subtitle removed per the no-redundant-kana rule.)
     const examplesHTML = (ex.examples || []).map(id => {
       const item = ediblesIndex.get(id);
       if (!item) return '';
@@ -21994,7 +22006,6 @@ function renderExtraTexturesSection() {
               ${textureSpeakerSVG()}
             </button>
           </h3>
-          ${subKanaHTML}
           <p class="extra-texture-row-ja" lang="ja">${escHTML(ex.ja)}</p>
           <p class="extra-texture-row-en">${escHTML(ex.en)}</p>
           ${examplesHTML ? `
