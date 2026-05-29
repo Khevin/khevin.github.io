@@ -31259,6 +31259,7 @@ function renderWritingPitch(container) {
       pattern: 'heiban', accent: 0,
       word: { mora: ['さ','く','ら'], pitch: ['L','H','H'] },
       particle: { mora: ['が'], pitch: ['H'] },
+      say: '桜が',
       headEn: 'sakura — cherry blossom',
       desc: 'Heiban (平板) is flat — the pitch rises after the first mora and stays high. The following particle stays high too. Most Japanese nouns are heiban.',
     },
@@ -31266,6 +31267,7 @@ function renderWritingPitch(container) {
       pattern: 'atamadaka', accent: 1,
       word: { mora: ['は','し'], pitch: ['H','L'] },
       particle: { mora: ['が'], pitch: ['L'] },
+      say: '箸が',
       headEn: 'hashi [1] — chopsticks',
       desc: 'Atamadaka (頭高) is head-high — the FIRST mora is high, then drops. The fall comes immediately after mora 1. はし with this pitch means "chopsticks."',
     },
@@ -31273,15 +31275,17 @@ function renderWritingPitch(container) {
       pattern: 'nakadaka', accent: 2,
       word: { mora: ['は','し'], pitch: ['L','H'] },
       particle: { mora: ['が'], pitch: ['L'] },
+      say: '橋が',
       headEn: 'hashi [2] — bridge',
       desc: 'Nakadaka (中高) drops somewhere in the middle (or at the end of) the word. はし with the drop AFTER mora 2 means "bridge" — the particle が catches the fall.',
     },
     {
       pattern: 'odaka', accent: 2,
-      word: { mora: ['は','し'], pitch: ['L','H'] },
+      word: { mora: ['は','な'], pitch: ['L','H'] },
       particle: { mora: ['が'], pitch: ['L'] },
-      headEn: 'hashi [2] — edge',
-      desc: 'Odaka (尾高) looks identical to nakadaka on the word alone — the drop only reveals itself on the next particle. はし meaning "edge" drops on は the particle. The word pitch alone is ambiguous; you can only tell odaka from heiban when you add a particle and listen for whether it falls.',
+      say: '花が',
+      headEn: 'hana — flower',
+      desc: 'Odaka (尾高) looks flat on the word alone — は-な both rise — and only reveals the drop on the NEXT particle: は-な-↓が. The classic pair is 花 (flower, odaka) vs 鼻 (nose, heiban): identical said alone, but 花が falls on が while 鼻が stays high.',
     },
   ];
   // Common Japanese pitch-accent / intonation notations the learner will
@@ -31370,7 +31374,7 @@ function renderWritingPitch(container) {
               <header class="pitch-example-head">
                 ${renderPitchPatternChip(ex.pattern, ex.accent)}
                 <button class="pitch-example-play" type="button"
-                        data-speak="${escAttr(ex.word.mora.join('') + ex.particle.mora.join(''))}"
+                        data-speak="${escAttr(ex.say || (ex.word.mora.join('') + ex.particle.mora.join('')))}"
                         aria-label="Play the example">
                   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6,4 20,12 6,20"/></svg>
                 </button>
