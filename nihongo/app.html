@@ -15991,20 +15991,31 @@
     display: inline-flex;
     align-items: flex-end;
     position: relative;
-    padding-top: 28px;   /* room for the contour SVG above the glyphs */
+    padding-top: 32px;   /* room for the contour SVG above the glyphs */
   }
+  /* Contour SVG stretches to the FULL width of the mora row (left:0
+     right:0) so its proportional viewBox columns line up with the
+     equal-width mora glyphs automatically — see renderPitchContourSVG.
+     This is what lets the mora kerning widen without the contour
+     drifting. */
   .pitch-contour-svg {
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    width: 100%;
+    height: 30px;
     pointer-events: none;
-    height: 24px;
+    overflow: visible;
   }
   .pitch-mora {
     display: inline-flex;
     align-items: flex-end;
     justify-content: center;
-    width: 36px;
+    /* Wider columns than before (was 36px) — the kana at the large end
+       of the clamp is ~48px wide, so 36px crammed them. ~0.95em + breathing
+       room reads cleanly. The contour follows automatically. */
+    width: clamp(44px, 5.4vw, 66px);
     font-family: var(--font-title);
     font-size: clamp(34px, 4.2vw, 56px);
     line-height: 1.05;
@@ -16106,6 +16117,25 @@
     font-family: var(--font-en);
     font-size: 12px;
     color: var(--ink-faint);
+  }
+  .speaking-silent-hint {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    margin: 8px 0 0;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--accent-vermilion, #c34b30) 8%, transparent);
+    text-align: center;
+  }
+  .speaking-silent-hint[hidden] { display: none; }
+  .speaking-silent-hint .ja {
+    font-family: var(--font-title);
+    font-size: 14px;
+    color: color-mix(in srgb, var(--accent-vermilion, #c34b30) 80%, var(--ink));
+  }
+  .speaking-silent-hint .en {
+    font-family: var(--font-en);
+    font-size: 12px;
+    color: var(--ink-soft);
   }
 
   /* Waveform pair */
@@ -16366,9 +16396,9 @@
     .score-overall-num { font-size: 24px; }
   }
   @media (max-width: 540px) {
-    .pitch-mora { width: 30px; font-size: 32px; }
-    .pitch-mora-row { padding-top: 24px; }
-    .pitch-contour-svg { height: 20px; }
+    .pitch-mora { width: 38px; font-size: 32px; }
+    .pitch-mora-row { padding-top: 26px; }
+    .pitch-contour-svg { height: 24px; }
   }
 
   /* ─── Pitch & Tones basics page (Writing → Pitch) ───────────────── */
@@ -16857,6 +16887,13 @@ const APP = {
   speakingPhraseId:   lsGet('jp:speakingPhrase', null),
   speakingScores:     null,  // { rhythm, clarity, pitch, naturalness, overall } | null
   speakingUserBuffer: null,  // AudioBuffer of the user's last recording — in-memory only, dies on phrase change
+  // Pitch-accent contour notation style, site-wide. 'lines' = the OJAD /
+  // textbook step-line style (horizontal bars at high/low with vertical
+  // drops — the canonical notation, what learners see in every Japanese
+  // textbook). 'dots' = the connected-dot polyline. Default 'lines'.
+  // Set via settings → Display. Applies to the studio AND the Pitch &
+  // Tones basics page.
+  pitchNotation:      lsGet('jp:pitchNotation', 'lines'),
   particleIdx:  lsGet('jp:particleIdx', 0),
   // 'quiz' shows the test, 'particle' shows the single-particle lesson.
   particleMode: lsGet('jp:particleMode', 'lessons'),
@@ -18645,6 +18682,12 @@ function openSettingsModal() {
             </span>
             <button class="settings-toggle" id="set-particles" aria-checked="${APP.particlesOn}" role="switch"><i></i></button>
           </div>
+          <div class="settings-toggle-row">
+            <span class="settings-field-label">Pitch-accent notation
+              <span class="hint">${APP.pitchNotation === 'dots' ? 'Connected dots' : 'Step lines'} — toggle for textbook step lines (on) vs connected dots (off). Used in Speaking &amp; Pitch lessons.</span>
+            </span>
+            <button class="settings-toggle" id="set-pitch-notation" aria-checked="${APP.pitchNotation === 'lines'}" role="switch"><i></i></button>
+          </div>
         </section>
       </div>
     `;
@@ -18713,6 +18756,19 @@ function openSettingsModal() {
       lsSet('jp:particles', APP.particlesOn);
       applyBodyClasses();
       renderInside();
+    });
+    const pitchNotaToggle = wrap.querySelector('#set-pitch-notation');
+    if (pitchNotaToggle) pitchNotaToggle.addEventListener('click', () => {
+      APP.pitchNotation = APP.pitchNotation === 'lines' ? 'dots' : 'lines';
+      lsSet('jp:pitchNotation', APP.pitchNotation);
+      renderInside();
+      // Live-refresh whatever pitch surface is open so the change shows
+      // immediately without a manual reload.
+      if (APP.section === 'speaking') {
+        renderSpeaking(document.getElementById('main-inner'));
+      } else if (APP.section === 'writing' && APP.writingPage === 'pitch') {
+        renderWriting(document.getElementById('main-inner'));
+      }
     });
     wrap.querySelectorAll('[data-settings-close]').forEach(b =>
       b.addEventListener('click', closeSettingsModal));
@@ -29292,49 +29348,96 @@ function defaultSpeakingPhrase(cat) {
 }
 
 // ── Pitch contour SVG ───────────────────────────────────────────────────
-// Renders the OJAD-style line above a chunk of mora glyphs. Each mora is
-// allotted one column of width COL_W; the line steps between LOW_Y and
-// HIGH_Y depending on the H/L array. Returns an inline SVG string that
-// sits absolutely positioned above the mora row.
+// Renders the pitch-accent contour above a chunk of mora glyphs. Two
+// styles, chosen by APP.pitchNotation (set in settings → Display):
 //
-// `chunk` is { mora: [...strings], pitch: [...'H'|'L'] }. `tone` defaults
-// to 'model' (plain ink); 'user' draws the user-pitch overlay in the
-// sage-colored token. Both can coexist by stacking two SVGs.
+//   'lines' (default) — the OJAD / textbook STEP notation. A horizontal
+//      bar sits at the HIGH level over high mora and the LOW level over
+//      low mora, with vertical connectors at the transitions — a square
+//      wave drawn above the kana. This is the notation every Japanese
+//      textbook uses (and the Waseda reference the user shared).
+//
+//   'dots' — a connected-dot polyline through each mora's pitch point.
+//
+// The SVG uses a PROPORTIONAL viewBox (count × COL units wide) stretched
+// to width:100% of the mora row via preserveAspectRatio="none". Because
+// the row width = sum of equal-width mora glyphs, each contour column
+// lines up with its mora glyph automatically — regardless of the glyph's
+// pixel width. vector-effect="non-scaling-stroke" keeps the stroke a
+// constant screen thickness despite the non-uniform viewBox stretch
+// (without it, the horizontal stretch would fatten vertical strokes and
+// thin horizontal ones). This decoupling is what lets us widen the mora
+// kerning freely without the contour drifting out of alignment.
+//
+// `chunk` is { mora: [...strings], pitch: [...'H'|'L'] }. `tone` 'model'
+// = plain ink; 'user' = the sage overlay for the recorded-pitch compare.
 function renderPitchContourSVG(chunk, tone = 'model') {
+  const pitch = chunk.pitch || [];
   const moraCount = (chunk.mora || []).length;
   if (!moraCount) return '';
-  const COL_W = 36;       // matches the .pitch-mora width below
-  const HIGH_Y = 4;       // top of the SVG canvas — high pitch
-  const LOW_Y  = 18;      // bottom of the canvas — low pitch
-  const W = moraCount * COL_W;
-  const H = 24;
-  // Build a polyline: one point per mora at its column-center.
-  const pts = (chunk.pitch || []).map((p, i) => {
-    const x = i * COL_W + COL_W / 2;
-    const y = p === 'H' ? HIGH_Y : LOW_Y;
-    return `${x},${y}`;
-  }).join(' ');
-  // Color picked from the speaking-* tokens — see speaking.DESIGN.md.
+  const COL = 100;          // relative viewBox units per mora column
+  const VBH = 100;          // viewBox height
+  const HIGH_Y = 24;        // high-pitch line height (viewBox units)
+  const LOW_Y  = 74;        // low-pitch line height
+  const W = moraCount * COL;
   const stroke = tone === 'user' ? 'var(--pitch-line-user)' : 'var(--pitch-line)';
-  const opacity = tone === 'user' ? '0.7' : '1';
+  const opacity = tone === 'user' ? '0.65' : '1';
+  const style = (APP.pitchNotation === 'dots') ? 'dots' : 'lines';
+
+  let body;
+  if (style === 'dots') {
+    // Connected-dot polyline through each column center.
+    const pts = pitch.map((p, i) => {
+      const x = i * COL + COL / 2;
+      const y = p === 'H' ? HIGH_Y : LOW_Y;
+      return `${x},${y}`;
+    }).join(' ');
+    body = `
+      <polyline points="${pts}" fill="none" stroke="${stroke}"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                vector-effect="non-scaling-stroke" opacity="${opacity}" />
+      ${pitch.map((p, i) => {
+        const x = i * COL + COL / 2;
+        const y = p === 'H' ? HIGH_Y : LOW_Y;
+        return `<circle cx="${x}" cy="${y}" r="3.2" vector-effect="non-scaling-stroke"
+                        fill="${stroke}" opacity="${opacity}"/>`;
+      }).join('')}`;
+  } else {
+    // OJAD step line — a single square-wave path. The horizontal bar
+    // spans each mora's full column; vertical connectors join levels at
+    // the column boundaries. Inset each bar slightly from the column
+    // edges (PAD) so adjacent same-level bars read as one continuous
+    // line but level-changes show a clean vertical step.
+    const PAD = 6;
+    let d = '';
+    pitch.forEach((p, i) => {
+      const y = p === 'H' ? HIGH_Y : LOW_Y;
+      const x0 = i * COL;
+      const x1 = (i + 1) * COL;
+      if (i === 0) {
+        d += `M ${x0 + PAD} ${y} `;
+      } else {
+        const prevY = pitch[i - 1] === 'H' ? HIGH_Y : LOW_Y;
+        if (prevY !== y) {
+          // vertical step at the boundary, then start this bar
+          d += `L ${x0} ${prevY} L ${x0} ${y} `;
+        } else {
+          d += `L ${x0} ${y} `;
+        }
+      }
+      d += `L ${x1 - (i === pitch.length - 1 ? PAD : 0)} ${y} `;
+    });
+    body = `
+      <path d="${d}" fill="none" stroke="${stroke}"
+            stroke-width="2" stroke-linejoin="miter" stroke-linecap="round"
+            vector-effect="non-scaling-stroke" opacity="${opacity}" />`;
+  }
+
   return `
-    <svg class="pitch-contour-svg" viewBox="0 0 ${W} ${H}"
-         width="${W}" height="${H}"
+    <svg class="pitch-contour-svg" viewBox="0 0 ${W} ${VBH}"
          preserveAspectRatio="none" aria-hidden="true"
          style="--contour-tone:${tone}">
-      <polyline points="${pts}"
-                fill="none"
-                stroke="${stroke}"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                opacity="${opacity}" />
-      ${(chunk.pitch || []).map((p, i) => {
-        const x = i * COL_W + COL_W / 2;
-        const y = p === 'H' ? HIGH_Y : LOW_Y;
-        return `<circle cx="${x}" cy="${y}" r="2.2"
-                        fill="${stroke}" opacity="${opacity}"/>`;
-      }).join('')}
+      ${body}
     </svg>`;
 }
 
@@ -29550,6 +29653,10 @@ function speakingStudioHTML(cat, phrase) {
             <span class="mic-label-ja" id="speaking-mic-label-ja">録音する</span>
             <span class="mic-label-en" id="speaking-mic-label-en">Tap to Record</span>
           </div>
+          <p class="speaking-silent-hint" id="speaking-silent-hint" role="status" aria-live="polite" hidden>
+            <span class="ja">きこえませんでした</span>
+            <span class="en"><em>We didn't hear anything — tap the mic and speak the phrase.</em></span>
+          </p>
         </div>
 
         <div class="speaking-waveforms" aria-label="Audio waveforms">
@@ -29754,133 +29861,269 @@ function stopAndForgetUserRecording() {
 }
 
 // ── Heuristic scoring engine ─────────────────────────────────────────
-// Each score is 0-100 derived from ONE real signal. No randomness.
-// All four dimensions are intentionally lenient — a learner is here to
-// improve, not to be punished. A relatively-poor attempt scores 55–70;
-// a good attempt 75–90; a model-matching attempt 90+. We never report
-// 100 (no perfect-verdict, per restriction).
-function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
-  if (!audioBuffer) return null;
-  // (1) RHYTHM — duration alignment with model. We estimate the model
-  // duration from the mora count: a comfortable speaking pace in JP
-  // is about 6-8 mora per second, so we use 150ms per mora as a base
-  // plus a small per-chunk pause. Closer the user's duration to this
-  // estimate, higher the rhythm score.
-  const moraCount = (phrase.chunks || []).reduce((n, c) => n + (c.mora || []).length, 0);
-  const chunkGapMs = ((phrase.chunks || []).length - 1) * 120;
-  const expectedSec = (moraCount * 0.15) + (chunkGapMs / 1000);
-  const userSec = durationSec || (audioBuffer.duration);
-  const ratio = userSec / (expectedSec || 0.1);
-  // Score peaks at ratio=1.0 (perfect match); falls off as ratio
-  // diverges either way. Half-credit at ratio=0.5 or ratio=2.0.
-  const rhythm = Math.round(Math.max(45, Math.min(95, 95 - Math.abs(Math.log(ratio)) * 35)));
+// Each score is 0-100 derived from a REAL signal. No randomness.
+//
+// The cardinal rule (fixed 2026-05-29 after silence scored 50-60): a
+// recording with no actual SPEECH in it scores ZERO. Everything else
+// scales up from there. The previous version measured duration, RMS,
+// and pitch independently with no voice-activity gate, so silence —
+// which still has a duration, a (near-zero) RMS that hit the floor
+// branch, and an autocorrelation that fell back to a neutral 0.5
+// agreement — accumulated to ~60. That was the bug.
+//
+// New pipeline:
+//   1. analyzeAudio()  → frame-by-frame voice-activity detection (VAD).
+//      Computes a noise floor, counts VOICED frames, measures voiced
+//      duration + mean voiced RMS + peak.
+//   2. SILENCE GATE    → if there isn't enough voiced audio, return all
+//      zeros immediately. Pure silence / room tone scores 0.
+//   3. PRESENCE RAMP   → a 0..1 confidence that real speech is present,
+//      from voiced duration + loudness + peak. Every dimension is
+//      multiplied by it, so a faint mumble scores low (not mid).
+//   4. Per-dimension scoring from voiced signal only.
+//
+// Score bands for a recording that DOES contain speech: poor attempt
+// 50-68, decent 70-85, model-matching 86-95. Never 100 (no perfect-
+// verdict, per PRODUCT.md restriction §4).
 
-  // (2) CLARITY — RMS volume envelope. We want a strong signal, but not
-  // clipping (which would suggest the user shouted into the mic).
-  const ch = audioBuffer.getChannelData(0);
-  let sumSq = 0, peak = 0;
-  for (let i = 0; i < ch.length; i++) {
-    const v = ch[i];
-    sumSq += v * v;
-    const a = Math.abs(v); if (a > peak) peak = a;
-  }
-  const rms = Math.sqrt(sumSq / ch.length);
-  // Target RMS ~0.08-0.18 (comfortable speaking volume). Below = quiet,
-  // above 0.35 = probably clipping.
-  let clarity;
-  if (rms < 0.02) clarity = 45;
-  else if (rms < 0.06) clarity = 60 + Math.round((rms / 0.06) * 15);
-  else if (rms < 0.20) clarity = 78 + Math.round(((rms - 0.06) / 0.14) * 14);
-  else if (rms < 0.40) clarity = 92 - Math.round(((rms - 0.20) / 0.20) * 12);
-  else clarity = 70;
-  if (peak > 0.98) clarity = Math.max(55, clarity - 10);  // clipping penalty
-  clarity = Math.max(45, Math.min(95, clarity));
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-  // (3) PITCH — autocorrelation pitch detection on small windows across
-  // the recording. We derive a coarse H/L sequence for the user and
-  // compare it to the phrase's expected H/L pattern. The agreement rate
-  // becomes the pitch score.
-  const pitchAgree = estimatePitchAgreement(phrase, audioBuffer);
-  // Map agreement (0-1) → score (50-95). Even random alignment with
-  // a binary H/L pattern is ~50% — we anchor 0.5 agreement at 55,
-  // 1.0 agreement at 92.
-  const pitch = Math.round(Math.max(50, Math.min(92, 55 + (pitchAgree - 0.5) * 74)));
-
-  // (4) NATURALNESS — composite of the other three's stddev. Penalize
-  // imbalance: a person scoring 90/90/55/?? is less "natural" overall
-  // than one scoring 75/75/75/??. Encourages even improvement.
-  const trio = [rhythm, clarity, pitch];
-  const meanTrio = trio.reduce((a, b) => a + b, 0) / 3;
-  const sd = Math.sqrt(trio.reduce((a, b) => a + (b - meanTrio) ** 2, 0) / 3);
-  // Lower sd = higher naturalness. Anchor: sd=0 → 92, sd=20 → 60.
-  const naturalness = Math.round(Math.max(50, Math.min(94, 92 - sd * 1.6)));
-
-  const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
-  return { rhythm, clarity, pitch, naturalness, overall };
-}
-
-// Coarse pitch agreement estimator. Slices the audio into windows aligned
-// to the mora sequence, runs a cheap autocorrelation on each, labels each
-// window 'H' or 'L' relative to the median pitch across the whole utterance,
-// then compares to the expected pattern. Returns a 0-1 agreement rate.
-function estimatePitchAgreement(phrase, audioBuffer) {
+// Frame-level voice-activity analysis. Returns the signals every
+// dimension reads. 20ms frames at any sample rate.
+function analyzeAudio(audioBuffer) {
   const ch = audioBuffer.getChannelData(0);
   const sr = audioBuffer.sampleRate;
-  const morasFlat = (phrase.chunks || []).flatMap(c => (c.pitch || []).map(p => p));
-  if (!morasFlat.length || ch.length < sr * 0.2) return 0.5;
-  // Trim leading/trailing silence so the mora windows line up better.
-  const SILENCE = 0.01;
-  let trimStart = 0, trimEnd = ch.length;
-  for (let i = 0; i < ch.length; i++) { if (Math.abs(ch[i]) > SILENCE) { trimStart = i; break; } }
-  for (let i = ch.length - 1; i >= 0; i--) { if (Math.abs(ch[i]) > SILENCE) { trimEnd = i; break; } }
-  const seg = ch.subarray(Math.max(0, trimStart - sr * 0.02), Math.min(ch.length, trimEnd + sr * 0.02));
-  if (seg.length < sr * 0.1) return 0.5;
-  const moraWinLen = Math.floor(seg.length / morasFlat.length);
-  if (moraWinLen < 200) return 0.5;
-  // Per-mora pitch estimate via autocorrelation peak.
-  const pitches = [];
-  for (let i = 0; i < morasFlat.length; i++) {
-    const start = i * moraWinLen;
-    const win = seg.subarray(start, start + moraWinLen);
-    pitches.push(estimatePitchHz(win, sr));
+  const frameLen = Math.max(1, Math.floor(sr * 0.02));
+  const frameRms = [];
+  let peak = 0;
+  for (let i = 0; i + frameLen <= ch.length; i += frameLen) {
+    let sumSq = 0;
+    for (let j = i; j < i + frameLen; j++) {
+      const v = ch[j];
+      sumSq += v * v;
+      const a = v < 0 ? -v : v;
+      if (a > peak) peak = a;
+    }
+    frameRms.push(Math.sqrt(sumSq / frameLen));
   }
-  const valid = pitches.filter(p => p > 50 && p < 500);
-  if (valid.length < morasFlat.length / 2) return 0.5;
-  // Use median of valid pitches as the H/L threshold for this speaker —
-  // any window above the median labels as H, below = L. This auto-
-  // calibrates to the user's vocal range (no fixed 200Hz threshold that
-  // would punish bass voices or reward sopranos).
-  const sorted = [...valid].sort((a, b) => a - b);
-  const median = sorted[Math.floor(sorted.length / 2)];
-  let agree = 0, total = 0;
-  for (let i = 0; i < morasFlat.length; i++) {
-    if (!(pitches[i] > 50 && pitches[i] < 500)) continue;
-    const userLabel = pitches[i] >= median ? 'H' : 'L';
-    if (userLabel === morasFlat[i]) agree++;
-    total++;
+  if (!frameRms.length) {
+    return { peak: 0, voicedFrames: 0, voicedRatio: 0, voicedDurationSec: 0,
+             meanVoicedRms: 0, totalDurationSec: ch.length / sr, voicedThreshold: 0.02, frameSec: 0.02 };
   }
-  return total ? agree / total : 0.5;
+  // Noise floor = 15th-percentile frame RMS (the quiet background between
+  // or around speech). The voiced threshold sits a margin above it, with
+  // an absolute floor so a totally-silent clip (floor ≈ 0) still requires
+  // real energy to count as voiced.
+  const sorted = [...frameRms].sort((a, b) => a - b);
+  const noiseFloor = sorted[Math.floor(sorted.length * 0.15)] || 0;
+  const voicedThreshold = Math.max(0.014, noiseFloor * 2.2);
+  let voiced = 0, voicedSum = 0;
+  for (const r of frameRms) {
+    if (r > voicedThreshold) { voiced++; voicedSum += r; }
+  }
+  return {
+    peak,
+    voicedFrames: voiced,
+    voicedRatio: voiced / frameRms.length,
+    voicedDurationSec: voiced * 0.02,
+    meanVoicedRms: voiced ? voicedSum / voiced : 0,
+    totalDurationSec: ch.length / sr,
+    voicedThreshold,
+    frameSec: 0.02,
+  };
 }
 
-// Cheap autocorrelation pitch detector. Returns Hz or 0 if no clear pitch.
-function estimatePitchHz(buf, sr) {
-  if (!buf || buf.length < 100) return 0;
-  const minF = 70, maxF = 400;
-  const minLag = Math.floor(sr / maxF);
-  const maxLag = Math.floor(sr / minF);
-  let bestLag = 0, bestCorr = 0;
-  // Pre-compute energy for normalization.
-  let energy = 0;
-  for (let i = 0; i < buf.length; i++) energy += buf[i] * buf[i];
-  if (energy < 1e-4) return 0;
-  for (let lag = minLag; lag < maxLag && lag < buf.length; lag++) {
-    let corr = 0;
-    for (let i = 0; i < buf.length - lag; i++) corr += buf[i] * buf[i + lag];
-    corr /= (buf.length - lag);
-    if (corr > bestCorr) { bestCorr = corr; bestLag = lag; }
+function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
+  if (!audioBuffer) return null;
+  const a = analyzeAudio(audioBuffer);
+
+  // ── SILENCE GATE ──
+  // Need a meaningful amount of voiced audio AND a clear peak AND a
+  // non-trivial voiced loudness. Pure silence, room tone, a stray tap,
+  // or a held breath all fail this and score a flat zero. This is the
+  // fix for the "silence scored 50-60" bug.
+  const hasSpeech =
+    a.voicedDurationSec >= 0.18 &&
+    a.peak >= 0.045 &&
+    a.meanVoicedRms >= 0.012;
+  if (!hasSpeech) {
+    return { rhythm: 0, clarity: 0, pitch: 0, naturalness: 0, overall: 0, silent: true };
   }
-  if (bestLag === 0) return 0;
-  return sr / bestLag;
+
+  // ── PRESENCE RAMP (0..1) ──
+  // Full credit needs ~0.45s of voiced audio, ~0.055 mean voiced RMS,
+  // and a 0.12 peak. A borderline-quiet attempt lands < 1 and pulls
+  // every dimension down proportionally — so "barely audible" reads as
+  // a low score, not a middling one.
+  const presence = clamp(Math.min(
+    a.voicedDurationSec / 0.45,
+    a.meanVoicedRms / 0.055,
+    a.peak / 0.12
+  ), 0, 1);
+
+  // ── (1) RHYTHM — VOICED duration vs expected ──
+  // Use voiced duration (not wall-clock), so leading/trailing silence
+  // can't inflate it. Expected ≈ 150ms/mora + a small gap per chunk.
+  const moraCount = (phrase.chunks || []).reduce((n, c) => n + (c.mora || []).length, 0);
+  const chunkGapSec = ((phrase.chunks || []).length - 1) * 0.12;
+  const expectedSec = (moraCount * 0.15) + chunkGapSec;
+  const ratio = a.voicedDurationSec / (expectedSec || 0.1);
+  // Peaks at ratio 1.0; half-credit near ratio 0.5 / 2.0. Floor 40 so a
+  // real-but-mistimed utterance isn't crushed, then × presence.
+  const rhythmRaw = 96 - Math.abs(Math.log(ratio)) * 40;
+  const rhythm = Math.round(clamp(clamp(rhythmRaw, 40, 95) * presence, 0, 95));
+
+  // ── (2) CLARITY — voiced loudness, penalize clipping ──
+  // Target mean voiced RMS ~0.06-0.20 (comfortable). Quiet → lower;
+  // clipping (peak ≈ 1.0) → penalty.
+  const rms = a.meanVoicedRms;
+  let clarityRaw;
+  if (rms < 0.06)      clarityRaw = 50 + (rms / 0.06) * 30;            // 50→80
+  else if (rms < 0.20) clarityRaw = 80 + ((rms - 0.06) / 0.14) * 13;  // 80→93
+  else if (rms < 0.40) clarityRaw = 93 - ((rms - 0.20) / 0.20) * 16;  // 93→77
+  else                 clarityRaw = 72;
+  if (a.peak > 0.985) clarityRaw -= 14;                                // clipping
+  const clarity = Math.round(clamp(clarityRaw * presence, 0, 95));
+
+  // ── (3) PITCH — per-mora H/L agreement over voiced windows ──
+  const { agreement, coverage } = estimatePitchAgreement(phrase, audioBuffer, a.voicedThreshold);
+  let pitchRaw;
+  if (coverage < 0.34) {
+    // Too few mora had a detectable pitch — can't judge contour. Score
+    // proportional to the little coverage we got, capped low.
+    pitchRaw = 36 * (coverage / 0.34);
+  } else {
+    // Agreement 0.5 (chance) → 50, 1.0 (perfect) → 90. A binary H/L
+    // sequence aligns ~50% by luck, so we anchor chance below the
+    // mid-point and reward real agreement.
+    pitchRaw = 50 + (agreement - 0.5) * 80;
+  }
+  const pitch = Math.round(clamp(pitchRaw * presence, 0, 92));
+
+  // ── (4) NATURALNESS — gated composite ──
+  // Inverse of the spread across the other three (even improvement reads
+  // as more natural than a lopsided 90/90/50). Then × presence so a
+  // faint attempt can't post a high naturalness off a tight-but-low trio.
+  const trio = [rhythm, clarity, pitch];
+  const mean = (trio[0] + trio[1] + trio[2]) / 3;
+  const sd = Math.sqrt(trio.reduce((s, v) => s + (v - mean) ** 2, 0) / 3);
+  const naturalRaw = Math.min(mean + 4, 94 - sd * 1.5);  // can't exceed the trio's own level by much
+  const naturalness = Math.round(clamp(naturalRaw * presence, 0, 94));
+
+  const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
+  return { rhythm, clarity, pitch, naturalness, overall, silent: false };
+}
+
+// Per-mora pitch agreement. Trims to the voiced region using the VAD
+// threshold, splits into one window per mora, runs confident-only
+// autocorrelation per window, labels each detected window H/L relative
+// to the speaker's own median F0 (auto-calibrates to vocal range), then
+// compares to the expected pattern.
+// Returns { agreement: 0..1, coverage: 0..1 } — coverage is the fraction
+// of mora that had a confidently-detected pitch. Low coverage (mumbling,
+// whispering, breath) means we can't judge the contour → caller scores low.
+function estimatePitchAgreement(phrase, audioBuffer, voicedThreshold) {
+  const ch = audioBuffer.getChannelData(0);
+  const sr = audioBuffer.sampleRate;
+  const morasFlat = (phrase.chunks || []).flatMap(c => (c.pitch || []));
+  const n = morasFlat.length;
+  if (!n) return { agreement: 0, coverage: 0 };
+  const thr = Math.max(0.012, voicedThreshold || 0.014);
+  // Trim to the first/last frame above the voiced threshold.
+  let s = -1, e = -1;
+  for (let i = 0; i < ch.length; i++) { const v = ch[i] < 0 ? -ch[i] : ch[i]; if (v > thr) { s = i; break; } }
+  for (let i = ch.length - 1; i >= 0; i--) { const v = ch[i] < 0 ? -ch[i] : ch[i]; if (v > thr) { e = i; break; } }
+  if (s < 0 || e <= s || (e - s) < sr * 0.12) return { agreement: 0, coverage: 0 };
+  const seg = ch.subarray(s, e);
+  const winLen = Math.floor(seg.length / n);
+  if (winLen < 256) return { agreement: 0, coverage: 0 };
+  // Detect F0 per mora window (null if not confidently voiced).
+  const detected = new Array(n).fill(null);
+  for (let i = 0; i < n; i++) {
+    const w = seg.subarray(i * winLen, (i + 1) * winLen);
+    const { hz, conf } = estimatePitchHz(w, sr);
+    if (conf > 0.30 && hz > 70 && hz < 420) detected[i] = hz;
+  }
+  const valid = detected.filter(h => h != null);
+  const coverage = valid.length / n;
+  if (valid.length < 2) return { agreement: 0, coverage };
+  // H/L threshold = midpoint between robust-min and robust-max (20th /
+  // 80th percentile of detected F0). The midpoint cleanly separates the
+  // two pitch levels even when the H/L counts are skewed — a median
+  // threshold fails here: for a pattern like L-H-L-L-L (mostly L) the
+  // median lands ON the low value, so every mora ties to H and the
+  // agreement collapses. The midpoint auto-calibrates to the speaker's
+  // own range (no fixed Hz), so a bass and a soprano both score fairly.
+  const sortedV = [...valid].sort((x, y) => x - y);
+  const lo = sortedV[Math.floor(sortedV.length * 0.20)];
+  const hi = sortedV[Math.floor(sortedV.length * 0.80)];
+  const threshold = (lo + hi) / 2;
+  // If the speaker is essentially monotone (range < ~6% of pitch), they
+  // can't realize a contour with a fall — only a genuinely flat pattern
+  // (heiban) will match. The threshold logic handles this naturally:
+  // monotone → all mora on one side → matches only flat expected patterns.
+  let agree = 0, total = 0;
+  for (let i = 0; i < n; i++) {
+    if (detected[i] == null) continue;
+    const label = detected[i] >= threshold ? 'H' : 'L';
+    if (label === morasFlat[i]) agree++;
+    total++;
+  }
+  return { agreement: total ? agree / total : 0, coverage };
+}
+
+// Pitch detector via NORMALIZED cross-correlation (NCCF) with an
+// octave-error guard. Returns { hz, conf } where conf is the NCCF peak
+// in 0..1 — ~1 for clearly voiced (periodic) audio, near-zero for noise
+// / silence / fricatives. Caller treats conf below ~0.30 as "no pitch."
+//
+// Two fixes over the naive version that caused an octave-halving bug
+// (a 175Hz mora detected as 87.5Hz):
+//   (a) Energy-normalized correlation (divide by sqrt of both windows'
+//       energy) instead of dividing by overlap length. The old length
+//       normalization made LONGER lags score higher, biasing the result
+//       toward the sub-harmonic (half the true frequency).
+//   (b) Pick the FIRST local-max lag whose NCCF clears 80% of the global
+//       max — not the global max itself. The true period is the first
+//       strong peak; integer multiples of it (the octave-down errors)
+//       are later peaks. Taking the first peak locks onto the fundamental.
+function estimatePitchHz(buf, sr) {
+  const N = buf ? buf.length : 0;
+  if (N < 200) return { hz: 0, conf: 0 };
+  const minF = 70, maxF = 420;
+  const minLag = Math.floor(sr / maxF);
+  const maxLag = Math.min(N - 1, Math.floor(sr / minF));
+  if (maxLag <= minLag) return { hz: 0, conf: 0 };
+  // Prefix sum of squares → O(1) energy of any prefix window.
+  const pref = new Float64Array(N + 1);
+  for (let i = 0; i < N; i++) pref[i + 1] = pref[i] + buf[i] * buf[i];
+  if (pref[N] < 1e-5) return { hz: 0, conf: 0 };
+  const nccf = new Float64Array(maxLag + 1);
+  for (let lag = minLag; lag <= maxLag; lag++) {
+    const lim = N - lag;
+    let corr = 0;
+    for (let i = 0; i < lim; i++) corr += buf[i] * buf[i + lag];
+    const e1 = pref[lim];                 // energy of buf[0..lim)
+    const e2 = pref[lim + lag] - pref[lag]; // energy of buf[lag..lag+lim)
+    const denom = Math.sqrt(e1 * e2);
+    nccf[lag] = denom > 1e-9 ? corr / denom : 0;
+  }
+  let gmax = 0;
+  for (let lag = minLag; lag <= maxLag; lag++) if (nccf[lag] > gmax) gmax = nccf[lag];
+  if (gmax < 0.30) return { hz: 0, conf: gmax };
+  const thresh = 0.80 * gmax;
+  let chosen = 0;
+  for (let lag = minLag + 1; lag < maxLag; lag++) {
+    if (nccf[lag] >= thresh && nccf[lag] >= nccf[lag - 1] && nccf[lag] >= nccf[lag + 1]) {
+      chosen = lag; break;
+    }
+  }
+  if (!chosen) {
+    // Fallback: global argmax.
+    for (let lag = minLag; lag <= maxLag; lag++) if (nccf[lag] === gmax) { chosen = lag; break; }
+  }
+  if (!chosen) return { hz: 0, conf: gmax };
+  return { hz: sr / chosen, conf: gmax };
 }
 
 // ── Studio wiring ────────────────────────────────────────────────────
@@ -29942,6 +30185,10 @@ function wireSpeakingStudio(cat, phrase) {
           userDur.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         }
         if (userPlayBtn) userPlayBtn.disabled = false;
+        // Silent-recording hint — show when the scorer detected no speech
+        // (the silence gate returned all zeros). Otherwise keep it hidden.
+        const silentHint = root.querySelector('#speaking-silent-hint');
+        if (silentHint) silentHint.hidden = !(scores && scores.silent);
         // Rerender scores in place (don't full-rerender the studio —
         // that would lose the user waveform we just drew). Reflect
         // updated scores into the score chips.
@@ -29950,6 +30197,9 @@ function wireSpeakingStudio(cat, phrase) {
         if (micLabelJa) micLabelJa.textContent = '録音する';
         if (micLabelEn) micLabelEn.textContent = 'Tap to Record';
       });
+      // Clear any prior silent-hint when a new recording starts.
+      const silentHintReset = root.querySelector('#speaking-silent-hint');
+      if (silentHintReset) silentHintReset.hidden = true;
       micBtn.dataset.state = 'recording';
       if (micLabelJa) micLabelJa.textContent = '録音中…';
       if (micLabelEn) micLabelEn.textContent = 'Recording';
