@@ -686,7 +686,19 @@
       const cache = ImageSlot._variantCache;
       if (cache.has(imageKey)) return cache.get(imageKey);
 
-      const encodedKey = imageKey.split('/').map(encodeURIComponent).join('/');
+      // Candidate base keys, in priority order. Food art lives under
+      // images/vocab/food/<id>, but dozens of call sites still pass
+      // image-key="vocab/<id>" (flashcards, the textures page tiles). For any
+      // vocab/ key that isn't already inside a managed subfolder, probe the
+      // food/ subfolder first and fall back to the flat vocab/ path. This lets
+      // food art move into vocab/food/ without touching those call sites,
+      // while the dual-purpose covers / room sheets that stay flat in vocab/
+      // (sushi, ramen, *-sheet-*) still resolve via the fallback.
+      const bases = [];
+      const m = /^vocab\/(?!food\/)(.+)$/.exec(imageKey);
+      if (m) { bases.push('vocab/food/' + m[1]); bases.push(imageKey); }
+      else { bases.push(imageKey); }
+      const enc = (k) => k.split('/').map(encodeURIComponent).join('/');
       const exts = ImageSlot._imageExts;
 
       const promise = (async () => {
@@ -694,15 +706,18 @@
         for (let n = 1; n <= 9; n++) {
           const suffix = n === 1 ? '' : encodeURIComponent(` (${n})`);
           let url = null;
-          for (const ext of exts) {
-            const candidate = './images/' + encodedKey + suffix + '.' + ext;
-            const exists = await new Promise(resolve => {
-              const img = new Image();
-              img.onload = () => resolve(true);
-              img.onerror = () => resolve(false);
-              img.src = candidate;
-            });
-            if (exists) { url = candidate; break; }
+          for (const base of bases) {
+            for (const ext of exts) {
+              const candidate = './images/' + enc(base) + suffix + '.' + ext;
+              const exists = await new Promise(resolve => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = candidate;
+              });
+              if (exists) { url = candidate; break; }
+            }
+            if (url) break;
           }
           if (!url) break;
           found.push(url);
