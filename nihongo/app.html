@@ -15989,38 +15989,33 @@
   }
   .pitch-mora-row {
     display: inline-flex;
-    align-items: flex-end;
+    align-items: center;
     position: relative;
-    /* Small top room — the high bar of the contour sits right at the
-       kana tops, not floating in a separate band above. The contour
-       OVERLAPS the upper portion of the glyphs (per the user's
-       textbook reference, where the line runs over/inside the
-       letters). */
-    padding-top: 8px;
+    /* Room ABOVE for the overline (high mora) and BELOW for the
+       underline (low mora). The glyph is centred between the two
+       levels — the line's POSITION tells you the pitch, which reads
+       far more clearly than packing every line into a band above. */
+    padding-top: 0.46em;
+    padding-bottom: 0.42em;
   }
-  /* Contour SVG stretches to the FULL width of the mora row (left:0
-     right:0) so its proportional viewBox columns line up with the
-     equal-width mora glyphs automatically — see renderPitchContourSVG.
-     This is what lets the mora kerning widen without the contour
-     drifting.
-     It's positioned to OVERLAP the top of the kana: the SVG box runs
-     from the row top down ~36px, so the high line lands at the kana
-     tops and the low line dips ~18px into the upper strokes. z-index
-     keeps the maroon line painting OVER the ink glyphs. */
+  /* Contour SVG covers the FULL row box (top to bottom). Its proportional
+     viewBox columns line up with the equal-width mora glyphs
+     automatically, so kerning can change without the contour drifting.
+     High lines land in the top padding (above the glyph), low lines in
+     the bottom padding (below the glyph); vertical steps fall in the
+     gaps between glyphs. */
   .pitch-contour-svg {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    inset: 0;
     width: 100%;
-    height: 36px;
+    height: 100%;
     z-index: 2;
     pointer-events: none;
     overflow: visible;
   }
   .pitch-mora {
     display: inline-flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
     /* Wider columns than before (was 36px) — the kana at the large end
        of the clamp is ~48px wide, so 36px crammed them. ~0.95em + breathing
@@ -16043,8 +16038,9 @@
      fixed display px. Equal-width em columns keep the proportional SVG
      contour aligned to the mora. */
   .pitch-mora-row.is-inline {
-    padding-top: 0.62em;
-    vertical-align: -0.15em;
+    padding-top: 0.5em;
+    padding-bottom: 0.45em;
+    vertical-align: -0.35em;
     margin: 0 0.1em;
   }
   .pitch-mora-row.is-inline .pitch-mora {
@@ -16053,7 +16049,7 @@
     line-height: 1.1;
   }
   .pitch-mora-row.is-inline .pitch-contour-svg {
-    height: 0.95em;
+    height: 100%;
   }
 
   .pitch-pattern-chip {
@@ -16164,6 +16160,42 @@
   .speaking-silent-hint .en {
     font-family: var(--font-en);
     font-size: 12px;
+    color: var(--ink-soft);
+  }
+  /* "Heard" line — the STT transcript (or an explanatory message) shown
+     above the waveforms so the learner sees what the recognizer caught. */
+  .speaking-heard {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    margin: 0 0 14px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    border-left: 2px solid color-mix(in srgb, var(--accent-gold, #a8843c) 55%, transparent);
+  }
+  .speaking-heard[hidden] { display: none; }
+  .speaking-heard-label {
+    font-family: var(--font-menu-en);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+  }
+  .speaking-heard-text {
+    font-family: var(--font-title);
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  /* Non-transcript states read as a quieter note, not a headword. */
+  .speaking-heard[data-state="nowords"],
+  .speaking-heard[data-state="unavailable"] {
+    border-left-color: color-mix(in srgb, var(--ink) 18%, transparent);
+  }
+  .speaking-heard[data-state="nowords"] .speaking-heard-text,
+  .speaking-heard[data-state="unavailable"] .speaking-heard-text {
+    font-family: var(--font-en);
+    font-style: italic;
+    font-size: 13px;
     color: var(--ink-soft);
   }
 
@@ -16426,8 +16458,6 @@
   }
   @media (max-width: 540px) {
     .pitch-mora { width: 38px; font-size: 32px; }
-    .pitch-mora-row { padding-top: 6px; }
-    .pitch-contour-svg { height: 26px; }
   }
 
   /* ─── Pitch & Tones basics page (Writing → Pitch) ───────────────── */
@@ -16935,6 +16965,10 @@ const APP = {
   // Set via settings → Display. Applies to the studio AND the Pitch &
   // Tones basics page.
   pitchNotation:      lsGet('jp:pitchNotation', 'lines'),
+  // Auto-play the model phrase when a Shadowing phrase loads. On by
+  // default ("listen first" pedagogy); the learner can turn it off in
+  // settings if they'd rather trigger playback themselves.
+  speakingAutoplay:   lsGet('jp:speakingAutoplay', true),
   particleIdx:  lsGet('jp:particleIdx', 0),
   // 'quiz' shows the test, 'particle' shows the single-particle lesson.
   particleMode: lsGet('jp:particleMode', 'lessons'),
@@ -18735,6 +18769,12 @@ function openSettingsModal() {
             </span>
             <button class="settings-toggle" id="set-pitch-notation" aria-checked="${APP.pitchNotation === 'lines'}" role="switch"><i></i></button>
           </div>
+          <div class="settings-toggle-row">
+            <span class="settings-field-label">Auto-play phrases
+              <span class="hint">In the Shadowing studio, play the model automatically when a phrase loads</span>
+            </span>
+            <button class="settings-toggle" id="set-speaking-autoplay" aria-checked="${APP.speakingAutoplay}" role="switch"><i></i></button>
+          </div>
         </section>
       </div>
     `;
@@ -18816,6 +18856,12 @@ function openSettingsModal() {
       } else if (APP.section === 'writing' && APP.writingPage === 'pitch') {
         renderWriting(document.getElementById('main-inner'));
       }
+    });
+    const speakingAutoplayToggle = wrap.querySelector('#set-speaking-autoplay');
+    if (speakingAutoplayToggle) speakingAutoplayToggle.addEventListener('click', () => {
+      APP.speakingAutoplay = !APP.speakingAutoplay;
+      lsSet('jp:speakingAutoplay', APP.speakingAutoplay);
+      renderInside();
     });
     wrap.querySelectorAll('[data-settings-close]').forEach(b =>
       b.addEventListener('click', closeSettingsModal));
@@ -29424,8 +29470,14 @@ function renderPitchContourSVG(chunk, tone = 'model') {
   if (!moraCount) return '';
   const COL = 100;          // relative viewBox units per mora column
   const VBH = 100;          // viewBox height
-  const HIGH_Y = 24;        // high-pitch line height (viewBox units)
-  const LOW_Y  = 74;        // low-pitch line height
+  // High mora sit ABOVE the glyph (overline), low mora BELOW it
+  // (underline) — the textbook "line position = pitch" form, which reads
+  // far more clearly than packing every line into a band above the kana.
+  // The glyph is centred between the two levels; vertical connectors at
+  // H↔L transitions fall in the gap between adjacent kana, not across a
+  // glyph's strokes.
+  const HIGH_Y = 12;        // overline — near the top, above the glyph
+  const LOW_Y  = 88;        // underline — near the bottom, below the glyph
   const W = moraCount * COL;
   const stroke = tone === 'user' ? 'var(--pitch-line-user)' : 'var(--pitch-line)';
   const opacity = tone === 'user' ? '0.65' : '1';
@@ -29795,6 +29847,14 @@ function speakingStudioHTML(cat, phrase) {
           </p>
         </div>
 
+        <!-- "Heard" line — shows the speech-to-text transcript of the last
+             recording so the learner can SEE what the recognizer caught.
+             Hidden until a recording lands. -->
+        <div class="speaking-heard" id="speaking-heard" role="status" aria-live="polite" hidden>
+          <span class="speaking-heard-label">きこえた · <em>Heard</em></span>
+          <span class="speaking-heard-text" id="speaking-heard-text"></span>
+        </div>
+
         <div class="speaking-waveforms" aria-label="Audio waveforms">
           <div class="waveform-row waveform-original">
             <div class="waveform-label">
@@ -29958,10 +30018,55 @@ const SpeakingRecorder = (function () {
     return mediaStream;
   }
 
+  // Web Speech API recognition — Chrome/Edge expose it (webkit-prefixed).
+  // Runs in PARALLEL with MediaRecorder during a take: MediaRecorder gives
+  // us the buffer (waveform + acoustic scoring), SpeechRecognition gives us
+  // the transcript (content scoring). NOTE: this uses the browser's
+  // built-in recognition, which on Chrome routes audio to Google's
+  // servers — a deliberate exception to the earlier "no cloud STT"
+  // restriction, made because the user explicitly asked for STT.
+  const SRClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const STT_SUPPORTED = !!SRClass;
+  let recog = null;
+
   async function start(onDoneCallback) {
     onStop = onDoneCallback;
     const stream = await ensureStream();
     chunks = [];
+
+    // Deliver the result once BOTH the decoded audio AND the recognizer
+    // have finished (or a safety timeout). Without the join we'd score
+    // before the transcript arrived.
+    let audioResult = null, recogDone = !STT_SUPPORTED, transcript = '', delivered = false;
+    function maybeDeliver() {
+      if (delivered || !audioResult || !recogDone) return;
+      delivered = true;
+      if (onStop) onStop({ ...audioResult, transcript, sttAvailable: STT_SUPPORTED });
+    }
+
+    // SpeechRecognition (its own mic capture; coexists with MediaRecorder).
+    recog = null;
+    if (STT_SUPPORTED) {
+      try {
+        recog = new SRClass();
+        recog.lang = 'ja-JP';
+        recog.interimResults = false;
+        recog.maxAlternatives = 1;
+        recog.continuous = false;
+        recog.onresult = e => {
+          let best = '';
+          for (let i = 0; i < e.results.length; i++) {
+            const r = e.results[i];
+            if (r && r[0]) best += r[0].transcript;
+          }
+          transcript = best;
+        };
+        recog.onerror = () => { /* no-speech / aborted / not-allowed — leave transcript empty */ };
+        recog.onend = () => { recogDone = true; maybeDeliver(); };
+        recog.start();
+      } catch (e) { recog = null; recogDone = true; }
+    }
+
     mediaRecorder = new MediaRecorder(stream);
     mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
     mediaRecorder.onstop = async () => {
@@ -29974,7 +30079,10 @@ const SpeakingRecorder = (function () {
       // Tear down the recorder + analyser, but KEEP the stream alive for
       // the next recording (no re-prompt).
       teardownRecorder();
-      if (onStop) onStop({ audioBuffer, duration: (Date.now() - startTime) / 1000 });
+      audioResult = { audioBuffer, duration: (Date.now() - startTime) / 1000 };
+      maybeDeliver();
+      // Safety: if the recognizer never ends, deliver anyway after 1.5s.
+      if (!recogDone) setTimeout(() => { recogDone = true; maybeDeliver(); }, 1500);
     };
     // Live analyser for the recording-pulse — real input volume.
     const ctx = ensureAudioCtx();
@@ -29991,6 +30099,7 @@ const SpeakingRecorder = (function () {
 
   function stop() {
     if (stopTimer) { clearTimeout(stopTimer); stopTimer = null; }
+    if (recog) { try { recog.stop(); } catch (e) {} }
     if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
   }
 
@@ -30005,6 +30114,7 @@ const SpeakingRecorder = (function () {
   // indicator turns off. Call when leaving the Speaking section.
   function release() {
     if (stopTimer) { clearTimeout(stopTimer); stopTimer = null; }
+    if (recog) { try { recog.abort(); } catch (e) {} recog = null; }
     if (mediaRecorder && mediaRecorder.state !== 'inactive') { try { mediaRecorder.stop(); } catch (e) {} }
     teardownRecorder();
     if (mediaStream) {
@@ -30015,8 +30125,9 @@ const SpeakingRecorder = (function () {
 
   function getAnalyser() { return analyser; }
   function isRecording() { return mediaRecorder && mediaRecorder.state === 'recording'; }
+  function sttAvailable() { return STT_SUPPORTED; }
 
-  return { start, stop, release, getAnalyser, isRecording };
+  return { start, stop, release, getAnalyser, isRecording, sttAvailable };
 })();
 
 function stopAndForgetUserRecording() {
@@ -30363,13 +30474,54 @@ function vowelSequenceAccuracy(userV, expV) {
   return clamp(1 - D[n][m] / pathLen, 0, 1);
 }
 
+// Levenshtein-based string similarity (0..1). Operates per code point so
+// multi-byte kana/kanji compare correctly.
+function stringSimilarity(a, b) {
+  const al = Array.from(a || ''), bl = Array.from(b || '');
+  const n = al.length, m = bl.length;
+  if (!n && !m) return 1;
+  if (!n || !m) return 0;
+  const dp = new Array(m + 1);
+  for (let j = 0; j <= m; j++) dp[j] = j;
+  for (let i = 1; i <= n; i++) {
+    let prev = dp[0]; dp[0] = i;
+    for (let j = 1; j <= m; j++) {
+      const tmp = dp[j];
+      dp[j] = Math.min(dp[j] + 1, dp[j - 1] + 1, prev + (al[i - 1] === bl[j - 1] ? 0 : 1));
+      prev = tmp;
+    }
+  }
+  return 1 - dp[m] / Math.max(n, m);
+}
+
+// Content accuracy from a speech-to-text transcript vs the phrase. STT
+// (Web Speech API) returns Japanese either in kana or kanji, so we compare
+// the recognized text against BOTH the phrase's kana reading and its kanji
+// form and take the better match. Returns 0..1, or null when there's no
+// transcript to judge (STT unavailable / nothing recognized).
+function transcriptAccuracy(transcript, phrase) {
+  if (!transcript) return null;
+  const norm = s => (s || '').replace(/[\s　、。，．・!?！？「」『』,.・]/g, '');
+  const t = norm(transcript);
+  if (!t) return null;
+  const kana = norm((phrase.chunks || []).flatMap(c => (c.mora || [])).join(''));
+  const kanji = norm(phrase.kanji || '');
+  let best = 0;
+  for (const tgt of [kana, kanji]) if (tgt) best = Math.max(best, stringSimilarity(t, tgt));
+  return best;
+}
+
 // The four-dimension scorer. Built around syllable-nucleus structure AND
-// vowel-sequence content so it responds to WHAT was said, not just whether
-// SOME sound happened. No hard-coded floors — every number flows from a
+// content accuracy (speech-to-text when available, vowel-formant matching
+// as fallback) so it responds to WHAT was said, not just whether SOME
+// sound happened. No hard-coded floors — every number flows from a
 // measurement, so silence lands at ~0-2, a single shouted vowel ("WHOA")
-// lands in the teens, and the WRONG phrase (right rhythm, wrong vowels)
-// craters because the content multiplier collapses, all algorithmically.
-function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
+// lands in the teens, and the WRONG phrase craters because the content
+// multiplier collapses, all algorithmically.
+//
+// opts.transcript    — STT result string (or '' / null if none)
+// opts.sttAvailable  — whether SpeechRecognition ran at all
+function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
   if (!audioBuffer) return null;
   const a = analyzeAudio(audioBuffer);
   const ch = audioBuffer.getChannelData(0);
@@ -30396,12 +30548,20 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
       if (v) userVowels.push(v);
     }
   }
-  const accuracy = vowelSequenceAccuracy(userVowels, expectedVowels);
-  // Map accuracy → a 0..1 gate. Formant classification on FLOWING speech
-  // is noisier than on isolated vowels, so even a correct attempt tops out
-  // around acc 0.8 — the map saturates to 1.0 by then so effort isn't
-  // punished for the classifier's own slack. Below ~0.15 (gibberish / the
-  // wrong phrase) the gate is near zero, collapsing the score.
+  const formantAccuracy = vowelSequenceAccuracy(userVowels, expectedVowels);
+  // Speech-to-text content accuracy (preferred when available — it
+  // actually recognizes the WORDS, far more reliable than guessing
+  // vowels from formants). Blend: STT leads, formant supports (so a
+  // single STT mis-hear doesn't fully sink a good attempt). Fall back to
+  // formant-only when STT didn't run / heard nothing.
+  const sttAccuracy = transcriptAccuracy(opts.transcript, phrase);
+  const accuracy = (sttAccuracy != null)
+    ? clamp(0.75 * sttAccuracy + 0.25 * formantAccuracy, 0, 1)
+    : formantAccuracy;
+  // Map accuracy → a 0..1 gate. STT/formant on FLOWING speech is noisier
+  // than ideal, so a correct attempt saturates the gate by acc ≈ 0.8 —
+  // effort isn't punished for recognizer slack. Below ~0.15 (gibberish /
+  // the wrong phrase) the gate is near zero, collapsing the score.
   const accFactor = clamp((accuracy - 0.12) / 0.68, 0, 1);
 
   // Speech-presence confidence (0..1). Drives nothing on its own except
@@ -30503,10 +30663,17 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec) {
   const naturalness = Math.round(clamp(naturalness01 * (0.35 + 0.65 * accFactor) * 95, 0, 95));
 
   const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
-  // "silent" flag for the UI hint — fires when there's essentially no
-  // structured speech (no nuclei or a near-zero overall).
+  // Status flags for the UI ("heard" line + hints):
+  //   silent   — essentially no structured speech (no nuclei / near-zero).
+  //   noWords  — there WAS sound, STT ran, but recognized nothing.
   const silent = (N === 0) || overall < 8;
-  return { rhythm, clarity, pitch, naturalness, overall, silent, accuracy };
+  const transcript = (opts.transcript || '').trim();
+  const noWords = !silent && opts.sttAvailable && !transcript;
+  return {
+    rhythm, clarity, pitch, naturalness, overall,
+    silent, noWords, accuracy, transcript,
+    sttAvailable: !!opts.sttAvailable,
+  };
 }
 
 // Pitch-contour score (0..1), sampled at the syllable nuclei. F0 is most
@@ -30628,10 +30795,13 @@ function wireSpeakingStudio(cat, phrase) {
   // Auto-play the model once on phrase mount (per pedagogical pillar
   // §5.1 "Listen first, twice" — auto once, replay on demand).
   const fullKana = (phrase.chunks || []).map(c => (c.mora || []).join('')).join(' ');
-  // Run after layout settles + voices load.
-  setTimeout(() => {
-    if (typeof TTS !== 'undefined' && TTS.speak) TTS.speak(fullKana);
-  }, 300);
+  // Run after layout settles + voices load — but only if autoplay is on
+  // (settings → Display → Auto-play phrases).
+  if (APP.speakingAutoplay) {
+    setTimeout(() => {
+      if (typeof TTS !== 'undefined' && TTS.speak) TTS.speak(fullKana);
+    }, 300);
+  }
 
   // Replay-model button.
   const replayBtn = root.querySelector('#speaking-play-original');
@@ -30666,10 +30836,11 @@ function wireSpeakingStudio(cat, phrase) {
     if (micLabelJa) micLabelJa.textContent = '準備中…';
     if (micLabelEn) micLabelEn.textContent = 'Preparing…';
     try {
-      await SpeakingRecorder.start(({ audioBuffer, duration }) => {
-        // Recording finished. Compute scores + draw real waveform.
+      await SpeakingRecorder.start(({ audioBuffer, duration, transcript, sttAvailable }) => {
+        // Recording finished. Compute scores (with the STT transcript as
+        // the content signal) + draw real waveform.
         APP.speakingUserBuffer = audioBuffer;
-        const scores = scoreSpeakingAttempt(phrase, audioBuffer, duration);
+        const scores = scoreSpeakingAttempt(phrase, audioBuffer, duration, { transcript, sttAvailable });
         APP.speakingScores = scores;
         if (userSvg && audioBuffer) {
           userSvg.innerHTML = realWaveformPath(audioBuffer, 'var(--waveform-user)');
@@ -30679,21 +30850,44 @@ function wireSpeakingStudio(cat, phrase) {
           userDur.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         }
         if (userPlayBtn) userPlayBtn.disabled = false;
-        // Silent-recording hint — show when the scorer detected no speech
-        // (the silence gate returned all zeros). Otherwise keep it hidden.
+        // Silent-recording hint — no substantial sound in the input.
         const silentHint = root.querySelector('#speaking-silent-hint');
         if (silentHint) silentHint.hidden = !(scores && scores.silent);
+        // "Heard" line — show the recognized transcript, or the relevant
+        // explanation when there's nothing to show.
+        const heard = root.querySelector('#speaking-heard');
+        const heardText = root.querySelector('#speaking-heard-text');
+        if (heard && heardText) {
+          if (scores.silent) {
+            heard.hidden = true;                       // silent-hint covers this case
+          } else if (scores.transcript) {
+            heard.hidden = false;
+            heard.dataset.state = 'ok';
+            heardText.textContent = '「' + scores.transcript + '」';
+          } else if (scores.noWords) {
+            heard.hidden = false;
+            heard.dataset.state = 'nowords';
+            heardText.textContent = 'I caught sound but couldn’t make out any words — try again, a little clearer.';
+          } else if (!scores.sttAvailable) {
+            heard.hidden = false;
+            heard.dataset.state = 'unavailable';
+            heardText.textContent = 'Speech recognition isn’t available in this browser — scored on sound only. (Try Chrome or Edge for word matching.)';
+          } else {
+            heard.hidden = true;
+          }
+        }
         // Rerender scores in place (don't full-rerender the studio —
-        // that would lose the user waveform we just drew). Reflect
-        // updated scores into the score chips.
+        // that would lose the user waveform we just drew).
         updateSpeakingScoresInPlace();
         micBtn.dataset.state = 'idle';
         if (micLabelJa) micLabelJa.textContent = '録音する';
         if (micLabelEn) micLabelEn.textContent = 'Tap to Record';
       });
-      // Clear any prior silent-hint when a new recording starts.
+      // Clear any prior hints when a new recording starts.
       const silentHintReset = root.querySelector('#speaking-silent-hint');
       if (silentHintReset) silentHintReset.hidden = true;
+      const heardReset = root.querySelector('#speaking-heard');
+      if (heardReset) heardReset.hidden = true;
       micBtn.dataset.state = 'recording';
       if (micLabelJa) micLabelJa.textContent = '録音中…';
       if (micLabelEn) micLabelEn.textContent = 'Recording';
