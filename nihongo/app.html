@@ -30018,54 +30018,71 @@ const SpeakingRecorder = (function () {
     return mediaStream;
   }
 
-  // Web Speech API recognition — Chrome/Edge expose it (webkit-prefixed).
-  // Runs in PARALLEL with MediaRecorder during a take: MediaRecorder gives
-  // us the buffer (waveform + acoustic scoring), SpeechRecognition gives us
-  // the transcript (content scoring). NOTE: this uses the browser's
-  // built-in recognition, which on Chrome routes audio to Google's
+  // ── Speech-to-text (Web Speech API) — Chrome/Edge expose it (webkit-
+  // prefixed). The recognizer keeps its OWN mic capture, SEPARATE from
+  // getUserMedia, so each `.start()` could fire its own permission prompt.
+  // The old code newed-up and started a recognizer on EVERY take, which is
+  // what re-prompted every time. Instead we create ONE recognizer and keep
+  // it running continuously for the whole speaking session (reviving it if
+  // Chrome auto-stops after a pause). A take just opens a "capture window":
+  // clear the buffer when recording starts, snapshot the transcript when it
+  // stops. Because getUserMedia is awaited first (granting the origin's mic
+  // permission), the recognizer reuses that grant on persisting origins and
+  // doesn't prompt separately. NOTE: on Chrome this routes audio to Google's
   // servers — a deliberate exception to the earlier "no cloud STT"
   // restriction, made because the user explicitly asked for STT.
   const SRClass = window.SpeechRecognition || window.webkitSpeechRecognition;
   const STT_SUPPORTED = !!SRClass;
   let recog = null;
+  let recogRunning = false;
+  let sessionActive = false;     // true between the first start() and release()
+  let captureWindow = false;     // true only while a take is being recorded
+  let capturedFinal = '';
+  let capturedInterim = '';
+
+  function ensureRecog() {
+    if (!STT_SUPPORTED || recog) return;
+    recog = new SRClass();
+    recog.lang = 'ja-JP';
+    recog.interimResults = true;
+    recog.continuous = true;
+    recog.maxAlternatives = 1;
+    recog.onresult = e => {
+      if (!captureWindow) return;          // ignore anything said outside a take
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (!r || !r[0]) continue;
+        if (r.isFinal) capturedFinal += r[0].transcript;
+        else interim += r[0].transcript;
+      }
+      capturedInterim = interim;
+    };
+    recog.onerror = () => { /* no-speech / aborted — leave the buffer as-is */ };
+    recog.onend = () => {
+      recogRunning = false;
+      // Chrome ends recognition after a silence; revive it so the next take
+      // doesn't have to .start() again (which is what re-prompted before).
+      if (sessionActive) { try { recog.start(); recogRunning = true; } catch (e) {} }
+    };
+  }
+  function startRecog() {
+    ensureRecog();
+    if (recog && !recogRunning) { try { recog.start(); recogRunning = true; } catch (e) {} }
+  }
 
   async function start(onDoneCallback) {
     onStop = onDoneCallback;
-    const stream = await ensureStream();
+    const stream = await ensureStream();          // mic grant FIRST (one prompt)
     chunks = [];
 
-    // Deliver the result once BOTH the decoded audio AND the recognizer
-    // have finished (or a safety timeout). Without the join we'd score
-    // before the transcript arrived.
-    let audioResult = null, recogDone = !STT_SUPPORTED, transcript = '', delivered = false;
-    function maybeDeliver() {
-      if (delivered || !audioResult || !recogDone) return;
-      delivered = true;
-      if (onStop) onStop({ ...audioResult, transcript, sttAvailable: STT_SUPPORTED });
-    }
-
-    // SpeechRecognition (its own mic capture; coexists with MediaRecorder).
-    recog = null;
-    if (STT_SUPPORTED) {
-      try {
-        recog = new SRClass();
-        recog.lang = 'ja-JP';
-        recog.interimResults = false;
-        recog.maxAlternatives = 1;
-        recog.continuous = false;
-        recog.onresult = e => {
-          let best = '';
-          for (let i = 0; i < e.results.length; i++) {
-            const r = e.results[i];
-            if (r && r[0]) best += r[0].transcript;
-          }
-          transcript = best;
-        };
-        recog.onerror = () => { /* no-speech / aborted / not-allowed — leave transcript empty */ };
-        recog.onend = () => { recogDone = true; maybeDeliver(); };
-        recog.start();
-      } catch (e) { recog = null; recogDone = true; }
-    }
+    // Open the transcript capture window for this take and make sure the
+    // persistent recognizer is running (reuses the grant from getUserMedia).
+    sessionActive = true;
+    capturedFinal = '';
+    capturedInterim = '';
+    captureWindow = true;
+    startRecog();
 
     mediaRecorder = new MediaRecorder(stream);
     mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
@@ -30076,13 +30093,22 @@ const SpeakingRecorder = (function () {
       let audioBuffer = null;
       try { audioBuffer = await ctx.decodeAudioData(arrayBuf.slice(0)); }
       catch (e) { audioBuffer = null; }
-      // Tear down the recorder + analyser, but KEEP the stream alive for
-      // the next recording (no re-prompt).
+      // Crop leading/trailing silence so the displayed waveform + playback
+      // show only the spoken part.
+      if (audioBuffer) audioBuffer = trimToRealBuffer(audioBuffer, ctx);
+      // Tear down the recorder + analyser, but KEEP the stream + recognizer
+      // alive for the next take (no re-prompt).
       teardownRecorder();
-      audioResult = { audioBuffer, duration: (Date.now() - startTime) / 1000 };
-      maybeDeliver();
-      // Safety: if the recognizer never ends, deliver anyway after 1.5s.
-      if (!recogDone) setTimeout(() => { recogDone = true; maybeDeliver(); }, 1500);
+      const duration = audioBuffer ? audioBuffer.duration : (Date.now() - startTime) / 1000;
+      // Close the capture window + deliver. Give the recognizer a brief
+      // grace to flush a final result if it hasn't produced one yet.
+      const finish = () => {
+        captureWindow = false;
+        const transcript = (capturedFinal || capturedInterim || '').trim();
+        if (onStop) onStop({ audioBuffer, duration, transcript, sttAvailable: STT_SUPPORTED });
+      };
+      if (STT_SUPPORTED && !capturedFinal) setTimeout(finish, 700);
+      else finish();
     };
     // Live analyser for the recording-pulse — real input volume.
     const ctx = ensureAudioCtx();
@@ -30097,9 +30123,9 @@ const SpeakingRecorder = (function () {
     return { analyser };
   }
 
+  // End the current take. The recognizer keeps running for the next one.
   function stop() {
     if (stopTimer) { clearTimeout(stopTimer); stopTimer = null; }
-    if (recog) { try { recog.stop(); } catch (e) {} }
     if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
   }
 
@@ -30110,11 +30136,16 @@ const SpeakingRecorder = (function () {
     mediaRecorder = null;
   }
 
-  // Fully release the mic — stops the tracks so the browser's recording
-  // indicator turns off. Call when leaving the Speaking section.
+  // Fully release the mic when leaving the Speaking section — stop the
+  // recognizer AND the stream tracks so the browser's recording indicator
+  // turns off. The recognizer OBJECT is kept (just stopped) so re-entering
+  // the section reuses the existing permission grant instead of re-prompting.
   function release() {
     if (stopTimer) { clearTimeout(stopTimer); stopTimer = null; }
-    if (recog) { try { recog.abort(); } catch (e) {} recog = null; }
+    sessionActive = false;
+    captureWindow = false;
+    if (recog && recogRunning) { try { recog.stop(); } catch (e) {} }
+    recogRunning = false;
     if (mediaRecorder && mediaRecorder.state !== 'inactive') { try { mediaRecorder.stop(); } catch (e) {} }
     teardownRecorder();
     if (mediaStream) {
@@ -30281,6 +30312,24 @@ function trimSilence(audioBuffer) {
   // Don't bother if there was barely anything to remove (<80ms total).
   if ((n - (e - s)) < frameLen * 8) return { buffer: audioBuffer, trimmed: false };
   return { buffer: makeBufferView(ch, sr, s, e), trimmed: true, startSec: s / sr, endSec: e / sr };
+}
+
+// Crop the silence into a REAL AudioBuffer (the view above shares memory and
+// can't drive an AudioBufferSourceNode for playback). Used at capture time so
+// the displayed waveform and the playback both show only the spoken part.
+// Falls back to the original buffer if there's nothing to trim or the copy
+// fails. `ctx` is any AudioContext (for createBuffer).
+function trimToRealBuffer(audioBuffer, ctx) {
+  const tr = trimSilence(audioBuffer);
+  if (!tr.trimmed) return audioBuffer;
+  const data = tr.buffer.getChannelData(0);
+  if (!data.length) return audioBuffer;
+  try {
+    const out = ctx.createBuffer(1, data.length, tr.buffer.sampleRate);
+    if (out.copyToChannel) out.copyToChannel(data, 0);
+    else out.getChannelData(0).set(data);
+    return out;
+  } catch (e) { return audioBuffer; }
 }
 
 // Detect syllable nuclei — the per-mora vowel beats — from the smoothed
