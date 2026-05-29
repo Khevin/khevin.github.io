@@ -95,26 +95,21 @@
     transform: translateY(-1px);
   }
   .jp-enter-mark {
-    font-family: var(--serif-jp);
-    font-weight: 700;
-    font-size: 32px;
-    color: var(--jp-gold-dark);
-    background: var(--jp-paper-2);
-    border: 1px solid var(--jp-edge);
-    border-radius: 6px;
-    width: 52px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 72px;
+    width: auto;
+    max-width: 88px;
+    object-fit: contain;
     flex: 0 0 auto;
+    align-self: center;
   }
   .jp-enter-body {
     display: flex;
     flex-direction: column;
+    justify-content: center;   /* keep the text centred against the taller logo */
     gap: 3px;
     flex: 1;
     min-width: 0;
+    align-self: center;
   }
   .jp-enter-label {
     font-family: var(--serif-jp);
@@ -275,7 +270,7 @@
 
     <div class="jp-enter">
       <a href="./nihongo/app.html" class="jp-enter-link">
-        <span class="jp-enter-mark" lang="ja" aria-hidden="true">学</span>
+        <img class="jp-enter-mark" src="./nihongo/images/logo.webp" alt="" aria-hidden="true" />
         <span class="jp-enter-body">
           <span class="jp-enter-label">勉強アプリを開く &mdash; Open the study app</span>
           <span class="jp-enter-sub">Vocabulary &middot; Flashcards &middot; Dictionary &middot; Sentences</span>
