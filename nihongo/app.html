@@ -16037,6 +16037,25 @@
     width: clamp(10px, 1.2vw, 18px);
   }
 
+  /* Inline pitch-markup variant — for `かな{LHLL}` rendered inside body
+     prose (pitchifyText / window.pitchify). Everything sizes in EM so the
+     contour scales with the surrounding text instead of the studio's
+     fixed display px. Equal-width em columns keep the proportional SVG
+     contour aligned to the mora. */
+  .pitch-mora-row.is-inline {
+    padding-top: 0.62em;
+    vertical-align: -0.15em;
+    margin: 0 0.1em;
+  }
+  .pitch-mora-row.is-inline .pitch-mora {
+    width: 1.04em;
+    font-size: 1.35em;
+    line-height: 1.1;
+  }
+  .pitch-mora-row.is-inline .pitch-contour-svg {
+    height: 0.95em;
+  }
+
   .pitch-pattern-chip {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 10px;
@@ -16488,6 +16507,18 @@
     padding: 1px 6px;
     border-radius: 3px;
     font-size: 0.9em;
+  }
+  .pitch-markup-code {
+    font-family: var(--font-en);
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 18px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    white-space: pre-wrap;
   }
   .pitch-trio {
     display: grid;
@@ -29478,15 +29509,104 @@ function renderPitchPatternChip(pattern, accent) {
 }
 
 // ── Mora row renderer — used in both the studio and the pitch basics page.
-function renderMoraRow(chunk, tone = 'model') {
+function renderMoraRow(chunk, tone = 'model', opts = {}) {
+  const cls = 'pitch-mora-row' + (opts.inline ? ' is-inline' : '');
   return `
-    <span class="pitch-mora-row">
+    <span class="${cls}">
       ${renderPitchContourSVG(chunk, tone)}
       ${(chunk.mora || []).map((m, i) => `
         <span class="pitch-mora" data-pitch="${escAttr(chunk.pitch[i] || 'L')}">${escHTML(m)}</span>
       `).join('')}
     </span>`;
 }
+
+// ── Inline pitch-accent markup: `かな{LHLL}` → rendered contour ────────
+// The OJAD / textbook shorthand the user found: write a kana run followed
+// by a brace of H/L marks (one per mora) and it renders the pitch line
+// over the kana. Reusable anywhere — call pitchifyText(str) on a content
+// string, or window.pitchify(element) to process the text nodes of an
+// already-rendered container.
+//
+// The hard part is splitting kana into MORA correctly: small kana
+// (ゃゅょ, small vowels, ゎ) attach to the preceding mora (きょ = 1 mora);
+// the long mark ー, the sokuon っ, and ん are each their own mora.
+const MORA_ATTACH = new Set([
+  // small ya/yu/yo + small vowels + small wa — hiragana then katakana
+  'ゃ','ゅ','ょ','ぁ','ぃ','ぅ','ぇ','ぉ','ゎ',
+  'ャ','ュ','ョ','ァ','ィ','ゥ','ェ','ォ','ヮ',
+]);
+function splitMora(kana) {
+  const mora = [];
+  for (const ch of Array.from(kana)) {
+    if (MORA_ATTACH.has(ch) && mora.length) {
+      mora[mora.length - 1] += ch;          // small kana fuses into the previous mora
+    } else {
+      mora.push(ch);                          // everything else (incl. ー っ ん) is its own mora
+    }
+  }
+  return mora;
+}
+
+// Build the inline contour HTML for one `kana` + `marks` pair. If the
+// mark count doesn't match the mora count we pad/truncate defensively so
+// a small typo still renders something sensible rather than throwing.
+function renderPitchMarkup(kana, marks) {
+  const mora = splitMora(kana);
+  if (!mora.length) return escHTML(kana);
+  let pitch = String(marks).toUpperCase().replace(/[^HL]/g, '').split('');
+  if (!pitch.length) return escHTML(kana);
+  // Align lengths: repeat the last mark to pad, or trim the excess.
+  while (pitch.length < mora.length) pitch.push(pitch[pitch.length - 1]);
+  if (pitch.length > mora.length) pitch = pitch.slice(0, mora.length);
+  return renderMoraRow({ mora, pitch }, 'model', { inline: true });
+}
+
+// String → string. Replaces every `かな{HL...}` occurrence in a plain-text
+// string with its rendered inline contour. Matches hiragana, katakana,
+// and the long mark; the brace holds H/L (case-insensitive). Other text
+// passes through untouched (HTML-escaped).
+const PITCH_MARKUP_RE = /([ぁ-ゖァ-ヺー]+)\{([HLhl]+)\}/g;
+function pitchifyText(str) {
+  let out = '', last = 0, m;
+  PITCH_MARKUP_RE.lastIndex = 0;
+  while ((m = PITCH_MARKUP_RE.exec(str))) {
+    out += escHTML(str.slice(last, m.index));
+    out += renderPitchMarkup(m[1], m[2]);
+    last = m.index + m[0].length;
+  }
+  out += escHTML(str.slice(last));
+  return out;
+}
+
+// DOM walker. Processes the text nodes of an already-rendered element,
+// swapping any `かな{HL}` markup for rendered contours. Lets the notation
+// work in "any html" — author the markup in content, call pitchify on the
+// container after it mounts. Skips <script>/<style> and elements opting
+// out via data-no-pitch.
+function pitchify(root) {
+  if (!root) return;
+  const probe = /[ぁ-ゖァ-ヺー]+\{[HLhl]+\}/;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const p = node.parentNode;
+      if (!p) return NodeFilter.FILTER_REJECT;
+      const tag = p.nodeName;
+      if (tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
+      if (p.closest && p.closest('[data-no-pitch]')) return NodeFilter.FILTER_REJECT;
+      return probe.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+    },
+  });
+  const targets = [];
+  let node;
+  while ((node = walker.nextNode())) targets.push(node);
+  for (const t of targets) {
+    const span = document.createElement('span');
+    span.innerHTML = pitchifyText(t.nodeValue);
+    t.replaceWith(span);
+  }
+}
+window.pitchify = pitchify;
+window.pitchifyText = pitchifyText;
 
 // ── Speaking sidebar (categories list) ────────────────────────────────
 function renderSpeakingSidebar() {
@@ -30569,6 +30689,28 @@ function renderWritingPitch(container) {
         </dl>
       </section>
 
+      <section class="pitch-section">
+        <h2 class="pitch-section-title">
+          <span class="num">四</span>
+          <span class="ja">かきかた</span>
+          <span class="en"><em>Notation shortcut</em></span>
+        </h2>
+        <div class="pitch-section-body">
+          <p>
+            You can write pitch accent inline anywhere on this site. Type a kana word followed by a brace of
+            <strong>H</strong> / <strong>L</strong> marks — one per mora — and it renders the line over the kana:
+          </p>
+          <pre class="pitch-markup-code" data-no-pitch>ありがとう{LHLLL}</pre>
+          <p>…turns into: ありがとう{LHLLL}</p>
+          <p>
+            <strong>L</strong> stands for <em>low</em>, <strong>H</strong> for <em>high</em>. One mark per mora —
+            small kana fuse to the mora before them (きょ is one), and ー, っ, ん each count on their own.
+            Write the reading in <em>kana</em> (kanji don't split into mora). A few more:
+            にほんご{LHHHH} (heiban), わたし{LHL} (nakadaka), あめ{HLL} (atamadaka), おすし{LHL} (the sushi word).
+          </p>
+        </div>
+      </section>
+
       <section class="pitch-section pitch-section-cta">
         <p class="pitch-cta-prompt">Ready to practice?</p>
         <button class="pitch-cta-btn" type="button" data-jump-speaking>
@@ -30577,6 +30719,11 @@ function renderWritingPitch(container) {
         </button>
       </section>
     </div>`;
+
+  // Render any inline かな{HL} markup in the prose (the "notation shortcut"
+  // section above relies on this). data-no-pitch on the <pre> keeps the
+  // literal syntax example un-rendered so the learner sees what to type.
+  if (typeof pitchify === 'function') pitchify(container);
 
   // Wire example play buttons → TTS.
   container.querySelectorAll('.pitch-example-play[data-speak]').forEach(btn => {
