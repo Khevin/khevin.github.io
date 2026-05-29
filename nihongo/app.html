@@ -18617,8 +18617,13 @@ function renderAudioSettingsPopover() {
   const vol  = Math.max(0, Math.min(1, +APP.ttsVolume || 1));
   const rate = Math.max(0.5, Math.min(1.5, +APP.ttsRate || 0.85));
 
+  const gcloudVoices = (APP.gcloudTtsKey && window.TTS && TTS.GCLOUD_VOICES) ? TTS.GCLOUD_VOICES : [];
   const voiceOpts = [
     `<option value="">${escHTML('Auto (best Japanese voice)')}</option>`,
+    ...gcloudVoices.map(g => {
+      const val = 'gcloud:' + g.id;
+      return `<option value="${escAttr(val)}"${val === currentVoiceURI ? ' selected' : ''}>${escHTML(g.label)}</option>`;
+    }),
     ...jaVoices.map(v => {
       const sel = v.voiceURI === currentVoiceURI ? ' selected' : '';
       return `<option value="${escAttr(v.voiceURI)}"${sel}>${escHTML(v.name || v.voiceURI)}</option>`;
@@ -18971,6 +18976,14 @@ function openSettingsModal() {
     });
     const testBtn = wrap.querySelector('[data-test-voice]');
     if (testBtn) testBtn.addEventListener('click', () => {
+      // Commit whatever's currently selected in the dropdown first, so Test
+      // always plays the VISIBLE choice (don't depend on the change event
+      // having fired — e.g. picking an option then clicking straight here).
+      const vs = wrap.querySelector('#tts-voice');
+      if (vs) {
+        APP.ttsVoiceURI = vs.value || null;
+        lsSet('jp:ttsVoiceURI', APP.ttsVoiceURI);
+      }
       TTS.speak('こんにちは。日本語の音声テストです。');
     });
     const autoplay = wrap.querySelector('#set-autoplay');
