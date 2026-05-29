@@ -70,8 +70,12 @@
   }
 
   /* ── enter CTA ───────────────────────────────────────────────────── */
+  /* Tighten the gap between the hero and the CTA card. The shared .section
+     adds 96px top padding; this page only has the one .section (the hero is
+     .page-hero), so the override is local. */
+  .section { padding-top: 44px; }
   .jp-enter {
-    margin: 40px 0 56px;
+    margin: 8px 0 56px;
   }
   .jp-enter-link {
     display: flex;
