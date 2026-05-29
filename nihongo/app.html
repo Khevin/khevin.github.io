@@ -16116,6 +16116,35 @@
     display: flex; flex-direction: column; align-items: center; gap: 8px;
     margin: 14px 0 24px;
   }
+  /* Mic + STT-engine pill. The cluster shrink-wraps the mic so it stays
+     centred; the pill is absolutely placed to the mic's right. */
+  .speaking-mic-cluster { position: relative; display: inline-flex; }
+  .speaking-stt-pick {
+    position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
+    margin-left: 14px;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    background: transparent;
+    color: var(--ink-faint);
+    cursor: pointer; white-space: nowrap;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .speaking-stt-pick svg { width: 14px; height: 14px; }
+  .speaking-stt-pick .stt-pick-label { font-family: var(--font-en); font-size: 11px; letter-spacing: 0.02em; }
+  .speaking-stt-pick:hover { color: var(--ink-soft); border-color: color-mix(in srgb, var(--ink) 24%, transparent); }
+  /* Cloud engine active → filled gold; browser → muted. */
+  .speaking-stt-pick[data-engine="cloud"] {
+    background: color-mix(in srgb, var(--accent-gold, #a8843c) 16%, var(--paper));
+    border-color: color-mix(in srgb, var(--accent-gold, #a8843c) 50%, transparent);
+    color: color-mix(in srgb, var(--accent-gold, #a8843c) 70%, var(--ink));
+  }
+  @media (max-width: 560px) {
+    /* Tight screens: icon-only pill so it doesn't collide with the card edge. */
+    .speaking-stt-pick { margin-left: 8px; padding: 5px; }
+    .speaking-stt-pick .stt-pick-label { display: none; }
+  }
   .speaking-mic {
     width: 88px; height: 88px;
     border-radius: 999px;
@@ -30140,11 +30169,27 @@ function speakingStudioHTML(cat, phrase) {
         </div>
 
         <div class="speaking-mic-row">
-          <button class="speaking-mic" id="speaking-mic" type="button"
-                  data-state="idle"
-                  aria-label="Tap to record">
-            ${G_MIC}
-          </button>
+          <div class="speaking-mic-cluster">
+            <button class="speaking-mic" id="speaking-mic" type="button"
+                    data-state="idle"
+                    aria-label="Tap to record">
+              ${G_MIC}
+            </button>
+            ${(() => {
+              const cloud = !!(APP.gcloudTtsKey && APP.gcloudStt !== false);
+              return `<button class="speaking-stt-pick" id="speaking-stt-pick" type="button"
+                      data-engine="${cloud ? 'cloud' : 'browser'}"
+                      title="${escAttr('音声認識エンジン · speech recognition' + (APP.gcloudTtsKey ? ' — tap to switch Cloud ⇄ Browser' : ' — add a Google Cloud key in settings to use Cloud'))}"
+                      aria-label="${escAttr('Speech recognition engine: ' + (cloud ? 'Google Cloud' : 'browser'))}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="3"/>
+                  <path d="M9 10.5a2 2 0 1 0 0 3"/>
+                  <path d="M16 10.5a2 2 0 1 0 0 3"/>
+                </svg>
+                <span class="stt-pick-label">${cloud ? 'Cloud' : 'Browser'}</span>
+              </button>`;
+            })()}
+          </div>
           <div class="speaking-mic-labels">
             <span class="mic-label-ja" id="speaking-mic-label-ja"><ruby>録音<rt>ろくおん</rt></ruby>する</span>
             <span class="mic-label-en" id="speaking-mic-label-en">Tap to Record</span>
@@ -31403,6 +31448,25 @@ function wireSpeakingStudio(cat, phrase) {
     APP.speakingAutoplay = !APP.speakingAutoplay;
     lsSet('jp:speakingAutoplay', APP.speakingAutoplay);
     autoplayToggle.setAttribute('aria-checked', String(APP.speakingAutoplay));
+  });
+
+  // STT-engine pill (right of the mic) — flips APP.gcloudStt (Cloud ⇄
+  // Browser), the same flag Settings → "Cloud speech recognition" controls.
+  // With no key there's nothing to switch to, so it opens Settings to add
+  // one. Applies to the next recording.
+  const sttPick = root.querySelector('#speaking-stt-pick');
+  if (sttPick) sttPick.addEventListener('click', () => {
+    if (!APP.gcloudTtsKey) {
+      if (typeof openSettingsModal === 'function') openSettingsModal();
+      return;
+    }
+    APP.gcloudStt = (APP.gcloudStt === false);   // flip; default on
+    lsSet('jp:gcloudStt', APP.gcloudStt);
+    const cloud = APP.gcloudStt !== false;
+    sttPick.dataset.engine = cloud ? 'cloud' : 'browser';
+    const lbl = sttPick.querySelector('.stt-pick-label');
+    if (lbl) lbl.textContent = cloud ? 'Cloud' : 'Browser';
+    sttPick.setAttribute('aria-label', 'Speech recognition engine: ' + (cloud ? 'Google Cloud' : 'browser'));
   });
 
   // User-playback (after recording exists).
