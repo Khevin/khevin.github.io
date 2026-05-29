@@ -4509,148 +4509,138 @@
     z-index: 4;
   }
 
-  /* detail dialog */
-  .book-dialog {
+  /* small English gloss under the JP masthead title */
+  .books-page .library-recommend-en {
+    font-family: var(--font-menu-en);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 14px 0 0;
+  }
+
+  /* ─── editorial detail modal (click a cover) ─────────────────────────
+     A large, scrollable popover that presents each book as a short
+     editorial spread: a header, then stacked sections that switch layout
+     to suit the page scans — two-column (image 60 / text 40), full-bleed
+     image, or full-width text. Portrait scans are height-bounded and
+     centred; landscape spreads fill the width. */
+  .book-modal {
     border: 0;
     padding: 0;
     background: transparent;
     color: var(--ink);
-    width: min(900px, 92vw);
-    max-height: 84vh;
-    overflow: visible;
-  }
-  .book-dialog::backdrop { background: rgba(26, 24, 21, 0.55); }
-  .book-dialog[open] { animation: book-dialog-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-  @keyframes book-dialog-in {
-    from { transform: translateY(12px) scale(0.98); opacity: 0; }
-    to   { transform: translateY(0)    scale(1);    opacity: 1; }
-  }
-  .book-dialog-form {
+    width: min(1080px, 94vw);
+    max-height: 90vh;
+    overflow: hidden;
     position: relative;
-    background: var(--paper);
-    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-    box-shadow:
-      18px 18px 0 var(--accent-vermilion, #c34b30),
-      0 18px 40px color-mix(in srgb, var(--ink) 24%, transparent);
-    overflow: auto;
-    max-height: 84vh;
   }
-  .book-dialog-grid { display: grid; grid-template-columns: 320px 1fr; gap: 0; }
-  .book-dialog-close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 44px;
-    height: 44px;
-    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  .book-modal::backdrop { background: rgba(26, 24, 21, 0.60); }
+  .book-modal[open] { animation: book-dialog-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes book-dialog-in {
+    from { transform: translateY(14px) scale(0.985); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);     opacity: 1; }
+  }
+  .book-modal-scroll {
     background: var(--paper);
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    box-shadow: 0 24px 60px color-mix(in srgb, var(--ink) 30%, transparent);
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .book-modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 44px; height: 44px;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(4px);
     border-radius: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-family: var(--font-menu-en);
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    z-index: 2;
-    color: var(--ink);
+    font-size: 22px; line-height: 1;
+    cursor: pointer; z-index: 3; color: var(--ink);
     transition: background .15s, color .15s;
   }
-  .book-dialog-close:hover { background: var(--ink); color: var(--paper); }
-  .book-dialog-close:focus-visible { outline: 2px solid var(--accent-vermilion, #c34b30); outline-offset: 2px; }
-  .book-dialog-pic {
-    background: color-mix(in srgb, var(--ink) 6%, var(--paper));
-    border-right: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-    padding: 36px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .book-modal-close:hover { background: var(--ink); color: var(--paper); }
+  .book-modal-close:focus-visible { outline: 2px solid var(--accent-vermilion, #c34b30); outline-offset: 2px; }
+  .book-modal-head {
+    padding: 52px 56px 28px;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
   }
-  .book-dialog-pic img {
-    width: 100%;
-    max-width: 240px;
-    display: block;
+  .book-modal-eyebrow {
+    font-family: var(--font-menu-en);
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-faint); margin: 0 0 14px;
+  }
+  .book-modal-title {
+    font-family: var(--font-body);
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.04; letter-spacing: -0.02em; font-weight: 400;
+    margin: 0; text-wrap: balance; color: var(--ink);
+  }
+  .book-modal-author {
+    font-family: var(--font-body); font-size: 18px; font-style: italic;
+    color: var(--ink-soft); margin: 10px 0 0;
+  }
+  .book-modal-tagline {
+    font-family: var(--font-body); font-size: 18px; line-height: 1.5;
+    color: var(--ink-soft); margin: 18px 0 0; max-width: 60ch; text-wrap: pretty;
+    border-left: 2px solid var(--accent-vermilion, #c34b30); padding-left: 18px;
+  }
+  .book-modal-sections { display: grid; gap: 0; }
+  .book-modal-section { padding: 40px 56px; }
+  .book-modal-section + .book-modal-section {
+    border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .book-modal-section[data-layout="two-col"] {
+    display: grid; grid-template-columns: 60% 40%; gap: 40px; align-items: center;
+  }
+  .book-modal-section[data-layout="two-col"][data-image-side="right"] .bms-figure { order: 2; }
+  .bms-figure { margin: 0; }
+  .bms-figure img {
+    display: block; width: 100%; height: auto;
     border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: 2px;
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--ink) 12%, transparent);
   }
-  .book-dialog-body { padding: 36px 36px 32px; display: grid; gap: 14px; align-content: start; }
-  .book-dialog-title {
-    font-family: var(--font-body);
-    font-size: clamp(28px, 3vw, 36px);
-    line-height: 1.05;
-    letter-spacing: -0.015em;
-    font-weight: 400;
-    margin: 0;
-    text-wrap: balance;
-    color: var(--ink);
+  .bms-cap {
+    margin: 12px 0 0; font-family: var(--font-body); font-size: 13px;
+    font-style: italic; line-height: 1.5; color: var(--ink-faint); text-wrap: pretty;
   }
-  .book-dialog-title em { font-style: italic; color: var(--accent-vermilion, #c34b30); }
-  .book-dialog-author {
-    font-family: var(--font-body);
-    font-size: 18px;
-    font-style: italic;
-    color: var(--ink-soft);
-    margin: 0 0 8px;
+  .book-modal-section[data-layout="full-image"] { display: block; }
+  .book-modal-section[data-layout="full-image"] .bms-figure { text-align: center; }
+  .book-modal-section[data-layout="full-image"] .bms-figure img {
+    width: auto; max-width: 100%; max-height: 78vh; margin: 0 auto;
   }
-  .book-dialog-blurb {
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    margin: 0;
-    text-wrap: pretty;
-    max-width: 60ch;
+  .book-modal-section[data-layout="full-text"] .bms-text { max-width: 68ch; margin: 0 auto; }
+  .bms-heading {
+    font-family: var(--font-body); font-size: clamp(20px, 2vw, 26px);
+    line-height: 1.15; letter-spacing: -0.01em; font-weight: 400;
+    margin: 0 0 12px; color: var(--ink);
   }
-  .book-dialog-blurb em { font-style: italic; color: var(--accent-vermilion, #c34b30); }
-  .book-dialog-why {
-    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
-    padding-top: 14px;
-    margin-top: 4px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    line-height: 1.55;
-    color: var(--ink-soft);
+  .bms-body {
+    font-family: var(--font-body); font-size: 16px; line-height: 1.62;
+    color: var(--ink-soft); text-wrap: pretty;
   }
-  .book-dialog-why strong {
-    font-family: var(--font-menu-en);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 400;
-  }
-  .book-dialog-meta {
-    margin: 14px 0 0;
-    border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-    padding-top: 16px;
-    font-family: var(--font-menu-en);
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
+  .bms-body em { font-style: italic; color: var(--accent-vermilion, #c34b30); }
+
   @media (prefers-reduced-motion: reduce) {
     .books-page .book-cover .book-image,
     .books-page .effect,
     .books-page .light { transition: none; }
-    .book-dialog[open] { animation: none; }
-  }
-  @media (max-width: 900px) {
-    .books-page .library-title-grid { grid-template-columns: 1fr; gap: 28px; }
-    .books-page .library-blurb { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 18px; }
-    .book-dialog-grid { grid-template-columns: 1fr; }
-    .book-dialog-pic { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); padding: 28px; }
-    .book-dialog-pic img { max-width: 200px; }
-    .book-dialog-body { padding: 28px 24px 24px; }
+    .book-modal[open] { animation: none; }
   }
   @media (max-width: 760px) {
     .books-page .library-head { padding: 8px 0 24px; }
-    .books-page .shelf-head { grid-template-columns: 40px 1fr; gap: 12px 14px; }
-    .books-page .shelf-meta { grid-column: 1 / -1; text-align: left; flex-direction: row; gap: 10px; align-items: baseline; }
-    .books-page .shelf-meta-sub { font-size: 12px; }
-    .book-dialog { width: 96vw; }
-    .book-dialog-form { box-shadow: 8px 8px 0 var(--accent-vermilion, #c34b30), 0 12px 28px rgba(0,0,0,0.28); }
+    .book-modal { width: 96vw; max-height: 92vh; }
+    .book-modal-scroll { max-height: 92vh; }
+    .book-modal-head { padding: 44px 24px 22px; }
+    .book-modal-section { padding: 28px 24px; }
+    .book-modal-section[data-layout="two-col"] { grid-template-columns: 1fr; gap: 20px; }
+    .book-modal-section[data-layout="two-col"][data-image-side="right"] .bms-figure { order: 0; }
+    .book-modal-section[data-layout="full-image"] .bms-figure img { max-height: 66vh; }
   }
 
   /* ─── speaking sidebar (2nd column when on Speaking) ──────────────────
@@ -25780,21 +25770,113 @@ function renderLibrary(container) {
 // shelf + detail dialog). 3 sample books for now; real shelves/links/images
 // land later. Covers come from the shared assets/books/ folder (one level up
 // from nihongo/). No Embla carousel — the shelf is a static wrapped grid.
-const BOOKS_SAMPLE = [
-  { id:'arden-want',        file:'arden-want.jpg',        title:'It’s Not How Good You Are, It’s How Good You Want to Be', author:'Paul Arden',     year:'2003',     blurb:'A pocket-sized cattle-prod from Saatchi’s creative director — two hundred pages of provocations that read as if shouted across a studio at 3pm.', why:'Re-read every January. Sets a higher floor for what counts as “trying.”' },
-  { id:'norman-doet',       file:'norman-doet.jpg',       title:'The Design of Everyday Things',                          author:'Don Norman',     year:'2013 ed.', blurb:'The book that named affordances, signifiers, and the “Norman door.” Still the cleanest argument for putting users at the center.', why:'Quoted in nearly every kickoff.' },
-  { id:'kahneman-fast-slow', file:'kahneman-fast-slow.jpg', title:'Thinking, Fast and Slow',                              author:'Daniel Kahneman', year:'2011',     blurb:'Kahneman’s synthesis of decades of cognitive research: the two systems of thinking and the biases each introduces.', why:'' },
+// Recommended Japanese-learning books. Each book is a cover (shown in the
+// shelf) plus an ordered list of `sections` that render inside the editorial
+// modal when the cover is clicked. A section's `layout` decides its shape:
+//   'two-col'    — image 60% / text 40% (set imageSide 'left' | 'right')
+//   'full-image' — the page scan, full width (portrait scans are height-capped)
+//   'full-text'  — a centred column of prose
+// Images live at images/books/<file>. `body` may contain inline <em>.
+const BOOKS = [
+  {
+    id: 'hiragana-katakana',
+    cover: 'hiragana-katakana.webp',
+    title: 'Learning Japanese Hiragana & Katakana',
+    author: 'Kenneth G. Henshall & Tetsuo Takagaki',
+    meta: 'Tuttle · Revised 2nd ed.',
+    tagline: 'The workbook that puts the two kana syllabaries into your hand, not just your head.',
+    sections: [
+      {
+        layout: 'two-col', imageSide: 'left', image: 'hiragana-katakana-2.webp',
+        heading: 'One character, one page',
+        body: 'Every kana gets the full treatment: a large model glyph, the sound it makes (“う as in <em>hula</em>, but shorter”), the kanji it was abbreviated from, numbered stroke order, and a grid to write it yourself. You copy until the shape is muscle memory.'
+      },
+      {
+        layout: 'two-col', imageSide: 'right', image: 'hiragana-katakana-3.webp',
+        heading: 'Then real words, right away',
+        body: 'Once the chart is learned the drills shift to words you’ll actually meet — <em>kimono, sashimi, hanami, mikoshi</em> — written in kana with the gloss beside them. Reading and writing reinforce each other from the first lesson.'
+      },
+      {
+        layout: 'full-text',
+        heading: 'Why it opens the shelf',
+        body: 'Kana is the one thing you can’t fake your way around, and this is the cleanest path through it. A week here and the rest of Japanese stops looking like wallpaper.'
+      },
+    ],
+  },
+  {
+    id: 'master-vocabulary',
+    cover: 'master-japanese-vocabulary.webp',
+    title: 'Master Japanese Vocabulary: The 1000 Core Words',
+    author: '語彙を学ぶ',
+    meta: 'Frequency-first · 1000 core words',
+    tagline: 'A vocabulary trainer built around the thousand words that actually carry a conversation.',
+    sections: [
+      {
+        layout: 'full-image', image: 'master-japanese-vocabulary-2.webp',
+        caption: 'Each entry pairs kanji + kana, marks the pitch accent, gives an example sentence with furigana, and leaves a grid to write the word yourself.'
+      },
+      {
+        layout: 'full-text',
+        heading: 'The thousand that matter',
+        body: 'Instead of themed lists you’ll never finish, it takes the highest-frequency words and drills them — <em>出る</em> (to leave), <em>思う</em> (to think), <em>まだ</em> (not yet), <em>顔</em> (face). Learn these and you’ve got the spine of everyday speech.'
+      },
+      {
+        layout: 'full-image', image: 'master-japanese-vocabulary-3.webp',
+        caption: 'Word-search, crossword and matching puzzles turn passive recognition into recall — the part most vocabulary books leave out.'
+      },
+    ],
+  },
+  {
+    id: 'remembering-the-kanji',
+    cover: 'remembering-the-kanji.webp',
+    title: 'Remembering the Kanji 1',
+    author: 'James W. Heisig',
+    meta: 'Univ. of Hawai‘i Press · 6th ed.',
+    tagline: 'The method this app’s flashcards are built on — meaning and writing first, readings later.',
+    sections: [
+      {
+        layout: 'two-col', imageSide: 'left', image: 'remembering-the-kanji-2.webp',
+        heading: 'A keyword and a story',
+        body: 'Heisig breaks every character into a handful of recurring “primitives,” gives each kanji one English keyword, and ties them together with a short imaginative story. <em>工</em> (craft) beside a primitive becomes <em>左</em> (left). Remember the picture and the strokes follow.'
+      },
+      {
+        layout: 'full-image', image: 'remembering-the-kanji-3.webp',
+        caption: 'Frames build on one another in order — by Lesson 27 you’re assembling 人 (person) into 佐 · 但 · 住 · 位. 2,200 characters, one stackable system.'
+      },
+      {
+        layout: 'full-text',
+        heading: 'Why it’s here',
+        body: 'This is the backbone of the Flashcards section — the keywords and primitive stories on the card backs come straight from Heisig’s frames. Reading the source makes the whole deck click.'
+      },
+    ],
+  },
 ];
 
+// One section of the editorial modal → HTML. `body` is trusted authored
+// copy (may carry <em>); headings/captions are escaped.
+function bookModalSectionHTML(s) {
+  const imgTag = s.image
+    ? `<figure class="bms-figure"><img src="images/books/${escAttr(s.image)}" alt="" loading="lazy" decoding="async">${
+        s.caption ? `<figcaption class="bms-cap">${escHTML(s.caption)}</figcaption>` : ''}</figure>`
+    : '';
+  const textBlock = (s.heading || s.body)
+    ? `<div class="bms-text">${s.heading ? `<h3 class="bms-heading">${escHTML(s.heading)}</h3>` : ''}${
+        s.body ? `<div class="bms-body">${s.body}</div>` : ''}</div>`
+    : '';
+  if (s.layout === 'full-text')  return `<section class="book-modal-section" data-layout="full-text">${textBlock}</section>`;
+  if (s.layout === 'full-image') return `<section class="book-modal-section" data-layout="full-image">${imgTag}</section>`;
+  return `<section class="book-modal-section" data-layout="two-col" data-image-side="${escAttr(s.imageSide || 'left')}">${imgTag}${textBlock}</section>`;
+}
+
 function renderBooks(container) {
-  const cards = BOOKS_SAMPLE.map(b => `
+  const cards = BOOKS.map(b => `
     <button class="book-items" type="button" data-book-id="${escAttr(b.id)}"
-            aria-label="${escAttr(b.title + ' by ' + b.author)}">
+            aria-label="${escAttr(b.title + (b.author ? ' — ' + b.author : ''))}">
       <div class="main-book-wrap" aria-hidden="true">
         <div class="book-cover">
           <div class="book-inside"></div>
           <div class="book-image">
-            <img src="../assets/books/${escAttr(b.file)}" alt="" loading="lazy" decoding="async" />
+            <img src="images/books/${escAttr(b.cover)}" alt="" loading="lazy" decoding="async" />
             <div class="effect"></div>
             <div class="light"></div>
           </div>
@@ -25806,42 +25888,18 @@ function renderBooks(container) {
     <div class="books-page">
       <header class="library-head">
         <div class="library-crumbs"><span lang="ja">としょ</span><span class="sep">/</span><span aria-current="page">Books</span></div>
-        <div class="library-title-grid">
-          <h1 class="library-h1">Books I’ve <em>read &amp; re-read.</em></h1>
-          <p class="library-blurb">A small, curated reading shelf — the same one from the portfolio, brought in-app. Tap a cover for the detail. <em>More coming.</em></p>
-        </div>
+        <h1 class="library-h1" lang="ja"><ruby>推薦<rt>すいせん</rt></ruby><ruby>図書<rt>としょ</rt></ruby></h1>
+        <p class="library-recommend-en">Books I recommend</p>
       </header>
-      <section class="shelf" data-state="expanded">
-        <div class="shelf-head">
-          <div class="shelf-rule" aria-hidden="true"></div>
-          <h2 class="shelf-title">Sample shelf</h2>
-          <div class="shelf-meta">
-            <span class="shelf-meta-volumes"><span class="v">${BOOKS_SAMPLE.length}</span> volumes</span>
-            <span class="shelf-meta-sub">Three examples to test the layout.</span>
-          </div>
-        </div>
+      <section class="shelf books-shelf">
         <div class="shelf-grid-wrap">
           <div class="shelf-grid"><div class="embla__container">${cards}</div></div>
         </div>
       </section>
 
-      <dialog class="book-dialog" id="books-dialog" aria-labelledby="books-dialog-title">
-        <form method="dialog" class="book-dialog-form">
-          <button type="submit" class="book-dialog-close" aria-label="Close" value="cancel">&times;</button>
-          <div class="book-dialog-grid">
-            <div class="book-dialog-pic"><img id="books-dialog-img" src="" alt="" /></div>
-            <div class="book-dialog-body">
-              <h2 class="book-dialog-title" id="books-dialog-title"></h2>
-              <p class="book-dialog-author" id="books-dialog-author"></p>
-              <p class="book-dialog-blurb" id="books-dialog-blurb"></p>
-              <div class="book-dialog-why" id="books-dialog-whywrap">
-                <strong>Why it’s on the shelf</strong>
-                <span id="books-dialog-why"></span>
-              </div>
-              <p class="book-dialog-meta" id="books-dialog-meta"></p>
-            </div>
-          </div>
-        </form>
+      <dialog class="book-modal" id="book-modal" aria-labelledby="book-modal-title">
+        <button type="button" class="book-modal-close" aria-label="Close">&times;</button>
+        <div class="book-modal-scroll" id="book-modal-scroll"></div>
       </dialog>
     </div>`;
 
@@ -25862,26 +25920,30 @@ function renderBooks(container) {
     else img.addEventListener('load', () => setBookDims(cell, img.naturalWidth, img.naturalHeight), { once: true });
   });
 
-  // Cover → detail dialog.
-  const dlg = container.querySelector('#books-dialog');
-  if (dlg) {
+  // Cover → editorial modal.
+  const dlg = container.querySelector('#book-modal');
+  const scroll = container.querySelector('#book-modal-scroll');
+  if (dlg && scroll) {
+    const openBook = (b) => {
+      scroll.innerHTML = `
+        <header class="book-modal-head">
+          ${b.meta ? `<p class="book-modal-eyebrow">${escHTML(b.meta)}</p>` : ''}
+          <h2 class="book-modal-title" id="book-modal-title">${escHTML(b.title)}</h2>
+          ${b.author ? `<p class="book-modal-author">${escHTML(b.author)}</p>` : ''}
+          ${b.tagline ? `<p class="book-modal-tagline">${escHTML(b.tagline)}</p>` : ''}
+        </header>
+        <div class="book-modal-sections">${(b.sections || []).map(bookModalSectionHTML).join('')}</div>`;
+      scroll.scrollTop = 0;
+      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    };
     container.querySelectorAll('.book-items').forEach(btn => {
       btn.addEventListener('click', () => {
-        const b = BOOKS_SAMPLE.find(x => x.id === btn.dataset.bookId);
-        if (!b) return;
-        const img = container.querySelector('#books-dialog-img');
-        if (img) { img.src = '../assets/books/' + b.file; img.alt = b.title + ' cover'; }
-        const set = (id, txt) => { const n = container.querySelector(id); if (n) n.textContent = txt; };
-        set('#books-dialog-title', b.title);
-        set('#books-dialog-author', b.author ? 'by ' + b.author : '');
-        set('#books-dialog-blurb', b.blurb || '');
-        set('#books-dialog-why', b.why || '');
-        set('#books-dialog-meta', b.year || '');
-        const whyWrap = container.querySelector('#books-dialog-whywrap');
-        if (whyWrap) whyWrap.style.display = (b.why && b.why.trim()) ? '' : 'none';
-        if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+        const b = BOOKS.find(x => x.id === btn.dataset.bookId);
+        if (b) openBook(b);
       });
     });
+    const closeBtn = dlg.querySelector('.book-modal-close');
+    if (closeBtn) closeBtn.addEventListener('click', () => dlg.close());
     dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
   }
 }

@@ -66,6 +66,12 @@ const RULES = [
   // Shown in the vocab book hub layout, max ~640px wide.
   { folder: 'covers',      match: /.*/, maxDim: 800,  quality: 78 },
 
+  // ── recommended-books shelf + editorial modal (folder: images/books/) ─
+  // Covers render ~180px in the shelf; inner page scans render up to
+  // ~1080px wide in the full-image modal sections. 1400 gives retina
+  // headroom on the widest use without bloating the page-page scans.
+  { folder: 'books',       match: /.*/, maxDim: 1400, quality: 80 },
+
   // ── flashcard front images (folder: images/kanji/) ─────────────────
   // Shown in the editorial flashcard's left column, ~300px max.
   // 500 gives 1.6× retina headroom.
