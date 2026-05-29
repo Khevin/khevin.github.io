@@ -322,6 +322,7 @@
   .app.show-vocab-sidebar .brand-tooltip,
   .app.show-vocab-books-sidebar .brand-tooltip,
   .app.show-writing-sidebar .brand-tooltip,
+  .app.show-library-sidebar .brand-tooltip,
   .app.show-particles-sidebar .brand-tooltip {
     left: 362px;
   }
@@ -344,6 +345,7 @@
   .app.show-vocab-sidebar .brand-tooltip::before,
   .app.show-vocab-books-sidebar .brand-tooltip::before,
   .app.show-writing-sidebar .brand-tooltip::before,
+  .app.show-library-sidebar .brand-tooltip::before,
   .app.show-particles-sidebar .brand-tooltip::before {
     display: none;
   }
@@ -4271,6 +4273,384 @@
   @media (max-width: 760px) {
     .writing-sidebar { display: none !important; }
     .app.show-writing-sidebar { grid-template-columns: 1fr; }
+  }
+
+  /* Library hub — nested sidebar (Search · Dictionary · Books). Mirrors
+     the writing-sidebar treatment. */
+  .library-sidebar {
+    display: none;
+    background: color-mix(in srgb, var(--paper-edge) 35%, var(--paper) 65%);
+    border-right: 1px solid rgba(141,102,48,0.15);
+    box-shadow: inset -6px 0 16px -12px rgba(100,72,30,0.10);
+    padding: 16px 10px;
+    position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .app.show-library-sidebar .library-sidebar { display: block; }
+  .app.show-library-sidebar { grid-template-columns: 188px 160px 1fr; }
+  @media (max-width: 760px) {
+    .library-sidebar { display: none !important; }
+    .app.show-library-sidebar { grid-template-columns: 1fr; }
+  }
+
+  /* ─── Books page — ported from the portfolio Library (books.html /
+     styles.css 4673–5158). Scoped under .books-page; the portfolio's
+     own design tokens are remapped to the app's parchment+ink palette
+     locally so the 3D open-cover treatment (KKEdXOa flip) lands
+     identically. Masthead/title clamps are trimmed because the in-app
+     content column is narrower than the full portfolio page. */
+  .books-page {
+    --rule: color-mix(in srgb, var(--ink) 12%, transparent);
+    --accent: var(--accent-vermilion, #c34b30);
+    --ink-faintest: color-mix(in srgb, var(--ink) 10%, transparent);
+    --ink-2: var(--ink-soft);
+    --paper-deep: color-mix(in srgb, var(--ink) 6%, var(--paper));
+    --serif: var(--font-body);
+    --mono: var(--font-menu-en);
+    --m-fast: .15s;
+    min-height: 60vh;
+    padding: 0 0 72px;
+  }
+
+  /* masthead */
+  .books-page .library-head { padding: 8px 0 32px; position: relative; }
+  .books-page .library-crumbs {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .books-page .library-crumbs .sep { color: var(--ink-faintest); }
+  .books-page .library-title-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 48px;
+    align-items: end;
+  }
+  .books-page .library-h1 {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    font-weight: 400;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .books-page .library-h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .books-page .library-blurb {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+    border-left: 1px solid var(--rule);
+    padding-left: 24px;
+    margin: 0;
+  }
+  .books-page .library-blurb em { font-style: italic; color: var(--accent); }
+
+  /* shelf section */
+  .books-page .shelf { padding: 48px 0 0; }
+  .books-page .shelf-head {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .books-page .shelf-rule { height: 1px; background: var(--rule); border: 0; margin: 0; }
+  .books-page .shelf-title {
+    font-family: var(--serif);
+    font-size: clamp(26px, 3.5vw, 40px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .books-page .shelf-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .books-page .shelf-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: right;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .books-page .shelf-meta .v { color: var(--ink); }
+  .books-page .shelf-meta-sub {
+    text-transform: none;
+    letter-spacing: 0.04em;
+    font-style: italic;
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* static expanded shelf — books wrap into a multi-row grid (no Embla) */
+  .books-page .shelf-grid-wrap { position: relative; }
+  .books-page .shelf-grid { overflow: visible; padding: 24px 0 32px; }
+  .books-page .embla__container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 8px;
+    row-gap: 24px;
+  }
+
+  /* single book — KKEdXOa "3D Book Flip Cover" (cover + page-stack inset) */
+  .books-page .book-items {
+    position: relative;
+    cursor: pointer;
+    padding: 16px;
+    margin: 0;
+    display: grid;
+    flex: 0 0 auto;
+    border: 0;
+    background: transparent;
+    min-height: 320px;
+    align-items: end;
+    font: inherit;
+    color: inherit;
+  }
+  .books-page .book-items:focus { outline: none; }
+  .books-page .book-items:focus-visible .book-image {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .books-page .main-book-wrap {
+    position: relative;
+    width: var(--cw, 187px);
+    height: var(--bh, 280px);
+  }
+  .books-page .book-cover { position: relative; width: 100%; height: 100%; }
+  .books-page .book-cover .book-inside {
+    position: absolute;
+    width: 90%;
+    height: 96%;
+    top: 1%;
+    left: 16px;
+    border: 1px solid var(--ink-faintest);
+    border-radius: 2px 6px 6px 2px;
+    background: var(--paper);
+    box-shadow:
+      10px 40px 40px -10px rgba(26, 24, 21, 0.20),
+      inset -2px 0 0 var(--ink-faintest),
+      inset -3px 0 0 var(--paper-deep),
+      inset -4px 0 0 var(--paper),
+      inset -5px 0 0 var(--paper-deep),
+      inset -6px 0 0 var(--paper),
+      inset -7px 0 0 var(--paper-deep),
+      inset -8px 0 0 var(--paper),
+      inset -9px 0 0 var(--paper-deep);
+  }
+  .books-page .book-cover .book-image {
+    line-height: 0;
+    position: relative;
+    border-radius: 2px 6px 6px 2px;
+    box-shadow:
+      6px 6px 18px -2px rgba(0, 0, 0, 0.2),
+      24px 28px 40px -6px rgba(0, 0, 0, 0.1);
+    transition: all 300ms ease-in-out;
+    transform: perspective(2000px) rotateY(-15deg) translateX(-10px) scaleX(0.94);
+    cursor: pointer;
+  }
+  .books-page .book-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2px 6px 6px 2px;
+  }
+  .books-page .book-items:hover .book-image,
+  .books-page .book-items:focus-visible .book-image {
+    transform: perspective(2000px) rotateY(0deg) translateX(0px) scaleX(1);
+    transform-style: preserve-3d;
+    box-shadow:
+      6px 6px 12px -1px rgba(0, 0, 0, 0.1),
+      20px 14px 16px -6px rgba(0, 0, 0, 0.1);
+  }
+  .books-page .effect {
+    position: absolute;
+    width: 20px;
+    height: 100%;
+    margin-left: 16px;
+    top: 0;
+    border-left: 2px solid rgba(0, 0, 0, 0.06);
+    background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0) 100%);
+    transition: all 500ms ease;
+    z-index: 5;
+  }
+  .books-page .book-items:hover .effect { margin-left: 14px; }
+  .books-page .light {
+    width: 90%;
+    height: 100%;
+    position: absolute;
+    border-radius: 3px;
+    background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 100%);
+    top: 0;
+    right: 0;
+    opacity: 0.1;
+    transition: all 500ms ease;
+    z-index: 4;
+  }
+
+  /* detail dialog */
+  .book-dialog {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--ink);
+    width: min(900px, 92vw);
+    max-height: 84vh;
+    overflow: visible;
+  }
+  .book-dialog::backdrop { background: rgba(26, 24, 21, 0.55); }
+  .book-dialog[open] { animation: book-dialog-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes book-dialog-in {
+    from { transform: translateY(12px) scale(0.98); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);    opacity: 1; }
+  }
+  .book-dialog-form {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    box-shadow:
+      18px 18px 0 var(--accent-vermilion, #c34b30),
+      0 18px 40px color-mix(in srgb, var(--ink) 24%, transparent);
+    overflow: auto;
+    max-height: 84vh;
+  }
+  .book-dialog-grid { display: grid; grid-template-columns: 320px 1fr; gap: 0; }
+  .book-dialog-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    background: var(--paper);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-menu-en);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+    color: var(--ink);
+    transition: background .15s, color .15s;
+  }
+  .book-dialog-close:hover { background: var(--ink); color: var(--paper); }
+  .book-dialog-close:focus-visible { outline: 2px solid var(--accent-vermilion, #c34b30); outline-offset: 2px; }
+  .book-dialog-pic {
+    background: color-mix(in srgb, var(--ink) 6%, var(--paper));
+    border-right: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    padding: 36px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .book-dialog-pic img {
+    width: 100%;
+    max-width: 240px;
+    display: block;
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+  .book-dialog-body { padding: 36px 36px 32px; display: grid; gap: 14px; align-content: start; }
+  .book-dialog-title {
+    font-family: var(--font-body);
+    font-size: clamp(28px, 3vw, 36px);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+    margin: 0;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  .book-dialog-title em { font-style: italic; color: var(--accent-vermilion, #c34b30); }
+  .book-dialog-author {
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 8px;
+  }
+  .book-dialog-blurb {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    text-wrap: pretty;
+    max-width: 60ch;
+  }
+  .book-dialog-blurb em { font-style: italic; color: var(--accent-vermilion, #c34b30); }
+  .book-dialog-why {
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    padding-top: 14px;
+    margin-top: 4px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .book-dialog-why strong {
+    font-family: var(--font-menu-en);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+  .book-dialog-meta {
+    margin: 14px 0 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    padding-top: 16px;
+    font-family: var(--font-menu-en);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .books-page .book-cover .book-image,
+    .books-page .effect,
+    .books-page .light { transition: none; }
+    .book-dialog[open] { animation: none; }
+  }
+  @media (max-width: 900px) {
+    .books-page .library-title-grid { grid-template-columns: 1fr; gap: 28px; }
+    .books-page .library-blurb { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 18px; }
+    .book-dialog-grid { grid-template-columns: 1fr; }
+    .book-dialog-pic { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); padding: 28px; }
+    .book-dialog-pic img { max-width: 200px; }
+    .book-dialog-body { padding: 28px 24px 24px; }
+  }
+  @media (max-width: 760px) {
+    .books-page .library-head { padding: 8px 0 24px; }
+    .books-page .shelf-head { grid-template-columns: 40px 1fr; gap: 12px 14px; }
+    .books-page .shelf-meta { grid-column: 1 / -1; text-align: left; flex-direction: row; gap: 10px; align-items: baseline; }
+    .books-page .shelf-meta-sub { font-size: 12px; }
+    .book-dialog { width: 96vw; }
+    .book-dialog-form { box-shadow: 8px 8px 0 var(--accent-vermilion, #c34b30), 0 12px 28px rgba(0,0,0,0.28); }
   }
 
   /* ─── speaking sidebar (2nd column when on Speaking) ──────────────────
@@ -16854,6 +17234,8 @@
        filmstrip inside the main column, not in a third sidebar — per the
        spread-with-bottom-rail layout decision in 2026-05-28-speaking.PRODUCT.md. -->
   <aside class="speaking-sidebar" id="speaking-sidebar"></aside>
+  <!-- Library hub: nested sidebar listing Search · Dictionary · Books. -->
+  <aside class="library-sidebar" id="library-sidebar"></aside>
   <main class="main" id="main">
     <!-- Stepper slot — lives OUTSIDE main-inner so vocab pages can place
          the step nav flush to the top while keeping the card content
@@ -16930,13 +17312,19 @@ const SECTIONS = [
   // producing — the learner imitates, records, and is scored against
   // the model. See docs/superpowers/specs/2026-05-28-speaking.PRODUCT.md.
   { id: 'speaking',   glyph: '話', ja: 'はなす',  en: 'Speaking' },
-  { id: 'search',     glyph: '検', ja: '検索',  en: 'Search' },
-  { id: 'dictionary', glyph: '辞', ja: '辞書',   en: 'Dictionary' },
+  // Library — a reference hub. Search, Dictionary, and Books live as pages
+  // inside its nested sidebar (renderLibrary / LIBRARY_PAGES). Replaces the
+  // former standalone Search + Dictionary top-level items.
+  { id: 'library',    glyph: '図', ja: 'としょ',  en: 'Library' },
 ];
 
 function hashSection() {
-  const h = (location.hash || '').replace('#', '');
-  return ['vocab','writing','flashcards','speaking','search','dictionary'].includes(h) ? h : lsGet('jp:section', 'vocab');
+  let h = (location.hash || '').replace('#', '');
+  // Search + Dictionary were merged into Library; map old hashes/prefs.
+  if (h === 'search' || h === 'dictionary') h = 'library';
+  if (['vocab','writing','flashcards','speaking','library'].includes(h)) return h;
+  const saved = lsGet('jp:section', 'vocab');
+  return (saved === 'search' || saved === 'dictionary') ? 'library' : saved;
 }
 
 const APP = {
@@ -17100,6 +17488,10 @@ const APP = {
   kanaSizeR: lsGet('jp:kana-size-r', 11),
   kanaFont:     lsGet('jp:kana-font', 'mincho'),
   writingPage:  lsGet('jp:writingPage', 'kana'),
+  // Library hub — which page of the nested sidebar is active: search,
+  // dictionary, or books. Migrates an old #dictionary deep-link to land on
+  // the dictionary page.
+  libraryPage:  lsGet('jp:libraryPage', (location.hash.replace('#','') === 'dictionary') ? 'dictionary' : 'search'),
   // Speaking sub-system state. Single category + single phrase active at a
   // time. Persisted across reloads so a session resumes where the learner
   // left it. Permission state for the mic is NOT persisted — every load
@@ -17189,6 +17581,7 @@ function setSection(s) {
   scl.toggle('show-flash-sidebar', s === 'flashcards');
   scl.toggle('show-writing-sidebar', s === 'writing');
   scl.toggle('show-speaking-sidebar', s === 'speaking');
+  scl.toggle('show-library-sidebar', s === 'library');
   scl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
   // Order matters — updateSidebar queues the tier-1 brush into
   // _brushRenderQueue; renderMain then queues tier-2 and tier-3. If
@@ -17850,7 +18243,7 @@ const BRUSH_BG_SPILL_RATIO = 0.10;
 const BRUSH_BG_FALLBACK_ASPECT = 2.0;
 const SUB_SIDEBAR_SELECTOR =
   '.particles-sidebar, .flash-sidebar, .writing-sidebar, ' +
-  '.vocab-sidebar, .vocab-books-sidebar';
+  '.vocab-sidebar, .vocab-books-sidebar, .library-sidebar';
 function repositionBgBrushes() {
   document.querySelectorAll('.active-brush-bg').forEach(brush => {
     const row = brush.parentElement;
@@ -19321,8 +19714,7 @@ function renderMain() {
   else if (APP.section === 'writing')    { renderWriting(el); renderWritingSidebar(); renderParticlesSidebar(); }
   else if (APP.section === 'flashcards') renderFlashcards(el);
   else if (APP.section === 'speaking')   { renderSpeaking(el); renderSpeakingSidebar(); }
-  else if (APP.section === 'search')     renderSearch(el);
-  else if (APP.section === 'dictionary') renderDictionary(el);
+  else if (APP.section === 'library')    { renderLibrary(el); renderLibrarySidebar(); }
 }
 
 // Reset every piece of book-local state. Called whenever the user
@@ -25307,6 +25699,165 @@ function renderWriting(container) {
   else if (actual === 'colors')             renderWritingColors(container);
   else if (actual === 'datetime')           renderWritingDatetime(container);
   else if (actual === 'pitch')              renderWritingPitch(container);
+}
+
+// ── Library hub — Search · Dictionary · Books in a nested sidebar ─────
+// Mirrors the Writing-section pattern: a fixed page list rendered into a
+// second-rail sidebar, with a dispatch that swaps the main column.
+const LIBRARY_PAGES = [
+  { id: 'search',     glyph: '検', ja: 'けんさく', en: 'Search' },
+  { id: 'dictionary', glyph: '辞', ja: 'じしょ',   en: 'Dictionary' },
+  { id: 'books',      glyph: '本', ja: 'ほん',     en: 'Books' },
+];
+
+function renderLibrarySidebar() {
+  const el = document.getElementById('library-sidebar');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="flash-sidebar-head">sections</div>
+    <ul class="cat-list">
+      ${LIBRARY_PAGES.map(p => {
+        const isActive = p.id === APP.libraryPage;
+        return `
+        <li>
+          <button class="cat-item ${isActive ? 'active' : ''}" data-library-page="${p.id}">
+            <span class="cat-glyph">${p.glyph}</span>
+            <span class="cat-label">
+              <span class="cat-ja">${escHTML(p.ja)}</span>
+              <span class="cat-en">${escHTML(p.en)}</span>
+            </span>
+            ${isActive ? activeBrushHTML(2) : ''}
+          </button>
+        </li>`;
+      }).join('')}
+    </ul>`;
+  el.querySelectorAll('[data-library-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.libraryPage === APP.libraryPage) return;
+      APP.libraryPage = btn.dataset.libraryPage;
+      lsSet('jp:libraryPage', APP.libraryPage);
+      if (typeof applyContextBg === 'function') applyContextBg();
+      renderLibrary(document.getElementById('main-inner'));
+      renderLibrarySidebar();
+    });
+  });
+}
+
+function renderLibrary(container) {
+  const page = APP.libraryPage || 'search';
+  if (page === 'dictionary')    renderDictionary(container);
+  else if (page === 'books')    renderBooks(container);
+  else                          renderSearch(container);
+}
+
+// Books — a static port of the portfolio Library page (the 3D open-cover
+// shelf + detail dialog). 3 sample books for now; real shelves/links/images
+// land later. Covers come from the shared assets/books/ folder (one level up
+// from nihongo/). No Embla carousel — the shelf is a static wrapped grid.
+const BOOKS_SAMPLE = [
+  { id:'arden-want',        file:'arden-want.jpg',        title:'It’s Not How Good You Are, It’s How Good You Want to Be', author:'Paul Arden',     year:'2003',     blurb:'A pocket-sized cattle-prod from Saatchi’s creative director — two hundred pages of provocations that read as if shouted across a studio at 3pm.', why:'Re-read every January. Sets a higher floor for what counts as “trying.”' },
+  { id:'norman-doet',       file:'norman-doet.jpg',       title:'The Design of Everyday Things',                          author:'Don Norman',     year:'2013 ed.', blurb:'The book that named affordances, signifiers, and the “Norman door.” Still the cleanest argument for putting users at the center.', why:'Quoted in nearly every kickoff.' },
+  { id:'kahneman-fast-slow', file:'kahneman-fast-slow.jpg', title:'Thinking, Fast and Slow',                              author:'Daniel Kahneman', year:'2011',     blurb:'Kahneman’s synthesis of decades of cognitive research: the two systems of thinking and the biases each introduces.', why:'' },
+];
+
+function renderBooks(container) {
+  const cards = BOOKS_SAMPLE.map(b => `
+    <button class="book-items" type="button" data-book-id="${escAttr(b.id)}"
+            aria-label="${escAttr(b.title + ' by ' + b.author)}">
+      <div class="main-book-wrap" aria-hidden="true">
+        <div class="book-cover">
+          <div class="book-inside"></div>
+          <div class="book-image">
+            <img src="../assets/books/${escAttr(b.file)}" alt="" loading="lazy" decoding="async" />
+            <div class="effect"></div>
+            <div class="light"></div>
+          </div>
+        </div>
+      </div>
+    </button>`).join('');
+
+  container.innerHTML = `
+    <div class="books-page">
+      <header class="library-head">
+        <div class="library-crumbs"><span lang="ja">としょ</span><span class="sep">/</span><span aria-current="page">Books</span></div>
+        <div class="library-title-grid">
+          <h1 class="library-h1">Books I’ve <em>read &amp; re-read.</em></h1>
+          <p class="library-blurb">A small, curated reading shelf — the same one from the portfolio, brought in-app. Tap a cover for the detail. <em>More coming.</em></p>
+        </div>
+      </header>
+      <section class="shelf" data-state="expanded">
+        <div class="shelf-head">
+          <div class="shelf-rule" aria-hidden="true"></div>
+          <h2 class="shelf-title">Sample shelf</h2>
+          <div class="shelf-meta">
+            <span class="shelf-meta-volumes"><span class="v">${BOOKS_SAMPLE.length}</span> volumes</span>
+            <span class="shelf-meta-sub">Three examples to test the layout.</span>
+          </div>
+        </div>
+        <div class="shelf-grid-wrap">
+          <div class="shelf-grid"><div class="embla__container">${cards}</div></div>
+        </div>
+      </section>
+
+      <dialog class="book-dialog" id="books-dialog" aria-labelledby="books-dialog-title">
+        <form method="dialog" class="book-dialog-form">
+          <button type="submit" class="book-dialog-close" aria-label="Close" value="cancel">&times;</button>
+          <div class="book-dialog-grid">
+            <div class="book-dialog-pic"><img id="books-dialog-img" src="" alt="" /></div>
+            <div class="book-dialog-body">
+              <h2 class="book-dialog-title" id="books-dialog-title"></h2>
+              <p class="book-dialog-author" id="books-dialog-author"></p>
+              <p class="book-dialog-blurb" id="books-dialog-blurb"></p>
+              <div class="book-dialog-why" id="books-dialog-whywrap">
+                <strong>Why it’s on the shelf</strong>
+                <span id="books-dialog-why"></span>
+              </div>
+              <p class="book-dialog-meta" id="books-dialog-meta"></p>
+            </div>
+          </div>
+        </form>
+      </dialog>
+    </div>`;
+
+  // Per-cover aspect-ratio → --cw/--bh (ported from the portfolio).
+  const PORTRAIT_AR = 0.667, CAP_AR = PORTRAIT_AR * 1.33, BASE_H = 260;
+  const setBookDims = (cell, w, h) => {
+    if (!w || !h) return;
+    const ar = w / h; let cw, bh;
+    if (ar <= CAP_AR) { bh = BASE_H; cw = Math.round(BASE_H * ar); }
+    else { cw = Math.round(BASE_H * CAP_AR); bh = Math.round(cw / ar); }
+    cell.style.setProperty('--cw', cw + 'px');
+    cell.style.setProperty('--bh', bh + 'px');
+  };
+  container.querySelectorAll('.book-image img').forEach(img => {
+    const cell = img.closest('.book-items');
+    if (!cell) return;
+    if (img.complete && img.naturalWidth) setBookDims(cell, img.naturalWidth, img.naturalHeight);
+    else img.addEventListener('load', () => setBookDims(cell, img.naturalWidth, img.naturalHeight), { once: true });
+  });
+
+  // Cover → detail dialog.
+  const dlg = container.querySelector('#books-dialog');
+  if (dlg) {
+    container.querySelectorAll('.book-items').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const b = BOOKS_SAMPLE.find(x => x.id === btn.dataset.bookId);
+        if (!b) return;
+        const img = container.querySelector('#books-dialog-img');
+        if (img) { img.src = '../assets/books/' + b.file; img.alt = b.title + ' cover'; }
+        const set = (id, txt) => { const n = container.querySelector(id); if (n) n.textContent = txt; };
+        set('#books-dialog-title', b.title);
+        set('#books-dialog-author', b.author ? 'by ' + b.author : '');
+        set('#books-dialog-blurb', b.blurb || '');
+        set('#books-dialog-why', b.why || '');
+        set('#books-dialog-meta', b.year || '');
+        const whyWrap = container.querySelector('#books-dialog-whywrap');
+        if (whyWrap) whyWrap.style.display = (b.why && b.why.trim()) ? '' : 'none';
+        if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+      });
+    });
+    dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  }
 }
 
 function renderWritingKana(container) {
@@ -31852,6 +32403,7 @@ function init() {
   appCl.toggle('show-flash-sidebar', APP.section === 'flashcards');
   appCl.toggle('show-writing-sidebar', APP.section === 'writing');
   appCl.toggle('show-speaking-sidebar', APP.section === 'speaking');
+  appCl.toggle('show-library-sidebar', APP.section === 'library');
   appCl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
   renderSidebar();
   renderMain();
