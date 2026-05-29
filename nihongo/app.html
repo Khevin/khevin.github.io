@@ -16389,6 +16389,13 @@
     display: inline-flex;
     align-items: center;
     position: relative;
+    /* Atomic word unit: the whole chunk wraps together or not at all, so a
+       word/phrase never breaks across lines mid-mora. The .speaking-phrase
+       flex container wraps BETWEEN chunks (at the chunk-gaps), so a long
+       phrase like おれは ケンシンです breaks after the particle, keeping
+       ケンシンです intact on the next line. */
+    flex: 0 0 auto;
+    white-space: nowrap;
     /* Room ABOVE for the overline (high mora) and BELOW for the
        underline (low mora). The glyph is centred between the two
        levels — the line's POSITION tells you the pitch, which reads
@@ -30308,15 +30315,14 @@ window.SPEAKING_CATEGORIES = [
         id: 'ore-kenshin',
         chunks: [
           { mora: ['お','れ','は'], pitch: ['L','H','H'] },
-          { mora: ['ケ','ン','シ','ン'], pitch: ['L','H','H','H'] },
-          { mora: ['で','す'], pitch: ['L','L'] },
+          { mora: ['ケ','ン','シ','ン','で','す'], pitch: ['L','H','H','H','H','H'] },
         ],
         kanji: 'おれは ケンシンです',
         romaji: 'ore wa Kenshin desu',
         en: 'I am Kenshin.',
         pattern: 'heiban',
         accent: 0,
-        notes: 'おれ is a rough, masculine “I” — fitting for a wandering swordsman. Names are written in katakana: ケンシン. Swap in your own name.',
+        notes: 'おれ is a rough, masculine “I” — fitting for a wandering swordsman. Names are written in katakana: ケンシン. The name + です stays high (heiban). Swap in your own name.',
       },
       {
         id: 'kaoru-iimasu',
