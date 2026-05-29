@@ -30061,9 +30061,13 @@ const SpeakingRecorder = (function () {
     recog.onerror = () => { /* no-speech / aborted — leave the buffer as-is */ };
     recog.onend = () => {
       recogRunning = false;
-      // Chrome ends recognition after a silence; revive it so the next take
-      // doesn't have to .start() again (which is what re-prompted before).
-      if (sessionActive) { try { recog.start(); recogRunning = true; } catch (e) {} }
+      // Only revive the recognizer if a take is STILL actively recording
+      // (Chrome can end it mid-utterance after a pause). At idle we leave it
+      // stopped — auto-restarting at a random non-gesture moment (e.g. right
+      // as the user taps "play original") was triggering a stray mic prompt.
+      // The next record tap re-arms it via startRecog(), by which point the
+      // grant is already held, so no prompt.
+      if (sessionActive && isRecording()) { try { recog.start(); recogRunning = true; } catch (e) {} }
     };
   }
   function startRecog() {
@@ -30797,10 +30801,17 @@ function scoreSpeakingAttempt(phrase, audioBuffer, durationSec, opts = {}) {
   // Because every shown dimension carries the gate, OVERALL (their mean)
   // collapses for the wrong words without any extra multiply that would
   // double-count.
-  const rhythm      = Math.round(clamp(ease(rhythm01)      * (0.35 + 0.65 * gate) * 99, 0, 99));
-  const clarity     = Math.round(clamp(ease(clarity01)     * (0.12 + 0.88 * gate) * 97, 0, 97));
-  const pitch       = Math.round(clamp(ease(pitch01)       * (0.15 + 0.85 * gate) * 96, 0, 96));
-  const naturalness = Math.round(clamp(ease(naturalness01) * (0.12 + 0.88 * gate) * 97, 0, 97));
+  // Calibration lift (~7%): a strong real attempt's acoustic measures top
+  // out around 0.85-0.9 (nucleus detection is ±1, H/L pitch labelling is
+  // coarse), so without this an excellent read caps in the low 80s. The
+  // lift is multiplicative, so it rewards the high end without resurrecting
+  // a crater (gibberish at ~20 stays ~21). Ceilings stay below 100 — a
+  // literal perfect verdict is intentionally unreachable (PRODUCT.md §4).
+  const LIFT = 1.07;
+  const rhythm      = Math.round(clamp(ease(rhythm01)      * (0.35 + 0.65 * gate) * 99 * LIFT, 0, 99));
+  const clarity     = Math.round(clamp(ease(clarity01)     * (0.12 + 0.88 * gate) * 97 * LIFT, 0, 98));
+  const pitch       = Math.round(clamp(ease(pitch01)       * (0.15 + 0.85 * gate) * 96 * LIFT, 0, 98));
+  const naturalness = Math.round(clamp(ease(naturalness01) * (0.12 + 0.88 * gate) * 97 * LIFT, 0, 98));
 
   const overall = Math.round((rhythm + clarity + pitch + naturalness) / 4);
   // Status flags for the UI ("heard" line + hints):
