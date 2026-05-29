@@ -30271,6 +30271,32 @@ window.SPEAKING_CATEGORIES = [
         accent: 1,
         notes: 'メニュー is atamadaka [1] — the first mora メ is HIGH, the rest fall. ニュ is one mora (the ュ attaches to ニ). The long mark ー counts as its own mora.',
       },
+      {
+        id: 'kore-kudasai',
+        chunks: [
+          { mora: ['こ','れ','を'], pitch: ['L','H','H'] },
+          { mora: ['く','だ','さ','い'], pitch: ['L','H','H','L'] },
+        ],
+        kanji: 'これを ください',
+        romaji: 'kore o kudasai',
+        en: 'This one, please.',
+        pattern: 'nakadaka',
+        accent: 3,
+        notes: 'これ is heiban — こ rises to れ and を stays high, no drop. ください is [3]: up on だ, level on さ, then falls on the final い. The point-and-order staple when you don\'t know a dish\'s name.',
+      },
+      {
+        id: 'osusume-nandesu',
+        chunks: [
+          { mora: ['お','す','す','め','は'], pitch: ['L','H','H','H','H'] },
+          { mora: ['な','ん','で','す','か'], pitch: ['H','L','L','L','L'] },
+        ],
+        kanji: 'おすすめは 何ですか',
+        romaji: 'osusume wa nan desu ka',
+        en: 'What do you recommend?',
+        pattern: 'atamadaka',
+        accent: 1,
+        notes: 'おすすめ stays high all the way through (heiban), and は keeps that high. The question word なん is [1] — high on な, dropping on ん; ですか trails low. In speech か lifts again as a question rise, separate from the lexical accent.',
+      },
     ],
   },
 ];
@@ -30594,7 +30620,14 @@ function furiganaTranscript(transcript, phrase) {
 function speakingStudioHTML(cat, phrase) {
   const phraseIdx = cat.phrases.findIndex(p => p.id === phrase.id);
   const phraseTotal = cat.phrases.length;
-  const portraitSrc = `images/speaking/portrait-${escAttr(cat.portrait || cat.id)}.webp`;
+  // Per-phrase scene illustration. Lives in the category folder
+  // (images/speaking/<category>/<phrase>.webp) — the default convention.
+  // Categories that ship a single shared image instead point `phrase.image`
+  // (or `cat.portrait`) at a root-level file. image-slot probes extensions
+  // and collapses (readonly) if nothing is found.
+  const phraseImgKey = phrase.image
+    ? `speaking/${escAttr(phrase.image)}`
+    : `speaking/${escAttr(cat.id)}/${escAttr(phrase.id)}`;
   const fullKana = (phrase.chunks || []).map(c => (c.mora || []).join('')).join(' ');
   // Mora-by-mora chunk rendering for the display phrase. Each chunk shows
   // the pitch contour SVG above the row of mora glyphs; chunks are spaced
@@ -30684,7 +30717,7 @@ function speakingStudioHTML(cat, phrase) {
     <div class="speaking-studio" tabindex="-1" data-category-id="${escAttr(cat.id)}" data-phrase-id="${escAttr(phrase.id)}">
       <aside class="speaking-portrait" aria-hidden="true">
         <div class="speaking-portrait-frame">
-          <image-slot image-key="speaking/portrait-${escAttr(cat.portrait || cat.id)}" readonly></image-slot>
+          <image-slot image-key="${phraseImgKey}" readonly></image-slot>
         </div>
       </aside>
 
@@ -30726,7 +30759,7 @@ function speakingStudioHTML(cat, phrase) {
                   <path d="M9 10.5a2 2 0 1 0 0 3"/>
                   <path d="M16 10.5a2 2 0 1 0 0 3"/>
                 </svg>
-                <span class="stt-pick-label">${cloud ? 'STT API' : 'Browser'}</span>
+                <span class="stt-pick-label">${cloud ? 'API' : 'Browser'}</span>
               </button>`;
             })()}
           </div>
@@ -32005,7 +32038,7 @@ function wireSpeakingStudio(cat, phrase) {
     const cloud = APP.gcloudStt !== false;
     sttPick.dataset.engine = cloud ? 'cloud' : 'browser';
     const lbl = sttPick.querySelector('.stt-pick-label');
-    if (lbl) lbl.textContent = cloud ? 'STT API' : 'Browser';
+    if (lbl) lbl.textContent = cloud ? 'API' : 'Browser';
     sttPick.setAttribute('aria-label', 'Speech recognition engine: ' + (cloud ? 'Google Cloud STT API' : 'browser'));
   });
 

@@ -79,6 +79,12 @@ const RULES = [
   { folder: 'konbini',     match: /.*/, maxDim: 600,  quality: 78 },
   { folder: 'eating out',  match: /.*/, maxDim: 600,  quality: 78 },
 
+  // ── speaking sentence illustrations (folder: images/speaking/...) ───
+  // Per-phrase scene illustrations shown in the Speaking studio portrait
+  // frame (~280px wide). Sub-folders per category (speaking/food/...).
+  // 600px gives 2× retina headroom; same budget as vocab.
+  { folder: 'speaking',    match: /.*/, maxDim: 600,  quality: 78 },
+
   // ── vocabulary (onomatopoeia images) ────────────────────────────────
   { folder: 'vocabulary',  match: /.*/, maxDim: 500,  quality: 78 },
 
