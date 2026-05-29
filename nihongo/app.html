@@ -15985,8 +15985,34 @@
     color: var(--accent-vermilion, #c34b30);
     font-size: 14px;
   }
-  /* Pitch-pattern chip rides the eyebrow row, pushed to the right edge. */
-  .speaking-stage-eyebrow .pitch-pattern-chip { margin-left: auto; }
+  /* The autoplay toggle + pitch chip cluster on the right of the eyebrow.
+     The toggle carries margin-left:auto, so it (and the chip after it) hug
+     the right edge with the row's gap between them. */
+  .speaking-stage-eyebrow .speaking-autoplay-toggle { margin-left: auto; }
+  .speaking-autoplay-toggle {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px 3px 7px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    background: transparent;
+    color: var(--ink-faint);
+    font-family: var(--font-menu-en);
+    font-size: 10px; letter-spacing: 0.06em;
+    text-transform: none;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .speaking-autoplay-toggle svg { width: 13px; height: 13px; }
+  .speaking-autoplay-toggle .autoplay-label { font-family: var(--font-title); font-size: 12px; }
+  .speaking-autoplay-toggle:hover { color: var(--ink-soft); border-color: color-mix(in srgb, var(--ink) 24%, transparent); }
+  /* ON — the model auto-plays on load. Filled gold. */
+  .speaking-autoplay-toggle[aria-checked="true"] {
+    background: color-mix(in srgb, var(--accent-gold, #a8843c) 16%, var(--paper));
+    border-color: color-mix(in srgb, var(--accent-gold, #a8843c) 50%, transparent);
+    color: color-mix(in srgb, var(--accent-gold, #a8843c) 70%, var(--ink));
+  }
+  /* OFF — muted, icon dimmed. */
+  .speaking-autoplay-toggle[aria-checked="false"] { opacity: 0.72; }
 
   /* Phrase + pitch contour */
   .speaking-phrase {
@@ -30096,6 +30122,16 @@ function speakingStudioHTML(cat, phrase) {
         <div class="speaking-stage-eyebrow">
           <span class="eyebrow-glyph" aria-hidden="true">✿</span>
           <span class="eyebrow-text">PHRASE ${phraseIdx + 1} / ${phraseTotal}</span>
+          <button class="speaking-autoplay-toggle" id="speaking-autoplay-toggle" type="button"
+                  role="switch" aria-checked="${APP.speakingAutoplay ? 'true' : 'false'}"
+                  title="自動再生 · Auto-play the model when a phrase loads"
+                  aria-label="自動再生 (auto-play the model when a phrase loads)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/>
+              <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>
+            </svg>
+            <span class="autoplay-label">自動</span>
+          </button>
           ${renderPitchPatternChip(phrase.pattern, phrase.accent)}
         </div>
 
@@ -31353,6 +31389,16 @@ function wireSpeakingStudio(cat, phrase) {
   if (voiceOpenBtn && typeof toggleAudioSettingsPopover === 'function') {
     voiceOpenBtn.addEventListener('click', (e) => toggleAudioSettingsPopover(e, voiceOpenBtn));
   }
+
+  // Autoplay toggle — flips APP.speakingAutoplay (the same flag Settings →
+  // "Auto-play phrases" controls, so the two stay in sync). Takes effect on
+  // the next phrase load.
+  const autoplayToggle = root.querySelector('#speaking-autoplay-toggle');
+  if (autoplayToggle) autoplayToggle.addEventListener('click', () => {
+    APP.speakingAutoplay = !APP.speakingAutoplay;
+    lsSet('jp:speakingAutoplay', APP.speakingAutoplay);
+    autoplayToggle.setAttribute('aria-checked', String(APP.speakingAutoplay));
+  });
 
   // User-playback (after recording exists).
   const userPlayBtn = root.querySelector('#speaking-play-user');
