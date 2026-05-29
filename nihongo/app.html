@@ -16632,6 +16632,7 @@
     display: inline-flex; align-items: flex-end;
   }
   .pitch-trio-gloss { display: flex; flex-direction: column; gap: 2px; margin: 0; }
+  .pitch-trio-tts { margin-top: 2px; }
   .pitch-trio-gloss .ja {
     font-family: var(--font-title);
     font-size: 22px;
@@ -31317,7 +31318,8 @@ function renderWritingPitch(container) {
           </p>
           <p>
             The classic example is <ruby>橋<rt>はし</rt></ruby> (a bridge), <ruby>箸<rt>はし</rt></ruby> (chopsticks),
-            and <ruby>端<rt>はし</rt></ruby> (an edge). All three are pronounced <em>hashi</em>. The pitch decides which.
+            and <ruby>端<rt>はし</rt></ruby> (an edge). All three are pronounced <em>hashi</em>. The pitch decides which —
+            tap the speaker on each card to hear it (how clearly they differ depends on your device's Japanese voice).
           </p>
         </div>
         <div class="pitch-trio">
@@ -31338,6 +31340,12 @@ function renderWritingPitch(container) {
                   <span class="ja">${escHTML(['端','橋','箸'][i])}</span>
                   <span class="en"><em>${escHTML(meaning)}</em></span>
                 </p>
+                <button class="tts-btn pitch-trio-tts" type="button"
+                        aria-label="${escAttr('Hear ' + ['端','橋','箸'][i] + 'が — ' + meaning)}"
+                        title="読み上げ (listen)"
+                        data-speak="${escAttr(['端','橋','箸'][i] + 'が')}">
+                  ${speakerIconSVG()}
+                </button>
               </article>`;
           }).join('')}
         </div>
