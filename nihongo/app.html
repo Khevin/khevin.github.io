@@ -19610,10 +19610,13 @@ const SECTION_BGS = {
   'eating-out':        ['images/bg/eating-out/bg1.webp',
                         'images/bg/eating-out/bg2.webp',
                         'images/bg/eating-out/bg3.webp'],
-  // The three food "data" books (flavors / edibles / textures) intentionally
-  // have NO context bg — they're image-dense editorial pages, and a section
-  // background just competes with their own content. Suppressed in
-  // currentBgContextKey. Other eating-out books use the random pool above.
+  // Per-book deterministic overrides inside the eating-out class. flavors and
+  // edibles each get a fixed bg that matches the page's identity; books not
+  // listed here fall back to the random 'eating-out' pool above.
+  'vocab-flavors':     ['images/bg/eating-out/bg3.webp'],
+  'vocab-edibles':     ['images/bg/eating-out/bg1.webp'],
+  // 'vocab-textures' intentionally omitted — the Textures book suppresses its
+  // context bg (see currentBgContextKey) so it doesn't double up on texture.
   // Each writing subpage carries one specific bg — the brush + ink
   // aesthetics map to the subject they teach.
   'writing-kana':               ['images/bg/writing/bg-shodo.webp'],            // calligraphy → hiragana/katakana
@@ -19667,11 +19670,11 @@ function pickSectionBg(key) {
 // least-specific (the global fallback pool). Returns null only if even
 // the global pool is empty.
 function currentBgContextKey() {
-  // The food "data" books (flavors / edibles / textures) are themselves walls
-  // of food imagery — a second page background behind them just reads as two
-  // competing textures. Suppress the context bg entirely so the paper shows
-  // through cleanly.
-  if (APP.section === 'vocab' && ['flavors', 'edibles', 'textures'].includes(APP.vocabBookId)) return null;
+  // The Textures book is itself a wall of food-texture imagery — a second
+  // textured page background behind it just reads as two competing textures.
+  // Suppress the context bg entirely so the paper shows through cleanly.
+  // (flavors / edibles keep their backgrounds — see SECTION_BGS.)
+  if (APP.section === 'vocab' && APP.vocabBookId === 'textures') return null;
   // Section-class / subpage specific overrides come first.
   if (APP.section === 'vocab' && APP.vocabClassId === 'eating-out') {
     // Per-book overrides: flavors / edibles / textures each get a
