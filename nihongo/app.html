@@ -897,6 +897,13 @@
     overflow-wrap: break-word;
     line-break: strict;
   }
+  /* Furigana inside a page title (e.g. the Pitch page's 抑揚) — small and
+     faded so the kanji stays the anchor. Only ruby-bearing titles use it. */
+  .page-title-jp rt {
+    font-size: 0.36em;
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
   /* Inline connector inside a title — e.g. "ひらがな と カタカナ".
      The と sits smaller and faded so the two anchoring scripts read as
      the main subject. */
@@ -16983,33 +16990,10 @@
     --pitch-pattern-atamadaka: #c34b30;
     --pitch-pattern-nakadaka:  #8c6a3a;
     --pitch-pattern-odaka:     #7a9a5a;
-    max-width: 880px;
-    margin: 0 auto;
-    padding: clamp(20px, 2.2vw, 40px) clamp(16px, 2.4vw, 40px) clamp(64px, 6vw, 96px);
-  }
-  .pitch-page-head { margin-bottom: clamp(28px, 3vw, 48px); }
-  .pitch-page-eyebrow {
-    font-family: var(--font-menu-en);
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 8px;
-  }
-  .pitch-page-title {
-    font-family: var(--font-title);
-    font-size: clamp(36px, 4.5vw, 52px);
-    margin: 0 0 8px;
-    color: var(--ink);
-    line-height: 1.15;
-  }
-  .pitch-page-title rt { font-size: 0.35em; color: var(--ink-faint); }
-  .pitch-page-sub {
-    font-family: var(--font-en);
-    font-style: italic;
-    font-size: clamp(15px, 1.3vw, 17px);
-    color: var(--ink-soft);
-    margin: 0;
+    /* No own max-width / margin / padding: the page flows inside .main-inner
+       like every other page (capped at --content-max, centred, with .main's
+       page padding) so its body width and insets match the rest of the site.
+       The header uses the standard .page-head set below. */
   }
   .pitch-section {
     margin-top: clamp(32px, 3.6vw, 56px);
@@ -32550,13 +32534,12 @@ function renderWritingPitch(container) {
 
   container.innerHTML = `
     <div class="pitch-page">
-      <header class="pitch-page-head">
-        <div class="pitch-page-eyebrow">PITCH ACCENT &amp; TONES · よくよう・トーン</div>
-        <h1 class="pitch-page-title">
-          <ruby>抑揚<rt>よくよう</rt></ruby>とトーン
-        </h1>
-        <p class="pitch-page-sub"><em>How Japanese rises and falls — and why it matters.</em></p>
-      </header>
+      <div class="page-head">
+        <div class="page-eyebrow">pitch accent · 抑揚</div>
+        <h1 class="page-title-jp"><ruby>抑揚<rt>よくよう</rt></ruby><span class="title-conj">と</span>トーン</h1>
+        <div class="page-title-en">How Japanese rises and falls — and why it matters.</div>
+        <div class="rule"></div>
+      </div>
 
       <section class="pitch-section">
         <h2 class="pitch-section-title">
