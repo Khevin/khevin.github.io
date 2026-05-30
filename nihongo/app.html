@@ -17686,6 +17686,14 @@ const TTS = (function () {
   // produce two overlapping clips, since cancel() can only stop a clip that
   // already exists, not a fetch still in the air.
   let speakGen = 0;
+  // Double-trigger debounce. A play of the SAME phrase requested again within
+  // this window is almost always an accident — a double-click, a touch that
+  // fires click twice, or a stray second handler — never an intentional
+  // replay (you'd wait to hear the clip first). Different phrases are NOT
+  // debounced, so fast navigation between items still speaks each one.
+  const SPEAK_DEBOUNCE_MS = 700;
+  let lastSpeakText = '';
+  let lastSpeakAt = 0;
 
   function vol01() {
     const vol = +APP.ttsVolume;
@@ -17773,6 +17781,12 @@ const TTS = (function () {
   function speak(text) {
     const clean_ = clean(text);
     if (!clean_) return;
+    const now = Date.now();
+    // Ignore a rapid repeat of the same phrase (double-click / double-fired
+    // event / accidental second handler). See SPEAK_DEBOUNCE_MS.
+    if (clean_ === lastSpeakText && (now - lastSpeakAt) < SPEAK_DEBOUNCE_MS) return;
+    lastSpeakText = clean_;
+    lastSpeakAt = now;
     cancel();   // stop anything playing + invalidate any in-flight cloud fetch
     const sel = APP.ttsVoiceURI || '';
     if (sel.indexOf('gcloud:') === 0 && APP.gcloudTtsKey) {
@@ -25902,13 +25916,17 @@ function renderBooks(container) {
       </div>
     </button>`).join('');
 
+  // Standard app page header (page-head / eyebrow / page-title-jp /
+  // page-title-en / rule) — kept OUTSIDE .books-page so it inherits the
+  // app's global type tokens rather than the .books-page editorial overrides.
   container.innerHTML = `
+    <div class="page-head">
+      <div class="page-eyebrow">books · 本</div>
+      <h1 class="page-title-jp">推薦図書</h1>
+      <div class="page-title-en">Books I recommend — a small shelf for learning Japanese.</div>
+      <div class="rule"></div>
+    </div>
     <div class="books-page">
-      <header class="library-head">
-        <div class="library-crumbs"><span lang="ja">としょ</span><span class="sep">/</span><span aria-current="page">Books</span></div>
-        <h1 class="library-h1" lang="ja"><ruby>推薦<rt>すいせん</rt></ruby><ruby>図書<rt>としょ</rt></ruby></h1>
-        <p class="library-recommend-en">Books I recommend</p>
-      </header>
       <section class="shelf books-shelf">
         <div class="shelf-grid-wrap">
           <div class="shelf-grid"><div class="embla__container">${cards}</div></div>
