@@ -81,6 +81,34 @@ async function main() {
       check('BUG-1 dictionary content rendered (contains 水)', r.mainHas水 === true, `mainHas水=${r.mainHas水}`);
       await page.close();
     }
+
+    // ── BUG-2: animation lock self-heals (no permanent navigation freeze) ────
+    // The flavors/edibles transition guards are literally `if (animLocked(flag))
+    // return;`. animLocked treats a fresh lock as blocking (debounce preserved)
+    // and a stale lock (older than the longest animation) as released, so a
+    // stranded flag can never permanently freeze navigation.
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const LOCK = (typeof ANIM_LOCK_MS !== 'undefined') ? ANIM_LOCK_MS : 3000;
+        return {
+          isFn: typeof animLocked === 'function',
+          freshBlocks: animLocked(Date.now()),                 // mid-animation → blocked
+          staleReleases: animLocked(Date.now() - (LOCK + 1000)),// stranded flag → released
+          falseUnlocked: animLocked(false),                    // cleared → unlocked
+          zeroUnlocked: animLocked(0),                         // never set → unlocked
+          nullUnlocked: animLocked(null),
+          lockMs: LOCK,
+        };
+      });
+      check('BUG-2 animLocked is defined', r.isFn === true, `typeof=${r.isFn}`);
+      check('BUG-2 fresh lock blocks (debounce preserved)', r.freshBlocks === true, `fresh=${r.freshBlocks}`);
+      check('BUG-2 stale lock releases (no permanent freeze)', r.staleReleases === false, `stale=${r.staleReleases}`);
+      check('BUG-2 cleared flag (false) is unlocked', r.falseUnlocked === false, `false=${r.falseUnlocked}`);
+      check('BUG-2 unset flag (0/null) is unlocked', r.zeroUnlocked === false && r.nullUnlocked === false, `0=${r.zeroUnlocked} null=${r.nullUnlocked}`);
+      check('BUG-2 lock window exceeds longest animation (~2.2s)', r.lockMs > 2200, `lockMs=${r.lockMs}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();

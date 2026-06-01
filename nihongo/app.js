@@ -4952,9 +4952,23 @@ function wireTexturesPageHandlers(book) {
 // second click cleanly. Per-target same-id guards stay in place
 // (`APP.flavorId === flavorId` etc.) — this only blocks DIFFERENT-target
 // rapid clicks.
+// Self-healing animation lock. The flavors/edibles two-phase transitions set
+// their flag on entry and clear it when the entrance animation completes. If
+// the mid-transition rerender throws (bad data) — or the user navigates away
+// before the inner timeout fires — the flag could otherwise stay set forever,
+// and since every transition early-returns while it's set, ALL navigation
+// would silently freeze. Storing Date.now() instead of `true` lets the guard
+// treat a stale lock (older than the longest animation) as released, so
+// navigation always recovers. A `false` clear stays falsy → animLocked(false)
+// is false, so the success path is unchanged.
+const ANIM_LOCK_MS = 3000; // > the longest transition (flavors entry ~2.2s)
+function animLocked(stamp) {
+  return !!stamp && (Date.now() - stamp) < ANIM_LOCK_MS;
+}
+
 function enterFlavorImmersion(book, flavorId) {
   if (APP.flavorId === flavorId) return; // already there
-  if (window.__flavorsAnimating) return;  // mid-transition
+  if (animLocked(window.__flavorsAnimating)) return;  // mid-transition
   const frame = document.querySelector('.flavors-frame');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!frame || reduced) {
@@ -4974,7 +4988,7 @@ function enterFlavorImmersion(book, flavorId) {
   //      coming in from the right one at a time. The class is removed
   //      after the longest animation completes (~2.1s) so subsequent
   //      flavor switches don't replay the entrance.
-  window.__flavorsAnimating = true;
+  window.__flavorsAnimating = Date.now();
   frame.classList.add('is-leaving-bento');
   setTimeout(() => {
     APP.flavorId = flavorId;
@@ -4999,7 +5013,7 @@ function enterFlavorImmersion(book, flavorId) {
 
 function exitFlavorImmersion(book) {
   if (APP.flavorId == null) return;
-  if (window.__flavorsAnimating) return;
+  if (animLocked(window.__flavorsAnimating)) return;
   const frame = document.querySelector('.flavors-frame');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!frame || reduced) {
@@ -5016,7 +5030,7 @@ function exitFlavorImmersion(book) {
   //   2. swap → is-entering-bento (~500ms): bento cards cascade in
   //      with stagger (the reverse of the bento-card-exit they did
   //      on the way out).
-  window.__flavorsAnimating = true;
+  window.__flavorsAnimating = Date.now();
   frame.classList.add('is-leaving-immersion');
   setTimeout(() => {
     APP.flavorId = null;
@@ -5038,7 +5052,7 @@ function exitFlavorImmersion(book) {
 
 function switchFlavor(book, flavorId) {
   if (APP.flavorId === flavorId) return;
-  if (window.__flavorsAnimating) return;
+  if (animLocked(window.__flavorsAnimating)) return;
   const frame = document.querySelector('.flavors-frame');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!frame || reduced) {
@@ -5055,7 +5069,7 @@ function switchFlavor(book, flavorId) {
   //      food cards exit (no rail).
   //   2. swap → is-switching-in (~700ms): same elements re-enter
   //      with a shorter cascade than the full entry.
-  window.__flavorsAnimating = true;
+  window.__flavorsAnimating = Date.now();
   frame.classList.add('is-switching-out');
   setTimeout(() => {
     APP.flavorId = flavorId;
@@ -5774,8 +5788,8 @@ function wireEdiblesPageHandlers(book) {
       // transitions; blocks the second click while the first is still
       // animating (see comment on enterFlavorImmersion for full rationale).
       if (target === 'categories' && ediFrame && !reduced) {
-        if (window.__ediblesAnimating) return;
-        window.__ediblesAnimating = true;
+        if (animLocked(window.__ediblesAnimating)) return;
+        window.__ediblesAnimating = Date.now();
         ediFrame.classList.add('is-leaving-items');
         setTimeout(() => {
           APP.edibleCategory = null;
@@ -5814,8 +5828,8 @@ function wireEdiblesPageHandlers(book) {
       // selector and BOTH animate as targets, which reads as a shaky
       // double-hop. (This was the bug the user reported.)
       if (target === 'items' && ediFrame && !reduced) {
-        if (window.__ediblesAnimating) return;
-        window.__ediblesAnimating = true;
+        if (animLocked(window.__ediblesAnimating)) return;
+        window.__ediblesAnimating = Date.now();
         const returningItemId = APP.edibleItem;
         ediFrame.classList.add('is-zoom-out-detail');
         setTimeout(() => {
@@ -5893,8 +5907,8 @@ function wireEdiblesPageHandlers(book) {
         rerenderEdibles(book);
         return;
       }
-      if (window.__ediblesAnimating) return;
-      window.__ediblesAnimating = true;
+      if (animLocked(window.__ediblesAnimating)) return;
+      window.__ediblesAnimating = Date.now();
       ediFrame.classList.add('is-leaving-categories');
       setTimeout(() => {
         APP.edibleCategory = nextCatId;
@@ -5938,8 +5952,8 @@ function wireEdiblesPageHandlers(book) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
-      if (window.__ediblesAnimating) return;
-      window.__ediblesAnimating = true;
+      if (animLocked(window.__ediblesAnimating)) return;
+      window.__ediblesAnimating = Date.now();
       // Defensive: strip is-zoom-target from any sibling card that
       // might still carry it from a prior back-from-detail flow. The
       // back path adds the class then strips it in its inner timeout,
@@ -5998,8 +6012,8 @@ function wireEdiblesPageHandlers(book) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
-      if (window.__ediblesAnimating) return;
-      window.__ediblesAnimating = true;
+      if (animLocked(window.__ediblesAnimating)) return;
+      window.__ediblesAnimating = Date.now();
       const isNext = walkBtn.classList.contains('edibles-back-walk-next');
       const outClass = isNext ? 'is-sliding-out-left' : 'is-sliding-out-right';
       const inClass  = isNext ? 'is-sliding-in-from-right' : 'is-sliding-in-from-left';
@@ -6048,8 +6062,8 @@ function wireEdiblesPageHandlers(book) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
-      if (window.__ediblesAnimating) return;
-      window.__ediblesAnimating = true;
+      if (animLocked(window.__ediblesAnimating)) return;
+      window.__ediblesAnimating = Date.now();
       simBtn.classList.add('is-zoom-target');
       ediFrame.classList.add('is-launching-similar');
       setTimeout(() => {
