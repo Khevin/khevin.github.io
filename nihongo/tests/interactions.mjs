@@ -390,6 +390,47 @@ async function main() {
       check(`P5 dictionary targeted update == full render over ${r.n} queries`, r.mismatches === 0, `mismatches=${r.mismatches} [${r.details.join(', ')}]`);
       await page.close();
     }
+
+    // ── Phase 5b: radical search targeted toggle == full re-render ──────────
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const snap = (c) => ({
+          active: [...c.querySelectorAll('.rad-grid [data-rad-toggle]')].filter(b => b.classList.contains('is-active')).map(b => b.dataset.radToggle).sort(),
+          dim: [...c.querySelectorAll('.rad-grid [data-rad-toggle]')].filter(b => b.classList.contains('is-dim')).map(b => b.dataset.radToggle).sort(),
+          trayEmpty: c.querySelector('.rad-selected').classList.contains('is-empty'),
+          trayHTML: c.querySelector('.rad-selected').innerHTML,
+          resultsHTML: c.querySelector('.rad-results').innerHTML,
+        });
+        const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+        const KR = window.KANJI_RADICALS || {};
+        const k2 = Object.keys(KR).find(k => (KR[k] || []).length >= 2) || Object.keys(KR)[0];
+        const r1 = (KR[k2] || [])[0], r2 = (KR[k2] || [])[1] || r1;
+
+        let mismatches = 0; const details = [];
+        const scenarios = [{ label: 'one', sel: [r1] }, { label: 'two', sel: [r1, r2] }];
+        for (const sc of scenarios) {
+          const full = document.createElement('div'); document.body.appendChild(full);
+          APP.radicalsSelected = [...sc.sel]; renderSearch(full);
+          const a = snap(full); full.remove();
+
+          const tgt = document.createElement('div'); document.body.appendChild(tgt);
+          APP.radicalsSelected = []; renderSearch(tgt);
+          for (const rr of sc.sel) toggleRadical(tgt, rr); // targeted updates
+          const b = snap(tgt); tgt.remove();
+          if (!eq(a, b)) { mismatches++; details.push(sc.label); }
+        }
+        // clear via the targeted path must equal a full empty render
+        const fe = document.createElement('div'); document.body.appendChild(fe);
+        APP.radicalsSelected = []; renderSearch(fe); const ae = snap(fe); fe.remove();
+        const tc = document.createElement('div'); document.body.appendChild(tc);
+        APP.radicalsSelected = []; renderSearch(tc); toggleRadical(tc, r1); clearRadicals(tc); const be = snap(tc); tc.remove();
+        return { mismatches, details, clearMatch: eq(ae, be), sel: [r1, r2] };
+      });
+      check(`P5b search toggle == full render (one + two radicals, sel=${r.sel.join('')})`, r.mismatches === 0, `mismatches=${r.mismatches} [${r.details.join(', ')}]`);
+      check('P5b search clear via targeted == full empty render', r.clearMatch === true, `clearMatch=${r.clearMatch}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();

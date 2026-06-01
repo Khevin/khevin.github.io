@@ -11934,15 +11934,18 @@ function flashListViewHTML(cls, deck) {
     </div>`;
 }
 
-function renderSearch(container) {
+// Shared computation for the radical search page: the stroke-grouped radical
+// list, the current selection, which radicals are still "alive" (would still
+// yield results), and the matching kanji. Used by both the full render and the
+// targeted toggle update so the two can't drift.
+function searchModel() {
   const raw = window.RADICALS_BY_STROKE || [];
   // Collapse the long tail to save vertical space: keep 1–7 as-is, merge
   // 8+9 into one row, and merge 10+ (everything from 10 onwards — sparse
-  // and rarely needed in our deck) into one row. Each row carries a
-  // display `label` so the renderer doesn\'t need to know the rule.
+  // and rarely needed in our deck) into one row.
   const all = [];
-  let pool89 = [];
-  let pool10plus = [];
+  const pool89 = [];
+  const pool10plus = [];
   for (const g of raw) {
     if (g.strokes <= 7)           all.push({ label: String(g.strokes),  chars: g.chars });
     else if (g.strokes <= 9)      pool89.push(...g.chars);
@@ -11955,47 +11958,29 @@ function renderSearch(container) {
   const selectedSet = new Set(selected);
   const matches = kanjiMatchingRadicals(selected);
 
-  // Pre-compute which radicals would yield zero results given the current
-  // selection — those get dimmed (still clickable for browse-only, but
-  // visually de-emphasized like jisho.org does). When nothing is selected
-  // everything is "alive."
+  // Which radicals would yield zero results given the current selection — those
+  // get dimmed. Empty selection = everything alive.
   const aliveRadicals = new Set();
   if (selected.length === 0) {
     for (const k in (window.KANJI_RADICALS || {})) {
       for (const r of (window.KANJI_RADICALS[k] || [])) aliveRadicals.add(r);
     }
   } else {
-    // For each candidate radical, would adding it to the selection produce
-    // any matches? If yes, mark as alive. Reuse Idx.radicalCandidates() — the
-    // deduped non-radical cards with radicals precomputed — instead of
-    // rebuilding the card-kanji list and re-resolving radicalsForKanji() for
-    // every candidate radical on every render. Equivalent: dedup doesn't change
-    // a .some() result, and candidates already exclude cards with no radicals
-    // (which never matched under the old `rad.length` guard).
     const cands = Idx.radicalCandidates();
     for (const group of all) {
       for (const r of group.chars) {
         if (selectedSet.has(r)) { aliveRadicals.add(r); continue; }
-        // would this radical, added to current selection, return any kanji?
         const next = [...selected, r];
-        const has = cands.some(c => next.every(x => c.radicals.includes(x)));
-        if (has) aliveRadicals.add(r);
+        if (cands.some(c => next.every(x => c.radicals.includes(x)))) aliveRadicals.add(r);
       }
     }
   }
+  return { all, selected, selectedSet, aliveRadicals, matches };
+}
 
-  container.innerHTML = `
-    <div class="page-head">
-      <div class="page-eyebrow">search · 検索</div>
-      <h1 class="page-title-jp">ぶしゅ から さがす</h1>
-      <div class="rule"></div>
-      <p class="page-sub">
-        Pick radicals to find kanji in your decks that contain all of them.
-        Click a result to jump to its flashcard.
-      </p>
-    </div>
-
-    <div class="rad-selected ${selected.length ? '' : 'is-empty'}">
+// Inner markup of the .rad-selected tray (label + selected chips + clear).
+function searchSelectedInnerHTML(selected) {
+  return `
       <span class="rad-selected-label">selected</span>
       <div class="rad-selected-chips">
         ${selected.length === 0
@@ -12003,26 +11988,12 @@ function renderSearch(container) {
           : selected.map(r => `<button class="rad-chip is-active is-tray" data-rad-toggle="${escAttr(r)}">${escHTML(r)}</button>`).join('')
         }
       </div>
-      ${selected.length ? `<button class="rad-clear" data-rad-clear>clear</button>` : ''}
-    </div>
+      ${selected.length ? `<button class="rad-clear" data-rad-clear>clear</button>` : ''}`;
+}
 
-    <div class="rad-grid">
-      ${all.map(group => `
-        <div class="rad-stroke-row">
-          <div class="rad-stroke-label">
-            <span class="rad-stroke-num">${escHTML(group.label)}</span>
-            <span class="rad-stroke-unit">画</span>
-          </div>
-          <div class="rad-stroke-chips">
-            ${group.chars.map(r => `
-              <button class="rad-chip ${selectedSet.has(r) ? 'is-active' : ''} ${aliveRadicals.has(r) ? '' : 'is-dim'}" data-rad-toggle="${escAttr(r)}">${escHTML(r)}</button>
-            `).join('')}
-          </div>
-        </div>
-      `).join('')}
-    </div>
-
-    <div class="rad-results">
+// Inner markup of the .rad-results region (head + empty state or kanji grid).
+function searchResultsInnerHTML(matches, selected) {
+  return `
       <div class="rad-results-head">
         <span class="rad-results-label">${selected.length === 0 ? 'all decomposed kanji' : 'matching kanji'}</span>
         <span class="rad-results-count">${matches.length}</span>
@@ -12046,34 +12017,94 @@ function renderSearch(container) {
             </button>
           `).join('')}
         </div>
-      `}
-    </div>`;
+      `}`;
+}
 
-  // Toggle selection — selected radicals stack into the tray; clicking an
-  // already-selected radical removes it.
-  container.querySelectorAll('[data-rad-toggle]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const r = btn.dataset.radToggle;
-      const next = selectedSet.has(r) ? selected.filter(x => x !== r) : [...selected, r];
-      APP.radicalsSelected = next;
-      lsSet('jp:radicalsSelected', next);
-      renderSearch(container);
-    });
-  });
+function toggleRadical(container, r) {
+  const cur = Array.isArray(APP.radicalsSelected) ? APP.radicalsSelected : [];
+  APP.radicalsSelected = cur.includes(r) ? cur.filter(x => x !== r) : [...cur, r];
+  lsSet('jp:radicalsSelected', APP.radicalsSelected);
+  updateSearchState(container);
+}
+function clearRadicals(container) {
+  APP.radicalsSelected = [];
+  lsSet('jp:radicalsSelected', []);
+  updateSearchState(container);
+}
 
-  container.querySelectorAll('[data-rad-clear]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      APP.radicalsSelected = [];
-      lsSet('jp:radicalsSelected', []);
-      renderSearch(container);
-    });
-  });
+// (Re)wire the regions rebuilt by updateSearchState: the tray chips, the clear
+// button, and the result kanji. The grid chips are wired once in renderSearch
+// and persist (the grid is never rebuilt — only its chip classes flip).
+function wireSearchDynamic(container) {
+  const sel = container.querySelector('.rad-selected');
+  if (sel) {
+    sel.querySelectorAll('[data-rad-toggle]').forEach(b => b.addEventListener('click', () => toggleRadical(container, b.dataset.radToggle)));
+    sel.querySelectorAll('[data-rad-clear]').forEach(b => b.addEventListener('click', () => clearRadicals(container)));
+  }
+  container.querySelectorAll('.rad-results [data-rad-kanji]').forEach(b => b.addEventListener('click', () => jumpToKanjiFlashcard(b.dataset.radKanji)));
+}
 
-  container.querySelectorAll('[data-rad-kanji]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      jumpToKanjiFlashcard(btn.dataset.radKanji);
-    });
+// Targeted toggle update: flip the grid chip classes in place and rebuild only
+// the selected tray + results — instead of re-rendering the whole page (which
+// rebuilt all ~253 grid chips and the page head every click).
+function updateSearchState(container) {
+  const { selectedSet, aliveRadicals, matches, selected } = searchModel();
+  container.querySelectorAll('.rad-grid [data-rad-toggle]').forEach(btn => {
+    const r = btn.dataset.radToggle;
+    btn.classList.toggle('is-active', selectedSet.has(r));
+    btn.classList.toggle('is-dim', !aliveRadicals.has(r));
   });
+  const sel = container.querySelector('.rad-selected');
+  if (sel) {
+    sel.className = `rad-selected ${selected.length ? '' : 'is-empty'}`;
+    sel.innerHTML = searchSelectedInnerHTML(selected);
+  }
+  const res = container.querySelector('.rad-results');
+  if (res) res.innerHTML = searchResultsInnerHTML(matches, selected);
+  wireSearchDynamic(container);
+}
+
+function renderSearch(container) {
+  const { all, selected, selectedSet, aliveRadicals, matches } = searchModel();
+
+  container.innerHTML = `
+    <div class="page-head">
+      <div class="page-eyebrow">search · 検索</div>
+      <h1 class="page-title-jp">ぶしゅ から さがす</h1>
+      <div class="rule"></div>
+      <p class="page-sub">
+        Pick radicals to find kanji in your decks that contain all of them.
+        Click a result to jump to its flashcard.
+      </p>
+    </div>
+
+    <div class="rad-selected ${selected.length ? '' : 'is-empty'}">${searchSelectedInnerHTML(selected)}</div>
+
+    <div class="rad-grid">
+      ${all.map(group => `
+        <div class="rad-stroke-row">
+          <div class="rad-stroke-label">
+            <span class="rad-stroke-num">${escHTML(group.label)}</span>
+            <span class="rad-stroke-unit">画</span>
+          </div>
+          <div class="rad-stroke-chips">
+            ${group.chars.map(r => `
+              <button class="rad-chip ${selectedSet.has(r) ? 'is-active' : ''} ${aliveRadicals.has(r) ? '' : 'is-dim'}" data-rad-toggle="${escAttr(r)}">${escHTML(r)}</button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="rad-results">${searchResultsInnerHTML(matches, selected)}</div>`;
+
+  // Grid chips are wired once and persist across targeted updates (the grid is
+  // never rebuilt — only its chip classes flip). They read APP state fresh via
+  // toggleRadical, so they never capture a stale selection.
+  container.querySelectorAll('.rad-grid [data-rad-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => toggleRadical(container, btn.dataset.radToggle));
+  });
+  wireSearchDynamic(container);
 }
 
 // ── Flashcards ───────────────────────────────────────────────────────────
