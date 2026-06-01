@@ -1522,8 +1522,16 @@ function initPopover() {
 }
 
 function jumpToDictionary(q) {
+  // Search + Dictionary were merged into the Library hub; 'dictionary' is no
+  // longer a top-level section. Route to the library section on its Dictionary
+  // page so setSection toggles the library sidebar and renderLibrary →
+  // renderDictionary consumes pendingDictQ. (Calling setSection('dictionary')
+  // here left the app on an invalid section with no sidebar and dropped the
+  // query.)
   APP.pendingDictQ = q;
-  setSection('dictionary');
+  APP.libraryPage = 'dictionary';
+  lsSet('jp:libraryPage', 'dictionary');
+  setSection('library');
 }
 
 function openPopover(item, anchorRect) {
