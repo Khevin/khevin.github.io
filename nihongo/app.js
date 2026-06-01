@@ -11966,19 +11966,19 @@ function renderSearch(container) {
     }
   } else {
     // For each candidate radical, would adding it to the selection produce
-    // any matches? If yes, mark as alive.
-    const cardIndex = (window.FLASHCARD_CLASSES || []).flatMap(c =>
-      c.cards.filter(c => c.kanji && !c.type).map(c => c.kanji)
-    );
+    // any matches? If yes, mark as alive. Reuse Idx.radicalCandidates() — the
+    // deduped non-radical cards with radicals precomputed — instead of
+    // rebuilding the card-kanji list and re-resolving radicalsForKanji() for
+    // every candidate radical on every render. Equivalent: dedup doesn't change
+    // a .some() result, and candidates already exclude cards with no radicals
+    // (which never matched under the old `rad.length` guard).
+    const cands = Idx.radicalCandidates();
     for (const group of all) {
       for (const r of group.chars) {
         if (selectedSet.has(r)) { aliveRadicals.add(r); continue; }
         // would this radical, added to current selection, return any kanji?
         const next = [...selected, r];
-        const has = cardIndex.some(k => {
-          const rad = radicalsForKanji(k);
-          return rad.length && next.every(x => rad.includes(x));
-        });
+        const has = cands.some(c => next.every(x => c.radicals.includes(x)));
         if (has) aliveRadicals.add(r);
       }
     }

@@ -324,6 +324,39 @@ async function main() {
       check(`HARDEN Idx.dictTags matches naive flatMap+Set+sort (${r.tagsLen} tags)`, r.tagsMatch === true, `match=${r.tagsMatch}`);
       await page.close();
     }
+
+    // ── renderSearch aliveRadicals: indexed candidates == naive card scan ───
+    // golden only exercises the empty-selection branch; verify the non-empty
+    // branch (now using Idx.radicalCandidates) matches the old card-index scan.
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const KR = window.KANJI_RADICALS || {};
+        const someKanji = Object.keys(KR).find(k => (KR[k] || []).length);
+        const sel = someKanji ? [KR[someKanji][0]] : [];
+        const selSet = new Set(sel);
+        const radChars = [];
+        for (const g of (window.RADICALS_BY_STROKE || [])) for (const c of (g.chars || [])) radChars.push(c);
+        const cardIndex = (window.FLASHCARD_CLASSES || []).flatMap(c => c.cards.filter(x => x.kanji && !x.type).map(x => x.kanji));
+        const aliveOld = new Set();
+        for (const rr of radChars) {
+          if (selSet.has(rr)) { aliveOld.add(rr); continue; }
+          const next = [...sel, rr];
+          if (cardIndex.some(k => { const rad = radicalsForKanji(k); return rad.length && next.every(x => rad.includes(x)); })) aliveOld.add(rr);
+        }
+        const cands = Idx.radicalCandidates();
+        const aliveNew = new Set();
+        for (const rr of radChars) {
+          if (selSet.has(rr)) { aliveNew.add(rr); continue; }
+          const next = [...sel, rr];
+          if (cands.some(c => next.every(x => c.radicals.includes(x)))) aliveNew.add(rr);
+        }
+        const a = [...aliveOld].sort(), b = [...aliveNew].sort();
+        return { sel, radCount: radChars.length, match: JSON.stringify(a) === JSON.stringify(b), oldSize: a.length, newSize: b.length };
+      });
+      check(`HARDEN aliveRadicals indexed == naive over ${r.radCount} radicals (sel=${r.sel.join('')})`, r.match === true, `old=${r.oldSize} new=${r.newSize}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
