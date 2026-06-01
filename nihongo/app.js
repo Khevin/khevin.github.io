@@ -4393,21 +4393,30 @@ function findFlavorVerbNotes(flavorId) {
 // If the total ever climbs past 100, raise the constant — but the
 // row layout (grid auto-fill) gracefully wraps to multiple rows, so
 // the only downside of more matches is more vertical scroll.
-function findEdiblesWithFlavor(flavorId, limit = 100) {
-  const results = [];
+// Single iterator over every edible row across all edibles books, yielding
+// { item, cat, book } in book→category→item order. Return `false` from `fn` to
+// stop early. Replaces four hand-copied 4-deep VOCAB_CLASSES walks.
+function eachEdible(fn) {
   for (const cls of (window.VOCAB_CLASSES || [])) {
     for (const book of (cls.books || [])) {
       if (!book.isEdiblesPage) continue;
       for (const cat of (book.categories || [])) {
         for (const item of (cat.items || [])) {
-          if ((item.flavors || []).includes(flavorId)) {
-            results.push({ item, cat, book });
-            if (results.length >= limit) return results;
-          }
+          if (fn({ item, cat, book }) === false) return;
         }
       }
     }
   }
+}
+
+function findEdiblesWithFlavor(flavorId, limit = 100) {
+  const results = [];
+  eachEdible(row => {
+    if ((row.item.flavors || []).includes(flavorId)) {
+      results.push(row);
+      if (results.length >= limit) return false;
+    }
+  });
   return results;
 }
 
@@ -4419,19 +4428,12 @@ function findEdiblesWithFlavor(flavorId, limit = 100) {
 // edibles set is ~95 items so the cap is effectively uncapped.
 function findEdiblesWithTexture(textureKana, limit = 100) {
   const results = [];
-  for (const cls of (window.VOCAB_CLASSES || [])) {
-    for (const book of (cls.books || [])) {
-      if (!book.isEdiblesPage) continue;
-      for (const cat of (book.categories || [])) {
-        for (const item of (cat.items || [])) {
-          if ((item.textures || []).includes(textureKana)) {
-            results.push({ item, cat, book });
-            if (results.length >= limit) return results;
-          }
-        }
-      }
+  eachEdible(row => {
+    if ((row.item.textures || []).includes(textureKana)) {
+      results.push(row);
+      if (results.length >= limit) return false;
     }
-  }
+  });
   return results;
 }
 
@@ -4443,16 +4445,7 @@ function findEdiblesWithTexture(textureKana, limit = 100) {
 function lookupEdiblesByIds(ids) {
   if (!Array.isArray(ids) || !ids.length) return [];
   const index = new Map();
-  for (const cls of (window.VOCAB_CLASSES || [])) {
-    for (const book of (cls.books || [])) {
-      if (!book.isEdiblesPage) continue;
-      for (const cat of (book.categories || [])) {
-        for (const item of (cat.items || [])) {
-          index.set(item.id, { item, cat, book });
-        }
-      }
-    }
-  }
+  eachEdible(row => { index.set(row.item.id, row); });
   return ids.map(id => index.get(id)).filter(Boolean);
 }
 
@@ -4771,14 +4764,7 @@ function renderExtraTexturesSection() {
   // re-walk. Quiet failure mode: a stale example id silently drops
   // out of the rendered row (no slot reserved).
   const ediblesIndex = new Map();
-  for (const cls of (window.VOCAB_CLASSES || [])) {
-    for (const book of (cls.books || [])) {
-      if (!book.isEdiblesPage) continue;
-      for (const cat of (book.categories || [])) {
-        for (const it of (cat.items || [])) ediblesIndex.set(it.id, it);
-      }
-    }
-  }
+  eachEdible(row => ediblesIndex.set(row.item.id, row.item));
 
   const rowsHTML = EXTRA_TEXTURE_EXPLAINERS.map((ex, i) => {
     // Kanji block: ruby with rt furigana when a kanji exists; just
@@ -5811,26 +5797,19 @@ function findSimilarEdibles(currentItem, allCategories, limit = 6) {
 
 // Helpers — look up a flavor's chip color and kana by id, from the
 // Flavors book sitting elsewhere in VOCAB_CLASSES.
-function lookupFlavorChip(flavorId) {
+// Find a flavor definition by id across all flavors books (first match).
+function findFlavorDef(flavorId) {
   for (const cls of (window.VOCAB_CLASSES || [])) {
     for (const book of (cls.books || [])) {
       if (!book.isFlavorsPage) continue;
       const f = (book.flavors || []).find(x => x.id === flavorId);
-      if (f) return f.chip;
-    }
-  }
-  return 'var(--ink-4)';
-}
-function lookupFlavorKana(flavorId) {
-  for (const cls of (window.VOCAB_CLASSES || [])) {
-    for (const book of (cls.books || [])) {
-      if (!book.isFlavorsPage) continue;
-      const f = (book.flavors || []).find(x => x.id === flavorId);
-      if (f) return f.kana;
+      if (f) return f;
     }
   }
   return null;
 }
+function lookupFlavorChip(flavorId) { const f = findFlavorDef(flavorId); return f ? f.chip : 'var(--ink-4)'; }
+function lookupFlavorKana(flavorId) { const f = findFlavorDef(flavorId); return f ? f.kana : null; }
 
 // Wire handlers — category tile click, item card click, back buttons,
 // flavor badge cross-links.

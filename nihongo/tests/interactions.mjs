@@ -259,6 +259,42 @@ async function main() {
       check(`P4 seeAlsoCards matches naive scan over ${r.n.cards} cards`, r.sa === 0, `mismatches=${r.sa}`);
       await page.close();
     }
+
+    // ── Phase 6: de-duplicated edibles/flavor walks match naive scans ───────
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const J = (x) => JSON.stringify(x);
+        const nEdFlavor = (fid, limit = 100) => { const out = []; for (const cls of (window.VOCAB_CLASSES || [])) for (const b of (cls.books || [])) { if (!b.isEdiblesPage) continue; for (const cat of (b.categories || [])) for (const it of (cat.items || [])) { if ((it.flavors || []).includes(fid)) { out.push(it.id); if (out.length >= limit) return out; } } } return out; };
+        const nEdTexture = (tk, limit = 100) => { const out = []; for (const cls of (window.VOCAB_CLASSES || [])) for (const b of (cls.books || [])) { if (!b.isEdiblesPage) continue; for (const cat of (b.categories || [])) for (const it of (cat.items || [])) { if ((it.textures || []).includes(tk)) { out.push(it.id); if (out.length >= limit) return out; } } } return out; };
+        const nChip = (fid) => { for (const cls of (window.VOCAB_CLASSES || [])) for (const b of (cls.books || [])) { if (!b.isFlavorsPage) continue; const f = (b.flavors || []).find(x => x.id === fid); if (f) return f.chip; } return 'var(--ink-4)'; };
+        const nKana = (fid) => { for (const cls of (window.VOCAB_CLASSES || [])) for (const b of (cls.books || [])) { if (!b.isFlavorsPage) continue; const f = (b.flavors || []).find(x => x.id === fid); if (f) return f.kana; } return null; };
+
+        const flavorIds = new Set(), textureKanas = new Set();
+        for (const cls of (window.VOCAB_CLASSES || [])) for (const b of (cls.books || [])) {
+          if (b.isFlavorsPage) for (const f of (b.flavors || [])) flavorIds.add(f.id);
+          if (b.isEdiblesPage) for (const cat of (b.categories || [])) for (const it of (cat.items || [])) {
+            (it.flavors || []).forEach(x => flavorIds.add(x));
+            (it.textures || []).forEach(x => textureKanas.add(x));
+          }
+        }
+        flavorIds.add('__none__'); textureKanas.add('__none__');
+
+        let ef = 0, et = 0, ch = 0, ka = 0;
+        for (const fid of flavorIds) {
+          if (J(nEdFlavor(fid)) !== J(findEdiblesWithFlavor(fid).map(x => x.item.id))) ef++;
+          if (nChip(fid) !== lookupFlavorChip(fid)) ch++;
+          if (nKana(fid) !== lookupFlavorKana(fid)) ka++;
+        }
+        for (const tk of textureKanas) if (J(nEdTexture(tk)) !== J(findEdiblesWithTexture(tk).map(x => x.item.id))) et++;
+        return { ef, et, ch, ka, n: { flavors: flavorIds.size, textures: textureKanas.size } };
+      });
+      check(`P6 findEdiblesWithFlavor matches naive walk over ${r.n.flavors} ids`, r.ef === 0, `mismatches=${r.ef}`);
+      check(`P6 findEdiblesWithTexture matches naive walk over ${r.n.textures} kanas`, r.et === 0, `mismatches=${r.et}`);
+      check(`P6 lookupFlavorChip matches naive walk over ${r.n.flavors} ids`, r.ch === 0, `mismatches=${r.ch}`);
+      check(`P6 lookupFlavorKana matches naive walk over ${r.n.flavors} ids`, r.ka === 0, `mismatches=${r.ka}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
