@@ -109,6 +109,46 @@ async function main() {
       check('BUG-2 lock window exceeds longest animation (~2.2s)', r.lockMs > 2200, `lockMs=${r.lockMs}`);
       await page.close();
     }
+
+    // ── BUG-3 + BUG-4: scene-engine state robustness ────────────────────────
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const out = {};
+        // BUG-3: gotoStep with an unknown id must advance sequentially, not no-op.
+        const scene = { id: 'test', steps: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] };
+        const s1 = { stepIdx: 0, history: [] };
+        gotoStep(scene, s1, 'does-not-exist');
+        out.unknownAdvances = s1.stepIdx;          // expect 1
+        const s2 = { stepIdx: 0, history: [] };
+        gotoStep(scene, s2, 'c');
+        out.knownJumps = s2.stepIdx;               // expect 2 (normal jump preserved)
+        const s3 = { stepIdx: 2, history: [] };
+        gotoStep(scene, s3, 'nope');
+        out.clampAtEnd = s3.stepIdx;               // expect 2 (clamped, no overshoot)
+
+        // BUG-4: a legacy/partial persisted scene state must be backfilled on load.
+        APP.scenes = { legacy: { stepIdx: 2, selected: [] } }; // missing npcVariants/history/choices/sizes
+        const st = sceneStateFor('legacy');
+        out.npcVariantsObj = st.npcVariants && typeof st.npcVariants === 'object';
+        out.historyArr = Array.isArray(st.history);
+        out.choicesObj = st.choices && typeof st.choices === 'object';
+        out.preservedStepIdx = st.stepIdx;         // expect 2 (existing value wins)
+        let threw = false;
+        try { sceneVariant(st, 'greet', [{ x: 1 }, { x: 2 }]); } catch (e) { threw = true; }
+        out.sceneVariantSafe = !threw;             // must not throw on backfilled state
+        return out;
+      });
+      check('BUG-3 unknown step id advances sequentially (no dead-end)', r.unknownAdvances === 1, `stepIdx=${r.unknownAdvances}`);
+      check('BUG-3 known step id still jumps normally', r.knownJumps === 2, `stepIdx=${r.knownJumps}`);
+      check('BUG-3 fallback clamps at last step', r.clampAtEnd === 2, `stepIdx=${r.clampAtEnd}`);
+      check('BUG-4 legacy state backfills npcVariants', r.npcVariantsObj === true, `npcVariants=${r.npcVariantsObj}`);
+      check('BUG-4 legacy state backfills history array', r.historyArr === true, `history=${r.historyArr}`);
+      check('BUG-4 legacy state backfills choices', r.choicesObj === true, `choices=${r.choicesObj}`);
+      check('BUG-4 existing field value preserved (stepIdx=2)', r.preservedStepIdx === 2, `stepIdx=${r.preservedStepIdx}`);
+      check('BUG-4 sceneVariant no longer throws on legacy state', r.sceneVariantSafe === true, `safe=${r.sceneVariantSafe}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();

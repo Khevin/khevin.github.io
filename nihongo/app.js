@@ -6414,7 +6414,16 @@ function itemFurigana(item, state) {
 
 function sceneStateFor(bookId) {
   if (!APP.scenes) APP.scenes = lsGet('jp:scenes', {});
-  if (!APP.scenes[bookId]) APP.scenes[bookId] = freshSceneState();
+  if (!APP.scenes[bookId]) {
+    APP.scenes[bookId] = freshSceneState();
+  } else {
+    // Backfill fields added to freshSceneState() after this state was
+    // persisted. A localStorage 'jp:scenes' entry written before, e.g.,
+    // npcVariants existed would otherwise throw on first read
+    // (state.npcVariants[stepId], state.history.push(...), state.selected.map).
+    // Existing values win; only absent keys take the fresh default.
+    APP.scenes[bookId] = { ...freshSceneState(), ...APP.scenes[bookId] };
+  }
   return APP.scenes[bookId];
 }
 
@@ -6469,8 +6478,16 @@ function sceneInterp(str, state) {
 }
 
 function gotoStep(scene, state, stepId) {
-  const idx = scene.steps.findIndex(s => s.id === stepId);
-  if (idx < 0) return;
+  let idx = scene.steps.findIndex(s => s.id === stepId);
+  if (idx < 0) {
+    // Unknown target id (a `next`/`choice.next` typo, or a step that was
+    // removed from the scene data). Previously this returned silently, leaving
+    // the Next button doing nothing — an unrecoverable dead-end. Fall back to
+    // the next sequential step instead, mirroring the falsy-`next` branch in
+    // the step handlers, so a data error degrades to linear progression.
+    console.warn(`gotoStep: step id "${stepId}" not found in scene "${scene.id || '?'}"; advancing sequentially`);
+    idx = Math.min(state.stepIdx + 1, scene.steps.length - 1);
+  }
   state.history.push(state.stepIdx);
   state.stepIdx = idx;
   saveSceneState();
