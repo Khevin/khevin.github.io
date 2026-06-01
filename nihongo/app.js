@@ -1202,12 +1202,95 @@ function colorParticles(ja) {
   return html;
 }
 
+// ── Lookup indexes ───────────────────────────────────────────────────────
+// window.VOCAB_BOOKS / FLASHCARD_CLASSES / DICTIONARY are static seed data,
+// loaded once via <script> and never mutated at runtime. These indexes are
+// therefore built lazily on first use and cached for the page lifetime (no
+// invalidation needed), replacing the repeated linear scans that previously ran
+// on every popover lookup, dictionary keystroke, flashcard render, and radical
+// toggle. Each builder preserves the original scan's first-match-wins order, and
+// each accessor returns the same shape (fresh `{...card, classId}` copies where
+// the originals did) so rendered output is byte-identical.
+const Idx = (function () {
+  let _vocabItem = null;       // kanji|ja|kana            -> vocab item (first match)
+  let _dictEntry = null;       // kanji|kana               -> DICTIONARY entry (first match)
+  let _dictKanjiByChar = null; // char                     -> kind:'kanji' entry (first match)
+  let _cardByKanji = null;     // kanji                    -> { card, classId, idx } (first match)
+  let _kunIndex = null;        // normalized kun           -> [{...card, classId}]
+  let _seeAlsoReverse = null;  // target kanji             -> [{ card, classId }] (cards pointing at it)
+  let _radicalCandidates = null; // [{ card, classId, radicals }] deduped non-radical cards
+
+  function buildVocab() {
+    _vocabItem = new Map();
+    for (const book of (window.VOCAB_BOOKS || [])) {
+      for (const page of (book.pages || [])) {
+        for (const item of (page.items || [])) {
+          for (const key of [item.kanji, item.ja, item.kana]) {
+            if (key && !_vocabItem.has(key)) _vocabItem.set(key, item);
+          }
+        }
+      }
+    }
+  }
+  function buildDict() {
+    _dictEntry = new Map();
+    _dictKanjiByChar = new Map();
+    for (const e of (window.DICTIONARY || [])) {
+      if (e.kanji && !_dictEntry.has(e.kanji)) _dictEntry.set(e.kanji, e);
+      if (e.kana && !_dictEntry.has(e.kana)) _dictEntry.set(e.kana, e);
+      if (e.kind === 'kanji' && e.kanji && !_dictKanjiByChar.has(e.kanji)) _dictKanjiByChar.set(e.kanji, e);
+    }
+  }
+  function buildCards() {
+    _cardByKanji = new Map();
+    _kunIndex = new Map();
+    _seeAlsoReverse = new Map();
+    _radicalCandidates = [];
+    const radSeen = new Set();
+    for (const cls of (window.FLASHCARD_CLASSES || [])) {
+      let idx = 0;
+      for (const card of cls.cards) {
+        const here = idx++;
+        if (card.kanji && !_cardByKanji.has(card.kanji)) {
+          _cardByKanji.set(card.kanji, { card, classId: cls.id, idx: here });
+        }
+        const kun = (card.kun || '').replace(/[().\s]/g, '');
+        if (kun) {
+          if (!_kunIndex.has(kun)) _kunIndex.set(kun, []);
+          _kunIndex.get(kun).push(Object.assign({}, card, { classId: cls.id }));
+        }
+        for (const target of (card.seeAlso || [])) {
+          if (!_seeAlsoReverse.has(target)) _seeAlsoReverse.set(target, []);
+          _seeAlsoReverse.get(target).push({ card, classId: cls.id });
+        }
+        if (card.type !== 'radical' && card.kanji && !radSeen.has(card.kanji)) {
+          const radicals = radicalsForKanji(card.kanji);
+          if (radicals.length) {
+            _radicalCandidates.push({ card, classId: cls.id, radicals });
+            radSeen.add(card.kanji);
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    vocabItem(text)        { if (!_vocabItem) buildVocab(); return _vocabItem.get(text) || null; },
+    dictEntry(text)        { if (!_dictEntry) buildDict(); return _dictEntry.get(text) || null; },
+    dictKanjiByChar(c)     { if (!_dictKanjiByChar) buildDict(); return _dictKanjiByChar.get(c) || null; },
+    cardEntry(kanji)       { if (!_cardByKanji) buildCards(); return _cardByKanji.get(kanji) || null; },
+    kunIndex()             { if (!_kunIndex) buildCards(); return _kunIndex; },
+    seeAlsoReverse(kanji)  { if (!_seeAlsoReverse) buildCards(); return _seeAlsoReverse.get(kanji) || []; },
+    radicalCandidates()    { if (!_radicalCandidates) buildCards(); return _radicalCandidates; },
+  };
+})();
+
 function kanjiReading(c) {
   const readings = window.KANJI_READINGS || {};
   if (readings[c]) return readings[c];
   // Fall back to a dictionary kanji entry's kana (convert katakana → hiragana,
   // drop the okurigana marker after `.`).
-  const dictEntry = (window.DICTIONARY || []).find(e => e.kind === 'kanji' && e.kanji === c);
+  const dictEntry = Idx.dictKanjiByChar(c);
   if (dictEntry && dictEntry.kana) {
     return dictEntry.kana.split('.')[0]
       .replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
@@ -1365,16 +1448,12 @@ function parseChunk(text) {
 
 function lookupWord(text) {
   if (!text) return null;
-  for (const book of (window.VOCAB_BOOKS || [])) {
-    for (const page of (book.pages || [])) {
-      for (const item of (page.items || [])) {
-        const k = item.kanji || item.ja;
-        if (k === text || item.kana === text || item.ja === text)
-          return { kanji: k || text, kana: item.kana || '', en: item.en || '' };
-      }
-    }
+  const item = Idx.vocabItem(text);
+  if (item) {
+    const k = item.kanji || item.ja;
+    return { kanji: k || text, kana: item.kana || '', en: item.en || '' };
   }
-  const d = (window.DICTIONARY || []).find(e => e.kanji === text || e.kana === text);
+  const d = Idx.dictEntry(text);
   if (d) return { kanji: d.kanji, kana: d.kana, en: d.en };
 
   // Character-level fallback: a single kanji that's not in any vocab book
@@ -11293,21 +11372,13 @@ function radicalsForKanji(kanji) {
 // radicals build it (via the related-chips on the flashcard), OR pick
 // radicals → see which kanji come back.
 function kanjiMatchingRadicals(selected) {
+  // Candidates (deduped non-radical cards that have a decomposition) are
+  // precomputed once in Idx; only the per-selection intersection runs here.
   const out = [];
-  const seen = new Set();
-  for (const cls of (window.FLASHCARD_CLASSES || [])) {
-    for (const card of cls.cards) {
-      if (card.type === 'radical') continue;
-      if (!card.kanji || seen.has(card.kanji)) continue;
-      const radicals = radicalsForKanji(card.kanji);
-      if (!radicals.length) continue;
-      // Intersection: every selected radical must be present.
-      const hit = selected.length === 0 || selected.every(r => radicals.includes(r));
-      if (hit) {
-        out.push({ ...card, classId: cls.id });
-        seen.add(card.kanji);
-      }
-    }
+  for (const cand of Idx.radicalCandidates()) {
+    // Intersection: every selected radical must be present.
+    const hit = selected.length === 0 || selected.every(r => cand.radicals.includes(r));
+    if (hit) out.push({ ...cand.card, classId: cand.classId });
   }
   return out;
 }
@@ -11315,15 +11386,12 @@ function kanjiMatchingRadicals(selected) {
 // Jump to a kanji's flashcard. Switches section + class + index, persists,
 // and updates the hash so back-button navigation behaves.
 function jumpToKanjiFlashcard(kanji) {
-  for (const cls of (window.FLASHCARD_CLASSES || [])) {
-    const idx = cls.cards.findIndex(c => c.kanji === kanji);
-    if (idx === -1) continue;
-    APP.flashClassId = cls.id;
-    APP.flashIdx = idx;
-    lsSet('jp:flashClass', cls.id);
-    setSection('flashcards');
-    return;
-  }
+  const e = Idx.cardEntry(kanji);
+  if (!e) return;
+  APP.flashClassId = e.classId;
+  APP.flashIdx = e.idx;
+  lsSet('jp:flashClass', e.classId);
+  setSection('flashcards');
 }
 
 // ── Editorial flashcard layout (opt-in via cls.useEditorialLayout) ─────
@@ -12078,18 +12146,6 @@ function renderSearch(container) {
 // kanji stands in for) because that's where the most surprising homophones
 // live — e.g. 鼻 and 花 both read はな despite meaning very different things.
 // Tags each card with classId so the related chip can hop to the right deck.
-function buildKunIndex() {
-  const idx = new Map();
-  for (const cls of (window.FLASHCARD_CLASSES || [])) {
-    for (const card of cls.cards) {
-      const kun = (card.kun || '').replace(/[().\s]/g, '');
-      if (!kun) continue;
-      if (!idx.has(kun)) idx.set(kun, []);
-      idx.get(kun).push(Object.assign({}, card, { classId: cls.id }));
-    }
-  }
-  return idx;
-}
 function relatedByKun(card, kunIdx) {
   if (!card || !card.kun) return [];
   const kun = card.kun.replace(/[().\s]/g, '');
@@ -12102,11 +12158,8 @@ function relatedByKun(card, kunIdx) {
 // where kun-based homophone matching wouldn't catch the relationship
 // (e.g. 未 and 妹 share the 未 component but have different readings).
 function lookupCardByKanji(kanji) {
-  for (const cls of (window.FLASHCARD_CLASSES || [])) {
-    const card = cls.cards.find(c => c.kanji === kanji);
-    if (card) return Object.assign({}, card, { classId: cls.id });
-  }
-  return null;
+  const e = Idx.cardEntry(kanji);
+  return e ? Object.assign({}, e.card, { classId: e.classId }) : null;
 }
 function seeAlsoCards(card) {
   if (!card) return [];
@@ -12118,13 +12171,10 @@ function seeAlsoCards(card) {
     if (c) { out.push(c); seen.add(k); }
   }
   // Reverse direction — peers that point AT this card auto-surface here.
-  for (const cls of (window.FLASHCARD_CLASSES || [])) {
-    for (const c of cls.cards) {
-      if (!c.seeAlso || !c.seeAlso.includes(card.kanji)) continue;
-      if (c.kanji === card.kanji || seen.has(c.kanji)) continue;
-      out.push(Object.assign({}, c, { classId: cls.id }));
-      seen.add(c.kanji);
-    }
+  for (const e of Idx.seeAlsoReverse(card.kanji)) {
+    if (e.card.kanji === card.kanji || seen.has(e.card.kanji)) continue;
+    out.push(Object.assign({}, e.card, { classId: e.classId }));
+    seen.add(e.card.kanji);
   }
   return out;
 }
@@ -12214,7 +12264,7 @@ function renderFlashcards(container) {
   if (APP.flashIdx > deck.length) APP.flashIdx = 0;
   const isWrapup = APP.flashIdx === deck.length;
   const card = isWrapup ? null : deck[APP.flashIdx];
-  const related = card ? relatedByKun(card, buildKunIndex()) : [];
+  const related = card ? relatedByKun(card, Idx.kunIndex()) : [];
   const seeAlso = card ? seeAlsoCards(card) : [];
 
   // Progress: full bar when on the wrap-up screen (you've reached the

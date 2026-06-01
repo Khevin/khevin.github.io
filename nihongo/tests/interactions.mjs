@@ -204,6 +204,61 @@ async function main() {
       check('BUG-6 re-render tears down orphaned listeners (back to baseline)', r.afterReWire === r.baseline, `afterReWire=${r.afterReWire} base=${r.baseline}`);
       await page.close();
     }
+
+    // ── Phase 4: memoized indexes return identical results to naive scans ────
+    // Exhaustively compare the now-indexed production lookups against fresh
+    // full-scan reference implementations (the pre-Phase-4 logic) across the
+    // entire input domain. Any divergence — order, dedup, first-match — fails.
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const J = (x) => JSON.stringify(x);
+        // Reference (naive) implementations — copies of the original scans.
+        const nLookupWord = (text) => {
+          if (!text) return null;
+          for (const book of (window.VOCAB_BOOKS || [])) for (const page of (book.pages || [])) for (const item of (page.items || [])) {
+            const k = item.kanji || item.ja;
+            if (k === text || item.kana === text || item.ja === text) return { kanji: k || text, kana: item.kana || '', en: item.en || '' };
+          }
+          const d = (window.DICTIONARY || []).find(e => e.kanji === text || e.kana === text);
+          if (d) return { kanji: d.kanji, kana: d.kana, en: d.en };
+          const chars = [...text];
+          if (chars.length === 1) { const c = chars[0], m = window.KANJI_MEANINGS || {}, rd = window.KANJI_READINGS || {}; if (m[c] || rd[c]) return { kanji: c, kana: rd[c] || '', en: m[c] || '' }; }
+          return { kanji: text, kana: '', en: '' };
+        };
+        const nCard = (kanji) => { for (const cls of (window.FLASHCARD_CLASSES || [])) { const card = cls.cards.find(c => c.kanji === kanji); if (card) return Object.assign({}, card, { classId: cls.id }); } return null; };
+        const nReading = (c) => { const rd = window.KANJI_READINGS || {}; if (rd[c]) return rd[c]; const de = (window.DICTIONARY || []).find(e => e.kind === 'kanji' && e.kanji === c); if (de && de.kana) return de.kana.split('.')[0].replace(/[ァ-ヶ]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60)); return ''; };
+        const nRadicals = (sel) => { const out = [], seen = new Set(); for (const cls of (window.FLASHCARD_CLASSES || [])) for (const card of cls.cards) { if (card.type === 'radical') continue; if (!card.kanji || seen.has(card.kanji)) continue; const rad = radicalsForKanji(card.kanji); if (!rad.length) continue; const hit = sel.length === 0 || sel.every(x => rad.includes(x)); if (hit) { out.push({ ...card, classId: cls.id }); seen.add(card.kanji); } } return out; };
+        const nSeeAlso = (card) => { if (!card) return []; const seen = new Set(), out = []; for (const k of (card.seeAlso || [])) { if (k === card.kanji || seen.has(k)) continue; const c = nCard(k); if (c) { out.push(c); seen.add(k); } } for (const cls of (window.FLASHCARD_CLASSES || [])) for (const c of cls.cards) { if (!c.seeAlso || !c.seeAlso.includes(card.kanji)) continue; if (c.kanji === card.kanji || seen.has(c.kanji)) continue; out.push(Object.assign({}, c, { classId: cls.id })); seen.add(c.kanji); } return out; };
+
+        // Domains.
+        const words = new Set();
+        for (const b of (window.VOCAB_BOOKS || [])) for (const p of (b.pages || [])) for (const it of (p.items || [])) { [it.kanji, it.ja, it.kana].forEach(x => x && words.add(x)); }
+        for (const e of (window.DICTIONARY || [])) { if (e.kanji) words.add(e.kanji); if (e.kana) words.add(e.kana); }
+        Object.keys(window.KANJI_READINGS || {}).forEach(c => words.add(c));
+        words.add('___nonexistent___');
+        const allCards = (window.FLASHCARD_CLASSES || []).flatMap(c => c.cards);
+        const kanjis = new Set(allCards.map(c => c.kanji).filter(Boolean)); kanjis.add('___none___');
+        const readingChars = new Set([...Object.keys(window.KANJI_READINGS || {}), ...(window.DICTIONARY || []).filter(e => e.kind === 'kanji').map(e => e.kanji)]); readingChars.add('〇');
+        const radSet = new Set(); Object.values(window.KANJI_RADICALS || {}).forEach(arr => (arr || []).forEach(x => radSet.add(x)));
+        const someRads = [...radSet].slice(0, 5);
+        const radSelections = [[], ...someRads.map(x => [x]), someRads.slice(0, 2)];
+
+        let lw = 0, cd = 0, rd = 0, ra = 0, sa = 0;
+        for (const t of words) if (J(nLookupWord(t)) !== J(lookupWord(t))) lw++;
+        for (const k of kanjis) if (J(nCard(k)) !== J(lookupCardByKanji(k))) cd++;
+        for (const c of readingChars) if (nReading(c) !== kanjiReading(c)) rd++;
+        for (const sel of radSelections) if (J(nRadicals(sel)) !== J(kanjiMatchingRadicals(sel))) ra++;
+        for (const card of allCards) if (J(nSeeAlso(card)) !== J(seeAlsoCards(card))) sa++;
+        return { lw, cd, rd, ra, sa, n: { words: words.size, kanjis: kanjis.size, readingChars: readingChars.size, radSel: radSelections.length, cards: allCards.length } };
+      });
+      check(`P4 lookupWord matches naive scan over ${r.n.words} inputs`, r.lw === 0, `mismatches=${r.lw}`);
+      check(`P4 lookupCardByKanji matches naive scan over ${r.n.kanjis} inputs`, r.cd === 0, `mismatches=${r.cd}`);
+      check(`P4 kanjiReading matches naive scan over ${r.n.readingChars} inputs`, r.rd === 0, `mismatches=${r.rd}`);
+      check(`P4 kanjiMatchingRadicals matches naive scan over ${r.n.radSel} selections`, r.ra === 0, `mismatches=${r.ra}`);
+      check(`P4 seeAlsoCards matches naive scan over ${r.n.cards} cards`, r.sa === 0, `mismatches=${r.sa}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
