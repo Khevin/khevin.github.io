@@ -149,6 +149,61 @@ async function main() {
       check('BUG-4 sceneVariant no longer throws on legacy state', r.sceneVariantSafe === true, `safe=${r.sceneVariantSafe}`);
       await page.close();
     }
+
+    // ── BUG-5: leaving Speaking closes the reused playback AudioContext ──────
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        APP.section = 'speaking';
+        let closed = false, stopped = false;
+        APP._speakingPlayCtx = { state: 'running', close() { closed = true; } };
+        APP._speakingPlaySrc = { stop() { stopped = true; } };
+        setSection('flashcards'); // leaving Speaking must release the playback ctx
+        return { closed, stopped, ctxNulled: APP._speakingPlayCtx === null, srcNulled: APP._speakingPlaySrc === null };
+      });
+      check('BUG-5 leaving Speaking closes the playback AudioContext', r.closed === true, `closed=${r.closed}`);
+      check('BUG-5 leaving Speaking stops the active source', r.stopped === true, `stopped=${r.stopped}`);
+      check('BUG-5 playback ctx + src refs cleared', r.ctxNulled === true && r.srcNulled === true, `ctxNulled=${r.ctxNulled} srcNulled=${r.srcNulled}`);
+      await page.close();
+    }
+
+    // ── BUG-6: shop-picker does not orphan document listeners on re-render ───
+    // Open the picker (adds 2 document listeners), then re-wire on fresh DOM
+    // (simulating a scene re-render). The previous instance's listeners must be
+    // torn down, returning the document-listener count to baseline.
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        let active = 0;
+        const realAdd = document.addEventListener.bind(document);
+        const realRemove = document.removeEventListener.bind(document);
+        const counted = (t) => t === 'click' || t === 'keydown';
+        document.addEventListener = (t, fn, o) => { if (counted(t)) active++; return realAdd(t, fn, o); };
+        document.removeEventListener = (t, fn, o) => { if (counted(t)) active--; return realRemove(t, fn, o); };
+        const mk = () => {
+          const el = document.createElement('div');
+          el.className = 'exp-shop';
+          el.innerHTML = '<button data-exp-shop-open aria-expanded="false">shop</button>' +
+            '<div class="exp-shop-dropdown" hidden><button data-exp-shop="x">X</button></div>';
+          document.body.appendChild(el);
+          return el;
+        };
+        const baseline = active;
+        const root1 = mk();
+        wireExperienceShopPicker(root1);
+        root1.querySelector('[data-exp-shop-open]').click(); // open → +2 doc listeners
+        const afterOpen = active;
+        const root2 = mk();
+        wireExperienceShopPicker(root2);                     // re-render → tear down root1's listeners
+        const afterReWire = active;
+        // restore
+        document.addEventListener = realAdd; document.removeEventListener = realRemove;
+        return { baseline, afterOpen, afterReWire };
+      });
+      check('BUG-6 opening picker adds 2 document listeners', r.afterOpen === r.baseline + 2, `open=${r.afterOpen} base=${r.baseline}`);
+      check('BUG-6 re-render tears down orphaned listeners (back to baseline)', r.afterReWire === r.baseline, `afterReWire=${r.afterReWire} base=${r.baseline}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();

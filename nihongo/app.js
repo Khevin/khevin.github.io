@@ -280,6 +280,10 @@ function setSection(s) {
   // permission prompt fires only once — see SpeakingRecorder.)
   if (APP.section === 'speaking' && s !== 'speaking' && typeof SpeakingRecorder !== 'undefined') {
     SpeakingRecorder.release();
+    // Stop + close the user-playback AudioContext (see wireSpeakingStudio) so
+    // it doesn't linger past the section. Lazily re-created on next playback.
+    if (APP._speakingPlaySrc) { try { APP._speakingPlaySrc.stop(); } catch (e) {} APP._speakingPlaySrc = null; }
+    if (APP._speakingPlayCtx) { try { APP._speakingPlayCtx.close(); } catch (e) {} APP._speakingPlayCtx = null; }
   }
   APP.section = s;
   location.hash = s;
@@ -3550,6 +3554,14 @@ function experienceShopPickerHTML(currentId) {
 // Wire the dropdown — toggle on trigger, close on outside click or
 // Escape, switch restaurant on option click.
 function wireExperienceShopPicker(root) {
+  // If a previous render left the picker OPEN, its document-level listeners are
+  // still attached (close() only fires on outside-click/Esc/select). Re-wiring
+  // on the fresh DOM would orphan those old listeners onto detached nodes — a
+  // leak. Tear down the previous instance's listeners before wiring this one.
+  if (wireExperienceShopPicker._cleanup) {
+    wireExperienceShopPicker._cleanup();
+    wireExperienceShopPicker._cleanup = null;
+  }
   const trigger = root.querySelector('[data-exp-shop-open]');
   const dropdown = root.querySelector('.exp-shop-dropdown');
   if (!trigger || !dropdown) return;
@@ -3558,6 +3570,7 @@ function wireExperienceShopPicker(root) {
     trigger.setAttribute('aria-expanded', 'false');
     document.removeEventListener('click', onDocClick, true);
     document.removeEventListener('keydown', onKey);
+    wireExperienceShopPicker._cleanup = null;
   };
   const onDocClick = (e) => {
     if (root.contains(e.target)) return; // clicks inside the picker handled separately
@@ -3572,6 +3585,8 @@ function wireExperienceShopPicker(root) {
     trigger.setAttribute('aria-expanded', 'true');
     document.addEventListener('click', onDocClick, true);
     document.addEventListener('keydown', onKey);
+    // Remember how to tear this open picker down if a re-render replaces it.
+    wireExperienceShopPicker._cleanup = close;
   });
   dropdown.querySelectorAll('[data-exp-shop]').forEach(opt => {
     opt.addEventListener('click', (e) => {
@@ -15084,11 +15099,23 @@ function wireSpeakingStudio(cat, phrase) {
   const userPlayBtn = root.querySelector('#speaking-play-user');
   if (userPlayBtn) userPlayBtn.addEventListener('click', () => {
     if (!APP.speakingUserBuffer) return;
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Reuse ONE playback AudioContext instead of allocating a fresh one per
+    // tap. The old code new'd a context each click and only closed it in
+    // src.onended — so navigating away (or re-tapping) mid-playback stranded
+    // the context unclosed, and browsers cap concurrent contexts (~6), so the
+    // studio would eventually fail to play. setSection closes this on leave.
+    let ctx = APP._speakingPlayCtx;
+    if (!ctx || ctx.state === 'closed') {
+      ctx = APP._speakingPlayCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    // Stop any in-flight playback so rapid taps don't overlap or leak a source.
+    if (APP._speakingPlaySrc) { try { APP._speakingPlaySrc.stop(); } catch (e) {} }
     const src = ctx.createBufferSource();
+    APP._speakingPlaySrc = src;
     src.buffer = APP.speakingUserBuffer;
     src.connect(ctx.destination);
-    src.onended = () => ctx.close();
+    src.onended = () => { if (APP._speakingPlaySrc === src) APP._speakingPlaySrc = null; };
     src.start();
   });
 
