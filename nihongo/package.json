@@ -5,9 +5,14 @@
   "description": "Local-only build/process scripts for the nihongo app. Not a published package — exists so node_modules has a home and scripts can require their dependencies cleanly.",
   "type": "module",
   "scripts": {
-    "process-particles": "node scripts/process-particle-blobs.mjs"
+    "process-particles": "node scripts/process-particle-blobs.mjs",
+    "characterize": "node tests/capture.mjs tests/golden-baseline.json",
+    "verify": "node tests/capture.mjs tests/golden-after.json && node tests/compare.mjs tests/golden-baseline.json tests/golden-after.json"
   },
   "dependencies": {
     "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.60.0"
   }
 }

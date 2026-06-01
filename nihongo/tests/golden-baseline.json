@@ -1,0 +1,2756 @@
+{
+  "capturedAt": "2026-06-01",
+  "states": {
+    "vocab/default": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 429,
+          "text": "食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures 外 がいしょく Eating Out 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファスト フード Fast Food flavors · 味 味あじの 世界せかい Tap a card to enter that flavor's world. No English on the cards — listen, look, feel. The translation waits in the drawer. おいしい あまい からい つめたい すっぱい にがい さわやか あつい しょっぱい まずい",
+          "tagCounts": {
+            "div": 50,
+            "button": 26,
+            "span": 20,
+            "header": 1,
+            "h1": 1,
+            "ruby": 2,
+            "rt": 2,
+            "p": 11,
+            "ul": 1,
+            "li": 10,
+            "image-slot": 10
+          },
+          "dataAttrs": [
+            "data-book",
+            "data-book-id",
+            "data-class",
+            "data-editable",
+            "data-filled",
+            "data-flavor-id",
+            "data-mode"
+          ],
+          "controls": 26,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 199,
+          "text": "books 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures interactive 外 がいしょく Eating Out places 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファストフード Fast Food",
+          "tagCounts": {
+            "div": 3,
+            "ul": 3,
+            "li": 11,
+            "button": 11,
+            "span": 46,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 11,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "vocab/flavors": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 429,
+          "text": "食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures 外 がいしょく Eating Out 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファスト フード Fast Food flavors · 味 味あじの 世界せかい Tap a card to enter that flavor's world. No English on the cards — listen, look, feel. The translation waits in the drawer. おいしい あまい からい つめたい すっぱい にがい さわやか あつい しょっぱい まずい",
+          "tagCounts": {
+            "div": 50,
+            "button": 26,
+            "span": 20,
+            "header": 1,
+            "h1": 1,
+            "ruby": 2,
+            "rt": 2,
+            "p": 11,
+            "ul": 1,
+            "li": 10,
+            "image-slot": 10
+          },
+          "dataAttrs": [
+            "data-book",
+            "data-book-id",
+            "data-class",
+            "data-editable",
+            "data-filled",
+            "data-flavor-id",
+            "data-mode"
+          ],
+          "controls": 26,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 199,
+          "text": "books 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures interactive 外 がいしょく Eating Out places 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファストフード Fast Food",
+          "tagCounts": {
+            "div": 3,
+            "ul": 3,
+            "li": 11,
+            "button": 11,
+            "span": 46,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 11,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "vocab/textures": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 2195,
+          "text": "食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures 外 がいしょく Eating Out 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファスト フード Fast Food textures · 食感 食感しょっかんの 世界せかい Each texture is a brushstroke that IS the feel — soft sine for もちもち, sharp sawtooth for さくさく. Tap a card to enter that texture's world. やわらかい 柔らかい さらさら とろとろ ふわふわ ねばねば ぷりぷり もちもち ぱりぱり さくさく シャキシャキ カリカリ かたい 硬い さらさら sarasara 「さらさら」は さらりと、ながれる かんじです。 おちゃ や みず は さらさら しています。 おちゃ みず ウーロンちゃ たんさんすい そば うどん English & cultural notes smooth-flowing The flow of loose rice through fingers, the smoothness of just-poured tea, the slip of fresh udon noodles in a cold bowl. さらさら is the absence of texture as a texture — clean, unencumbered, almost silent. Also used for hair, fabric, sand. The brushed-line for さらさら is barely there: a long flat wave with very low amplitude. 他ほかの 食感しょっかん スペクトラムに のっていない、よく つかう 食感の ことば。 Other texture descriptors that didn't make the spectrum — useful supporting vocabulary. 柔らかいやわ やわらかい ものは、おしたら すぐ かたちが かわります。 Soft things change shape easily when pressed. しょくパン じゃがいも ほうれんそう とうふ ハンバーガー 滑らかなめ なめらかは、ざらざらしない、つるっとした かんじです。 Nameraka is the feeling of no roughness — clean and gliding. プリン わさび とうふ なまクリーム ヨーグルト つるつる つるつるは、すべるような、なめらかな かんじです。うどんを つるつると すすります。 Tsurutsuru is a slippery, sliding feel — we slurp udon and ramen this way. うどん そば ラーメン わかめ ぷるぷる ぷるぷるは、ゆれる、やわらかい かんじです。ゼリーや 豆腐が ぷるぷるです。 Purupuru is the wobbly, jiggly feel — jelly and tofu are purupuru. プリン とうふ わらびもち プチプチ プチプチは、ちいさい つぶが はじける かんじです。いくらや なっとうが プチプチです。 Puchipuchi is tiny grains bursting — salmon roe and natto are puchipuchi. なっとう みかん オレンジ ブルーベリー キウイ シャリシャリ シャリシャリは、こおりや ざらざらした かんじです。かき氷や なしが シャリシャリです。 Sharishari is icy and granular — shaved ice and Japanese pear are sharishari. かきごおり なし げんまい すいか クリーミー クリーミーは、こくがあって、なめらかな かんじです。バターや 生クリームが クリーミーです。 Creamy is rich and smooth — butter and whipped cream are creamy. ぎゅうにゅう なまクリーム アイスクリーム バター チーズ まっちゃ ジューシー ジューシーは、かむと しるが あふれる かんじです。りんごや ももが ジューシーです。 Juicy is when liquid overflows on bite — apples and peaches are juicy. りんご もも メロン すいか トマト さくらんぼ space hears the word · ← → walks the spectrum",
+          "tagCounts": {
+            "div": 79,
+            "button": 35,
+            "span": 163,
+            "header": 2,
+            "h1": 1,
+            "ruby": 6,
+            "rt": 6,
+            "p": 23,
+            "section": 3,
+            "ul": 1,
+            "li": 10,
+            "img": 63,
+            "svg": 20,
+            "path": 38,
+            "br": 2,
+            "h3": 9,
+            "details": 1,
+            "summary": 1,
+            "h2": 1,
+            "article": 8
+          },
+          "dataAttrs": [
+            "data-book",
+            "data-class",
+            "data-speak",
+            "data-spectrum-texture"
+          ],
+          "controls": 36,
+          "imgSrcs": [
+            "/nihongo/images/vocab/food/aisukuriimu.webp",
+            "/nihongo/images/vocab/food/bataa.webp",
+            "/nihongo/images/vocab/food/buruuberii.webp",
+            "/nihongo/images/vocab/food/chiizu.webp",
+            "/nihongo/images/vocab/food/ebi-tempura.webp",
+            "/nihongo/images/vocab/food/ebi.webp",
+            "/nihongo/images/vocab/food/furaido-chikin.webp",
+            "/nihongo/images/vocab/food/genmai.webp",
+            "/nihongo/images/vocab/food/gyuunyuu.webp",
+            "/nihongo/images/vocab/food/hanbaagaa.webp",
+            "/nihongo/images/vocab/food/hourensou.webp",
+            "/nihongo/images/vocab/food/jagaimo.webp",
+            "/nihongo/images/vocab/food/kakigoori.webp",
+            "/nihongo/images/vocab/food/kiwi.webp",
+            "/nihongo/images/vocab/food/kyabetsu.webp",
+            "/nihongo/images/vocab/food/maccha.webp",
+            "/nihongo/images/vocab/food/meron.webp",
+            "/nihongo/images/vocab/food/mikan.webp",
+            "/nihongo/images/vocab/food/mizu.webp",
+            "/nihongo/images/vocab/food/mochi.webp",
+            "/nihongo/images/vocab/food/momo.webp",
+            "/nihongo/images/vocab/food/namakuriimu.webp",
+            "/nihongo/images/vocab/food/namakuriimu.webp",
+            "/nihongo/images/vocab/food/nashi.webp",
+            "/nihongo/images/vocab/food/nattou.webp",
+            "/nihongo/images/vocab/food/nattou.webp",
+            "/nihongo/images/vocab/food/nori.webp",
+            "/nihongo/images/vocab/food/ocha.webp",
+            "/nihongo/images/vocab/food/ocha.webp",
+            "/nihongo/images/vocab/food/ocha.webp",
+            "/nihongo/images/vocab/food/orenji.webp",
+            "/nihongo/images/vocab/food/purin.webp",
+            "/nihongo/images/vocab/food/purin.webp",
+            "/nihongo/images/vocab/food/raamen.webp",
+            "/nihongo/images/vocab/food/ringo.webp",
+            "/nihongo/images/vocab/food/sakuranbo.webp",
+            "/nihongo/images/vocab/food/shokupan.webp",
+            "/nihongo/images/vocab/food/shokupan.webp",
+            "/nihongo/images/vocab/food/soba.webp",
+            "/nihongo/images/vocab/food/soba.webp",
+            "/nihongo/images/vocab/food/suika.webp",
+            "/nihongo/images/vocab/food/suika.webp",
+            "/nihongo/images/vocab/food/tamago.webp",
+            "/nihongo/images/vocab/food/tansansui.webp",
+            "/nihongo/images/vocab/food/tomato.webp",
+            "/nihongo/images/vocab/food/toofu.webp",
+            "/nihongo/images/vocab/food/toofu.webp",
+            "/nihongo/images/vocab/food/toofu.webp",
+            "/nihongo/images/vocab/food/udon.webp",
+            "/nihongo/images/vocab/food/udon.webp",
+            "/nihongo/images/vocab/food/uuroncha.webp",
+            "/nihongo/images/vocab/food/wakame.webp",
+            "/nihongo/images/vocab/food/warabimochi.webp",
+            "/nihongo/images/vocab/food/wasabi.webp",
+            "/nihongo/images/vocab/food/yooguruto.webp"
+          ]
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 199,
+          "text": "books 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures interactive 外 がいしょく Eating Out places 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファストフード Fast Food",
+          "tagCounts": {
+            "div": 3,
+            "ul": 3,
+            "li": 11,
+            "button": 11,
+            "span": 46,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 11,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "vocab/edibles": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 458,
+          "text": "食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures 外 がいしょく Eating Out 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファスト フード Fast Food edibles · 食材 食材しょくざいの 世界せかい Browse foods by category. Each carries its flavor profile — click a flavor badge inside an item to walk back to that flavor's world. 果物 くだもの 野菜 やさい 肉 にく 魚 さかな 穀物 こくもつ 乳製品 にゅうせいひん 菓子 かし 飲み物 のみもの",
+          "tagCounts": {
+            "div": 73,
+            "button": 24,
+            "span": 36,
+            "header": 1,
+            "h1": 1,
+            "ruby": 2,
+            "rt": 2,
+            "p": 1,
+            "image-slot": 24
+          },
+          "dataAttrs": [
+            "data-book",
+            "data-book-id",
+            "data-category-id",
+            "data-class",
+            "data-editable",
+            "data-filled",
+            "data-mode",
+            "data-pos"
+          ],
+          "controls": 24,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 199,
+          "text": "books 味 あじ Flavors 食材 しょくざい Edibles 食感 しょっかん Textures interactive 外 がいしょく Eating Out places 屋 やたい Street Food 寿 すしや Sushi 板 おまかせ Omakase 串 いざかや Izakaya 麺 ラーメン Ramen 便 コンビニ Conbini 速 ファストフード Fast Food",
+          "tagCounts": {
+            "div": 3,
+            "ul": 3,
+            "li": 11,
+            "button": 11,
+            "span": 46,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 11,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "vocab/bathroom": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 442,
+          "text": "食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway よくしつ 1. 浴室 （よくしつ） bathroom 2. 鏡 （かがみ） mirror 3. 洗面台 （せんめんだい） washbasin / vanity 4. 蛇口 （じゃぐち） faucet / tap 5. シャワー （しゃわー） shower 6. 浴槽 （よくそう） bathtub 7. トイレ （といれ） toilet 8. トイレットペーパー （といれっとぺーぱー） toilet paper 9. バスマット （ばすまっと） bath mat 10. タオル （たおる） towel 11. ドア （どあ） door 12. 窓 （まど） window",
+          "tagCounts": {
+            "div": 49,
+            "button": 11,
+            "span": 70,
+            "h2": 1,
+            "image-slot": 1
+          },
+          "dataAttrs": [
+            "data-book",
+            "data-bound-height",
+            "data-class",
+            "data-editable",
+            "data-en",
+            "data-filled",
+            "data-kana",
+            "data-kanji",
+            "data-num",
+            "data-page-title"
+          ],
+          "controls": 11,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 52,
+          "text": "1 ことば Vocab 2 ことば Vocab 3 つかいかた Usage 4 ぶん Sentences",
+          "tagCounts": {
+            "nav": 1,
+            "button": 4,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-page"
+          ],
+          "controls": 4,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "writing/kana": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 639,
+          "text": "writing · 文字 ひらがなとカタカナ show: ひらがな カタカナ rōmaji style: 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook 筆 · Brush ノト · Noto Sans size: あ ▲ ▼ ア ▲ ▼ ↺ aiueo — あ ア a い イ i う ウ u え エ e お オ o k か カ ka き キ ki く ク ku け ケ ke こ コ ko s さ サ sa し シ shi す ス su せ セ se そ ソ so t た タ ta ち チ chi つ ツ tsu て テ te と ト to n な ナ na に ニ ni ぬ ヌ nu ね ネ ne の ノ no h は ハ ha ひ ヒ hi ふ フ fu へ ヘ he ほ ホ ho m ま マ ma み ミ mi む ム mu め メ me も モ mo y や ヤ ya ゆ ユ yu よ ヨ yo r ら ラ ra り リ ri る ル ru れ レ re ろ ロ ro w わ ワ wa を ヲ wo n ん ン n か→が・は→ば・は→ぱ Voicing marks (゛dakuten · ゜handakuten) bend a kana's sound. Same shape, different voice — pair them once and they'll lock in.",
+          "tagCounts": {
+            "div": 92,
+            "h1": 1,
+            "span": 163,
+            "button": 14,
+            "ul": 1,
+            "li": 5,
+            "label": 2,
+            "input": 2
+          },
+          "dataAttrs": [
+            "data-dir",
+            "data-fontdd-pick",
+            "data-fontdd-target",
+            "data-fontdd-trigger",
+            "data-size",
+            "data-size-reset",
+            "data-size-step",
+            "data-toggle"
+          ],
+          "controls": 16,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "writing/numbers": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 878,
+          "text": "writing · 文字 すうじ · 数字 1 1 ～ 10 1 一 いち 2 二 に 3 三 さん 4 四 よん 5 五 ご 6 六 ろく 7 七 なな 8 八 はち 9 九 きゅう 10 十 じゅう 2 11 ～ 20 11 十一 じゅういち 12 十二 じゅうに 13 十三 じゅうさん 14 十四 じゅうよん 15 十五 じゅうご 16 十六 じゅうろく 17 十七 じゅうなな 18 十八 じゅうはち 19 十九 じゅうきゅう 20 二十 にじゅう ⭑ 11 〜 19 = じゅう + 1 〜 9 3 30 ～ 100 30 三十 さんじゅう 40 四十 よんじゅう 50 五十 ごじゅう 60 六十 ろくじゅう 70 七十 ななじゅう 80 八十 はちじゅう 90 九十 きゅうじゅう 100 百 ひゃく 30 〜 90 = tens + じゅう tens十の位 + ones一の位 → number数字 examples 21 二十一 ↓ にじゅういち 34 三十四 ↓ さんじゅうよん 68 六十八 ↓ ろくじゅうはち 99 九十九 ↓ きゅうじゅうきゅう 4 100s and 1000s 100 百 ひゃく 200 二百 にひゃく 300 三百 さんびゃく 400 四百 よんひゃく 500 五百 ごひゃく 600 六百 ろっぴゃく 700 七百 ななひゃく 800 八百 はっぴゃく 900 九百 きゅうひゃく 1000 千 せん 2000 二千 にせん 3000 三千 さんぜん 4000 四千 よんせん 5000 五千 ごせん 6000 六千 ろくせん 7000 七千 ななせん 8000 八千 はっせん 9000 九千 きゅうせん ⭐ irregular sounds さんびゃく · ろっぴゃく · はっぴゃく · さんぜん · はっせん construction examples 356 — 三百五十六 — さんびゃくごじゅうろく 300 + 50 + 6 1,200 — 千 二百 — せんにひゃく 1000 + 200",
+          "tagCounts": {
+            "div": 69,
+            "h1": 1,
+            "span": 49,
+            "table": 4,
+            "tbody": 4,
+            "tr": 46,
+            "td": 138,
+            "br": 3
+          },
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "writing/colors": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 225,
+          "text": "writing · 文字 いろ · 色 kanji color on off 白 しろ white 黒 くろ black 赤 あか red 青 あお blue / green 黄 き yellow 茶 ちゃ tea / brown 緑 みどり green 紫 むらさき purple 灰色 はいいろ gray 桃色 ももいろ peach pink ピンク ぴんく pink (loanword) オレンジ おれんじ orange (loanword)",
+          "tagCounts": {
+            "div": 77,
+            "h1": 1,
+            "span": 15,
+            "button": 2,
+            "svg": 12,
+            "path": 23
+          },
+          "dataAttrs": [
+            "data-color-kanji",
+            "data-flash-colorize",
+            "data-light"
+          ],
+          "controls": 14,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "writing/datetime": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 3362,
+          "text": "writing · 日付と時刻 ようび と じこく — days and the clock The seven days, the year–month–day order that runs the opposite of English, and the clock readings that bend the numbers you already know. The seven elemental days Each day is an elemental kanji + 曜日. Sun → Moon → Mars → Mercury → Jupiter → Venus → Saturn — the same planetary order that runs the Romance week, so 火曜日 matches Italian martedì, 金曜日 matches French vendredi. any one of 日 月 火 水 木 金 土 elemental kanji + the marker 曜 · よう + closing 日 日 · び = a day name X 曜日 火曜日 · 水曜日 · 金曜日… The 曜 in the middle is the same character in all seven days — it never changes. The learner's job is just to recognize which elemental kanji goes in the left slot. Once you know the seven elements (日 月 火 水 木 金 土), every day name is one substitution away. 日曜日 にちようび 日 · Sunday 月曜日 げつようび 月 · Monday 火曜日 かようび 火 · Tuesday 水曜日 すいようび 水 · Wednesday 木曜日 もくようび 木 · Thursday 金曜日 きんようび 金 · Friday 土曜日 どようび 土 · Saturday Months are read as numbers of the moon月 · the lunar count 月 · the twelve months — a formula and three exceptions N 月 = N がつ Months are just a number + 月. Plug any 1–12 into the slot and the reading is just that number + がつ. 一月 (いちがつ) · 三月 (さんがつ) · 十月 (じゅうがつ) · 十二月 (じゅうにがつ) Three readings that bend — memorize as exceptions 四月 しがつ April not よんがつ 七月 しちがつ July not なながつ 九月 くがつ September not きゅうがつ Same irregulars as the hours (四 七 九): the on-readings clip into a shorter form. Once these three click, every other month follows the formula. Dates run big to small Year → month → day, biggest unit first, each marked by its kanji (年 / 月 / 日). 年 2024 year · ねん 月 12 month · がつ 日 31 day · にち 二〇二四年十二月三十一日 December 31, 2024 年 ねん Read each digit individually (に・ぜろ・に・よん年) or as a number (にせんにじゅうよねん). 月 がつ Months use the on-readings: 一月 (いちがつ) through 十二月 (じゅうにがつ). 日 にち / か Day-of-month is irregular for 1〜10 + 14, 20, 24 — they take kun-readings ending in か: 一日 ついたち, 二日 ふつか, 三日 みっか, 廿日 はつか. Everything else takes にち. Reading the clock 〜時 for hours, 〜分 for minutes, 半 for half-past — three of the hours bend their reading (四 七 九). 時 · the hours 1 〜 12 1 一時 いちじ 2 二時 にじ 3 三時 さんじ 4 四時 よじ not しじ 5 五時 ごじ 6 六時 ろくじ 7 七時 しちじ not ななじ 8 八時 はちじ 9 九時 くじ not きゅうじ 10 十時 じゅうじ 11 十一時 じゅういちじ 12 十二時 じゅうにじ 分 · the minutes 1 一分 いっぷん pun 2 二分 にふん fun 3 三分 さんぷん pun 5 五分 ごふん fun 10 十分 じゅっぷん pun 30 三十分 さんじゅっぷん 半はん pun fun after 2, 4, 5, 7, 9 — the plain reading. pun after 1, 3, 6, 8, 10 — rendaku-driven, often paired with a small っ in the kana (いっぷん, さんぷん, ろっぷん). 半 (han) replaces \"30 minutes\" — 三時半 is \"three thirty,\" not \"three hours and a half.\" 午前 · 午後 — AM and PM 午前 ごぜん AM — before noon 午後 ごご PM — after noon AM/PM markers PRECEDE the hour: 午前九時 (ごぜん くじ) is 9 AM, 午後三時半 (ごご さんじはん) is 3:30 PM. The 24-hour clock just keeps counting: 十八時三十分 is 18:30. 時刻 · convert any time to Japanese 十二 三 六 九 時 hour 0–23 分 min 0–59 ⇄ flip AM/PM 日本語で · in Japanese 午前九時三十分 / 午前九時半 ごぜん くじ さんじゅっぷん / ごぜん くじはん 9:30 AM Two ways to set the time. Type the hour (0–23) and minute (0–59) into the inputs, or grab the clock hands and drag — both paths stay in sync. The Japanese reading updates live, with the hour irregulars (四 七 九) and the ぷん/ふん rendaku applied automatically. At 30 minutes you'll see both 三十分 and the 半 alternative — they're interchangeable. Use the flip AM/PM button to swap between morning and afternoon while keeping the same clock position.",
+          "tagCounts": {
+            "div": 127,
+            "span": 197,
+            "section": 3,
+            "h2": 3,
+            "p": 9,
+            "i": 3,
+            "image-slot": 8,
+            "h3": 1,
+            "em": 2,
+            "b": 3,
+            "br": 1,
+            "dl": 1,
+            "dt": 3,
+            "dd": 3,
+            "svg": 1,
+            "circle": 3,
+            "line": 14,
+            "text": 4,
+            "label": 2,
+            "input": 2,
+            "button": 1
+          },
+          "dataAttrs": [
+            "data-clock-hand",
+            "data-editable",
+            "data-filled"
+          ],
+          "controls": 3,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "writing/particles": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 1506,
+          "text": "writing · particles レッスン Step-by-step walk-throughs of each particle system. 18 of 18 lessons ready. The rest are mapped out — pick a card below to begin. Foundation は と が — the bedrock 01 は トピック導入 Introducing the topic 6 min 02 が·は 主語マーカー The subject marker (and は vs が) 9 min 03 は·が 二重主語 X は Y が — the umbrella topic pattern 8 min Action & Place を · に · で · へ — what verbs do and where 04 を 動作の対象 What verbs act on (object · path · leaving) 7 min 05 に 場所と存在 Destination & location of existence 7 min 06 で 動作の場所と手段 Place of action · means · cause 7 min 07 に·で 場所の対比 に vs で — the classic location confusion 8 min 08 へ·に 方向のニュアンス へ vs に — direction nuance 5 min Time & Recipients に — when, and to whom 09 に 時間と相手 に — time markers + indirect object (to whom) 7 min Description の — possession, kind, and turning verbs into nouns 10 の 所有と修飾 の — possession & description 6 min 11 の 名詞化と疑問 の — nominalizer & question marker 7 min Joining と と や — how things group together 12 と 列挙と同伴と引用 と — exhaustive \"and\" · with · quotation 7 min 13 と 自動的条件 と — the automatic conditional 5 min 14 や·と 代表的列挙 や vs と — representative list 5 min Additive も — also, too, even 15 も 同類と強調 も — also · emphasis · with negatives 7 min Range から と まで — from, until, because 16 から·まで 範囲と理由 から & まで — from, until, because 7 min Synthesis pulling all twelve particles together 17 助 助詞のまとめ The ecosystem — common mistakes + the map 10 min Omission when particles disappear — and why 18 が·∅ ゼロガ Zero が — when the subject marker disappears 8 min",
+          "tagCounts": {
+            "div": 141,
+            "b": 2,
+            "h3": 9,
+            "p": 9,
+            "button": 18,
+            "span": 32
+          },
+          "dataAttrs": [
+            "data-lesson-id"
+          ],
+          "controls": 18,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 336,
+          "text": "interactive 講 レッスン Lessons 記 記事 Articles 問 クイズ Particle test particles は wa topic marker が ga subject marker を o object marker に ni destination & time で de place of action & means へ e direction の no possession & modification と to with, and, quotation も mo also, too から kara from, because まで made until, as far as や ya and (among others)",
+          "tagCounts": {
+            "div": 2,
+            "ul": 2,
+            "li": 15,
+            "button": 15,
+            "span": 60,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-particle-key",
+            "data-particle-mode"
+          ],
+          "controls": 15,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "writing/sentence": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 5978,
+          "text": "writing · grammar ぶんの くみたて — building a Japanese sentence If English is a line, Japanese is a constellation. Words can sit almost anywhere — what matters is the little tag that follows each one, and the verb that pins everything to the end. 一 A different way of saying the same thingenglish vs japanese English uses word order to tell you who's doing what to whom. Japanese uses little markers called particles — and the verb almost always lands at the very end. English I watch anime. Word order = meaning. Subject → Verb → Object. Move \"I\" and \"anime\" and the sentence breaks. vs. Japanese 私は アニメを 見る。 Particles = meaning. Each noun carries a marker telling its job. The verb sits at the end. So は tags watashi as the topic. を tags anime as the thing being watched. Once those tags are in place, the order can shuffle — and the meaning still holds. 二 The verb is the anchor動詞 / どうし Picture every Japanese sentence as a planet. The verb sits at the center. Everything else orbits — and each piece of information clips on with its own little particle. 読みやすい順 natural order — verb arrives last 田中さん は Topic主題 月曜日 に Time時間 学校 で Location場所 先生 と With同伴者 本 を Object目的語 終わり· the end 読みます Verb動詞 Tanaka-san reads a book with the teacher at school on Monday. 全部の助詞 · all eight particles, by role は Topic 主題 — what we're talking about 田中さんは を Object 目的語 — what the verb acts on 本を に Time 時間 — when it happens 月曜日に に Destination 行き先 — where it's heading 学校に で Location 場所 — where it happens 学校で で Means 手段 — how it's done 電車で から Origin 出発点 — where it starts 駅から と Co-participant 同伴者 — who's along 先生と The verb arrives last. Everything before it is optional — even the topic は. Word order tweaks the emphasis, but rarely the underlying meaning. 三 Four kinds of building blocklike clip-together pieces If we colour every word in a Japanese sentence by its part of speech, only four colours come back. Memorise these four shapes and you'll see the seams in every sentence. 名詞 noun Nouns & な-adjectives The \"things\" of the sentence: people, places, ideas. な-adjectives feel like nouns and behave like them. 私 · 学校 · アニメ · 静か(な)watashi · gakkou · anime · shizuka 動詞 verb Verbs & い-adjectives Words that conjugate. い-adjectives count here too — they take tense and negation just like verbs. 見る · 食べる · 行く · 寒い · 楽しいmiru · taberu · iku · samui · tanoshii 助詞 Particles & です The tiny clips that label nouns and glue clauses together. です belongs here too — it's grammar, not vocabulary. は · が · を · に · で · の · と · ですwa · ga · o · ni · de · no · to · desu 。 Sentence ender The full stop. In Japanese it's the little circle 。 — and once you reach it, the sentence is sealed. 見る。\"watch (period)\" Notice the shapes: nouns and verbs are arrows that pass meaning forward. Particles are diamonds that snap between them. The full stop is the cap on the end. 四 Snap the pieces togetheryour first sentence Let's build \"I watch anime.\" Each block clips onto the next — and the diamond particles are what hold the noun arrows in place. \"I watch anime.\" WATASHI WA ANIME WO MITEIRU。 私 watashi は アニメ anime を 見ている miteiru 。 私 (watashi)I — the topic は (wa)topic marker アニメ (anime)the thing watched を (wo)object marker 見ている (miteiru)am watching 五 Now make it longersame shape, more pieces The same clip-together rule scales. Add more nouns, more particles, more clauses — but every new noun still needs its own diamond, and the verb still anchors the end. \"I'm a fool who watches anime.\" WATASHI WA ANIME WO MIRU BAKA DESU。 私 は アニメ を 見る バカ です 。 私I はtopic marker アニメanime (object) をobject marker 見るwatch — modifies バカ バカfool — the predicate ですcopula \"am\" See what happened? を still says \"the thing being watched is anime\" — even though the action of watching is now describing a person (バカ), not the speaker directly. Particles stay glued to their noun no matter what's happening around them. \"I watch anime with my cute cat.\" WATASHI WA WATASHI NO KAWAII NEKO TO ANIME WO MIRU。 私 は 私 の 可愛い 猫 と アニメ を 見る 。 私 の 可愛い 猫\"my cute cat\" — one big noun phrase と (to)co-participant — \"with\" アニメthe object を (wo)object marker 見るthe verb, anchoring it all 六 Word order changes the spotlightsame sentence, different emphasis Because particles do the labelling, you can shuffle the satellites around the verb. The verb stays at the end — but whatever sits closest to it gets the most weight. NeutralStandard order — no special emphasis. 太郎は 日曜日に 公園で 野球を しました。 Taro played baseball at the park on Sunday. When-focusedTime slid toward the front, then verb. 日曜日に 太郎は 公園で 野球を しました。 On Sunday, Taro played baseball at the park. What-focusedObject hugged up next to the verb. 太郎は 公園で 日曜日に 野球を しました。 It was baseball Taro played at the park on Sunday. Try saying each line out loud — the meaning stays put, but the colour of the sentence shifts. 七 Only two rules are non-negotiableeverything else can move 壱 The verb goes at the end Whatever the sentence is doing — saying, asking, describing — the verb (or です) is the last thing before the full stop. If your sentence is ending in a noun, you're missing your anchor. 弐 Particles follow their noun The diamond always sits immediately after the noun it's tagging. You can move a noun-and-its-particle as a single unit — but you can never separate them. 八 Two pairs that trip everyone upは vs が, に vs で These are the famous confusions. They feel like the same thing at first — but they tell different stories. は vs. が は · topic Sets up what the sentence is about. Old information — already on the table. 私は学生です。As for me — student. が · subject Identifies who or what. New information, often emphatic. 私が学生です。I am the student (not them). に vs. で に · existence / destination Where someone is, or where they're going to. 図書館にいます。I am at the library. で · place of action Where something happens. The action's stage. 図書館で勉強します。I study at the library. You've got the skeleton. Next: walk through each particle individually, and start writing your own sentences from scratch. Study the particles →",
+          "tagCounts": {
+            "div": 118,
+            "span": 215,
+            "section": 9,
+            "h2": 8,
+            "em": 17,
+            "p": 34,
+            "b": 18,
+            "h3": 3,
+            "br": 9,
+            "i": 15,
+            "small": 5,
+            "h4": 6,
+            "h5": 4,
+            "button": 1
+          },
+          "dataAttrs": [
+            "data-axis",
+            "data-pc",
+            "data-ss-goto"
+          ],
+          "controls": 1,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "writing/pitch": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 3173,
+          "text": "pitch accent · 抑揚 抑揚よくようとトーン How Japanese rises and falls — and why it matters. 一 どうしてピッチが大切？ Why pitch matters Japanese is a mora-timed, pitch-accented language. Unlike English (which uses stress — louder syllables) Japanese uses pitch — higher or lower mora — to mark meaning. Every word has a pitch pattern, and changing it can change the word entirely. The classic example is 橋はし (a bridge), 箸はし (chopsticks), and 端はし (an edge). All three are pronounced hashi. The pitch decides which — tap the speaker on each card to hear it (how clearly they differ depends on your device's Japanese voice). は し が 平板 heiban [0] 端 edge は し が 中高 nakadaka [2] 橋 bridge は し が 頭高 atamadaka [1] 箸 chopsticks 二 よっつのパターン The four patterns Tokyo-standard Japanese has exactly four pitch accent patterns. Once you can hear the four, you can hear every word. The number in brackets [n] tells you how many mora are high before the drop — [0] means no drop (heiban), [1] means drop right after the first mora, etc. 平板 heiban [0] さ く ら が sakura — cherry blossom Heiban (平板) is flat — the pitch rises after the first mora and stays high. The following particle stays high too. Most Japanese nouns are heiban. 頭高 atamadaka [1] は し が hashi [1] — chopsticks Atamadaka (頭高) is head-high — the FIRST mora is high, then drops. The fall comes immediately after mora 1. はし with this pitch means \"chopsticks.\" 中高 nakadaka [2] は し が hashi [2] — bridge Nakadaka (中高) drops somewhere in the middle (or at the end of) the word. はし with the drop AFTER mora 2 means \"bridge\" — the particle が catches the fall. 尾高 odaka [2] は な が hana — flower Odaka (尾高) looks flat on the word alone — は-な both rise — and only reveals the drop on the NEXT particle: は-な-↓が. The classic pair is 花 (flower, odaka) vs 鼻 (nose, heiban): identical said alone, but 花が falls on が while 鼻が stays high. 三 きごう Notation legend Common marks you'll see across textbooks and dictionaries. This app uses the OJAD-style line above the mora row — high mora sit under the line, low mora outside it. ￣High plateau The OJAD line above kana marks the high-pitch run. Mora under it are H; mora outside it are L. ↓Down-step A vertical drop at the end of a high plateau. The next mora is L, even if visually it sits on the same baseline. ↑Rising tone Question intonation. Add an upward sweep at the END of a sentence to mark it as a question, even without か. ／Pause A small breath between words or phrases. Written as a space in this app; spoken as a brief silence (~100-150ms). ＝Long sustain A held vowel or katakana long mark (ー). The mora is held for two beats but stays at the same pitch. 四 かきかた Notation shortcut You can write pitch accent inline anywhere on this site. Type a kana word followed by a brace of H / L marks — one per mora — and it renders the line over the kana: ありがとう{LHLLL} …turns into: あ り が と う L stands for low, H for high. One mark per mora — small kana fuse to the mora before them (きょ is one), and ー, っ, ん each count on their own. Write the reading in kana (kanji don't split into mora). A few more: に ほ ん ご (heiban), わ た し (nakadaka), あ め (atamadaka), お す し (the sushi word). Ready to practice? 話す Speaking · Shadowing Studio",
+          "tagCounts": {
+            "div": 23,
+            "h1": 1,
+            "ruby": 4,
+            "rt": 4,
+            "span": 126,
+            "section": 5,
+            "h2": 4,
+            "em": 17,
+            "p": 19,
+            "strong": 5,
+            "article": 7,
+            "svg": 26,
+            "path": 28,
+            "button": 8,
+            "code": 3,
+            "header": 4,
+            "polygon": 4,
+            "dl": 1,
+            "dt": 5,
+            "dd": 5,
+            "pre": 1
+          },
+          "dataAttrs": [
+            "data-jump-speaking",
+            "data-no-pitch",
+            "data-pattern",
+            "data-pitch",
+            "data-speak"
+          ],
+          "controls": 8,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "flashcards/card": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 1144,
+          "text": "一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia card list glyph 筆 · Brush ▾ 明朝 · Mincho ゴシック · Gothic 教科書 · Textbook 筆 · Brush ✓ ノト · Noto Sans text 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook 筆 · Brush ノト · Noto Sans bg randomnonefuji.webpsakura.webpshoji.webptemple.webpwaves.webp translations show hide 絵 · 漢字 · よみかた 日 kun ひ · on ニチ MEANING sun / day EXAMPLES 日曜日 NICHIYŌbi Sunday 毎日 MAINICHI every day 日の出 hinode sunrise ALSO READS ひ 火 fire SEE ALSO 星 star 時 hour / time 日曜日 Sunday 曜 day of the week / shining 書 write / book / calligraphy 日 ひ · ニチ sun / day COMPOSED OF No constituent radicals listed. STROKES 4 画 — the total stroke count for this kanji. stroke order via Wiktionary · CC BY-SA H #12 · day #12 day This character is meant to represent the sun. Recalling an old TV set, the arrow running through it can be seen as an aerial. Remembering the Kanji — James Heisig, 4th Ed. 4画 うら 裏 まえ ← 前 つぎ 次 → 単語札 英 —",
+          "tagCounts": {
+            "div": 57,
+            "button": 46,
+            "span": 154,
+            "svg": 9,
+            "rect": 1,
+            "line": 6,
+            "ul": 3,
+            "li": 13,
+            "select": 1,
+            "option": 7,
+            "polyline": 2,
+            "image-slot": 1,
+            "path": 15,
+            "section": 6,
+            "img": 1,
+            "p": 1,
+            "a": 1
+          },
+          "dataAttrs": [
+            "data-editable",
+            "data-filled",
+            "data-flash-bg",
+            "data-flash-class",
+            "data-flash-en",
+            "data-flash-jump",
+            "data-flash-view",
+            "data-flipped",
+            "data-fontdd-pick",
+            "data-fontdd-target",
+            "data-fontdd-trigger",
+            "data-speak",
+            "data-testcard-flip",
+            "data-testcard-nav"
+          ],
+          "controls": 47,
+          "imgSrcs": [
+            "/nihongo/images/stroke/%E6%97%A5-order.gif"
+          ]
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 270,
+          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 17,
+            "button": 17,
+            "span": 68
+          },
+          "dataAttrs": [
+            "data-flash-cat"
+          ],
+          "controls": 17,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "flashcards/list": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 992,
+          "text": "一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia card list glyph 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook ノト · Noto Sans text 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook ノト · Noto Sans bg randomnonefuji.webpsakura.webpshoji.webptemple.webpwaves.webp 英 — 日 ひ · ニチ sun / day 4画 月 つき · ゲツ moon / month 4画 山 やま · サン mountain 3画 川 かわ · セン river 3画 木 き · ボク tree / wood 4画 本 もと · ホン book / origin / root 5画 火 ひ · カ fire 4画 水 みず · スイ water 4画 氷 こおり · ヒョウ ice 5画 土 つち · ド earth / soil / Saturday 3画 田 た · デン rice field 5画 大 おお · ダイ big / large 3画 小 ちい · ショウ small 3画 円 まる · エン yen / circle 4画 王 おう · オウ king 4画 生 い · セイ life / give birth / student 5画 玉 たま · ギョク jewel / ball 5画 国 くに · コク country 8画 金 かね · キン gold / money / metal 8画 車 くるま · シャ vehicle / car 7画",
+          "tagCounts": {
+            "div": 8,
+            "button": 51,
+            "span": 236,
+            "svg": 2,
+            "rect": 1,
+            "line": 6,
+            "ul": 2,
+            "li": 8,
+            "select": 1,
+            "option": 7
+          },
+          "dataAttrs": [
+            "data-flash-bg",
+            "data-flash-class",
+            "data-flash-en",
+            "data-flash-jump-idx",
+            "data-flash-view",
+            "data-fontdd-pick",
+            "data-fontdd-target",
+            "data-fontdd-trigger"
+          ],
+          "controls": 52,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 270,
+          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 17,
+            "button": 17,
+            "span": 68
+          },
+          "dataAttrs": [
+            "data-flash-cat"
+          ],
+          "controls": 17,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "speaking/studio": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 968,
+          "text": "✿ PHRASE 1 / 7 自動再生 平板 heiban [0] こ ん に ち は Browser 録音ろくおんする Tap to Record きこえませんでした We didn't hear anything — tap the mic and speak the phrase. きこえた Heard お手本てほん Original あなた Your Version — / — リズム リズム Rhythm Whether your beats match the phrase’s mora count and even, mora-timed spacing. はっきり はっきり Clarity How crisply each syllable is articulated — read from the energy dips between morae. ピッチ ピッチ Pitch Whether your high–low pitch contour follows the phrase’s accent pattern. 自然 自然 Naturalness Overall delivery — a believable speaking rate with the other three in balance. — /100 Hello / Good afternoon. The all-purpose daytime hello. The final は is written ha but said “wa” — a leftover topic particle. Stays high and even. これからのフレーズ Up Next 1 こんにちは Hello / Good afternoon. 2 おはよう ございます Good morning. (polite) 3 こんばんは Good evening. 4 はじめまして Nice to meet you. (first time) 5 おれは ケンシンです I am Kenshin. 6 カオルと いいます My name is Kaoru. 7 よろしく おねがいします Please be kind to me.",
+          "tagCounts": {
+            "div": 25,
+            "aside": 1,
+            "image-slot": 1,
+            "section": 1,
+            "span": 108,
+            "button": 15,
+            "i": 1,
+            "svg": 14,
+            "path": 14,
+            "rect": 2,
+            "ruby": 2,
+            "rt": 2,
+            "p": 3,
+            "em": 5,
+            "polygon": 2,
+            "line": 120,
+            "circle": 1,
+            "polyline": 1,
+            "nav": 1,
+            "ol": 1,
+            "li": 7
+          },
+          "dataAttrs": [
+            "data-category-id",
+            "data-editable",
+            "data-engine",
+            "data-filled",
+            "data-has-score",
+            "data-pattern",
+            "data-phrase-id",
+            "data-pitch",
+            "data-score-dim",
+            "data-speaking-phrase",
+            "data-speaking-walk",
+            "data-state"
+          ],
+          "controls": 20,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 270,
+          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 17,
+            "button": 17,
+            "span": 68
+          },
+          "dataAttrs": [
+            "data-flash-cat"
+          ],
+          "controls": 17,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 47,
+          "text": "categories 挨 あいさつ Greetings 食 たべもの Food & Meals",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 2,
+            "button": 2,
+            "span": 8
+          },
+          "dataAttrs": [
+            "data-speaking-cat"
+          ],
+          "controls": 2,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        }
+      }
+    },
+    "library/search": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 3133,
+          "text": "search · 検索 ぶしゅ から さがす Pick radicals to find kanji in your decks that contain all of them. Click a result to jump to its flashcard. selected none — pick from below 1 画 一 ｜ 丶 ノ 乙 亅 2 画 二 亠 人 ⺅ 𠆢 儿 入 ハ 丷 冂 冖 冫 几 凵 刀 ⺉ 力 勹 匕 匚 十 卜 卩 厂 厶 又 マ 九 ユ 乃 𠂉 3 画 ⻌ 口 囗 土 士 夂 夕 大 女 子 宀 寸 小 ⺌ 尢 尸 屮 山 川 巛 工 已 巾 干 幺 广 廴 廾 弋 弓 ヨ 彑 彡 彳 ⺖ ⺘ ⺡ ⺨ ⺾ ⻏ ⻖ 也 亡 及 久 4 画 ⺹ 心 戈 戸 手 支 攵 文 斗 斤 方 无 日 曰 月 木 欠 止 歹 殳 比 毛 氏 气 水 火 ⺣ 爪 父 爻 爿 片 牛 犬 ⺭ 王 元 井 勿 尤 五 屯 巴 毋 5 画 玄 瓦 甘 生 用 田 疋 疒 癶 白 皮 皿 目 矛 矢 石 示 禸 禾 穴 立 ⻂ 世 巨 冊 母 ⺲ 牙 6 画 瓜 竹 米 糸 缶 羊 羽 而 耒 耳 聿 肉 自 至 臼 舌 舟 艮 色 虍 虫 血 行 衣 西 7 画 臣 見 角 言 谷 豆 豕 豸 貝 赤 走 足 身 車 辛 辰 酉 釆 里 舛 麦 8+9 画 金 長 門 隶 隹 雨 青 非 奄 岡 免 斉 面 革 韭 音 頁 風 飛 食 首 香 品 10+ 画 馬 骨 高 髟 鬥 鬯 鬲 鬼 竜 韋 魚 鳥 鹵 鹿 麻 亀 啇 黄 黒 黍 黹 無 歯 黽 鼎 鼓 鼠 鼻 齊 龠 all decomposed kanji 133 日 ひ ニチ sun / day 月 つき ゲツ moon / month 山 やま サン mountain 川 かわ セン river 木 き ボク tree / wood 本 もと ホン book / origin / root 火 ひ カ fire 水 みず スイ water 氷 こおり ヒョウ ice 土 つち ド earth / soil / Saturday 田 た デン rice field 大 おお ダイ big / large 小 ちい ショウ small 円 まる エン yen / circle 王 おう オウ king 生 い セイ life / give birth / student 玉 たま ギョク jewel / ball 国 くに コク country 金 かね キン gold / money / metal 車 くるま シャ vehicle / car 一 ひと イチ one 二 ふた ニ two 三 み サン three 四 よ シ four 五 いつ ゴ five 六 む ロク six 七 なな シチ seven 八 や ハチ eight 九 ここの キュウ nine 十 とお ジュウ ten 百 もも ヒャク hundred 千 ち セン thousand 人 ひと ジン person 休 やす キュウ rest / holiday 入 はい ニュウ enter 子 こ シ child 女 おんな ジョ woman 好 す コウ like / fond 母 はは ボ mother 姉 あね シ older sister 妹 いもうと マイ younger sister 父 ちち フ father 男 おとこ ダン man 兄 あに ケイ older brother 弟 おとうと テイ younger brother 友 とも ユウ friend 双 ふた ソウ pair / both 林 はやし リン woods 森 もり シン forest 石 いし セキ stone / rock 岩 いわ ガン rock / boulder 雨 あめ ウ rain 雪 ゆき セツ snow 竹 たけ チク bamboo 草 くさ ソウ grass 虫 むし チュウ insect · bichinho (pt) 風 かぜ フウ wind 気 き キ spirit / air / energy 元気 げんき well / fine / energetic / lively 星 ほし セイ star 空 そら クウ empty / sky 雲 くも ウン cloud 花 はな カ flower 葉 は ヨウ leaf 町 まち チョウ town / city block 村 むら ソン village 今 いま コン now / present 分 わ フン minute / part / understand 時 とき ジ hour / time 春 はる シュン spring 夏 なつ カ summer 秋 あき シュウ autumn 冬 ふゆ トウ winter 早 はや ソウ early / fast 遅 おそ チ late / slow 昼 ひる チュウ noon / daytime 夕 ゆう セキ evening 先 さき セン ahead / previous / tip 宀 うかんむり roof / crown / cap (radical) 字 じ ジ character / letter 学 まな ガク learn / study 校 コウ school 文 ふみ ブン writing / text / culture 名 な メイ name / fame 書 か ショ write / book / calligraphy 色 いろ シキ color 白 しろ ハク white 黒 くろ コク black 赤 あか セキ red 青 あお セイ blue / green 茶 ちゃ チャ tea / brown 緑 みどり リョク green 紫 むらさき シ purple 体 からだ タイ body 口 くち コウ mouth / opening / entrance 目 め モク eye 見 み ケン look / see 自 みずから ジ self / oneself 首 くび シュ neck 耳 みみ ジ ear 足 あし ソク foot / leg 心 こころ シン heart / mind 手 て シュ hand 鼻 はな ビ nose 頭 あたま トウ head 顔 かお ガン face 髪 かみ ハツ hair 歯 は シ tooth 腕 うで ワン arm 貝 かい バイ shellfish / shell 犬 いぬ ケン dog 猫 ねこ ビョウ cat 鳥 とり チョウ bird 鶏 にわとり ケイ chicken 魚 さかな ギョ fish 馬 うま バ horse 牛 うし ギュウ cow / bull 豚 ぶた トン pig 蛸 たこ ショウ octopus 戸 と コ door 門 かど モン gate 開 ひら カイ open 窓 まど ソウ window 床 ゆか ショウ floor 棚 たな shelf 上 うえ ジョウ up / above 下 した カ down / below 左 ひだり サ left 右 みぎ ウ right 中 なか チュウ middle / inside 来 く ライ come / next / future 出 で シュツ go out / exit 立 た リツ stand / establish",
+          "tagCounts": {
+            "div": 36,
+            "h1": 1,
+            "p": 1,
+            "span": 683,
+            "button": 386
+          },
+          "dataAttrs": [
+            "data-rad-kanji",
+            "data-rad-toggle"
+          ],
+          "controls": 386,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 270,
+          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 17,
+            "button": 17,
+            "span": 68
+          },
+          "dataAttrs": [
+            "data-flash-cat"
+          ],
+          "controls": 17,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 47,
+          "text": "categories 挨 あいさつ Greetings 食 たべもの Food & Meals",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 2,
+            "button": 2,
+            "span": 8
+          },
+          "dataAttrs": [
+            "data-speaking-cat"
+          ],
+          "controls": 2,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 50,
+          "text": "sections 検 けんさく Search 辞 じしょ Dictionary 本 ほん Books",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 3,
+            "button": 3,
+            "span": 12
+          },
+          "dataAttrs": [
+            "data-library-page"
+          ],
+          "controls": 3,
+          "imgSrcs": []
+        }
+      }
+    },
+    "library/dictionary": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 3224,
+          "text": "dictionary · 辞書 さがす Browse and search — kanji, words, and what they mean 123 entries kind: allkanjiword level: allN5N4N3N2N1 tag: anyadjanimalbathroombedroombodyentrancehomekitchenlivingroomnaturetime Kanji · 95 かぜ 風 wind N5 nature みず 水 water N5 nature ひ 火 fire N5 nature やま 山 mountain N5 nature かわ 川 river N5 nature ひと 人 person N5 はい.る 入 enter / put in N5 で.る 出 go out / exit N5 と.まる 止 stop / halt N4 と 戸 door N3 もん 門 gate N3 こう 閤 side door N1 ひら.く 開 open N4 ゆか 床 floor N3 home たな 棚 shelf N2 home ちち 父 father N5 はは 母 mother N5 あに 兄 older brother N5 あね 姉 older sister N5 おとうと 弟 younger brother N4 いもうと 妹 younger sister N4 こ 子 child N5 おんな 女 woman N5 す.き 好 like / fond N5 じ 字 character / letter N4 おとこ 男 man N5 まい 毎 every N5 time とも 友 friend N4 はん 反 anti- / opposite N3 こおり 氷 ice N3 nature ゆき 雪 snow N4 nature そら 空 sky N5 nature くも 雲 cloud N4 nature ほし 星 star N4 nature は 葉 leaf N3 nature くさ 草 grass N3 nature まだ 未 not yet / unripe N3 き 木 tree N5 nature ほん 本 book / origin / root N5 home はやし 林 woods N4 nature もり 森 forest N4 nature がけ 厂 cliff (radical) — nature いし 石 stone / rock N5 nature いわ 岩 rock / boulder N3 nature ほら 宕 cave — nature つち 土 earth / soil / Saturday N5 nature · time さ.る 去 to leave / past N4 time かたな 刀 katana / sword N3 ちから 力 power / strength N4 ゆみ 弓 bow N3 いち 市 market / city N4 た 田 rice field N4 nature まち 町 town N4 むら 村 village N4 おう 王 king N4 なま 生 life / raw N5 nature くに 国 country N5 うかんむり 宀 roof / crown / cap (radical) — えん 円 yen / circle N5 おお 大 big / large N5 adj ちい 小 small N5 adj うえ 上 up / above N5 した 下 down / below N5 ひ 日 sun / day N5 time つき 月 moon / month N5 time め 目 eye N5 body からだ 体 body N5 body て 手 hand N5 body み.る 見 look / see N5 じ 自 self / oneself N4 くち 口 mouth / opening / entrance N5 body みみ 耳 ear N5 body はな 鼻 nose N3 body あし 足 foot / leg N5 body かお 顔 face N4 body あたま 頭 head N4 body かみ 髪 hair N4 body は 歯 tooth N4 body こころ 心 heart / mind N4 body うで 腕 arm N3 body くび 首 neck N3 body はな 花 flower N5 nature あめ 雨 rain N5 nature はる 春 spring N5 time · nature なつ 夏 summer N5 time · nature あき 秋 autumn N5 time · nature ふゆ 冬 winter N5 time · nature むし 虫 insect N4 animal · nature かがみ 鏡 mirror N4 home まど 窓 window N4 home へび 蛇 snake N2 animal かぎ 鍵 key N2 home ヨク 浴 bathe N3 home ね.る 寝 sleep N3 home つめ.たい 冷 cold (to touch) N3 adj Words · 28 てんじょう 天井 ceiling N3 home しまい 姉妹 sisters N4 きょうだい 兄弟 brothers / siblings N4 よくしつ 浴室 bathroom N4 home · bathroom せんめんだい 洗面台 washbasin N3 home · bathroom じゃぐち 蛇口 faucet N2 home · bathroom しゃわー シャワー shower N5 home · bathroom よくそう 浴槽 bathtub N2 home · bathroom といれ トイレ toilet N5 home · bathroom たおる タオル towel N5 home はぶらし 歯ブラシ toothbrush N4 home · bathroom れいぞうこ 冷蔵庫 refrigerator N4 home · kitchen でんしれんじ 電子レンジ microwave N3 home · kitchen ほうちょう 包丁 kitchen knife N3 home · kitchen おさら お皿 plate N5 home · kitchen はし 箸 chopsticks N5 home · kitchen そふぁ ソファ sofa N5 home · livingroom てれび テレビ television N5 home · livingroom ほんだな 本棚 bookshelf N4 home · livingroom かーてん カーテン curtain N5 home べっど ベッド bed N5 home · bedroom ふとん 布団 futon / duvet N4 home · bedroom まくら 枕 pillow N3 home · bedroom めざましどけい 目覚まし時計 alarm clock N3 home · bedroom げんかん 玄関 entryway N4 home · entrance くつ 靴 shoes N5 home · entrance かさ 傘 umbrella N4 home · entrance かぎ 鍵 key N3 home · entrance",
+          "tagCounts": {
+            "div": 874,
+            "h1": 1,
+            "svg": 1,
+            "circle": 1,
+            "line": 1,
+            "input": 1,
+            "span": 130,
+            "button": 21,
+            "section": 2
+          },
+          "dataAttrs": [
+            "data-filter-key",
+            "data-filter-val"
+          ],
+          "controls": 22,
+          "imgSrcs": []
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 270,
+          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 17,
+            "button": 17,
+            "span": 68
+          },
+          "dataAttrs": [
+            "data-flash-cat"
+          ],
+          "controls": 17,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 47,
+          "text": "categories 挨 あいさつ Greetings 食 たべもの Food & Meals",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 2,
+            "button": 2,
+            "span": 8
+          },
+          "dataAttrs": [
+            "data-speaking-cat"
+          ],
+          "controls": 2,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 50,
+          "text": "sections 検 けんさく Search 辞 じしょ Dictionary 本 ほん Books",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 3,
+            "button": 3,
+            "span": 12
+          },
+          "dataAttrs": [
+            "data-library-page"
+          ],
+          "controls": 3,
+          "imgSrcs": []
+        }
+      }
+    },
+    "library/books": {
+      "ok": true,
+      "surfaces": {
+        "main-inner": {
+          "len": 73,
+          "text": "books · 本 推薦図書 Books I recommend — a small shelf for learning Japanese. ×",
+          "tagCounts": {
+            "div": 27,
+            "h1": 1,
+            "section": 1,
+            "button": 4,
+            "img": 3,
+            "dialog": 1
+          },
+          "dataAttrs": [
+            "data-book-id"
+          ],
+          "controls": 4,
+          "imgSrcs": [
+            "/nihongo/images/books/hiragana-katakana.webp",
+            "/nihongo/images/books/master-japanese-vocabulary.webp",
+            "/nihongo/images/books/remembering-the-kanji.webp"
+          ]
+        },
+        "main-stepper": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "sidebar": {
+          "len": 482,
+          "text": "明 brightness · clarity · understanding めい · あか-るい 日 + 月 → 明 A composite kanji: 日 (sun) plus 月 (moon) — the two largest things in the sky pressed together to mean bright, lucid, comprehensible. In the logo the sun radical is rendered in vermilion to echo the hinomaru; 月 stays in sumi ink. Fitting for a project about reading and learning Japanese: 明 is what we want the language to become for the learner. 基 基礎 Basics 札 単語札 Flashcards 語 語彙 Vocabulary 話 はなす Speaking 図 としょ Library 設定",
+          "tagCounts": {
+            "div": 7,
+            "img": 1,
+            "span": 29,
+            "p": 2,
+            "strong": 2,
+            "em": 3,
+            "ul": 1,
+            "li": 5,
+            "button": 7,
+            "svg": 1,
+            "path": 3
+          },
+          "dataAttrs": [
+            "data-section"
+          ],
+          "controls": 8,
+          "imgSrcs": [
+            "/nihongo/images/logo.webp"
+          ]
+        },
+        "vocab-sidebar": {
+          "len": 71,
+          "text": "categories 食 たべもの Food 家 いえ Home 宿 やど Stays 網 ネット Internet 畳 じょうご Jougo",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 5,
+            "button": 5,
+            "span": 20
+          },
+          "dataAttrs": [
+            "data-vocab-cat"
+          ],
+          "controls": 5,
+          "imgSrcs": []
+        },
+        "vocab-books-sidebar": {
+          "len": 99,
+          "text": "books 浴 よくしつ Bathroom 台 だいどころ Kitchen 居 いま Living Room 寝 しんしつ Bedroom 玄 げんかん Entrance 廊 ろうか Hallway",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 6,
+            "button": 6,
+            "span": 24,
+            "img": 1
+          },
+          "dataAttrs": [
+            "data-vocab-book"
+          ],
+          "controls": 6,
+          "imgSrcs": []
+        },
+        "flash-sidebar": {
+          "len": 270,
+          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 17,
+            "button": 17,
+            "span": 68
+          },
+          "dataAttrs": [
+            "data-flash-cat"
+          ],
+          "controls": 17,
+          "imgSrcs": []
+        },
+        "writing-sidebar": {
+          "len": 155,
+          "text": "sections あ ひらがなカタカナ Hiragana & Katakana 数 すうじ Numbers 文 ぶんのくみたて Sentence Structure は じょし Particles 色 いろ Colors 時 ようびじこく Days & Time 抑 よくようトーン Pitch & Tones",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 7,
+            "button": 7,
+            "span": 36
+          },
+          "dataAttrs": [
+            "data-writing-page"
+          ],
+          "controls": 7,
+          "imgSrcs": []
+        },
+        "particles-sidebar": {
+          "len": 0,
+          "text": "",
+          "tagCounts": {},
+          "dataAttrs": [],
+          "controls": 0,
+          "imgSrcs": []
+        },
+        "speaking-sidebar": {
+          "len": 47,
+          "text": "categories 挨 あいさつ Greetings 食 たべもの Food & Meals",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 2,
+            "button": 2,
+            "span": 8
+          },
+          "dataAttrs": [
+            "data-speaking-cat"
+          ],
+          "controls": 2,
+          "imgSrcs": []
+        },
+        "library-sidebar": {
+          "len": 50,
+          "text": "sections 検 けんさく Search 辞 じしょ Dictionary 本 ほん Books",
+          "tagCounts": {
+            "div": 1,
+            "ul": 1,
+            "li": 3,
+            "button": 3,
+            "span": 12
+          },
+          "dataAttrs": [
+            "data-library-page"
+          ],
+          "controls": 3,
+          "imgSrcs": []
+        }
+      }
+    }
+  }
+}
