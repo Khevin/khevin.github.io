@@ -12778,14 +12778,8 @@ function renderFlashcards(container) {
 }
 
 // ── Dictionary ───────────────────────────────────────────────────────────
-function renderDictionary(container) {
-  if (APP.pendingDictQ) {
-    APP.dictQ = APP.pendingDictQ;
-    APP.dictKind = 'all'; APP.dictLevel = 'all'; APP.dictTag = 'all';
-    APP.pendingDictQ = null;
-  }
-
-  const allTags = Idx.dictTags(); // memoized (was rebuilt via flatMap+Set+sort each keystroke)
+// Query-dependent slice of the dictionary — recomputed on each keystroke.
+function dictFilter() {
   const norm = s => (s || '').toLowerCase().normalize('NFC');
   const query = norm(APP.dictQ);
   const filtered = (window.DICTIONARY || []).filter(e => {
@@ -12795,17 +12789,18 @@ function renderDictionary(container) {
     if (!query) return true;
     return (e.kanji||'').includes(APP.dictQ) || norm(e.kana).includes(query) || norm(e.en).includes(query);
   });
-  const kanjiHits = filtered.filter(e => e.kind === 'kanji');
-  const wordHits  = filtered.filter(e => e.kind === 'word');
+  return { filtered, kanjiHits: filtered.filter(e => e.kind === 'kanji'), wordHits: filtered.filter(e => e.kind === 'word') };
+}
 
-  const pill = (val, cur, key) =>
-    `<button class="pill ${val === APP[key] ? 'active' : ''}" data-filter-key="${key}" data-filter-val="${escAttr(val)}">${escHTML(val === 'all' ? (key === 'dictTag' ? 'any' : 'all') : val)}</button>`;
-
-  const clearBtnHTML = APP.dictQ
-    ? `<button class="icon-btn" id="dict-clear" title="clear">
+function dictClearBtnHTML() {
+  return `<button class="icon-btn" id="dict-clear" title="clear">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>` : '';
+      </button>`;
+}
 
+// Results-only markup (empty-state + Kanji/Words groups). Shared by the full
+// render and the targeted keystroke update so the two can't drift.
+function dictResultsHTML(kanjiHits, wordHits, filtered) {
   const groupHTML = (label, entries) => entries.length === 0 ? '' : `
     <section style="margin-bottom:36px">
       <div style="font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink-3);
@@ -12824,6 +12819,49 @@ function renderDictionary(container) {
           </div>`).join('')}
       </div>
     </section>`;
+  return `${filtered.length === 0 ? '<div class="empty-state">nothing matches yet — try clearing some filters</div>' : ''}
+    ${groupHTML('Kanji', kanjiHits)}
+    ${groupHTML('Words', wordHits)}`;
+}
+
+// Targeted keystroke update: refresh ONLY the results + entry count + clear
+// button, leaving the page head, the search input (so focus/caret survive), and
+// the filter pills untouched. The old path rebuilt the whole page innerHTML on
+// every debounced keystroke — recreating the input and every filter pill each
+// time. Result sections are the last children (after .filters), so they swap in
+// place with no wrapper element (keeps the DOM structure identical).
+function updateDictionaryResults(container) {
+  const { filtered, kanjiHits, wordHits } = dictFilter();
+  const count = container.querySelector('#dict-count');
+  if (count) count.textContent = `${filtered.length} entries`;
+  container.querySelectorAll(':scope > section, :scope > .empty-state').forEach(el => el.remove());
+  container.insertAdjacentHTML('beforeend', dictResultsHTML(kanjiHits, wordHits, filtered));
+  // Clear button appears/disappears only at the empty↔non-empty boundary.
+  const input = container.querySelector('#dict-input');
+  const clearBtn = container.querySelector('#dict-clear');
+  if (APP.dictQ && !clearBtn && input) {
+    input.insertAdjacentHTML('afterend', dictClearBtnHTML());
+    const btn = container.querySelector('#dict-clear');
+    if (btn) btn.addEventListener('click', () => { APP.dictQ = ''; renderDictionary(container); });
+  } else if (!APP.dictQ && clearBtn) {
+    clearBtn.remove();
+  }
+}
+
+function renderDictionary(container) {
+  if (APP.pendingDictQ) {
+    APP.dictQ = APP.pendingDictQ;
+    APP.dictKind = 'all'; APP.dictLevel = 'all'; APP.dictTag = 'all';
+    APP.pendingDictQ = null;
+  }
+
+  const allTags = Idx.dictTags(); // memoized (was rebuilt via flatMap+Set+sort each keystroke)
+  const { filtered, kanjiHits, wordHits } = dictFilter();
+
+  const pill = (val, cur, key) =>
+    `<button class="pill ${val === APP[key] ? 'active' : ''}" data-filter-key="${key}" data-filter-val="${escAttr(val)}">${escHTML(val === 'all' ? (key === 'dictTag' ? 'any' : 'all') : val)}</button>`;
+
+  const clearBtnHTML = APP.dictQ ? dictClearBtnHTML() : '';
 
   container.innerHTML = `
     <div class="page-head">
@@ -12833,7 +12871,7 @@ function renderDictionary(container) {
           <h1 class="page-title-jp">さがす</h1>
           <div class="page-title-en">Browse and search — kanji, words, and what they mean</div>
         </div>
-        <div class="small-label">${filtered.length} entries</div>
+        <div class="small-label" id="dict-count">${filtered.length} entries</div>
       </div>
       <div class="rule"></div>
     </div>
@@ -12855,15 +12893,20 @@ function renderDictionary(container) {
       ${['all',...allTags].map(v => pill(v, APP.dictTag, 'dictTag')).join('')}
     </div>
 
-    ${filtered.length === 0 ? '<div class="empty-state">nothing matches yet — try clearing some filters</div>' : ''}
-    ${groupHTML('Kanji', kanjiHits)}
-    ${groupHTML('Words', wordHits)}`;
+    ${dictResultsHTML(kanjiHits, wordHits, filtered)}`;
 
   const input = container.querySelector('#dict-input');
   let debTimer;
   input.addEventListener('input', () => {
     clearTimeout(debTimer);
-    debTimer = setTimeout(() => { APP.dictQ = input.value; renderDictionary(container); }, 120);
+    debTimer = setTimeout(() => {
+      APP.dictQ = input.value;
+      // Targeted results update instead of a full renderDictionary — the input
+      // is never recreated, so focus survives naturally. Caret is restored to
+      // the end to preserve the previous (full-rebuild) behavior exactly.
+      updateDictionaryResults(container);
+      input.setSelectionRange(input.value.length, input.value.length);
+    }, 120);
   });
   input.focus();
   input.setSelectionRange(input.value.length, input.value.length);

@@ -357,6 +357,39 @@ async function main() {
       check(`HARDEN aliveRadicals indexed == naive over ${r.radCount} radicals (sel=${r.sel.join('')})`, r.match === true, `old=${r.oldSize} new=${r.newSize}`);
       await page.close();
     }
+
+    // ── Phase 5: dictionary targeted keystroke update == full re-render ──────
+    // The keystroke path now updates only results/count/clear-button instead of
+    // rebuilding the page. Verify it produces the same results, count, and
+    // clear-button state as a full renderDictionary, across several queries.
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const snap = (c) => ({
+          count: (c.querySelector('#dict-count') || {}).textContent || '',
+          sections: [...c.querySelectorAll(':scope > section, :scope > .empty-state')].map(e => e.outerHTML).join(''),
+          hasClear: !!c.querySelector('#dict-clear'),
+        });
+        const reset = () => { APP.dictKind = 'all'; APP.dictLevel = 'all'; APP.dictTag = 'all'; APP.pendingDictQ = null; };
+        const queries = ['', 'mizu', '水', 'mirror', 'zzznomatch', 'か', 'kaze'];
+        let mismatches = 0; const details = [];
+        for (const q of queries) {
+          const full = document.createElement('div'); document.body.appendChild(full);
+          reset(); APP.dictQ = q; renderDictionary(full);
+          const a = snap(full); full.remove();
+
+          const tgt = document.createElement('div'); document.body.appendChild(tgt);
+          reset(); APP.dictQ = ''; renderDictionary(tgt);     // full render, empty query
+          APP.dictQ = q; updateDictionaryResults(tgt);        // then targeted update to the query
+          const b = snap(tgt); tgt.remove();
+
+          if (a.count !== b.count || a.sections !== b.sections || a.hasClear !== b.hasClear) { mismatches++; details.push(q || '(empty)'); }
+        }
+        return { mismatches, details, n: queries.length };
+      });
+      check(`P5 dictionary targeted update == full render over ${r.n} queries`, r.mismatches === 0, `mismatches=${r.mismatches} [${r.details.join(', ')}]`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
