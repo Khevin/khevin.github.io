@@ -1122,7 +1122,19 @@ function escHTML(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 function escAttr(s) {
-  return String(s).replace(/"/g,'&quot;');
+  // Escape the full set so a value is safe in BOTH single- and double-quoted
+  // attributes and can't break out into markup. `&` must go first so the other
+  // entities aren't double-escaped. All values are author-authored today, so
+  // this is defense-in-depth — but several data-* attributes (data-speak,
+  // data-stem, data-kanji…) flow user-reachable strings into innerHTML, and
+  // these entities decode back to the original on getAttribute(), so handlers
+  // read the identical value (the change is transparent to existing behavior).
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // Render a Japanese label that may contain '\n' as a stack-on-line-break
@@ -1219,6 +1231,7 @@ const Idx = (function () {
   let _kunIndex = null;        // normalized kun           -> [{...card, classId}]
   let _seeAlsoReverse = null;  // target kanji             -> [{ card, classId }] (cards pointing at it)
   let _radicalCandidates = null; // [{ card, classId, radicals }] deduped non-radical cards
+  let _dictTags = null;        // sorted unique DICTIONARY tag list
 
   function buildVocab() {
     _vocabItem = new Map();
@@ -1235,11 +1248,14 @@ const Idx = (function () {
   function buildDict() {
     _dictEntry = new Map();
     _dictKanjiByChar = new Map();
+    const tags = new Set();
     for (const e of (window.DICTIONARY || [])) {
       if (e.kanji && !_dictEntry.has(e.kanji)) _dictEntry.set(e.kanji, e);
       if (e.kana && !_dictEntry.has(e.kana)) _dictEntry.set(e.kana, e);
       if (e.kind === 'kanji' && e.kanji && !_dictKanjiByChar.has(e.kanji)) _dictKanjiByChar.set(e.kanji, e);
+      for (const t of (e.tags || [])) tags.add(t);
     }
+    _dictTags = [...tags].sort();
   }
   function buildCards() {
     _cardByKanji = new Map();
@@ -1278,6 +1294,7 @@ const Idx = (function () {
     vocabItem(text)        { if (!_vocabItem) buildVocab(); return _vocabItem.get(text) || null; },
     dictEntry(text)        { if (!_dictEntry) buildDict(); return _dictEntry.get(text) || null; },
     dictKanjiByChar(c)     { if (!_dictKanjiByChar) buildDict(); return _dictKanjiByChar.get(c) || null; },
+    dictTags()             { if (!_dictTags) buildDict(); return _dictTags; },
     cardEntry(kanji)       { if (!_cardByKanji) buildCards(); return _cardByKanji.get(kanji) || null; },
     kunIndex()             { if (!_kunIndex) buildCards(); return _kunIndex; },
     seeAlsoReverse(kanji)  { if (!_seeAlsoReverse) buildCards(); return _seeAlsoReverse.get(kanji) || []; },
@@ -12768,7 +12785,7 @@ function renderDictionary(container) {
     APP.pendingDictQ = null;
   }
 
-  const allTags = [...new Set((window.DICTIONARY || []).flatMap(e => e.tags || []))].sort();
+  const allTags = Idx.dictTags(); // memoized (was rebuilt via flatMap+Set+sort each keystroke)
   const norm = s => (s || '').toLowerCase().normalize('NFC');
   const query = norm(APP.dictQ);
   const filtered = (window.DICTIONARY || []).filter(e => {

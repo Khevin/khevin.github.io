@@ -295,6 +295,35 @@ async function main() {
       check(`P6 lookupFlavorKana matches naive walk over ${r.n.flavors} ids`, r.ka === 0, `mismatches=${r.ka}`);
       await page.close();
     }
+
+    // ── Hardening: escAttr full-escape (transparent) + dictTags memo ────────
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        const samples = ['plain', 'a&b', 'a<b>c', 'q"x', "ap'x", 'mix &<>"\'', '水 みず', '<script>alert(1)</script>'];
+        let rawBreakout = 0, decodeFail = 0;
+        for (const s of samples) {
+          const esc = escAttr(s);
+          if (/[<>"']/.test(esc)) rawBreakout++; // no raw breakout chars survive
+          const div = document.createElement('div');
+          div.innerHTML = `<span data-x="${esc}"></span>`; // place in a double-quoted attr
+          if (div.firstChild.getAttribute('data-x') !== s) decodeFail++; // decodes back to original
+        }
+        const naiveTags = [...new Set((window.DICTIONARY || []).flatMap(e => e.tags || []))].sort();
+        const idxTags = Idx.dictTags();
+        return {
+          rawBreakout, decodeFail,
+          tagsMatch: JSON.stringify(naiveTags) === JSON.stringify(idxTags),
+          tagsLen: idxTags.length,
+          ampFirst: escAttr('<&') === '&lt;&amp;', // '&' must be escaped without double-escaping the entity
+        };
+      });
+      check('HARDEN escAttr leaves no raw < > " \' (no breakout)', r.rawBreakout === 0, `rawBreakout=${r.rawBreakout}`);
+      check('HARDEN escAttr is transparent (getAttribute decodes to original)', r.decodeFail === 0, `decodeFail=${r.decodeFail}`);
+      check('HARDEN escAttr escapes & without double-escaping entities', r.ampFirst === true, `ampFirst=${r.ampFirst}`);
+      check(`HARDEN Idx.dictTags matches naive flatMap+Set+sort (${r.tagsLen} tags)`, r.tagsMatch === true, `match=${r.tagsMatch}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
