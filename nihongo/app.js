@@ -5046,127 +5046,67 @@ function animLocked(stamp) {
   return !!stamp && (Date.now() - stamp) < ANIM_LOCK_MS;
 }
 
+// Shared two-phase enter/exit/switch choreography. Adds `outClass` to the
+// current frame, waits `outMs`, runs `commit` (state mutation + persist) then
+// `rerender`, force-reflows the new frame, adds `inClass`, and removes it after
+// `inMs` — clearing the lock at the end (or immediately if the new frame is
+// gone). Honors prefers-reduced-motion / no-frame with an instant commit, and
+// the self-healing animation lock (window[flag]). Behavior is identical to the
+// three hand-written copies it replaced; only the class names, delays, flag,
+// frame selector, and commit body ever differed.
+function twoPhaseSwap(opts, commit, rerender) {
+  const { flag, frameSel, outClass, outMs, inClass, inMs } = opts;
+  if (animLocked(window[flag])) return; // mid-transition
+  const frame = document.querySelector(frameSel);
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!frame || reduced) { commit(); rerender(); return; }
+  window[flag] = Date.now();
+  frame.classList.add(outClass);
+  setTimeout(() => {
+    commit();
+    rerender();
+    const next = document.querySelector(frameSel);
+    if (next) {
+      void next.offsetWidth; // force reflow so the entrance restarts from frame 0
+      next.classList.add(inClass);
+      setTimeout(() => {
+        next.classList.remove(inClass);
+        window[flag] = false;
+      }, inMs);
+    } else {
+      window[flag] = false;
+    }
+  }, outMs);
+}
+
+// bento → immersion (is-leaving-bento 280ms → is-entering 2200ms)
 function enterFlavorImmersion(book, flavorId) {
   if (APP.flavorId === flavorId) return; // already there
-  if (animLocked(window.__flavorsAnimating)) return;  // mid-transition
-  const frame = document.querySelector('.flavors-frame');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!frame || reduced) {
-    APP.flavorId = flavorId;
-    lsSet('jp:flavorId', flavorId);
-    rerenderFlavorsPage(book);
-    return;
-  }
-  // Two-phase choreography:
-  //   1. Tag the current bento with .is-leaving-bento → CSS cascade-
-  //      exits the 10 cards (~14ms stagger × 10 = ~140ms total exit
-  //      tail) plus a paper-base fade. Total exit window 280ms.
-  //   2. After 280ms, swap to immersion. The new frame mounts with
-  //      .is-entering, which triggers a sequenced cascade across the
-  //      immersion view: flood-fill, hero, kana, romaji, audio, notes,
-  //      food cards (per-card stagger), and finally the rail thumbs
-  //      coming in from the right one at a time. The class is removed
-  //      after the longest animation completes (~2.1s) so subsequent
-  //      flavor switches don't replay the entrance.
-  window.__flavorsAnimating = Date.now();
-  frame.classList.add('is-leaving-bento');
-  setTimeout(() => {
-    APP.flavorId = flavorId;
-    lsSet('jp:flavorId', flavorId);
-    rerenderFlavorsPage(book);
-    const next = document.querySelector('.flavors-frame');
-    if (next) {
-      // Force a reflow before adding the class so the animations
-      // restart from frame 0 even when the browser would otherwise
-      // skip them (e.g. on rapid re-entries).
-      void next.offsetWidth;
-      next.classList.add('is-entering');
-      setTimeout(() => {
-        next.classList.remove('is-entering');
-        window.__flavorsAnimating = false;
-      }, 2200);
-    } else {
-      window.__flavorsAnimating = false;
-    }
-  }, 280);
+  twoPhaseSwap(
+    { flag: '__flavorsAnimating', frameSel: '.flavors-frame', outClass: 'is-leaving-bento', outMs: 280, inClass: 'is-entering', inMs: 2200 },
+    () => { APP.flavorId = flavorId; lsSet('jp:flavorId', flavorId); },
+    () => rerenderFlavorsPage(book)
+  );
 }
 
+// immersion → bento (is-leaving-immersion 500ms → is-entering-bento 1000ms)
 function exitFlavorImmersion(book) {
   if (APP.flavorId == null) return;
-  if (animLocked(window.__flavorsAnimating)) return;
-  const frame = document.querySelector('.flavors-frame');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!frame || reduced) {
-    APP.flavorId = null;
-    lsSet('jp:flavorId', null);
-    rerenderFlavorsPage(book);
-    return;
-  }
-  // Two-phase reverse choreography:
-  //   1. is-leaving-immersion (~500ms): rail thumbs slide out to the
-  //      right (reverse stagger so the last-rendered thumb leaves
-  //      first), food cards drop + fade, identity collapses, hero
-  //      scales out, wrap fades to paper.
-  //   2. swap → is-entering-bento (~500ms): bento cards cascade in
-  //      with stagger (the reverse of the bento-card-exit they did
-  //      on the way out).
-  window.__flavorsAnimating = Date.now();
-  frame.classList.add('is-leaving-immersion');
-  setTimeout(() => {
-    APP.flavorId = null;
-    lsSet('jp:flavorId', null);
-    rerenderFlavorsPage(book);
-    const next = document.querySelector('.flavors-frame');
-    if (next) {
-      void next.offsetWidth;
-      next.classList.add('is-entering-bento');
-      setTimeout(() => {
-        next.classList.remove('is-entering-bento');
-        window.__flavorsAnimating = false;
-      }, 1000);
-    } else {
-      window.__flavorsAnimating = false;
-    }
-  }, 500);
+  twoPhaseSwap(
+    { flag: '__flavorsAnimating', frameSel: '.flavors-frame', outClass: 'is-leaving-immersion', outMs: 500, inClass: 'is-entering-bento', inMs: 1000 },
+    () => { APP.flavorId = null; lsSet('jp:flavorId', null); },
+    () => rerenderFlavorsPage(book)
+  );
 }
 
+// within-immersion swap (is-switching-out 280ms → is-switching-in 900ms)
 function switchFlavor(book, flavorId) {
   if (APP.flavorId === flavorId) return;
-  if (animLocked(window.__flavorsAnimating)) return;
-  const frame = document.querySelector('.flavors-frame');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!frame || reduced) {
-    APP.flavorId = flavorId;
-    lsSet('jp:flavorId', flavorId);
-    rerenderFlavorsPage(book);
-    return;
-  }
-  // Two-phase within-immersion swap. Lighter than the full bento→
-  // immersion entry — the rail stays put (it just updates its
-  // is-active state on the new render), only the immersion body
-  // content cycles out and back in.
-  //   1. is-switching-out (~280ms): hero, kana, identity, notes,
-  //      food cards exit (no rail).
-  //   2. swap → is-switching-in (~700ms): same elements re-enter
-  //      with a shorter cascade than the full entry.
-  window.__flavorsAnimating = Date.now();
-  frame.classList.add('is-switching-out');
-  setTimeout(() => {
-    APP.flavorId = flavorId;
-    lsSet('jp:flavorId', flavorId);
-    rerenderFlavorsPage(book);
-    const next = document.querySelector('.flavors-frame');
-    if (next) {
-      void next.offsetWidth;
-      next.classList.add('is-switching-in');
-      setTimeout(() => {
-        next.classList.remove('is-switching-in');
-        window.__flavorsAnimating = false;
-      }, 900);
-    } else {
-      window.__flavorsAnimating = false;
-    }
-  }, 280);
+  twoPhaseSwap(
+    { flag: '__flavorsAnimating', frameSel: '.flavors-frame', outClass: 'is-switching-out', outMs: 280, inClass: 'is-switching-in', inMs: 900 },
+    () => { APP.flavorId = flavorId; lsSet('jp:flavorId', flavorId); },
+    () => rerenderFlavorsPage(book)
+  );
 }
 
 function walkFlavor(book, dir) {
