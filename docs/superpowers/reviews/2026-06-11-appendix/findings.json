@@ -1,0 +1,455 @@
+{
+  "confirmed": [
+    {
+      "title": "Section activation logic exists in three divergent copies; the hashchange path leaks a live mic stream and stale sidebar state",
+      "severity": "high",
+      "evidence": "nihongo/app.js:267-306 (setSection), 12957-12960 (hashchange handler), 15557-15564 (init duplicate of the toggle block), 14038-14045 + 14283-14295 (mic stream cached for the session, released only by SpeakingRecorder.release), 281-287 (release called ONLY from setSection), 12160-12169 (_lastRenderedFlashClass early-return), 7775-7790 (a third hashchange listener just for the vocab FAB)",
+      "detail": "setSection does six things the hashchange handler at 12957-12960 does not: (1) release the mic + close the playback AudioContext when leaving Speaking — so navigating away from #speaking via browser back/forward leaves the OS/browser recording indicator on and the getUserMedia stream live (the recorder deliberately caches the stream for the whole section, app.js:14104, so nothing else stops it); (2-3) toggle show-speaking-sidebar and show-library-sidebar — the handler only toggles the four older sections' classes, so history navigation out of Speaking/Library leaves the stale class on .app (two sidebars' display rules active at once). Tellingly, the two missing sections are exactly the two newest ones — every section added since the handler was written was wired into setSection but forgotten here, proving the 3-copy pattern fails on each addition; (4) lsSet('jp:section') — after back-nav the persisted section silently diverges from what's on screen, so a later hash-less open (hashSection fallback at 29-36) resurrects the wrong section; (5) reset _lastRenderedFlashClass, so re-entering flashcards via history hits the 12168 early-return and skips the flash-sidebar render/cascade; (6) the flash-cache reset on leave. A seventh listener (7775-7790) handles FAB visibility separately because 'section switches don't always go through' renderMain — more evidence the section-change side-effects have no single owner.",
+      "recommendation": "Collapse to one applySection(s, {updateHash}) that owns: per-section leave hooks (mic release, cache resets), the full sidebar class toggle loop (derive it from SECTIONS instead of six hand-written toggles), lsSet('jp:section'), updateSidebar(), renderMain(). setSection(s) = applySection(s, {updateHash:true}); the hashchange handler and init both delegate to it. A small enter/leave hook table per section keeps teardown out of the router. Verify with npm run verify + test:interactions, plus a manual back/forward pass out of #speaking checking the mic indicator.",
+      "effort": "S",
+      "area": "architecture",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "No global error boundary anywhere; a throw inside any renderer leaves a blank or half-rendered pane with no recovery and no user feedback",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:2546-2567 (renderMain dispatch, no try/catch), 2560-2561 (className set to 'main-inner fade-enter' before dispatch), 4-10 (lsGet/lsSet are the model of the local-only try/catch style); grep over the whole file: zero window.onerror / addEventListener('error') / unhandledrejection; only ~19 try blocks in 15,574 lines, all micro-local (storage, audio stop/close e.g. 285-286)",
+      "detail": "The app's render model is innerHTML-blast-then-wire, driven by ~6,500 lines of hand-maintained data (data.js) plus four more data files. If any section renderer throws (one malformed data entry, one missing field on a card), renderMain has already cleared the stepper (2555) and set the pane to its fade-enter state (2561); the exception escapes to the console, the listeners never get wired, and the user sees a frozen half-page with no message. There is no path back except a manual reload, and since APP state was already mutated by whatever triggered the render, the reload can land in the same broken state (persisted ids are trusted, e.g. APP.flashClassId/vocabBookId restored from localStorage with no existence check at 38-258). Async failures (gcloud fetches at 14077-14101 throw by design) similarly rely on every call site remembering to catch; an unhandled rejection is silent.",
+      "recommendation": "Wrap each section branch in renderMain in try/catch: on error, console.error and render a minimal fallback into #main-inner ('this section failed to load' + a reset button that clears the section's persisted drill-state keys and re-renders). Add window.onerror and unhandledrejection listeners that at least log with context (APP.section, active book/class ids) — on a no-framework app this is ~25 lines and converts 'mystery blank page' into a diagnosable, recoverable state.",
+      "effort": "S",
+      "area": "architecture",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "APP.scenes lazy hydration can be bypassed by three 'APP.scenes = APP.scenes || {}' sites — a latent wipe-all-restaurant-progress hazard, one copy living in dead code",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:6445-6458 (sceneStateFor — the only hydrating reader of 'jp:scenes'), 6460-6462 (saveSceneState persists the whole map), 3314-3325 (renderRandomCategoryRestaurant: unguarded `APP.scenes = APP.scenes || {}` + immediate saveSceneState), 3327-3334 (comment confirming this path was superseded), 6330 (renderForcedRestaurant — only caller is the dead 3324), 3517-3528 and 3699-3710 (live reroll / shop-picker paths repeating the same pattern)",
+      "detail": "Hydration of saved restaurant progress happens lazily inside sceneStateFor (6446). But three other sites initialize the slot with `APP.scenes = APP.scenes || {}` instead of hydrating. If any of them runs before the first sceneStateFor call of the session, APP.scenes becomes a truthy `{}`, the localStorage load at 6446 is permanently skipped, and the saveSceneState() that follows (3323 / 3526 / 3708) overwrites 'jp:scenes' with a map containing only the one fresh entry — silently destroying every other restaurant's saved progress (data loss). Today the two live sites (rollNewExperienceRestaurant, selectExperienceRestaurant) are reachable only from buttons inside an already-rendered scene, which hydrated via sceneStateFor first — i.e. correctness rests on an implicit render-ordering contract that nothing enforces and the next refactor can break. The third site sits in renderRandomCategoryRestaurant, which is fully dead (its replacement is documented at 3327-3334; renderForcedRestaurant at 6330 has no other caller) yet still ships 100+ lines carrying the worst version of the bug. Related: launchExperienceWithRestaurant's guard at 3358 skips the reset when APP.scenes is not yet hydrated, so its 'always land on the cover' contract (3341-3344) silently fails in the not-yet-hydrated case.",
+      "recommendation": "Delete renderRandomCategoryRestaurant and renderForcedRestaurant. Make hydration the only accessor — `function scenes() { if (!APP.scenes) APP.scenes = lsGet('jp:scenes', {}); return APP.scenes; }` — and replace every `APP.scenes = APP.scenes || {}` and bare `APP.scenes[...]` read/write with it (same treatment for the twin APP.experience pattern at 3507-3513). This removes the ordering dependency entirely.",
+      "effort": "S",
+      "area": "architecture",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "APP god-object mixes four state lifetimes (persisted prefs, inline migrations, transient UI, live OS resources), with overflow onto window.__* globals",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:38-258 (the literal: ~40 lsGet-backed prefs interleaved with transient fields like dictQ/popoverItem/flashIdx at 58, 101, 160-167; migration IIFEs embedded at 48-57, 95-100, 175-193, 244-248), 285-286 + 15167-15178 (APP._speakingPlayCtx/_speakingPlaySrc — live AudioContext/BufferSource handles), 2548-2550 (APP._flashKeyHandler — a window keydown listener stored for manual removal), 6446 + 3508 (APP.scenes/APP.experience attached lazily, invisible in the literal), 2597 + 15556 + 4240-4241/5019-5020/6138-6139 (window.__bookEntranceFlag handshake), 5821-6114 (window.__ediblesAnimating reentrancy lock)",
+      "detail": "Nothing in the code distinguishes 'persisted preference' from 'transient view state' from 'live resource handle' except comments and a loose underscore convention — and even that leaks: durable fields (scenes, experience) appear only at their lazy-attach sites, while genuinely process-scoped flags escape APP entirely onto window (__bookEntranceFlag is a cross-render handshake set in resetBookEntryState/init and consumed+cleared in three wire handlers; __ediblesAnimating is an animation lock copy-pasted six times). Because each persisted field repeats its storage key at every write site, the field↔key mapping ('kanaShowH' ↔ 'jp:kana-show-h', section ↔ 'jp:section') exists only by convention — which is precisely how the hashchange path forgot lsSet('jp:section'). The migration IIFEs inside the object literal (4 of them) mean schema evolution logic is scattered through a 220-line literal. This goes beyond the already-planned write-site centralization: the missing piece is a declarative taxonomy, which would make that centralization nearly free.",
+      "recommendation": "Partition into three namespaces: APP.prefs built from a declarative table `{ field, key, default, migrate? }` (one boot loop replaces lines 38-258's lsGet calls and all four migration IIFEs; one `setPref(field, val)` becomes the single persistence writer the planned centralization wants); APP.ui for transient view state; APP.rt for live handles/timers/locks — and move window.__bookEntranceFlag and window.__ediblesAnimating into APP.rt. Mechanical, verifiable with the golden-baseline tests.",
+      "effort": "M",
+      "area": "architecture",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "15.5k-line app.js despite clean module seams that split into plain <script> files with zero build step",
+      "severity": "medium",
+      "evidence": "nihongo/app.html:70-81 (already loads 7 sequential plain scripts), nihongo/app.js:333 (TTS IIFE), 1226-1303 (Idx IIFE), 14103-14302 (SpeakingRecorder IIFE), 2546-2567 (renderMain — the only cross-section dispatcher), region boundaries read at 3309-3408/6411-6462 (scene engine), 12067 (search), 12211 (flashcards), 12882 (dictionary), 13654-13733 (speaking), 15551-15575 (init/boot)",
+      "detail": "The file is already organized as de-facto modules — three real IIFEs (TTS, Idx, SpeakingRecorder) plus banner-commented regions (scene engine ~3300-7790, writing/kana/particles ~8400-11100, search/radicals ~11940-12160, flashcards ~12160-12750, dictionary ~12813-12954, speaking ~13418-15550) — all communicating exclusively through globals (APP, lsGet/lsSet, escHTML/escAttr, Idx, TTS) and booted by a single DOMContentLoaded init at the bottom. Since app.html already sequences seven script tags, splitting into core.js → tts.js → idx.js → vocab-scenes.js → writing.js → flashcards.js → library.js → speaking.js → boot.js requires only honoring load order for top-level consts; defensive `typeof X !== 'undefined'` guards that anticipate exactly this (267:281, 2626-2628) already exist. The cost of the monolith is concrete: every cited bug in this audit lives 10,000+ lines from its collaborator (setSection at 267 vs its drifted twin at 12957), and review/blame/grep all operate at file scale. Each split file needs its own 'use strict'; the golden-fingerprint tests (tests/characterize.js, 18 states) can prove the split is behavior-neutral.",
+      "recommendation": "Do the split file-by-file (one region per commit), running npm run verify + test:interactions after each move. Start with the three IIFEs (zero-risk: they export one const each), then speaking (most self-contained large region), then the scene engine. Keep app.js as the boot/router file.",
+      "effort": "L",
+      "area": "architecture",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Sections mutate each other's APP state and persistence directly, and setSection accepts unvalidated ids — a contract gap that already shipped one bug",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:12678-12706 (flashcards wiring writes APP.vocabClassId/vocabBookId/vocabPageIdx + their lsSet keys, then setSection(targetSection)), 8057-8077 (vocab grid writes APP.flashClassId/flashIdx/flashFlipped; lines 8070-8075 carry an impossible `typeof setSection === 'function'` check with a location.reload() fallback — dead defensive code in a single file where setSection is a hoisted declaration), 1624-1635 (jumpToDictionary writes APP.libraryPage + APP.pendingDictQ; the comment at 1628-1630 documents the shipped bug: setSection('dictionary') 'left the app on an invalid section with no sidebar and dropped the query'), 267-306 (setSection: no validation of s against SECTIONS)",
+      "detail": "Cross-section jumps are implemented by each caller hand-assembling the target section's internal state: which APP fields to set, which 'jp:*' keys to persist, which transient handoff slot to fill (pendingDictQ), and finally setSection. Three problems compound: (a) the knowledge of 'what makes flashcards land on card N' is duplicated outside the flashcards region, so refactoring a section's state silently breaks its callers; (b) setSection trusts any string — when the search/dictionary sections were merged into Library, a stale caller produced a sidebar-less invalid section with a dropped query (the in-code comment at 1628-1630 is the post-mortem); the dead reload-fallback at 8073-8074 shows callers don't trust the contract either; (c) handoff slots like pendingDictQ are fire-and-forget with no owner. The hashSection() legacy-hash mapping (29-36) and the literal's libraryPage migration (199-202) are more shrapnel from the same missing abstraction.",
+      "recommendation": "Introduce one navigateTo(intent) entry point — e.g. navigateTo({section:'flashcards', classId, cardId}) / ({section:'library', page:'dictionary', q}) — that validates section against SECTIONS (fallback + console.warn on unknown ids), owns the target section's state writes + persistence, then calls the unified applySection from finding 1. Callers shrink to data; section-rename migrations live in one place.",
+      "effort": "M",
+      "area": "architecture",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Flashcard keydown listener stacks on every internal re-render — exponential re-renders and cross-section UI corruption",
+      "severity": "critical",
+      "evidence": "nihongo/app.js:12774-12790 (APP._flashKeyHandler assigned and window.addEventListener('keydown', ...) unconditionally at end of renderFlashcards); nihongo/app.js:2546-2551 (the ONLY removeEventListener site, inside renderMain); nihongo/app.js:12778-12787 (keydown handler calls renderFlashcards(container) directly); nihongo/app.js:12363-12421, 12740-12755 (click handlers — class switch, view toggle, EN toggle, font pickers, wrap-up tiles — all call renderFlashcards(container) directly, bypassing renderMain)",
+      "detail": "Every renderFlashcards call ends by assigning a NEW arrow function to APP._flashKeyHandler and adding it as a window keydown listener. The matching removeEventListener exists only in renderMain, which runs on section changes — never on the internal re-render path. So every arrow/space/'f' keypress and every in-page click adds one more listener while orphaning the previous reference. Because all stacked handlers fire per keypress and each triggers a full innerHTML re-render that adds another listener, the count doubles per arrow press (1→2→4→...→256 after 8 presses). Symptoms: card navigation skips N positions per press, hundreds of innerHTML blasts + renderFlashSidebar calls + 3x Image() preloads per keystroke (12790-12808), and the UI freezes within ~10 presses. Worse: renderMain only removes the LAST assigned handler, so once >=2 are stacked, navigating to another section leaves live stale handlers — pressing ArrowLeft/ArrowRight while in e.g. the dictionary re-renders flashcard UI into #main-inner over the current page (the handler has no section guard and doesn't exclude inputs for arrow keys).",
+      "recommendation": "At the top of renderFlashcards (or just before line 12774), remove the previous handler: if (APP._flashKeyHandler) window.removeEventListener('keydown', APP._flashKeyHandler). Better: register one persistent delegated keydown handler at boot that no-ops unless APP.section === 'flashcards', eliminating the add/remove dance entirely. Add an interactions.mjs assertion that presses ArrowRight 5x and asserts flashIdx advanced exactly 5.",
+      "effort": "S",
+      "area": "performance",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Google Fonts loads 11 families / 26 weight-variants: 2.18MB of render-blocking CSS (572KB on the wire), 2,400 @font-face blocks",
+      "severity": "high",
+      "evidence": "nihongo/app.html:7-9 (single fonts.googleapis.com css2 link with 11 families); measured via curl with Chrome UA: HTTP 200, 2,183,813 bytes uncompressed CSS, 572,141 bytes compressed transfer, 2,400 @font-face blocks referencing 1,986 unique woff2 subset files",
+      "detail": "The stylesheet link is render-blocking: first paint waits on a 572KB compressed (2.18MB parsed) CSS response — that single resource is larger on the wire than app.js+app.css+data.js gzipped combined (~512KB). Eight of the 11 families are Japanese (Shippori Mincho x5 weights, Zen Kaku Gothic New x3, Klee One x2, Yuji Syuku, Yuji Mai, Kaisei Decol x2, Hina Mincho, Noto Sans JP x4); each JP family-weight expands to ~120 unicode-range slices, which is where the 2,400 @font-face blocks come from. Beyond the CSS, any kanji-dense page (dictionary, flashcards, scenes) triggers dozens of woff2 subset downloads per family because the same codepoints are requested in every family used on screen. display=swap avoids FOIT but guarantees a multi-font FOUT cascade as slices trickle in.",
+      "recommendation": "Audit which families/weights app.css actually uses and prune the request (likely 3-4 families carry the UI; decorative ones like Yuji Mai/Hina Mincho/Kaisei Decol can be cut or loaded on demand). Split the link in two: critical families in the head, decorative families injected after load. Each family removed cuts both the blocking CSS and the per-page subset downloads. Self-hosting subsetted woff2 for the 1-2 core JP families is the bigger follow-up.",
+      "effort": "M",
+      "area": "performance",
+      "verdict": "confirmed",
+      "verifyNote": "Every measured number reproduced exactly. nihongo/app.html:9 has a single render-blocking css2 link with 11 families; live fetch with Chrome UA returned HTTP 200, 2,183,813 bytes uncompressed / 572,141 bytes gzip transfer, 2,400 @font-face blocks, 1,986 unique woff2 URLs — all exact matches. Per-family block counts confirm ~120-124 unicode-range slices per JP family-weight (Shippori 610/5w, Noto Sans JP 496/4w, Zen Kaku 363/3w, etc.). Bundle comparison holds: app.js+app.css+data.js gzip = 512,162 bytes < 572,141. No mitigations exist: no FontFace API, no service worker, no preload/async-CSS trick, no local fallbacks; the preconnects at app.html:7-8 only reduce connection latency. All 11 families are actually used in app.css/app.js. Minor nuance only: '26 weight-variants' counts explicitly enumerated weights; including the three default-400 axis-less families (Yuji Syuku, Yuji Mai, Hina Mincho) the CSS serves 29 family-variant combos — which strengthens the claim. High severity is fair: the font CSS is a render-blocking critical-path resource larger on the wire than the entire app gzipped."
+    },
+    {
+      "title": "First-load JS+CSS payload is 2.24MB raw / ~592KB gzip across 9 synchronous files, unminified",
+      "severity": "medium",
+      "evidence": "Measured: app.js 792,440 raw / 231,447 gzip; app.css 632,632 / 132,116; data.js 519,085 / 148,599; particle-lessons-data.js 100,694 / 26,994; particle-quiz-data.js 54,218 / 10,853; heisig-data.js 48,095 / 16,333; image-slot.js 47,505 / 14,349; images/stroke/manifest.js 26,164 / 6,299; particle-articles-data.js 15,227 / 5,210. Load order: nihongo/app.html:70-81 (8 parser-sequential script tags), app.html:10 (blocking app.css)",
+      "detail": "Every page view parses and evaluates ~1.6MB of JS (app.js + 5 data files + image-slot + manifest) and 632KB of CSS before anything is interactive, regardless of which section the user opens. The particle-* data files (170KB raw), heisig-data (48KB), and the stroke manifest (26KB) are only consumed by specific sections, yet block startup for all. There is no minification (no build step, by design), so the raw parse cost is ~2x what it needs to be; gzip on the host mitigates transfer but not parse/eval (792KB of app.js source is roughly 50-150ms of parse+eval on desktop, several hundred ms on mid-range mobile). The ?v= cache-busting params are present, so long-lived cache headers would make repeat visits cheap if the host sets them.",
+      "recommendation": "Two no-build-compatible wins: (1) add defer to all 8 script tags so parsing doesn't serialize against HTML/CSS work; (2) lazy-inject the section-specific data files (particle-*, heisig-data, stroke manifest — 244KB raw, ~66KB gzip) on first visit to their sections via a tiny loadScript helper, since app.js already guards with window.X || [] fallbacks. If a build step ever becomes acceptable, a single esbuild --minify pass cuts the raw payload roughly in half without changing the source workflow.",
+      "effort": "M",
+      "area": "performance",
+      "verdict": "confirmed",
+      "verifyNote": "All cited numbers reproduce byte-exactly (sum 2,236,060 raw / 592,200 gzip across 9 files). app.html lines 70-81 contain exactly 8 parser-blocking script tags (no defer/async/module) and line 10 the blocking app.css. Files are unminified (app.js: 15,574 commented source lines). No lazy-loading escape hatch exists: no dynamic script injection, import(), service worker, or preload anywhere in nihongo/. Section-specific consumption confirmed: PARTICLE_* globals used only at app.js:10523-10921, STROKE_FORMATS only at app.js:11674-11706, HEISIG only at app.js:1154-1157 — and all are accessed behind existence guards (window.X || [], typeof HEISIG === 'undefined'), so deferring them would be code-compatible, which strengthens rather than weakens the claim. ?v= cache-busting params present on all 9 resources."
+    },
+    {
+      "title": "Brush repositioning runs 3 document-wide querySelectorAll scans + interleaved write/read forced layouts on every scroll frame and every DOM mutation, app-wide, even with zero brushes",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:1050-1096 (initTier3BrushPositioning: MutationObserver on document.body subtree:true, window resize, document capture-phase scroll, capture-phase load — all funnel into one rAF-coalesced schedule()); app.js:911-948 (repositionParticleBrushes), 987-1022 (repositionBgBrushes), 1037-1049 (repositionTier3Brushes) — each does document.querySelectorAll then per-element getBoundingClientRect/offsetWidth reads followed by style.left/top/width/height writes",
+      "detail": "The rAF coalescing is sound, but the triggers are unconditional for the app's lifetime: ANY scroll anywhere (capture phase catches sub-sidebar scrolls) schedules a pass every frame, and ANY DOM mutation (including every innerHTML blast) schedules one. Each pass does three full-document selector scans even when the result is empty (sections with no active brushes still pay the scan on every scroll frame). When brushes exist, the three functions interleave writes and reads: repositionTier3Brushes writes style.left/top, then repositionBgBrushes reads getBoundingClientRect (forced synchronous layout), writes, then repositionParticleBrushes reads again (second forced layout) — and within each forEach, every iteration's rect read after the previous iteration's style writes forces another layout. That is 2+ forced layouts per scrolled frame on every sidebar-bearing section, growing with the DOM size of the current page.",
+      "recommendation": "Keep the trigger set but (1) maintain a cached live collection of brush elements, refreshed only when the MutationObserver callback sees added/removed nodes matching the brush classes, and early-return from schedule() when the cache is empty — this makes the steady-state scroll cost zero on brush-less pages; (2) restructure the three repositioners into one shared pass: phase A reads every rect/offsetWidth into an array, phase B applies all style writes — one layout flush per frame instead of several.",
+      "effort": "M",
+      "area": "performance",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "About 29 of 53 inline <img> sites (plus the image-slot custom element) lack loading=\"lazy\", so scene/grid renders decode entire image sets eagerly — repeatedly, given full re-renders",
+      "severity": "medium",
+      "evidence": "nihongo/app.js inline <img> without loading attr: 7104-7131 (konbini shelf rows + section hero, re-rendered on every pick), 6280 (food modal), 6670/6710/6732 (restaurant cover/lookaround/cashier webp), 6912 (menu food images), 4645/4891 (texture staple images), 5391/5485/5596/5610/5625 (edibles pips/badges/walk images); nihongo/image-slot.js:305-317 (shadow-DOM <img> created with no loading/decoding attributes — every vocab-page slot decodes eagerly); contrast: 24 sites in app.js and 41 in data.js DO set loading=\"lazy\" (e.g. app.js:3222, 7271, 8131, 8671). images/ folder measured at 44MB total (food 1.7MB, konbini 568KB, eating-out 1MB, vocab 7.2MB)",
+      "detail": "Lazy-loading is applied inconsistently: long below-the-fold grids like the konbini shelf (one webp per item plus a hero, app.js:7104-7131) and the edibles walk/texture pages fetch and decode every image at render time. This compounds with the known full-innerHTML re-render on restaurant scene picks: each shelf pick discards and re-creates every <img>, re-running decode for the whole shelf on each click (network is cached; decode is not guaranteed to be). The image-slot element is the default image surface for vocab pages, so its missing loading/decoding attributes affect the largest image folder (7.2MB vocab).",
+      "recommendation": "Add loading=\"lazy\" decoding=\"async\" to the listed grid/scene <img> templates (keep eager only for the single above-the-fold hero per page, like the existing loading=\"eager\" at app.js:1712 and 4915), and set img.loading='lazy'; img.decoding='async' on the shadow <img> in image-slot.js. One-line changes per site; verify with the golden-fingerprint suite since markup strings change.",
+      "effort": "S",
+      "area": "performance",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Browser back/forward into Speaking or Library breaks sidebars, leaks the mic, and skips persistence — hashchange handler diverged from setSection",
+      "severity": "high",
+      "evidence": "nihongo/app.js:267-306 (setSection), nihongo/app.js:12957-12960 (hashchange handler), nihongo/app.js:14283 (SpeakingRecorder.release), nihongo/app.css:4286-4287 and 4656-4657, nihongo/app.html:25,27",
+      "detail": "setSection does six class toggles plus four side effects; the window 'hashchange' handler at app.js:12959 re-implements only four of the toggles and none of the side effects. Line-by-line deltas: (1) it never toggles 'show-speaking-sidebar' or 'show-library-sidebar'. CSS gates both the aside visibility and the grid columns on those classes (app.css:4286-4287, 4656-4657), so pressing Back/Forward INTO #speaking or #library renders the main content with no sidebar — the Speaking/Library sub-page navigation is unreachable; pressing Back OUT of them leaves the stale class in place, so e.g. #speaking → Back → #vocab has both 'show-speaking-sidebar' and 'show-vocab-sidebar' set: two display:block asides in a 3-column grid, the extra one wraps and breaks the layout. (2) It never calls SpeakingRecorder.release() or closes APP._speakingPlayCtx (setSection lines 281-287 do), so recording in #speaking then pressing Back keeps the mic stream alive — the browser's mic-in-use indicator stays lit indefinitely (privacy-visible). (3) It skips lsSet('jp:section', s) (line 290), so a section reached via Back/Forward is not restored on next hash-less open. (4) It skips the _lastRenderedFlashClass reset (lines 275-277), so Forward back into #flashcards silently skips the flash-sidebar rebuild that setSection's comment says must fire (cosmetic: missing tier-2 brush cascade).",
+      "recommendation": "Extract the shared body of setSection (class toggles + speaking teardown + flash-cache reset + lsSet + updateSidebar/renderMain) into one applySection(s) function and have both setSection and the hashchange handler call it; setSection additionally sets location.hash. This removes the copy that already drifted once.",
+      "effort": "S",
+      "area": "correctness",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "alignReadings proportional fallback produces wrong per-kanji furigana on ~40 shipped words, including splits inside digraphs",
+      "severity": "high",
+      "evidence": "nihongo/app.js:1409-1423 (fallback), 1326-1338 (splitKanjiBreakdown), 1434-1450 (withFurigana), 1637-1670 (openPopover render)",
+      "detail": "When per-kanji default readings fail to match (rendaku, jukujikun, missing KANJI_READINGS entries), the fallback splits the cluster's kana purely by default-reading LENGTH ratios with Math.round, ignoring mora boundaries. I extracted the function and ran it over all 436 word+kana pairs in VOCAB_BOOKS pages, DICTIONARY, and restaurant menus: ~100 words take the fallback path and dozens get visibly wrong splits that render in the popover breakdown and ruby glyph. Concrete failing inputs (word → actual split): 日本酒(にほんしゅ) → 日=にほ, 本=んし, 酒=ゅ — the 酒 furigana is a bare small ゅ; 半熟卵(はんじゅくたまご) → 熟=ゅくた; 醤油(しょうゆ) → 醤=しょ, 油=うゆ; 縁日(えんにち) → 縁=え, 日=んにち; 茶碗(ちゃわん) → 茶=ちゃわ, 碗=ん; 一品(いっぴん) → 一=いっぴ, 品=ん; 職人(しょくにん) → 人=くにん; 新幹線 → 幹=んせ, 線=ん. These are clickable vocab rows/word chunks, so the app actively teaches wrong readings. The specifically hypothesized rounding overrun (share=total for a non-last kanji → empty trailing share, e.g. default lengths [3,1] over 2 kana) is constructible but has 0 hits in current data — and when it does fire, withFurigana line 1441 masks it by substituting the context-free default reading ('' is falsy), silently double-counting mora rather than showing empty furigana.",
+      "recommendation": "After computing each share boundary, snap it so a share never starts with ゃゅょぁぃぅぇぉっー or ん-attachment (advance/retreat one char), or — typographically correct for jukujikun — render one ruby spanning the whole cluster when defaults fail instead of guessing per-kanji. Add the extracted scan as a data test: every aligned split must rebuild the kana and never start a share with a combining kana.",
+      "effort": "M",
+      "area": "correctness",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Popover is a near-empty dead-end for multi-kanji words absent from vocab and dictionary — 16 reachable stems in shipped sentences",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:1466-1492 (lookupWord), 1494-1500 (wordChunkHTML), 1534-1539 (click wiring), 7915-7927 (sentencesHTML rendering clickable chunks)",
+      "detail": "lookupWord's character-level fallback (lines 1482-1490) only applies when the stem is exactly 1 character; multi-char misses return { kanji:text, kana:'', en:'' }. The comment at 1476-1481 claims 'every kanji we have any data for surfaces at least its reading and meaning when clicked', but that only holds for single-kanji stems. I scanned every example sentence rendered through jaSentenceHTML (sentence pages, app.js:7919) with the real parseChunk/splitJaChunks logic: 16 multi-kanji stems miss both Idx.vocabItem and Idx.dictEntry — 部屋, 友達, 料理, 空気, 毎日, 毎朝, 毎晩, 一日, 十時, 七時, 湿気, 足音, 新鮮な, お風呂, 目覚まし, 閉め忘れない. Clicking them opens a popover with an empty kana line, empty English line, and a glyph whose ruby comes from per-kanji DEFAULT readings (withFurigana with kana='' → alignReadings returns null) — which for compounds like 部屋(へや) or 一日(ついたち/いちにち) can show outright wrong readings, compounding the alignReadings issue above.",
+      "recommendation": "Either add these 16 words to DICTIONARY (data fix, smallest), or extend lookupWord: when all chars have KANJI_READINGS/MEANINGS data, synthesize kana from the breakdown and en from joined meanings so the popover always teaches something true; log/test for sentence stems that miss every index so new sentence data can't reintroduce dead-ends.",
+      "effort": "M",
+      "area": "correctness",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "[KNOWN+] Persistence: quota failures are silently fatal to ALL progress saving, and persisted scene state is shape-trusted and clone-frozen",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:4-10 (lsGet/lsSet), 6445-6457 (sceneStateFor backfill), 6411-6413 (freshSceneState), 7602 (state.selected.push(item)), 6521 (state.history.push)",
+      "detail": "Beyond the known '110 scattered write sites': (1) lsSet's catch {} means a QuotaExceededError (or Safari private-mode write failure) silently disables every future save — scene progress, quiz prefs, settings — with zero user feedback and no in-memory flag, so the app looks fine until reload wipes the session. (2) sceneStateFor's spread backfill ({...freshSceneState(), ...saved}) only fills ABSENT keys; a jp:scenes entry that parses but carries wrong-typed values (e.g. history persisted as an object by an older/newer version) passes the backfill and then throws deep inside gotoStep (state.history.push, 6521) or sceneOrderText (state.selected.map), bricking that scene with no recovery path short of clearing localStorage by hand. (3) state.selected persists full menu-item object clones (7602): after reload, in-flight orders price/display from the frozen clone, so any data.js menu correction (price, kanji, sizes) never reaches resumed scenes — sceneTotal can show a price that no longer exists on the menu next to it.",
+      "recommendation": "When centralizing persistence: surface write failures once (toast + stop retrying), validate value SHAPES on read (Array.isArray on history/selected, typeof checks) falling back to freshSceneState() per scene, and persist selected items by id, re-resolving against live menu data on load.",
+      "effort": "M",
+      "area": "correctness",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "~88 dead class selectors (~530 lines), several of which are never-firing state classes that silently disable intended UX",
+      "severity": "medium",
+      "evidence": "nihongo/app.css:863-870 (.streak/.streak-dot), 3966-4046 (.flash-right/.flash-usage/.flash-related/.flash-controls), 3504-3520 (.flash-image), 6972-7016 (.flavor-drawer family), 10797 (.cover-name-card family), 12075-12085 (.word-pop-quote family), 16249-16280 (.speaking-head-* family), 1072 (body.no-english .reveal-en::after), 2182 (.read-tts.is-speaking), 9240 (.sheet-hotspot.is-pinned), 313+336 (.app.show-vocab-books-sidebar); nihongo/app.js:310 (no-english IS toggled), 1576 (hotspots toggle is-active, never is-pinned)",
+      "detail": "Full-corpus cross-reference (app.css class selectors vs app.js + app.html + all data files + image-slot.js, with dynamic-construction families verified by hand: money-coin-${v}, level-${lvl}, is-${brush.type} at app.js:731, lp-bigparticles-${size}, ff-selector-cols-${n}) leaves 88 of 1,575 unique classes (5.6%) with zero producers — 129 rule blocks, ~532 lines, more with their attached comments. Most are fossils of replaced layouts (old flashcard right-rail .flash-usage/.flash-related, restaurant .cover-* name cards, .library-h1 ported-portfolio masthead, .testcard-tabs, .shelf-*, .ss-h-ga/ni/de/... particle highlights of which only ss-h-wa/o/no/to are actually emitted). Four are more interesting: they are state classes the CSS expects JS to apply but nothing ever does — (1) body.no-english .reveal-en::after renders a \"(tap to reveal)\" hint, but no markup ever carries .reveal-en, so the hide-English toggle (app.js:310) hides translations with no reveal affordance; (2) .read-tts.is-speaking is the only now-speaking visual feedback for the universal TTS button and never fires; (3) .sheet-hotspot.is-pinned styling is dead because JS toggles is-active instead; (4) .app.show-vocab-books-sidebar appears in the brand-tooltip offset selector lists but the class is never set on .app.",
+      "recommendation": "Delete the verified-dead blocks in one commit guarded by npm run verify + test:interactions (the 88-name list is reproducible with the cross-reference script). Separately decide for the four state classes whether to delete the CSS or add the missing one-line JS (classList.toggle('is-speaking') in the TTS play handler; emit .reveal-en on hidden-English spans) — they look like intended features that got disconnected, not dead design.",
+      "effort": "M",
+      "area": "css",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Single render-blocking 632 KB stylesheet ships unminified; 26.7% of the file is comments — minification alone cuts transfer from 132 KB to 54 KB gzip",
+      "severity": "medium",
+      "evidence": "nihongo/app.css (632,632 bytes, 17,191 lines; measured gzip 131,974 B raw vs 54,448 B after comment-strip + whitespace-collapse; comments = 164,996 chars = 26.7%); nihongo/app.html:10 (<link rel=\"stylesheet\" href=\"app.css?v=1\"> — sole consumer, render-blocking)",
+      "detail": "The no-build constraint means app.css is served exactly as authored. The prose comments are excellent documentation (700 comment sites, many multi-paragraph design rationales) but they ship to every visitor on the critical rendering path: 632 KB raw / 132 KB gzip blocks first paint of every section. A naive strip+collapse already yields 351 KB / 54.4 KB gzip (-59% transfer, -77 KB); a real minifier (lightningcss/csso) would also merge the 66 duplicate rule bodies (478 redundant declarations measured) and do better. Cache-busting is a manual ?v=1 query, so a stale minified copy is a real failure mode if done by hand.",
+      "recommendation": "Keep app.css as the authored source of truth and add a 5-line npm script (e.g. npx lightningcss --minify app.css -o app.min.css) plus swap app.html to app.min.css with a content-hash query; wire it into the existing npm run verify so the minified copy can never go stale. This preserves the no-framework/no-bundler philosophy — it is a file copy, not a build graph.",
+      "effort": "S",
+      "area": "css",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Six copy-paste secondary-sidebar blocks (3 byte-identical) plus 8 repeats of the same grid template — the CSS twin of the known JS sidebar duplication",
+      "severity": "medium",
+      "evidence": "nihongo/app.css:4160-4170 (.flash-sidebar), 4259-4273 (.writing-sidebar), 4277-4291 (.library-sidebar), 4647-4661 (.speaking-sidebar), 4668-4684 (.particles-sidebar), 4727-4763 (.vocab-sidebar/.vocab-books-sidebar); 8 occurrences of 'grid-template-columns: 188px 160px ...' counted across these blocks",
+      "detail": "Each secondary sidebar repeats the same 8-declaration body (display:none; color-mix paper wash; border-right; inset box-shadow; padding 16px 10px; position:sticky; top:0; height:100vh; overflow-y:auto; overflow-x:hidden) plus its own .app.show-X { grid-template-columns: 188px 160px 1fr } rule plus its own @media (max-width:760px) hide block. flash/writing/library bodies are byte-identical (35% paper-edge mix); speaking (22%) and particles/vocab-books (20%, shadow dropped) differ only in the wash percentage. That is ~100 lines where one shared rule would do, and every new section (the speaking sidebar comment at 4643 says 'Mirrors writing-sidebar styling') has been added by copying the previous one. The global duplicate-body fingerprint shows this is the largest but not only cluster: 66 duplicate bodies / 478 redundant declarations file-wide (e.g. the x11 image-fit block, the x5 italic-gloss block).",
+      "recommendation": "CSS-only dedup, no JS/markup change needed: comma-group the six selectors into one shared body with a --side-wash custom property (default 35%), override the percentage per class in 3 one-liners, and collapse the six 760px hide blocks into one comma-grouped media rule. The next sidebar then costs 2 lines instead of ~16.",
+      "effort": "S",
+      "area": "css",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Token system bypassed by ~460 hardcoded color literals; --gold-dark hand-expanded as rgba(141,102,48,...) 119 times in 22 alpha variants; --accent-vermilion referenced 18x but never defined",
+      "severity": "medium",
+      "evidence": "nihongo/app.css:1-31 (:root palette: --gold-dark #8d6630, --gold #b48a4a, etc.); 4163-4164 (typical rgba(141,102,48,0.15) / rgba(100,72,30,0.10) literals); 4301, 4564, 4587, 4624 (var(--accent-vermilion, #c34b30) fallbacks — no '--accent-vermilion:' definition exists in app.css, app.js, or app.html); 382 (#c43a4a vermilion literal); 4136-4145 (untokenized blue/red/purple level-tag hexes). Counts: 297 rgba() literals + ~165 hex outside :root vs 2,891 var() refs and 182 color-mix() calls",
+      "detail": "The palette is properly tokenized at the top and var()/color-mix() dominate (2,891 + 182 uses), but alpha variants of the core inks were never tokenized: rgba(141,102,48,…) — which is exactly --gold-dark #8d6630 — appears 119 times in 22 different alpha steps, rgba(180,138,74,…) (= --gold) 34 times, rgba(100,72,30,…) 27 times. Any palette retune (the font-theming infrastructure at lines 32-62 shows theming is a live concern) silently misses all ~460 literals. Worse, the books-page region ported from the portfolio references var(--accent-vermilion, #c34b30) 18 times but the custom property is defined nowhere in this app — every use permanently hits the fallback, so the 'token' is a phantom: defining it later (or porting more portfolio CSS that defines it differently) would change 18 colors at once, and meanwhile #c34b30 vs the app's own #c43a4a vermilion (line 382) are two near-identical reds drifting independently.",
+      "recommendation": "Add the missing alpha tokens once (--gold-dark-a15: rgba(141,102,48,.15) etc., or switch to color-mix(in srgb, var(--gold-dark) 15%, transparent) which the file already uses 182 times) and mechanically replace the three rgba families. Define --accent-vermilion: #c34b30 in :root (or collapse it onto #c43a4a after a visual check) so the fallback stops being load-bearing.",
+      "effort": "M",
+      "area": "css",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Breakpoint drift: 16 distinct max-width breakpoints across 141 scattered @media blocks, with a 700-820px cluster around the de-facto 760px mobile line",
+      "severity": "medium",
+      "evidence": "nihongo/app.css media-query census (grep -o '@media[^{]*' | sort | uniq -c): 760px x35 (one with stray trailing whitespace making a 23rd distinct query string), 1100px x9, 900px x9, 700px x6 (e.g. 10569, 10980, 11150), 720px x5 (5959), 640/600/520px x5 each, 560px x4, 820/540/480px x3 each, 420px x2, 980/780 (5702)/460px x1 each; min-width 901px x2 / 761px x1; prefers-reduced-motion x37; read blocks at 4250-4256 (761/760 sidebar pair) and 4678-4684 (1100/760 particles pair)",
+      "detail": "The app has a real breakpoint system in practice — 760px is the sidebar-collapse line (35 blocks), 1100px drops tier-3 sidebars, 900px hides the class-strip — but later sections invented satellites: 700, 720, 780, 820 all serve the same 'narrow screen' intent, and the small end is a ladder of 420/460/480/520/540/560/600/640. Concretely, between 760px and 700px the sidebars are already gone (4254) while five later components (10569, 10980, 11150, 11428, 11519) still render their desktop layout, producing a 60px-wide window of half-collapsed UI that nobody designed deliberately. The 141 blocks are all inline next to their components (which is fine and consistent), but with 16 stops there is no single place to learn what the canonical widths are. The 37 separate prefers-reduced-motion blocks, by contrast, are healthy co-location — the issue is width drift, not scattering per se.",
+      "recommendation": "Pick the canonical ladder the file already implies (1100 / 900 / 760 / 560-ish / 460-ish), document it in a header comment, and snap the 700/720/780/820 satellites to 760 and the 420-640 ladder to two stops after visually checking each section (the Playwright golden states cover 18 of them). Also fix the whitespace-variant '@media (max-width: 760px)  ' so greps and future tooling see one query.",
+      "effort": "M",
+      "area": "css",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Stale foodPool FK ids silently empty out texture spotlight rows (karikari renders 3 of 6 authored examples)",
+      "severity": "high",
+      "evidence": "nihongo/data.js:1019-1024, 1123, 1158, 1266; nihongo/app.js:4457-4467, 4885-4890",
+      "detail": "data.js:1019-1024 records that poppukoon/furaido-poteto/poteto-chippusu/piinattsu were removed from the kashi edibles category, but three texture foodPool arrays still reference them: sakusaku (data.js:1123), paripari (data.js:1158), karikari (data.js:1266, which also lists 'dish-karaage' — a menu-dish id that was never an edible). lookupEdiblesByIds (app.js:4462-4467) is documented as 'dropping missing ids silently', and renderTextureSpotlight slices foodPool to 6 BEFORE resolving (app.js:4885), so the dropped ids consume slots. Verified by script: karikari spotlight renders 3/6 items, sakusaku 4/6, paripari 4/5. Authored content is invisibly missing from the live UI today and nothing warns.",
+      "recommendation": "Either re-add the four removed items to an edibles category or update the three foodPool arrays to existing ids; also resolve-then-slice in renderTextureSpotlight so a dangling id doesn't consume one of the 6 visible slots. Add a foodPool-FK check to the validator (see separate finding).",
+      "effort": "S",
+      "area": "data-tests",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "No automated coverage for the scene engine, particle quiz/lessons, drill-in views, or settings — golden matrix stops at 18 top-level defaults",
+      "severity": "high",
+      "evidence": "nihongo/tests/characterize.js:140-159; nihongo/tests/interactions.mjs:57-433; nihongo/tests/SMOKE-CHECKLIST.md (sections B, E, H)",
+      "detail": "The golden matrix (characterize.js:140-159) captures only default states: every drill-in slot is null (flavorId, textureId, edibleCategory/Item), so the flavor immersion, texture immersion, edibles item-grid and item-detail (121 items — the largest dataset in data.js) are never fingerprinted; only the 8 category tiles are. Zero states cover: any restaurant scene step (5 templates x 7-12 steps, 21 restaurants in EATING_OUT_RESTAURANTS — the ~1300-line scene engine renders nothing under test), the konbini flow, particle lessons detail (18 lessons), articles (3), the quiz config/running screens (PARTICLE_QUIZ_BANK untested), speaking with a phrase selected/scored, the settings modal, or the kanji popover. interactions.mjs's 43 assertions are all regression guards for previously-fixed bugs and refactor-parity checks; the scene engine is exercised only via direct function calls (gotoStep/sceneStateFor at lines 116-150), never by walking a scene through its rendered UI. All of these surfaces live exclusively in the manual SMOKE-CHECKLIST.md.",
+      "recommendation": "Cheapest high-value additions to the STATES matrix (renderMain-driven, same harness): flavorId:'oishii', textureId:'mochimochi', edibleCategory:'kudamono' (+ one with edibleItem set), particleMode:'quiz', lessonId set, articleId set, speakingCategoryId/PhraseId set. Then one Playwright test that clicks data-scene-next through a full restaurant scene template to the end (the checklist's B.5) — that single walk would cover the largest untested engine.",
+      "effort": "M",
+      "area": "data-tests",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Same word defined 2-3x with drift: duplicate DICTIONARY entry for 鍵 carries conflicting JLPT levels; 7 kanji have diverging glosses between FLASHCARDS and DICTIONARY",
+      "severity": "medium",
+      "evidence": "nihongo/data.js:5846, 5876, 5792, 5810, 2263-2264, 2284; nihongo/app.js:1248-1258, 12816-12850",
+      "detail": "Concrete duplicate: 鍵/かぎ/'key' appears twice inside DICTIONARY itself — data.js:5846 as kind:'kanji' level N2 and data.js:5876 as kind:'word' level N3. Both rows render on the dictionary page (dictFilter at app.js:12816 filters the raw array), so searching 鍵 shows the same word with two different JLPT levels; meanwhile Idx.dictEntry is first-match-wins on both kanji and kana keys (app.js:1253-1254), so the N3/entrance entry is unreachable from every popover/lookup path. Cross-source drift (verified by script, 7 kanji): e.g. 生 is 'life / raw' (kana なま) in DICTIONARY (data.js:5810) but 'life / give birth / student' (kun い) in FLASHCARDS (data.js:2284); 木 is 'tree' in dict (5792) vs 'tree / wood' in flashcards (2263). lookupWord prefers vocab/dict, the flashcard renders the card — so the popover and the flashcard show different glosses for the same kanji.",
+      "recommendation": "Delete one 鍵 entry (or merge into kind:'word' with one level). For the gloss drift, pick a canonical source per kanji — simplest: have a build-time check that flags kanji present in both FLASHCARD_CLASSES and DICTIONARY whose en strings differ, then reconcile the 7 by hand.",
+      "effort": "M",
+      "area": "data-tests",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Edible textures[] FK migration never happened: 63/186 tags are non-canonical strings, including a hiragana/katakana split (ぷちぷち vs プチプチ)",
+      "severity": "medium",
+      "evidence": "nihongo/data.js:551-555; nihongo/app.js:4440-4455, 5452-5462, 5495-5550",
+      "detail": "data.js:553-555 promises 'textures[] are kana strings for now (Phase 2 will turn them into FK ids when Textures ships)' — Textures shipped (texturesPageHTML, app.js:4600) but the migration never happened. Verified by script: 63 of the texture tags across 121 edibles are not canonical texture-book kanas (ジューシー, やわらかい, クリーミー, シャリシャリ, プチプチ, つるつる, ぷるぷる, なめらか, ぷちぷち). The edible-detail badge renderer papers over it with a display-only fallback + EXTRA_TEXTURE_GLOSSES (app.js:5534-5550, glosses at 5452-5462 — which even carries BOTH scripts of puchipuchi at 5455-5456 to absorb the split: nattou is tagged ぷちぷち while 7 fruits are tagged プチプチ). Any exact-match consumer splits those item sets — findEdiblesWithTexture (app.js:4446-4455) matches kana exactly, and is currently dead in app code (its only callers are the parity tests in interactions.mjs:289), so the drift is latent rather than visible. Matching is string-identity with no normalization, so each new edible author must guess the right script.",
+      "recommendation": "Do the promised migration: give the 10 canonical textures stable ids in textures book (they exist), convert textures[] entries to ids where canonical, and move the 9 non-canonical descriptors into a registered EXTRA_TEXTURES list keyed by one script. At minimum normalize ぷちぷち→プチプチ on nattou and delete or wire up findEdiblesWithTexture.",
+      "effort": "M",
+      "area": "data-tests",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "A data validator exists (flashcards only) but is not wired into any npm script; vocab/edibles/dictionary — where the actual dangling refs live — have zero validation",
+      "severity": "medium",
+      "evidence": "nihongo/scripts/validate-flashcard-curriculum.mjs:1-40; nihongo/package.json (scripts block); nihongo/app.js:4780-4783",
+      "detail": "scripts/validate-flashcard-curriculum.mjs walks FLASHCARD_CLASSES and currently passes, but package.json's scripts (verify, test:interactions, characterize) never invoke it — it only runs if someone remembers. Nothing at all validates VOCAB_CLASSES, the edibles database, texture foodPools, or DICTIONARY — precisely where this audit found dangling FKs (foodPool), an internal duplicate (鍵), and non-canonical texture tags. The codebase's own comments acknowledge the failure mode: app.js:4780-4782 'Quiet failure mode: a stale example id silently drops out of the rendered row (no slot reserved)'. Every consumer is written to degrade silently, so a typo'd id or field name produces no signal anywhere.",
+      "recommendation": "Extend the existing validator (or add a sibling validate-data.mjs using the same load-data.js-with-stubbed-window pattern) to check: edibles flavors[] against flavor ids, textures[] against the canonical+extra registry, foodPool ids against edible ids, EXTRA_TEXTURE_EXPLAINERS example ids, and DICTIONARY kanji uniqueness. Chain it into `npm run verify` so it gates every refactor. The checks in this audit were ~40 lines of node script — most of the work is done.",
+      "effort": "S",
+      "area": "data-tests",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "image-slot variant probe guarantees >=8 sequential 404s per image key on every page load; the test harness deliberately masks them",
+      "severity": "medium",
+      "evidence": "nihongo/image-slot.js:684-729; nihongo/app.js:7876; nihongo/tests/capture.mjs:73-75",
+      "detail": "_probeVariants (image-slot.js:704-726) probes variants n=1..9, stopping at the first miss — but after n=1 resolves it ALWAYS probes n=2 across all candidate bases x 4 extensions before stopping. For vocab/ keys the base list is 2 entries (image-slot.js:697-699), so that's 8 sequential guaranteed-404 requests per key: zero '(N)' variant files exist anywhere on disk (verified: 0 matches in images/vocab/food, 158 files). Flat-stored keys like the room sheets (image-key='vocab/<book>-<sheet>', app.js:7876, files flat in images/vocab/) pay 4 additional 404s inside n=1 before the fallback base hits. The flavors bento alone (10 readonly slots) fires ~80 404s; an edibles category grid fires 8 per tile. The cache (image-slot.js:685-687) is an in-memory Map, so every full reload re-pays the entire probe — and the requests are sequential awaits, so on a slow host the probe .then that finalizes readonly slots is delayed by the whole 404 chain. capture.mjs:73-75 explicitly ignores 'Failed to load resource' console errors ('some image files simply aren't on disk in this checkout'), so the harness will never surface a regression here. Disk audit was otherwise healthy: flavors/flavorballs/edibles/konbini/dish/chain-page images all exist; the only genuinely missing referenced files are 18/21 restaurant '<id>-inside.webp' lookaround images (only the 3 sushi shops have them), which fall back to images/inside/placeholder.svg — so 18 of 21 restaurant scenes show a placeholder at the look-around step.",
+      "recommendation": "Stop probing n=2 unconditionally: gate multi-variant probing behind an explicit attribute (variants='3') or a tiny generated manifest (the repo already has images/stroke/manifest.js as precedent — a build script can emit the variant map). Alternatively cache probe results in sessionStorage so the cost is once per session, not per load. Separately: generate the 18 missing -inside images or drop the lookaround step for restaurants without one.",
+      "effort": "M",
+      "area": "data-tests",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Three field-name dialects for the same concept across vocab page types, and two shapes for flashcard examples arrays",
+      "severity": "medium",
+      "evidence": "nihongo/data.js:24-36 (cheatsheet: num/kanji/kana/en), 63-75 (usage: ja/kana/en), 81-106 (sentences: ja/en/level, no kana), 2259, 2326-2331; nihongo/app.js:1236-1247",
+      "detail": "Shape survey across all 393 vocab items (verified by script): cheatsheet items key the headword as `kanji` (even for pure-katakana loanwords like シャワー), usage items key it as `ja`, sentences as `ja` with no kana at all; menu-reference items add foodImg/konbiniImg/price variants. Every consumer must branch: Idx.buildVocab indexes [item.kanji, item.ja, item.kana] (app.js:1241), and the test's naive reference does `item.kanji || item.ja` (interactions.mjs:221). Flashcard `examples` arrays come in two incompatible shapes — {word, reading, meaning} on normal cards (data.js:2259) vs {kanji, kun, on, en} on radical cards (data.js:2326-2331) — and 35 compound-word cards omit `strokes` entirely (script-verified). With no schema or validation, a misspelled field doesn't error; it silently renders an empty cell, which is invisible in the golden fingerprint unless the text length changes.",
+      "recommendation": "Don't mass-rename (high churn for low gain) — instead document the canonical shape per page type in a comment block at the top of data.js, and add shape assertions to the proposed validator (e.g. cheatsheet items must have kanji+kana+en; examples entries must match one of the two known shapes). That converts silent rendering gaps into build-time failures without touching renderers.",
+      "effort": "S",
+      "area": "data-tests",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Restaurant scene menu rows are click-only <li> elements — keyboard users cannot order, hard-blocking the scene flow",
+      "severity": "critical",
+      "evidence": "nihongo/app.js:6951-6963 (menu rows as <li data-menu-item>), nihongo/app.js:7585-7606 (click-only wiring), nihongo/app.js:6975-6979 (next button disabled until a pick), nihongo/app.js:6917-6923 (brand-menu variant correctly uses <button data-menu-item>), nihongo/app.js:7038-7054 (size cards correctly use <button>)",
+      "detail": "The traditional-restaurant menu step renders each orderable item as `<li class=\"scene-menu-row\" data-menu-item=\"${i}\">` with no tabindex, no role, and no key handler; the only wiring is a click listener (7585-7606). The scene's Next button is `disabled` until at least one item is selected (6975-6979), so a keyboard-only or switch user reaches the menu step and can go no further — the entire restaurant flow dead-ends. The inconsistency is stark: the brand-shop variant of the very same `data-menu-item` handler renders `<button class=\"brand-item\">` (6917) and the sizes step renders `<button class=\"size-card\">` (7038), both fully keyboard-operable. Only the traditional menu list was left as inert <li>s.",
+      "recommendation": "Change the row markup to `<button type=\"button\" class=\"scene-menu-row\" data-menu-item=\"${i}\" aria-pressed=\"${picked}\">` inside the <li> (or put role/tabindex/keydown on the li, but a real button is simpler and matches the sibling variants). Add an aria-label combining kanji/kana/price so the row reads coherently. The existing click delegate needs no change since it queries [data-menu-item].",
+      "effort": "S",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Flashcards: window-level Space handler hijacks button/select activation and has no focus guard",
+      "severity": "high",
+      "evidence": "nihongo/app.js:12774-12790 (APP._flashKeyHandler on window; Space branch at 12780 calls preventDefault + re-render unconditionally; the 'f' branch at 12785 guards inputs but Space does not), nihongo/app.js:12326 (<select class=\"flash-bg-select\"> exists on the same page), nihongo/app.js:12461,12568 (#flash-prev/#flash-next buttons)",
+      "detail": "The flashcards keyboard handler is attached to `window` and its Space branch (12780) calls `e.preventDefault()` and toggles English + full re-render with no check of what currently has focus. Pressing Space while a button is focused (the standard activation key for #flash-next, the flip button, TTS buttons) is swallowed: preventDefault cancels the button's activation, English toggles instead, and the re-render destroys the focused element. Same for the `<select data-flash-bg>` (12326) — Space normally opens it, but the handler intercepts. The 'f' branch shows the author knew to guard inputs/textareas (12785) but the Space/Arrow branches got no guard at all; arrows also fire while focus sits in the select.",
+      "recommendation": "At the top of APP._flashKeyHandler, bail when the event target is interactive: `if (e.target.closest('button, select, input, textarea, a, [tabindex]')) return;` (or at minimum guard the Space branch the way 'f' is guarded, extended to buttons/selects). Better: scope the shortcut to a focusable card surface (tabindex=\"-1\" container) instead of window.",
+      "effort": "S",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "In-page innerHTML re-renders drop keyboard focus to <body>; dictionary filter pills additionally steal focus into the search input",
+      "severity": "high",
+      "evidence": "nihongo/app.js:12661-12671 (flashcard navTo → renderFlashcards full rebuild), nihongo/app.js:12670-12678 (nav buttons wired to it), nihongo/app.js:7604-7617 (scene picks → renderRestaurantScene rebuild), nihongo/app.js:12948-12952 (dictionary pills → full renderDictionary), nihongo/app.js:12942 (unconditional input.focus() at end of renderDictionary), nihongo/app.html:14-34 (no skip link; 7 asides precede <main>)",
+      "detail": "Activating almost any in-page control rebuilds its whole container via innerHTML, destroying the focused element: Enter on the flashcard next/prev/flip buttons (navTo, 12661-12671) rebuilds the entire flashcards pane, so focus falls to <body> and a keyboard user must Tab back from the document top — through up to seven sidebars, since app.html has no skip link. Restaurant scene picks (7604-7617) behave the same. Dictionary filter pills are worse: clicking 'N5' triggers a full renderDictionary whose last act is `input.focus()` (12942), teleporting focus from the pill row into the text field. [KNOWN+] The planned 'targeted update' work is framed as perf, but it is also the a11y fix — the two already-landed targeted paths prove it: the keystroke path (12858-12880, comment: 'input is never recreated, so focus survives naturally') and the radical grid (12101-12106, chips persist across updates). Focus preservation should be an explicit acceptance criterion for the remaining conversions.",
+      "recommendation": "When converting remaining full re-renders to targeted updates, record `document.activeElement` (by data-attribute identity) before the swap and restore focus to the equivalent element after; for flashcard nav, move focus to the new card container (tabindex=\"-1\") so SRs announce the new card. Remove the unconditional input.focus() in renderDictionary except on first entry. Add a skip-to-main link in app.html as cheap mitigation.",
+      "effort": "M",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Div-based modals declare aria-modal=\"true\" but have no focus trap and no focus restore; #card-modal never receives focus at all",
+      "severity": "high",
+      "evidence": "nihongo/app.html:56 (#card-modal role=dialog aria-modal aria-hidden), nihongo/app.js:11258-11290 (open/close/wiring — no .focus() anywhere), nihongo/app.js:2063-2070,2285 (settings modal: focuses dialog but renderInside re-blasts innerHTML on every tab/toggle, re-yanking focus to the dialog root), nihongo/app.js:2408-2411 (Esc close, no restore), nihongo/app.js:6270-6315 (food modal: same pattern), nihongo/app.js:12971-13073 (jougo modal: native <dialog> + showModal — the correct in-repo pattern)",
+      "detail": "Three div-based dialogs (card modal, settings modal, food modal) set role=\"dialog\" aria-modal=\"true\" — telling screen readers the background is inert — but implement no Tab trap, so keyboard focus walks straight out into the supposedly-inert page behind the backdrop. None restores focus to the opener on close (focus drops to <body> when the wrapper is removed). The card modal is worst: openColorFlashcard (11258-11271) never moves focus in at all, so a keyboard user who opens it from a color tile is left focused behind a backdrop they cannot see past, with Esc as the only escape (11287-11289 — a document-level Escape listener that closes it even when it isn't open). The settings modal also rebuilds its entire innerHTML on every tab click or toggle (renderInside, refocusing the dialog root at 2285), forcing the user to re-Tab to where they were after each interaction. Meanwhile the jougo modal (12971-13073) already uses native <dialog>.showModal(), which gives trap + Esc + restore for free.",
+      "recommendation": "Convert card/settings/food modals to native <dialog> + showModal() like the jougo modal — it removes the trap, Esc, and focus-restore code they currently lack. If conversion is deferred, minimally: focus the dialog on open, store the opener and .focus() it on close, and make settings toggles update in place instead of renderInside().",
+      "effort": "M",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "No live regions for dictionary result count or speaking scores; score values hang on aria-labels that screen readers ignore",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:2228,13883,13892 (the only three aria-live/role=status regions in ~15.5k lines), nihongo/app.js:12866-12867 (#dict-count textContent update, no live region), nihongo/app.js:12905 (#dict-count markup), nihongo/app.js:13756-13772 (score chip: div tabindex=0; 'X out of 100' aria-label on a plain <span class=\"score-chip-dots\">), nihongo/app.js:15315-15334 (updateSpeakingScoresInPlace: toggles dot classes + updates the span aria-label only)",
+      "detail": "Dynamic results are visually updated but never announced. Typing in the dictionary updates '#dict-count' via textContent (12866-12867) with no aria-live, so a screen-reader user gets no feedback that 3 vs 300 entries matched. After a speaking recording, updateSpeakingScoresInPlace (15315-15334) fills dots and rewrites an aria-label — but that label sits on a non-interactive <span> (13764), which most screen readers ignore entirely (aria-label is only reliably exposed on interactive or roled elements). The chip wrapper that IS focusable (div tabindex=0, 13760-13761) keeps its static description label, so even refocusing a chip after recording reads the dimension blurb, not the score. Net: the app's central feedback loop — your pronunciation scores — is invisible to AT. The three existing role=status regions (TTS test, silent-hint, heard-text) show the pattern is known; it just wasn't applied to results.",
+      "recommendation": "Add aria-live=\"polite\" to #dict-count (one attribute). For speaking: after scoring completes, write a one-line summary ('Overall 82. Rhythm 80, clarity 75…') into a visually-hidden role=status element, and move the per-chip value into the focusable chip's own aria-label (or give the dots span role=\"img\").",
+      "effort": "S",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Document is lang=\"en\" while content is Japanese-dominant; only 2 lang=\"ja\" attributes exist in the whole app",
+      "severity": "medium",
+      "evidence": "nihongo/app.html:2 (<html lang=\"en\">), nihongo/app.js:4842,4931 (the only two lang=\"ja\" usages), nihongo/app.js:1430-1443 (withFurigana ruby generation — no lang), nihongo/app.js:3909,4617 (page titles in raw ruby/kanji under lang=en)",
+      "detail": "Every kana/kanji string — page titles, ruby-annotated headwords, scene dialogue, flashcard readings — is announced by screen readers using English language rules, because the document declares lang=\"en\" and exactly two <p> elements in 15.5k lines override it (4842, 4931). Depending on the SR/voice this yields mangled pronunciation or character-by-character spellout of the very content the app teaches. The ruby markup itself is semantically sound (<ruby>kanji<rt>reading</rt></ruby>, 1430-1443) but un-tagged; for a language-learning app this is the difference between hearing はな and hearing 'CJK ideograph'. Minor adjunct: no <rp> fallback parentheses in any ruby, so the rare non-ruby UA renders readings glued to base text.",
+      "recommendation": "Lowest-cost systematic fix: add lang=\"ja\" inside the shared markup helpers (withFurigana at 1430, jpLineHTML, the .ja span convention used throughout) so coverage propagates everywhere those helpers are used, plus on the known JP-only containers (page-title-jp, scene dialogue, kana cells). Keep html lang=\"en\" since chrome/instructions are English.",
+      "effort": "M",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "image-slot hardcodes alt=\"\" on all images; scene cover image has no alt attribute; slot upload affordance is mouse-only",
+      "severity": "medium",
+      "evidence": "nihongo/image-slot.js:309,317 (<img alt=\"\"> hardcoded in the element template), nihongo/image-slot.js:348-354 (click-to-browse only; host never gets tabindex/keydown), nihongo/app.js:6670-6671 (cover-img with no alt attribute at all), nihongo/app.js:13029-13035 (jougo modal sets alt correctly — the counter-example)",
+      "detail": "The <image-slot> custom element renders its inner <img> with hardcoded alt=\"\" (image-slot.js:309, 317) and exposes no attribute to set one — yet it carries content imagery: flashcard meaning-illustrations, speaking phrase scenes, flavor/edible photos. Many call sites compensate (wrapping buttons carry aria-labels, the speaking portrait is aria-hidden), but where the slot IS the content — e.g. flashcard wrap-up tiles flipped to 'show all images' — nothing is announced. Separately, the restaurant cover image (app.js:6670) omits alt entirely, so screen readers fall back to announcing the encoded filename URL ('images/eating%20out/...'). And the slot's user-upload feature (its reason for existing) is wired to click and drag only (image-slot.js:348-354) with a non-focusable host, so keyboard users cannot fill or reframe a slot.",
+      "recommendation": "Add an `alt` attribute to image-slot (observe it, copy to the inner img; keep default \"\" for decorative uses) and set it at content call sites from existing kana/en data. Give the cover-img alt with the restaurant name (r.name is already in scope). For uploads: make the empty slot host focusable (tabindex=\"0\", role=\"button\") and trigger this._input.click() on Enter/Space.",
+      "effort": "S",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    },
+    {
+      "title": "Usage cards (word-pop triggers) are click/dblclick-only divs; jougo tiles next to them show the correct pattern",
+      "severity": "medium",
+      "evidence": "nihongo/app.js:7888-7892 (div.usage-card markup, no tabindex/role), nihongo/app.js:1611-1621 (click opens popover; dblclick = jump to dictionary), nihongo/app.js:1637-1699 (openPopover never moves focus into the popover), nihongo/app.js:1532 (Esc closes), nihongo/app.js:8128-8129 + 13084-13090 (jougo tiles: role=button tabindex=0 + Enter/Space delegate — the in-repo reference implementation)",
+      "detail": "Vocabulary usage cards render as plain <div class=\"usage-card\"> (7888-7892) with two pointer-only gestures: click opens the word popover (with TTS auto-speak) and double-click jumps to the dictionary (1611-1621). Neither is reachable by keyboard — no tabindex, no role, no key handler — and double-click has no keyboard analogue anywhere. When the popover does open, focus stays on the page behind it (openPopover, 1637-1699), so its close and TTS-replay buttons are out of reach in sequence; Esc (1532) is the only keyboard interaction that works. The codebase already contains the right pattern 5k lines later: jougo tiles get role=\"button\" tabindex=\"0\" (8128-8129) plus a document-level Enter/Space delegate (13084-13090).",
+      "recommendation": "Apply the jougo-tile pattern to usage-card: role=\"button\" tabindex=\"0\" in the template and extend the existing main-click delegate with an Enter/Space keydown twin. Replace dblclick-to-dictionary with a visible link/button inside the popover (it already deep-links via jumpToDictionary). On popover open, focus the close button; on close, restore focus to the originating card.",
+      "effort": "S",
+      "area": "a11y",
+      "verdict": "unverified",
+      "verifyNote": "verifier failed"
+    }
+  ],
+  "refuted": [],
+  "lows": [
+    {
+      "title": "Dead generated assets tracked in the repo, including a 1.9 MB extraction of a copyrighted book sitting in the deployable web root",
+      "severity": "low",
+      "evidence": "git ls-files: nihongo/grade1-kanji.json (21 KB), nihongo/kanji-guide.md (1,917,506 bytes), nihongo/heisig-reference.md (38 KB) all tracked; nihongo/app.html:70-81 loads only the 7 js files; grep across app.html + app.js finds zero references to any of the three — only the offline pipeline touches them (nihongo/scripts/grade1_parse.py:2, kanji_guide_extract.py:5,11, heisig_extract.py:14, heisig_md.py:5, heisig_fill_missing.py:24); the source PDFs are correctly gitignored (.gitignore:18) but their derivatives are not",
+      "detail": "grade1-kanji.json and kanji-guide.md are intermediate outputs of the scripts/ extraction pipeline whose final, actually-loaded artifact is heisig-data.js (app.html:77). Nothing at runtime fetches them, so they are pure repo weight — and kanji-guide.md alone is ~1.9 MB of extracted text from 'The Complete Guide to Japanese Kanji', with heisig-reference.md derived from the Heisig book. The PDFs were deliberately kept out of git, but committing their full-text extractions to a public portfolio repo (and serving them from the web root if the site deploys this directory statically) recreates the same redistribution exposure the .gitignore tried to avoid.",
+      "recommendation": "git rm nihongo/grade1-kanji.json nihongo/kanji-guide.md nihongo/heisig-reference.md and add them to .gitignore alongside the PDFs (the pipeline regenerates them locally when needed; scripts already reference them by relative path so no code change). If the reference markdowns are personally useful, keep them untracked or move them outside the deployable directory.",
+      "effort": "S",
+      "area": "architecture"
+    },
+    {
+      "title": "typewriterReveal allocates one span + one uncancelled setTimeout per character; timers outlive navigation",
+      "severity": "low",
+      "evidence": "nihongo/app.js:6542-6575 (per-char span wrap at 6552-6559; atoms.forEach((atom,i) => setTimeout(..., i*perCharMs)) at 6572-6574, no handles kept); app.js:7525-7534 (called for up to 4 selector groups per scene step advance). File-wide timer hygiene is otherwise good: 28 setTimeout sites, zero setInterval",
+      "detail": "Each scene-step advance wraps every visible character of every dialogue/narrative/wait/player line in its own span and schedules an individual macrotask per character (64ms apart). A typical step with a 60-char NPC line plus narrative easily queues 100-200 timers, each forcing a small style/paint invalidation as it lands. Nothing cancels them: advancing again, restarting (sceneRestart at 6532), or leaving the section lets the full tail of timers fire against detached nodes — wasted wakeups for several seconds after the user moved on, multiplied when steps are clicked through quickly. This is the only bulk timer producer in the file.",
+      "recommendation": "Replace the timer fan-out with CSS staggering: set style.animationDelay = (i*perCharMs)+'ms' (or transition-delay) on each atom and add a single is-shown class on the container in one rAF — zero timers, identical visuals, and detached nodes cost nothing. If keeping timers, store the ids on the element and clear them at the top of the next typewriterReveal/render.",
+      "effort": "S",
+      "area": "performance"
+    },
+    {
+      "title": "Time clock teaches 午前十二時 for midnight and 午後十二時 for noon — English 12-AM/PM convention transplanted into Japanese readouts",
+      "severity": "low",
+      "evidence": "nihongo/app.js:9268-9298 (buildTimeReading), 9727-9734 (input clamp allows hour 0), 9685 (explainer inviting 0-23 input)",
+      "detail": "buildTimeReading maps h12===0 to 12 and picks the period purely by hour24<12, so typing hour 0 (explicitly invited by the page: 'Type the hour (0-23)') yields 午前十二時 / ごぜん じゅうにじ for 0:00, and hour 12 yields 午後十二時 for noon. Natural Japanese convention is 午前0時(れいじ) for midnight and 午後0時 or 正午 for noon; 午前/午後十二時 is the ambiguous English-calque form that JIS and style guides advise against — on a page whose whole purpose is teaching correct time readings, the two boundary inputs produce readings a native speaker wouldn't use. The minute logic itself (rendaku ふん/ぷん table, 半 alternative at :30) checked out correct against its own rules for all 0-59.",
+      "recommendation": "Special-case h12 boundaries: hour24===0 → 午前零時(れいじ), hour24===12 → 午後零時/正午 (showing 正午 as the alternative the way :30 shows 半). Keep the en string as 12:00 AM/PM.",
+      "effort": "S",
+      "area": "correctness"
+    },
+    {
+      "title": "Konbini data: オレンジ row carries the kana for 'orange juice' — label, kana, and TTS disagree",
+      "severity": "low",
+      "evidence": "nihongo/data.js:1786 ({ kanji:'オレンジ', kana:'おれんじじゅーす', en:'orange juice', price:170 })",
+      "detail": "Found by the alignReadings corpus scan as the single rebuild mismatch in 436 pairs: the shelf row displays オレンジ with kana line おれんじじゅーす beneath it, and any TTS/data-speak driven off kana says 'orenji juusu' while the visible word says 'orenji'. Either the kanji field should be オレンジジュース (matching en:'orange juice' and the juice image drink-juice.webp) or the kana should be おれんじ.",
+      "recommendation": "Set kanji:'オレンジジュース' (the en gloss and konbiniImg indicate juice is intended). One-line data fix.",
+      "effort": "S",
+      "area": "correctness"
+    },
+    {
+      "title": "No table of contents or anchor index for a 17,191-line single-consumer stylesheet (good section dividers exist but are undiscoverable)",
+      "severity": "low",
+      "evidence": "nihongo/app.css:1-75 (file opens directly with :root — no TOC/header); 132 '─── section ───' divider comments confirmed (e.g. 74 scrollbar, 112 layout shell, 193 sidebar, 13101 writing/kana, 15984 interactive clock); entire file indented one level (style-tag heritage, line 1 ':root {' is indented); nihongo/app.html:10 sole consumer",
+      "detail": "Navigation today depends on grepping for one of 132 inline dividers whose phrasing you must already know ('book / cheatsheet frame', 'jougo example modal'). There is no index, the dividers use inconsistent dash-counts/formats so they cannot be mechanically extracted into one, and the whole file carries a vestigial 2-space indent from when it presumably lived in a <style> tag. The file is ordered roughly by app section (shell/sidebar -> book frame -> flashcards -> vocab/restaurant scenes -> radicals -> word popover -> writing/kana -> speaking), and app.html is the only consumer, so a per-section split (app-shell.css, app-scenes.css, app-writing.css, app-speaking.css...) is mechanically safe — but it would multiply render-blocking requests without HTTP/2 push benefits and complicate the ?v= cache-busting, so it only pays off together with the minify/concat step from the size finding.",
+      "recommendation": "Cheapest high-value move: add a 30-line table of contents at the top listing each major section with its divider text (so grep '─── radicals' is discoverable), normalize the divider format, and dedent the file once. Defer physical splitting unless/until the minify pipeline from the size finding lands, at which point source files can be split freely and concatenated on deploy.",
+      "effort": "S",
+      "area": "css"
+    },
+    {
+      "title": "DICTIONARY kana field mixes three reading conventions and renders them raw in the dictionary UI",
+      "severity": "low",
+      "evidence": "nihongo/data.js:5758, 5847, 5796, 5812; nihongo/app.js:12841-12850, 1305-1307",
+      "detail": "The kana field holds kun readings with okurigana dots ('はい.る', data.js:5758), bare katakana on-readings ('ヨク' for 浴, data.js:5847 — every neighboring entry uses hiragana), and radical names ('うかんむり', 5812); level holds '—' for non-JLPT entries (5796). dictResultsHTML renders kana verbatim (app.js:12844), so the dictionary list shows 'はい.る' with the dot and katakana 'ヨク' inline with plain-hiragana rows, and the '—' level produces a `level-—` CSS class (app.js:12848). kanjiReading() already has to undo these conventions (strip dots, katakana→hiragana) for the popover path, so the normalization logic exists but the display path skips it.",
+      "recommendation": "Normalize at render: reuse the existing dot-strip + katakana→hiragana conversion for the furigana cell (or store on/kun in separate fields like flashcards do). Map level '—' to a 'level-none' class.",
+      "effort": "S",
+      "area": "data-tests"
+    },
+    {
+      "title": "Reduced-motion coverage is strong but JS smooth-scrolls and the global section fade are unguarded",
+      "severity": "low",
+      "evidence": "nihongo/app.js:4206,5804 (window.scrollTo behavior:'smooth' with no reduced check — same pattern at 5920/5982/6015/6042/6066/6092/6118 per grep), nihongo/app.js:5812-5823 and 4240-4247 (adjacent code DOES check prefers-reduced-motion for the same transitions), nihongo/app.css:12106-12107 (.fade-enter fadeIn animation applied on every renderMain via app.js:2561, outside any reduce guard)",
+      "detail": "Coverage is genuinely good — 38 CSS @media (prefers-reduced-motion: reduce) blocks and ~10 JS matchMedia checks gate the big choreography (bento entrances, two-phase swaps, edibles transitions, typewriter). Two gaps remain: (1) all nine `window.scrollTo({behavior:'smooth'})` calls in the flavors/edibles walk handlers run unconditionally — browsers do not automatically reduce programmatic smooth scrolls, and these sit in the exact handlers (e.g. 5804 vs the reduced check eight lines later at 5812) where every other animation IS gated; (2) `.fade-enter` (app.css:12106) animates opacity+translateY on every single renderMain (app.js:2561), i.e. the most frequent animation in the app, with no reduce override.",
+      "recommendation": "Add a tiny helper `const scrollBehavior = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'` and use it in the nine scrollTo calls. Add `.fade-enter { animation: none; }` inside one of the existing reduce blocks in app.css.",
+      "effort": "S",
+      "area": "a11y"
+    }
+  ]
+}
