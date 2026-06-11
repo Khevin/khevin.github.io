@@ -264,6 +264,19 @@ function shouldShowParticlesSidebar() {
   return APP.section === 'writing' && (APP.writingPage || 'kana') === 'particles';
 }
 
+// Tear down the Speaking section's live audio resources: the mic (release is
+// permission-aware — see SpeakingRecorder.release) and the user-playback
+// AudioContext. Shared by setSection AND the hashchange handler so BOTH
+// navigation paths run it — leaving via browser back/forward used to skip
+// release entirely, keeping the mic hot (recording indicator on, stream live)
+// until the tab closed.
+function releaseSpeakingResources() {
+  if (typeof SpeakingRecorder !== 'undefined') SpeakingRecorder.release();
+  // Lazily re-created on next playback (see wireSpeakingStudio).
+  if (APP._speakingPlaySrc) { try { APP._speakingPlaySrc.stop(); } catch (e) {} APP._speakingPlaySrc = null; }
+  if (APP._speakingPlayCtx) { try { APP._speakingPlayCtx.close(); } catch (e) {} APP._speakingPlayCtx = null; }
+}
+
 function setSection(s) {
   // Reset the flash-sidebar render cache whenever we cross the
   // flashcards section boundary — entering or leaving. This way the
@@ -278,13 +291,7 @@ function setSection(s) {
   // Leaving Speaking → release the mic so the browser indicator turns off.
   // (The stream is held alive across recordings WITHIN the section so the
   // permission prompt fires only once — see SpeakingRecorder.)
-  if (APP.section === 'speaking' && s !== 'speaking' && typeof SpeakingRecorder !== 'undefined') {
-    SpeakingRecorder.release();
-    // Stop + close the user-playback AudioContext (see wireSpeakingStudio) so
-    // it doesn't linger past the section. Lazily re-created on next playback.
-    if (APP._speakingPlaySrc) { try { APP._speakingPlaySrc.stop(); } catch (e) {} APP._speakingPlaySrc = null; }
-    if (APP._speakingPlayCtx) { try { APP._speakingPlayCtx.close(); } catch (e) {} APP._speakingPlayCtx = null; }
-  }
+  if (APP.section === 'speaking' && s !== 'speaking') releaseSpeakingResources();
   APP.section = s;
   location.hash = s;
   lsSet('jp:section', s);
@@ -12771,6 +12778,14 @@ function renderFlashcards(container) {
     }
   });
 
+  // Replace (don't stack) the window keydown handler. Internal re-renders —
+  // every arrow/Space/'f' press and every in-page click handler — call
+  // renderFlashcards directly without passing through renderMain, which is
+  // the only other removal site. Without this removal each re-render added
+  // one more listener, each of which re-rendered and added another: listener
+  // count doubled per keypress (1→2→4→…), freezing the tab within ~10
+  // presses and leaving stale handlers alive in other sections.
+  if (APP._flashKeyHandler) window.removeEventListener('keydown', APP._flashKeyHandler);
   APP._flashKeyHandler = e => {
     // Keyboard arrows cycle the SAME deck.length + 1 positions as
     // navTo (cards 0..deck-1 plus the wrap-up at deck.length).
@@ -12956,7 +12971,25 @@ function renderDictionary(container) {
 // ── Hash change ──────────────────────────────────────────────────────────
 window.addEventListener('hashchange', () => {
   const s = hashSection();
-  if (s !== APP.section) { APP.section = s; const cl = document.querySelector('.app').classList; cl.toggle('show-vocab-sidebar', s === 'vocab'); cl.toggle('show-flash-sidebar', s === 'flashcards'); cl.toggle('show-writing-sidebar', s === 'writing'); cl.toggle('show-particles-sidebar', shouldShowParticlesSidebar()); /* updateSidebar() FIRST so the tier-1 brush enters the render-cycle queue before any tier-2/3 brushes from renderMain — order in the queue determines cascade order. */ updateSidebar(); renderMain(); }
+  if (s === APP.section) return;
+  // Leaving Speaking via back/forward must tear down the mic exactly like a
+  // sidebar click does — this path used to skip release(), leaving the
+  // recording indicator on and the stream live until the tab closed.
+  if (APP.section === 'speaking') releaseSpeakingResources();
+  APP.section = s;
+  lsSet('jp:section', s); // keep the persisted section in sync on history nav
+  const cl = document.querySelector('.app').classList;
+  cl.toggle('show-vocab-sidebar', s === 'vocab');
+  cl.toggle('show-flash-sidebar', s === 'flashcards');
+  cl.toggle('show-writing-sidebar', s === 'writing');
+  cl.toggle('show-speaking-sidebar', s === 'speaking');
+  cl.toggle('show-library-sidebar', s === 'library');
+  cl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
+  // updateSidebar() FIRST so the tier-1 brush enters the render-cycle queue
+  // before any tier-2/3 brushes from renderMain — order in the queue
+  // determines cascade order.
+  updateSidebar();
+  renderMain();
 });
 
 // ── Jougo example modal ─────────────────────────────────────────────────
@@ -14117,10 +14150,38 @@ const SpeakingRecorder = (function () {
     return audioCtx;
   }
 
+  // ── Permission-aware stream lifecycle ───────────────────────────
+  // Whether stopping the tracks and re-acquiring later is FREE (no new
+  // permission prompt). That requires BOTH: an origin that can durably
+  // persist mic grants at all — file:// cannot in Chrome, every re-acquire
+  // after a full stop re-prompts there — AND a current 'granted' state from
+  // the Permissions API (one-time grants expire ~5 min after tracks stop and
+  // flip the state back to 'prompt' via onchange, which we track). When we
+  // can't see a durable grant, release() PARKS the stream (tracks kept live
+  // but disabled) instead of stopping it, so the session's single grant is
+  // reused — at most one prompt per page session, the design contract.
+  // permissions.query never prompts, so probing at module init is safe; on
+  // browsers without it (older Safari) micGranted stays null → park.
+  const MIC_CAN_PERSIST = location.protocol !== 'file:';
+  let micGranted = null;   // null = unknown; mirrors permissions.query state
+  (function watchMicPermission() {
+    try {
+      if (!navigator.permissions || !navigator.permissions.query) return;
+      navigator.permissions.query({ name: 'microphone' }).then(st => {
+        micGranted = (st.state === 'granted');
+        st.onchange = () => { micGranted = (st.state === 'granted'); };
+      }).catch(() => {});
+    } catch (e) { /* descriptor unsupported → stay null (conservative) */ }
+  })();
+
   // Acquire the mic stream once, cache it. Reused on every subsequent
   // record so the permission prompt fires only the first time.
   async function ensureStream() {
-    if (mediaStream && mediaStream.active) return mediaStream;
+    if (mediaStream && mediaStream.active) {
+      // Un-park: release() may have left the tracks live-but-disabled.
+      mediaStream.getTracks().forEach(t => { t.enabled = true; });
+      return mediaStream;
+    }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       throw new Error('MediaDevices unavailable');
     }
@@ -14276,10 +14337,21 @@ const SpeakingRecorder = (function () {
     mediaRecorder = null;
   }
 
-  // Fully release the mic when leaving the Speaking section — stop the
-  // recognizer AND the stream tracks so the browser's recording indicator
-  // turns off. The recognizer OBJECT is kept (just stopped) so re-entering
-  // the section reuses the existing permission grant instead of re-prompting.
+  // Release the mic when leaving the Speaking section. Always stops the
+  // recognizer + recorder (no capture continues outside the section). What
+  // happens to the STREAM is permission-aware:
+  //   • Durable grant on a persisting origin → fully stop the tracks. The
+  //     browser's recording indicator turns off, and the next ensureStream()
+  //     re-acquires silently (no prompt — the grant persists).
+  //   • Anything else (file://, one-time grant, Safari, Permissions API
+  //     unavailable) → PARK: keep the tracks live but disabled. The OS-level
+  //     mic indicator turns off; Chrome's tab-strip dot stays lit — that is
+  //     the honest cost of "never ask twice in a session" on an origin where
+  //     a stopped grant would re-prompt. The next take just re-enables the
+  //     tracks. (This also keeps the page's permission state 'granted', so
+  //     SpeechRecognition restarts stay silent too.)
+  // The recognizer OBJECT is kept (just stopped) so re-entering the section
+  // reuses it instead of re-prompting.
   function release() {
     if (stopTimer) { clearTimeout(stopTimer); stopTimer = null; }
     sessionActive = false;
@@ -14288,9 +14360,12 @@ const SpeakingRecorder = (function () {
     recogRunning = false;
     if (mediaRecorder && mediaRecorder.state !== 'inactive') { try { mediaRecorder.stop(); } catch (e) {} }
     teardownRecorder();
-    if (mediaStream) {
+    if (!mediaStream) return;
+    if (MIC_CAN_PERSIST && micGranted === true) {
       mediaStream.getTracks().forEach(t => t.stop());
       mediaStream = null;
+    } else {
+      mediaStream.getTracks().forEach(t => { t.enabled = false; });
     }
   }
 

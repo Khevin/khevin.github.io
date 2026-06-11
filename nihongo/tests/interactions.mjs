@@ -431,6 +431,187 @@ async function main() {
       check('P5b search clear via targeted == full empty render', r.clearMatch === true, `clearMatch=${r.clearMatch}`);
       await page.close();
     }
+
+    // ── CRIT-1: flashcard keydown handler must not stack across re-renders ──
+    // Before the fix every internal re-render added one more window keydown
+    // listener; listeners doubled per arrow press (idx walked 0→1→3→7…) and
+    // stale handlers kept firing in other sections.
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(async () => {
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+        setSection('flashcards');
+        APP.flashClassId = 'basic'; APP.flashIdx = 0; APP.flashFlipped = false;
+        renderMain();
+        await sleep(50);
+        const press = (key) => window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+        for (let i = 0; i < 4; i++) { press('ArrowRight'); await sleep(30); }
+        const idxAfter4 = APP.flashIdx;             // 4 if exactly one handler; 15 if stacking
+        setSection('library');                       // renderMain removes the (single) handler
+        await sleep(50);
+        const mainBefore = document.getElementById('main-inner').innerHTML.length;
+        press('ArrowRight');                         // must be inert outside flashcards
+        await sleep(30);
+        const mainAfter = document.getElementById('main-inner').innerHTML.length;
+        const idxAfterLeave = APP.flashIdx;
+        return { idxAfter4, leakInert: mainBefore === mainAfter && idxAfterLeave === idxAfter4 };
+      });
+      check('CRIT-1 four ArrowRight presses advance exactly four cards', r.idxAfter4 === 4, `idx=${r.idxAfter4}`);
+      check('CRIT-1 keydown is inert after leaving flashcards (no stale handlers)', r.leakInert === true, `leakInert=${r.leakInert}`);
+      await page.close();
+    }
+
+    // ── MIC: permission-aware stream lifecycle ───────────────────────────────
+    // Non-persistent grant (state 'prompt'): leaving Speaking must PARK the
+    // stream (live + disabled) so the next take reuses the one grant — exactly
+    // one getUserMedia per page session.
+    {
+      const page = await browser.newPage();
+      await page.addInitScript(() => {
+        window.__gumCount = 0;
+        // Playwright's headless shell has no real mic capture, so getUserMedia
+        // is stubbed with a REAL synthetic MediaStream (AudioContext
+        // destination-node stream): genuine tracks with working stop()/
+        // enabled/readyState semantics. Fresh stream per call so a stopped
+        // stream can't be silently resurrected.
+        navigator.mediaDevices.getUserMedia = async () => {
+          window.__gumCount++;
+          const ctx = new AudioContext();
+          const dest = ctx.createMediaStreamDestination();
+          const osc = ctx.createOscillator(); osc.connect(dest); osc.start();
+          window.__lastStream = dest.stream;
+          return dest.stream;
+        };
+        const orig = navigator.permissions.query.bind(navigator.permissions);
+        navigator.permissions.query = (d) => (d && d.name === 'microphone')
+          ? Promise.resolve({ state: 'prompt', onchange: null })
+          : orig(d);
+      });
+      await page.goto(`http://127.0.0.1:${port}/nihongo/app.html`, { waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(() => typeof APP !== 'undefined' && !!(document.getElementById('main-inner') || {}).innerHTML, { timeout: 20000 });
+      const r = await page.evaluate(async () => {
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+        setSection('speaking'); await sleep(80);
+        await SpeakingRecorder.start(() => {});
+        await sleep(300);
+        SpeakingRecorder.stop(); await sleep(400);
+        setSection('vocab'); await sleep(80);          // leave → release() → should PARK
+        const t = window.__lastStream && window.__lastStream.getTracks()[0];
+        const parked = !!t && t.readyState === 'live' && t.enabled === false;
+        setSection('speaking'); await sleep(80);        // return + record again
+        await SpeakingRecorder.start(() => {});
+        await sleep(150);
+        const reEnabled = !!t && t.enabled === true;
+        const gumCount = window.__gumCount;             // expect exactly 1
+        SpeakingRecorder.stop(); await sleep(300);
+        setSection('vocab'); await sleep(50);
+        return { parked, reEnabled, gumCount };
+      });
+      check('MIC non-persistent grant: leaving Speaking parks the stream (live, disabled)', r.parked === true, `parked=${r.parked}`);
+      check('MIC non-persistent grant: next take re-enables the parked stream', r.reEnabled === true, `reEnabled=${r.reEnabled}`);
+      check('MIC non-persistent grant: exactly ONE getUserMedia per session', r.gumCount === 1, `gumCount=${r.gumCount}`);
+      await page.close();
+    }
+
+    // Durable grant (state 'granted' on http origin): leaving Speaking fully
+    // stops the tracks (indicator off); re-recording re-acquires (silently in
+    // real browsers, since the grant persists).
+    {
+      const page = await browser.newPage();
+      await page.addInitScript(() => {
+        window.__gumCount = 0;
+        // Playwright's headless shell has no real mic capture, so getUserMedia
+        // is stubbed with a REAL synthetic MediaStream (AudioContext
+        // destination-node stream): genuine tracks with working stop()/
+        // enabled/readyState semantics. Fresh stream per call so a stopped
+        // stream can't be silently resurrected.
+        navigator.mediaDevices.getUserMedia = async () => {
+          window.__gumCount++;
+          const ctx = new AudioContext();
+          const dest = ctx.createMediaStreamDestination();
+          const osc = ctx.createOscillator(); osc.connect(dest); osc.start();
+          window.__lastStream = dest.stream;
+          return dest.stream;
+        };
+        const orig = navigator.permissions.query.bind(navigator.permissions);
+        navigator.permissions.query = (d) => (d && d.name === 'microphone')
+          ? Promise.resolve({ state: 'granted', onchange: null })
+          : orig(d);
+      });
+      await page.goto(`http://127.0.0.1:${port}/nihongo/app.html`, { waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(() => typeof APP !== 'undefined' && !!(document.getElementById('main-inner') || {}).innerHTML, { timeout: 20000 });
+      const r = await page.evaluate(async () => {
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+        setSection('speaking'); await sleep(80);
+        await SpeakingRecorder.start(() => {});
+        await sleep(300);
+        SpeakingRecorder.stop(); await sleep(400);
+        const t = window.__lastStream && window.__lastStream.getTracks()[0];
+        setSection('vocab'); await sleep(80);           // leave → release() → full stop
+        const stopped = !!t && t.readyState === 'ended';
+        setSection('speaking'); await sleep(80);
+        await SpeakingRecorder.start(() => {});
+        await sleep(150);
+        const gumCount = window.__gumCount;             // expect 2 (fresh silent acquire)
+        SpeakingRecorder.stop(); await sleep(300);
+        setSection('vocab'); await sleep(50);
+        return { stopped, gumCount };
+      });
+      check('MIC durable grant: leaving Speaking fully stops the tracks (indicator off)', r.stopped === true, `stopped=${r.stopped}`);
+      check('MIC durable grant: re-recording re-acquires (no park needed)', r.gumCount === 2, `gumCount=${r.gumCount}`);
+      await page.close();
+    }
+
+    // Back/forward (hashchange) must release the mic too — this path used to
+    // skip release() entirely, leaving the stream hot until tab close. Also
+    // verifies the handler's catch-up fixes: jp:section persisted + the
+    // library sidebar toggle.
+    {
+      const page = await browser.newPage();
+      await page.addInitScript(() => {
+        window.__gumCount = 0;
+        // Playwright's headless shell has no real mic capture, so getUserMedia
+        // is stubbed with a REAL synthetic MediaStream (AudioContext
+        // destination-node stream): genuine tracks with working stop()/
+        // enabled/readyState semantics. Fresh stream per call so a stopped
+        // stream can't be silently resurrected.
+        navigator.mediaDevices.getUserMedia = async () => {
+          window.__gumCount++;
+          const ctx = new AudioContext();
+          const dest = ctx.createMediaStreamDestination();
+          const osc = ctx.createOscillator(); osc.connect(dest); osc.start();
+          window.__lastStream = dest.stream;
+          return dest.stream;
+        };
+        const orig = navigator.permissions.query.bind(navigator.permissions);
+        navigator.permissions.query = (d) => (d && d.name === 'microphone')
+          ? Promise.resolve({ state: 'prompt', onchange: null })
+          : orig(d);
+      });
+      await page.goto(`http://127.0.0.1:${port}/nihongo/app.html`, { waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(() => typeof APP !== 'undefined' && !!(document.getElementById('main-inner') || {}).innerHTML, { timeout: 20000 });
+      const r = await page.evaluate(async () => {
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+        setSection('speaking'); await sleep(80);
+        await SpeakingRecorder.start(() => {});
+        await sleep(300);
+        SpeakingRecorder.stop(); await sleep(400);
+        location.hash = 'library';                      // simulate back/forward nav
+        await sleep(150);
+        const t = window.__lastStream && window.__lastStream.getTracks()[0];
+        return {
+          released: !!t && (t.enabled === false || t.readyState === 'ended'),
+          section: APP.section,
+          persisted: JSON.parse(localStorage.getItem('jp:section') || 'null'),
+          librarySidebar: document.querySelector('.app').classList.contains('show-library-sidebar'),
+          speakingSidebarOff: !document.querySelector('.app').classList.contains('show-speaking-sidebar'),
+        };
+      });
+      check('MIC hashchange out of Speaking releases the mic (parked or stopped)', r.released === true, `released=${r.released}`);
+      check('NAV hashchange persists jp:section', r.persisted === 'library', `persisted=${r.persisted}`);
+      check('NAV hashchange toggles library/speaking sidebars correctly', r.librarySidebar === true && r.speakingSidebarOff === true, `lib=${r.librarySidebar} spkOff=${r.speakingSidebarOff}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
