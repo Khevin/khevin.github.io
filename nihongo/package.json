@@ -8,6 +8,7 @@
     "process-particles": "node scripts/process-particle-blobs.mjs",
     "characterize": "node tests/capture.mjs tests/golden-baseline.json",
     "validate-data": "node scripts/validate-data.mjs",
+    "build-vendor": "node scripts/build-vendor.mjs",
     "verify": "node scripts/validate-data.mjs && node tests/capture.mjs tests/golden-after.json && node tests/compare.mjs tests/golden-baseline.json tests/golden-after.json",
     "test:interactions": "node tests/interactions.mjs"
   },
@@ -15,6 +16,8 @@
     "sharp": "^0.33.0"
   },
   "devDependencies": {
-    "playwright": "^1.60.0"
+    "esbuild": "^0.28.1",
+    "playwright": "^1.60.0",
+    "ts-fsrs": "^5.4.1"
   }
 }

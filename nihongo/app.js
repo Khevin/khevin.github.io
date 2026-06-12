@@ -1335,6 +1335,148 @@ const Idx = (function () {
   };
 })();
 
+// ── SRS — spaced review state over the existing flashcards ──────────────
+// Wraps the hand-authored decks with the FSRS scheduler (vendor/ts-fsrs.js,
+// the algorithm Anki ships as default since 2023). The cards/images stay
+// exactly as authored — this module only remembers, per card, when it is
+// next due and how stable the memory is. State lives in localStorage
+// ('jp:srs'); ~150 bytes per card, so even the full 262-card deck is ~40 KB.
+//
+// Key scheme: '<classId>/<card.id || card.kanji>' — stable across deck
+// reordering (never index-based), unique across classes (the same kanji may
+// legitimately appear in two decks and is reviewed in each deck's context).
+//
+// Scheduling: stock FSRS-5 parameters, fuzz disabled (deterministic
+// intervals → testable; revisit once real review history exists). New cards
+// enter the scheduler the first time they are RATED — the deck's authored
+// order is the curriculum, so the learn queue is simply "the next unseen
+// cards of this deck, in order."
+const SRS = (function () {
+  const LS_KEY = 'jp:srs';
+  let _f = null;       // lazy ts-fsrs instance
+  let _store = null;   // { v:1, cards: { key: serializedCard }, days: { 'YYYY-MM-DD': n } }
+
+  function engine() {
+    if (_f) return _f;
+    if (typeof TSFSRS === 'undefined') return null; // vendor script missing
+    _f = TSFSRS.fsrs(TSFSRS.generatorParameters({ enable_fuzz: false }));
+    return _f;
+  }
+  function store() {
+    if (!_store) {
+      _store = lsGet(LS_KEY, null) || { v: 1, cards: {}, days: {} };
+      if (!_store.cards) _store.cards = {};
+      if (!_store.days) _store.days = {};
+    }
+    return _store;
+  }
+  function persist() { lsSet(LS_KEY, store()); }
+
+  // ts-fsrs cards carry Date objects; localStorage carries ISO strings.
+  function thaw(c) {
+    if (!c) return null;
+    return { ...c, due: new Date(c.due), last_review: c.last_review ? new Date(c.last_review) : undefined };
+  }
+  function freeze(c) {
+    return { ...c, due: c.due.toISOString(), last_review: c.last_review ? c.last_review.toISOString() : undefined };
+  }
+
+  function keyFor(classId, card) { return classId + '/' + (card.id || card.kanji); }
+  function stateFor(key) { return thaw(store().cards[key]); }
+  function isDue(key, now = new Date()) {
+    const c = stateFor(key);
+    return !!c && c.due <= now;
+  }
+
+  // Every reviewable card across all decks, in authored order, tagged with
+  // its key + class. vocabOnly cards are reference rows, not drill cards.
+  function allReviewable() {
+    const out = [];
+    for (const cls of (window.FLASHCARD_CLASSES || [])) {
+      for (const card of (cls.cards || [])) {
+        if (card.vocabOnly) continue;
+        out.push({ key: keyFor(cls.id, card), classId: cls.id, card });
+      }
+    }
+    return out;
+  }
+  // Due queue (cards already in the scheduler whose due date has passed),
+  // most-overdue first — the classic review ordering.
+  function dueQueue(now = new Date()) {
+    const due = [];
+    for (const entry of allReviewable()) {
+      const c = stateFor(entry.key);
+      if (c && c.due <= now) due.push({ ...entry, srs: c });
+    }
+    due.sort((a, b) => a.srs.due - b.srs.due);
+    return due;
+  }
+  // The next unseen cards of ONE deck, authored order — the learn queue.
+  function learnQueue(classId, limit = 10) {
+    const out = [];
+    for (const entry of allReviewable()) {
+      if (entry.classId !== classId) continue;
+      if (store().cards[entry.key]) continue;
+      out.push(entry);
+      if (out.length >= limit) break;
+    }
+    return out;
+  }
+  function counts(now = new Date()) {
+    let due = 0, tracked = 0;
+    for (const k in store().cards) {
+      tracked++;
+      if (new Date(store().cards[k].due) <= now) due++;
+    }
+    return { due, tracked };
+  }
+
+  // Rate a card (1 Again · 2 Hard · 3 Good · 4 Easy). Seeds an empty FSRS
+  // card on first rating. Returns the updated state, or null without the
+  // vendor engine (the UI hides itself in that case — graceful degrade).
+  function rate(key, rating, now = new Date()) {
+    const f = engine();
+    if (!f) return null;
+    const prev = stateFor(key) || TSFSRS.createEmptyCard(now);
+    const rec = f.repeat(prev, now);
+    const next = rec[rating].card;
+    store().cards[key] = freeze(next);
+    // Quiet per-day review tally — feeds the (future) study calendar.
+    // Local date, not UTC: a study day is the learner's day.
+    const day = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    store().days[day] = (store().days[day] || 0) + 1;
+    persist();
+    return thaw(store().cards[key]);
+  }
+
+  // Human label for each rating's would-be interval ("10m", "2d", "3w") —
+  // shown small under the rating buttons so the choice is informed, never
+  // gamified.
+  function previewIntervals(key, now = new Date()) {
+    const f = engine();
+    if (!f) return null;
+    const prev = stateFor(key) || TSFSRS.createEmptyCard(now);
+    const rec = f.repeat(prev, now);
+    const label = (d) => {
+      const mins = Math.max(1, Math.round((d - now) / 60000));
+      if (mins < 60) return mins + 'm';
+      const hrs = Math.round(mins / 60);
+      if (hrs < 24) return hrs + 'h';
+      const days = Math.round(hrs / 24);
+      if (days < 30) return days + 'd';
+      const months = Math.round(days / 30);
+      if (months < 12) return months + 'mo';
+      return Math.round(days / 365 * 10) / 10 + 'y';
+    };
+    const out = {};
+    for (const r of [1, 2, 3, 4]) out[r] = label(rec[r].card.due);
+    return out;
+  }
+
+  return { keyFor, stateFor, isDue, dueQueue, learnQueue, counts, rate, previewIntervals,
+           available() { return typeof TSFSRS !== 'undefined'; } };
+})();
+
 function kanjiReading(c) {
   const readings = window.KANJI_READINGS || {};
   if (readings[c]) return readings[c];
