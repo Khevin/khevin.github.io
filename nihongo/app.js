@@ -9328,11 +9328,13 @@ function buildMinuteReading(m) {
   return { kanjiNum, kanaNum, kanaUnit };
 }
 function buildTimeReading(hour24, minute) {
-  // Hours 1–12 with the three irregulars baked in (4→よ, 7→しち, 9→く).
-  const HOUR_K = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
-  const HOUR_R = ['', 'いち', 'に', 'さん', 'よ', 'ご', 'ろく', 'しち', 'はち', 'く', 'じゅう', 'じゅういち', 'じゅうに'];
-  let h12 = hour24 % 12;
-  if (h12 === 0) h12 = 12;
+  // Hours 0–12 with the three irregulars baked in (4→よ, 7→しち, 9→く).
+  // Index 0 is 零 (れい): Japanese clock convention (JIS/NHK style) reads
+  // midnight as 午前零時 and noon as 午後零時 (or 正午) — NOT 午前十二時/
+  // 午後十二時, which transplants the English 12-AM/PM convention.
+  const HOUR_K = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
+  const HOUR_R = ['れい', 'いち', 'に', 'さん', 'よ', 'ご', 'ろく', 'しち', 'はち', 'く', 'じゅう', 'じゅういち', 'じゅうに'];
+  const h12 = hour24 % 12;
   const periodJa   = hour24 < 12 ? '午前' : '午後';
   const periodKana = hour24 < 12 ? 'ごぜん' : 'ごご';
   const periodEn   = hour24 < 12 ? 'AM' : 'PM';
@@ -9356,7 +9358,10 @@ function buildTimeReading(hour24, minute) {
   }
   const ja   = periodJa + hourK + minK + (altK ? ' / ' + altK : '');
   const kana = periodKana + ' ' + hourR + (minR ? ' ' + minR : '') + (altR ? ' / ' + altR : '');
-  const en   = h12 + ':' + String(minute).padStart(2, '0') + ' ' + periodEn;
+  // The ENGLISH digital readout keeps the English 12-hour convention
+  // (midnight = 12:00 AM) while the Japanese reads 零時 — the mismatch is
+  // deliberate: each language gets its own clock convention, side by side.
+  const en   = (h12 === 0 ? 12 : h12) + ':' + String(minute).padStart(2, '0') + ' ' + periodEn;
   return { ja, kana, en };
 }
 

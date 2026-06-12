@@ -927,7 +927,7 @@ window.VOCAB_CLASSES = [
                 flavors:['oishii'], textures:['もちもち', 'シャキシャキ'], season:['通年 year-round'],
                 notes:'Unpolished rice. Chewier, nuttier, more nutritious than white rice. Common in health-food restaurants and macrobiotic cuisine; sold in the same bags as white rice at supermarkets.' },
               { id:'nattou', kanji:'納豆', kana:'なっとう', romaji:'nattou', en:'fermented soybeans',
-                flavors:['oishii', 'nigai'], textures:['ねばねば', 'ぷちぷち'], season:['通年 year-round'],
+                flavors:['oishii', 'nigai'], textures:['ねばねば', 'プチプチ'], season:['通年 year-round'],
                 notes:'The famously divisive Japanese breakfast — fermented soybeans webbed in sticky threads (糸 ito), eaten over rice with soy and the mustard packet that comes in the styrofoam cup. 茨城 (Ibaraki) is the historical heartland. Stir vigorously with chopsticks until foamy — that\'s when the umami opens up. Pairs naturally with ご飯, たまご (TKG-style), and ねぎ.' },
             ]
           },
@@ -1120,7 +1120,11 @@ window.VOCAB_CLASSES = [
             // write the word; the toast-crust crackle is the canonical
             // breakfast さくさく moment). taiyaki dropped — its outer
             // shell is closer to crisp-thin than crisp-shatter.
-            foodPool:['kukkii','toosuto','ebi-tempura','yasai-tempura','furaido-poteto','poteto-chippusu'],
+            // furaido-poteto / poteto-chippusu were authored here but never
+            // added to the edibles database, so those rows silently dropped
+            // at render. Removed to match reality — fries/chips (and karaage,
+            // peanuts below) are candidates for a future edibles content pass.
+            foodPool:['kukkii','toosuto','ebi-tempura','yasai-tempura'],
             feelsLike:['crisp','flaky','light','軽やか','うきうき'],
             moods:[
               { icon:'spark',  label:'軽快' },
@@ -1155,7 +1159,7 @@ window.VOCAB_CLASSES = [
             // bite it). Potato chips moved to the foodPool as a
             // secondary example.
             staple:'nori', stapleLabel:'crisp-sheet', softness:7,
-            foodPool:['nori','onigiri','poteto-chippusu','beekon','taiyaki'],
+            foodPool:['nori','onigiri','beekon','taiyaki'],
             feelsLike:['snap-crisp','brittle','thin','軽い','歯切れ良い'],
             moods:[
               { icon:'spark',  label:'おやつ時間' },
@@ -1263,7 +1267,7 @@ window.VOCAB_CLASSES = [
             // toosuto added — the well-done crust hits the heavier
             // カリカリ side of the spectrum (the user explicitly
             // flagged toast for the crunchier-hard textures).
-            foodPool:['furaido-chikin','toosuto','beekon','dish-karaage','furaido-poteto','poteto-chippusu','piinattsu','ebi-tempura'],
+            foodPool:['furaido-chikin','toosuto','beekon','ebi-tempura'],
             feelsLike:['crunchy','hard','満足感','ご褒美','充実感'],
             moods:[
               { icon:'gift',   label:'ご褒美' },
@@ -1783,7 +1787,7 @@ window.VOCAB_CLASSES = [
               { kanji:'コーヒー',         kana:'こーひー',           en:'canned coffee',           price:130, konbiniImg:'drink-coffee.webp' },
               { kanji:'お水',             kana:'おみず',             en:'bottled water',           price:110, konbiniImg:'drink-water.webp' },
               { kanji:'ポカリ',           kana:'ぽかり',             en:'Pocari Sweat (sports)',   price:160, konbiniImg:'drink-pocari.webp' },
-              { kanji:'オレンジ',         kana:'おれんじじゅーす',   en:'orange juice',            price:170, konbiniImg:'drink-juice.webp' },
+              { kanji:'オレンジジュース', kana:'おれんじじゅーす',   en:'orange juice',            price:170, konbiniImg:'drink-juice.webp' },
               { kanji:'ビール',           kana:'びーる',             en:'beer (can)',              price:280, konbiniImg:'drink-beer.webp' },
               // ── お菓子 (6) ──────────────────────────────────────
               { kanji:'ポッキー',         kana:'ぽっきー',           en:'Pocky',                   price:160, konbiniImg:'sweet-pocky.webp' },
@@ -4394,7 +4398,7 @@ window.KONBINI_SECTIONS = [
       { id:'drink-coffee',  kanji:'コーヒー',   kana:'こーひー',       en:'canned coffee',         price:130, category:'drink' },
       { id:'drink-water',   kanji:'お水',       kana:'おみず',         en:'bottled water',         price:110, category:'drink', furigana:'お<ruby>水<rt>みず</rt></ruby>' },
       { id:'drink-pocari',  kanji:'ポカリ',     kana:'ぽかり',         en:'Pocari Sweat (sports)', price:160, category:'drink' },
-      { id:'drink-juice',   kanji:'オレンジ',   kana:'オレンジジュース', en:'orange juice',          price:170, category:'drink' },
+      { id:'drink-juice',   kanji:'オレンジジュース', kana:'オレンジジュース', en:'orange juice',     price:170, category:'drink' },
       { id:'drink-beer',    kanji:'ビール',     kana:'びーる',         en:'beer (can)',            price:280, category:'drink' },
     ],
   },

@@ -7,7 +7,8 @@
   "scripts": {
     "process-particles": "node scripts/process-particle-blobs.mjs",
     "characterize": "node tests/capture.mjs tests/golden-baseline.json",
-    "verify": "node tests/capture.mjs tests/golden-after.json && node tests/compare.mjs tests/golden-baseline.json tests/golden-after.json",
+    "validate-data": "node scripts/validate-data.mjs",
+    "verify": "node scripts/validate-data.mjs && node tests/capture.mjs tests/golden-after.json && node tests/compare.mjs tests/golden-baseline.json tests/golden-after.json",
     "test:interactions": "node tests/interactions.mjs"
   },
   "dependencies": {
