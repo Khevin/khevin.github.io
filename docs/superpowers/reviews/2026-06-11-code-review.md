@@ -56,7 +56,7 @@ stream — `track.enabled=false` — so the session's one grant is reused), and 
 the zero-prompt configuration; `file://` can never durably persist mic permission in Chrome.
 Effort: S. Severity: critical (UX-breaking annoyance + privacy leak on the back-nav path).
 
-### 3. ● Restaurant scene menu is keyboard-dead — flow hard-blocks
+### 3. ✓ Restaurant scene menu is keyboard-dead — flow hard-blocks *(fixed: rows are role="button" with Enter/Space + focus restore + focus ring; verified live)*
 The traditional-restaurant menu step renders orderable items as bare `<li data-menu-item>` with
 click-only wiring (app.js:6951–6963, 7585–7606), while the Next button stays `disabled` until a
 pick (6975–6979). Keyboard/switch users dead-end mid-scene. The fix is established in-house: the
@@ -192,6 +192,39 @@ Effort: S–M each.
 - A short table of contents comment at the top of `app.css`.
 
 ---
+
+## Status after the 2026-06-11 fix pass (same day)
+
+Done and committed, each gated by golden 18/18 + interactions (now 55) + validator:
+- **P0.1 / P0.2 / P0.3** — flashcard listener stacking, mic permission lifecycle, scene
+  keyboard access. All verified live.
+- **P1.4** — `applySection` now solely owns section-switch side-effects; setSection /
+  hashchange / init delegate. **P1.8** — render error boundary + per-section reset keys +
+  global error/rejection loggers.
+- **P1.7** — `scripts/validate-data.mjs` wired into `npm run verify`; fixed what it caught
+  (7 dangling foodPool ids, script-variant texture tag, orange-juice label mismatch) plus the
+  P3 clock fix (午前零時/午後零時). **Refuted:** the "duplicate 鍵 with conflicting levels"
+  claim — it's one `kind:'kanji'` + one `kind:'word'` entry, intended design. The 厶 seeAlso
+  refs point at a real radical card; the runtime lookup just doesn't resolve radical cards
+  (dormant link — surfacing it is a future UI decision).
+- **P2.12** — `scenes()` hydration accessor (wipe hazard closed), dead scene launchers deleted
+  (~60 lines), brush-reposition early-exit probe, typewriter timer cancellation, konbini lazy
+  imgs. The "~29 img sites lack lazy" count was inflated by multi-line tags — only one real gap.
+- **P1.9 (subset)** — key-hijack guard, aria-live on dictionary count + speaking scores,
+  card-modal focus management, reduced-motion-aware `scrollPageTop()` replacing 9 copies.
+
+**P1.5 fonts — audited, no mechanical trim available.** All 11 families are referenced
+(several via the user-facing font pickers) and every loaded weight is used (400–700 heavily,
+800 once at app.css:419; a font-weight:900 at app.css:14749 exceeds what's loaded and is
+already browser-synthesized — pre-existing). Real transfer is also lower than the 2.18 MB
+headline because Google Fonts unicode-range slicing downloads only rendered slices. The
+meaningful win here is a deliberate **self-host + subset pipeline** (woff2 subsets of used
+glyph sets) — promoted to a standalone project alongside the CSS minification decision.
+
+**Still open, in priority order:** P1.6 furigana alignment (with the join==kana data test) ·
+P1.9 remainder (focus restoration on re-renders, jougo-style focus traps for the settings
+modal, lang attributes) · P2.10 CSS pass · P2.11 remaining data hygiene (field-dialect adapter,
+image-slot probe manifest, dead generated assets) · P2.13 carried-over phases.
 
 ## Suggested sequencing
 
