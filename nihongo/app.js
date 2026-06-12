@@ -1389,12 +1389,15 @@ const SRS = (function () {
   }
 
   // Every reviewable card across all decks, in authored order, tagged with
-  // its key + class. vocabOnly cards are reference rows, not drill cards.
+  // its key + class. vocabOnly cards are reference rows, not drill cards;
+  // radical interludes are teaching pages, not recall questions (their
+  // template lives inline in browse mode — bring them into rotation once
+  // it's extracted).
   function allReviewable() {
     const out = [];
     for (const cls of (window.FLASHCARD_CLASSES || [])) {
       for (const card of (cls.cards || [])) {
-        if (card.vocabOnly) continue;
+        if (card.vocabOnly || card.type === 'radical') continue;
         out.push({ key: keyFor(cls.id, card), classId: cls.id, card });
       }
     }
@@ -1429,6 +1432,16 @@ const SRS = (function () {
       if (new Date(store().cards[k].due) <= now) due++;
     }
     return { due, tracked };
+  }
+  // Earliest future due date (null when nothing is scheduled ahead) — feeds
+  // the quiet "next due …" line on the session-complete state.
+  function nextDue(now = new Date()) {
+    let min = null;
+    for (const k in store().cards) {
+      const d = new Date(store().cards[k].due);
+      if (d > now && (!min || d < min)) min = d;
+    }
+    return min;
   }
 
   // Rate a card (1 Again · 2 Hard · 3 Good · 4 Easy). Seeds an empty FSRS
@@ -1473,7 +1486,7 @@ const SRS = (function () {
     return out;
   }
 
-  return { keyFor, stateFor, isDue, dueQueue, learnQueue, counts, rate, previewIntervals,
+  return { keyFor, stateFor, isDue, dueQueue, learnQueue, counts, nextDue, rate, previewIntervals,
            available() { return typeof TSFSRS !== 'undefined'; } };
 })();
 
@@ -12390,18 +12403,37 @@ let _lastRenderedFlashClass = null;
 function renderFlashSidebar() {
   const el = document.getElementById('flash-sidebar');
   if (!el) return;
-  // Skip the rebuild if the sidebar already shows the current class —
-  // the existing DOM has the correct .active item and brush. Without
-  // this guard, every next/prev/flip click would re-render the sidebar
-  // and re-animate the brush.
-  if (_lastRenderedFlashClass === APP.flashClassId) return;
-  _lastRenderedFlashClass = APP.flashClassId;
+  // Skip the rebuild if the sidebar already shows the current class, mode,
+  // and due count — the existing DOM has the correct .active item and
+  // brush. Without this guard, every next/prev/flip click would re-render
+  // the sidebar and re-animate the brush. Mode + due count join the cache
+  // key so entering review (or rating cards down to zero due) refreshes
+  // the 復習 row.
+  const srsDue = (typeof SRS !== 'undefined' && SRS.available()) ? SRS.counts().due : 0;
+  const sidebarKey = APP.flashClassId + '|' + (APP.flashMode || 'browse') + '|' + srsDue;
+  if (_lastRenderedFlashClass === sidebarKey) return;
+  _lastRenderedFlashClass = sidebarKey;
   const classes = window.FLASHCARD_CLASSES || [];
+  const inReview = APP.flashMode === 'review';
   el.innerHTML = `
+    ${(typeof SRS !== 'undefined' && SRS.available()) ? `
+    <div class="flash-sidebar-head">study</div>
+    <ul class="cat-list">
+      <li>
+        <button class="cat-item ${inReview ? 'active' : ''}" data-flash-review>
+          <span class="cat-glyph">復</span>
+          <span class="cat-label">
+            <span class="cat-ja">復習</span>
+            <span class="cat-en">review${srsDue ? ' · ' + srsDue + ' due' : ''}</span>
+          </span>
+          ${inReview ? activeBrushHTML(2) : ''}
+        </button>
+      </li>
+    </ul>` : ''}
     <div class="flash-sidebar-head">categories</div>
     <ul class="cat-list">
       ${classes.map(c => {
-        const isActive = c.id === APP.flashClassId;
+        const isActive = !inReview && c.id === APP.flashClassId;
         return `
         <li>
           <button class="cat-item ${isActive ? 'active' : ''}" data-flash-cat="${c.id}">
@@ -12416,9 +12448,14 @@ function renderFlashSidebar() {
       `;
       }).join('')}
     </ul>`;
+  const reviewBtn = el.querySelector('[data-flash-review]');
+  if (reviewBtn) reviewBtn.addEventListener('click', () => {
+    if (APP.flashMode !== 'review') enterReviewMode();
+  });
   el.querySelectorAll('[data-flash-cat]').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.flashCat === APP.flashClassId) return;
+      if (btn.dataset.flashCat === APP.flashClassId && APP.flashMode !== 'review') return;
+      APP.flashMode = 'browse';
       APP.flashClassId = btn.dataset.flashCat;
       APP.flashIdx = 0;
       APP.flashFlipped = false;
@@ -12437,7 +12474,214 @@ function renderFlashSidebar() {
   });
 }
 
+// ── Review mode (FSRS) ──────────────────────────────────────────────────
+// The recall layer over the existing decks. The card itself renders through
+// the SAME editorialFlashcardHTML / radical templates as browse mode — review
+// only changes the chrome around it: the question/answer reveal, the four
+// quiet rating chips, and the session close. Transient by design: a reload
+// lands back in browse (review is a sitting, not a place).
+//
+// Rejected defaults (named, per the design pass): no per-button semantic
+// colors (red-Again/green-Easy is drill-app grammar — the chips are ink,
+// the interval preview carries the information); no progress bar or
+// completion celebration (a typographic close in the card's place); no
+// red badge on the sidebar (the due count is plain text in the list).
+
+function enterReviewMode() {
+  if (typeof SRS === 'undefined' || !SRS.available()) return;
+  APP.flashMode = 'review';
+  APP.flashFlipped = false;
+  APP._review = {
+    queue: SRS.dueQueue().map(e => e.key),
+    idx: 0,
+    revealed: false,
+    reviewed: 0,
+  };
+  renderFlashcards(document.getElementById('main-inner'));
+}
+
+function exitReviewMode() {
+  APP.flashMode = 'browse';
+  APP._review = null;
+  APP.flashFlipped = false;
+  renderFlashcards(document.getElementById('main-inner'));
+}
+
+// key → { card, cls } across all decks (review queues store keys only, so
+// deck edits between sessions can never strand an index).
+function resolveSrsKey(key) {
+  for (const cls of (window.FLASHCARD_CLASSES || [])) {
+    for (const card of (cls.cards || [])) {
+      if (card.vocabOnly) continue;
+      if (SRS.keyFor(cls.id, card) === key) return { card, cls };
+    }
+  }
+  return null;
+}
+
+function renderReview(container) {
+  const rv = APP._review || (APP._review = { queue: [], idx: 0, revealed: false, reviewed: 0 });
+  const total = rv.queue.length;
+
+  // ── Session complete / nothing due ──
+  if (rv.idx >= total) {
+    const counts = SRS.counts();
+    const next = SRS.nextDue();
+    const nextLabel = next ? (() => {
+      const mins = Math.round((next - new Date()) / 60000);
+      if (mins < 60) return `in ${Math.max(1, mins)} minute${mins === 1 ? '' : 's'}`;
+      if (mins < 60 * 24) return `in ${Math.round(mins / 60)} hour${Math.round(mins / 60) === 1 ? '' : 's'}`;
+      const days = Math.round(mins / (60 * 24));
+      return days === 1 ? 'tomorrow' : `in ${days} days`;
+    })() : null;
+    const cls = (window.FLASHCARD_CLASSES || []).find(c => c.id === APP.flashClassId) || (window.FLASHCARD_CLASSES || [])[0];
+    const learnable = cls ? SRS.learnQueue(cls.id, 10) : [];
+    container.innerHTML = `
+      <div class="flash-review">
+        <div class="flash-review-meta">
+          <span class="review-pos">復習 · review</span>
+          <button class="review-exit" data-review-exit type="button">もどる · browse</button>
+        </div>
+        <div class="review-done">
+          <div class="review-done-ja">${rv.reviewed ? 'きょうの復習は おわり' : '復習するカードは ありません'}</div>
+          <div class="review-done-en">
+            ${rv.reviewed ? `${rv.reviewed} card${rv.reviewed === 1 ? '' : 's'} revisited` : 'nothing due right now'}
+            ${counts.tracked ? ` · ${counts.tracked} in rotation` : ''}
+            ${nextLabel ? ` · next due ${nextLabel}` : ''}
+          </div>
+          <div class="rule review-done-rule"></div>
+          ${learnable.length ? `
+            <button class="testcard-nav-btn is-primary review-learn" data-review-learn type="button">
+              <span class="testcard-nav-furi">${escHTML(cls.titleJa)}</span>
+              <span class="testcard-nav-label">新しい ${learnable.length} まいを 学ぶ</span>
+            </button>
+            <div class="review-kbd-hint">learn the next ${learnable.length} unseen card${learnable.length === 1 ? '' : 's'} of ${escHTML(cls.titleEn)}, in deck order</div>
+          ` : `
+            <div class="review-kbd-hint">every card of ${escHTML(cls ? cls.titleEn : 'this deck')} is already in rotation</div>
+          `}
+        </div>
+      </div>`;
+    const exitBtn = container.querySelector('[data-review-exit]');
+    if (exitBtn) exitBtn.addEventListener('click', exitReviewMode);
+    const learnBtn = container.querySelector('[data-review-learn]');
+    if (learnBtn) learnBtn.addEventListener('click', () => {
+      rv.queue.push(...learnable.map(e => e.key));
+      rv.revealed = false;
+      renderFlashcards(container);
+    });
+    renderFlashSidebar();
+    return;
+  }
+
+  // ── Current card ──
+  const key = rv.queue[rv.idx];
+  const hit = resolveSrsKey(key);
+  if (!hit) { rv.idx++; renderFlashcards(container); return; } // deck edited; skip
+  const { card, cls } = hit;
+  const related = relatedByKun(card, Idx.kunIndex());
+  const seeAlso = seeAlsoCards(card);
+
+  // Question side hides the English layer (the existing study-mode switch);
+  // reveal shows it. The card template itself is untouched.
+  const savedEn = APP.flashShowEn;
+  const savedFlip = APP.flashFlipped;
+  APP.flashShowEn = rv.revealed;
+  if (!rv.revealed) APP.flashFlipped = false;
+  let cardHTML;
+  try {
+    cardHTML = editorialFlashcardHTML(card, cls, related, seeAlso);
+  } finally {
+    APP.flashShowEn = savedEn;
+    APP.flashFlipped = savedFlip;
+  }
+
+  const intervals = SRS.previewIntervals(key) || {};
+  const RATING_CHIPS = [
+    { r: 1, ja: 'また',     en: 'again' },
+    { r: 2, ja: 'むずかしい', en: 'hard' },
+    { r: 3, ja: 'できた',   en: 'good' },
+    { r: 4, ja: 'かんたん', en: 'easy' },
+  ];
+  container.innerHTML = `
+    <div class="flash-review ${rv.revealed ? 'is-answer' : 'is-question'}">
+      <div class="flash-review-meta">
+        <span class="review-pos">復習 · ${rv.idx + 1} / ${total}</span>
+        <span class="review-deck">${escHTML(cls.titleJa)} · ${escHTML(cls.titleEn)}</span>
+        <button class="review-exit" data-review-exit type="button">もどる · browse</button>
+      </div>
+      <div class="flash-deck flash-deck-editorial">
+        <div class="flash-stage">${cardHTML}</div>
+      </div>
+      <div class="review-bar" aria-live="polite">
+        ${rv.revealed ? `
+          ${RATING_CHIPS.map(c => `
+            <button class="testcard-nav-btn review-rate ${c.r === 1 ? 'review-rate-again' : ''}"
+                    data-rate="${c.r}" type="button"
+                    aria-label="${c.en} — next in ${escAttr(intervals[c.r] || '?')}">
+              <span class="testcard-nav-furi">${escHTML(intervals[c.r] || '')}</span>
+              <span class="testcard-nav-label">${c.ja}</span>
+            </button>
+          `).join('')}
+        ` : `
+          <button class="testcard-nav-btn is-primary review-reveal" data-review-reveal type="button">
+            <span class="testcard-nav-furi">スペース</span>
+            <span class="testcard-nav-label">こたえを 見る</span>
+          </button>
+        `}
+      </div>
+      <div class="review-kbd-hint">${rv.revealed ? '1–4 rates · f flips to stroke order' : 'recall the meaning first — space reveals'}</div>
+    </div>`;
+
+  // ── Wiring ──
+  const exitBtn = container.querySelector('[data-review-exit]');
+  if (exitBtn) exitBtn.addEventListener('click', exitReviewMode);
+  const revealBtn = container.querySelector('[data-review-reveal]');
+  if (revealBtn) revealBtn.addEventListener('click', () => { rv.revealed = true; renderFlashcards(container); });
+  const rateCard = (rating) => {
+    SRS.rate(key, rating);
+    // "Again" comes back this sitting — the classic re-queue.
+    if (rating === 1) rv.queue.push(key);
+    rv.reviewed++;
+    rv.idx++;
+    rv.revealed = false;
+    APP.flashFlipped = false;
+    renderFlashcards(container);
+  };
+  container.querySelectorAll('[data-rate]').forEach(b =>
+    b.addEventListener('click', () => rateCard(+b.dataset.rate)));
+  const flipBtn = container.querySelector('[data-testcard-flip]');
+  if (flipBtn && rv.revealed) flipBtn.addEventListener('click', () => {
+    APP.flashFlipped = !APP.flashFlipped;
+    renderFlashcards(container);
+  });
+
+  // Keyboard: replace-not-stack, same pattern + focus guard as browse mode.
+  if (APP._flashKeyHandler) window.removeEventListener('keydown', APP._flashKeyHandler);
+  APP._flashKeyHandler = e => {
+    const t = e.target;
+    if (t instanceof HTMLElement &&
+        t.closest('button, a, select, input, textarea, [contenteditable]')) return;
+    if (!rv.revealed) {
+      if (e.key === ' ' || e.key === 'f' || e.key === 'Enter') {
+        e.preventDefault();
+        rv.revealed = true;
+        renderFlashcards(container);
+      }
+      return;
+    }
+    if (e.key >= '1' && e.key <= '4') { e.preventDefault(); rateCard(+e.key); return; }
+    if (e.key === 'f' || e.key === ' ') {
+      e.preventDefault();
+      APP.flashFlipped = !APP.flashFlipped;
+      renderFlashcards(container);
+    }
+  };
+  window.addEventListener('keydown', APP._flashKeyHandler);
+  renderFlashSidebar();
+}
+
 function renderFlashcards(container) {
+  if (APP.flashMode === 'review') return renderReview(container);
   const classes = window.FLASHCARD_CLASSES || [];
   if (!classes.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
   const cls = classes.find(c => c.id === APP.flashClassId) || classes[0];

@@ -18,6 +18,11 @@
 
     --accent:      var(--gold);
     --accent-soft: var(--gold-soft);
+    /* The hinomaru vermilion (the logo's sun). 18 declarations referenced
+       this token before it was ever defined — they silently fell back to
+       #c34b30 fallbacks or currentColor. Defined here so they finally
+       resolve as designed. */
+    --accent-vermilion: #c34b30;
 
     --serif-jp:   'Shippori Mincho', 'Noto Serif JP', 'Hiragino Mincho Pro', serif;
     /* Role-based JP font tokens — let each typography slot be themed
@@ -2447,6 +2452,108 @@
   .testcard-nav-arrow {
     font-size: 16px;
     line-height: 1;
+  }
+
+  /* ─── Review mode (FSRS) chrome ──────────────────────────────────────
+     The card template is untouched; review wraps it with a meta line, the
+     reveal / rating bar (reusing the testcard-nav-btn grammar — furigana
+     mini-label over the label), and a quiet session close. Deliberately
+     NOT drill-app styled: rating chips are ink-uniform, the interval
+     preview is the information, and また carries a single vermilion
+     underline (the card returns to you, marked in the logo's red). */
+  .flash-review {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding-top: 8px;
+  }
+  .flash-review .flash-deck { width: 100%; }
+  .flash-review-meta {
+    width: 100%;
+    max-width: 920px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 0 4px;
+  }
+  .review-pos, .review-deck {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: .06em;
+    color: var(--ink-3);
+  }
+  .review-deck { flex: 1; }
+  .review-exit {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 4px 6px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    cursor: pointer;
+    border-bottom: 1px dotted var(--ink-4);
+  }
+  .review-exit:hover { color: var(--ink); }
+  .review-exit:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .review-bar {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .review-bar .testcard-nav-btn { min-width: 104px; }
+  .review-bar .testcard-nav-furi { min-height: 14px; }
+  .review-rate-again .testcard-nav-label {
+    box-shadow: inset 0 -2px 0 var(--accent-vermilion);
+  }
+  .review-kbd-hint {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: .04em;
+  }
+  /* Review suspends free browsing: the card's own prev/next footer nav is
+     hidden; the flip control appears only once the answer is revealed
+     (visibility keeps the footer's 3-column geometry stable). */
+  .flash-review .testcard-footer-nav { display: none; }
+  .flash-review.is-question .testcard-flip-btn { visibility: hidden; }
+  /* The question side is a recall prompt: the card already blanks its main
+     meaning + example glosses under the EN switch, but the related/see-also
+     chips carry their own English ("Sunday", "morning") that would hand the
+     answer over. Collapse them until reveal. */
+  .flash-review.is-question .testcard-chip-en { display: none; }
+  .review-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 96px 24px 48px;
+    text-align: center;
+  }
+  .review-done-ja {
+    font-family: var(--serif-jp);
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: .08em;
+  }
+  .review-done-en {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-3);
+  }
+  .review-done-rule { width: 72px; margin: 10px 0 6px; }
+  .review-learn { margin-top: 4px; }
+  @media (max-width: 760px) {
+    .review-bar { gap: 8px; }
+    .review-bar .testcard-nav-btn { min-width: 0; flex: 1 1 40%; }
+    .flash-review-meta { flex-wrap: wrap; }
   }
 
   /* ─── Flip card (front ↔ back) ────────────────────────────────────────

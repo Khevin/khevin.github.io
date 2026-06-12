@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-06-01",
+  "capturedAt": "2026-06-12",
   "states": {
     "vocab/default": {
       "ok": true,
@@ -1879,19 +1879,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 270,
-          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 288,
+          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
           "tagCounts": {
-            "div": 1,
-            "ul": 1,
-            "li": 17,
-            "button": 17,
-            "span": 68
+            "div": 2,
+            "ul": 2,
+            "li": 18,
+            "button": 18,
+            "span": 72
           },
           "dataAttrs": [
-            "data-flash-cat"
+            "data-flash-cat",
+            "data-flash-review"
           ],
-          "controls": 17,
+          "controls": 18,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2033,19 +2034,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 270,
-          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 288,
+          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
           "tagCounts": {
-            "div": 1,
-            "ul": 1,
-            "li": 17,
-            "button": 17,
-            "span": 68
+            "div": 2,
+            "ul": 2,
+            "li": 18,
+            "button": 18,
+            "span": 72
           },
           "dataAttrs": [
-            "data-flash-cat"
+            "data-flash-cat",
+            "data-flash-review"
           ],
-          "controls": 17,
+          "controls": 18,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2202,19 +2204,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 270,
-          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 288,
+          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
           "tagCounts": {
-            "div": 1,
-            "ul": 1,
-            "li": 17,
-            "button": 17,
-            "span": 68
+            "div": 2,
+            "ul": 2,
+            "li": 18,
+            "button": 18,
+            "span": 72
           },
           "dataAttrs": [
-            "data-flash-cat"
+            "data-flash-cat",
+            "data-flash-review"
           ],
-          "controls": 17,
+          "controls": 18,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2353,19 +2356,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 270,
-          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 288,
+          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
           "tagCounts": {
-            "div": 1,
-            "ul": 1,
-            "li": 17,
-            "button": 17,
-            "span": 68
+            "div": 2,
+            "ul": 2,
+            "li": 18,
+            "button": 18,
+            "span": 72
           },
           "dataAttrs": [
-            "data-flash-cat"
+            "data-flash-cat",
+            "data-flash-review"
           ],
-          "controls": 17,
+          "controls": 18,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2516,19 +2520,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 270,
-          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 288,
+          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
           "tagCounts": {
-            "div": 1,
-            "ul": 1,
-            "li": 17,
-            "button": 17,
-            "span": 68
+            "div": 2,
+            "ul": 2,
+            "li": 18,
+            "button": 18,
+            "span": 72
           },
           "dataAttrs": [
-            "data-flash-cat"
+            "data-flash-cat",
+            "data-flash-review"
           ],
-          "controls": 17,
+          "controls": 18,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2679,19 +2684,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 270,
-          "text": "categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 288,
+          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
           "tagCounts": {
-            "div": 1,
-            "ul": 1,
-            "li": 17,
-            "button": 17,
-            "span": 68
+            "div": 2,
+            "ul": 2,
+            "li": 18,
+            "button": 18,
+            "span": 72
           },
           "dataAttrs": [
-            "data-flash-cat"
+            "data-flash-cat",
+            "data-flash-review"
           ],
-          "controls": 17,
+          "controls": 18,
           "imgSrcs": []
         },
         "writing-sidebar": {

@@ -676,6 +676,53 @@ async function main() {
       check('R1 due queue surfaces rated cards when due', r.dueBeforeAnyRating === 0 && r.dueAfterRating === true, `before=${r.dueBeforeAnyRating} after=${r.dueAfterRating}`);
       await page.close();
     }
+
+    // ── R1: review-mode UI flow (sidebar → learn → reveal → rate → done) ────
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(async () => {
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+        localStorage.removeItem('jp:srs');
+        setSection('flashcards'); await sleep(80);
+        const out = {};
+        const entry = document.querySelector('[data-flash-review]');
+        out.sidebarEntry = !!entry;
+        entry.click(); await sleep(100);
+        out.emptyStateShown = /復習するカードは ありません/.test(document.body.textContent);
+        document.querySelector('[data-review-learn]').click(); await sleep(120);
+        out.questionState = !!document.querySelector('.flash-review.is-question');
+        out.meaningBlanked = (document.querySelector('.testcard-meaning') || {}).textContent === '— —';
+        out.navHidden = getComputedStyle(document.querySelector('.testcard-footer-nav')).display === 'none';
+        // reveal via Space
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true })); await sleep(120);
+        out.answerState = !!document.querySelector('.flash-review.is-answer');
+        out.meaningShown = (document.querySelector('.testcard-meaning') || {}).textContent !== '— —';
+        out.fourChips = document.querySelectorAll('[data-rate]').length === 4;
+        const startQueueLen = APP._review.queue.length;
+        // rate Again via key 1 → re-queues this sitting
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: '1', bubbles: true })); await sleep(120);
+        out.againRequeued = APP._review.queue.length === startQueueLen + 1 && APP._review.idx === 1;
+        // rate the rest Good to reach the close
+        while (APP._review.idx < APP._review.queue.length) {
+          APP._review.revealed = true; renderFlashcards(document.getElementById('main-inner')); await sleep(15);
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: '3', bubbles: true })); await sleep(15);
+        }
+        await sleep(100);
+        out.doneState = /きょうの復習は おわり/.test(document.body.textContent);
+        out.trackedAfter = SRS.counts().tracked;
+        // exit back to browse
+        document.querySelector('[data-review-exit]').click(); await sleep(100);
+        out.backToBrowse = APP.flashMode === 'browse' && !!document.querySelector('.flash-layout');
+        localStorage.removeItem('jp:srs');
+        return out;
+      });
+      check('R1-UI sidebar entry + empty state + learn seeds a session', r.sidebarEntry && r.emptyStateShown, `entry=${r.sidebarEntry} empty=${r.emptyStateShown}`);
+      check('R1-UI question hides meaning + suspends card nav', r.questionState && r.meaningBlanked && r.navHidden, `q=${r.questionState} blank=${r.meaningBlanked} nav=${r.navHidden}`);
+      check('R1-UI space reveals the answer with four rating chips', r.answerState && r.meaningShown && r.fourChips, `a=${r.answerState} meaning=${r.meaningShown} chips=${r.fourChips}`);
+      check('R1-UI "Again" re-queues the card this sitting', r.againRequeued === true, `requeued=${r.againRequeued}`);
+      check('R1-UI session closes quietly and exit returns to browse', r.doneState && r.trackedAfter === 10 && r.backToBrowse, `done=${r.doneState} tracked=${r.trackedAfter} browse=${r.backToBrowse}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
