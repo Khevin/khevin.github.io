@@ -1079,6 +1079,11 @@ function initTier3BrushPositioning() {
     pending = true;
     requestAnimationFrame(() => {
       pending = false;
+      // Fast exit before the three repositioners run their own full-document
+      // queries: this fires on EVERY scroll frame / resize / DOM mutation
+      // app-wide, and most surfaces have zero fixed-position brushes at all.
+      // A single first-match probe is far cheaper than three full scans.
+      if (!document.querySelector('.active-brush.tier-3, .active-brush-bg, .active-brush-particle')) return;
       repositionTier3Brushes();
       repositionBgBrushes();
       repositionParticleBrushes();
@@ -2565,6 +2570,7 @@ function applyContextBg() {
 // ── Main dispatcher ──────────────────────────────────────────────────────
 function renderMain() {
   closePopover();
+  cancelTypewriterTimers(); // navigating away from a scene strands its reveals
   if (APP._flashKeyHandler) {
     window.removeEventListener('keydown', APP._flashKeyHandler);
     APP._flashKeyHandler = null;
@@ -2687,8 +2693,8 @@ function resetBookEntryState(bookId) {
   // Restaurant scene flows live in APP.scenes[bookId]. Reset only the
   // clicked book's scene — leave other restaurants' progress intact
   // so the user can resume them later.
-  if (APP.scenes && bookId && APP.scenes[bookId] && typeof freshSceneState === 'function') {
-    APP.scenes[bookId] = freshSceneState();
+  if (bookId && scenes()[bookId] && typeof freshSceneState === 'function') {
+    scenes()[bookId] = freshSceneState();
     if (typeof saveSceneState === 'function') saveSceneState();
   }
 }
@@ -3370,24 +3376,6 @@ function menuReferenceHTML(book, page, expBtn) {
   `;
 }
 
-// Roll a random restaurant from a category and launch it fresh. Each
-// click starts a brand new scene flow at the cover step — picking the
-// same restaurant twice in a row still feels like a new visit. Used
-// by the "experience" button on category hub books (Sushi, Omakase,
-// Izakaya, Ramen, Street Food).
-function renderRandomCategoryRestaurant(categoryId) {
-  const all = (window.EATING_OUT_RESTAURANTS || []).filter(r => r.category === categoryId);
-  if (!all.length) return null;
-  const pick = all[Math.floor(Math.random() * all.length)];
-  // Wipe any prior scene state for this restaurant so the random roll
-  // always begins at the cover, regardless of whether the player was
-  // mid-flow there from a previous random or direct visit.
-  APP.scenes = APP.scenes || {};
-  APP.scenes[pick.id] = freshSceneState();
-  saveSceneState();
-  return renderForcedRestaurant(pick.id);
-}
-
 // Route an "experience ___" button click through the existing
 // Experience book (book.id = 'experience') rather than rendering a
 // divergent scene flow into vocab-page-content directly. The forked
@@ -3419,8 +3407,8 @@ function launchExperienceWithRestaurant(restaurantId) {
   // The flow's natural progression resumes from here as if it's a
   // fresh visit — matches the convention the bottom-bar back button
   // and sidebar-click reset already use elsewhere.
-  if (APP.scenes && APP.scenes[restaurantId] && typeof freshSceneState === 'function') {
-    APP.scenes[restaurantId] = freshSceneState();
+  if (scenes()[restaurantId] && typeof freshSceneState === 'function') {
+    scenes()[restaurantId] = freshSceneState();
     if (typeof saveSceneState === 'function') saveSceneState();
   }
   // Switch into the Experience book + persist.
@@ -3585,8 +3573,7 @@ function rollNewExperienceRestaurant(currentId) {
   state.restaurantId = next.id;
   state.completed = false;
   saveExperienceState();
-  APP.scenes = APP.scenes || {};
-  APP.scenes[next.id] = freshSceneState();
+  scenes()[next.id] = freshSceneState();
   saveSceneState();
   return next;
 }
@@ -3767,8 +3754,7 @@ function selectExperienceRestaurant(restaurantId) {
   state.restaurantId = next.id;
   state.completed = false;
   saveExperienceState();
-  APP.scenes = APP.scenes || {};
-  APP.scenes[next.id] = freshSceneState();
+  scenes()[next.id] = freshSceneState();
   saveSceneState();
   return next;
 }
@@ -6384,36 +6370,6 @@ function closeFoodDialog() {
   existing.remove();
 }
 
-// Direct-launch a specific restaurant by id (no random roll, no
-// reroll button). Used by the "fast food" sidebar group — when the
-// player clicks マック or ケンタ, they land straight in that scene
-// flow instead of going through the random experience. Each fast
-// food book has its own scene state keyed by the restaurant id, so
-// pausing mid-order at KFC then visiting McDonald's saves both flows
-// independently.
-function renderForcedRestaurant(restaurantId) {
-  const el = document.getElementById('vocab-page-content');
-  if (!el) return;
-  const restaurants = window.EATING_OUT_RESTAURANTS || [];
-  const restaurant = restaurants.find(r => r.id === restaurantId);
-  if (!restaurant) {
-    el.innerHTML = `<div class="empty-state">Restaurant '${escHTML(restaurantId)}' not found.</div>`;
-    return;
-  }
-  const scene = resolveScene(restaurant);
-  if (!scene) {
-    el.innerHTML = `<div class="empty-state">Scene template missing for ${escHTML(restaurant.template || restaurant.id)}.</div>`;
-    return;
-  }
-  // Use a book object whose id matches the restaurant id — that keys
-  // scene state under jp:scenes[restaurantId], same shape the
-  // Experience roll uses. The two share state by design: if you've
-  // already started a McDonald's order via the random roller, opening
-  // the McDonald's book picks up where you left off (and vice versa).
-  const fakeBook = { id: restaurant.id, titleEn: restaurant.name.en, titleJa: restaurant.name.ja };
-  renderRestaurantScene(fakeBook, scene);
-}
-
 function renderExperience() {
   const el = document.getElementById('vocab-page-content');
   if (!el) return;
@@ -6438,8 +6394,8 @@ function renderExperience() {
     }
     state.restaurantId = restaurant.id;
     saveExperienceState();
-    if (APP.scenes && APP.scenes[restaurant.id]) {
-      APP.scenes[restaurant.id] = freshSceneState();
+    if (scenes()[restaurant.id]) {
+      scenes()[restaurant.id] = freshSceneState();
       saveSceneState();
     }
   }
@@ -6506,8 +6462,19 @@ function itemFurigana(item, state) {
   return item.furigana || null;
 }
 
-function sceneStateFor(bookId) {
+// THE one way to touch the scene-state map — hydrates from localStorage on
+// first access. The old call-site pattern `APP.scenes = APP.scenes || {}`
+// could run before hydration, permanently mask the saved map behind a fresh
+// `{}`, and the next saveSceneState() would then overwrite EVERY
+// restaurant's saved progress with a single entry (a silent wipe kept at
+// bay only by render ordering). All readers/writers go through here now.
+function scenes() {
   if (!APP.scenes) APP.scenes = lsGet('jp:scenes', {});
+  return APP.scenes;
+}
+
+function sceneStateFor(bookId) {
+  scenes();
   if (!APP.scenes[bookId]) {
     APP.scenes[bookId] = freshSceneState();
   } else {
@@ -6594,7 +6561,7 @@ function sceneBack(state) {
 }
 
 function sceneRestart(bookId) {
-  APP.scenes[bookId] = freshSceneState();
+  scenes()[bookId] = freshSceneState();
   saveSceneState();
 }
 
@@ -6603,6 +6570,16 @@ function sceneRestart(bookId) {
 // `perCharMs` intervals. Ruby blocks (<ruby><rt>) are treated as a single
 // atom so the reading guide doesn't reveal mid-word.
 // Respects prefers-reduced-motion (shows everything instantly).
+// Pending reveal timers — one per not-yet-shown character. Cancelled when a
+// new scene step renders (or the user navigates away): the old spans are
+// detached by the innerHTML swap, so letting up to ~hundreds of stale
+// timeouts tick on against detached nodes was pure waste.
+let _twTimers = [];
+function cancelTypewriterTimers() {
+  for (const id of _twTimers) clearTimeout(id);
+  _twTimers = [];
+}
+
 function typewriterReveal(el, perCharMs = 64) {
   if (!el) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -6634,7 +6611,7 @@ function typewriterReveal(el, perCharMs = 64) {
   };
   walk(el);
   atoms.forEach((atom, i) => {
-    setTimeout(() => atom.classList.add('is-shown'), i * perCharMs);
+    _twTimers.push(setTimeout(() => atom.classList.add('is-shown'), i * perCharMs));
   });
 }
 
@@ -7173,7 +7150,7 @@ function shelfStepHTML(scene, state, step) {
         <span class="shelf-row-img">
           <img src="images/konbini/${escAttr(item.id)}.webp"
                onerror="if(!this.src.endsWith('placeholder.svg')){this.src='images/konbini/placeholder.svg';this.dataset.placeholder='1';}"
-               data-id="${escAttr(item.id)}" alt="" />
+               data-id="${escAttr(item.id)}" alt="" loading="lazy" />
         </span>
         <span class="shelf-row-text">
           <span class="shelf-row-kanji">${jpLineHTML(item.kanji, item.en, '', item.furigana)}</span>
@@ -7590,6 +7567,9 @@ function renderRestaurantScene(book, scene) {
   if (state._lastShownStep !== step.id) {
     state._lastShownStep = step.id;
     saveSceneState();
+    // The innerHTML swap above detached the previous step's atoms; drop
+    // their still-pending reveal timers before queueing this step's.
+    cancelTypewriterTimers();
     const targets = el.querySelectorAll(
       '.scene-body .scene-npc-line, ' +
       '.scene-body .scene-narrative .jp-line, ' +
