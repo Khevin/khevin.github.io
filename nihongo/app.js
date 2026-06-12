@@ -1143,6 +1143,14 @@ document.addEventListener('click', e => {
 });
 
 // ── Utilities ───────────────────────────────────────────────────────────
+// Scroll the page back to the top, honoring prefers-reduced-motion (the
+// CSS animation coverage respects it everywhere; these JS scrolls were the
+// stragglers). One helper instead of nine hand-copied scrollTo calls.
+function scrollPageTop() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+}
+
 function escHTML(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
@@ -4253,7 +4261,7 @@ function wireFlavorsPageHandlers(book) {
       const inner = document.getElementById('main-inner');
       if (inner) renderVocab(inner);
       if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollPageTop();
       return;
     }
   });
@@ -5851,7 +5859,7 @@ function wireEdiblesPageHandlers(book) {
       const inner = document.getElementById('main-inner');
       if (inner) renderVocab(inner);
       if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollPageTop();
       return;
     }
     // Back button: takes a `data-edibles-back` of either "categories"
@@ -5967,7 +5975,7 @@ function wireEdiblesPageHandlers(book) {
       const inner = document.getElementById('main-inner');
       if (inner) renderVocab(inner);
       if (typeof renderVocabBooksSidebar === 'function') renderVocabBooksSidebar();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollPageTop();
       return;
     }
     // Category tile click — enter that category's item-grid. Empty
@@ -6029,7 +6037,7 @@ function wireEdiblesPageHandlers(book) {
         APP.edibleItem = itemId;
         lsSet('jp:edibleItem', itemId);
         rerenderEdibles(book);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollPageTop();
         return;
       }
       if (animLocked(window.__ediblesAnimating)) return;
@@ -6062,7 +6070,7 @@ function wireEdiblesPageHandlers(book) {
         } else {
           window.__ediblesAnimating = false;
         }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollPageTop();
       }, 380);
       return;
     }
@@ -6089,7 +6097,7 @@ function wireEdiblesPageHandlers(book) {
         APP.edibleItem = targetId;
         lsSet('jp:edibleItem', targetId);
         rerenderEdibles(book);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollPageTop();
         return;
       }
       if (animLocked(window.__ediblesAnimating)) return;
@@ -6113,7 +6121,7 @@ function wireEdiblesPageHandlers(book) {
         } else {
           window.__ediblesAnimating = false;
         }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollPageTop();
       }, 320);
       return;
     }
@@ -6139,7 +6147,7 @@ function wireEdiblesPageHandlers(book) {
         lsSet('jp:edibleCategory', catId);
         lsSet('jp:edibleItem', itemId);
         rerenderEdibles(book);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollPageTop();
         return;
       }
       if (animLocked(window.__ediblesAnimating)) return;
@@ -6165,7 +6173,7 @@ function wireEdiblesPageHandlers(book) {
         }
         // Scroll to top so the user lands on the new item's hero, not
         // mid-page where the previous similar-row used to be.
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollPageTop();
       }, 420);
       return;
     }
@@ -11332,9 +11340,15 @@ function openColorFlashcard(kanji) {
   const backdrop = document.getElementById('card-modal-backdrop');
   if (!body || !modal || !backdrop) return;
   body.innerHTML = colorCardModalHTML(card);
+  // Remember the opener so close can hand focus back — without this the
+  // dialog announced aria-modal but keyboard focus stayed on the page
+  // behind it, and closing dropped focus to <body>.
+  APP._cardModalOpener = document.activeElement;
   modal.classList.add('is-open');
   modal.setAttribute('aria-hidden', 'false');
   backdrop.classList.add('is-open');
+  const closeBtn = document.getElementById('card-modal-close');
+  if (closeBtn) closeBtn.focus();
 }
 
 function closeCardModal() {
@@ -11344,6 +11358,12 @@ function closeCardModal() {
   modal.classList.remove('is-open');
   modal.setAttribute('aria-hidden', 'true');
   backdrop.classList.remove('is-open');
+  // Restore focus to whatever opened the modal (if it's still in the DOM).
+  const opener = APP._cardModalOpener;
+  APP._cardModalOpener = null;
+  if (opener && opener.isConnected && typeof opener.focus === 'function') {
+    opener.focus({ preventScroll: true });
+  }
 }
 
 function attachCardModalEvents() {
@@ -12847,6 +12867,14 @@ function renderFlashcards(container) {
   // presses and leaving stale handlers alive in other sections.
   if (APP._flashKeyHandler) window.removeEventListener('keydown', APP._flashKeyHandler);
   APP._flashKeyHandler = e => {
+    // Don't hijack keys from a focused interactive control: Space on a
+    // button must CLICK the button (it used to ALSO toggle English and
+    // re-render, double-firing), arrows inside a <select>/input must move
+    // the selection/caret, etc. Keyboard study shortcuts apply only when
+    // focus is on the page itself.
+    const t = e.target;
+    if (t instanceof HTMLElement &&
+        t.closest('button, a, select, input, textarea, [contenteditable]')) return;
     // Keyboard arrows cycle the SAME deck.length + 1 positions as
     // navTo (cards 0..deck-1 plus the wrap-up at deck.length).
     const N = deck.length + 1;
@@ -12977,7 +13005,7 @@ function renderDictionary(container) {
           <h1 class="page-title-jp">さがす</h1>
           <div class="page-title-en">Browse and search — kanji, words, and what they mean</div>
         </div>
-        <div class="small-label" id="dict-count">${filtered.length} entries</div>
+        <div class="small-label" id="dict-count" aria-live="polite">${filtered.length} entries</div>
       </div>
       <div class="rule"></div>
     </div>
@@ -14014,7 +14042,7 @@ function speakingStudioHTML(cat, phrase) {
           </div>
         </div>
 
-        <div class="speaking-scores">
+        <div class="speaking-scores" aria-live="polite">
           ${chipHTML('rhythm',      'リズム',  'Rhythm',      'Whether your beats match the phrase’s mora count and even, mora-timed spacing.', G_RHYTHM)}
           ${chipHTML('clarity',     'はっきり', 'Clarity',     'How crisply each syllable is articulated — read from the energy dips between morae.', G_CLARITY)}
           ${chipHTML('pitch',       'ピッチ',  'Pitch',       'Whether your high–low pitch contour follows the phrase’s accent pattern.', G_PITCH)}
