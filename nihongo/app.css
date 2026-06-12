@@ -2517,16 +2517,80 @@
     color: var(--ink-4);
     letter-spacing: .04em;
   }
-  /* Review suspends free browsing: the card's own prev/next footer nav is
-     hidden; the flip control appears only once the answer is revealed
-     (visibility keeps the footer's 3-column geometry stable). */
-  .flash-review .testcard-footer-nav { display: none; }
-  .flash-review.is-question .testcard-flip-btn { visibility: hidden; }
-  /* The question side is a recall prompt: the card already blanks its main
-     meaning + example glosses under the EN switch, but the related/see-also
-     chips carry their own English ("Sunday", "morning") that would hand the
-     answer over. Collapse them until reveal. */
-  .flash-review.is-question .testcard-chip-en { display: none; }
+  /* The review card is its own lean template (reviewCardHTML) — a bare
+     prompt and a spare confirmation, NOT the full browse spread. Front is
+     the kanji alone; back adds the image, meaning, and kun/on readings. */
+  .review-card {
+    width: 100%;
+    max-width: 920px;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 48px 32px;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px;
+    box-shadow: 0 2px 14px var(--paper-shadow);
+  }
+  .review-card-glyph {
+    font-size: clamp(96px, 18vw, 168px);
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: .02em;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+  .review-card.is-back .review-card-glyph {
+    font-size: clamp(72px, 12vw, 120px);
+  }
+  .review-card-pair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .review-card-image {
+    width: 190px;
+    height: 190px;
+  }
+  .review-card-image image-slot { width: 100%; height: 100%; display: block; }
+  /* No image on file → a readonly image-slot hides itself (its own
+     :host([readonly]:not([data-filled])) rule); collapse the 190px box too
+     so imageless cards don't carry a hollow square. data-filled lives on
+     the host (light DOM), so :has() can see it. */
+  .review-card-image:has(image-slot:not([data-filled])) { display: none; }
+  .review-card-meaning {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-2);
+    text-align: center;
+  }
+  .review-card-readings {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .review-reading { display: inline-flex; align-items: baseline; gap: 8px; }
+  .review-reading-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: .08em;
+    color: var(--ink-4);
+  }
+  .review-reading-value {
+    font-family: var(--serif-jp);
+    font-size: 18px;
+    color: var(--ink-2);
+  }
+  .review-reading-dot { color: var(--ink-4); }
   .review-done {
     display: flex;
     flex-direction: column;

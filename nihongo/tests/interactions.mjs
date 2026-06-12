@@ -691,12 +691,17 @@ async function main() {
         out.emptyStateShown = /復習するカードは ありません/.test(document.body.textContent);
         document.querySelector('[data-review-learn]').click(); await sleep(120);
         out.questionState = !!document.querySelector('.flash-review.is-question');
-        out.meaningBlanked = (document.querySelector('.testcard-meaning') || {}).textContent === '— —';
-        out.navHidden = getComputedStyle(document.querySelector('.testcard-footer-nav')).display === 'none';
+        // The lean review card: the question side is the kanji ALONE.
+        out.frontIsBareKanji = (document.querySelector('.review-card.is-front') || {}).textContent?.trim() === '日';
+        out.noBrowseChrome = !document.querySelector('.flash-review .testcard-footer') && !document.querySelector('.flash-review .testcard-examples');
         // reveal via Space
         window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true })); await sleep(120);
         out.answerState = !!document.querySelector('.flash-review.is-answer');
-        out.meaningShown = (document.querySelector('.testcard-meaning') || {}).textContent !== '— —';
+        const back = document.querySelector('.review-card.is-back');
+        out.backHasAll = !!back &&
+          /sun/i.test((back.querySelector('.review-card-meaning') || {}).textContent || '') &&
+          !!back.querySelector('image-slot') &&
+          /ひ/.test((back.querySelector('.review-card-readings') || {}).textContent || '');
         out.fourChips = document.querySelectorAll('[data-rate]').length === 4;
         const startQueueLen = APP._review.queue.length;
         // rate Again via key 1 → re-queues this sitting
@@ -717,8 +722,8 @@ async function main() {
         return out;
       });
       check('R1-UI sidebar entry + empty state + learn seeds a session', r.sidebarEntry && r.emptyStateShown, `entry=${r.sidebarEntry} empty=${r.emptyStateShown}`);
-      check('R1-UI question hides meaning + suspends card nav', r.questionState && r.meaningBlanked && r.navHidden, `q=${r.questionState} blank=${r.meaningBlanked} nav=${r.navHidden}`);
-      check('R1-UI space reveals the answer with four rating chips', r.answerState && r.meaningShown && r.fourChips, `a=${r.answerState} meaning=${r.meaningShown} chips=${r.fourChips}`);
+      check('R1-UI question is the kanji alone (no browse chrome)', r.questionState && r.frontIsBareKanji && r.noBrowseChrome, `q=${r.questionState} bare=${r.frontIsBareKanji} lean=${r.noBrowseChrome}`);
+      check('R1-UI back = kanji + image + meaning + readings, four chips', r.answerState && r.backHasAll && r.fourChips, `a=${r.answerState} back=${r.backHasAll} chips=${r.fourChips}`);
       check('R1-UI "Again" re-queues the card this sitting', r.againRequeued === true, `requeued=${r.againRequeued}`);
       check('R1-UI session closes quietly and exit returns to browse', r.doneState && r.trackedAfter === 10 && r.backToBrowse, `done=${r.doneState} tracked=${r.trackedAfter} browse=${r.backToBrowse}`);
       await page.close();

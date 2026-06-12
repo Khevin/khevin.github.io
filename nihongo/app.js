@@ -12519,6 +12519,47 @@ function resolveSrsKey(key) {
   return null;
 }
 
+// The review card is deliberately LEANER than the browse card — recall
+// wants a bare prompt and a spare confirmation, not the full reference
+// spread (examples, see-also, heisig live in browse for study sessions):
+//   front · the kanji alone
+//   back  · kanji + its image + meaning + kun/on readings
+// The image stays OFF the question side on purpose: the hand-picked
+// images are mnemonics, and a mnemonic on the prompt answers the prompt.
+function reviewCardHTML(card, cls, revealed) {
+  const glyphFont = fontStackFor(APP.flashGlyphFont || 'brush');
+  // Colors deck: the swatch IS the meaning, so the front glyph stays ink
+  // and the color arrives with the answer. White gets the outline guard
+  // (white on cream paper is invisible), same as browse.
+  const isWhite = card.swatch && card.swatch.toLowerCase() === '#ffffff';
+  const colorize = revealed && card.swatch && !isWhite;
+  const glyphCls = (revealed && card.swatch && isWhite) ? ' color-glyph-light' : '';
+  const glyph = `<div class="review-card-glyph${glyphCls}"
+       style="font-family:${glyphFont}${colorize ? `;color:${escAttr(card.swatch)}` : ''}">${escHTML(card.kanji)}</div>`;
+  if (!revealed) {
+    return `<div class="review-card is-front">${glyph}</div>`;
+  }
+  const folder = card.imageFolder || cls.imageFolder || 'kanji';
+  const readings = [
+    card.kun ? `<span class="review-reading"><span class="review-reading-label">kun</span><span class="review-reading-value">${escHTML(card.kun)}</span></span>` : '',
+    card.on  ? `<span class="review-reading"><span class="review-reading-label">on</span><span class="review-reading-value">${escHTML(card.on)}</span></span>` : '',
+  ].filter(Boolean).join('<span class="review-reading-dot">·</span>');
+  return `
+    <div class="review-card is-back">
+      <div class="review-card-pair">
+        ${glyph}
+        <div class="review-card-image">
+          <image-slot id="review-${escAttr(card.id || card.kanji)}"
+                      image-key="${escAttr(folder)}/${escAttr(card.kanji)}"
+                      shape="rounded" radius="10" fit="contain" position="50% 50%" readonly
+                      placeholder=""></image-slot>
+        </div>
+      </div>
+      <div class="review-card-meaning">${escHTML(card.en || '')}</div>
+      ${readings ? `<div class="review-card-readings">${readings}</div>` : ''}
+    </div>`;
+}
+
 function renderReview(container) {
   const rv = APP._review || (APP._review = { queue: [], idx: 0, revealed: false, reviewed: 0 });
   const total = rv.queue.length;
@@ -12578,22 +12619,7 @@ function renderReview(container) {
   const hit = resolveSrsKey(key);
   if (!hit) { rv.idx++; renderFlashcards(container); return; } // deck edited; skip
   const { card, cls } = hit;
-  const related = relatedByKun(card, Idx.kunIndex());
-  const seeAlso = seeAlsoCards(card);
-
-  // Question side hides the English layer (the existing study-mode switch);
-  // reveal shows it. The card template itself is untouched.
-  const savedEn = APP.flashShowEn;
-  const savedFlip = APP.flashFlipped;
-  APP.flashShowEn = rv.revealed;
-  if (!rv.revealed) APP.flashFlipped = false;
-  let cardHTML;
-  try {
-    cardHTML = editorialFlashcardHTML(card, cls, related, seeAlso);
-  } finally {
-    APP.flashShowEn = savedEn;
-    APP.flashFlipped = savedFlip;
-  }
+  const cardHTML = reviewCardHTML(card, cls, rv.revealed);
 
   const intervals = SRS.previewIntervals(key) || {};
   const RATING_CHIPS = [
@@ -12629,7 +12655,7 @@ function renderReview(container) {
           </button>
         `}
       </div>
-      <div class="review-kbd-hint">${rv.revealed ? '1–4 rates · f flips to stroke order' : 'recall the meaning first — space reveals'}</div>
+      <div class="review-kbd-hint">${rv.revealed ? '1–4 rates' : 'recall the reading and meaning — space reveals'}</div>
     </div>`;
 
   // ── Wiring ──
@@ -12649,11 +12675,6 @@ function renderReview(container) {
   };
   container.querySelectorAll('[data-rate]').forEach(b =>
     b.addEventListener('click', () => rateCard(+b.dataset.rate)));
-  const flipBtn = container.querySelector('[data-testcard-flip]');
-  if (flipBtn && rv.revealed) flipBtn.addEventListener('click', () => {
-    APP.flashFlipped = !APP.flashFlipped;
-    renderFlashcards(container);
-  });
 
   // Keyboard: replace-not-stack, same pattern + focus guard as browse mode.
   if (APP._flashKeyHandler) window.removeEventListener('keydown', APP._flashKeyHandler);
@@ -12662,19 +12683,14 @@ function renderReview(container) {
     if (t instanceof HTMLElement &&
         t.closest('button, a, select, input, textarea, [contenteditable]')) return;
     if (!rv.revealed) {
-      if (e.key === ' ' || e.key === 'f' || e.key === 'Enter') {
+      if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault();
         rv.revealed = true;
         renderFlashcards(container);
       }
       return;
     }
-    if (e.key >= '1' && e.key <= '4') { e.preventDefault(); rateCard(+e.key); return; }
-    if (e.key === 'f' || e.key === ' ') {
-      e.preventDefault();
-      APP.flashFlipped = !APP.flashFlipped;
-      renderFlashcards(container);
-    }
+    if (e.key >= '1' && e.key <= '4') { e.preventDefault(); rateCard(+e.key); }
   };
   window.addEventListener('keydown', APP._flashKeyHandler);
   renderFlashSidebar();
