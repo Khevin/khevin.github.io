@@ -6959,7 +6959,8 @@ function menuStepHTML(scene, state, step) {
         ${step.items.map((item, i) => {
           const picked = selectedIds.has(item.kanji);
           return `
-            <li class="scene-menu-row ${picked ? 'is-picked' : ''}" data-menu-item="${i}">
+            <li class="scene-menu-row ${picked ? 'is-picked' : ''}" data-menu-item="${i}"
+                role="button" tabindex="0" aria-pressed="${picked ? 'true' : 'false'}">
               <span class="m-kanji">${jpLineHTML(item.kanji, item.en, '', item.furigana)}</span>
               <span class="m-kana">${escHTML(item.kana)}</span>
               <span class="m-dots"></span>
@@ -7590,7 +7591,7 @@ function renderRestaurantScene(book, scene) {
   });
   // Menu item picker — toggles selection.
   el.querySelectorAll('[data-menu-item]').forEach(row => {
-    row.addEventListener('click', () => {
+    const toggleMenuItem = () => {
       const i = +row.dataset.menuItem;
       const item = step.items[i];
       const existing = state.selected.findIndex(s => s.kanji === item.kanji);
@@ -7610,7 +7611,24 @@ function renderRestaurantScene(book, scene) {
       }
       saveSceneState();
       renderRestaurantScene(book, scene);
-    });
+      // The re-render replaced the DOM, dropping focus to <body> — put it
+      // back on the same row so a keyboard user can keep picking without
+      // tabbing in from the top again.
+      const next = el.querySelector(`[data-menu-item="${i}"]`);
+      if (next) next.focus({ preventScroll: true });
+    };
+    row.addEventListener('click', toggleMenuItem);
+    // The traditional sit-down menu renders rows as role="button" <li>s
+    // (layout reasons); real keyboard activation has to be wired by hand.
+    // The brand-shop variant uses real <button>s, which already fire click
+    // on Enter/Space — adding a keydown there would double-toggle.
+    if (row.tagName !== 'BUTTON') {
+      row.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault(); // Space must not scroll the page
+        toggleMenuItem();
+      });
+    }
   });
   // Size-card picker — records the chosen size for one item at a time.
   el.querySelectorAll('[data-size-item]').forEach(btn => {

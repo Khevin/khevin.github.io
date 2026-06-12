@@ -9808,6 +9808,12 @@
   .m-kanji, .m-kana { overflow-wrap: anywhere; word-break: break-word; }
   .scene-menu-row:last-child { border-bottom: none; }
   .scene-menu-row:hover { background: color-mix(in srgb, var(--gold-soft) 18%, transparent); }
+  /* Rows are keyboard-operable (role="button" + tabindex) — same focus ring
+     convention as the other interactive tiles. Invisible to mouse users. */
+  .scene-menu-row:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
   .scene-menu-row.is-picked { background: color-mix(in srgb, var(--gold-soft) 28%, transparent); }
   .m-kanji { font-family: var(--serif-jp); font-size: 20px; color: var(--ink); font-weight: 500; }
   .m-kana  { font-family: var(--serif-jp); font-size: 14px; color: var(--ink-4); }
