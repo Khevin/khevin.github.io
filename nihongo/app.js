@@ -277,24 +277,35 @@ function releaseSpeakingResources() {
   if (APP._speakingPlayCtx) { try { APP._speakingPlayCtx.close(); } catch (e) {} APP._speakingPlayCtx = null; }
 }
 
-function setSection(s) {
-  // Reset the flash-sidebar render cache whenever we cross the
-  // flashcards section boundary — entering or leaving. This way the
-  // tier-2 brush always fires fresh as part of the cascade when the
-  // user returns to flashcards, even though APP.flashClassId hasn't
-  // changed. Without this reset, the cache from a previous visit
-  // would silently skip the sidebar render, and the cascade would
-  // be missing its tier-2 stroke.
-  if (APP.section === 'flashcards' || s === 'flashcards') {
+// THE single owner of every side-effect of switching sections. setSection
+// (user navigation), the hashchange handler (history navigation), and init
+// (boot) all funnel through here — they previously hand-maintained three
+// diverging copies of this list, and every section added after the copies
+// were written got wired into setSection and forgotten in the others
+// (speaking/library sidebar toggles, persistence, the mic release).
+//
+// opts:
+//   updateHash — write location.hash (false when the hash already changed,
+//                i.e. the hashchange path, and at boot)
+//   persist    — lsSet('jp:section') (false at boot so a hash-less first
+//                visit doesn't persist a section the user never chose)
+//   render     — run updateSidebar + renderMain (false at boot, which owns
+//                its own render ordering around initSettings etc.)
+function applySection(s, { updateHash = true, persist = true, render = true } = {}) {
+  const prev = APP.section;
+  // Reset the flash-sidebar render cache whenever we cross the flashcards
+  // boundary — entering or leaving — so the tier-2 brush always fires fresh
+  // as part of the cascade. Without this, the cache from a previous visit
+  // silently skips the sidebar render and the cascade misses its stroke.
+  if (prev === 'flashcards' || s === 'flashcards') {
     _lastRenderedFlashClass = null;
   }
-  // Leaving Speaking → release the mic so the browser indicator turns off.
-  // (The stream is held alive across recordings WITHIN the section so the
-  // permission prompt fires only once — see SpeakingRecorder.)
-  if (APP.section === 'speaking' && s !== 'speaking') releaseSpeakingResources();
+  // Leaving Speaking → release the mic (permission-aware; see
+  // SpeakingRecorder.release) + the playback AudioContext.
+  if (prev === 'speaking' && s !== 'speaking') releaseSpeakingResources();
   APP.section = s;
-  location.hash = s;
-  lsSet('jp:section', s);
+  if (updateHash) location.hash = s;
+  if (persist) lsSet('jp:section', s);
   const scl = document.querySelector('.app').classList;
   scl.toggle('show-vocab-sidebar', s === 'vocab');
   scl.toggle('show-flash-sidebar', s === 'flashcards');
@@ -302,15 +313,17 @@ function setSection(s) {
   scl.toggle('show-speaking-sidebar', s === 'speaking');
   scl.toggle('show-library-sidebar', s === 'library');
   scl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
-  // Order matters — updateSidebar queues the tier-1 brush into
-  // _brushRenderQueue; renderMain then queues tier-2 and tier-3. If
-  // renderMain runs first, the cascade animates 2→3→1, which the
-  // brain reads as "wrong" (the outer context arriving last). Tier-1
-  // FIRST so the cascade reads as a coherent zoom-in: section →
-  // sub-page → item.
-  updateSidebar();
-  renderMain();
+  if (render) {
+    // Order matters — updateSidebar queues the tier-1 brush into
+    // _brushRenderQueue; renderMain then queues tier-2 and tier-3. Tier-1
+    // FIRST so the cascade reads as a coherent zoom-in: section →
+    // sub-page → item.
+    updateSidebar();
+    renderMain();
+  }
 }
+
+function setSection(s) { applySection(s); }
 
 // ── Body classes ────────────────────────────────────────────────────────
 function applyBodyClasses() {
@@ -2566,11 +2579,55 @@ function renderMain() {
   applyContextBg();
   const el = document.getElementById('main-inner');
   el.className = 'main-inner fade-enter';
-  if (APP.section === 'vocab')           { renderVocab(el); renderVocabSidebar(); renderVocabBooksSidebar(); }
-  else if (APP.section === 'writing')    { renderWriting(el); renderWritingSidebar(); renderParticlesSidebar(); }
-  else if (APP.section === 'flashcards') renderFlashcards(el);
-  else if (APP.section === 'speaking')   { renderSpeaking(el); renderSpeakingSidebar(); }
-  else if (APP.section === 'library')    { renderLibrary(el); renderLibrarySidebar(); }
+  try {
+    if (APP.section === 'vocab')           { renderVocab(el); renderVocabSidebar(); renderVocabBooksSidebar(); }
+    else if (APP.section === 'writing')    { renderWriting(el); renderWritingSidebar(); renderParticlesSidebar(); }
+    else if (APP.section === 'flashcards') renderFlashcards(el);
+    else if (APP.section === 'speaking')   { renderSpeaking(el); renderSpeakingSidebar(); }
+    else if (APP.section === 'library')    { renderLibrary(el); renderLibrarySidebar(); }
+  } catch (err) {
+    renderSectionFailure(el, err);
+  }
+}
+
+// Per-section persisted drill-state keys — what the failure-recovery reset
+// clears. Drill state is what most often resurrects a broken render (the
+// renderers trust persisted ids against the current data), so clearing only
+// the broken section's keys preserves everything else the user has set.
+const SECTION_RESET_KEYS = {
+  vocab:      ['jp:vocabClass', 'jp:vocabBook', 'jp:flavorId', 'jp:textureId',
+               'jp:edibleCategory', 'jp:edibleItem', 'jp:edibleFromFlavor',
+               'jp:edibleFromTexture', 'jp:scenes', 'jp:experience'],
+  flashcards: ['jp:flashClass', 'jp:flashView'],
+  writing:    ['jp:writingPage', 'jp:particleMode', 'jp:particleIdx',
+               'jp:lessonId', 'jp:articleId'],
+  speaking:   ['jp:speakingCategory', 'jp:speakingPhrase'],
+  library:    ['jp:libraryPage', 'jp:radicalsSelected'],
+};
+
+// Failure containment for the render dispatch. Before this existed, ONE
+// malformed data entry blanked the pane with no message and no way back —
+// and because drill-state is persisted, reload resurrected the same broken
+// state. The fallback offers exactly that escape hatch: clear this
+// section's persisted drill keys and reboot fresh.
+function renderSectionFailure(el, err) {
+  console.error(`[nihongo] render failed for section "${APP.section}"`, err);
+  el.innerHTML = `
+    <div class="empty-state" style="max-width:520px;margin:80px auto;text-align:center">
+      <div style="font-size:15px;margin-bottom:6px">この${escHTML(APP.section)}ページは ひらけませんでした。</div>
+      <div style="font-size:13px;opacity:.75;margin-bottom:18px">
+        This section failed to render — likely a data entry it couldn't digest.
+        Resetting clears only this section's saved position; everything else keeps.
+      </div>
+      <button class="scene-next" data-render-retry type="button">reset this section</button>
+    </div>`;
+  const btn = el.querySelector('[data-render-retry]');
+  if (btn) btn.addEventListener('click', () => {
+    for (const k of (SECTION_RESET_KEYS[APP.section] || [])) {
+      try { localStorage.removeItem(k); } catch (e) {}
+    }
+    location.reload();
+  });
 }
 
 // Reset every piece of book-local state. Called whenever the user
@@ -12990,24 +13047,10 @@ function renderDictionary(container) {
 window.addEventListener('hashchange', () => {
   const s = hashSection();
   if (s === APP.section) return;
-  // Leaving Speaking via back/forward must tear down the mic exactly like a
-  // sidebar click does — this path used to skip release(), leaving the
-  // recording indicator on and the stream live until the tab closed.
-  if (APP.section === 'speaking') releaseSpeakingResources();
-  APP.section = s;
-  lsSet('jp:section', s); // keep the persisted section in sync on history nav
-  const cl = document.querySelector('.app').classList;
-  cl.toggle('show-vocab-sidebar', s === 'vocab');
-  cl.toggle('show-flash-sidebar', s === 'flashcards');
-  cl.toggle('show-writing-sidebar', s === 'writing');
-  cl.toggle('show-speaking-sidebar', s === 'speaking');
-  cl.toggle('show-library-sidebar', s === 'library');
-  cl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
-  // updateSidebar() FIRST so the tier-1 brush enters the render-cycle queue
-  // before any tier-2/3 brushes from renderMain — order in the queue
-  // determines cascade order.
-  updateSidebar();
-  renderMain();
+  // History navigation: the hash is already what changed, so don't rewrite
+  // it — everything else (mic release, sidebar toggles, persistence, cache
+  // resets, renders) is identical to a sidebar click via applySection.
+  applySection(s, { updateHash: false });
 });
 
 // ── Jougo example modal ─────────────────────────────────────────────────
@@ -15648,13 +15691,10 @@ function init() {
   // resetBookEntryState(). The wire handlers consume + clear it.
   window.__bookEntranceFlag = APP.vocabBookId;
   applyBodyClasses();
-  const appCl = document.querySelector('.app').classList;
-  appCl.toggle('show-vocab-sidebar', APP.section === 'vocab');
-  appCl.toggle('show-flash-sidebar', APP.section === 'flashcards');
-  appCl.toggle('show-writing-sidebar', APP.section === 'writing');
-  appCl.toggle('show-speaking-sidebar', APP.section === 'speaking');
-  appCl.toggle('show-library-sidebar', APP.section === 'library');
-  appCl.toggle('show-particles-sidebar', shouldShowParticlesSidebar());
+  // Boot-time section application: toggles only. No hash write, no persist
+  // (a hash-less first visit shouldn't store a section the user never
+  // chose), no render — init owns its own render ordering below.
+  applySection(APP.section, { updateHash: false, persist: false, render: false });
   renderSidebar();
   renderMain();
   initSettings();
@@ -15663,5 +15703,18 @@ function init() {
   attachVocabDrawerEvents();
   attachCardModalEvents();
 }
+
+// Last-resort visibility for anything the render boundary doesn't cover
+// (event handlers, async chains). Logging-only — the boundary owns recovery
+// UI; these make "mystery blank page" reports diagnosable by always carrying
+// the section + active ids that produced the failure.
+window.addEventListener('error', e => {
+  console.error(`[nihongo] uncaught error in section "${APP.section}"`,
+    { book: APP.vocabBookId, flashClass: APP.flashClassId, page: APP.writingPage },
+    e.message, `${e.filename || ''}:${e.lineno || ''}`);
+});
+window.addEventListener('unhandledrejection', e => {
+  console.error(`[nihongo] unhandled rejection in section "${APP.section}"`, e.reason);
+});
 
 document.addEventListener('DOMContentLoaded', init);

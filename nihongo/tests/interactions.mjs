@@ -612,6 +612,28 @@ async function main() {
       check('NAV hashchange toggles library/speaking sidebars correctly', r.librarySidebar === true && r.speakingSidebarOff === true, `lib=${r.librarySidebar} spkOff=${r.speakingSidebarOff}`);
       await page.close();
     }
+
+    // ── P1.8: render error boundary contains a throwing section renderer ────
+    {
+      const page = await freshPage(browser, port);
+      const r = await page.evaluate(() => {
+        // Classic-script function declarations are global properties, so the
+        // dispatch resolves renderVocab via window — swap in a thrower.
+        window.renderVocab = () => { throw new Error('boom: malformed data entry'); };
+        let escaped = false;
+        APP.section = 'vocab';
+        try { renderMain(); } catch (e) { escaped = true; }
+        const el = document.getElementById('main-inner');
+        return {
+          escaped,
+          fallbackShown: !!el.querySelector('[data-render-retry]'),
+          mentionsFailure: /failed to render/i.test(el.textContent),
+        };
+      });
+      check('P1.8 a throwing renderer does not escape renderMain', r.escaped === false, `escaped=${r.escaped}`);
+      check('P1.8 failure fallback renders with a reset control', r.fallbackShown === true && r.mentionsFailure === true, `fallback=${r.fallbackShown} text=${r.mentionsFailure}`);
+      await page.close();
+    }
   } finally {
     await browser.close();
     server.close();
