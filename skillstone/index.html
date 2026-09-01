@@ -8766,14 +8766,16 @@ function astroSymbol(name, x, y) {
     return tx;
   }
   const d = ASTRO_GLYPH[name]; if (!d) return null;
-  const s = (ZODIAC.indexOf(name) > -1 ? 1 : 1.1) * astroGlyphScale;
+  /* signs on the ring a little larger than the bodies inside it; both lighter than the
+     first cut, which read bold against the hairlines */
+  const s = (ZODIAC.indexOf(name) > -1 ? 0.84 : 0.76) * astroGlyphScale;
   const g = document.createElementNS(NS, "g");
   g.setAttribute("class", "ag " + (ZODIAC.indexOf(name) > -1 ? "ag-sign" : "ag-body"));
   g.setAttribute("transform", "translate(" + (x - 12 * s) + "," + (y - 12 * s) + ") scale(" + s + ")");
   const p = document.createElementNS(NS, "path");
   p.setAttribute("d", d); p.setAttribute("fill", "none");
   p.setAttribute("stroke", ZODIAC.indexOf(name) > -1 ? astroInk().gold : astroInk().gold2);
-  p.setAttribute("stroke-width", "1.9"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round");
+  p.setAttribute("stroke-width", "1.45"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round");
   g.appendChild(p);
   return g;
 }
@@ -9159,7 +9161,7 @@ function renderAstro() {
   /* the plate itself: AstroChart draws from the same object the twin just printed */
   try {
     /* signs ≈ 20px at a 628px plate, never under 14px at the smallest */
-    astroGlyphScale = Math.max(0.95, Math.min(1.7, size / 470));
+    astroGlyphScale = Math.max(0.95, Math.min(1.5, size / 470));
     const data = { planets: {} };
     c.bodies.forEach(x => { data.planets[x.name] = [x.lon, x.speed]; });
     /* the library validates for exactly twelve cusps; unknown time → the twelve sign
@@ -10143,18 +10145,10 @@ function renderCrests() {
       <span class="cn${st.level === null ? " none" : ""}" aria-hidden="true">${st.level === null ? "–" : st.level}</span>
     </div>`;
   }).join("");
-  const worn = PROF_GROUPS.map(g => {
-    const st = profGroupStats(g.k);
-    const lbl = st.level === null
-      ? `${g.name} — nothing to practise yet`
-      : `${g.name} — mean proficiency ${st.level} of ${PROF_MAX} across ${st.skills.length} skills, ${fmtHours(st.hours)} logged`;
-    return `<div class="crest crest-prof" role="img" aria-label="${esc(lbl)}">
-      ${sig(g.k, 15)}
-      <span class="ab" aria-hidden="true">${g.ab}</span>
-      <span class="cn${st.level ? "" : " none"}" aria-hidden="true">${st.level === null ? "–" : st.level}</span>
-    </div>`;
-  }).join("");
-  $("#crests").innerHTML = earned + '<span class="crest-rule" aria-hidden="true"></span>' + worn;
+  /* the four earned attributes only. The practised groups (Arts, Crafts, Languages, Sports)
+     used to sit right of a rule here; they read as a second scoreboard on the card, and
+     their home is the Proficiency tab. Owner's call, 1 Sep 2026. */
+  $("#crests").innerHTML = earned;
 }
 
 function tileAria(s) {
