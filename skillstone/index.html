@@ -8878,7 +8878,7 @@ function renderJ3() {
   /* ---- merged notes + reminders ---- */
   const entries = j3Entries(b, key);
   let notes = '<section><div class="j3-sec-h"><span class="label">Notes</span>' +
-    '<span class="n">' + entries.length + "</span></div>";
+    '<button type="button" class="j3-btn" data-j3="e-new">Add note</button></div>';
   notes += entries.length ? entries.map(e =>
     '<div class="j3-row' + (e.done ? " done" : "") + (j3Menu === e.id ? " menu-open" : "") + '">' +
       '<span class="j3-kind" aria-hidden="true">\u2013</span>' +
@@ -8886,8 +8886,7 @@ function renderJ3() {
         '" value="' + esc(e.text) + '" aria-label="Note">' +
       j3RowMenu(e, e.kind === "rem" ? "e-del-rem" : "e-del-note") + "</div>").join("")
     : '';
-  notes += '<form class="j3-row j3-add" data-form="j3-note"><span class="j3-kind">+</span>' +
-    '<input class="j3-in" name="t" placeholder="Write a note\u2026" aria-label="New note"></form></section>';
+  notes += "</section>";
 
   /* ---- bucket ---- */
   const shownAll = j3Bucket(b, key);
@@ -8895,7 +8894,7 @@ function renderJ3() {
   if (j3Cat !== "All" && cats.indexOf(j3Cat) < 0) j3Cat = "All";
   const shown = shownAll.filter(x => j3Cat === "All" || x.cat === j3Cat);
   let bucket = '<section><div class="j3-sec-h"><span class="label">Bucket</span>' +
-    '<span class="n">' + shownAll.filter(x => !x.done).length + " open</span></div>";
+    '<button type="button" class="j3-btn" data-j3="b-new">Add item</button></div>';
   if (cats.length) bucket += '<div class="j3-cats">' +
     '<button type="button" class="j3-cat all" data-j3="cat" data-cat="All" aria-pressed="' +
       (j3Cat === "All") + '">All</button>' +
@@ -8912,8 +8911,7 @@ function renderJ3() {
         esc(x.cat || "none") + '">' + j3CatIcon(x.cat, 15) + "</button>" +
       j3RowX("b-del", x.id, "item") + "</div>").join("")
     : '';
-  bucket += '<form class="j3-row j3-add" data-form="j3-buck"><span class="j3-kind">+</span>' +
-    '<input class="j3-in" name="t" placeholder="Add to the bucket\u2026" aria-label="New item"></form></section>';
+  bucket += "</section>";
 
   /* ---- habits ---- */
   let habits = '<section class="j3-wide"><div class="j3-sec-h"><span class="label">Habits</span>' +
@@ -9109,6 +9107,16 @@ function j3Act(t) {
                          break; }
     case "b-cat":      { const x = b.bucket.find(y => y.id === id);
                          if (x) x.cat = j3NextCat(x.cat); break; }
+    case "e-new":      { const nn = { id: uid(), text: "", done: false };
+                         (b.notes[key] = b.notes[key] || []).push(nn); save(); renderJ3();
+                         const f = $("#viewJournal").querySelector('[data-j3="e-text"][data-id="' + nn.id + '"]');
+                         if (f) f.focus({ preventScroll: true });
+                         return; }
+    case "b-new":      { const nb = { id: uid(), text: "", cat: j3Cat === "All" ? "" : j3Cat, done: false };
+                         b.bucket.push(nb); save(); renderJ3();
+                         const f = $("#viewJournal").querySelector('[data-j3="b-text"][data-id="' + nb.id + '"]');
+                         if (f) f.focus({ preventScroll: true });
+                         return; }
     case "h-new":      { const nh = { id: uid(), name: "", schedule: { type: "days", days: [0,1,2,3,4,5,6] } };
                          b.habits.push(nh); j3Sched = null; save(); renderJ3();
                          const f = $("#viewJournal").querySelector('[data-j3="h-name"][data-id="' + nh.id + '"]');
@@ -9132,9 +9140,9 @@ function j3Add(f) {
   const v = (inp.value || "").trim();
   if (!v) return;
   const kind = f.dataset.form;
-  if (kind === "j3-note") (b.notes[key] = b.notes[key] || []).push({ id: uid(), text: v });
-  if (kind === "j3-buck") b.bucket.push({ id: uid(), text: v, cat: j3Cat === "All" ? "" : j3Cat, done: false });
-    if (kind === "j3-day") { b.days[key] = b.days[key] || {};
+  /* notes and bucket items are created from their header buttons now (e-new / b-new);
+     only the day columns still add by typing into a row */
+  if (kind === "j3-day") { b.days[key] = b.days[key] || {};
                            (b.days[key][f.dataset.dow] = b.days[key][f.dataset.dow] || []).push({ id: uid(), text: v }); }
   inp.value = "";
   save();
