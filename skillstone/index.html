@@ -2604,14 +2604,21 @@ li.is-done .qg { color: var(--verdant); }
 .j3-leaf.bwd.is-turning { transform: rotateY(180deg); }
 .j3-face { position: absolute; inset: 0; backface-visibility: hidden; overflow: hidden; }
 .j3-face.back { transform: rotateY(180deg); }
+/* a leaf in the air is the page it lifted from. The veil is baked into the face's own
+   background — the sheet image multiplied with paper and grain by background-blend-mode,
+   then diluted by a 45% paper layer on top: 0.55 × multiply + 0.45 × paper, the sheet's own
+   arithmetic — because mix-blend-mode does not survive a 3D rendering context, and the
+   front face of a turning leaf is one. Sized as the sheet's veil: its height plus 40px above
+   and below, shifted up 40px. The fold's half is an inset shadow at the spine edge. */
 .j3-face, .j3-ghost { background-color: var(--paper); background-image: var(--paper-grain); }
-/* a leaf in the air is the page it lifted from: the same veil, sized as the sheet's (its
-   height plus 40px above and below, shifted up 40px), and the fold's half as an inset shadow */
-.j3-face::before, .j3-ghost::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background-size: 100% calc(100% + 80px); background-position: 0 -40px; background-repeat: no-repeat;
-  mix-blend-mode: multiply; opacity: 0.55; }
-.j3-face.pg-left::before,  .j3-ghost.pg-left::before  { background-image: url("assets/paper-1.webp"); }
-.j3-face.pg-right::before, .j3-ghost.pg-right::before { background-image: url("assets/paper-2.webp"); }
+.j3-face.pg-left, .j3-ghost.pg-left, .j3-face.pg-right, .j3-ghost.pg-right {
+  background-size: auto, 100% calc(100% + 80px), auto;
+  background-position: 0 0, 0 -40px, 0 0;
+  background-repeat: repeat, no-repeat, repeat;
+  background-blend-mode: normal, multiply, normal;
+}
+.j3-face.pg-left,  .j3-ghost.pg-left  { background-image: linear-gradient(rgba(243,234,214,0.45), rgba(243,234,214,0.45)), url("assets/paper-1.webp"), var(--paper-grain); }
+.j3-face.pg-right, .j3-ghost.pg-right { background-image: linear-gradient(rgba(243,234,214,0.45), rgba(243,234,214,0.45)), url("assets/paper-2.webp"), var(--paper-grain); }
 .j3-face.pg-left,  .j3-ghost.pg-left  { box-shadow: inset -32px 0 32px -22px rgba(0,0,0,0.5); }
 .j3-face.pg-right, .j3-ghost.pg-right { box-shadow: inset 32px 0 32px -22px rgba(0,0,0,0.5); }
 .j3-face > .j3-page, .j3-ghost > .j3-page { position: absolute; inset: 28px 32px; z-index: 1; }   /* the sheet's padding; the gap is 2 × 32px */
