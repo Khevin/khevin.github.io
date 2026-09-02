@@ -2463,7 +2463,7 @@ li.is-done .qg { color: var(--verdant); }
   position: relative; perspective: 2000px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 10px minmax(0, 1fr);
-  padding: 0 14px 30px;
+  padding: 0 14px 36px;
   background: url("assets/cover.webp") center / cover, #2A2018;
   border: 1px solid rgba(0,0,0,0.65);
   border-radius: 6px 10px 10px 6px;
@@ -2473,7 +2473,7 @@ li.is-done .qg { color: var(--verdant); }
 /* the gutter: one shadow down the fold, over both pages (after the pen: 4em wide, darkest at
    the centre), instead of a dark column and two inset edges */
 .j3-spine { position: relative; z-index: 2; pointer-events: none; }
-.j3-spine::before { content: ""; position: absolute; top: -30px; bottom: -30px; left: 50%; width: 64px; transform: translateX(-50%);
+.j3-spine::before { content: ""; position: absolute; top: -36px; bottom: -36px; left: 50%; width: 64px; transform: translateX(-50%);
   background: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 46%, rgba(0,0,0,0.45) 49%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.45) 51%, rgba(0,0,0,0.18) 52%, transparent 100%); }
 /* the sheets: paper, one whole sheet a page, and ink on it. The journal's tokens are
    redefined here, so every rule that paints parchment on stone paints ink on paper —
@@ -2495,21 +2495,24 @@ li.is-done .qg { color: var(--verdant); }
 .j3-page.right { background-image: url("assets/paper-2.webp"); }
 /* the lift: a paper block a little wider than the page, turned 1.4° about its outer end, so
    the top rises and the foot dips toward the spine. It carries the page's own sheet. */
-.j3-bow { position: absolute; z-index: 0; pointer-events: none; height: 26px; left: -6px; right: -14px;
+.j3-bow { position: absolute; z-index: 0; pointer-events: none; height: 24px;
   background-repeat: no-repeat; background-size: cover; background-position: center; }
-.j3-page.left .j3-bow  { background-image: url("assets/paper-1.webp"); transform-origin: left center; }
-.j3-page.right .j3-bow { background-image: url("assets/paper-2.webp"); transform-origin: right center; left: -14px; right: -6px; }
-.j3-bow.t { top: -22px; }
-.j3-bow.b { bottom: -22px; }
-.j3-page.left .j3-bow.t  { transform: rotate(-1.4deg); border-top-left-radius: 28px 10px; }
-.j3-page.left .j3-bow.b  { transform: rotate(1.4deg); border-bottom-left-radius: 28px 10px; }
-.j3-page.right .j3-bow.t { transform: rotate(1.4deg); border-top-right-radius: 28px 10px; }
-.j3-page.right .j3-bow.b { transform: rotate(-1.4deg); border-bottom-right-radius: 28px 10px; }
+.j3-page.left .j3-bow  { background-image: url("assets/paper-1.webp"); transform-origin: left center; left: 0; right: -5px; }
+.j3-page.right .j3-bow { background-image: url("assets/paper-2.webp"); transform-origin: right center; left: -5px; right: 0; }
+.j3-bow.t { top: -18px; }
+.j3-bow.b { bottom: -18px; }
+.j3-page.left .j3-bow.t  { transform: rotate(-1deg); border-top-left-radius: 24px 8px; }
+.j3-page.left .j3-bow.b  { transform: rotate(1deg); border-bottom-left-radius: 24px 8px; }
+.j3-page.right .j3-bow.t { transform: rotate(1deg); border-top-right-radius: 24px 8px; }
+.j3-page.right .j3-bow.b { transform: rotate(-1deg); border-bottom-right-radius: 24px 8px; }
+/* the pages’ outer corners round with their lift blocks, so no square corner shows beneath */
+.j3-page.left  { border-radius: 10px 0 0 10px / 6px 0 0 6px; }
+.j3-page.right { border-radius: 0 10px 10px 0 / 0 6px 6px 0; }
 .j3-bow.t { box-shadow: 0 -2px 4px rgba(0,0,0,0.25); }
 .j3-bow.b { box-shadow: 0 3px 6px rgba(0,0,0,0.45); }
 /* the block of sheets under each page: stacked edges along the outer side and the foot */
 .j3-page::before, .j3-page::after { content: ""; position: absolute; pointer-events: none; }
-.j3-page::before { top: 8px; bottom: 8px; width: 7px; background: repeating-linear-gradient(to right, #EADAB6 0 1px, #C4B08A 1px 2px); box-shadow: 0 0 6px rgba(0,0,0,0.35); }
+.j3-page::before { top: 14px; bottom: 14px; width: 7px; background: repeating-linear-gradient(to right, #EADAB6 0 1px, #C4B08A 1px 2px); box-shadow: 0 0 6px rgba(0,0,0,0.35); }
 .j3-page.left::before  { left: -7px; }
 .j3-page.right::before { right: -7px; }
 .j3-page::after { display: none; }   /* the foot belongs to the lift */
@@ -2524,7 +2527,8 @@ li.is-done .qg { color: var(--verdant); }
 .j3-head {
   grid-column: 1 / -1;
   display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
-  margin: 0 -14px 30px;
+  position: relative; z-index: 3;                 /* above the lift: nothing rises into the band */
+  margin: 0 -14px 36px;
   padding: var(--s4) calc(var(--s5) + 14px);
   background: rgba(18,13,9,0.8);
   border-bottom: 1px solid rgba(0,0,0,0.55);
