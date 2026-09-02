@@ -2954,8 +2954,9 @@ li.is-done .qg { color: var(--verdant); }
 .dy-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
 .dy-body-c { display: flex; flex-direction: column; justify-content: center; }
 /* the logbook is all page: the writing fills the card and only scrolls once it is longer than the card */
-.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0 36px; }   /* the writing column, inset from the frame */
-.dy-log .dy-body { display: flex; flex-direction: column; }
+.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0 -20px 0 36px; }   /* the writing column, inset 36px from the frame on both sides; the scroller runs 20px into the right padding so its bar sits 16px from the border */
+.dy-log .dy-body { display: flex; flex-direction: column; padding-right: 46px; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }   /* 46 + the 10px gutter = the 56 the column is inset on the left */
+.dy-log .dy-mark { margin-right: 56px; }
 .dy-log .dy-page { flex: 1 0 auto; }
 /* the day */
 .dy-day-body { flex: 1 1 auto; min-height: 0; width: 100%; overflow: auto; display: flex; flex-direction: column; align-items: center; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }
@@ -9552,7 +9553,7 @@ document.addEventListener("keydown", e => {
 document.addEventListener("focusin",  e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.add("is-writing"); });
 document.addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.remove("is-writing"); });
 document.addEventListener("click", e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"], [data-dy="mood"], [data-dy="turn"], [data-dy="tarot"]');
+  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"], [data-dy="mood"], [data-dy="turn"], [data-dy="tarot"], [data-dy="view"]');
   if (t) dyAct(t);
 });
 
