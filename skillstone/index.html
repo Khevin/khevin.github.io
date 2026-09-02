@@ -2493,29 +2493,12 @@ li.is-done .qg { color: var(--verdant); }
 .j3-sheet { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: url("assets/paper-2.webp") center / cover; opacity: 0.4; mix-blend-mode: multiply; }
 .j3-page > .j3-left-grid, .j3-page > .j3-days { position: relative; z-index: 1; }
 .j3-page.right { background-image: url("assets/paper-2.webp"); }
-/* the lift: a paper block a little wider than the page, turned 1.4° about its outer end, so
-   the top rises and the foot dips toward the spine. It carries the page's own sheet. */
-.j3-bow { position: absolute; z-index: 0; pointer-events: none; height: 24px;
-  background-repeat: no-repeat; background-size: cover; background-position: center; }
-.j3-page.left .j3-bow  { background-image: url("assets/paper-1.webp"); transform-origin: left center; left: 0; right: -5px; }
-.j3-page.right .j3-bow { background-image: url("assets/paper-2.webp"); transform-origin: right center; left: -5px; right: 0; }
-.j3-bow.t { top: -18px; }
-.j3-bow.b { bottom: -18px; }
-.j3-page.left .j3-bow.t  { transform: rotate(-1deg); border-top-left-radius: 24px 8px; }
-.j3-page.left .j3-bow.b  { transform: rotate(1deg); border-bottom-left-radius: 24px 8px; }
-.j3-page.right .j3-bow.t { transform: rotate(1deg); border-top-right-radius: 24px 8px; }
-.j3-page.right .j3-bow.b { transform: rotate(-1deg); border-bottom-right-radius: 24px 8px; }
-/* the pages’ outer corners round with their lift blocks, so no square corner shows beneath */
-.j3-page.left  { border-radius: 10px 0 0 10px / 6px 0 0 6px; }
-.j3-page.right { border-radius: 0 10px 10px 0 / 0 6px 6px 0; }
-.j3-bow.t { box-shadow: 0 -2px 4px rgba(0,0,0,0.25); }
-.j3-bow.b { box-shadow: 0 3px 6px rgba(0,0,0,0.45); }
-/* the block of sheets under each page: stacked edges along the outer side and the foot */
-.j3-page::before, .j3-page::after { content: ""; position: absolute; pointer-events: none; }
-.j3-page::before { top: 14px; bottom: 14px; width: 7px; background: repeating-linear-gradient(to right, #EADAB6 0 1px, #C4B08A 1px 2px); box-shadow: 0 0 6px rgba(0,0,0,0.35); }
-.j3-page.left::before  { left: -7px; }
-.j3-page.right::before { right: -7px; }
-.j3-page::after { display: none; }   /* the foot belongs to the lift */
+/* the lift, cut from the page: the box extends 18px into the cover above and below, and a
+   polygon clips top and foot so both rise toward the spine — the same paper, the same
+   vignette, unbroken to a curved edge. Outer end flat, 2px short of the band at the spine. */
+.j3-page { margin-top: -18px; margin-bottom: -18px; padding-top: calc(var(--s5) + 18px); padding-bottom: calc(var(--s5) + 18px); }
+.j3-page.left  { clip-path: polygon(0 18px, 25% 15px, 50% 11px, 75% 6px, 100% 2px, 100% calc(100% - 2px), 75% calc(100% - 6px), 50% calc(100% - 11px), 25% calc(100% - 15px), 0 calc(100% - 18px)); }
+.j3-page.right { clip-path: polygon(0 2px, 25% 6px, 50% 11px, 75% 15px, 100% 18px, 100% calc(100% - 18px), 75% calc(100% - 15px), 50% calc(100% - 11px), 25% calc(100% - 6px), 0 calc(100% - 2px)); }
 /* the head plates keep a light inscription on the dark stone */
 .j3-page .j3-btn { color: #D9CCB0; }
 @media (hover: hover) { .j3-page .j3-btn:hover { color: #F3E9D2; } }
@@ -2563,7 +2546,7 @@ li.is-done .qg { color: var(--verdant); }
    strip is 16px, the control 44. */
 .j3-mark { grid-row: 2; grid-column: 1 / -1; position: relative; height: 0; z-index: 3; }
 .j3-ribbon {
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
   width: 44px; height: 168px; padding: 0; background: none; border: 0; cursor: pointer;
   transition: left 380ms var(--e-out), height 380ms var(--e-out);
 }
@@ -2588,8 +2571,7 @@ li.is-done .qg { color: var(--verdant); }
 .j3-face { position: absolute; inset: 0; backface-visibility: hidden; overflow: hidden; }
 .j3-face.back { transform: rotateY(180deg); }
 .j3-face > .j3-page, .j3-ghost > .j3-page { position: absolute; inset: 0; box-shadow: none; }
-.j3-face > .j3-page::before, .j3-face > .j3-page::after, .j3-ghost > .j3-page::before, .j3-ghost > .j3-page::after,
-.j3-face .j3-bow, .j3-ghost .j3-bow { display: none; }
+.j3-face > .j3-page, .j3-ghost > .j3-page { margin: 0; }   /* the leaf's faces fill their box; the cut edge comes along */
 .j3-face::after { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--e-out);
   background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
 .j3-leaf.bwd .j3-face::after { background: linear-gradient(-90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
@@ -2834,8 +2816,8 @@ li.is-done .qg { color: var(--verdant); }
   .j3-mark { display: none; }
   .j3 { padding: 0 10px 12px; }
   .j3-head { margin: 0 -10px var(--s3); padding-left: calc(var(--s5) + 10px); padding-right: calc(var(--s5) + 10px); }
-  .j3-page::before { display: none; }
-  .j3-bow { display: none; }
+  .j3-page { margin: 0; padding: var(--s5); }
+  .j3-page.left, .j3-page.right { clip-path: none; }   /* outranks the desktop cut */
   .j3-page + .j3-page { margin-top: var(--s3); }
   .j3-page.left, .j3-page.right { box-shadow: none; }
   .j3-page.right { border-top: 1px solid var(--j3-rule); }
@@ -10480,9 +10462,9 @@ function renderJ3() {
       /* the ribbon: over the gutter on this week; peeking from the edge where this week lies otherwise */
       '<div class="j3-mark"><button type="button" class="j3-ribbon" data-j3="wk-today" aria-label="' +
         (isThisWeek ? "This week" : "Back to this week") + '"' + (isThisWeek ? " disabled" : "") + "></button></div>" +
-      '<div class="j3-page left"><div class="j3-bow t" aria-hidden="true"></div><div class="j3-bow b" aria-hidden="true"></div><div class="j3-sheet" aria-hidden="true"></div><div class="j3-left-grid">' + notes + bucket + habits + "</div></div>" +
+      '<div class="j3-page left"><div class="j3-sheet" aria-hidden="true"></div><div class="j3-left-grid">' + notes + bucket + habits + "</div></div>" +
       '<div class="j3-spine" aria-hidden="true"></div>' +
-      '<div class="j3-page right"><div class="j3-bow t" aria-hidden="true"></div><div class="j3-bow b" aria-hidden="true"></div>' + right + "</div>" +
+      '<div class="j3-page right">' + right + "</div>" +
     "</div>";
 }
 
