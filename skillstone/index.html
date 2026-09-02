@@ -1324,7 +1324,9 @@ button.d-plaque {
   /* a centred row that overflows must stay reachable from its left edge */
   justify-content: safe center;
   align-self: center; align-items: center;
-  margin: 0 auto 6px;
+  /* the owner’s own numbers: the plate is pulled left until its finial meets the name bar,
+     and held off the gear on the other side */
+  margin: 0 16px 0 -24px;
   /* room below the buttons for the notch, which hangs 2px under them — a scrolling row
      clips anything outside its box, and a clipped triangle reads upside-down */
   padding: 2px 10px 5px;
@@ -2926,6 +2928,7 @@ li.is-done .qg { color: var(--verdant); }
   .app > .board { position: static; }
   .sect-cells { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
   .masthead { flex-wrap: wrap; }
+  .tabs { margin: 0 auto 6px; }   /* wrapped onto its own line, the plate is not pulled off the edge */
   .d-cols { grid-template-columns: 1fr; gap: var(--s5); }
   .app > .board-detail { border-left: 0; padding-left: 0; padding-top: var(--s5); border-top: 1px solid var(--mortar); }
   .brand .strap { display: none; }
