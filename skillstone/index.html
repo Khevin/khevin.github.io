@@ -2929,13 +2929,14 @@ li.is-done .qg { color: var(--verdant); }
 
 /* ================= diary — the plate ================= */
 /* four framed cards on the dark field: the day, the logbook, the mood, the three lines */
-.dy2 { --f-read: 'Lora', Georgia, serif; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) minmax(0, 6fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+.dy2 { --f-read: 'Lora', Georgia, serif; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) minmax(0, 6fr); grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
   gap: var(--s5); padding: var(--s5) var(--s5) var(--s6); height: calc(100dvh - 150px); min-height: 720px; }
 .dy-card { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column;
   background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%);
   border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 48px 36px 32px; overflow: hidden; }
 .dy-card::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
-.dy-day::before, .dy-linesc::before { content: none; }   /* the owner's cut: the day and the lines keep one frame */
+.dy-day::before, .dy-spare::before { content: none; }   /* the owner's cut: the day and the spare keep one frame */
+@media (max-width: 999px) { .dy-spare { display: none; } }   /* an empty card has no business in the stack */
 .dy-day { grid-row: 1 / 3; align-items: center; }
 .dy-log { grid-column: 2 / 4; }
 /* the ornaments */
@@ -2949,31 +2950,36 @@ li.is-done .qg { color: var(--verdant); }
 .orn-side.l { left: 3px; top: 50%; transform: translateY(-50%); } .orn-side.r { right: 3px; top: 50%; transform: translateY(-50%); } .orn-side.b { bottom: 3px; left: 50%; transform: translateX(-50%); }
 /* titles in the display face, the rule with its diamond beneath */
 .dy-ct { font-family: var(--f-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--parchment); text-align: center; margin: 0; }
-.dy-rule2 { display: block; width: 160px; height: 10px; margin: var(--s2) auto var(--s5); flex: none; }
+.dy-rule2 { display: block; width: 160px; height: 10px; margin: var(--s1) auto var(--s2); flex: none; }
 .dy-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
 .dy-body-c { display: flex; flex-direction: column; justify-content: center; }
 /* the logbook is all page: the writing fills the card and only scrolls once it is longer than the card */
-.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0 36px; }   /* the writing column, inset from the frame */
 .dy-log .dy-body { display: flex; flex-direction: column; }
 .dy-log .dy-page { flex: 1 0 auto; }
 /* the day */
+.dy-day-body { flex: 1 1 auto; min-height: 0; width: 100%; overflow: auto; display: flex; flex-direction: column; align-items: center; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }
 .dy-date { font-size: 1.0625rem; }
 .dy-date.is-today { color: var(--gold); }
 .dy-wd { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s2); font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bronze); }
 .dy-wdl { width: 44px; height: 1px; background: rgba(232,176,84,0.6); }
-.dy-nav { display: flex; gap: 6px; margin-top: var(--s4); }
-.dy-step { min-width: 28px; padding: 0 var(--s2); font-size: 0.875rem; line-height: 1; }
-.dy-step:disabled { opacity: 0.35; cursor: default; }
-.dy-strip { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin-top: var(--s3); }
+/* the month strip owns its arrows: two bare chevrons in light gold, a 28px hit each, the label and dots between */
+.dy-strip { display: flex; align-items: stretch; gap: var(--s2); margin-top: var(--s2); }
+.dy-strip-col { display: flex; flex-direction: column; align-items: center; gap: var(--s2); }
+.dy-step { width: 28px; padding: 0; background: none; border: 0; border-radius: 6px; cursor: pointer; font-family: var(--f-display); font-weight: 700; font-size: 1.125rem; line-height: 1; color: #FFD067; opacity: 0.6; transition: opacity var(--t-fast) var(--e-out); }
+.dy-step:disabled { opacity: 0.2; cursor: default; }
+.dy-step:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.dy-today { background: none; border: 0; padding: 0 var(--s2); min-height: 24px; cursor: pointer; font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: #FFD067; opacity: 0.8; }
+@media (hover: hover) { .dy-step:hover:not(:disabled), .dy-today:hover { opacity: 1; } }
 .dy-mname { font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin: 0; }
-.dy-month { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 6px; padding-bottom: 6px; max-width: 240px; }
+.dy-month { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 6px; padding-bottom: 6px; max-width: 174px; }   /* fifteen a row */
 .dy-dot { position: relative; width: 6px; height: 6px; border-radius: 50%; background: var(--mortar-2); }
 .dy-dot.is-on { background: var(--gold); }
 .dy-dot.is-fut { opacity: 0.4; }
 .dy-dot.is-today { box-shadow: 0 0 0 2px #17130F, 0 0 0 3px var(--bronze); }
 .dy-dot.is-sel::after { content: ""; position: absolute; left: -1px; right: -1px; bottom: -6px; height: 2px; background: var(--gold); }
 /* the medallion, with the card over it */
-.dy-orb { position: relative; width: min(360px, 100%); aspect-ratio: 1; margin-top: var(--s5); display: grid; place-items: center; flex: none; }
+.dy-orb { position: relative; width: min(360px, 100%); aspect-ratio: 1; margin-top: var(--s2); display: grid; place-items: center; flex: none; }
 .dy-medal-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.9; }
 .dy-orb-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--s3); }
 .dy-tcard { margin: 0; width: 132px; height: 220px; border-radius: 8px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.6); }   /* the medallion shows around it */
@@ -2981,6 +2987,15 @@ li.is-done .qg { color: var(--verdant); }
 .dy-tcard.is-rev img { transform: rotate(180deg); }
 .dy-tback svg { display: block; width: 132px; height: 220px; }
 .dy-tback.is-past { opacity: 0.45; }
+/* the reading under the card, a size smaller than the Tarot page */
+.dy-read { width: 100%; margin-top: var(--s2); text-align: center; }
+.dy-read .tar-name.sm { font-size: 0.9375rem; letter-spacing: 0.04em; margin-top: 0; }
+.dy-read .tar-rev-l { font-size: 0.625rem; margin-top: 0; }
+.dy-read .tar-pills { margin: var(--s1) 0 var(--s2); gap: var(--s1) var(--s3); }
+.dy-read .tar-pill { font-size: 0.5625rem; }
+.dy-read .tar-meaning { font-size: 0.75rem; line-height: 1.5; text-align: left; }
+.dy-read .tar-landed { margin-top: 6px; font-size: 0.625rem; }
+.dy-read .tar-adjust { min-height: 28px; font-size: 0.625rem; }
 .dy-tname { font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment); margin: 0; text-align: center; }
 .dy-trev { color: var(--ember); }
 /* the page: the card is the surface; focus lifts it a shade */
@@ -3007,8 +3022,9 @@ li.is-done .qg { color: var(--verdant); }
   color: var(--ink-dry); font-family: var(--f-read); font-size: 1rem; line-height: 1.55; transition: color var(--t-settle) var(--e-out); }
 .dy-line:focus { outline: none; color: var(--ink-wet); }
 /* the medallions */
-.dy-scale { display: flex; justify-content: center; gap: var(--s2); flex-wrap: wrap; }
-.dy-medal { appearance: none; background: none; border: 0; padding: var(--s1) 0 var(--s2); min-width: 0; cursor: pointer;
+.dy-scale { display: flex; justify-content: center; gap: var(--s2); flex-wrap: nowrap; }   /* five, always one row */
+.dy-moodc .dy-body { overflow: hidden; }   /* the row fits the lower third; a scrollbar here would only steal its width */
+.dy-medal { appearance: none; background: none; border: 0; padding: 2px 0 var(--s1); min-width: 0; cursor: pointer;
   display: grid; justify-items: center; gap: var(--s1); border-radius: var(--r-md); }
 .dy-medal-img { position: relative; width: 56px; height: 56px; }   /* five in one row of the mood card */
 .dy-medal-img img { position: absolute; inset: 0; width: 56px; height: 56px; display: block; transition: opacity var(--t-base) var(--e-out), transform var(--t-fast) var(--e-out); }
@@ -3019,6 +3035,10 @@ li.is-done .qg { color: var(--verdant); }
 .dy-medal:active .dy-medal-img img { transform: translateY(1px) scale(0.98); }
 .dy-medal-w { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash); transition: color var(--t-base) var(--e-out); }
 .dy-medal[aria-checked="true"] .dy-medal-w { color: var(--gold); }
+/* with one chosen, the other four step back: grey and dim; hover brings one forward to consider it */
+.dy-scale:has([aria-checked="true"]) .dy-medal[aria-checked="false"] .dy-medal-img .unlit { filter: grayscale(1) brightness(0.75); opacity: 0.6; }
+.dy-scale:has([aria-checked="true"]) .dy-medal[aria-checked="false"] .dy-medal-w { color: var(--mortar-2); }
+@media (hover: hover) { .dy-scale:has([aria-checked="true"]) .dy-medal[aria-checked="false"]:hover .dy-medal-img .unlit { filter: none; opacity: 1; } }
 .dy-medal:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 /* the gesture: while the page has focus, the hall dims around it */
 body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-writing .topbar { opacity: 0.6; }
@@ -9372,7 +9392,7 @@ function dyFrame(o) {
   let h = "";
   (o.sprigs || []).forEach(p => { h += DY_ORN.sprig.replace('class="orn"', 'class="orn ' + p + '"'); });
   h += o.top === "sun" ? DY_ORN.sun : o.top === "moon" ? DY_ORN.moon : DY_ORN.notch;
-  if (o.sides) h += DY_ORN.side.replace('class="orn-side"', 'class="orn-side l"') + DY_ORN.side.replace('class="orn-side"', 'class="orn-side r"') + DY_ORN.side.replace('class="orn-side"', 'class="orn-side b"');
+  if (o.sides) h += DY_ORN.side.replace('class="orn-side"', 'class="orn-side l"') + DY_ORN.side.replace('class="orn-side"', 'class="orn-side r"') + (o.sides === "lr" ? "" : DY_ORN.side.replace('class="orn-side"', 'class="orn-side b"'));
   return h;
 }
 const dyDateLong = d => d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear();
@@ -9411,41 +9431,50 @@ function dyCardHTML(sel, isToday) {
   if (rec && TAROT[rec.c]) {
     const c = TAROT[rec.c];
     return '<figure class="dy-tcard' + (rec.r ? " is-rev" : "") + '"><img src="' + tarImg(c) + '" alt="' + esc(c.n) + (rec.r ? ", reversed" : "") + '" width="150" height="250"></figure>' +
-      '<p class="dy-tname">' + esc(c.n) + (rec.r ? ' <span class="dy-trev">reversed</span>' : "") + "</p>" +
-      '<button type="button" class="btn btn-ghost btn-sm" data-dy="tarot">Open the reading</button>';
+      (isToday && !rec.land ? '<button type="button" class="btn btn-primary btn-sm" data-dy="tarot">Continue the reading</button>' : "");
   }
   return '<div class="dy-tcard dy-tback' + (isToday ? "" : " is-past") + '">' + tarBackSVG() + "</div>" +
     (isToday ? '<button type="button" class="btn btn-primary btn-sm" data-dy="turn">Turn today\u2019s card</button>' : "");
 }
+/* the reading, under the card: once today's flow is finished, or for any past morning that has a card */
+function dyReadHTML(sel, isToday) {
+  const rec = state.tarot && state.tarot.days ? state.tarot.days[tarKey(sel)] : null;
+  if (!rec || !TAROT[rec.c] || (isToday && !rec.land)) return "";
+  const c = TAROT[rec.c], rev = !!rec.r;
+  return '<div class="dy-read">' + tarNameHTML(c, rev, true) + tarPills(rev ? c.rkw : c.kw) +
+    '<p class="tar-meaning">' + esc(rev ? c.rev : c.up) + "</p>" +
+    '<p class="tar-landed">' + (rec.f && rec.f.length ? rec.f.map(esc).join(" \u00b7 ") : '<span class="q">no feelings picked</span>') +
+    (typeof rec.v === "number" ? ' <span class="v">\u00b7 landed at <b>' + rec.v + "</b></span>" : "") +
+    (isToday ? ' <button type="button" class="tar-adjust" data-dy="adjust">Adjust</button>' : "") + "</p></div>";
+}
 /* the strip: the month of the morning on the page, dots left to right */
-function dyStripHTML(b, sel, today) {
+function dyStripHTML(b, sel, today, prev, next) {
   const y = sel.getFullYear(), m = sel.getMonth(), n = new Date(y, m + 1, 0).getDate();
-  let h = '<div class="dy-strip"><p class="dy-mname">' + MONTHS[m] + (y === today.getFullYear() ? "" : " " + y) + "</p>" +
+  let h = '<div class="dy-strip">' +
+    '<button type="button" class="dy-step" data-dy="step" data-d="-1" aria-label="Earlier morning"' + (prev ? "" : " disabled") + ">\u2039</button>" +
+    '<div class="dy-strip-col"><p class="dy-mname">' + MONTHS[m] + (y === today.getFullYear() ? "" : " " + y) + "</p>" +
     '<div class="dy-month" role="img" aria-label="' + MONTHS[m] + ', mornings written">';
   for (let d = 1; d <= n; d++) {
     const dt = new Date(y, m, d), on = !!dyGetDate(b, dt);
     h += '<span class="dy-dot' + (on ? " is-on" : "") + (dySame(dt, today) ? " is-today" : "") + (dySame(dt, sel) ? " is-sel" : "") + (dt > today && !dySame(dt, today) ? " is-fut" : "") + '"></span>';
   }
-  return h + "</div></div>";
+  return h + "</div>" + (dySame(sel, today) ? "" : '<button type="button" class="dy-today" data-dy="today">Today</button>') + "</div>" +
+    '<button type="button" class="dy-step" data-dy="step" data-d="1" aria-label="Later morning"' + (next ? "" : " disabled") + ">\u203a</button></div>";
 }
 function renderDiary() {
   const el = $("#viewDiary"); if (!el) return;
   const b = book(), today = new Date(), sel = dyDay(), isToday = dySame(sel, today);
   const prev = dyNeighbour(b, sel, -1), next = dyNeighbour(b, sel, 1), wk = weekKeyOf(sel), dow = dyDow(sel);
   el.innerHTML = '<div class="dy2">' +
-    '<section class="dy-card dy-day">' + dyFrame({ sprigs: ["bl", "br"], top: "sun", sides: true }) +
+    '<section class="dy-card dy-day">' + dyFrame({ sprigs: ["bl", "br"], top: "sun", sides: true }) + '<div class="dy-day-body">' +
       '<p class="dy-ct dy-date' + (isToday ? " is-today" : "") + '">' + dyDateLong(sel) + "</p>" +
       '<div class="dy-wd"><span class="dy-wdl"></span><span>' + DOW_LONG[dow] + '</span><span class="dy-wdl"></span></div>' +
-      '<div class="dy-nav">' +
-        '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="-1" aria-label="Earlier morning"' + (prev ? "" : " disabled") + ">\u2039</button>" +
-        (isToday ? "" : '<button type="button" class="j3-btn" data-dy="today">Today</button>') +
-        '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="1" aria-label="Later morning"' + (next ? "" : " disabled") + ">\u203a</button>" +
-      "</div>" + dyStripHTML(b, sel, today) +
-      '<div class="dy-orb">' + DY_ORN.medallion + '<div class="dy-orb-card">' + dyCardHTML(sel, isToday) + "</div></div>" +
+      dyStripHTML(b, sel, today, prev, next) +
+      '<div class="dy-orb">' + DY_ORN.medallion + '<div class="dy-orb-card">' + dyCardHTML(sel, isToday) + "</div></div>" + dyReadHTML(sel, isToday) + "</div>" +
     "</section>" +
     '<section class="dy-card dy-log" aria-label="Logbook">' + dyFrame({ top: "notch", sides: true }) + dyPageHTML(b, wk, dow) + "</section>" +
-    '<section class="dy-card dy-moodc">' + dyFrame({ sprigs: ["tl", "tr", "bl", "br"], top: "moon", sides: true }) + '<h2 class="dy-ct">How I feel</h2>' + DY_ORN.rule + '<div class="dy-body dy-body-c">' + dyMoodHTML(b, wk, dow) + "</div></section>" +
-    '<section class="dy-card dy-linesc">' + dyFrame({ top: "notch" }) + '<div class="dy-body dy-body-c">' + dyLinesHTML(b, wk, dow) + "</div></section>" +
+    '<section class="dy-card dy-moodc">' + dyFrame({ sprigs: ["tl", "tr"], top: "moon", sides: "lr" }) + '<h2 class="dy-ct">How I feel</h2>' + DY_ORN.rule + '<div class="dy-body dy-body-c">' + dyMoodHTML(b, wk, dow) + "</div></section>" +
+    '<section class="dy-card dy-spare" aria-hidden="true">' + dyFrame({ top: "notch" }) + "</section>" +   /* a placeholder until the owner decides what it holds; the three lines are out of the plate, their data kept */
     "</div>";
   el.querySelectorAll(".dy-page, .dy-line").forEach(dyAutosize);
 }
@@ -9501,9 +9530,8 @@ function dyAct(el) {
   }
   if (el.dataset.dy === "today") { dySel = null; renderDiary(); return; }
   if (el.dataset.dy === "tarot") { setView("tarot"); return; }
-  if (el.dataset.dy === "turn") {           /* the same turn as the Tarot page; the diary redraws when the card has landed */
-    renderTarot(); tarTurn(); setTimeout(renderDiary, 260); return;
-  }
+  if (el.dataset.dy === "turn") { setView("tarot"); tarTurn(); return; }   /* the deal happens on the Tarot page; Finish brings the diary back */
+  if (el.dataset.dy === "adjust") { tarView = "land"; setView("tarot"); return; }
   if (el.dataset.dy === "step") {
     const n = dyNeighbour(b, dyDay(), +el.dataset.d); if (!n) return;
     dySel = dySame(n, new Date()) ? null : dyISO(n); renderDiary();
@@ -10148,7 +10176,7 @@ function tarVal(v) {
   if (r) r.style.setProperty("--v", rec.v + "%");
 }
 function tarNext() { const r = tarRec(); if (r) { r.seen = 1; save(); renderTarot(); } }
-function tarFinish() { const r = tarRec(); if (r) { r.land = 1; tarView = null; tarSel = tarKey(); save(); renderTarot(); } }
+function tarFinish() { const r = tarRec(); if (r) { r.land = 1; tarView = null; tarSel = tarKey(); save(); setView("diary"); renderDiary(); } }   /* the reading comes home to the diary */
 function tarAdjust() { tarView = "land"; renderTarot(); }
 function tarPick(k) { tarSel = k; renderTarot(); }
 
