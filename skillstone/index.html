@@ -2342,8 +2342,10 @@ li.is-done .qg { color: var(--verdant); }
   display: grid; place-items: center; font-size: 0.625rem; line-height: 1;
 }
 @media (hover: hover) { .tm-tick:hover { border-color: var(--bronze); } }
-/* three states, three weights of the same mark */
-.tm-book.reading .tm-tick { border-color: var(--mortar-2); color: var(--bronze); }
+/* three states, and the middle one has to carry as far as the other two: an empty box, a box
+   half filled with a dash across it, a full box with the tick */
+.tm-book.reading .tm-tick { border-color: var(--bronze); color: var(--gold); font-size: 0.875rem; font-weight: 700;
+  background: linear-gradient(to top, rgba(166,123,46,0.16) 50%, transparent 50%); }
 .tm-book.read .tm-tick { border-color: var(--bronze); background: rgba(166,123,46,0.16); }
 .tm-open {
   appearance: none; background: none; border: 0; padding: 0; cursor: pointer;
@@ -10389,12 +10391,12 @@ function renderTarot(landing) {
     '<p class="tar-meaning">' + esc(selRev ? selCard.rev : selCard.up) + "</p>" +
     '<p class="tar-landed">' +
       (selRec.f && selRec.f.length ? selRec.f.map(esc).join(" \u00b7 ") : '<span class="q">no feelings picked</span>') +
-      (typeof selRec.v === "number" ? ' <span class="v">\u00b7 landed at <b>' + selRec.v + "</b></span>" : "") +
+      (typeof selRec.v === "number" ? ' <span class="v">\u00b7 mood at <b>' + selRec.v + "</b></span>" : "") +
       (tarSel === key ? ' <button type="button" class="tar-adjust" data-tar="adjust">Adjust</button>' : "") +
     "</p></div>";
 
   const g = tarGraphHTML();
-  if (g) h += '<div class="tar-graphsec"><span class="label">How it lands, over time</span>' + g + "</div>";
+  if (g) h += '<div class="tar-graphsec"><span class="label">Mood over time</span>' + g + "</div>";
   el.innerHTML = h + "</div>";
 
   /* center the selected card, then let the cursor own the strip */
