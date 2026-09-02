@@ -1131,6 +1131,9 @@ button.d-plaque {
 .cfg-gear { width: 40px; padding: 0; justify-content: center; }
 .cfg-sec { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; }
 .cfg-row { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.auth-box { display: flex; flex-direction: column; gap: var(--s2); margin-bottom: var(--s3); }
+.auth-user { font-size: 0.8125rem; color: var(--dust); }
+.auth-user b { color: var(--parchment); font-weight: 500; }
 .cfg-h { display: flex; align-items: baseline; gap: var(--s2); align-self: stretch;
   font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
 .cfg-h .cloud-state { margin-left: auto; }
@@ -2880,6 +2883,7 @@ li.is-done .qg { color: var(--verdant); }
   </div>
   <div class="cfg-sec">
     <span class="cfg-h">Cloud <span class="cloud-state" id="cloudState" aria-live="polite"></span></span>
+  <div id="authBox" class="auth-box"></div>
   <form class="cloud-form" data-form="cloud">
     <p class="cloud-h">Sync this board through Supabase</p>
     <label class="cloud-l">Project URL
@@ -5541,6 +5545,8 @@ const cloudUrl = () => cloud.url.replace(/\/+$/, "") + "/rest/v1/" + CLOUD_TABLE
 const cloudHdr = extra => {
   const hdr = { apikey: cloud.key, "Content-Type": "application/json" };
   if (/^eyJ[\w-]+\.[\w-]+\.[\w-]+$/.test(cloud.key)) hdr.Authorization = "Bearer " + cloud.key;
+  /* a signed-in session outranks the key: row-level security reads the user from it */
+  if (auth && auth.access_token) hdr.Authorization = "Bearer " + auth.access_token;
   return Object.assign(hdr, extra || {});
 };
 function isServiceRole(k) {          /* a JWT whose payload claims service_role */
@@ -5724,6 +5730,116 @@ async function cloudConnect() {
     cloudFail(String(e.message || e), e.status);
   }
 }
+/* ================= sign in with Google (Supabase Auth, PKCE) ================= */
+const CLOUD_PUBLIC_KEY = "";           /* the project's publishable key, for visitors to sign in — his to place */
+const AUTH_KEY = "skillstone-auth", PKCE_KEY = "skillstone-pkce";
+let auth = null;                        /* { access_token, refresh_token, expires_at, user: { id, email } } */
+const authUrl = () => ((cloud && cloud.url) || ($("#cloudUrl") || {}).value || CLOUD_SUGGESTED || "").replace(/\/+$/, "");
+const authKey = () => CLOUD_PUBLIC_KEY || (cloud && cloud.key) || (($("#cloudKey") || {}).value || "").trim();
+function authLoad() {
+  try { auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); } catch (e) { auth = null; }
+  if (!auth || !auth.access_token || !auth.refresh_token || !auth.user || !auth.user.id) auth = null;
+}
+function authSave(s) {
+  auth = s ? { access_token: s.access_token, refresh_token: s.refresh_token,
+    expires_at: s.expires_at ? s.expires_at * 1000 : Date.now() + (Number(s.expires_in) || 3600) * 1000,
+    user: { id: s.user && s.user.id, email: (s.user && s.user.email) || "" } } : null;
+  try { if (auth) localStorage.setItem(AUTH_KEY, JSON.stringify(auth)); else localStorage.removeItem(AUTH_KEY); } catch (e) {}
+}
+const b64url = buf => btoa(String.fromCharCode.apply(null, new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+async function authStart() {
+  const url = authUrl(), key = authKey();
+  if (!/^https:\/\/\S+$/.test(url)) { cloudFail("The project URL must start with https://"); return; }
+  if (!key) { cloudFail("Paste the project\u2019s publishable key first \u2014 the sign-in needs it."); return; }
+  if (!(self.crypto && crypto.subtle)) { cloudFail("This browser cannot do the secure sign-in handshake."); return; }
+  const raw = new Uint8Array(48); crypto.getRandomValues(raw);
+  const verifier = b64url(raw.buffer);
+  const challenge = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
+  try { sessionStorage.setItem(PKCE_KEY, JSON.stringify({ verifier, url, key })); } catch (e) {}
+  const back = location.origin + location.pathname;
+  location.assign(url + "/auth/v1/authorize?provider=google&redirect_to=" + encodeURIComponent(back) +
+    "&code_challenge=" + challenge + "&code_challenge_method=S256");
+}
+async function authToken(url, key, query, body) {
+  const r = await fetch(url + "/auth/v1/token?grant_type=" + query, { method: "POST",
+    headers: { apikey: key, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const txt = await r.text();
+  if (!r.ok) throw new Error("HTTP " + r.status + " \u2014 " + txt.slice(0, 160));
+  return JSON.parse(txt);
+}
+/* the return leg: ?code= in the address, the verifier in this tab's session */
+async function authFinish() {
+  const code = new URLSearchParams(location.search).get("code");
+  if (!code) return false;
+  let p = null; try { p = JSON.parse(sessionStorage.getItem(PKCE_KEY) || "null"); } catch (e) {}
+  history.replaceState(null, "", location.pathname + location.hash);
+  try { sessionStorage.removeItem(PKCE_KEY); } catch (e) {}
+  if (!p || !p.verifier) { cloudFail("Sign-in came back without its handshake \u2014 try again from this tab."); return false; }
+  try {
+    const s = await authToken(p.url, p.key, "pkce", { auth_code: code, code_verifier: p.verifier });
+    authSave(s);
+    authCloudUrlKey = { url: p.url, key: p.key };
+    return true;
+  } catch (e) { cloudFail("Sign-in failed: " + e.message); return false; }
+}
+let authCloudUrlKey = null;
+async function authRefreshIfNeeded() {
+  if (!auth) return true;
+  if (auth.expires_at - Date.now() > 60000) return true;
+  const url = (cloud && cloud.url) || authUrl(), key = (cloud && cloud.key) || authKey();
+  try { authSave(await authToken(url, key, "refresh_token", { refresh_token: auth.refresh_token })); return true; }
+  catch (e) { authSave(null); cloudDisconnect(); renderAuth(); cloudFail("Your sign-in expired \u2014 sign in again."); return false; }
+}
+/* signed in: the board is the user\u2019s, on every device, with nothing to pair */
+async function authConnect() {
+  if (!auth) return;
+  const src = authCloudUrlKey || { url: (cloud && cloud.url) || authUrl(), key: (cloud && cloud.key) || authKey() };
+  if (!src.url || !src.key) return;
+  const prev = cloud, prevSeen = cloudSeen;
+  cloud = { url: src.url, key: src.key, board: "u-" + auth.user.id, user: 1 };
+  cloudSet("busy", "checking\u2026");
+  try {
+    const row = await cloudGet("updated_at");
+    if (row) { await cloudPull(); showToast("Signed in \u2014 your board is here.", true); }
+    else { cloudSeen = null; await cloudPush();
+      if (cloudState === "error") throw new Error($("#cloudNote").textContent || "upload failed");
+      showToast("Signed in \u2014 this board is now yours in the cloud."); }
+    saveCloud(); cloudSet("ok", ""); renderAuth();
+  } catch (e) {
+    cloud = prev; cloudSeen = prevSeen; cloudState = prev ? "ok" : "error";
+    renderCloud(); renderAuth(); cloudFail(String(e.message || e), e.status);
+  }
+}
+async function authSignOut() {
+  if (auth) { try { await fetch(authUrl() + "/auth/v1/logout", { method: "POST",
+    headers: { apikey: (cloud && cloud.key) || authKey(), Authorization: "Bearer " + auth.access_token } }); } catch (e) {} }
+  authSave(null);
+  if (cloud && cloud.user) cloudDisconnect();
+  renderAuth();
+  showToast("Signed out. The board stays on this device.");
+}
+function renderAuth() {
+  const box = $("#authBox"); if (!box) return;
+  const form = document.querySelector(".cloud-form");
+  if (auth) {
+    box.innerHTML = '<p class="auth-user">Signed in as <b>' + esc(auth.user.email || auth.user.id) + "</b></p>" +
+      '<div class="cloud-row"><button type="button" class="btn btn-ghost btn-sm" data-action="auth-out">Sign out</button></div>';
+    if (form) form.hidden = true;
+  } else {
+    const ready = !!authKey();
+    box.innerHTML = '<div class="cloud-row"><button type="button" class="btn btn-primary btn-sm" data-action="auth-google"' +
+      (ready ? "" : ' disabled title="Paste the project\u2019s publishable key below first"') + '>Sign in with Google</button></div>';
+    if (form) form.hidden = false;
+  }
+}
+async function authBoot() {
+  authLoad();
+  const came = await authFinish();
+  if (auth) { const ok = await authRefreshIfNeeded(); if (ok && (came || !cloud || !cloud.user)) await authConnect(); }
+  renderAuth();
+}
+setInterval(() => { if (auth && !document.hidden) authRefreshIfNeeded(); }, 60000);
+
 function cloudDisconnect() {
   cloud = null; cloudSeen = null;
   saveCloud();
@@ -11760,6 +11876,8 @@ document.addEventListener("click", e => {
     case "rename-cancel": renaming = false; renderDetail(false); break;
     case "bk-cancel":   $("#bookDlg").close(); break;
     case "cloud-off":   cloudDisconnect(); break;
+    case "auth-google": authStart(); break;
+    case "auth-out":    authSignOut(); break;
     case "cloud-code":  cloudCode(); break;
     case "addskill":    select("__add"); break;
     case "portrait":    portraitAction(); break;
@@ -11876,6 +11994,7 @@ document.addEventListener("keydown", e => {
 /* the birth form previews the resolved place and the offset it will use, as you type */
 document.addEventListener("input", e => {
   if (e.target && e.target.closest && e.target.closest("#birthDlg")) birthPreview();
+  if (e.target && e.target.id === "cloudKey") renderAuth();
 });
 document.addEventListener("change", e => {
   if (e.target && e.target.closest && e.target.closest("#birthDlg")) birthPreview();
@@ -11952,7 +12071,9 @@ bindPop($("#readPop"), () => $(".d-tomes-btn"), 340, "left", () => {
 bindCloud();
 loadCloud();
 renderCloud();
-if (cloud) cloudCheckFresh();
+/* the sign-in return leg and the session come first; a paired board without a session
+   keeps its own check */
+authBoot().then(() => { if (cloud && !cloud.user) cloudCheckFresh(); });
 watchGridWidth();
 save();
 if (rescuedFrom) showToast(`Board carried forward from ${rescuedFrom}. Nothing was deleted.`);
