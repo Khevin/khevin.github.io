@@ -5731,7 +5731,7 @@ async function cloudConnect() {
   }
 }
 /* ================= sign in with Google (Supabase Auth, PKCE) ================= */
-const CLOUD_PUBLIC_KEY = "";           /* the project's publishable key, for visitors to sign in — his to place */
+const CLOUD_PUBLIC_KEY = "sb_publishable_asb-0O1twsndyIUPdZyuNA_uiGQpn7o";           /* the project's publishable key, for visitors to sign in — his to place */
 const AUTH_KEY = "skillstone-auth", PKCE_KEY = "skillstone-pkce";
 let auth = null;                        /* { access_token, refresh_token, expires_at, user: { id, email } } */
 const authUrl = () => ((cloud && cloud.url) || ($("#cloudUrl") || {}).value || CLOUD_SUGGESTED || "").replace(/\/+$/, "");
@@ -5769,7 +5769,18 @@ async function authToken(url, key, query, body) {
 }
 /* the return leg: ?code= in the address, the verifier in this tab's session */
 async function authFinish() {
-  const code = new URLSearchParams(location.search).get("code");
+  /* a refusal comes back in the address too (?error=… and #error=…) — say it in the panel
+     rather than leave it in the URL bar, and name the switch when it is the signup one */
+  const qs = new URLSearchParams(location.search), hs = new URLSearchParams(location.hash.replace(/^#/, ""));
+  const refused = qs.get("error_description") || hs.get("error_description") || qs.get("error") || hs.get("error");
+  if (refused) {
+    history.replaceState(null, "", location.pathname);
+    try { sessionStorage.removeItem(PKCE_KEY); } catch (e) {}
+    cloudFail("Sign-in refused: " + refused + (/signups? not allowed/i.test(refused)
+      ? " — in Supabase: Authentication → Sign In / Providers → allow new users to sign up." : ""));
+    return false;
+  }
+  const code = qs.get("code");
   if (!code) return false;
   let p = null; try { p = JSON.parse(sessionStorage.getItem(PKCE_KEY) || "null"); } catch (e) {}
   history.replaceState(null, "", location.pathname + location.hash);
