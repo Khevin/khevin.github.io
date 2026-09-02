@@ -2958,8 +2958,26 @@ li.is-done .qg { color: var(--verdant); }
   background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%);
   border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 48px 36px 32px; overflow: visible; }   /* the sun and the moon ride the edge; each card clips its own body instead */
 .dy-card::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
-.dy-day::before, .dy-spare::before { content: none; }   /* the owner's cut: the day and the spare keep one frame */
-@media (max-width: 999px) { .dy-spare { display: none; } }   /* an empty card has no business in the stack */
+.dy-day::before, .dy-vowc::before { content: none; }   /* the owner's cut: the day and the fourth card keep one frame */
+/* the morning's three: a label, then the thing itself, hairlines between */
+.dy-vowc { padding: 34px 28px 26px; }
+.dy-vow { display: grid; align-content: center; width: 100%; }
+.dy-vrow { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: center; column-gap: var(--s3);
+  padding: var(--s2) 0; border-bottom: 1px solid rgba(232,176,84,0.22); transition: border-color var(--t-settle) var(--e-out); }
+.dy-vrow:last-child { border-bottom: 0; }
+.dy-vrow.is-set { border-bottom-color: rgba(232,176,84,0.45); }
+.dy-vl { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--mortar-2); transition: color var(--t-settle) var(--e-out); }
+.dy-vrow.is-set .dy-vl { color: var(--bronze); }
+.dy-vrow:focus-within .dy-vl { color: var(--gold); }
+.dy-vin, .dy-pick { width: 100%; box-sizing: border-box; min-height: 32px; padding: 6px var(--s1);
+  background: none; border: 0; color: var(--parchment); font-family: var(--f-read); font-size: 0.875rem; line-height: 1.4; }
+.dy-vin:focus, .dy-pick:focus { outline: none; color: var(--ink-wet); }
+.dy-vin::placeholder { color: var(--mortar-2); }
+.dy-pick { appearance: none; cursor: pointer; padding-right: 18px;
+  background: no-repeat right 2px center / 9px url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="%23A67B2E" stroke-width="1.6"/></svg>'); }
+.dy-pick.is-none { color: var(--mortar-2); }   /* nothing chosen yet reads as quiet as the empty lines beside it */
+.dy-pick option, .dy-pick optgroup { background: var(--stone-2); color: var(--parchment); }
 .dy-day { grid-row: 1 / 3; align-items: center; }
 .dy-log { grid-column: 2 / 4; }
 /* the ornaments */
@@ -9402,11 +9420,16 @@ function dySan(v) {
   } else if (v.mood !== undefined && v.mood !== null && v.mood !== "") {
     const n = Math.round(Number(v.mood)); if (n >= 1 && n <= 5) mood = n;
   }
+  const line = t => String(t || "").replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX);
+  const one = line(v.one), thanks = line(v.thanks), book = String(v.book || "").slice(0, 80);
   const e = {};
   if (page.trim()) e.page = page;
   if (three.some(Boolean)) e.three = three;
   if (mood) e.mood = mood;
-  if (!e.page && !e.three && !e.mood) return null;
+  if (one) e.one = one;
+  if (thanks) e.thanks = thanks;
+  if (book) e.book = book;
+  if (!e.page && !e.three && !e.mood && !e.one && !e.thanks && !e.book) return null;
   if (typeof v.at === "number" && isFinite(v.at)) e.at = v.at;
   return e;
 }
@@ -9475,6 +9498,31 @@ function dyLinesHTML(b, wk, dow) {
   for (let i = 0; i < 3; i++) h += '<div class="dy-lrow' + (three[i] ? " is-set" : "") + '"><span class="dy-num" aria-hidden="true">' + ["I", "II", "III"][i] + "</span>" +
     '<textarea class="dy-line" rows="1" data-dy="line"' + at + ' data-i="' + i + '" maxlength="' + DY_LINE_MAX + '" aria-label="' + ["First", "Second", "Third"][i] + ' of three">' + esc(three[i] || "") + "</textarea></div>";
   return h + "</div>";
+}
+/* The morning's three: a book off his own shelf, the one thing, and something to be grateful
+   for. The book list puts whatever he is already reading at the top, since that is the likely
+   answer; picking anything untouched marks it as being read, so choosing is a small commitment. */
+function dyVowHTML(b, wk, dow) {
+  const e = dyGet(b, wk, dow) || {}, at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
+  const rows = allBooks();
+  const now = rows.filter(r => tomeState(r.id) === "seal-6").sort((x, y) => x.title.localeCompare(y.title));
+  const rest = rows.filter(r => tomeState(r.id) !== "seal-6").sort((x, y) => x.title.localeCompare(y.title));
+  const opt = r => '<option value="' + esc(r.id) + '"' + (e.book === r.id ? " selected" : "") + ">" + esc(r.title) + "</option>";
+  const pick = '<select class="dy-pick' + (e.book ? "" : " is-none") + '" data-dy="book"' + at + ' aria-label="The book for today">' +
+    '<option value="">\u2014 pick a book \u2014</option>' +
+    (now.length ? '<optgroup label="Reading now">' + now.map(opt).join("") + "</optgroup>" : "") +
+    (rest.length ? '<optgroup label="On the shelves">' + rest.map(opt).join("") + "</optgroup>" : "") +
+    "</select>";
+  const field = (k, label, ph, aria) =>
+    '<div class="dy-vrow' + (e[k] ? " is-set" : "") + '"><span class="dy-vl">' + label + "</span>" +
+    '<input type="text" class="dy-vin" data-dy="' + k + '"' + at + ' maxlength="' + DY_LINE_MAX +
+    '" value="' + esc(e[k] || "") + '"' + (ph ? ' placeholder="' + ph + '"' : "") +
+    ' aria-label="' + aria + '"></div>';
+  return '<div class="dy-vow">' +
+    '<div class="dy-vrow' + (e.book ? " is-set" : "") + '"><span class="dy-vl">Reading</span>' + pick + "</div>" +
+    field("one", "One thing", "cannot miss today", "The one thing today") +
+    field("thanks", "Grateful for", "", "Something to be grateful for") +
+    "</div>";
 }
 /* the medallions, in the set the owner chose */
 function dyMoodHTML(b, wk, dow) {
@@ -9576,7 +9624,8 @@ function renderDiary() {
     "</section>" +
     '<section class="dy-card dy-log" aria-label="Logbook">' + dyFrame({ top: "notch", sides: true }) + dyPageHTML(b, wk, dow) + "</section>" +
     '<section class="dy-card dy-moodc">' + dyFrame({ sprigs: ["tl", "tr"], top: "moon", sides: "lr" }) + '<h2 class="dy-ct">How I feel</h2>' + DY_ORN.rule + '<div class="dy-body dy-body-c">' + dyMoodHTML(b, wk, dow) + "</div></section>" +
-    '<section class="dy-card dy-spare" aria-hidden="true">' + dyFrame({ top: "notch" }) + "</section>" +   /* a placeholder until the owner decides what it holds; the three lines are out of the plate, their data kept */
+    '<section class="dy-card dy-vowc" aria-label="Today">' + dyFrame({ top: "notch" }) +
+      '<div class="dy-body dy-body-c">' + dyVowHTML(b, wk, dow) + "</div></section>" +
     "</div>";
   el.querySelectorAll(".dy-page, .dy-line").forEach(dyAutosize);
   const dayCard = el.querySelector(".dy-day");                       /* the listeners die with the nodes on the next render */
@@ -9618,9 +9667,13 @@ function dyCommit(wk, dow, mutate) {
 }
 /* fields commit on change, like every field in the app */
 function dyEdit(t) {
+  /* choosing today's book puts it in progress on the shelf, unless it is already read */
+  if (t.dataset.dy === "book" && t.value && tomeState(t.value) === "") tomeWrite(t.value, r => { r.state = "seal-6"; });
   dyCommit(t.dataset.wk, t.dataset.dow, cur => {
     if (t.dataset.dy === "page") cur.page = t.value.slice(0, DY_PAGE_MAX);
     else if (t.dataset.dy === "line") { const three = (cur.three || []).slice(); three[+t.dataset.i] = t.value.replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX); cur.three = three; }
+    else if (t.dataset.dy === "one" || t.dataset.dy === "thanks") cur[t.dataset.dy] = t.value.replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX);
+    else if (t.dataset.dy === "book") cur.book = t.value;
   });
 }
 function dyAct(el) {
@@ -9646,7 +9699,7 @@ function dyAct(el) {
 }
 document.addEventListener("change", e => {
   const t = e.target && e.target.closest && e.target.closest("[data-dy]");
-  if (t && (t.dataset.dy === "page" || t.dataset.dy === "line")) dyEdit(t);
+  if (t && ["page", "line", "one", "thanks", "book"].indexOf(t.dataset.dy) > -1) dyEdit(t);
 });
 document.addEventListener("input", e => { const t = e.target; if (t && t.closest && t.closest("#viewDiary") && t.dataset && t.dataset.dy) dyLive(t); });
 /* Enter does not break a line: it moves to the next, and off the third */
