@@ -2933,7 +2933,7 @@ li.is-done .qg { color: var(--verdant); }
   gap: var(--s5); padding: var(--s5) var(--s5) var(--s6); height: calc(100dvh - 150px); min-height: 720px; }
 .dy-card { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column;
   background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%);
-  border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 48px 36px 32px; overflow: hidden; }
+  border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 48px 36px 32px; overflow: visible; }   /* the sun and the moon ride the edge; each card clips its own body instead */
 .dy-card::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
 .dy-day::before, .dy-spare::before { content: none; }   /* the owner's cut: the day and the spare keep one frame */
 @media (max-width: 999px) { .dy-spare { display: none; } }   /* an empty card has no business in the stack */
