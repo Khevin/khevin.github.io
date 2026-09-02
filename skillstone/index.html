@@ -2459,6 +2459,8 @@ li.is-done .qg { color: var(--verdant); }
    column rules the habit table genuinely needs. */
 /* the book: the owner's leather as a cover, showing 14px around two paper sheets */
 /* the book, on the pen's model: a cover slab, one sheet in front of it, the fold painted on */
+.j3::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: url("assets/cover.webp") center / cover; opacity: 0.22; mix-blend-mode: overlay; }
 .j3 {
   --j3-rule: var(--mortar);
   --paper: #F3EAD6;
@@ -2480,6 +2482,23 @@ li.is-done .qg { color: var(--verdant); }
   background-color: var(--paper); background-image: var(--paper-grain);
   box-shadow: 0 16px 40px rgba(0,0,0,0.5);
 }
+/* the veil: the owner's two sheets over the whole spread — paper-1 on the left half, paper-2
+   on the right, each sized to its half — multiplied at 55%, running into the lift room so
+   the lifted edges wear the same veil as the page under them. One element: nothing to
+   mismatch. Over the dark cover the multiply is invisible. */
+.j3-paper::before { content: ""; position: absolute; left: 0; right: 0; top: -40px; bottom: -40px; z-index: 1; pointer-events: none;
+  background-image: url("assets/paper-1.webp"), url("assets/paper-2.webp");
+  background-size: 50% 100%, 50% 100%; background-position: left top, right top; background-repeat: no-repeat;
+  mix-blend-mode: multiply; opacity: 0.55; }
+/* the corners: 56px pull handles; a small fold shows on hover */
+.j3-corner { position: absolute; bottom: 0; width: 56px; height: 56px; padding: 0; background: none; border: 0; cursor: grab; z-index: 4; touch-action: none; }
+.j3-corner.bl { left: 0; } .j3-corner.br { right: 0; }
+.j3-corner::before { content: ""; position: absolute; bottom: 0; width: 0; height: 0; border-style: solid; opacity: 0; transition: opacity var(--t-fast) var(--e-out); }
+.j3-corner.br::before { right: 0; border-width: 0 0 20px 20px; border-color: transparent transparent rgba(43,33,23,0.22) transparent; }
+.j3-corner.bl::before { left: 0; border-width: 0 20px 20px 0; border-color: transparent rgba(43,33,23,0.22) transparent transparent; }
+@media (hover: hover) { .j3-corner:hover::before { opacity: 1; } }
+.j3-corner:active { cursor: grabbing; }
+.j3-corner:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; border-radius: var(--r-sm); }
 /* the fold: the pen's gutter, one gradient over both halves, running into the lift room */
 .j3-fold { position: absolute; top: -40px; bottom: -40px; left: 50%; width: 4em; transform: translateX(-50%); z-index: 2; pointer-events: none;
   background: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 46%, rgba(0,0,0,0.5) 49%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.5) 51%, rgba(0,0,0,0.2) 52%, transparent 100%); }
@@ -2508,6 +2527,10 @@ li.is-done .qg { color: var(--verdant); }
   position: relative; z-index: 1; min-width: 0;
   color: var(--parchment);
 }
+/* the habit grid on paper: a scheduled day carries a visible tint; the frequency mark is dust */
+.j3-page .j3-cell.sched::after { background: rgba(110,74,14,0.14); }
+@media (hover: hover) { .j3-page .j3-cell:hover::after { background: rgba(110,74,14,0.26); } }
+.j3-page .j3-freq { color: var(--dust); }
 /* the head plates keep a light inscription on the dark stone */
 .j3-page .j3-btn { color: #D9CCB0; }
 @media (hover: hover) { .j3-page .j3-btn:hover { color: #F3E9D2; } }
@@ -2561,7 +2584,7 @@ li.is-done .qg { color: var(--verdant); }
 }
 .j3-ribbon::before {
   content: ""; position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 16px; height: 100%;
-  background: linear-gradient(90deg, #7A5716 0%, #C9973A 38%, #E6BC5E 52%, #B8862E 100%);
+  background: linear-gradient(90deg, #6A1E18 0%, #A63A2E 38%, #C4503F 52%, #8C2D23 100%);
   box-shadow: 0 3px 8px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.08);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 10px), 0 100%);
 }
@@ -2821,7 +2844,7 @@ li.is-done .qg { color: var(--verdant); }
 
 @media (max-width: 1100px) {
   .j3 { grid-template-columns: minmax(0, 1fr); }
-  .j3-mark, .j3-lift, .j3-fold { display: none; }
+  .j3-mark, .j3-lift, .j3-fold, .j3-corner { display: none; }
   .j3 { padding: 0 10px 12px; }
   .j3-head { margin: 0 -10px var(--s3); padding-left: calc(var(--s5) + 10px); padding-right: calc(var(--s5) + 10px); }
   .j3-paper { grid-template-columns: minmax(0, 1fr); row-gap: var(--s5); padding: 20px 16px; }
@@ -10475,6 +10498,9 @@ function renderJ3() {
         '<div class="j3-page right">' + right + "</div>" +
         '<div class="j3-lift b" aria-hidden="true"></div>' +
         '<div class="j3-fold" aria-hidden="true"></div>' +
+        /* the corners: press and pull to turn; a tap or Enter turns outright */
+        '<button type="button" class="j3-corner bl" data-corner="-1" aria-label="Previous week"></button>' +
+        '<button type="button" class="j3-corner br" data-corner="1" aria-label="Next week"></button>' +
       "</div>" +
     "</div>";
 }
@@ -10484,18 +10510,21 @@ function renderJ3() {
    other side is the back face; a ghost of the old opposite page stays put until the leaf
    passes the spine, so the reader sees the old spread until the paper covers it. Under
    700px the book is one column and nothing turns; reduced motion turns nothing. */
-function j3Turn(to) {
+/* build the leaf for a turn to `to`: renders the new week, returns the leaf and its ghost at
+   rest (or null when nothing should animate). j3Turn releases it on a transition; the corner
+   pull drives it by hand. */
+function j3Leaf(to) {
   const from = j3Week;
-  if (+to === +from) return;
+  if (+to === +from) return null;
   const dir = to > from ? 1 : -1;
   const old = document.querySelector("#viewJournal .j3");
   const can = old && window.innerWidth >= 700 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let oldL = null, oldR = null;
   if (can) { oldL = old.querySelector(".j3-page.left").cloneNode(true); oldR = old.querySelector(".j3-page.right").cloneNode(true); }
   j3Week = to; renderJ3();
-  if (!can) return;
+  if (!can) return null;
   const nb = document.querySelector("#viewJournal .j3"), L = nb.querySelector(".j3-page.left"), R = nb.querySelector(".j3-page.right");
-  if (!L || !R) return;
+  if (!L || !R) return null;
   const box = nb.getBoundingClientRect(), pr = nb.querySelector(".j3-paper").getBoundingClientRect();
   const rl = { left: pr.left, top: pr.top, width: pr.width / 2, height: pr.height }, rr = { left: pr.left + pr.width / 2, top: pr.top, width: pr.width / 2, height: pr.height };
   const place = (el, r) => { el.style.left = (r.left - box.left) + "px"; el.style.top = (r.top - box.top) + "px"; el.style.width = r.width + "px"; el.style.height = r.height + "px"; };
@@ -10506,13 +10535,59 @@ function j3Turn(to) {
   const ghost = document.createElement("div"); ghost.className = "j3-ghost"; ghost.appendChild(dir > 0 ? oldL : oldR);
   place(leaf, dir > 0 ? rr : rl); place(ghost, dir > 0 ? rl : rr);
   nb.append(ghost, leaf);
-  void leaf.offsetWidth;                       /* commit the resting transform before the turn begins */
-  leaf.classList.add("is-turning");
-  setTimeout(() => ghost.remove(), 330);
-  const done = () => leaf.remove();
-  leaf.addEventListener("transitionend", done, { once: true });
+  void leaf.offsetWidth;                       /* commit the resting transform before anything moves */
+  return { leaf, ghost, dir, from, to, halfW: pr.width / 2 };
+}
+function j3Turn(to) {
+  const s = j3Leaf(to); if (!s) return;
+  s.leaf.classList.add("is-turning");
+  setTimeout(() => s.ghost.remove(), 330);
+  const done = () => s.leaf.remove();
+  s.leaf.addEventListener("transitionend", done, { once: true });
   setTimeout(done, 900);
 }
+/* the corner pull: the leaf follows the hand; past a third it finishes, before it falls back */
+let j3Pull = null;
+function j3PullStart(e, btn) {
+  if (j3Pull || e.button) return;
+  const d = Number(btn.dataset.corner);
+  const s = j3Leaf(addDays(j3Week, d * 7));
+  if (!s) { return; }                          /* nothing to animate: the week has turned already */
+  s.leaf.style.transition = "none";
+  j3Pull = { s, x0: e.clientX, moved: false, angle: 0, id: e.pointerId };
+  try { btn.setPointerCapture(e.pointerId); } catch (x) {}
+}
+function j3PullMove(e) {
+  if (!j3Pull || e.pointerId !== j3Pull.id) return;
+  const p = j3Pull, dx = (e.clientX - p.x0) * (p.s.dir > 0 ? -1 : 1);
+  if (Math.abs(e.clientX - p.x0) > 4) p.moved = true;
+  p.angle = Math.max(0, Math.min(180, dx / p.s.halfW * 180));
+  p.s.leaf.style.transform = "rotateY(" + (p.s.dir > 0 ? -p.angle : p.angle) + "deg)";
+  p.s.ghost.style.visibility = p.angle > 90 ? "hidden" : "";
+}
+function j3PullEnd(e) {
+  if (!j3Pull || e.pointerId !== j3Pull.id) return;
+  const p = j3Pull; j3Pull = null;
+  const leaf = p.s.leaf, ghost = p.s.ghost, finish = !p.moved || p.angle > 60;
+  leaf.style.transition = "transform " + (finish ? 380 : 260) + "ms cubic-bezier(0.45, 0, 0.2, 1)";
+  void leaf.offsetWidth;
+  if (finish) {
+    leaf.style.transform = "rotateY(" + (p.s.dir > 0 ? -180 : 180) + "deg)";
+    setTimeout(() => ghost.remove(), 200);
+    setTimeout(() => leaf.remove(), 420);
+  } else {
+    leaf.style.transform = "rotateY(0deg)"; ghost.style.visibility = "";
+    setTimeout(() => { leaf.remove(); ghost.remove(); j3Week = p.s.from; renderJ3(); }, 280);
+  }
+}
+document.addEventListener("pointerdown", e => { const b = e.target.closest && e.target.closest(".j3-corner"); if (b) { e.preventDefault(); j3PullStart(e, b); } });
+document.addEventListener("pointermove", j3PullMove);
+document.addEventListener("pointerup", j3PullEnd);
+document.addEventListener("pointercancel", j3PullEnd);
+document.addEventListener("keydown", e => {
+  const b = e.target.closest && e.target.closest(".j3-corner");
+  if (b && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); j3Turn(addDays(j3Week, Number(b.dataset.corner) * 7)); }
+});
 
 /* text commits on change, never on keystroke */
 function j3Edit(t) {
