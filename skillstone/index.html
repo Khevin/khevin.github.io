@@ -2954,9 +2954,10 @@ li.is-done .qg { color: var(--verdant); }
 .dy-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
 .dy-body-c { display: flex; flex-direction: column; justify-content: center; }
 /* the logbook is all page: the writing fills the card and only scrolls once it is longer than the card */
-.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0 -20px 0 36px; }   /* the writing column, inset 36px from the frame on both sides; the scroller runs 20px into the right padding so its bar sits 16px from the border */
-.dy-log .dy-body { display: flex; flex-direction: column; padding-right: 46px; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }   /* 46 + the 10px gutter = the 56 the column is inset on the left */
-.dy-log .dy-mark { margin-right: 56px; }
+.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0 -20px 0 108px; }   /* the writing column, 144px in from the frame on both sides; the scroller still runs out to the border so its bar sits at the edge */
+.dy-log .dy-body { display: flex; flex-direction: column; padding-right: 117px; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }   /* 117 + the 10px gutter + the 17 to the border = 144, the left gap */
+.dy-log .dy-mark { margin-right: 127px; }   /* the word-mark rule ends where the writing ends */
+@media (max-width: 999px) { .dy-log .dy-station { margin-left: 0; } .dy-log .dy-body { padding-right: 9px; } .dy-log .dy-mark { margin-right: 19px; } }   /* stacked: the card’s own 36px is gap enough */
 .dy-log .dy-page { flex: 1 0 auto; }
 /* the day */
 .dy-day-body { flex: 1 1 auto; min-height: 0; width: 100%; overflow: auto; display: flex; flex-direction: column; align-items: center; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }
@@ -3002,7 +3003,7 @@ li.is-done .qg { color: var(--verdant); }
 /* the page: the card is the surface; focus lifts it a shade */
 .dy-page { display: block; width: 100%; box-sizing: border-box; min-height: calc(4 * 1.7em + 2 * var(--s3)); resize: none; overflow: hidden;
   background: transparent; border: 0; border-radius: var(--r-sm); padding: var(--s3) var(--s2); color: var(--parchment);
-  font-family: var(--f-read); font-size: 1.0625rem; line-height: 1.7; transition: background var(--t-pool) var(--e-out); }
+  font-family: var(--f-read); font-size: 0.875rem; line-height: 1.7; transition: background var(--t-pool) var(--e-out); }
 .dy-page:focus { outline: none; background: rgba(232,176,84,0.05); }
 .dy-page::placeholder { color: var(--mortar-2); }
 .dy-mark { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s3); flex: none; }
