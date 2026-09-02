@@ -2553,6 +2553,17 @@ li.is-done .qg { color: var(--verdant); }
 }
 @media (hover: hover) { .j3-tick:hover { border-color: var(--bronze); } }
 .j3-row.done .j3-in { color: var(--ash); text-decoration: line-through; text-decoration-color: var(--mortar-2); }
+/* the diary: a row per written morning, the day set small in the display face */
+.j3-drow { display: flex; gap: var(--s4); align-items: flex-start; padding: var(--s2) 0; }
+.j3-drow + .j3-drow { border-top: 1px solid rgba(62,53,39,0.5); }
+.j3-dday { flex: none; width: 128px; padding-top: 7px; font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); line-height: 1.3; }
+.j3-dday .dd { display: block; font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0; color: var(--mortar-2); margin-top: 2px; }
+.j3-drow.is-today .j3-dday { color: var(--gold); }
+.j3-dtext { flex: 1 1 auto; min-width: 0; min-height: 44px; resize: vertical; background: none; border: 0; border-bottom: 1px dashed var(--j3-rule);
+  color: var(--parchment); font: inherit; font-size: 0.9375rem; line-height: var(--lh); padding: 6px 0; }
+.j3-dtext::placeholder { color: var(--mortar-2); }
+.j3-dtext:focus-visible { outline: none; border-bottom-color: var(--gold); }
+@media (max-width: 700px) { .j3-drow { flex-direction: column; gap: 2px; } .j3-dday { width: auto; padding-top: 0; } }
 .j3-cats { display: flex; flex-wrap: wrap; gap: 4px; padding-bottom: var(--s2); }
 .j3-cat {
   appearance: none; background: none; border: 1px solid var(--j3-rule); border-radius: 999px;
@@ -5813,6 +5824,14 @@ function normaliseBook(b) {
   b.bucket    = Array.isArray(b.bucket) ? b.bucket : [];
   b.days      = (b.days && typeof b.days === "object") ? b.days : {};
   b.titles    = (b.titles && typeof b.titles === "object") ? b.titles : {};
+  /* diary[weekKey][dow] = the morning's affirmation, one string per day */
+  b.diary     = (b.diary && typeof b.diary === "object") ? b.diary : {};
+  Object.keys(b.diary).forEach(wk => {
+    const w = b.diary[wk];
+    if (!w || typeof w !== "object") { delete b.diary[wk]; return; }
+    Object.keys(w).forEach(d => { const s = String(w[d] || "").slice(0, 2000); if (s.trim()) w[d] = s; else delete w[d]; });
+    if (!Object.keys(w).length) delete b.diary[wk];
+  });
   b.habits.forEach(x => {
     x.id = x.id || uid();
     x.name = String(x.name || "").slice(0, 80);
@@ -9743,6 +9762,20 @@ function renderJ3() {
   const checks = b.checks[key] || {};
   const days = b.days[key] || {};
 
+  /* ---- diary: one morning per row ---- */
+  const dw = b.diary[key] || {};
+  const dayLabel = d => { const dt = addDays(j3Week, d); return DOW_LONG[d] + ' <span class="dd">' +
+    String(dt.getDate()).padStart(2, "0") + "/" + String(dt.getMonth() + 1).padStart(2, "0") + "</span>"; };
+  let diary = '<section class="j3-wide j3-diary"><div class="j3-sec-h"><span class="label">Diary</span></div>';
+  for (let d = 0; d < 7; d++) {
+    const txt = dw[d] || "", today = isThisWeek && d === todayDow;
+    if (!txt && !today) continue;
+    diary += '<div class="j3-drow' + (today ? " is-today" : "") + '"><span class="j3-dday">' + dayLabel(d) + "</span>" +
+      '<textarea class="j3-dtext" data-j3="y-text" data-dow="' + d + '" rows="2" maxlength="2000" aria-label="' + DOW_LONG[d] + ' morning"' +
+      (today && !txt ? ' placeholder="This morning I\u2026"' : "") + ">" + esc(txt) + "</textarea></div>";
+  }
+  diary += "</section>";
+
   /* ---- merged notes + reminders ---- */
   const entries = j3Entries(b, key);
   let notes = '<section><div class="j3-sec-h"><span class="label">Notes</span>' +
@@ -9884,7 +9917,7 @@ function renderJ3() {
         '<input class="j3-title" data-j3="wk-title" value="' + esc(b.titles[key] || "") +
           '" placeholder="name this week\u2026" aria-label="Week title">' +
       "</div>" +
-      '<div class="j3-page left"><div class="j3-left-grid">' + notes + bucket + habits + "</div></div>" +
+      '<div class="j3-page left"><div class="j3-left-grid">' + diary + notes + bucket + habits + "</div></div>" +
       '<div class="j3-spine" aria-hidden="true"></div>' +
       '<div class="j3-page right">' + right + "</div>" +
     "</div>";
@@ -9902,6 +9935,9 @@ function j3Edit(t) {
     case "h-name":  { const x = b.habits.find(y => y.id === id); if (x) x.name = v; break; }
     case "d-text":  { const e = ((b.days[key] || {})[t.dataset.dow] || []).find(x => x.id === id);
                       if (e) e.text = v; break; }
+    case "y-text":  { const w = (b.diary[key] = b.diary[key] || {}), d = t.dataset.dow;
+                      if (v.trim()) w[d] = v.trim().slice(0, 2000); else delete w[d];
+                      if (!Object.keys(w).length) delete b.diary[key]; break; }
     case "wk-title":{ if (v.trim()) b.titles[key] = v.trim().slice(0, 60); else delete b.titles[key]; break; }
     case "s-count": { const x = b.habits.find(y => y.id === id);
                       if (x) x.schedule = { type: "count", n: Math.max(1, Math.min(7, Number(v) || 1)) };
@@ -11757,7 +11793,7 @@ document.addEventListener("change", e => {
 });
 document.addEventListener("change", e => {
   const j = e.target.closest("[data-j3]");
-  if (j && j.tagName === "INPUT") j3Edit(j);
+  if (j && (j.tagName === "INPUT" || j.tagName === "TEXTAREA")) j3Edit(j);
 });
 /* a habit cell is a div with role=button, so it needs its own keys */
 document.addEventListener("keydown", e => {
