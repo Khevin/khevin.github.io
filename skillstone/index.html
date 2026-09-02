@@ -1005,6 +1005,7 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 @media (max-width: 1100px) { .tm-sug-list { columns: 2; } }
 @media (max-width: 700px)  { .tm-sug-list { columns: 1; } }
 .bib.is-read .bt { color: var(--dust); }
+.bib.is-read .gmark, .bib.is-reading .gmark { color: var(--gold-2); }   /* half filled or full, the box is lit */
 .bib-acts { display: flex; align-items: center; gap: var(--s1); flex: none; }
 .readmark {
   width: 30px; height: 30px; flex: none;
@@ -3845,6 +3846,18 @@ function markGlyph(kind, on) {
   if (kind === "shaky") return `<svg class="g gl" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2" fill="none" stroke="${stroke}" stroke-width="1.5"/><path d="M6 1.75h-3A1.25 1.25 0 0 0 1.75 3v6A1.25 1.25 0 0 0 3 10.25h3Z" fill="${on ? "currentColor" : "var(--mortar-2)"}"/></svg>`;
   return `<svg class="g gl" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2" fill="none" stroke="${stroke}" stroke-width="1.5"/></svg>`;
 }
+
+/* The shelf's three states in the reading list's box: empty, half filled, full. markGlyph
+   stays two-state — the facet marks that use it only have two. */
+function tomeGlyph(st) {
+  const lit = "currentColor", dim = "var(--mortar-2)";
+  if (st === "read") return '<svg class="g gl" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2" fill="' + lit + '" stroke="' + lit + '" stroke-width="1.5"/></svg>';
+  if (st === "seal-6") return '<svg class="g gl" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1.75 6h8.5v3.25a1 1 0 0 1-1 1h-6.5a1 1 0 0 1-1-1Z" fill="' + lit + '"/><rect x="1" y="1" width="10" height="10" rx="2" fill="none" stroke="' + lit + '" stroke-width="1.5"/></svg>';
+  return '<svg class="g gl" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2" fill="none" stroke="' + dim + '" stroke-width="1.5"/></svg>';
+}
+/* the same words the shelf uses, for the label that names what a press will do */
+const tomeNext = st => TOME_STATES[(TOME_STATES.indexOf(st) + 1) % TOME_STATES.length];
+const tomePress = st => st === "read" ? "true" : st === "seal-6" ? "mixed" : "false";
 
 /* ---------- the assay: judged inputs -> a suggestion, never a fact ---------- */
 const assessOf = s => (s.assess && typeof s.assess === "object") ? s.assess : null;
@@ -6860,7 +6873,7 @@ function tomeRowHTML(b) {
   const meta = b.rec ? [b.rec.skills.join(" \u00b7 "), b.rec.why, ""]
              : own ? [own.year || "", own.blurb || "", ""]
              : (BOOKMETA[b.id] || ["", "", ""]);
-  const next = TOME_STATES[(TOME_STATES.indexOf(st) + 1) % TOME_STATES.length];
+  const next = tomeNext(st);
   let out = '<li class="tm-book' + (st ? " " + st : "") + (open ? " open" : "") + '">' +
     '<div class="tm-line">' +
       '<button type="button" class="tm-tick" data-tm="state" data-id="' + b.id +
@@ -7184,16 +7197,17 @@ function renderProfDetail() {
       kb.books.filter(b => owned[aliasNorm(b.title)]).length + " of " + kb.books.length +
       ' on your shelves</span></span><ul class="biblio">' +
       kb.books.slice().sort((a, b) => a.band - b.band).map(b => {
-        const id = bookIdFor(b.title, owned), isRead = tomeRead(id);
-        return '<li class="bib' + (isRead ? " is-read" : "") + '">' +
+        const id = bookIdFor(b.title, owned), st = tomeState(id), isRead = st === "read";
+        return '<li class="bib' + (isRead ? " is-read" : "") + (st === "seal-6" ? " is-reading" : "") + '">' +
           '<span class="bb">' + (b.band >= 8 ? b.band + "+" : b.band) + "</span>" +
           '<span class="btext"><span class="bt">' + esc(b.title) + '</span> <span class="ba">\u00b7 ' +
           esc(b.author) + '</span><span class="bw"> \u2014 ' + esc(b.why) + "</span>" +
           (owned[aliasNorm(b.title)] ? '<span class="bown" title="On your shelves">owned</span>' : "") +
           "</span><button type=\"button\" class=\"gmark\" data-pf=\"bookread\" data-id=\"" + s.id +
-          '" data-b="' + esc(b.title) + '" aria-pressed="' + isRead + '" aria-label="' +
-          (isRead ? "Mark as unread" : "Mark as read") + ": " + esc(b.title) + '">' +
-          markGlyph("known", isRead) + "</button></li>";
+          '" data-b="' + esc(b.title) + '" aria-pressed="' + tomePress(st) + '" title="' +
+          esc(b.title) + ": " + TOME_WORD[st] + '" aria-label="' + esc(b.title) + " \u2014 " + TOME_WORD[st] +
+          ". Mark as " + TOME_WORD[tomeNext(st)] + '.">' +
+          tomeGlyph(st) + "</button></li>";
       }).join("") + "</ul></section>"
     : "") + "</div>";
 }
@@ -11624,10 +11638,10 @@ function biblioHTML(s, kb) {
     <ul class="biblio">
       ${books.map((b, i) => {
         const id = bookIdFor(b.title, owned);
-        const isRead = tomeRead(id);
+        const st = tomeState(id), isRead = st === "read";
         const isOwned = !!owned[aliasNorm(b.title)];
         return `
-      <li class="bib${isRead ? " is-read" : ""}">
+      <li class="bib${isRead ? " is-read" : ""}${st === "seal-6" ? " is-reading" : ""}">
         <span class="bb">${b.band >= 8 ? b.band + "+" : b.band}</span>
         <span class="btext">
           <span class="bt">${esc(b.title)}</span> <span class="ba">· ${esc(b.author)}</span>
@@ -11636,9 +11650,9 @@ function biblioHTML(s, kb) {
             i === nextIdx ? `<span class="bnext">next</span>` : ""}
         </span>
         <button type="button" class="gmark" data-action="bookread" data-b="${esc(b.title)}"
-          aria-pressed="${isRead}" title="${esc(b.title)}: ${isRead ? "read" : "not read"}"
-          aria-label="${isRead ? "Mark as unread" : "Mark as read"}: ${esc(b.title)}">
-          ${markGlyph("known", isRead)}
+          aria-pressed="${tomePress(st)}" title="${esc(b.title)}: ${TOME_WORD[st]}"
+          aria-label="${esc(b.title)} — ${TOME_WORD[st]}. Mark as ${TOME_WORD[tomeNext(st)]}.">
+          ${tomeGlyph(st)}
         </button>
       </li>`;
       }).join("")}
@@ -12399,14 +12413,14 @@ function bookRead(s, title) {
   /* the tick lands on the library row, not on a per-skill copy — so a book read for one
      skill is read for every skill that recommends it, and shows read on the shelf too */
   const id = bookIdFor(title);
-  const was = tomeRead(id);
+  const was = tomeState(id), next = tomeNext(was);      /* the shelf's cycle: nothing, reading, read */
   const entry = `Finished: ${title}`;
-  tomeWrite(id, r => { r.state = was ? "" : "read"; });
-  if (was) {
+  tomeWrite(id, r => { r.state = next; });
+  if (was === "read") {
     // un-marking is a correction, not history — the entry goes with it
     const idx = state.journal.map(j => j.sid === s.id && j.kind === "book" && j.text === entry).lastIndexOf(true);
     if (idx > -1) state.journal.splice(idx, 1);
-  } else {
+  } else if (next === "read") {
     state.journal.push({ ts: Date.now(), sid: s.id, kind: "book", text: entry });
   }
   trimJournal(); save();
