@@ -118,8 +118,8 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
    Portrait, name and class in the same stone as the crests. The only nod to a
    card frame is four gold corner ticks — filigree would be cosplay. */
 .hero {
-  display: flex; align-items: center; gap: var(--s4);
-  min-width: 210px; flex: 0 1 auto;
+  display: flex; align-items: flex-end; gap: 10px;   /* the portrait and the name sit on one line, as in the frame */
+  min-width: 0; flex: 1 1 auto;   /* the slack falls between the name and the crests, so they keep to the plate’s edges */
 }
 .portrait {
   position: relative;
@@ -149,10 +149,10 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
     linear-gradient(var(--bronze),var(--bronze)) 100% 100%/1px 7px no-repeat;
   opacity: 0.55;
 }
-.hero-main { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.hero-main { min-width: 0; display: flex; flex-direction: column; gap: 0; padding-bottom: 4px; }
 .hero-name {
   font-family: var(--f-display); font-weight: 700;
-  font-size: 1.5rem; letter-spacing: 0.02em; line-height: 1.1;
+  font-size: 1.25rem; letter-spacing: 0.024em; line-height: 1.32;   /* 20px, so a long name still fits the plate */
   color: var(--parchment);
   background: none; border: none; padding: 0; text-align: left;
   cursor: pointer; border-bottom: 1px dashed transparent;
@@ -191,6 +191,9 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 #classPop:popover-open { display: flex; flex-direction: column; gap: var(--s2); }
 .cls-list { list-style: none; display: flex; flex-direction: column; max-height: 300px; overflow-y: auto;
   scrollbar-width: thin; scrollbar-color: var(--mortar-2) transparent; }
+/* the same options, laid in a wrapping row where Settings has the width for it */
+.cfg-cls { flex-direction: row; flex-wrap: wrap; gap: var(--s1); max-height: none; align-self: stretch; }
+.cfg-cls .cls-opt { width: auto; min-height: 32px; padding: 4px var(--s2); gap: var(--s2); }
 .cls-opt {
   display: flex; align-items: center; gap: var(--s3);
   width: 100%; min-height: 40px; padding: var(--s2);
@@ -216,6 +219,13 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 /* one bar: photo, name + class, attributes, tabs, tools — left to right, with a single
    rule under the whole thing. Everything in it has a flex basis so nothing gets crushed;
    below ~1000px the bar wraps rather than squeezing. */
+/* the owner's plate, cut off its ground: it carries the portrait, the name and the four
+   attributes, and stretches with the name the way his frame does */
+.namebar {
+  display: flex; align-items: center; gap: var(--s3); flex: 0 1 auto; min-width: 0;
+  min-height: 105px; min-width: min(525px, 100%); padding: 0 31px 0 28px;   /* his frame’s width is the floor, so a short name never squashes the ends */
+  background: url("assets/gears/bar-name-cut.webp") 50% 50% / 100% 100% no-repeat;
+}
 .masthead {
   display: flex; flex-wrap: wrap; align-items: center;
   gap: var(--s3);
@@ -3004,7 +3014,18 @@ li.is-done .qg { color: var(--verdant); }
 .dy-orb { position: relative; width: min(360px, 100%); aspect-ratio: 1; margin-top: var(--s2); display: grid; place-items: center; flex: none; }
 .dy-medal-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.9; }
 .dy-orb-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--s3); }
-.dy-tcard { margin: 0; width: 132px; height: 220px; border-radius: 8px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.6); }   /* the medallion shows around it */
+/* the card is held, not printed: it turns toward the pointer and a gloss crosses it */
+.dy-orb-card { perspective: 800px; }
+.dy-tcard { position: relative; margin: 0; width: 132px; height: 220px; border-radius: 8px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.6);   /* the medallion shows around it */
+  transform: rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg)) scale(var(--tsc, 1));
+  transition: transform 0.45s var(--e-out), box-shadow 0.45s var(--e-out); }
+.dy-tcard.is-held { --tsc: 1.05; box-shadow: 0 26px 60px rgba(0,0,0,0.75);
+  transition: transform 90ms linear, box-shadow 0.3s var(--e-out); }
+.dy-tcard::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background: radial-gradient(200px circle at var(--gx, 50%) var(--gy, 50%), rgba(255,240,205,0.32), rgba(255,240,205,0.05) 45%, transparent 70%);
+  transition: opacity 0.35s var(--e-out); }
+.dy-tcard.is-held::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .dy-tcard, .dy-tcard.is-held { transform: none; transition: none; } .dy-tcard::after { display: none; } }
 .dy-tcard img { display: block; width: 132px; height: 220px; object-fit: cover; }
 .dy-tcard.is-rev img { transform: rotate(180deg); }
 .dy-tback svg { display: block; width: 132px; height: 220px; }
@@ -3139,8 +3160,10 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 
 <div class="wrap">
   <header class="masthead">
-    <div class="hero" id="hero"></div>
-    <div class="crests" id="crests" aria-label="Attributes"></div>
+    <div class="namebar">
+      <div class="hero" id="hero"></div>
+      <div class="crests" id="crests" aria-label="Attributes"></div>
+    </div>
 
     <nav class="tabs" role="tablist" aria-label="Sections">
       <button type="button" class="tab" role="tab" id="tabJournal" data-view="journal"
@@ -3161,7 +3184,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 
     <div class="tools">
       <button class="cfg-gear" id="cfgBtn" type="button" data-action="settings" aria-label="Settings">
-        <img src="assets/gears/gear-plate.png" alt="" width="34" height="34" draggable="false">
+        <img src="assets/gears/gear-runes-cut.webp" alt="" width="34" height="34" draggable="false">
       </button>
       <input type="file" id="portraitFile" accept="image/*" hidden>
     </div>
@@ -3238,6 +3261,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   </section>
   <section class="cfg-sec">
     <span class="cfg-h">Character</span>
+    <span class="cfg-l">Class</span>
+    <ul class="cls-list cfg-cls" id="cfgClsList" aria-label="Choose a class"></ul>
     <button class="btn btn-ghost btn-sm" data-action="addskill" type="button">
       <svg class="g" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       Add skill
@@ -9457,6 +9482,25 @@ function dyCardHTML(sel, isToday) {
   return '<div class="dy-tcard dy-tback' + (isToday ? "" : " is-past") + '">' + tarBackSVG() + "</div>" +
     (isToday ? '<button type="button" class="btn btn-primary btn-sm" data-dy="turn">Turn today\u2019s card</button>' : "");
 }
+/* The card answers the hand: it turns toward the pointer, up to 11 degrees, and a gloss tracks
+   across it. Let go and it settles back. Nothing is stored; the pointer is the only state. */
+const DY_TILT = 11;
+function dyTilt(card) {
+  if (!card || reduced()) return;
+  card.addEventListener("pointermove", e => {
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    card.style.setProperty("--ty", ((px - 0.5) * 2 * DY_TILT).toFixed(2) + "deg");
+    card.style.setProperty("--tx", ((0.5 - py) * 2 * DY_TILT).toFixed(2) + "deg");
+    card.style.setProperty("--gx", (px * 100).toFixed(1) + "%");
+    card.style.setProperty("--gy", (py * 100).toFixed(1) + "%");
+    card.classList.add("is-held");
+  });
+  card.addEventListener("pointerleave", () => {
+    card.classList.remove("is-held");
+    card.style.removeProperty("--tx"); card.style.removeProperty("--ty");
+  });
+}
 /* the reading, under the card: once today's flow is finished, or for any past morning that has a card */
 function dyReadHTML(sel, isToday) {
   const rec = state.tarot && state.tarot.days ? state.tarot.days[tarKey(sel)] : null;
@@ -9518,6 +9562,7 @@ function renderDiary() {
   el.querySelectorAll(".dy-page, .dy-line").forEach(dyAutosize);
   const dayCard = el.querySelector(".dy-day");                       /* the listeners die with the nodes on the next render */
   if (dayCard) { dayCard.addEventListener("pointerenter", () => sunHeat(1)); dayCard.addEventListener("pointerleave", () => sunHeat(0)); }
+  dyTilt(el.querySelector(".dy-tcard"));
 }
 function dyAutosize(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
 /* a height measured at one width is wrong at another: re-measure whenever the view’s column
@@ -10984,6 +11029,7 @@ function className(hero) {
 let heroSig = null;
 /* the panel's switch shows the board's choice */
 function renderMoodSwitch() {
+  renderClassList();
   const cur = (state.hero && state.hero.moods === "faces") ? "faces" : "symbols";
   document.querySelectorAll('[data-action="moods"]').forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === cur)));
   const h = state.hero || {}, s = sanSky(h.sky), back = TAR_BACKS[h.back] ? h.back : 0;
@@ -11034,25 +11080,24 @@ function renderHero() {
                aria-label="Sun in ${sun}. Open the chart.">
                <span class="sig" aria-hidden="true">${asig(sun, 18)}</span>${sun}
              </button>`
-          : `<button type="button" class="class-pick" data-action="classpick" popovertarget="classPop"
-               aria-label="Class: ${esc(className(hero))}. Change it.">
-               <span class="sig" aria-hidden="true">${csig(hero.cls, 18)}</span>${esc(className(hero))}
-             </button>
-             <button type="button" class="class-pick sign-pick is-unset" data-action="astro-open"
+          : `<button type="button" class="class-pick sign-pick is-unset" data-action="astro-open"
                aria-label="No birth set. Open the chart to set it.">
                <span class="sig" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></span>Sign
              </button>`; })()}
       </span>
     </div>`;
 }
-function renderClassList() {
-  const el = $("#clsList");
-  if (!el) return;
-  el.innerHTML = CLASSES.map(c => `
+function classOptsHTML() {
+  return CLASSES.map(c => `
     <li><button type="button" class="cls-opt" data-action="setclass" data-cls="${c.k}"
       aria-pressed="${state.hero.cls === c.k && !state.hero.clsName}">
       ${csig(c.k, 18)}<span>${c.name}</span>
     </button></li>`).join("");
+}
+/* two places ask for the list now: the popover, and Settings since the chip left the bar */
+function renderClassList() {
+  const h = classOptsHTML();
+  [$("#clsList"), $("#cfgClsList")].forEach(el => { if (el) el.innerHTML = h; });
 }
 function setClass(k) {
   heroSig = null;
