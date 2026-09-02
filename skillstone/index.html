@@ -2479,6 +2479,8 @@ li.is-done .qg { color: var(--verdant); }
   position: relative;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 64px;
   padding: 28px 32px;
+  min-height: 600px;                                  /* most weeks meet the floor, so the book stands still */
+  transition: min-height 320ms var(--e-out);          /* and settles softly when one does not */
   background-color: var(--paper); background-image: var(--paper-grain);
   box-shadow: 0 16px 40px rgba(0,0,0,0.5);
 }
@@ -2603,7 +2605,16 @@ li.is-done .qg { color: var(--verdant); }
 .j3-face { position: absolute; inset: 0; backface-visibility: hidden; overflow: hidden; }
 .j3-face.back { transform: rotateY(180deg); }
 .j3-face, .j3-ghost { background-color: var(--paper); background-image: var(--paper-grain); }
-.j3-face > .j3-page, .j3-ghost > .j3-page { position: absolute; inset: 28px 32px; }   /* the sheet's padding; the gap is 2 × 32px */
+/* a leaf in the air is the page it lifted from: the same veil, sized as the sheet's (its
+   height plus 40px above and below, shifted up 40px), and the fold's half as an inset shadow */
+.j3-face::before, .j3-ghost::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-size: 100% calc(100% + 80px); background-position: 0 -40px; background-repeat: no-repeat;
+  mix-blend-mode: multiply; opacity: 0.55; }
+.j3-face.pg-left::before,  .j3-ghost.pg-left::before  { background-image: url("assets/paper-1.webp"); }
+.j3-face.pg-right::before, .j3-ghost.pg-right::before { background-image: url("assets/paper-2.webp"); }
+.j3-face.pg-left,  .j3-ghost.pg-left  { box-shadow: inset -32px 0 32px -22px rgba(0,0,0,0.5); }
+.j3-face.pg-right, .j3-ghost.pg-right { box-shadow: inset 32px 0 32px -22px rgba(0,0,0,0.5); }
+.j3-face > .j3-page, .j3-ghost > .j3-page { position: absolute; inset: 28px 32px; z-index: 1; }   /* the sheet's padding; the gap is 2 × 32px */
 .j3-face::after { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--e-out);
   background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
 .j3-leaf.bwd .j3-face::after { background: linear-gradient(-90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
@@ -2847,7 +2858,7 @@ li.is-done .qg { color: var(--verdant); }
   .j3-mark, .j3-lift, .j3-fold, .j3-corner { display: none; }
   .j3 { padding: 0 10px 12px; }
   .j3-head { margin: 0 -10px var(--s3); padding-left: calc(var(--s5) + 10px); padding-right: calc(var(--s5) + 10px); }
-  .j3-paper { grid-template-columns: minmax(0, 1fr); row-gap: var(--s5); padding: 20px 16px; }
+  .j3-paper { grid-template-columns: minmax(0, 1fr); row-gap: var(--s5); padding: 20px 16px; min-height: 0; }
   .j3-page.left, .j3-page.right { box-shadow: none; }
   .j3-page.right { border-top: 1px solid var(--j3-rule); }
 }
@@ -10519,30 +10530,34 @@ function j3Leaf(to) {
   const dir = to > from ? 1 : -1;
   const old = document.querySelector("#viewJournal .j3");
   const can = old && window.innerWidth >= 700 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let oldL = null, oldR = null;
-  if (can) { oldL = old.querySelector(".j3-page.left").cloneNode(true); oldR = old.querySelector(".j3-page.right").cloneNode(true); }
+  let oldL = null, oldR = null, oldH = 0;
+  if (can) { oldL = old.querySelector(".j3-page.left").cloneNode(true); oldR = old.querySelector(".j3-page.right").cloneNode(true);
+    const op = old.querySelector(".j3-paper"); oldH = op ? op.getBoundingClientRect().height : 0; }
   j3Week = to; renderJ3();
   if (!can) return null;
+  /* hold the sheet at the height it had, so nothing under the leaf moves until it lands */
+  const paper = document.querySelector("#viewJournal .j3-paper");
+  if (paper && oldH) { paper.style.transition = "none"; paper.style.minHeight = oldH + "px"; void paper.offsetHeight; paper.style.transition = ""; }
   const nb = document.querySelector("#viewJournal .j3"), L = nb.querySelector(".j3-page.left"), R = nb.querySelector(".j3-page.right");
   if (!L || !R) return null;
   const box = nb.getBoundingClientRect(), pr = nb.querySelector(".j3-paper").getBoundingClientRect();
   const rl = { left: pr.left, top: pr.top, width: pr.width / 2, height: pr.height }, rr = { left: pr.left + pr.width / 2, top: pr.top, width: pr.width / 2, height: pr.height };
   const place = (el, r) => { el.style.left = (r.left - box.left) + "px"; el.style.top = (r.top - box.top) + "px"; el.style.width = r.width + "px"; el.style.height = r.height + "px"; };
   const leaf = document.createElement("div"); leaf.className = "j3-leaf " + (dir > 0 ? "fwd" : "bwd");
-  const front = document.createElement("div"); front.className = "j3-face front"; front.appendChild(dir > 0 ? oldR : oldL);
-  const back = document.createElement("div"); back.className = "j3-face back"; back.appendChild((dir > 0 ? L : R).cloneNode(true));
+  const front = document.createElement("div"); front.className = "j3-face front " + (dir > 0 ? "pg-right" : "pg-left"); front.appendChild(dir > 0 ? oldR : oldL);
+  const back = document.createElement("div"); back.className = "j3-face back " + (dir > 0 ? "pg-left" : "pg-right"); back.appendChild((dir > 0 ? L : R).cloneNode(true));
   leaf.append(front, back);
-  const ghost = document.createElement("div"); ghost.className = "j3-ghost"; ghost.appendChild(dir > 0 ? oldL : oldR);
+  const ghost = document.createElement("div"); ghost.className = "j3-ghost " + (dir > 0 ? "pg-left" : "pg-right"); ghost.appendChild(dir > 0 ? oldL : oldR);
   place(leaf, dir > 0 ? rr : rl); place(ghost, dir > 0 ? rl : rr);
   nb.append(ghost, leaf);
   void leaf.offsetWidth;                       /* commit the resting transform before anything moves */
-  return { leaf, ghost, dir, from, to, halfW: pr.width / 2 };
+  return { leaf, ghost, dir, from, to, halfW: pr.width / 2, release: () => { const p = document.querySelector("#viewJournal .j3-paper"); if (p) p.style.minHeight = ""; } };
 }
 function j3Turn(to) {
   const s = j3Leaf(to); if (!s) return;
   s.leaf.classList.add("is-turning");
   setTimeout(() => s.ghost.remove(), 330);
-  const done = () => s.leaf.remove();
+  const done = () => { s.leaf.remove(); s.release(); };
   s.leaf.addEventListener("transitionend", done, { once: true });
   setTimeout(done, 900);
 }
@@ -10574,10 +10589,10 @@ function j3PullEnd(e) {
   if (finish) {
     leaf.style.transform = "rotateY(" + (p.s.dir > 0 ? -180 : 180) + "deg)";
     setTimeout(() => ghost.remove(), 200);
-    setTimeout(() => leaf.remove(), 420);
+    setTimeout(() => { leaf.remove(); p.s.release(); }, 420);
   } else {
     leaf.style.transform = "rotateY(0deg)"; ghost.style.visibility = "";
-    setTimeout(() => { leaf.remove(); ghost.remove(); j3Week = p.s.from; renderJ3(); }, 280);
+    setTimeout(() => { leaf.remove(); ghost.remove(); j3Week = p.s.from; renderJ3(); }, 280);   /* the re-render drops the hold */
   }
 }
 document.addEventListener("pointerdown", e => { const b = e.target.closest && e.target.closest(".j3-corner"); if (b) { e.preventDefault(); j3PullStart(e, b); } });
