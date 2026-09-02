@@ -60,6 +60,9 @@
 
   --t-fast: 120ms;
   --t-base: 280ms;
+  /* the morning page: the lit pool, wet and dry ink, and how long each takes */
+  --pool: #3A3025; --ink-wet: var(--parchment); --ink-dry: var(--dust);
+  --t-pool: 500ms; --t-settle: 300ms;
   --e-out: cubic-bezier(0.25, 1, 0.5, 1);
   --e-in:  cubic-bezier(0.5, 0, 0.75, 0);
   --e-moment: cubic-bezier(0.34, 1.3, 0.64, 1);
@@ -744,10 +747,35 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
   border: 1px solid transparent;
   transition: background var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out), color var(--t-fast) var(--e-out), opacity var(--t-fast) var(--e-out);
 }
-.btn-primary { background: var(--gold); color: #1A1408; font-weight: 800; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
-@media (hover: hover) { .btn-primary:hover:not(:disabled) { background: var(--gold-2); } }
-.btn-primary:active:not(:disabled) { transform: translateY(1px); }
-.btn-primary:disabled { background: var(--stone-3); color: var(--ash); border-color: var(--mortar); box-shadow: none; cursor: not-allowed; }
+/* the primary button is a brass plate — the plaque's material family. A cast gradient, a
+   grain (an inline SVG noise filter, multiplied in), a bevel, and the inscription in the
+   display face. Hover sweeps one light across it and the sweep returns off-stage without
+   animating; press sinks the plate. */
+.btn-primary {
+  position: relative; overflow: hidden; isolation: isolate;
+  font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #1A1408; border-color: #6E4B14;
+  background: linear-gradient(180deg, #F3C873 0%, #E4AC4A 46%, #CF9535 54%, #DCA342 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(0,0,0,0.28), 0 1px 0 rgba(0,0,0,0.55), 0 3px 8px rgba(0,0,0,0.35);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.28);
+  transition: filter var(--t-fast) var(--e-out), box-shadow var(--t-fast) var(--e-out), transform var(--t-fast) var(--e-out), opacity var(--t-fast) var(--e-out);
+}
+.btn-primary::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.16; mix-blend-mode: multiply; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+.btn-primary::after {
+  content: ""; position: absolute; top: -50%; bottom: -50%; left: 0; width: 40%; pointer-events: none;
+  background: linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-140%) skewX(-18deg);
+}
+@media (hover: hover) {
+  .btn-primary:hover:not(:disabled) { filter: brightness(1.06); }
+  .btn-primary:hover:not(:disabled)::after { transform: translateX(340%) skewX(-18deg); transition: transform 650ms var(--e-out); }
+}
+.btn-primary:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.35); }
+.btn-primary:disabled { background: var(--stone-3); color: var(--ash); border-color: var(--mortar); box-shadow: none; text-shadow: none; cursor: not-allowed; }
+.btn-primary:disabled::before, .btn-primary:disabled::after { display: none; }
 .btn-ghost { background: transparent; border-color: var(--mortar); color: var(--dust); font-weight: 500; }
 @media (hover: hover) { .btn-ghost:hover { border-color: var(--mortar-2); background: var(--stone-2); color: var(--parchment); } }
 .btn-danger { background: transparent; border-color: var(--mortar); color: var(--ember); font-weight: 500; }
@@ -1598,40 +1626,26 @@ button.d-plaque {
 .tar-name { font-family: var(--f-display); font-weight: 700; font-size: 2rem; letter-spacing: 0.01em; line-height: 1.2; margin-top: var(--s5); text-wrap: balance; }
 .tar-name.sm { font-size: 1.5rem; margin-top: var(--s4); }
 .tar-rev-l { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ember); margin-top: var(--s1); }
-.tar-pills { display: flex; flex-wrap: wrap; gap: var(--s2); justify-content: center; margin: var(--s4) 0; }
+.tar-pills { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); justify-content: center; margin: var(--s4) 0; }
 .tar-readout .tar-pills, .tar-readout .tar-name { text-align: center; }
+/* the card's words: no stroke, no pill — words, tracked, with room between them */
 .tar-pill {
-  display: inline-block; padding: 6px 14px; border: 1px solid var(--mortar-2); border-radius: 999px;
-  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase;
+  display: inline-block; padding: 0;
+  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--gold);
 }
 .tar-meaning { font-size: 1.0625rem; line-height: 1.6; color: var(--parchment); max-width: 54ch; margin: 0 auto; }
-.tar-kw.dim { font-family: var(--f-mono); font-size: 0.8125rem; color: var(--ash); }
-.tar-meaning.dim { color: var(--dust); font-size: 0.9375rem; margin-top: var(--s2); }
 
-/* the counter-reading, folded under a chevron */
-.tar-other { margin: var(--s5) auto 0; max-width: 54ch; text-align: left; }
-.tar-other summary {
-  display: flex; align-items: center; justify-content: center; gap: var(--s2);
-  min-height: 44px; cursor: pointer; list-style: none;
-  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ash); transition: color var(--t-fast) var(--e-out);
-}
-.tar-other summary::-webkit-details-marker { display: none; }
-@media (hover: hover) { .tar-other summary:hover { color: var(--dust); } }
-.tar-other summary:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-sm); }
-.tar-other .chev { width: 14px; height: 14px; transition: transform var(--t-fast) var(--e-out); }
-.tar-other[open] .chev { transform: rotate(180deg); }
-.tar-other[open] summary { color: var(--dust); }
-.tar-other > p { text-align: center; }
 .tar-go { margin-top: var(--s6); }
 
 /* stage 2: the landing */
 .tar-mini .tar-card { width: 132px; }
 .tar-h2 { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; margin: var(--s6) 0 var(--s4); }
 .tar-feel { text-align: left; display: grid; gap: var(--s1); }
-.tar-fg { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: var(--s2); align-items: baseline; }
-.tar-fg-l { font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+.tar-fg { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--s2); align-items: baseline; }
+/* the group name is a heading in the display face, bronze; the feelings are choices in the
+   text face, dust — a category and a feeling no longer share a colour */
+.tar-fg-l { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bronze); padding-top: 14px; }
 .tar-fw { display: flex; flex-wrap: wrap; gap: 2px; }
 .tar-chip {
   appearance: none; background: none; border: 1px solid transparent; border-radius: 999px;
@@ -1642,28 +1656,58 @@ button.d-plaque {
 @media (hover: hover) { .tar-chip:hover { color: var(--parchment); background: var(--stone-2); } }
 .tar-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .tar-chip[aria-pressed="true"] { color: var(--gold); border-color: var(--bronze); background: var(--stone-2); }
+/* the gloss: above the word, after a second of hover or on keyboard focus; edge chips keep it on the page */
+.tar-chip { position: relative; }
+.tar-chip::after {
+  content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 2px); transform: translateX(-50%);
+  width: max-content; max-width: min(220px, 70vw); padding: var(--s2) var(--s3);
+  background: var(--stone-2); border: 1px solid var(--mortar-2); border-radius: var(--r-sm); box-shadow: var(--shadow-float);
+  font-family: var(--f-ui); font-size: 0.8125rem; line-height: 1.4; color: var(--dust); text-align: left; white-space: normal;
+  opacity: 0; visibility: hidden; pointer-events: none; z-index: 5;
+  transition: opacity var(--t-fast) var(--e-out) 0s, visibility 0s linear var(--t-fast);
+}
+.tar-chip:not([data-tip])::after { display: none; }
+@media (hover: hover) { .tar-chip:hover::after { opacity: 1; visibility: visible; transition-delay: 1s, 1s; } }
+.tar-chip:focus-visible::after { opacity: 1; visibility: visible; transition-delay: 1s, 1s; }
+.tar-fw .tar-chip:first-child::after { left: 0; transform: none; }
+.tar-fw .tar-chip:last-child::after { left: auto; right: 0; transform: none; }
+.vh { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 /* the 0–100 dial */
 .tar-dial { margin-top: var(--s6); text-align: left; }
 .tar-dial .label { display: block; margin-bottom: var(--s2); }
 .tar-dial .row { display: flex; align-items: center; gap: var(--s4); }
 .tar-dial .n { font-family: var(--f-mono); font-size: 1.375rem; color: var(--gold); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
-.tar-dial input[type="range"] {
-  flex: 1; appearance: none; height: 44px; background: none; cursor: pointer;
-}
+/* the dial: a carved channel with a notch at the centre; gold runs from the centre toward
+   wherever the thumb leans, so 50 — no lean — shows none. The thumb is a turned disc. */
+.tar-dial input[type="range"] { flex: 1; appearance: none; height: 44px; background: none; cursor: pointer; --v: 50%; }
 .tar-dial input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px; border-radius: 2px; background: var(--socket);
+  height: 6px; border-radius: 3px;
+  background:
+    linear-gradient(var(--bronze), var(--bronze)) no-repeat 50% 0 / 1px 6px,
+    linear-gradient(to right, var(--socket) min(50%, var(--v)), var(--gold) min(50%, var(--v)), var(--gold) max(50%, var(--v)), var(--socket) max(50%, var(--v)));
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.7), 0 1px 0 var(--bevel);
 }
 .tar-dial input[type="range"]::-webkit-slider-thumb {
-  appearance: none; width: 20px; height: 20px; border-radius: 50%; margin-top: -8px;
-  background: var(--gold); border: 2px solid #1A1408; box-shadow: 0 0 0 1px var(--bronze);
+  appearance: none; width: 22px; height: 22px; border-radius: 50%; margin-top: -8px;
+  background: radial-gradient(circle at 50% 45%, #F6D48A 0 2px, var(--gold) 2.5px 100%);
+  border: 2px solid #1A1408;
+  box-shadow: 0 0 0 1px var(--bronze), 0 2px 6px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.35);
+  transition: transform var(--t-fast) var(--e-out);
 }
-.tar-dial input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--socket); }
+@media (hover: hover) { .tar-dial input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.08); } }
+.tar-dial input[type="range"]:active::-webkit-slider-thumb { transform: scale(0.96); }
+.tar-dial input[type="range"]::-moz-range-track {
+  height: 6px; border-radius: 3px;
+  background: linear-gradient(to right, var(--socket) min(50%, var(--v)), var(--gold) min(50%, var(--v)), var(--gold) max(50%, var(--v)), var(--socket) max(50%, var(--v)));
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.7);
+}
 .tar-dial input[type="range"]::-moz-range-thumb {
   width: 18px; height: 18px; border-radius: 50%; background: var(--gold); border: 2px solid #1A1408;
+  box-shadow: 0 0 0 1px var(--bronze), 0 2px 6px rgba(0,0,0,0.55);
 }
 .tar-dial input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
-.tar-dial-ends { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ash); margin-top: var(--s1); }
+.tar-dial-ends { display: flex; justify-content: space-between; font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bronze); margin-top: var(--s2); }
 
 /* stage 3: the gallery — today centered, half again as large; history trails left */
 .tar-strip {
@@ -2556,17 +2600,6 @@ li.is-done .qg { color: var(--verdant); }
 }
 @media (hover: hover) { .j3-tick:hover { border-color: var(--bronze); } }
 .j3-row.done .j3-in { color: var(--ash); text-decoration: line-through; text-decoration-color: var(--mortar-2); }
-/* the diary: a row per written morning, the day set small in the display face */
-.j3-drow { display: flex; gap: var(--s4); align-items: flex-start; padding: var(--s2) 0; }
-.j3-drow + .j3-drow { border-top: 1px solid rgba(62,53,39,0.5); }
-.j3-dday { flex: none; width: 128px; padding-top: 7px; font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); line-height: 1.3; }
-.j3-dday .dd { display: block; font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0; color: var(--mortar-2); margin-top: 2px; }
-.j3-drow.is-today .j3-dday { color: var(--gold); }
-.j3-dtext { flex: 1 1 auto; min-width: 0; min-height: 44px; resize: vertical; background: none; border: 0; border-bottom: 1px dashed var(--j3-rule);
-  color: var(--parchment); font: inherit; font-size: 0.9375rem; line-height: var(--lh); padding: 6px 0; }
-.j3-dtext::placeholder { color: var(--mortar-2); }
-.j3-dtext:focus-visible { outline: none; border-bottom-color: var(--gold); }
-@media (max-width: 700px) { .j3-drow { flex-direction: column; gap: 2px; } .j3-dday { width: auto; padding-top: 0; } }
 .j3-cats { display: flex; flex-wrap: wrap; gap: 4px; padding-bottom: var(--s2); }
 .j3-cat {
   appearance: none; background: none; border: 1px solid var(--j3-rule); border-radius: 999px;
@@ -2734,6 +2767,80 @@ li.is-done .qg { color: var(--verdant); }
     transition-duration: 0.01ms !important;
   }
 }
+/* ================= diary — the morning page ================= */
+/* one column on a 34em measure; the page is the only lit thing */
+.dy { max-width: 34em; margin: 0 auto; padding: var(--s6) var(--s4) var(--s8); font-size: 1.0625rem; }
+@media (min-width: 700px) { .dy { font-size: 1rem; } }
+.dy-head { display: flex; flex-direction: column; gap: var(--s3); margin-bottom: var(--s5); }
+.dy-date { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
+.dy-date.is-today { color: var(--gold); }
+/* the month: one dot a day, gold where a morning was written, today ringed — no number */
+.dy-month { display: flex; flex-wrap: wrap; gap: 6px; min-height: 6px; }
+.dy-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mortar-2); }
+.dy-dot.is-on { background: var(--gold); }
+.dy-dot.is-today { box-shadow: 0 0 0 2px var(--stone-1), 0 0 0 3px var(--bronze); }
+/* the page: stone at rest, the pool with focus; grows, never scrolls inside itself */
+.dy-page {
+  display: block; width: 100%; box-sizing: border-box; min-height: calc(4 * 1.6em + 2 * var(--s4));
+  resize: none; overflow: hidden;
+  background: var(--stone-2); border: 0; border-radius: var(--r-md); padding: var(--s4);
+  box-shadow: inset 0 1px 0 var(--bevel);
+  color: var(--parchment); font: inherit; line-height: 1.6;
+  transition: background var(--t-pool) var(--e-out);
+}
+.dy-page:focus { outline: none; background: var(--pool); }
+.dy-page::placeholder { color: var(--mortar-2); }
+/* the mark: a rule that fills to 100 words and stays full; the count at its end */
+.dy-mark { display: flex; align-items: center; gap: var(--s3); margin: var(--s2) 0 var(--s5); }
+.dy-rule { flex: 1; height: 1px; background: linear-gradient(to right, var(--bronze) calc(var(--fill, 0) * 100%), var(--mortar) 0); }
+.dy-count { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
+.dy-count:empty { min-width: 0; }   /* no words yet: the rule runs the full width */
+/* three lines: wet while written, dry when they commit */
+.dy-three { display: grid; }
+.dy-line {
+  width: 100%; box-sizing: border-box; min-height: 44px; padding: 0 var(--s1);
+  background: none; border: 0; border-bottom: 1px dashed var(--mortar);
+  color: var(--ink-dry); font: inherit;
+  transition: color var(--t-settle) var(--e-out), border-color var(--t-fast) var(--e-out);
+}
+.dy-line:focus { outline: none; color: var(--ink-wet); border-bottom-color: var(--gold); }
+/* the drawer: closed on every load, its verb stated at rest */
+.dy-drawer { margin-top: var(--s7); }
+.dy-fold {
+  appearance: none; background: none; border: 0; min-height: 44px; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--s2);
+  font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash);
+  transition: color var(--t-fast) var(--e-out);
+}
+.dy-fold svg { width: 14px; height: 14px; transition: transform var(--t-fast) var(--e-out); }
+.dy-fold[aria-expanded="true"] svg { transform: rotate(90deg); }
+@media (hover: hover) { .dy-fold:hover { color: var(--dust); } }
+.dy-fold:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+.dy-past { margin-top: var(--s2); }
+.dy-none { font-size: 0.875rem; color: var(--ash); padding: var(--s2) 0; }
+.dy-mh { font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin: var(--s4) 0 var(--s1); }
+.dy-row {
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: var(--s3); align-items: baseline;
+  width: 100%; min-height: 44px; padding: var(--s2) var(--s1);
+  background: none; border: 0; border-top: 1px solid rgba(62,53,39,0.5);
+  color: var(--dust); font: inherit; text-align: left; cursor: pointer;
+}
+@media (hover: hover) { .dy-row:hover .dy-rsnip { color: var(--parchment); } }
+.dy-row:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-sm); }
+.dy-rday { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); white-space: nowrap; }
+.dy-row[aria-expanded="true"] .dy-rday { color: var(--gold); }
+.dy-rtime { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); font-variant-numeric: tabular-nums; }
+.dy-rsnip { font-size: 0.875rem; color: var(--dust); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dy-open { padding: var(--s2) 0 var(--s4); }
+.dy-open .dy-date { margin-bottom: var(--s3); }
+/* the gesture: while the page has focus, the hall dims around it */
+body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-writing .topbar,
+body.is-writing .dy-head, body.is-writing .dy-drawer { opacity: 0.6; }
+.hero, .tabs, .crests, .topbar, .dy-head, .dy-drawer { transition: opacity var(--t-pool) var(--e-out); }
+/* the hero's way in when there is no birth yet */
+.sign-pick.is-unset { color: var(--ash); }
+.sign-pick.is-unset .sig { color: var(--ash); }
+
 /* ================= astrology — the plate ================= */
 /* editorial register, manuscript grid: the plate alone, centred, everything else beneath */
 .astro { max-width: 880px; margin: 0 auto; padding: var(--s6) var(--s4) var(--s8); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s5); justify-items: center; }
@@ -2811,8 +2918,8 @@ li.is-done .qg { color: var(--verdant); }
         aria-selected="false" aria-controls="viewTomes" tabindex="-1">Tomes</button>
       <button type="button" class="tab" role="tab" id="tabTarot" data-view="tarot"
         aria-selected="false" aria-controls="viewTarot" tabindex="-1">Tarot</button>
-      <button type="button" class="tab" role="tab" id="tabAstro" data-view="astro"
-        aria-selected="false" aria-controls="viewAstro" tabindex="-1">Astrology</button>
+      <button type="button" class="tab" role="tab" id="tabDiary" data-view="diary"
+        aria-selected="false" aria-controls="viewDiary" tabindex="-1">Diary</button>
     </nav>
 
     <div class="tools">
@@ -2853,7 +2960,8 @@ li.is-done .qg { color: var(--verdant); }
   </div>
   <div id="viewCamp" role="tabpanel" aria-labelledby="tabCamp" hidden></div>
   <div id="viewTarot" role="tabpanel" aria-labelledby="tabTarot" hidden></div>
-  <div id="viewAstro" role="tabpanel" aria-labelledby="tabAstro" hidden></div>
+  <div id="viewAstro" role="tabpanel" aria-label="Astrology" hidden></div>
+  <div id="viewDiary" role="tabpanel" aria-labelledby="tabDiary" hidden></div>
   <div id="viewTomes" role="tabpanel" aria-labelledby="tabTomes" hidden></div>
 
 <div id="classPop" popover>
@@ -2871,15 +2979,6 @@ li.is-done .qg { color: var(--verdant); }
       <svg class="g" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       Add skill
     </button>
-  </div>
-  <div class="cfg-sec">
-    <span class="cfg-h">Backup</span>
-    <div class="cfg-row">
-      <button class="btn btn-ghost btn-sm" data-action="export" type="button">Download board</button>
-      <button class="btn btn-ghost btn-sm" data-action="import" type="button">Restore from file</button>
-    </div>
-    <input type="file" id="impFile" accept="application/json,.json" hidden>
-    <p class="cloud-note" id="impNote"></p>
   </div>
   <div class="cfg-sec">
     <span class="cfg-h">Cloud <span class="cloud-state" id="cloudState" aria-live="polite"></span></span>
@@ -5951,12 +6050,16 @@ function normaliseBook(b) {
   b.bucket    = Array.isArray(b.bucket) ? b.bucket : [];
   b.days      = (b.days && typeof b.days === "object") ? b.days : {};
   b.titles    = (b.titles && typeof b.titles === "object") ? b.titles : {};
-  /* diary[weekKey][dow] = the morning's affirmation, one string per day */
+  /* diary[weekKey][dow] = { page, three: [a, b, c], at } — the morning. The first shape was
+     one string per day; it becomes { page } here, on every load, losing nothing. */
   b.diary     = (b.diary && typeof b.diary === "object") ? b.diary : {};
   Object.keys(b.diary).forEach(wk => {
     const w = b.diary[wk];
     if (!w || typeof w !== "object") { delete b.diary[wk]; return; }
-    Object.keys(w).forEach(d => { const s = String(w[d] || "").slice(0, 2000); if (s.trim()) w[d] = s; else delete w[d]; });
+    Object.keys(w).forEach(d => {
+      const e = dySan(w[d]);
+      if (e) w[d] = e; else delete w[d];
+    });
     if (!Object.keys(w).length) delete b.diary[wk];
   });
   b.habits.forEach(x => {
@@ -6006,8 +6109,9 @@ function markSVG(m) {
 
 /* Journal 1 was removed in v4. The helpers above it - normaliseBook, book(), markSVG,
    isSched, schedLabel, schedTitle - stay: the journal is built on them. */
-const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", prof: "viewProf", tomes: "viewTomes", tarot: "viewTarot", astro: "viewAstro" };
-const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", prof: "tabProf", tomes: "tabTomes", tarot: "tabTarot", astro: "tabAstro" };
+const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", prof: "viewProf", tomes: "viewTomes", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro" };
+/* astrology has no tab: the plate is reached through the sun sign on the hero card */
+const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", prof: "tabProf", tomes: "tabTomes", tarot: "tabTarot", diary: "tabDiary" };
 function setView(v) {
   view = VIEWS[v] ? v : "journal";
   Object.keys(VIEWS).forEach(k => {
@@ -6022,6 +6126,7 @@ function setView(v) {
   if (view === "camp") renderCampaigns();
   if (view === "tarot") renderTarot();
   if (view === "astro") renderAstro();
+  if (view === "diary") renderDiary();
   /* the skill panel reads from the library, so it can go stale while it is hidden -
      tick a book on the Tomes tab, come back, and the count was yesterday's */
   if (view === "skills") renderDetail(false);
@@ -8856,6 +8961,158 @@ function campAct(el) {
   }
 }
 
+
+/* ================= diary — the morning page ================= */
+/* Register product, layout zero-chrome canvas, one gesture (ink dries). The page is the
+   surface; the date, the month's dots, the three lines and the drawer are quiet furniture. */
+const DY_PAGE_MAX = 20000, DY_LINE_MAX = 200, DY_MARK = 100;
+/* one morning, sanitised: a string from the first shape becomes { page } */
+function dySan(v) {
+  if (typeof v === "string") v = { page: v };
+  if (!v || typeof v !== "object") return null;
+  const page = String(v.page || "").slice(0, DY_PAGE_MAX);
+  const three = Array.isArray(v.three) ? v.three.slice(0, 3).map(s => String(s || "").trim().slice(0, DY_LINE_MAX)) : [];
+  while (three.length && !three[three.length - 1]) three.pop();
+  const e = {};
+  if (page.trim()) e.page = page;
+  if (three.some(Boolean)) e.three = three;
+  if (!e.page && !e.three) return null;
+  if (typeof v.at === "number" && isFinite(v.at)) e.at = v.at;
+  return e;
+}
+const dyDow = d => (d.getDay() + 6) % 7;
+/* the inverse of weekKeyOf: the Monday a key names (ISO — week 1 holds 4 January) */
+function dyMondayOfKey(wk) {
+  const m = /^(\d{4})-W(\d{2})$/.exec(wk); if (!m) return null;
+  return addDays(mondayOf(new Date(+m[1], 0, 4)), (+m[2] - 1) * 7);
+}
+const dyGet = (b, wk, dow) => (b.diary[wk] && b.diary[wk][dow]) || null;
+const dyWords = s => { const x = String(s || "").trim(); return x ? x.split(/\s+/).length : 0; };
+const dyTime = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
+const dyDateLine = d => DOW_LONG[dyDow(d)] + ", " + d.getDate() + " " + MONTHS[d.getMonth()];
+/* every written morning, newest first */
+function dyAll(b) {
+  const out = [];
+  Object.keys(b.diary).forEach(wk => {
+    const mon = dyMondayOfKey(wk); if (!mon) return;
+    Object.keys(b.diary[wk]).forEach(dow => { const e = b.diary[wk][dow]; if (e) out.push({ wk, dow: +dow, date: addDays(mon, +dow), e }); });
+  });
+  return out.sort((a, c) => c.date - a.date);
+}
+let dyDrawer = false, dyOpen = null;           /* closed on every load; one past morning open at a time */
+
+/* the station: a page and three lines for one morning. The ritual mounts this unchanged. */
+function dyStationHTML(b, wk, dow) {
+  const e = dyGet(b, wk, dow) || {}, three = e.three || [], words = dyWords(e.page);
+  const fill = Math.min(1, words / DY_MARK);
+  let h = '<div class="dy-station" data-wk="' + wk + '" data-dow="' + dow + '">' +
+    '<textarea class="dy-page" data-dy="page" data-wk="' + wk + '" data-dow="' + dow + '" rows="4" maxlength="' + DY_PAGE_MAX + '"' +
+      ' aria-label="The page"' + (e.page ? "" : ' placeholder="This morning I\u2026"') + '>' + esc(e.page || "") + "</textarea>" +
+    '<div class="dy-mark" style="--fill:' + fill.toFixed(3) + '"><span class="dy-rule"></span>' +
+      '<span class="dy-count">' + (words ? words : "") + "</span></div>" +
+    '<div class="dy-three">';
+  for (let i = 0; i < 3; i++) h += '<input class="dy-line" type="text" data-dy="line" data-wk="' + wk + '" data-dow="' + dow + '" data-i="' + i +
+    '" maxlength="' + DY_LINE_MAX + '" aria-label="' + ["First", "Second", "Third"][i] + ' of three" value="' + esc(three[i] || "") + '">';
+  return h + "</div></div>";
+}
+function dyMonthHTML(b, today) {
+  const y = today.getFullYear(), m = today.getMonth(), n = new Date(y, m + 1, 0).getDate();
+  let h = '<div class="dy-month" role="img" aria-label="' + MONTHS[m] + ', mornings written">';
+  for (let d = 1; d <= n; d++) {
+    const dt = new Date(y, m, d), on = !!dyGet(b, weekKeyOf(dt), dyDow(dt));
+    h += '<span class="dy-dot' + (on ? " is-on" : "") + (d === today.getDate() ? " is-today" : "") + '"></span>';
+  }
+  return h + "</div>";
+}
+function dyPastHTML(b, today) {
+  const tk = weekKeyOf(today), td = dyDow(today);
+  const all = dyAll(b).filter(x => !(x.wk === tk && x.dow === td));
+  if (!all.length) return '<p class="dy-none">Nothing yet. Today is the first.</p>';
+  let h = "", lastM = "";
+  all.forEach(x => {
+    const mk = MONTHS[x.date.getMonth()] + (x.date.getFullYear() === today.getFullYear() ? "" : " " + x.date.getFullYear());
+    if (mk !== lastM) { h += '<p class="dy-mh">' + mk + "</p>"; lastM = mk; }
+    const open = dyOpen && dyOpen.wk === x.wk && dyOpen.dow === x.dow;
+    const snip = (x.e.page || (x.e.three || []).filter(Boolean)[0] || "").replace(/\s+/g, " ").trim();
+    h += '<button type="button" class="dy-row" data-dy="open" data-wk="' + x.wk + '" data-dow="' + x.dow + '" aria-expanded="' + open + '">' +
+      '<span class="dy-rday">' + DOW_LONG[x.dow].slice(0, 3) + " \u00b7 " + String(x.date.getDate()).padStart(2, "0") + "/" + String(x.date.getMonth() + 1).padStart(2, "0") + "</span>" +
+      '<span class="dy-rtime">' + (x.e.at ? dyTime(x.e.at) : "") + "</span>" +
+      '<span class="dy-rsnip">' + esc(snip.slice(0, 90)) + "</span></button>";
+    if (open) h += '<div class="dy-open"><p class="dy-date">' + dyDateLine(x.date) + "</p>" + dyStationHTML(b, x.wk, x.dow) + "</div>";
+  });
+  return h;
+}
+function renderDiary() {
+  const el = $("#viewDiary"); if (!el) return;
+  const b = book(), today = new Date(), wk = weekKeyOf(today), dow = dyDow(today);
+  el.innerHTML = '<section class="dy">' +
+    '<header class="dy-head"><p class="dy-date is-today">' + dyDateLine(today) + "</p>" + dyMonthHTML(b, today) + "</header>" +
+    dyStationHTML(b, wk, dow) +
+    '<div class="dy-drawer"><button type="button" class="dy-fold" data-dy="drawer" aria-expanded="' + dyDrawer + '" aria-controls="dyPast">' +
+      Q_SVG('<path d="M9 6l6 6-6 6"/>', "qg") + "Past mornings</button>" +
+      '<div class="dy-past" id="dyPast"' + (dyDrawer ? "" : " hidden") + ">" + (dyDrawer ? dyPastHTML(b, today) : "") + "</div></div>" +
+    "</section>";
+  el.querySelectorAll(".dy-page").forEach(dyAutosize);
+}
+function dyAutosize(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+/* while typing: the page grows and the rule fills. Nothing is saved until the field commits. */
+function dyLive(ta) {
+  dyAutosize(ta);
+  const mark = ta.parentElement.querySelector(".dy-mark"), words = dyWords(ta.value);
+  if (mark) { mark.style.setProperty("--fill", Math.min(1, words / DY_MARK).toFixed(3)); mark.querySelector(".dy-count").textContent = words ? words : ""; }
+}
+/* commit on change, like every field in the app */
+function dyEdit(t) {
+  const b = book(), wk = t.dataset.wk, dow = t.dataset.dow;
+  const w = (b.diary[wk] = b.diary[wk] || {});
+  const cur = dySan(w[dow]) || {};
+  const page = cur.page || "", three = (cur.three || []).slice();
+  if (t.dataset.dy === "page") { const v = t.value.slice(0, DY_PAGE_MAX); cur.page = v; }
+  else { three[+t.dataset.i] = t.value.trim().slice(0, DY_LINE_MAX); cur.three = three; }
+  const had = !!(page.trim() || (cur.three || []).some(Boolean)) || !!w[dow];
+  const next = dySan(cur);
+  if (next) { if (!next.at && !had) next.at = Date.now(); else if (cur.at) next.at = cur.at; w[dow] = next; }
+  else delete w[dow];
+  if (!Object.keys(w).length) delete b.diary[wk];
+  save();
+  /* in place: the dot for today, never a re-render that would steal the next field's focus */
+  const today = new Date();
+  if (wk === weekKeyOf(today) && +dow === dyDow(today)) {
+    const dot = document.querySelector("#viewDiary .dy-dot.is-today");
+    if (dot) dot.classList.toggle("is-on", !!next);
+  }
+}
+function dyAct(el) {
+  const b = book(), today = new Date();
+  if (el.dataset.dy === "drawer") {
+    dyDrawer = !dyDrawer;
+    el.setAttribute("aria-expanded", String(dyDrawer));
+    const past = $("#dyPast"); if (!past) return;
+    past.hidden = !dyDrawer; past.innerHTML = dyDrawer ? dyPastHTML(b, today) : "";
+    past.querySelectorAll(".dy-page").forEach(dyAutosize);
+    return;
+  }
+  if (el.dataset.dy === "open") {
+    const wk = el.dataset.wk, dow = +el.dataset.dow;
+    dyOpen = dyOpen && dyOpen.wk === wk && dyOpen.dow === dow ? null : { wk, dow };
+    const past = $("#dyPast"); if (!past) return;
+    past.innerHTML = dyPastHTML(b, today);
+    past.querySelectorAll(".dy-page").forEach(dyAutosize);
+    if (dyOpen) { const row = past.querySelector('.dy-row[aria-expanded="true"]'); if (row) row.focus(); }
+  }
+}
+document.addEventListener("change", e => {
+  const t = e.target && e.target.closest && e.target.closest("[data-dy]");
+  if (t && (t.dataset.dy === "page" || t.dataset.dy === "line")) dyEdit(t);
+});
+document.addEventListener("input", e => { if (e.target && e.target.classList && e.target.classList.contains("dy-page")) dyLive(e.target); });
+document.addEventListener("focusin",  e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.add("is-writing"); });
+document.addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.remove("is-writing"); });
+document.addEventListener("click", e => {
+  const t = e.target && e.target.closest && e.target.closest('[data-dy="drawer"], [data-dy="open"]');
+  if (t) dyAct(t);
+});
+
 /* ================= astrology — the plate ================= */
 /* Register editorial, layout manuscript grid, lane celestial atlas plate. The chart states;
    it does not read. Everything on the plate is drawn from computed numbers, and the twin
@@ -9367,6 +9624,18 @@ const FEELINGS = [
   ["Ambiguous", ["Restless", "Wistful", "Awed", "Torn", "Tender", "Longing"]],
   ["Negative", ["Sad", "Anxious", "Frustrated", "Drained", "Lonely", "Afraid", "Angry"]]
 ];
+/* one line each, in the almanac voice — shown after a second's hover, read with the word */
+const FEEL_TIP = {
+  Joyful: "Light and bright, wanting to share it", Happy: "Content: things are as they should be",
+  Excited: "Leaning forward; something is coming", Grateful: "Glad for what is already here",
+  Hopeful: "Expecting good, without proof yet", Confident: "Sure of your footing", Calm: "Settled; nothing pulls at you",
+  Indifferent: "It passes through; nothing catches", Curious: "You want to know more", Thoughtful: "Turning it over, slowly",
+  Surprised: "Not what you expected, for better or worse", Focused: "Narrowed to the thing in front of you",
+  Restless: "Wanting to move, unsure where to", Wistful: "Missing something gently, half sweet", Awed: "Small before something large",
+  Torn: "Pulled two ways at once", Tender: "Soft, open, easily bruised", Longing: "An ache toward what is not here",
+  Sad: "Heavy and low, wanting quiet", Anxious: "Braced for something that has not happened", Frustrated: "Blocked, and pushing against it",
+  Drained: "Nothing left to give today", Lonely: "Unaccompanied, even in company", Afraid: "Something feels dangerous", Angry: "Hot: a line was crossed"
+};
 
 const tarKey = (d) => {
   const x = d || new Date();
@@ -9461,6 +9730,8 @@ function tarVal(v) {
   save();
   const n = document.querySelector("#viewTarot .tar-dial .n");
   if (n) n.textContent = rec.v;
+  const r = document.querySelector("#tarVal");
+  if (r) r.style.setProperty("--v", rec.v + "%");
 }
 function tarNext() { const r = tarRec(); if (r) { r.seen = 1; save(); renderTarot(); } }
 function tarFinish() { const r = tarRec(); if (r) { r.land = 1; tarView = null; tarSel = tarKey(); save(); renderTarot(); } }
@@ -9527,15 +9798,6 @@ function tarNameHTML(c, rev, small) {
   return '<h2 class="tar-name' + (small ? " sm" : "") + '">' + esc(c.n) + "</h2>" +
     (rev ? '<p class="tar-rev-l">Reversed</p>' : "");
 }
-/* the counter-reading stays on the page, folded — deleted would be dishonest, always-open
-   was noise */
-function tarOtherHTML(c, rev) {
-  const kw = rev ? c.kw : c.rkw;
-  return '<details class="tar-other"><summary>' + (rev ? "Upright, it would say" : "Reversed, it would say") +
-    Q_SVG('<path d="M6 9.5 12 15.5 18 9.5"/>', "qg chev") + "</summary>" +
-    '<p class="tar-kw dim">' + kw.map(esc).join(" \u00b7 ") + "</p>" +
-    '<p class="tar-meaning dim">' + esc(rev ? c.up : c.rev) + "</p></details>";
-}
 const TAR_DATE = () => new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
 /* the landing values, over time — dots and a line, nothing else */
@@ -9589,7 +9851,6 @@ function renderTarot(landing) {
       tarNameHTML(card, rev) +
       tarPills(rev ? card.rkw : card.kw) +
       '<p class="tar-meaning">' + esc(rev ? card.rev : card.up) + "</p>" +
-      tarOtherHTML(card, rev) +
       '<p class="tar-go"><button type="button" class="btn btn-primary" data-tar="next">Continue</button></p>' +
       tarBenchHTML() + "</div>";
     if (landing) setTimeout(() => {
@@ -9607,7 +9868,8 @@ function renderTarot(landing) {
       '<div class="tar-feel">' + FEELINGS.map(g =>
         '<div class="tar-fg"><span class="tar-fg-l">' + g[0] + '</span><div class="tar-fw">' +
         g[1].map(w => '<button type="button" class="tar-chip" data-tar="feel" data-w="' + w +
-          '" aria-pressed="' + (rec.f.indexOf(w) > -1) + '">' + w + "</button>").join("") +
+          '" aria-pressed="' + (rec.f.indexOf(w) > -1) + '"' + (FEEL_TIP[w] ? ' data-tip="' + esc(FEEL_TIP[w]) + '"' : "") + '>' + w +
+          (FEEL_TIP[w] ? '<span class="vh">, ' + esc(FEEL_TIP[w]) + "</span>" : "") + "</button>").join("") +
         "</div></div>").join("") + "</div>" +
       '<div class="tar-dial"><label class="label" for="tarVal">How do you feel about it</label>' +
       '<div class="row"><input type="range" id="tarVal" min="0" max="100" step="1" value="' + v +
@@ -9616,7 +9878,7 @@ function renderTarot(landing) {
       '<p class="tar-go"><button type="button" class="btn btn-primary" data-tar="finish">Finish the reading</button></p>' +
       tarBenchHTML() + "</div>";
     const r = el.querySelector("#tarVal");
-    if (r) r.addEventListener("input", () => tarVal(r.value));
+    if (r) { r.style.setProperty("--v", v + "%"); r.addEventListener("input", () => tarVal(r.value)); }
     return;
   }
 
@@ -9640,7 +9902,6 @@ function renderTarot(landing) {
     tarNameHTML(selCard, selRev, true) +
     tarPills(selRev ? selCard.rkw : selCard.kw) +
     '<p class="tar-meaning">' + esc(selRev ? selCard.rev : selCard.up) + "</p>" +
-    tarOtherHTML(selCard, selRev) +
     '<p class="tar-landed">' +
       (selRec.f && selRec.f.length ? selRec.f.map(esc).join(" \u00b7 ") : '<span class="q">no feelings picked</span>') +
       (typeof selRec.v === "number" ? ' <span class="v">\u00b7 landed at <b>' + selRec.v + "</b></span>" : "") +
@@ -9889,20 +10150,6 @@ function renderJ3() {
   const checks = b.checks[key] || {};
   const days = b.days[key] || {};
 
-  /* ---- diary: one morning per row ---- */
-  const dw = b.diary[key] || {};
-  const dayLabel = d => { const dt = addDays(j3Week, d); return DOW_LONG[d] + ' <span class="dd">' +
-    String(dt.getDate()).padStart(2, "0") + "/" + String(dt.getMonth() + 1).padStart(2, "0") + "</span>"; };
-  let diary = '<section class="j3-wide j3-diary"><div class="j3-sec-h"><span class="label">Diary</span></div>';
-  for (let d = 0; d < 7; d++) {
-    const txt = dw[d] || "", today = isThisWeek && d === todayDow;
-    if (!txt && !today) continue;
-    diary += '<div class="j3-drow' + (today ? " is-today" : "") + '"><span class="j3-dday">' + dayLabel(d) + "</span>" +
-      '<textarea class="j3-dtext" data-j3="y-text" data-dow="' + d + '" rows="2" maxlength="2000" aria-label="' + DOW_LONG[d] + ' morning"' +
-      (today && !txt ? ' placeholder="This morning I\u2026"' : "") + ">" + esc(txt) + "</textarea></div>";
-  }
-  diary += "</section>";
-
   /* ---- merged notes + reminders ---- */
   const entries = j3Entries(b, key);
   let notes = '<section><div class="j3-sec-h"><span class="label">Notes</span>' +
@@ -10044,7 +10291,7 @@ function renderJ3() {
         '<input class="j3-title" data-j3="wk-title" value="' + esc(b.titles[key] || "") +
           '" placeholder="name this week\u2026" aria-label="Week title">' +
       "</div>" +
-      '<div class="j3-page left"><div class="j3-left-grid">' + diary + notes + bucket + habits + "</div></div>" +
+      '<div class="j3-page left"><div class="j3-left-grid">' + notes + bucket + habits + "</div></div>" +
       '<div class="j3-spine" aria-hidden="true"></div>' +
       '<div class="j3-page right">' + right + "</div>" +
     "</div>";
@@ -10062,9 +10309,6 @@ function j3Edit(t) {
     case "h-name":  { const x = b.habits.find(y => y.id === id); if (x) x.name = v; break; }
     case "d-text":  { const e = ((b.days[key] || {})[t.dataset.dow] || []).find(x => x.id === id);
                       if (e) e.text = v; break; }
-    case "y-text":  { const w = (b.diary[key] = b.diary[key] || {}), d = t.dataset.dow;
-                      if (v.trim()) w[d] = v.trim().slice(0, 2000); else delete w[d];
-                      if (!Object.keys(w).length) delete b.diary[key]; break; }
     case "wk-title":{ if (v.trim()) b.titles[key] = v.trim().slice(0, 60); else delete b.titles[key]; break; }
     case "s-count": { const x = b.habits.find(y => y.id === id);
                       if (x) x.schedule = { type: "count", n: Math.max(1, Math.min(7, Number(v) || 1)) };
@@ -10228,6 +10472,10 @@ function renderHero() {
           : `<button type="button" class="class-pick" data-action="classpick" popovertarget="classPop"
                aria-label="Class: ${esc(className(hero))}. Change it.">
                <span class="sig" aria-hidden="true">${csig(hero.cls, 18)}</span>${esc(className(hero))}
+             </button>
+             <button type="button" class="class-pick sign-pick is-unset" data-action="astro-open"
+               aria-label="No birth set. Open the chart to set it.">
+               <span class="sig" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></span>Sign
              </button>`; })()}
       </span>
     </div>`;
@@ -11581,8 +11829,9 @@ function addSkill() {
 function takeSnapshot() { snapshot = JSON.parse(JSON.stringify(state)); }
 
 /* ---------- the board as a file ---------- */
-/* One Supabase row and one browser's localStorage are two copies of the same fragility.
-   This is the third, and the only one he can hold. */
+/* No longer in the panel (owner's call, once sign-in made the cloud row the record). Kept
+   as the emergency path: exportBoard() from the console downloads the board; importBoard(file)
+   restores one. DEPLOY.md says how. */
 function impNote(msg, bad) {
   const n = $("#impNote");
   if (!n) return;
@@ -11820,12 +12069,6 @@ document.addEventListener("click", e => {
     else if (a === "birth-cancel") { const d = $("#birthDlg"); if (d) d.close(); }
     else if (a === "birth-manual") { const m = $("#bManual"); if (m) { m.hidden = !m.hidden; birthPreview(); } }
     else if (a === "astro-open") setView("astro");
-    return;
-  }
-  const bak = e.target.closest('[data-action="export"], [data-action="import"]');
-  if (bak) {
-    if (bak.dataset.action === "export") exportBoard();
-    else { const f = $("#impFile"); if (f) f.click(); }
     return;
   }
   const bkSkill = e.target.closest("[data-bk-skill]");
