@@ -231,7 +231,6 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
   gap: var(--s3);
   padding-bottom: var(--s3);
   margin-bottom: var(--s5);
-  border-bottom: 1px solid var(--mortar);
 }
 .brand { display: flex; align-items: baseline; gap: var(--s3); min-width: 0; }
 .brand .mark { align-self: center; color: var(--gold); }
@@ -5352,6 +5351,20 @@ function sanitize(s) {
       x.assess.read = (x.assess.read && typeof x.assess.read === "object") ? x.assess.read : {};
     }
   });
+  /* Every book on the shelf holds one of three states, whatever shape its record arrived in:
+     a v4 boolean, a stray value from an older build, a row edited by hand. Anything else
+     becomes "not started" rather than a key the mark table has no answer for — which is how a
+     tick came to read "undefined". */
+  if (!s.tomes || typeof s.tomes !== "object") s.tomes = {};
+  Object.keys(s.tomes).forEach(id => {
+    const r = s.tomes[id];
+    if (!r || typeof r !== "object") { delete s.tomes[id]; return; }
+    if (r.read !== undefined) { if (!r.state) r.state = r.read ? "read" : ""; delete r.read; }
+    const v = String(r.state == null ? "" : r.state).trim().toLowerCase();
+    r.state = (v === "read" || v === "seal-6") ? v : "";
+    if (!Array.isArray(r.tags)) r.tags = [];
+    if (!r.tags.length && !r.state) delete s.tomes[id];
+  });
   return s;
 }
 
@@ -5965,6 +5978,7 @@ function loadCloud() {
   catch (e) { cloud = null; }
   if (cloud && cloud.url && cloud.key && cloud.board) cloudState = "ok";
   else cloud = null;
+  cloudSeen = (cloud && typeof cloud.seen === "string") ? cloud.seen : null;
 }
 function saveCloud() {
   try {
@@ -5972,6 +5986,21 @@ function saveCloud() {
     else localStorage.removeItem(CLOUD_KEY);
   } catch (e) {}
 }
+/* The guard and the dirty flag belong to the record, not to the page. Held only in memory they
+   were forgotten on every reload, and a reload that has forgotten what it last saw treats the
+   cloud row as news and pulls it over the board. */
+function cloudMark(patch) { if (!cloud) return; Object.assign(cloud, patch); saveCloud(); }
+/* A cheap fingerprint of the whole board. Whether there is unsent work is a question about
+   the board, not about who last called save() — boot-time migrations call it too, and a flag
+   set by those made every load look dirty, which would stop a second machine ever catching up. */
+function boardStamp() {
+  const t = JSON.stringify(state);
+  let h = 5381;
+  for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0;
+  return t.length.toString(36) + ":" + h.toString(36);
+}
+/* the local board says something the cloud row has not been told */
+const cloudAhead = () => !!cloud && cloud.stamp !== boardStamp();
 const cloudUrl = () => cloud.url.replace(/\/+$/, "") + "/rest/v1/" + CLOUD_TABLE;
 /* Only a JWT belongs in Authorization. The legacy anon key IS one; a
    sb_publishable_... key is not, and PostgREST tries to parse whatever sits in that
@@ -6050,7 +6079,7 @@ async function cloudGet(cols) {
 }
 async function cloudPull() {
   const row = await cloudGet();
-  if (!row) { cloudSeen = null; return false; }
+  if (!row) { cloudSeen = null; cloudMark({ seen: null }); return false; }
   cloudSeen = row.updated_at;
   const up = upgrade(row.data);
   if (!up) throw new Error("that row does not hold a Skillstone board");
@@ -6059,15 +6088,18 @@ async function cloudPull() {
   runPolish(state);
   try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
   renderGrid(); renderDetail(false);
+  cloudDirty = false;                   /* the local board IS the cloud row now */
+  cloudMark({ seen: cloudSeen, stamp: boardStamp() });
   return true;
 }
-async function cloudPush() {
+async function cloudPush(opts) {
   if (!cloud) return;
+  const alive = !!(opts && opts.keepalive);   /* leaving the page: the request must outlive it */
   cloudSet("busy");
   try {
     let res;
     if (cloudSeen === null) {           /* no row yet - create it */
-      res = await fetch(cloudUrl(), { method: "POST",
+      res = await fetch(cloudUrl(), { method: "POST", keepalive: alive,
         headers: cloudHdr({ Prefer: "return=representation" }),
         body: JSON.stringify({ id: cloud.board, data: state }) });
       if (res.status === 409) {         /* the other machine created it first */
@@ -6077,7 +6109,7 @@ async function cloudPush() {
       }
     } else {
       res = await fetch(cloudUrl() + "?id=eq." + encodeURIComponent(cloud.board) +
-        "&updated_at=eq." + encodeURIComponent(cloudSeen), { method: "PATCH",
+        "&updated_at=eq." + encodeURIComponent(cloudSeen), { method: "PATCH", keepalive: alive,
         headers: cloudHdr({ Prefer: "return=representation" }),
         body: JSON.stringify({ data: state }) });
     }
@@ -6090,31 +6122,44 @@ async function cloudPush() {
       cloudSet("ok", ""); return;
     }
     cloudSeen = rows[0].updated_at;
+    cloudDirty = false;                 /* cleared here and nowhere else: a failed push still owes */
+    cloudMark({ seen: cloudSeen, stamp: boardStamp() });
     cloudSet("ok", "");
   } catch (e) { cloudState = "error"; renderCloud(); cloudFail(String(e.message || e), e.status); }
 }
 /* Every edit used to schedule a push 700ms out, which made a stepper session a stream of
-   network writes. The queue now only marks the board dirty; the clock below pushes every
-   three minutes if anything changed, and LEAVING the tab flushes at once — the two moments
-   that matter are "regularly" and "before the lid closes", not "after every tap". */
-const CLOUD_EVERY = 3 * 60 * 1000;
+   network writes. The queue only marks the board dirty; the clock below pushes every five
+   minutes if anything changed, and LEAVING the tab flushes at once — the two moments that
+   matter are "regularly" and "before the lid closes", not "after every tap".
+   The flag is written to the cloud record the first time a session dirties the board, so a
+   reload knows the local copy is ahead of the cloud and must not be overwritten by it. */
+const CLOUD_EVERY = 5 * 60 * 1000;
 let cloudDirty = false;
-function cloudQueue() { if (cloud) cloudDirty = true; }
-function cloudFlush() {
-  if (!cloud || !cloudDirty || cloudState === "busy") return;
-  cloudDirty = false;
-  cloudPush();
+function cloudQueue() { if (cloud) cloudDirty = true; }   /* the in-memory hint the clock reads */
+function cloudFlush(opts) {
+  if (!cloud || cloudState === "busy") return;
+  if (!cloudDirty && !cloudAhead()) return;   /* the flag is cheap; the fingerprint is the truth */
+  cloudPush(opts);                      /* cleared by the push, once it lands */
 }
 setInterval(() => { if (!document.hidden) cloudFlush(); }, CLOUD_EVERY);
-document.addEventListener("visibilitychange", () => { if (document.hidden) cloudFlush(); });
-window.addEventListener("pagehide", cloudFlush);
+document.addEventListener("visibilitychange", () => { if (document.hidden) cloudFlush({ keepalive: true }); });
+window.addEventListener("pagehide", () => cloudFlush({ keepalive: true }));
 /* came back to the tab: has the other machine written since we last looked?
    A queued local write outranks it - those edits are newer by definition. */
 async function cloudCheckFresh() {
-  if (!cloud || cloudDirty || document.hidden || cloudState === "busy") return;
+  if (!cloud || document.hidden || cloudState === "busy") return;
   try {
     const row = await cloudGet("updated_at");
-    if (!row || row.updated_at === cloudSeen) return;
+    if (!row) { cloudSeen = null; cloudMark({ seen: null }); cloudDirty = true; cloudFlush(); return; }
+    /* Work here that the cloud has not been told about outranks the row, whatever its stamp
+       says: it is what the owner is looking at. Write against what is actually there and send
+       it. Only a board that matches the last sync may be replaced by the cloud's copy. */
+    if (cloudAhead()) {
+      cloudSeen = row.updated_at;
+      cloudMark({ seen: cloudSeen });
+      cloudDirty = true; cloudFlush(); return;
+    }
+    if (row.updated_at === cloudSeen) return;
     await cloudPull();
     showToast("Reloaded \u2014 the cloud board changed elsewhere.", true);
     cloudSet("ok", "");
@@ -6896,7 +6941,7 @@ function tomeRowHTML(b) {
     '<div class="tm-line">' +
       '<button type="button" class="tm-tick" data-tm="state" data-id="' + b.id +
         '" aria-label="' + esc(b.title + " \u2014 " + TOME_WORD[st] + ". Mark as " + TOME_WORD[next]) +
-        '" title="' + esc(TOME_WORD[st]) + '">' + TOME_MARK[st] + "</button>" +
+        '" title="' + esc(TOME_WORD[st] || "") + '">' + (TOME_MARK[st] || "") + "</button>" +
       '<button type="button" class="tm-open" data-tm="open" data-id="' + b.id + '" aria-expanded="' + open + '">' +
         '<span class="tm-title">' + esc(b.title) + "</span>" +
         (b.author ? '<span class="tm-author">' + esc(b.author) + "</span>" : "") +
@@ -10530,8 +10575,8 @@ function tomeAct(t) {
       const st = tomeState(id);
       const next = TOME_STATES[(TOME_STATES.indexOf(st) + 1) % TOME_STATES.length];
       const li = t.closest(".tm-book");
-      t.textContent = TOME_MARK[st];
-      t.title = TOME_WORD[st];
+      t.textContent = TOME_MARK[st] || "";
+      t.title = TOME_WORD[st] || "";
       const bk = allBooks().find(x => x.id === id);
       t.setAttribute("aria-label", (bk ? bk.title : "") + " — " + TOME_WORD[st] +
         ". Mark as " + TOME_WORD[next]);
