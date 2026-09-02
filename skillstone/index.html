@@ -1166,18 +1166,35 @@ button.d-plaque {
 #emoPop:popover-open { display: flex; flex-direction: column; gap: var(--s2); }
 
 /* the cloud panel — same floating grammar as the emoji and class pickers */
-#cfgPop {
-  position: fixed; inset: auto; margin: 0;
-  width: 340px; padding: var(--s4);
-  background: var(--stone-2);
-  border: 1px solid var(--mortar-2);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-float);
-  color: var(--parchment);
-}
-#cfgPop:popover-open { display: flex; flex-direction: column; gap: var(--s5); }
+/* the settings screen: the popover grown into a dialog — two columns of the same stone */
+.cfg-dlg { width: min(760px, 94vw); max-height: 92vh; overflow: auto; padding: var(--s6) var(--s6) var(--s7);
+  background: var(--stone-2); border: 1px solid var(--mortar-2); border-radius: var(--r-md);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6), inset 0 1px 0 var(--bevel); color: var(--parchment); }
+.cfg-dlg::backdrop { background: rgba(8,7,6,0.62); }
+.cfg-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s4); margin-bottom: var(--s6); }
+.cfg-title { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; letter-spacing: 0.02em; margin: 0; }
+.cfg-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s6) var(--s8); }
+.cfg-col { display: flex; flex-direction: column; gap: var(--s6); }
+.cfg-l { font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ash); }
+/* the card backs: five radios, the chosen one ringed gold */
+.cfg-backs { display: flex; gap: var(--s3); flex-wrap: wrap; }
+.cfg-back { appearance: none; background: none; border: 0; padding: 0; cursor: pointer; display: grid; justify-items: center; gap: var(--s2); min-width: 44px; }
+.cfg-back .cb { width: 60px; height: 100px; border-radius: 5px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.45); transition: box-shadow var(--t-fast) var(--e-out), transform var(--t-fast) var(--e-out); }
+.cfg-back .cb svg { width: 60px; height: 100px; display: block; }
+.cfg-back[aria-checked="true"] .cb { box-shadow: 0 0 0 2px var(--gold), 0 6px 16px rgba(0,0,0,0.5); }
+@media (hover: hover) { .cfg-back:hover .cb { transform: translateY(-2px); } }
+.cfg-back .cn { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash); }
+.cfg-back[aria-checked="true"] .cn { color: var(--gold); }
+.cfg-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+/* the sky's dials: the tarot's channel, filling from the left */
+.cfg-dials { display: grid; gap: 0; width: 100%; }
+.cfg-dial { display: grid; grid-template-columns: 60px minmax(0, 1fr) 40px; align-items: center; column-gap: var(--s3); }
+.cfg-dl { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bronze); }
+.cfg-dn { font-family: var(--f-mono); font-size: 0.9375rem; color: var(--gold); text-align: right; font-variant-numeric: tabular-nums; }
+.cfg-dials.is-still { opacity: 0.45; }
+@media (max-width: 720px) { .cfg-grid { grid-template-columns: minmax(0, 1fr); } .cfg-dlg { padding: var(--s5) var(--s4) var(--s6); } }
 .cfg-gear { width: 40px; padding: 0; justify-content: center; }
-.cfg-sec { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; }
+.cfg-sec { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; min-width: 0; }
 .cfg-row { display: flex; gap: var(--s2); flex-wrap: wrap; }
 .auth-box { display: flex; flex-direction: column; gap: var(--s2); margin-bottom: var(--s3); }
 .auth-user { font-size: 0.8125rem; color: var(--dust); }
@@ -3070,7 +3087,7 @@ body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
     </nav>
 
     <div class="tools">
-      <button class="btn btn-ghost btn-sm cfg-gear" id="cfgBtn" type="button" popovertarget="cfgPop"
+      <button class="btn btn-ghost btn-sm cfg-gear" id="cfgBtn" type="button" data-action="settings"
         aria-label="Settings">
         <svg class="g" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
       </button>
@@ -3119,22 +3136,42 @@ body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
   </form>
   <div class="cls-birth"><button type="button" class="btn btn-ghost btn-sm" data-action="birth-open">Enter your birth</button></div>
 </div>
-<div id="cfgPop" popover aria-label="Settings">
-  <div class="cfg-sec">
+<dialog id="cfgDlg" class="cfg-dlg" aria-label="Settings">
+  <div class="cfg-top"><h2 class="cfg-title">Settings</h2><button type="button" class="btn btn-ghost btn-sm" data-action="settings-close">Close</button></div>
+  <div class="cfg-grid">
+  <section class="cfg-sec">
+    <span class="cfg-h">Tarot</span>
+    <span class="cfg-l">Card back</span>
+    <div class="cfg-backs" id="cfgBacks" role="radiogroup" aria-label="Card back"></div>
+    <span class="cfg-l">Sky</span>
+    <div class="astro-switch" role="group" aria-label="The sky behind the cards">
+      <button type="button" data-action="sky-on" data-v="0" aria-pressed="false">Still</button>
+      <button type="button" data-action="sky-on" data-v="1" aria-pressed="true">Moving</button>
+    </div>
+    <div class="cfg-dials" id="cfgDials">
+      <label class="cfg-dial"><span class="cfg-dl">Density</span><input type="range" class="dial-range tank" data-sky="density" min="10" max="100" step="1" value="60"><span class="cfg-dn">60</span></label>
+      <label class="cfg-dial"><span class="cfg-dl">Glow</span><input type="range" class="dial-range tank" data-sky="glow" min="10" max="100" step="1" value="55"><span class="cfg-dn">55</span></label>
+      <label class="cfg-dial"><span class="cfg-dl">Drift</span><input type="range" class="dial-range tank" data-sky="drift" min="10" max="100" step="1" value="40"><span class="cfg-dn">40</span></label>
+      <label class="cfg-dial"><span class="cfg-dl">Hue</span><input type="range" class="dial-range tank" data-sky="hue" min="0" max="360" step="1" value="26"><span class="cfg-dn">26</span></label>
+    </div>
+  </section>
+  <div class="cfg-col">
+  <section class="cfg-sec">
+    <span class="cfg-h">Diary</span>
+    <span class="cfg-l">Mood medallions</span>
+    <div class="astro-switch" role="group" aria-label="Mood medallions">
+      <button type="button" data-action="moods" data-v="symbols" aria-pressed="true">Symbols</button>
+      <button type="button" data-action="moods" data-v="faces" aria-pressed="false">Faces</button>
+    </div>
+  </section>
+  <section class="cfg-sec">
     <span class="cfg-h">Character</span>
     <button class="btn btn-ghost btn-sm" data-action="addskill" type="button">
       <svg class="g" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       Add skill
     </button>
-  </div>
-  <div class="cfg-sec">
-    <span class="cfg-h">Diary</span>
-    <div class="astro-switch" role="group" aria-label="Mood medallions">
-      <button type="button" data-action="moods" data-v="symbols" aria-pressed="true">Symbols</button>
-      <button type="button" data-action="moods" data-v="faces" aria-pressed="false">Faces</button>
-    </div>
-  </div>
-  <div class="cfg-sec">
+  </section>
+  <section class="cfg-sec">
     <span class="cfg-h">Cloud <span class="cloud-state" id="cloudState" aria-live="polite"></span></span>
   <div id="authBox" class="auth-box"></div>
   <form class="cloud-form" data-form="cloud">
@@ -3154,8 +3191,10 @@ body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
     </div>
     <p class="cloud-note" id="cloudNote"></p>
   </form>
+  </section>
   </div>
-</div>
+  </div>
+</dialog>
 <div id="emoPop" popover>
   <input type="text" class="paste" id="emoPaste" maxlength="8" placeholder="Paste any emoji, or Enter to use" aria-label="Paste any emoji">
   <div class="emo-grid" id="emoGrid" aria-label="Pick an emoji"></div>
@@ -5037,7 +5076,13 @@ function validV1(s) {
 /* a declaration, not a const arrow: SEED() calls this from load(), which runs long
    before this line is reached — a const would be in its temporal dead zone and a fresh
    board would crash on first open */
-function DEFAULT_HERO() { return { name: "Adventurer", cls: "wizard", clsName: "", portrait: null, birth: null, houses: "whole", moods: "symbols" }; }
+function DEFAULT_HERO() { return { name: "Adventurer", cls: "wizard", clsName: "", portrait: null, birth: null, houses: "whole", moods: "symbols", back: 0, sky: { on: 1, density: 60, glow: 55, drift: 40, hue: 26 } }; }
+/* the sky's dials, clamped: on/off, then four 0–100 readings (hue 0–360) */
+function sanSky(s) {
+  s = (s && typeof s === "object") ? s : {};
+  const num = (v, lo, hi, d) => { const n = Math.round(Number(v)); return isFinite(n) ? Math.max(lo, Math.min(hi, n)) : d; };
+  return { on: s.on === 0 || s.on === false ? 0 : 1, density: num(s.density, 10, 100, 60), glow: num(s.glow, 10, 100, 55), drift: num(s.drift, 10, 100, 40), hue: num(s.hue, 0, 360, 26) };
+}
 /* Every content migration, in order, in ONE place. It used to be written out twice — at
    startup and in cloudPull — and every new migration had to be appended to both by hand.
    Three callers made that a liability instead of a latent one: a board arriving by import
@@ -5060,6 +5105,8 @@ function sanitize(s) {
     birth: sanBirth(hero.birth),
     houses: hero.houses === "placidus" ? "placidus" : "whole",
     moods: hero.moods === "faces" ? "faces" : "symbols",       /* which medallion set the mood row shows */
+    back: [0, 1, 2, 3, 4].indexOf(Math.round(Number(hero.back))) > -1 ? Math.round(Number(hero.back)) : 0,   /* which card back */
+    sky: sanSky(hero.sky),
     portrait: (typeof hero.portrait === "string" && hero.portrait.startsWith("data:image")) ? hero.portrait : null
   };
   s.sel = s.sel || null;
@@ -5976,7 +6023,7 @@ async function cloudConnect() {
     }
     saveCloud();
     cloudSet("ok", "");
-    const pop = $("#cfgPop"); if (pop && pop.hidePopover) pop.hidePopover();
+    settingsClose();
   } catch (e) {
     cloud = prev; cloudSeen = prevSeen;
     cloudState = prev ? "ok" : "error";
@@ -6142,14 +6189,8 @@ function fillCloudFields() {
   if (!u.value) u.value = CLOUD_SUGGESTED;
   if (!b.value) b.value = newBoardId();
 }
+/* the cloud fields live in the settings dialog now; it fills them each time it opens */
 function bindCloud() {
-  const pop = $("#cfgPop");
-  if (!pop || !pop.showPopover) { const b = $("#cfgBtn"); if (b) b.hidden = true; return; }
-  bindPop(pop, () => $("#cfgBtn"), 340, "right", fillCloudFields);
-  /* Add skill starts a flow on the page — the panel's job is done */
-  pop.addEventListener("click", e => {
-    if (e.target.closest('[data-action="addskill"]')) pop.hidePopover();
-  });
   ["#cloudUrl", "#cloudKey", "#cloudBoard"].forEach(sel => {
     const i = $(sel);
     if (i) i.addEventListener("input", () => cloudMaybeCode(i));
@@ -9126,6 +9167,12 @@ function campAct(el) {
    does not run. Simplex noise after Stefan Gustavson (public domain). */
 const SKY = { n: 420, props: 9, baseTTL: 60, rangeTTL: 220, baseSpeed: 0.08, rangeSpeed: 0.9,
   baseR: 0.6, rangeR: 2.2, baseHue: 26, rangeHue: 28, steps: 6, xOff: 0.0011, yOff: 0.0011, zOff: 0.00045, alpha: 0.55, scale: 0.5 };
+/* the owner's dials over the constants: density scales the count (60 = 420), glow is the
+   peak alpha, drift scales the speed (40 = as drawn), hue is the base hue */
+function skyCfg() {
+  const s = sanSky(state.hero && state.hero.sky);
+  return { on: !!s.on, n: Math.round(SKY.n * s.density / 60), alpha: s.glow / 100, speed: s.drift / 40, hue: s.hue };
+}
 let sky = null;
 function skyNoise() {
   const grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
@@ -9156,8 +9203,9 @@ function skySeed(i, stagger) {
   const p = sky.props;
   p[i] = Math.random() * sky.w; p[i + 1] = Math.random() * sky.h; p[i + 2] = 0; p[i + 3] = 0;
   p[i + 4] = stagger ? Math.random() * SKY.baseTTL : 0;             /* staggered at start so the sky does not pulse */
-  p[i + 5] = SKY.baseTTL + Math.random() * SKY.rangeTTL; p[i + 6] = SKY.baseSpeed + Math.random() * SKY.rangeSpeed;
-  p[i + 7] = SKY.baseR + Math.random() * SKY.rangeR; p[i + 8] = SKY.baseHue + Math.random() * SKY.rangeHue;
+  const c = skyCfg();
+  p[i + 5] = SKY.baseTTL + Math.random() * SKY.rangeTTL; p[i + 6] = (SKY.baseSpeed + Math.random() * SKY.rangeSpeed) * c.speed;
+  p[i + 7] = SKY.baseR + Math.random() * SKY.rangeR; p[i + 8] = c.hue + Math.random() * SKY.rangeHue;
 }
 function skyResize() {
   if (!sky) return;
@@ -9169,6 +9217,7 @@ const skyFade = (t, m) => { const h = 0.5 * m; return Math.abs(((t + h) % m) - h
 function skyFrame() {
   if (!sky || !sky.on) { if (sky) sky.raf = 0; return; }
   const ca = sky.ca, cb = sky.cb, p = sky.props, TAU = Math.PI * 2;
+  sky.alpha = skyCfg().alpha;
   sky.tick++;
   ca.clearRect(0, 0, sky.w, sky.h); ca.lineCap = "round";
   for (let i = 0; i < p.length; i += SKY.props) {
@@ -9176,7 +9225,7 @@ function skyFrame() {
     const vx = p[i + 2] + (Math.cos(n) - p[i + 2]) * 0.5, vy = p[i + 3] + (Math.sin(n) - p[i + 3]) * 0.5;
     const life = p[i + 4], ttl = p[i + 5], x2 = x + vx * p[i + 6], y2 = y + vy * p[i + 6];
     ca.lineWidth = p[i + 7];
-    ca.strokeStyle = "hsla(" + p[i + 8].toFixed(0) + ",70%,62%," + (skyFade(life, ttl) * SKY.alpha).toFixed(3) + ")";
+    ca.strokeStyle = "hsla(" + p[i + 8].toFixed(0) + ",70%,62%," + (skyFade(life, ttl) * sky.alpha).toFixed(3) + ")";
     ca.beginPath(); ca.moveTo(x, y); ca.lineTo(x2, y2); ca.stroke();
     p[i] = x2; p[i + 1] = y2; p[i + 2] = vx; p[i + 3] = vy; p[i + 4] = life + 1;
     if (x2 < 0 || x2 > sky.w || y2 < 0 || y2 > sky.h || life > ttl) skySeed(i, false);
@@ -9189,12 +9238,20 @@ function skyFrame() {
   cb.globalCompositeOperation = "source-over";
   sky.raf = requestAnimationFrame(skyFrame);
 }
+/* the dials changed: rebuild the field at the new count and reseed, keeping the sky where it is */
+function skyApply() {
+  if (!sky) return;
+  const n = skyCfg().n;
+  if (sky.props.length !== n * SKY.props) sky.props = new Float32Array(n * SKY.props);
+  for (let i = 0; i < sky.props.length; i += SKY.props) skySeed(i, true);
+  skySet(view === "tarot");
+}
 function skySet(on) {
-  if (on && window.matchMedia("(prefers-reduced-motion: reduce)").matches) on = false;
+  if (on && (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !skyCfg().on)) on = false;
   if (!sky) {
     const el = $("#sky"); if (!el) return;
     const a = document.createElement("canvas");
-    sky = { el, a, ca: a.getContext("2d"), cb: el.getContext("2d"), noise: skyNoise(), tick: 0, props: new Float32Array(SKY.n * SKY.props), raf: 0, on: false, w: 0, h: 0 };
+    sky = { el, a, ca: a.getContext("2d"), cb: el.getContext("2d"), noise: skyNoise(), tick: 0, props: new Float32Array(skyCfg().n * SKY.props), raf: 0, on: false, w: 0, h: 0, alpha: skyCfg().alpha };
     skyResize();
     window.addEventListener("resize", () => { if (sky) skyResize(); });
     document.addEventListener("visibilitychange", () => {
@@ -9948,21 +10005,18 @@ const tarDraw = key => {
 };
 
 /* the back is ours: black and gold, the four suits in one line, drawn in the crest hand */
-const TAR_BACK_SVG = '<svg viewBox="0 0 300 500" aria-hidden="true">' +
-  '<rect width="300" height="500" rx="10" fill="#14100C"/>' +
-  '<rect x="7" y="7" width="286" height="486" rx="7" fill="none" stroke="#A67B2E" stroke-width="2"/>' +
-  '<rect x="17" y="17" width="266" height="466" rx="4" fill="none" stroke="rgba(232,176,84,0.5)" stroke-width="1"/>' +
-  '<g stroke="#E8B054" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">' +
-  /* cup · wand · sword · pentacle, centered row */
-  '<g transform="translate(66,238) scale(1.35)"><path d="M-7-7H7L5.6-1a5.8 5.8 0 0 1-11.2 0Z"/><path d="M0 5v6"/><path d="M-5 11h10"/></g>' +
-  '<g transform="translate(122,238) scale(1.35)"><path d="M0-10V11"/><path d="M0-4C-3-4.6-4.8-6.4-5.4-9.4"/><path d="M0-4C3-4.6 4.8-6.4 5.4-9.4"/></g>' +
-  '<g transform="translate(178,238) scale(1.35)"><path d="M0-10V6"/><path d="M-4.5 3h9"/><circle cx="0" cy="9.5" r="1.6"/></g>' +
-  '<g transform="translate(234,238) scale(1.35)"><circle cx="0" cy="0" r="9.4" stroke-width="1.6"/><path stroke-width="1.6" d="M0-7.2 4.23 5.83-6.85-2.23H6.85L-4.23 5.83Z"/></g>' +
-  '</g>' +
-  '<g fill="#A67B2E"><path d="M150 200l4 6-4 6-4-6Z"/><path d="M150 282l4-6-4-6-4 6Z" fill="rgba(232,176,84,0.55)"/></g>' +
-  '<g stroke="rgba(166,123,46,0.6)" stroke-width="1"><path d="M60 214h180" stroke-dasharray="1 5"/><path d="M60 262h180" stroke-dasharray="1 5"/></g>' +
-  '<g fill="rgba(232,176,84,0.4)"><circle cx="30" cy="30" r="2"/><circle cx="270" cy="30" r="2"/><circle cx="30" cy="470" r="2"/><circle cx="270" cy="470" r="2"/></g>' +
-  "</svg>";
+/* the card backs: the suits back the app had, and four drawn after the owner's reference
+   sheet — a dotted ring with a sun and two serpents, sacred geometry under an arch, a cross
+   of moon phases, a radiant sun in a field of stars — all in the hall's gold and bronze on
+   the same near-black field, with the same bronze frame and gold hairline. */
+const TAR_BACKS = [
+  { id: "suits", name: "Suits", svg: "<svg viewBox=\"0 0 300 500\" aria-hidden=\"true\"><rect width=\"300\" height=\"500\" rx=\"10\" fill=\"#14100C\"/><rect x=\"7\" y=\"7\" width=\"286\" height=\"486\" rx=\"7\" fill=\"none\" stroke=\"#A67B2E\" stroke-width=\"2\"/><rect x=\"17\" y=\"17\" width=\"266\" height=\"466\" rx=\"4\" fill=\"none\" stroke=\"rgba(232,176,84,0.5)\" stroke-width=\"1\"/><g stroke=\"#E8B054\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"><g transform=\"translate(66,238) scale(1.35)\"><path d=\"M-7-7H7L5.6-1a5.8 5.8 0 0 1-11.2 0Z\"/><path d=\"M0 5v6\"/><path d=\"M-5 11h10\"/></g><g transform=\"translate(122,238) scale(1.35)\"><path d=\"M0-10V11\"/><path d=\"M0-4C-3-4.6-4.8-6.4-5.4-9.4\"/><path d=\"M0-4C3-4.6 4.8-6.4 5.4-9.4\"/></g><g transform=\"translate(178,238) scale(1.35)\"><path d=\"M0-10V6\"/><path d=\"M-4.5 3h9\"/><circle cx=\"0\" cy=\"9.5\" r=\"1.6\"/></g><g transform=\"translate(234,238) scale(1.35)\"><circle cx=\"0\" cy=\"0\" r=\"9.4\" stroke-width=\"1.6\"/><path stroke-width=\"1.6\" d=\"M0-7.2 4.23 5.83-6.85-2.23H6.85L-4.23 5.83Z\"/></g></g><g fill=\"#A67B2E\"><path d=\"M150 200l4 6-4 6-4-6Z\"/><path d=\"M150 282l4-6-4-6-4 6Z\" fill=\"rgba(232,176,84,0.55)\"/></g><g stroke=\"rgba(166,123,46,0.6)\" stroke-width=\"1\"><path d=\"M60 214h180\" stroke-dasharray=\"1 5\"/><path d=\"M60 262h180\" stroke-dasharray=\"1 5\"/></g><g fill=\"rgba(232,176,84,0.4)\"><circle cx=\"30\" cy=\"30\" r=\"2\"/><circle cx=\"270\" cy=\"30\" r=\"2\"/><circle cx=\"30\" cy=\"470\" r=\"2\"/><circle cx=\"270\" cy=\"470\" r=\"2\"/></g></svg>" },
+  { id: "serpents", name: "Serpents", svg: "<svg viewBox=\"0 0 300 500\" aria-hidden=\"true\"><rect width=\"300\" height=\"500\" rx=\"10\" fill=\"#14100C\"/><rect x=\"7\" y=\"7\" width=\"286\" height=\"486\" rx=\"7\" fill=\"none\" stroke=\"#A67B2E\" stroke-width=\"2\"/><rect x=\"17\" y=\"17\" width=\"266\" height=\"466\" rx=\"4\" fill=\"none\" stroke=\"rgba(232,176,84,0.5)\" stroke-width=\"1\"/><circle cx=\"236\" cy=\"250\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"234.94\" cy=\"263.45\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"231.79\" cy=\"276.58\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"226.63\" cy=\"289.04\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"219.58\" cy=\"300.55\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"210.81\" cy=\"310.81\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"200.55\" cy=\"319.58\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"189.04\" cy=\"326.63\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"176.58\" cy=\"331.79\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"163.45\" cy=\"334.94\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"150\" cy=\"336\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"136.55\" cy=\"334.94\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"123.42\" cy=\"331.79\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"110.96\" cy=\"326.63\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"99.45\" cy=\"319.58\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"89.19\" cy=\"310.81\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"80.42\" cy=\"300.55\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"73.37\" cy=\"289.04\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"68.21\" cy=\"276.58\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"65.06\" cy=\"263.45\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"64\" cy=\"250\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"65.06\" cy=\"236.55\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"68.21\" cy=\"223.42\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"73.37\" cy=\"210.96\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"80.42\" cy=\"199.45\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"89.19\" cy=\"189.19\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"99.45\" cy=\"180.42\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"110.96\" cy=\"173.37\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"123.42\" cy=\"168.21\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"136.55\" cy=\"165.06\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"150\" cy=\"164\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"163.45\" cy=\"165.06\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"176.58\" cy=\"168.21\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"189.04\" cy=\"173.37\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"200.55\" cy=\"180.42\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"210.81\" cy=\"189.19\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"219.58\" cy=\"199.45\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"226.63\" cy=\"210.96\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"231.79\" cy=\"223.42\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"234.94\" cy=\"236.55\" r=\"1.3\" fill=\"rgba(232,176,84,0.75)\"/><circle cx=\"150\" cy=\"250\" r=\"70\" fill=\"none\" stroke=\"#A67B2E\" stroke-width=\"1\"/><path d=\"M180 250L194 250M178.98 257.76L192.5 261.39M175.98 265L188.11 272M171.21 271.21L181.11 281.11M165 275.98L172 288.11M157.76 278.98L161.39 292.5M150 280L150 294M142.24 278.98L138.61 292.5M135 275.98L128 288.11M128.79 271.21L118.89 281.11M124.02 265L111.89 272M121.02 257.76L107.5 261.39M120 250L106 250M121.02 242.24L107.5 238.61M124.02 235L111.89 228M128.79 228.79L118.89 218.89M135 224.02L128 211.89M142.24 221.02L138.61 207.5M150 220L150 206M157.76 221.02L161.39 207.5M165 224.02L172 211.89M171.21 228.79L181.11 218.89M175.98 235L188.11 228M178.98 242.24L192.5 238.61\" stroke=\"#E8B054\" stroke-width=\"1.3\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M177.72 261.48L199.89 270.66M161.48 277.72L170.66 299.89M138.52 277.72L129.34 299.89M122.28 261.48L100.11 270.66M122.28 238.52L100.11 229.34M138.52 222.28L129.34 200.11M161.48 222.28L170.66 200.11M177.72 238.52L199.89 229.34\" stroke=\"#E8B054\" stroke-width=\"1.6\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"150\" cy=\"250\" r=\"24\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.8\"/><path d=\"M150 241L153.06 246.94L159 250L153.06 253.06L150 259L146.94 253.06L141 250L146.94 246.94Z\" fill=\"#E8B054\"/><g fill=\"none\" stroke=\"#C8543A\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M40 60c14-18 30-8 30 6s-18 22-6 34 32 6 40 18\"/><path d=\"M260 440c-14 18-30 8-30-6s18-22 6-34-32-6-40-18\"/></g><circle cx=\"104\" cy=\"118\" r=\"2.6\" fill=\"#C8543A\"/><circle cx=\"196\" cy=\"382\" r=\"2.6\" fill=\"#C8543A\"/><path d=\"M60 435L61.5 438.5L65 440L61.5 441.5L60 445L58.5 441.5L55 440L58.5 438.5Z\" fill=\"#E8B054\"/><path d=\"M240 55L241.5 58.5L245 60L241.5 61.5L240 65L238.5 61.5L235 60L238.5 58.5Z\" fill=\"#E8B054\"/><path d=\"M150 114L151.2 116.8L154 118L151.2 119.2L150 122L148.8 119.2L146 118L148.8 116.8Z\" fill=\"rgba(232,176,84,0.7)\"/><path d=\"M150 378L151.2 380.8L154 382L151.2 383.2L150 386L148.8 383.2L146 382L148.8 380.8Z\" fill=\"rgba(232,176,84,0.7)\"/><g fill=\"rgba(232,176,84,0.45)\"><circle cx=\"60\" cy=\"250\" r=\"1.6\"/><circle cx=\"240\" cy=\"250\" r=\"1.6\"/><circle cx=\"30\" cy=\"30\" r=\"2\"/><circle cx=\"270\" cy=\"30\" r=\"2\"/><circle cx=\"30\" cy=\"470\" r=\"2\"/><circle cx=\"270\" cy=\"470\" r=\"2\"/></g></svg>" },
+  { id: "geometry", name: "Geometry", svg: "<svg viewBox=\"0 0 300 500\" aria-hidden=\"true\"><rect width=\"300\" height=\"500\" rx=\"10\" fill=\"#14100C\"/><rect x=\"7\" y=\"7\" width=\"286\" height=\"486\" rx=\"7\" fill=\"none\" stroke=\"#A67B2E\" stroke-width=\"2\"/><rect x=\"17\" y=\"17\" width=\"266\" height=\"466\" rx=\"4\" fill=\"none\" stroke=\"rgba(232,176,84,0.5)\" stroke-width=\"1\"/><path d=\"M42 468V150a108 108 0 0 1 216 0v318Z\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.4\"/><path d=\"M50 460V150a100 100 0 0 1 200 0v310Z\" fill=\"none\" stroke=\"rgba(166,123,46,0.7)\" stroke-width=\"1\"/><path d=\"M38 150L26 150M50.83 97.95L40.2 92.37M86.38 57.83L79.56 47.95M136.5 38.82L135.05 26.9M189.72 45.28L193.97 34.06M233.83 75.73L242.82 67.77M258.75 123.2L270.4 120.32M258.75 176.8L270.4 179.68M233.83 224.27L242.82 232.23M189.72 254.72L193.97 265.94M136.5 261.18L135.05 273.1M86.38 242.17L79.56 252.05M50.83 202.05L40.2 207.63\" stroke=\"#E8B054\" stroke-width=\"1.2\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"150\" cy=\"262\" r=\"72\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.6\"/><path d=\"M150 190L212.35 298H87.65Z\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M78 262h144\" stroke=\"rgba(232,176,84,0.55)\" stroke-width=\"1\"/><path d=\"M160 262L170 262M157.07 269.07L164.14 276.14M150 272L150 282M142.93 269.07L135.86 276.14M140 262L130 262M142.93 254.93L135.86 247.86M150 252L150 242M157.07 254.93L164.14 247.86\" stroke=\"#E8B054\" stroke-width=\"1.4\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M150 256L152.1 259.9L156 262L152.1 264.1L150 268L147.9 264.1L144 262L147.9 259.9Z\" fill=\"#E8B054\"/><g fill=\"rgba(232,176,84,0.6)\"><circle cx=\"150\" cy=\"190\" r=\"2.2\"/><circle cx=\"212.35\" cy=\"298\" r=\"2.2\"/><circle cx=\"87.65\" cy=\"298\" r=\"2.2\"/></g><circle cx=\"34\" cy=\"34\" r=\"4\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.2\"/><path d=\"M40.5 34L44 34M38.6 38.6L41.07 41.07M34 40.5L34 44M29.4 38.6L26.93 41.07M27.5 34L24 34M29.4 29.4L26.93 26.93M34 27.5L34 24M38.6 29.4L41.07 26.93\" stroke=\"#E8B054\" stroke-width=\"1\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"266\" cy=\"34\" r=\"4\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.2\"/><path d=\"M272.5 34L276 34M270.6 38.6L273.07 41.07M266 40.5L266 44M261.4 38.6L258.93 41.07M259.5 34L256 34M261.4 29.4L258.93 26.93M266 27.5L266 24M270.6 29.4L273.07 26.93\" stroke=\"#E8B054\" stroke-width=\"1\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"34\" cy=\"466\" r=\"4\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.2\"/><path d=\"M40.5 466L44 466M38.6 470.6L41.07 473.07M34 472.5L34 476M29.4 470.6L26.93 473.07M27.5 466L24 466M29.4 461.4L26.93 458.93M34 459.5L34 456M38.6 461.4L41.07 458.93\" stroke=\"#E8B054\" stroke-width=\"1\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"266\" cy=\"466\" r=\"4\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.2\"/><path d=\"M272.5 466L276 466M270.6 470.6L273.07 473.07M266 472.5L266 476M261.4 470.6L258.93 473.07M259.5 466L256 466M261.4 461.4L258.93 458.93M266 459.5L266 456M270.6 461.4L273.07 458.93\" stroke=\"#E8B054\" stroke-width=\"1\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M120 420h60\" stroke=\"#A67B2E\" stroke-width=\"1\" stroke-dasharray=\"1 5\"/></svg>" },
+  { id: "phases", name: "Phases", svg: "<svg viewBox=\"0 0 300 500\" aria-hidden=\"true\"><rect width=\"300\" height=\"500\" rx=\"10\" fill=\"#14100C\"/><rect x=\"7\" y=\"7\" width=\"286\" height=\"486\" rx=\"7\" fill=\"none\" stroke=\"#A67B2E\" stroke-width=\"2\"/><rect x=\"17\" y=\"17\" width=\"266\" height=\"466\" rx=\"4\" fill=\"none\" stroke=\"rgba(232,176,84,0.5)\" stroke-width=\"1\"/><path d=\"M40 60h84a26 26 0 0 0 52 0h84v380h-84a26 26 0 0 0-52 0H40Z\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.4\" stroke-linejoin=\"round\"/><path d=\"M48 68h72a30 30 0 0 0 60 0h72v364h-72a30 30 0 0 0-60 0H48Z\" fill=\"none\" stroke=\"rgba(166,123,46,0.6)\" stroke-width=\"1\"/><circle cx=\"150\" cy=\"250\" r=\"15\" fill=\"#E8B054\"/><mask id=\"m150_212\"><rect x=\"139\" y=\"201\" width=\"22\" height=\"22\" fill=\"#fff\"/><circle cx=\"145.5\" cy=\"212\" r=\"9\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"212\" r=\"9\" fill=\"#E8B054\" mask=\"url(#m150_212)\"/><mask id=\"m150_186\"><rect x=\"141\" y=\"177\" width=\"18\" height=\"18\" fill=\"#fff\"/><circle cx=\"144\" cy=\"186\" r=\"7\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"186\" r=\"7\" fill=\"#E8B054\" mask=\"url(#m150_186)\"/><mask id=\"m150_162\"><rect x=\"143\" y=\"155\" width=\"14\" height=\"14\" fill=\"#fff\"/><circle cx=\"143.5\" cy=\"162\" r=\"5\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"162\" r=\"5\" fill=\"#E8B054\" mask=\"url(#m150_162)\"/><circle cx=\"150\" cy=\"142\" r=\"1.8\" fill=\"rgba(232,176,84,0.7)\"/><mask id=\"m188_250\"><rect x=\"177\" y=\"239\" width=\"22\" height=\"22\" fill=\"#fff\"/><circle cx=\"192.5\" cy=\"250\" r=\"9\" fill=\"#000\"/></mask><circle cx=\"188\" cy=\"250\" r=\"9\" fill=\"#E8B054\" mask=\"url(#m188_250)\"/><mask id=\"m214_250\"><rect x=\"205\" y=\"241\" width=\"18\" height=\"18\" fill=\"#fff\"/><circle cx=\"220\" cy=\"250\" r=\"7\" fill=\"#000\"/></mask><circle cx=\"214\" cy=\"250\" r=\"7\" fill=\"#E8B054\" mask=\"url(#m214_250)\"/><mask id=\"m238_250\"><rect x=\"231\" y=\"243\" width=\"14\" height=\"14\" fill=\"#fff\"/><circle cx=\"244.5\" cy=\"250\" r=\"5\" fill=\"#000\"/></mask><circle cx=\"238\" cy=\"250\" r=\"5\" fill=\"#E8B054\" mask=\"url(#m238_250)\"/><circle cx=\"258\" cy=\"250\" r=\"1.8\" fill=\"rgba(232,176,84,0.7)\"/><mask id=\"m150_288\"><rect x=\"139\" y=\"277\" width=\"22\" height=\"22\" fill=\"#fff\"/><circle cx=\"154.5\" cy=\"288\" r=\"9\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"288\" r=\"9\" fill=\"#E8B054\" mask=\"url(#m150_288)\"/><mask id=\"m150_314\"><rect x=\"141\" y=\"305\" width=\"18\" height=\"18\" fill=\"#fff\"/><circle cx=\"156\" cy=\"314\" r=\"7\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"314\" r=\"7\" fill=\"#E8B054\" mask=\"url(#m150_314)\"/><mask id=\"m150_338\"><rect x=\"143\" y=\"331\" width=\"14\" height=\"14\" fill=\"#fff\"/><circle cx=\"156.5\" cy=\"338\" r=\"5\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"338\" r=\"5\" fill=\"#E8B054\" mask=\"url(#m150_338)\"/><circle cx=\"150\" cy=\"358\" r=\"1.8\" fill=\"rgba(232,176,84,0.7)\"/><mask id=\"m112_250\"><rect x=\"101\" y=\"239\" width=\"22\" height=\"22\" fill=\"#fff\"/><circle cx=\"107.5\" cy=\"250\" r=\"9\" fill=\"#000\"/></mask><circle cx=\"112\" cy=\"250\" r=\"9\" fill=\"#E8B054\" mask=\"url(#m112_250)\"/><mask id=\"m86_250\"><rect x=\"77\" y=\"241\" width=\"18\" height=\"18\" fill=\"#fff\"/><circle cx=\"80\" cy=\"250\" r=\"7\" fill=\"#000\"/></mask><circle cx=\"86\" cy=\"250\" r=\"7\" fill=\"#E8B054\" mask=\"url(#m86_250)\"/><mask id=\"m62_250\"><rect x=\"55\" y=\"243\" width=\"14\" height=\"14\" fill=\"#fff\"/><circle cx=\"55.5\" cy=\"250\" r=\"5\" fill=\"#000\"/></mask><circle cx=\"62\" cy=\"250\" r=\"5\" fill=\"#E8B054\" mask=\"url(#m62_250)\"/><circle cx=\"42\" cy=\"250\" r=\"1.8\" fill=\"rgba(232,176,84,0.7)\"/><circle cx=\"150\" cy=\"60\" r=\"7\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.4\"/><circle cx=\"150\" cy=\"440\" r=\"7\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.4\"/><mask id=\"m150_60\"><rect x=\"143.5\" y=\"53.5\" width=\"13\" height=\"13\" fill=\"#fff\"/><circle cx=\"153\" cy=\"60\" r=\"4.5\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"60\" r=\"4.5\" fill=\"#E8B054\" mask=\"url(#m150_60)\"/><mask id=\"m150_440\"><rect x=\"143.5\" y=\"433.5\" width=\"13\" height=\"13\" fill=\"#fff\"/><circle cx=\"147\" cy=\"440\" r=\"4.5\" fill=\"#000\"/></mask><circle cx=\"150\" cy=\"440\" r=\"4.5\" fill=\"#E8B054\" mask=\"url(#m150_440)\"/><path d=\"M62 115.5L63.35 118.65L66.5 120L63.35 121.35L62 124.5L60.65 121.35L57.5 120L60.65 118.65Z\" fill=\"#E8B054\"/><path d=\"M238 115.5L239.35 118.65L242.5 120L239.35 121.35L238 124.5L236.65 121.35L233.5 120L236.65 118.65Z\" fill=\"#E8B054\"/><path d=\"M62 375.5L63.35 378.65L66.5 380L63.35 381.35L62 384.5L60.65 381.35L57.5 380L60.65 378.65Z\" fill=\"#E8B054\"/><path d=\"M238 375.5L239.35 378.65L242.5 380L239.35 381.35L238 384.5L236.65 381.35L233.5 380L236.65 378.65Z\" fill=\"#E8B054\"/><g fill=\"rgba(232,176,84,0.45)\"><circle cx=\"30\" cy=\"30\" r=\"2\"/><circle cx=\"270\" cy=\"30\" r=\"2\"/><circle cx=\"30\" cy=\"470\" r=\"2\"/><circle cx=\"270\" cy=\"470\" r=\"2\"/></g></svg>" },
+  { id: "radiance", name: "Radiance", svg: "<svg viewBox=\"0 0 300 500\" aria-hidden=\"true\"><rect width=\"300\" height=\"500\" rx=\"10\" fill=\"#14100C\"/><rect x=\"7\" y=\"7\" width=\"286\" height=\"486\" rx=\"7\" fill=\"none\" stroke=\"#A67B2E\" stroke-width=\"2\"/><rect x=\"17\" y=\"17\" width=\"266\" height=\"466\" rx=\"4\" fill=\"none\" stroke=\"rgba(232,176,84,0.5)\" stroke-width=\"1\"/><circle cx=\"150\" cy=\"250\" r=\"30\" fill=\"#E8B054\"/><circle cx=\"150\" cy=\"250\" r=\"36\" fill=\"none\" stroke=\"#E8B054\" stroke-width=\"1.2\"/><path d=\"M192 250L224 250M186.37 271L214.09 287M171 286.37L187 314.09M150 292L150 324M129 286.37L113 314.09M113.63 271L85.91 287M108 250L76 250M113.63 229L85.91 213M129 213.63L113 185.91M150 208L150 176M171 213.63L187 185.91M186.37 229L214.09 213\" stroke=\"#E8B054\" stroke-width=\"1.8\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M190.57 260.87L206.02 265.01M179.7 279.7L191.01 291.01M160.87 290.57L165.01 306.02M139.13 290.57L134.99 306.02M120.3 279.7L108.99 291.01M109.43 260.87L93.98 265.01M109.43 239.13L93.98 234.99M120.3 220.3L108.99 208.99M139.13 209.43L134.99 193.98M160.87 209.43L165.01 193.98M179.7 220.3L191.01 208.99M190.57 239.13L206.02 234.99\" stroke=\"#E8B054\" stroke-width=\"1.1\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"150\" cy=\"250\" r=\"96\" fill=\"none\" stroke=\"rgba(166,123,46,0.5)\" stroke-width=\"1\" stroke-dasharray=\"2 6\"/><path d=\"M52 68L53.8 72.2L58 74L53.8 75.8L52 80L50.2 75.8L46 74L50.2 72.2Z\" fill=\"#E8B054\"/><path d=\"M246 89L248.1 93.9L253 96L248.1 98.1L246 103L243.9 98.1L239 96L243.9 93.9Z\" fill=\"#E8B054\"/><path d=\"M70 403L72.1 407.9L77 410L72.1 412.1L70 417L67.9 412.1L63 410L67.9 407.9Z\" fill=\"#E8B054\"/><path d=\"M232 423L233.5 426.5L237 428L233.5 429.5L232 433L230.5 429.5L227 428L230.5 426.5Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M110 56.5L111.05 58.95L113.5 60L111.05 61.05L110 63.5L108.95 61.05L106.5 60L108.95 58.95Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M200 48L201.2 50.8L204 52L201.2 53.2L200 56L198.8 53.2L196 52L198.8 50.8Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M50 186.5L51.05 188.95L53.5 190L51.05 191.05L50 193.5L48.95 191.05L46.5 190L48.95 188.95Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M252 207L252.9 209.1L255 210L252.9 210.9L252 213L251.1 210.9L249 210L251.1 209.1Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M42 316L43.2 318.8L46 320L43.2 321.2L42 324L40.8 321.2L38 320L40.8 318.8Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M258 326.5L259.05 328.95L261.5 330L259.05 331.05L258 333.5L256.95 331.05L254.5 330L256.95 328.95Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M96 449L96.9 451.1L99 452L96.9 452.9L96 455L95.1 452.9L93 452L95.1 451.1Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M214 448.5L215.05 450.95L217.5 452L215.05 453.05L214 455.5L212.95 453.05L210.5 452L212.95 450.95Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M150 79.5L151.35 82.65L154.5 84L151.35 85.35L150 88.5L148.65 85.35L145.5 84L148.65 82.65Z\" fill=\"rgba(232,176,84,0.75)\"/><path d=\"M150 413.5L151.35 416.65L154.5 418L151.35 419.35L150 422.5L148.65 419.35L145.5 418L148.65 416.65Z\" fill=\"rgba(232,176,84,0.75)\"/><g fill=\"rgba(232,176,84,0.5)\"><circle cx=\"80\" cy=\"130\" r=\"1.6\"/><circle cx=\"222\" cy=\"150\" r=\"1.4\"/><circle cx=\"66\" cy=\"300\" r=\"1.4\"/><circle cx=\"236\" cy=\"290\" r=\"1.6\"/><circle cx=\"128\" cy=\"472\" r=\"1.4\"/><circle cx=\"180\" cy=\"34\" r=\"1.4\"/><circle cx=\"30\" cy=\"30\" r=\"2\"/><circle cx=\"270\" cy=\"30\" r=\"2\"/><circle cx=\"30\" cy=\"470\" r=\"2\"/><circle cx=\"270\" cy=\"470\" r=\"2\"/></g></svg>" }
+];
+const tarBackSVG = () => TAR_BACKS[(state.hero && TAR_BACKS[state.hero.back]) ? state.hero.back : 0].svg;
 
 /* one small record per day; the fields arrive as the ritual advances:
    {c, r, at} on the turn · seen on Continue · f[] and v (0–100) on the landing · land on Finish */
@@ -10079,7 +10133,7 @@ function renderTarot(landing) {
       '<p class="tar-date">' + esc(TAR_DATE()) + "</p>" +
       '<h2 class="tar-h0">Draw your daily card</h2>' +
       '<button type="button" class="tar-back" data-tar="turn" aria-label="Turn today\u2019s card">' +
-      TAR_BACK_SVG + "</button>" +
+      tarBackSVG() + "</button>" +
       "</div>";
     return;
   }
@@ -10788,7 +10842,27 @@ let heroSig = null;
 function renderMoodSwitch() {
   const cur = (state.hero && state.hero.moods === "faces") ? "faces" : "symbols";
   document.querySelectorAll('[data-action="moods"]').forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === cur)));
+  const h = state.hero || {}, s = sanSky(h.sky), back = TAR_BACKS[h.back] ? h.back : 0;
+  const bx = $("#cfgBacks");
+  if (bx) bx.innerHTML = TAR_BACKS.map((b, i) => '<button type="button" role="radio" class="cfg-back" data-action="back" data-n="' + i + '" aria-checked="' + (i === back) + '">' +
+    '<span class="cb">' + b.svg + '</span><span class="cn">' + b.name + "</span></button>").join("");
+  document.querySelectorAll('[data-action="sky-on"]').forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.v) === s.on)));
+  const dials = $("#cfgDials"); if (dials) dials.classList.toggle("is-still", !s.on);
+  document.querySelectorAll("[data-sky]").forEach(r => { const k = r.dataset.sky; r.value = s[k]; r.style.setProperty("--v", (k === "hue" ? s[k] / 3.6 : s[k]) + "%"); const n = r.parentElement.querySelector(".cfg-dn"); if (n) n.textContent = s[k]; });
 }
+const renderSettings = renderMoodSwitch;
+function settingsOpen() { const d = $("#cfgDlg"); if (!d) return; renderSettings(); fillCloudFields(); if (!d.open) d.showModal(); }
+function settingsClose() { const d = $("#cfgDlg"); if (d && d.open) d.close(); }
+/* a dial moves: the sky follows at once; the board is written when the hand lets go */
+document.addEventListener("input", e => {
+  const r = e.target; if (!r || !r.dataset || !r.dataset.sky) return;
+  const k = r.dataset.sky, s = sanSky(state.hero.sky); s[k] = Number(r.value); state.hero.sky = s;
+  r.style.setProperty("--v", (k === "hue" ? s[k] / 3.6 : s[k]) + "%"); const n = r.parentElement.querySelector(".cfg-dn"); if (n) n.textContent = s[k];
+  if (k === "density") skyApply(); else if (sky) sky.alpha = skyCfg().alpha;
+});
+document.addEventListener("change", e => { const r = e.target; if (r && r.dataset && r.dataset.sky) { save(); if (r.dataset.sky !== "density") skyApply(); } });
+/* a click on the backdrop closes the settings */
+document.addEventListener("click", e => { const d = $("#cfgDlg"); if (d && d.open && e.target === d) settingsClose(); });
 function renderHero() {
   renderMoodSwitch();
   const hero = state.hero;
@@ -12474,8 +12548,13 @@ document.addEventListener("click", e => {
                         { const inp = $("#rnInput"); if (inp) { inp.focus(); inp.select(); } } break;
     case "rename-cancel": renaming = false; renderDetail(false); break;
     case "bk-cancel":   $("#bookDlg").close(); break;
-    case "moods":       state.hero.moods = act.dataset.v === "faces" ? "faces" : "symbols"; save(); renderMoodSwitch();
+    case "moods":       state.hero.moods = act.dataset.v === "faces" ? "faces" : "symbols"; save(); renderSettings();
                         if (view === "diary") renderDiary(); break;
+    case "settings":    settingsOpen(); break;
+    case "settings-close": settingsClose(); break;
+    case "back":        state.hero.back = TAR_BACKS[+act.dataset.n] ? +act.dataset.n : 0; save(); renderSettings();
+                        if (view === "tarot") renderTarot(); break;
+    case "sky-on":      { const s = sanSky(state.hero.sky); s.on = act.dataset.v === "1" ? 1 : 0; state.hero.sky = s; save(); renderSettings(); skyApply(); break; }
     case "cloud-off":   cloudDisconnect(); break;
     case "auth-google": authStart(); break;
     case "auth-out":    authSignOut(); break;
