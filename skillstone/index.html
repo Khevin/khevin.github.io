@@ -2459,7 +2459,8 @@ li.is-done .qg { color: var(--verdant); }
    column rules the habit table genuinely needs. */
 .j3 {
   --j3-rule: var(--mortar);
-  --j3-page: var(--stone-1);
+  --j3-page: #3B3023;
+  position: relative; perspective: 2000px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 3px minmax(0, 1fr);
   background: var(--cave);
@@ -2473,7 +2474,13 @@ li.is-done .qg { color: var(--verdant); }
   opacity: 0.55;
 }
 .j3-page { padding: var(--s5); background: var(--j3-page); min-width: 0; }
-.j3-page, .qh-left {
+/* the journal's pages: the same grain as the hall, the purple discarded, lit to leather-brown
+   under a light wash. The quest hall keeps the dark tile. */
+.j3-page {
+  background-image: linear-gradient(rgba(13,11,10,0.12), rgba(13,11,10,0.12)), url("assets/page.webp");
+  background-repeat: repeat; background-size: 512px 512px;
+}
+.qh-left {
   background-image: linear-gradient(rgba(13,11,10,0.38), rgba(13,11,10,0.38)), url("assets/panel.webp");
   background-repeat: repeat; background-size: 512px 512px;
 }
@@ -2510,6 +2517,42 @@ li.is-done .qg { color: var(--verdant); }
   font-family: var(--f-ui); font-size: 0.8125rem; font-weight: 600; cursor: pointer;
 }
 @media (hover: hover) { .j3-nav button:hover { border-color: var(--mortar-2); color: var(--parchment); } }
+
+/* the ribbon: a satin-gold bookmark from the binding. Over the gutter when the book is open
+   on this week; peeking from the top edge on the side where this week lies otherwise. The
+   strip is 16px, the control 44. */
+.j3-mark { grid-row: 2; grid-column: 1 / -1; position: relative; height: 0; z-index: 3; }
+.j3-ribbon {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 44px; height: 168px; padding: 0; background: none; border: 0; cursor: pointer;
+  transition: left 380ms var(--e-out), height 380ms var(--e-out);
+}
+.j3-ribbon::before {
+  content: ""; position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 16px; height: 100%;
+  background: linear-gradient(90deg, #7A5716 0%, #C9973A 38%, #E6BC5E 52%, #B8862E 100%);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.08);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 10px), 0 100%);
+}
+.j3-ribbon:disabled { cursor: default; }
+/* the peek sits inside the page’s outer padding, never over its content */
+.j3.is-past .j3-ribbon { left: calc(100% - 12px); height: 46px; }
+.j3.is-future .j3-ribbon { left: 12px; height: 46px; }
+@media (hover: hover) { .j3-ribbon:not(:disabled):hover { height: 64px; } }
+.j3-ribbon:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+/* the turn: a leaf with two faces, hinged at the spine */
+.j3-leaf { position: absolute; z-index: 5; transform-style: preserve-3d; transition: transform 600ms cubic-bezier(0.45, 0, 0.2, 1); pointer-events: none; }
+.j3-leaf.fwd { transform-origin: left center; }
+.j3-leaf.fwd.is-turning { transform: rotateY(-180deg); }
+.j3-leaf.bwd { transform-origin: right center; }
+.j3-leaf.bwd.is-turning { transform: rotateY(180deg); }
+.j3-face { position: absolute; inset: 0; backface-visibility: hidden; overflow: hidden; }
+.j3-face.back { transform: rotateY(180deg); }
+.j3-face > .j3-page, .j3-ghost > .j3-page { position: absolute; inset: 0; box-shadow: none; }
+.j3-face::after { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--e-out);
+  background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
+.j3-leaf.bwd .j3-face::after { background: linear-gradient(-90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
+.j3-leaf.is-turning .j3-face::after { opacity: 1; }
+.j3-ghost { position: absolute; z-index: 4; overflow: hidden; pointer-events: none; }
 
 /* left page: 6 + 6, then 12 */
 .j3-left-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
@@ -2746,6 +2789,7 @@ li.is-done .qg { color: var(--verdant); }
 @media (max-width: 1100px) {
   .j3 { grid-template-columns: minmax(0, 1fr); }
   .j3-spine { display: none; }
+  .j3-mark { display: none; }
   .j3-page.left, .j3-page.right { box-shadow: none; }
   .j3-page.right { border-top: 1px solid var(--j3-rule); }
 }
@@ -2778,6 +2822,10 @@ li.is-done .qg { color: var(--verdant); }
     transition-duration: 0.01ms !important;
   }
 }
+/* ================= the sky ================= */
+/* fixed behind everything, above the tile; shown only while the Tarot is on screen */
+.sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
 /* ================= diary — the morning page ================= */
 /* one column on a 34em measure; the page is the only lit thing */
 .dy { max-width: 34em; margin: 0 auto; padding: var(--s6) var(--s4) var(--s8); font-size: 1.0625rem; }
@@ -2906,6 +2954,7 @@ body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
 </style>
 </head>
 <body>
+<canvas id="sky" class="sky" hidden aria-hidden="true"></canvas>
 
 <div class="wrap">
   <header class="masthead">
@@ -6132,6 +6181,7 @@ function setView(v) {
   if (view === "prof") renderProf();
   if (view === "camp") renderCampaigns();
   if (view === "tarot") renderTarot();
+  skySet(view === "tarot");
   if (view === "astro") renderAstro();
   if (view === "diary") renderDiary();
   /* the skill panel reads from the library, so it can go stale while it is hidden -
@@ -8969,6 +9019,96 @@ function campAct(el) {
 }
 
 
+/* ================= the sky — a swirl behind the tarot ================= */
+/* Ported from Sean Free's "Ambient Canvas Backgrounds" (Codrops, 2019) demo 2, with the
+   hall's tweaks: no painted background (the stone tile stays), amber and gold instead of
+   blue, fewer and slower particles spawning across the whole sky, half-resolution buffers,
+   and it runs only while the Tarot is on screen and the tab is visible. Reduced motion: it
+   does not run. Simplex noise after Stefan Gustavson (public domain). */
+const SKY = { n: 420, props: 9, baseTTL: 60, rangeTTL: 220, baseSpeed: 0.08, rangeSpeed: 0.9,
+  baseR: 0.6, rangeR: 2.2, baseHue: 26, rangeHue: 28, steps: 6, xOff: 0.0011, yOff: 0.0011, zOff: 0.00045, alpha: 0.55, scale: 0.5 };
+let sky = null;
+function skyNoise() {
+  const grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+  const p = new Uint8Array(256); for (let i = 0; i < 256; i++) p[i] = i;
+  let seed = 1234567; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  for (let i = 255; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const x = p[i]; p[i] = p[j]; p[j] = x; }
+  const perm = new Uint8Array(512), pm = new Uint8Array(512);
+  for (let i = 0; i < 512; i++) { perm[i] = p[i & 255]; pm[i] = perm[i] % 12; }
+  const F3 = 1 / 3, G3 = 1 / 6, dot = (g, x, y, z) => g[0] * x + g[1] * y + g[2] * z;
+  return function (xin, yin, zin) {
+    const s = (xin + yin + zin) * F3, i = Math.floor(xin + s), j = Math.floor(yin + s), k = Math.floor(zin + s);
+    const tt = (i + j + k) * G3, x0 = xin - (i - tt), y0 = yin - (j - tt), z0 = zin - (k - tt);
+    let i1, j1, k1, i2, j2, k2;
+    if (x0 >= y0) { if (y0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; } else if (x0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; } else { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; } }
+    else { if (y0 < z0) { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; } else if (x0 < z0) { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; } else { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; } }
+    const x1 = x0 - i1 + G3, y1 = y0 - j1 + G3, z1 = z0 - k1 + G3, x2 = x0 - i2 + 2 * G3, y2 = y0 - j2 + 2 * G3, z2 = z0 - k2 + 2 * G3,
+      x3 = x0 - 1 + 3 * G3, y3 = y0 - 1 + 3 * G3, z3 = z0 - 1 + 3 * G3, ii = i & 255, jj = j & 255, kk = k & 255;
+    const g0 = pm[ii + perm[jj + perm[kk]]], g1 = pm[ii + i1 + perm[jj + j1 + perm[kk + k1]]], g2 = pm[ii + i2 + perm[jj + j2 + perm[kk + k2]]], g3 = pm[ii + 1 + perm[jj + 1 + perm[kk + 1]]];
+    let n = 0, q;
+    q = 0.6 - x0 * x0 - y0 * y0 - z0 * z0; if (q > 0) { q *= q; n += q * q * dot(grad3[g0], x0, y0, z0); }
+    q = 0.6 - x1 * x1 - y1 * y1 - z1 * z1; if (q > 0) { q *= q; n += q * q * dot(grad3[g1], x1, y1, z1); }
+    q = 0.6 - x2 * x2 - y2 * y2 - z2 * z2; if (q > 0) { q *= q; n += q * q * dot(grad3[g2], x2, y2, z2); }
+    q = 0.6 - x3 * x3 - y3 * y3 - z3 * z3; if (q > 0) { q *= q; n += q * q * dot(grad3[g3], x3, y3, z3); }
+    return 32 * n;
+  };
+}
+function skySeed(i, stagger) {
+  const p = sky.props;
+  p[i] = Math.random() * sky.w; p[i + 1] = Math.random() * sky.h; p[i + 2] = 0; p[i + 3] = 0;
+  p[i + 4] = stagger ? Math.random() * SKY.baseTTL : 0;             /* staggered at start so the sky does not pulse */
+  p[i + 5] = SKY.baseTTL + Math.random() * SKY.rangeTTL; p[i + 6] = SKY.baseSpeed + Math.random() * SKY.rangeSpeed;
+  p[i + 7] = SKY.baseR + Math.random() * SKY.rangeR; p[i + 8] = SKY.baseHue + Math.random() * SKY.rangeHue;
+}
+function skyResize() {
+  if (!sky) return;
+  sky.w = Math.max(1, Math.round(innerWidth * SKY.scale)); sky.h = Math.max(1, Math.round(innerHeight * SKY.scale));
+  sky.a.width = sky.el.width = sky.w; sky.a.height = sky.el.height = sky.h;
+  for (let i = 0; i < sky.props.length; i += SKY.props) skySeed(i, true);
+}
+const skyFade = (t, m) => { const h = 0.5 * m; return Math.abs(((t + h) % m) - h) / h; };
+function skyFrame() {
+  if (!sky || !sky.on) { if (sky) sky.raf = 0; return; }
+  const ca = sky.ca, cb = sky.cb, p = sky.props, TAU = Math.PI * 2;
+  sky.tick++;
+  ca.clearRect(0, 0, sky.w, sky.h); ca.lineCap = "round";
+  for (let i = 0; i < p.length; i += SKY.props) {
+    const x = p[i], y = p[i + 1], n = sky.noise(x * SKY.xOff, y * SKY.yOff, sky.tick * SKY.zOff) * SKY.steps * TAU;
+    const vx = p[i + 2] + (Math.cos(n) - p[i + 2]) * 0.5, vy = p[i + 3] + (Math.sin(n) - p[i + 3]) * 0.5;
+    const life = p[i + 4], ttl = p[i + 5], x2 = x + vx * p[i + 6], y2 = y + vy * p[i + 6];
+    ca.lineWidth = p[i + 7];
+    ca.strokeStyle = "hsla(" + p[i + 8].toFixed(0) + ",70%,62%," + (skyFade(life, ttl) * SKY.alpha).toFixed(3) + ")";
+    ca.beginPath(); ca.moveTo(x, y); ca.lineTo(x2, y2); ca.stroke();
+    p[i] = x2; p[i + 1] = y2; p[i + 2] = vx; p[i + 3] = vy; p[i + 4] = life + 1;
+    if (x2 < 0 || x2 > sky.w || y2 < 0 || y2 > sky.h || life > ttl) skySeed(i, false);
+  }
+  cb.clearRect(0, 0, sky.w, sky.h);
+  cb.globalCompositeOperation = "lighter";
+  cb.filter = "blur(6px) brightness(180%)"; cb.drawImage(sky.a, 0, 0);
+  cb.filter = "blur(2px) brightness(150%)"; cb.drawImage(sky.a, 0, 0);
+  cb.filter = "none"; cb.drawImage(sky.a, 0, 0);
+  cb.globalCompositeOperation = "source-over";
+  sky.raf = requestAnimationFrame(skyFrame);
+}
+function skySet(on) {
+  if (on && window.matchMedia("(prefers-reduced-motion: reduce)").matches) on = false;
+  if (!sky) {
+    const el = $("#sky"); if (!el) return;
+    const a = document.createElement("canvas");
+    sky = { el, a, ca: a.getContext("2d"), cb: el.getContext("2d"), noise: skyNoise(), tick: 0, props: new Float32Array(SKY.n * SKY.props), raf: 0, on: false, w: 0, h: 0 };
+    skyResize();
+    window.addEventListener("resize", () => { if (sky) skyResize(); });
+    document.addEventListener("visibilitychange", () => {
+      if (!sky) return;
+      if (document.hidden) { cancelAnimationFrame(sky.raf); sky.raf = 0; }
+      else if (sky.on && !sky.raf) sky.raf = requestAnimationFrame(skyFrame);
+    });
+  }
+  sky.on = on; sky.el.hidden = !on;
+  if (!on) { cancelAnimationFrame(sky.raf); sky.raf = 0; return; }
+  if (!sky.raf && !document.hidden) sky.raf = requestAnimationFrame(skyFrame);
+}
+
 /* ================= diary — the morning page ================= */
 /* Register product, layout zero-chrome canvas, one gesture (ink dries). The page is the
    surface; the date and its stepper, the month strip, the three lines and the gauges are
@@ -10278,7 +10418,7 @@ function renderJ3() {
   right += '<div class="j3-weekend">' + dayHTML(5) + dayHTML(6) + "</div></div>";
 
   el.innerHTML =
-    '<div class="j3">' +
+    '<div class="j3' + (isThisWeek ? " is-now" : (j3Week < mondayOf(new Date()) ? " is-past" : " is-future")) + '">' +
       '<div class="j3-head">' +
         '<div class="j3-nav">' +
           '<button type="button" data-j3="wk" data-d="-1" aria-label="Previous week">\u2039</button>' +
@@ -10290,10 +10430,47 @@ function renderJ3() {
         '<input class="j3-title" data-j3="wk-title" value="' + esc(b.titles[key] || "") +
           '" placeholder="name this week\u2026" aria-label="Week title">' +
       "</div>" +
+      /* the ribbon: over the gutter on this week; peeking from the edge where this week lies otherwise */
+      '<div class="j3-mark"><button type="button" class="j3-ribbon" data-j3="wk-today" aria-label="' +
+        (isThisWeek ? "This week" : "Back to this week") + '"' + (isThisWeek ? " disabled" : "") + "></button></div>" +
       '<div class="j3-page left"><div class="j3-left-grid">' + notes + bucket + habits + "</div></div>" +
       '<div class="j3-spine" aria-hidden="true"></div>' +
       '<div class="j3-page right">' + right + "</div>" +
     "</div>";
+}
+
+/* changing week turns a leaf — after fchavonet's flip book: a 3D-preserved leaf with two
+   faces hinged at the spine. The outgoing page is the front face; the incoming page on the
+   other side is the back face; a ghost of the old opposite page stays put until the leaf
+   passes the spine, so the reader sees the old spread until the paper covers it. Under
+   700px the book is one column and nothing turns; reduced motion turns nothing. */
+function j3Turn(to) {
+  const from = j3Week;
+  if (+to === +from) return;
+  const dir = to > from ? 1 : -1;
+  const old = document.querySelector("#viewJournal .j3");
+  const can = old && window.innerWidth >= 700 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let oldL = null, oldR = null;
+  if (can) { oldL = old.querySelector(".j3-page.left").cloneNode(true); oldR = old.querySelector(".j3-page.right").cloneNode(true); }
+  j3Week = to; renderJ3();
+  if (!can) return;
+  const nb = document.querySelector("#viewJournal .j3"), L = nb.querySelector(".j3-page.left"), R = nb.querySelector(".j3-page.right");
+  if (!L || !R) return;
+  const box = nb.getBoundingClientRect(), rl = L.getBoundingClientRect(), rr = R.getBoundingClientRect();
+  const place = (el, r) => { el.style.left = (r.left - box.left) + "px"; el.style.top = (r.top - box.top) + "px"; el.style.width = r.width + "px"; el.style.height = r.height + "px"; };
+  const leaf = document.createElement("div"); leaf.className = "j3-leaf " + (dir > 0 ? "fwd" : "bwd");
+  const front = document.createElement("div"); front.className = "j3-face front"; front.appendChild(dir > 0 ? oldR : oldL);
+  const back = document.createElement("div"); back.className = "j3-face back"; back.appendChild((dir > 0 ? L : R).cloneNode(true));
+  leaf.append(front, back);
+  const ghost = document.createElement("div"); ghost.className = "j3-ghost"; ghost.appendChild(dir > 0 ? oldL : oldR);
+  place(leaf, dir > 0 ? rr : rl); place(ghost, dir > 0 ? rl : rr);
+  nb.append(ghost, leaf);
+  void leaf.offsetWidth;                       /* commit the resting transform before the turn begins */
+  leaf.classList.add("is-turning");
+  setTimeout(() => ghost.remove(), 330);
+  const done = () => leaf.remove();
+  leaf.addEventListener("transitionend", done, { once: true });
+  setTimeout(done, 900);
 }
 
 /* text commits on change, never on keystroke */
@@ -10368,8 +10545,8 @@ function j3Act(t) {
       break;
     }
     case "cycle":      j3Cycle(t); return;
-    case "wk":         j3Week = addDays(j3Week, Number(t.dataset.d) * 7); break;
-    case "wk-today":   j3Week = mondayOf(new Date()); break;
+    case "wk":         j3Turn(addDays(j3Week, Number(t.dataset.d) * 7)); return;
+    case "wk-today":   j3Turn(mondayOf(new Date())); return;
     case "cat":        j3Cat = t.dataset.cat; break;
     case "e-del-note": if (b.notes[key]) cut(b.notes[key]); break;
     case "e-del-rem":  cut(b.reminders); break;
