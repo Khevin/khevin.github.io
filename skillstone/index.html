@@ -9443,9 +9443,7 @@ function dyReadHTML(sel, isToday) {
   const c = TAROT[rec.c], rev = !!rec.r;
   return '<div class="dy-read">' + tarNameHTML(c, rev, true) + tarPills(rev ? c.rkw : c.kw) +
     '<p class="tar-meaning">' + esc(rev ? c.rev : c.up) + "</p>" +
-    '<p class="tar-landed">' + (rec.f && rec.f.length ? rec.f.map(esc).join(" \u00b7 ") : '<span class="q">no feelings picked</span>') +
-    (typeof rec.v === "number" ? ' <span class="v">\u00b7 landed at <b>' + rec.v + "</b></span>" : "") +
-    (isToday ? ' <button type="button" class="tar-adjust" data-dy="adjust">Adjust</button>' : "") + "</p></div>";
+    (tarStage() === 3 ? '<p class="tar-landed"><button type="button" class="tar-adjust dy-view" data-dy="view">View</button></p>' : "") + "</div>";   /* the feelings, the dial and Adjust live on the Tarot page; View opens this day there */
 }
 /* the strip: the month of the morning on the page, dots left to right */
 function dyStripHTML(b, sel, today, prev, next) {
@@ -9531,7 +9529,7 @@ function dyAct(el) {
   if (el.dataset.dy === "today") { dySel = null; renderDiary(); return; }
   if (el.dataset.dy === "tarot") { setView("tarot"); return; }
   if (el.dataset.dy === "turn") { setView("tarot"); tarTurn(); return; }   /* the deal happens on the Tarot page; Finish brings the diary back */
-  if (el.dataset.dy === "adjust") { tarView = "land"; setView("tarot"); return; }
+  if (el.dataset.dy === "view") { tarView = null; tarSel = tarKey(dyDay()); setView("tarot"); return; }   /* this day's reading, on the Tarot page */
   if (el.dataset.dy === "step") {
     const n = dyNeighbour(b, dyDay(), +el.dataset.d); if (!n) return;
     dySel = dySame(n, new Date()) ? null : dyISO(n); renderDiary();
