@@ -2558,6 +2558,8 @@ li.is-done .qg { color: var(--verdant); }
   font-family: var(--f-mono); font-size: 0.5625rem; font-weight: 500;
   letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash);
 }
+/* this week wears the ribbon’s red; any other week stays an outline */
+.j3-away.j3-now { border-color: #8C2D23; background: linear-gradient(90deg, #8C2D23, #A63A2E 60%, #8C2D23); color: #F6EBDD; }
 .j3-title {
   flex: 1; min-width: 150px;
   background: none; border: 0; border-bottom: 1px dashed var(--j3-rule);
@@ -10502,7 +10504,7 @@ function renderJ3() {
           '<button type="button" data-j3="wk" data-d="1" aria-label="Next week">\u203a</button>' +
         "</div>" +
         '<span class="j3-week">' + weekRange(j3Week) +
-          (isThisWeek ? "" : '<span class="j3-away">not this week</span>') + "</span>" +
+          (isThisWeek ? '<span class="j3-away j3-now">current week</span>' : '<span class="j3-away">not this week</span>') + "</span>" +
         '<input class="j3-title" data-j3="wk-title" value="' + esc(b.titles[key] || "") +
           '" placeholder="name this week\u2026" aria-label="Week title">' +
       "</div>" +
