@@ -2878,6 +2878,12 @@ li.is-done .qg { color: var(--verdant); }
 }
 .j3-day.today .dn { color: var(--gold); }
 .j3-day.today .dd { color: var(--bronze); }
+/* on paper, every mark of "now" is the ribbon's red: the rule, the day, the pill */
+.j3-page .j3-day.today { border-top-color: #8C2D23; }
+.j3-page .j3-day.today .dn { color: #8C2D23; }
+.j3-page .j3-day.today .dd { color: #A63A2E; }
+.j3-page .j3-today { background: linear-gradient(90deg, #8C2D23, #A63A2E 60%, #8C2D23); color: #F6EBDD; }
+.j3-page .j3-habits th.today { color: #8C2D23; }
 
 @media (max-width: 1100px) {
   .j3 { grid-template-columns: minmax(0, 1fr); }
@@ -2921,72 +2927,84 @@ li.is-done .qg { color: var(--verdant); }
 /* fixed behind everything, above the tile; shown only while the Tarot is on screen */
 .sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
-/* ================= diary — the morning page ================= */
-/* one column on a 34em measure; the page is the only lit thing */
-.dy { max-width: 34em; margin: 0 auto; padding: var(--s6) var(--s4) var(--s8); font-size: 1.0625rem; }
-@media (min-width: 700px) { .dy { font-size: 1rem; } }
-.dy-head { display: flex; flex-direction: column; gap: var(--s3); margin-bottom: var(--s5); }
-/* the date, with the stepper that walks the written mornings — left is earlier */
-.dy-nav { display: flex; align-items: center; gap: var(--s3); }
-.dy-nav .dy-date { flex: 1; min-width: 0; }
+/* ================= diary — the plate ================= */
+/* four framed cards on the dark field: the day, the logbook, the mood, the three lines */
+.dy2 { --f-read: 'Lora', Georgia, serif; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) minmax(0, 6fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s5); padding: var(--s5) var(--s5) var(--s6); height: calc(100dvh - 150px); min-height: 700px; }
+.dy-card { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column;
+  background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%);
+  border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 48px 36px 32px; overflow: hidden; }
+.dy-card::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
+.dy-day { grid-row: 1 / 3; align-items: center; }
+.dy-log { grid-column: 2 / 4; }
+/* the ornaments */
+.orn { position: absolute; width: 64px; height: 64px; pointer-events: none; opacity: 0.9; }
+.orn.tl { left: 14px; top: 14px; } .orn.tr { right: 14px; top: 14px; transform: scaleX(-1); }
+.orn.bl { left: 14px; bottom: 14px; transform: scaleY(-1); } .orn.br { right: 14px; bottom: 14px; transform: scale(-1); }
+.orn-top { position: absolute; top: -1px; left: 50%; width: 160px; height: 26px; transform: translateX(-50%); pointer-events: none; }
+.orn-side { position: absolute; width: 14px; height: 14px; pointer-events: none; }
+.orn-side.l { left: 3px; top: 50%; transform: translateY(-50%); } .orn-side.r { right: 3px; top: 50%; transform: translateY(-50%); } .orn-side.b { bottom: 3px; left: 50%; transform: translateX(-50%); }
+/* titles in the display face, the rule with its diamond beneath */
+.dy-ct { font-family: var(--f-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--parchment); text-align: center; margin: 0; }
+.dy-rule2 { display: block; width: 160px; height: 10px; margin: var(--s2) auto var(--s5); flex: none; }
+.dy-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
+.dy-body-c { display: flex; flex-direction: column; justify-content: center; }
+/* the day */
+.dy-date { font-size: 1.0625rem; }
+.dy-date.is-today { color: var(--gold); }
+.dy-wd { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s2); font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bronze); }
+.dy-wdl { width: 44px; height: 1px; background: rgba(232,176,84,0.6); }
+.dy-nav { display: flex; gap: 6px; margin-top: var(--s4); }
 .dy-step { min-width: 28px; padding: 0 var(--s2); font-size: 0.875rem; line-height: 1; }
 .dy-step:disabled { opacity: 0.35; cursor: default; }
-.dy-date { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
-.dy-date.is-today { color: var(--gold); }
-/* the strip: the month of the morning on the page, one dot a day, gold where a morning was
-   written, today ringed in bronze, the morning on the page barred in gold. The dots are the
-   map, not the control — thirty to a row, none would hit the 44px floor. */
-.dy-strip { display: flex; flex-direction: column; gap: var(--s2); }
-.dy-mname { font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
-.dy-month { display: flex; flex-wrap: wrap; gap: 6px; min-height: 6px; padding-bottom: 6px; }
+.dy-strip { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin-top: var(--s3); }
+.dy-mname { font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin: 0; }
+.dy-month { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 6px; padding-bottom: 6px; max-width: 240px; }
 .dy-dot { position: relative; width: 6px; height: 6px; border-radius: 50%; background: var(--mortar-2); }
 .dy-dot.is-on { background: var(--gold); }
 .dy-dot.is-fut { opacity: 0.4; }
-.dy-dot.is-today { box-shadow: 0 0 0 2px var(--stone-1), 0 0 0 3px var(--bronze); }
+.dy-dot.is-today { box-shadow: 0 0 0 2px #17130F, 0 0 0 3px var(--bronze); }
 .dy-dot.is-sel::after { content: ""; position: absolute; left: -1px; right: -1px; bottom: -6px; height: 2px; background: var(--gold); }
-/* the page: stone at rest, the pool with focus; grows, never scrolls inside itself */
-.dy-page {
-  display: block; width: 100%; box-sizing: border-box; min-height: calc(4 * 1.6em + 2 * var(--s4));
-  resize: none; overflow: hidden;
-  background: var(--stone-2); border: 0; border-radius: var(--r-md); padding: var(--s4);
-  box-shadow: inset 0 1px 0 var(--bevel);
-  color: var(--parchment); font: inherit; line-height: 1.6;
-  transition: background var(--t-pool) var(--e-out);
-}
-.dy-page:focus { outline: none; background: var(--pool); }
+/* the medallion, with the card over it */
+.dy-orb { position: relative; width: min(360px, 100%); aspect-ratio: 1; margin-top: var(--s5); display: grid; place-items: center; flex: none; }
+.dy-medal-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.9; }
+.dy-orb-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--s3); }
+.dy-tcard { margin: 0; width: 132px; height: 220px; border-radius: 8px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.6); }   /* the medallion shows around it */
+.dy-tcard img { display: block; width: 132px; height: 220px; object-fit: cover; }
+.dy-tcard.is-rev img { transform: rotate(180deg); }
+.dy-tback svg { display: block; width: 132px; height: 220px; }
+.dy-tback.is-past { opacity: 0.45; }
+.dy-tname { font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment); margin: 0; text-align: center; }
+.dy-trev { color: var(--ember); }
+/* the page: the card is the surface; focus lifts it a shade */
+.dy-page { display: block; width: 100%; box-sizing: border-box; min-height: calc(4 * 1.7em + 2 * var(--s3)); resize: none; overflow: hidden;
+  background: transparent; border: 0; border-radius: var(--r-sm); padding: var(--s3) var(--s2); color: var(--parchment);
+  font-family: var(--f-read); font-size: 1.0625rem; line-height: 1.7; transition: background var(--t-pool) var(--e-out); }
+.dy-page:focus { outline: none; background: rgba(232,176,84,0.05); }
 .dy-page::placeholder { color: var(--mortar-2); }
-/* the mark: a rule that fills to 100 words and stays full; the count at its end */
-.dy-mark { display: flex; align-items: center; gap: var(--s3); margin: var(--s2) 0 var(--s5); }
-.dy-rule { flex: 1; height: 1px; background: linear-gradient(to right, var(--bronze) calc(var(--fill, 0) * 100%), var(--mortar) 0); }
+.dy-mark { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s3); flex: none; }
+.dy-rule { flex: 1; height: 1px; background: linear-gradient(to right, var(--bronze) calc(var(--fill, 0) * 100%), rgba(62,53,39,1) 0); }
 .dy-count { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
-.dy-count:empty { min-width: 0; }   /* no words yet: the rule runs the full width */
-/* three lines: a numeral leads each; unwritten sits on a dashed rule, written seals on a
-   solid bronze one; the text is italic, wet while written, dry when it commits */
+.dy-count:empty { min-width: 0; }
+/* three lines: a numeral, a bar, the line; the rule solidifies when the line is written */
 .dy-three { display: grid; }
-.dy-lrow { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: center; column-gap: var(--s2);
-  border-bottom: 1px dashed var(--mortar); transition: border-color var(--t-settle) var(--e-out); }
-.dy-lrow.is-set { border-bottom-style: solid; border-bottom-color: var(--bronze); }
-.dy-lrow:focus-within { border-bottom-color: var(--gold); }
-.dy-num { font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.06em; color: var(--mortar-2); text-align: center; transition: color var(--t-settle) var(--e-out); }
+.dy-lrow { display: grid; grid-template-columns: 44px 1px minmax(0, 1fr); align-items: center; column-gap: var(--s4); padding: var(--s2) 0;
+  border-bottom: 1px solid rgba(232,176,84,0.22); transition: border-color var(--t-settle) var(--e-out); }
+.dy-lrow:last-child { border-bottom: 0; }
+.dy-lrow.is-set { border-bottom-color: rgba(232,176,84,0.45); }
+.dy-num { font-family: var(--f-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.06em; color: var(--mortar-2); text-align: center; transition: color var(--t-settle) var(--e-out); }
 .dy-lrow.is-set .dy-num { color: var(--bronze); }
 .dy-lrow:focus-within .dy-num { color: var(--gold); }
-.dy-line {
-  width: 100%; box-sizing: border-box; min-height: 44px; padding: 11px var(--s1);
-  background: none; border: 0; resize: none; overflow: hidden;
-  color: var(--ink-dry); font: inherit; font-style: italic; line-height: 1.45;
-  transition: color var(--t-settle) var(--e-out);
-}
+.dy-bar { width: 1px; height: 40px; background: rgba(232,176,84,0.5); }
+.dy-line { width: 100%; box-sizing: border-box; min-height: 44px; padding: 10px var(--s1); background: none; border: 0; resize: none; overflow: hidden;
+  color: var(--ink-dry); font-family: var(--f-read); font-size: 1rem; line-height: 1.55; transition: color var(--t-settle) var(--e-out); }
 .dy-line:focus { outline: none; color: var(--ink-wet); }
-/* the mood: five words in order, five plates; the chosen one is brass, the rest stone */
-.dy-mood { margin-top: var(--s6); display: grid; gap: var(--s2); }
-.dy-mood-l { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
-.dy-scale { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s1); }
-/* the medallions: the owner's own. Unlit at rest, lit fades up when chosen, lit at 40% under
-   the pointer; the word beneath in the display face. The medal is the button — no plate. */
+/* the medallions */
+.dy-scale { display: flex; justify-content: center; gap: var(--s2); flex-wrap: wrap; }
 .dy-medal { appearance: none; background: none; border: 0; padding: var(--s1) 0 var(--s2); min-width: 0; cursor: pointer;
   display: grid; justify-items: center; gap: var(--s1); border-radius: var(--r-md); }
-.dy-medal-img { position: relative; width: 64px; height: 64px; }
-.dy-medal-img img { position: absolute; inset: 0; width: 64px; height: 64px; display: block; transition: opacity var(--t-base) var(--e-out), transform var(--t-fast) var(--e-out); }
+.dy-medal-img { position: relative; width: 56px; height: 56px; }   /* five in one row of the mood card */
+.dy-medal-img img { position: absolute; inset: 0; width: 56px; height: 56px; display: block; transition: opacity var(--t-base) var(--e-out), transform var(--t-fast) var(--e-out); }
 .dy-medal-img .lit { opacity: 0; }
 .dy-medal[aria-checked="true"] .dy-medal-img .lit { opacity: 1; }
 .dy-medal[aria-checked="true"] .dy-medal-img .unlit { opacity: 0; }
@@ -2995,11 +3013,17 @@ li.is-done .qg { color: var(--verdant); }
 .dy-medal-w { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash); transition: color var(--t-base) var(--e-out); }
 .dy-medal[aria-checked="true"] .dy-medal-w { color: var(--gold); }
 .dy-medal:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-@media (max-width: 420px) { .dy-medal-img, .dy-medal-img img { width: 52px; height: 52px; } }
 /* the gesture: while the page has focus, the hall dims around it */
-body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-writing .topbar,
-body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
-.hero, .tabs, .crests, .topbar, .dy-head, .dy-mood { transition: opacity var(--t-pool) var(--e-out); }
+body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-writing .topbar { opacity: 0.6; }
+.hero, .tabs, .crests, .topbar { transition: opacity var(--t-pool) var(--e-out); }
+/* the cards stack below 1000px */
+@media (max-width: 999px) {
+  .dy2 { display: flex; flex-direction: column; height: auto; min-height: 0; padding: var(--s4); gap: var(--s4); }
+  .dy-day { grid-row: auto; } .dy-log { grid-column: auto; }
+  .dy-card { padding: 44px 24px 28px; }
+  .dy-log .dy-body { max-height: 60vh; }
+  .dy-medal-img, .dy-medal-img img { width: 52px; height: 52px; }
+}
 /* the hero's way in when there is no birth yet */
 .sign-pick.is-unset { color: var(--ash); }
 .sign-pick.is-unset .sig { color: var(--ash); }
@@ -9330,27 +9354,52 @@ function dyNeighbour(b, sel, dir) {
   const n = stops[i + dir]; return n || null;
 }
 
-/* the station: a page, three lines, three gauges — for one morning. The ritual mounts this unchanged. */
-function dyStationHTML(b, wk, dow) {
-  const e = dyGet(b, wk, dow) || {}, three = e.three || [], mood = e.mood || 0, words = dyWords(e.page);
-  const fill = Math.min(1, words / DY_MARK), at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
-  let h = '<div class="dy-station"' + at + '>' +
-    '<textarea class="dy-page" data-dy="page"' + at + ' rows="4" maxlength="' + DY_PAGE_MAX + '"' +
-      ' aria-label="The page"' + (e.page ? "" : ' placeholder="This morning I\u2026"') + '>' + esc(e.page || "") + "</textarea>" +
-    '<div class="dy-mark" style="--fill:' + fill.toFixed(3) + '"><span class="dy-rule"></span>' +
-      '<span class="dy-count">' + (words ? words : "") + "</span></div>" +
-    '<div class="dy-three">';
-  for (let i = 0; i < 3; i++) h += '<div class="dy-lrow' + (three[i] ? " is-set" : "") + '"><span class="dy-num" aria-hidden="true">' + ["I", "II", "III"][i] + "</span>" +
+/* the ornaments of a card: four laurel sprigs, a cartouche notch, a diamond at each side */
+const DY_ORN = { sprig: "<svg class=\"orn\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M6 58C14 34 30 18 58 6\" fill=\"none\" stroke=\"#C9A55A\" stroke-width=\"1.2\" stroke-linecap=\"round\"/><path transform=\"translate(10.47 47.08) rotate(-125.14)\" d=\"M0 0q5.4 -4.32 12 0q-6.6 4.32 -12 0z\" fill=\"#C9A55A\"/><path transform=\"translate(15.47 38.45) rotate(6.49)\" d=\"M0 0q5.04 -4.03 11.2 0q-6.16 4.03 -11.2 0z\" fill=\"#C9A55A\"/><path transform=\"translate(21.55 30.63) rotate(-109.72)\" d=\"M0 0q4.68 -3.74 10.4 0q-5.72 3.74 -10.4 0z\" fill=\"#C9A55A\"/><path transform=\"translate(28.77 23.53) rotate(21.73)\" d=\"M0 0q4.32 -3.46 9.6 0q-5.28 3.46 -9.6 0z\" fill=\"#C9A55A\"/><path transform=\"translate(37.21 17.11) rotate(-95.53)\" d=\"M0 0q3.96 -3.17 8.8 0q-4.84 3.17 -8.8 0z\" fill=\"#C9A55A\"/><path transform=\"translate(46.93 11.29) rotate(34.28)\" d=\"M0 0q3.6 -2.88 8 0q-4.4 2.88 -8 0z\" fill=\"#C9A55A\"/><path d=\"M60 0.8L60.96 3.04L63.2 4L60.96 4.96L60 7.2L59.04 4.96L56.8 4L59.04 3.04Z\" fill=\"#C9A55A\"/></svg>", notch: "<svg class=\"orn-top\" viewBox=\"0 0 160 26\" aria-hidden=\"true\"><path d=\"M0 0.5C46 0.5 50 25 80 25S114 0.5 160 0.5\" fill=\"#17130F\" stroke=\"rgba(232,176,84,0.6)\" stroke-width=\"1\"/><path d=\"M80 7.5L81.44 10.56L84.5 12L81.44 13.44L80 16.5L78.56 13.44L75.5 12L78.56 10.56Z\" fill=\"#E8B054\"/></svg>", rule: "<svg class=\"dy-rule2\" viewBox=\"0 0 160 10\" aria-hidden=\"true\"><path d=\"M0 5h68M92 5h68\" stroke=\"rgba(232,176,84,0.7)\" stroke-width=\"1\"/><path d=\"M80 1L81.28 3.72L84 5L81.28 6.28L80 9L78.72 6.28L76 5L78.72 3.72Z\" fill=\"#E8B054\"/></svg>", side: "<svg class=\"orn-side\" viewBox=\"0 0 14 14\" aria-hidden=\"true\"><path d=\"M7 1L8.8 5.2L13 7L8.8 8.8L7 13L5.2 8.8L1 7L5.2 5.2Z\" fill=\"#E8B054\"/></svg>", medallion: "<svg class=\"dy-medal-bg\" viewBox=\"0 0 360 360\" aria-hidden=\"true\"><g stroke=\"rgba(201,165,90,0.55)\" stroke-width=\"1\"><path d=\"M180 10V52M180 308V350M10 180H52M308 180H350\"/></g><path d=\"M180 5L181.5 8.5L185 10L181.5 11.5L180 15L178.5 11.5L175 10L178.5 8.5Z\" fill=\"#C9A55A\"/><path d=\"M180 345L181.5 348.5L185 350L181.5 351.5L180 355L178.5 351.5L175 350L178.5 348.5Z\" fill=\"#C9A55A\"/><path d=\"M10 175L11.5 178.5L15 180L11.5 181.5L10 185L8.5 181.5L5 180L8.5 178.5Z\" fill=\"#C9A55A\"/><path d=\"M350 175L351.5 178.5L355 180L351.5 181.5L350 185L348.5 181.5L345 180L348.5 178.5Z\" fill=\"#C9A55A\"/><circle cx=\"298\" cy=\"180\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"297.55\" cy=\"190.28\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"296.21\" cy=\"200.49\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"293.98\" cy=\"210.54\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"290.88\" cy=\"220.36\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"286.94\" cy=\"229.87\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"282.19\" cy=\"239\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"276.66\" cy=\"247.68\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"270.39\" cy=\"255.85\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"263.44\" cy=\"263.44\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"255.85\" cy=\"270.39\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"247.68\" cy=\"276.66\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"239\" cy=\"282.19\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"229.87\" cy=\"286.94\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"220.36\" cy=\"290.88\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"210.54\" cy=\"293.98\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"200.49\" cy=\"296.21\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"190.28\" cy=\"297.55\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"180\" cy=\"298\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"169.72\" cy=\"297.55\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"159.51\" cy=\"296.21\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"149.46\" cy=\"293.98\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"139.64\" cy=\"290.88\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"130.13\" cy=\"286.94\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"121\" cy=\"282.19\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"112.32\" cy=\"276.66\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"104.15\" cy=\"270.39\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"96.56\" cy=\"263.44\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"89.61\" cy=\"255.85\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"83.34\" cy=\"247.68\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"77.81\" cy=\"239\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"73.06\" cy=\"229.87\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"69.12\" cy=\"220.36\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"66.02\" cy=\"210.54\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"63.79\" cy=\"200.49\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"62.45\" cy=\"190.28\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"62\" cy=\"180\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"62.45\" cy=\"169.72\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"63.79\" cy=\"159.51\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"66.02\" cy=\"149.46\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"69.12\" cy=\"139.64\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"73.06\" cy=\"130.13\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"77.81\" cy=\"121\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"83.34\" cy=\"112.32\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"89.61\" cy=\"104.15\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"96.56\" cy=\"96.56\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"104.15\" cy=\"89.61\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"112.32\" cy=\"83.34\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"121\" cy=\"77.81\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"130.13\" cy=\"73.06\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"139.64\" cy=\"69.12\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"149.46\" cy=\"66.02\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"159.51\" cy=\"63.79\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"169.72\" cy=\"62.45\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"180\" cy=\"62\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"190.28\" cy=\"62.45\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"200.49\" cy=\"63.79\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"210.54\" cy=\"66.02\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"220.36\" cy=\"69.12\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"229.87\" cy=\"73.06\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"239\" cy=\"77.81\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"247.68\" cy=\"83.34\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"255.85\" cy=\"89.61\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"263.44\" cy=\"96.56\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"270.39\" cy=\"104.15\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"276.66\" cy=\"112.32\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"282.19\" cy=\"121\" r=\"1.8\" fill=\"rgba(201,165,90,0.9)\"/><circle cx=\"286.94\" cy=\"130.13\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"290.88\" cy=\"139.64\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"293.98\" cy=\"149.46\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"296.21\" cy=\"159.51\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"297.55\" cy=\"169.72\" r=\"1.1\" fill=\"rgba(201,165,90,0.6)\"/><circle cx=\"180\" cy=\"180\" r=\"104\" fill=\"none\" stroke=\"rgba(201,165,90,0.35)\" stroke-width=\"1\"/><path d=\"M229.82 175.76Q253.55 171.88 277.94 183.43Q259.8 185.6 229.82 184.24ZM227.65 195.14Q244.34 198.69 256.43 214.84Q245.32 212.58 224.4 202.99ZM218.23 212.23Q237.75 226.27 246.83 251.68Q232.47 240.39 212.23 218.23ZM202.99 224.4Q212.28 238.71 209.41 258.68Q203.15 249.23 195.14 227.65ZM184.24 229.82Q188.12 253.55 176.57 277.94Q174.4 259.8 175.76 229.82ZM164.86 227.65Q161.31 244.34 145.16 256.43Q147.42 245.32 157.01 224.4ZM147.77 218.23Q133.73 237.75 108.32 246.83Q119.61 232.47 141.77 212.23ZM135.6 202.99Q121.29 212.28 101.32 209.41Q110.77 203.15 132.35 195.14ZM130.18 184.24Q106.45 188.12 82.06 176.57Q100.2 174.4 130.18 175.76ZM132.35 164.86Q115.66 161.31 103.57 145.16Q114.68 147.42 135.6 157.01ZM141.77 147.77Q122.25 133.73 113.17 108.32Q127.53 119.61 147.77 141.77ZM157.01 135.6Q147.72 121.29 150.59 101.32Q156.85 110.77 164.86 132.35ZM175.76 130.18Q171.88 106.45 183.43 82.06Q185.6 100.2 184.24 130.18ZM195.14 132.35Q198.69 115.66 214.84 103.57Q212.58 114.68 202.99 135.6ZM212.23 141.77Q226.27 122.25 251.68 113.17Q240.39 127.53 218.23 147.77ZM224.4 157.01Q238.71 147.72 258.68 150.59Q249.23 156.85 227.65 164.86Z\" fill=\"#C9A55A\" stroke=\"#A67B2E\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><circle cx=\"180\" cy=\"180\" r=\"48\" fill=\"#17130F\" stroke=\"#E8B054\" stroke-width=\"1.6\"/><circle cx=\"180\" cy=\"180\" r=\"42\" fill=\"none\" stroke=\"rgba(232,176,84,0.4)\" stroke-width=\"1\"/><mask id=\"dyMoon\"><rect x=\"120\" y=\"120\" width=\"120\" height=\"120\" fill=\"#fff\"/><circle cx=\"178\" cy=\"178\" r=\"20\" fill=\"#000\"/></mask><circle cx=\"168\" cy=\"182\" r=\"20\" fill=\"#E8B054\" mask=\"url(#dyMoon)\"/><path d=\"M198 162L199.92 166.08L204 168L199.92 169.92L198 174L196.08 169.92L192 168L196.08 166.08Z\" fill=\"#E8B054\"/><path d=\"M206 184L207.28 186.72L210 188L207.28 189.28L206 192L204.72 189.28L202 188L204.72 186.72Z\" fill=\"#E8B054\"/><path d=\"M192 195L192.96 197.04L195 198L192.96 198.96L192 201L191.04 198.96L189 198L191.04 197.04Z\" fill=\"#E8B054\"/></svg>" };
+DY_ORN.frame = DY_ORN.sprig.replace('class="orn"', 'class="orn tl"') + DY_ORN.sprig.replace('class="orn"', 'class="orn tr"') +
+  DY_ORN.sprig.replace('class="orn"', 'class="orn bl"') + DY_ORN.sprig.replace('class="orn"', 'class="orn br"') + DY_ORN.notch +
+  DY_ORN.side.replace('class="orn-side"', 'class="orn-side l"') + DY_ORN.side.replace('class="orn-side"', 'class="orn-side r"') + DY_ORN.side.replace('class="orn-side"', 'class="orn-side b"');
+const dyDateLong = d => d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear();
+/* the page and its mark, for one morning */
+function dyPageHTML(b, wk, dow) {
+  const e = dyGet(b, wk, dow) || {}, words = dyWords(e.page), fill = Math.min(1, words / DY_MARK), at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
+  return '<div class="dy-station"' + at + '><div class="dy-body"><textarea class="dy-page" data-dy="page"' + at + ' rows="4" maxlength="' + DY_PAGE_MAX + '"' +
+    ' aria-label="The page"' + (e.page ? "" : ' placeholder="This morning I\u2026"') + '>' + esc(e.page || "") + "</textarea></div>" +
+    '<div class="dy-mark" style="--fill:' + fill.toFixed(3) + '"><span class="dy-rule"></span><span class="dy-count">' + (words ? words : "") + "</span></div></div>";
+}
+/* the three lines: a numeral, a bar, the line */
+function dyLinesHTML(b, wk, dow) {
+  const e = dyGet(b, wk, dow) || {}, three = e.three || [], at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
+  let h = '<div class="dy-three">';
+  for (let i = 0; i < 3; i++) h += '<div class="dy-lrow' + (three[i] ? " is-set" : "") + '"><span class="dy-num" aria-hidden="true">' + ["I", "II", "III"][i] + '</span><span class="dy-bar" aria-hidden="true"></span>' +
     '<textarea class="dy-line" rows="1" data-dy="line"' + at + ' data-i="' + i + '" maxlength="' + DY_LINE_MAX + '" aria-label="' + ["First", "Second", "Third"][i] + ' of three">' + esc(three[i] || "") + "</textarea></div>";
-  h += '</div><div class="dy-mood"><span class="dy-mood-l" id="dyMoodL">Mood</span><div class="dy-scale" role="radiogroup" aria-labelledby="dyMoodL">';
-  /* the owner's medallions: both states in the button, the word beneath */
+  return h + "</div>";
+}
+/* the medallions, in the set the owner chose */
+function dyMoodHTML(b, wk, dow) {
+  const e = dyGet(b, wk, dow) || {}, mood = e.mood || 0, at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
   const set = (state.hero && state.hero.moods === "faces") ? "assets/moods/faces/" : "assets/moods/";
+  let h = '<div class="dy-scale" role="radiogroup" aria-label="Mood">';
   DY_MOODS.forEach((w, i) => { const on = mood === i + 1, base = set + "0" + (i + 1) + "-" + w.toLowerCase() + "-";
     h += '<button type="button" role="radio" aria-checked="' + on + '" class="dy-medal" data-dy="mood" data-n="' + (i + 1) + '"' + at + '>' +
       '<span class="dy-medal-img"><img class="unlit" src="' + base + 'unclicked.webp" alt="" width="64" height="64" draggable="false">' +
       '<img class="lit" src="' + base + 'clicked.webp" alt="" width="64" height="64" draggable="false"></span>' +
       '<span class="dy-medal-w">' + w + "</span></button>"; });
-  return h + "</div></div></div>";
+  return h + "</div>";
+}
+/* the station, whole: the ritual mounts this */
+function dyStationHTML(b, wk, dow) { return dyPageHTML(b, wk, dow) + dyLinesHTML(b, wk, dow) + dyMoodHTML(b, wk, dow); }
+/* today's card over the medallion: the back and a Turn until it is turned; the face after */
+function dyCardHTML(sel, isToday) {
+  const rec = state.tarot && state.tarot.days ? state.tarot.days[tarKey(sel)] : null;
+  if (rec && TAROT[rec.c]) {
+    const c = TAROT[rec.c];
+    return '<figure class="dy-tcard' + (rec.r ? " is-rev" : "") + '"><img src="' + tarImg(c) + '" alt="' + esc(c.n) + (rec.r ? ", reversed" : "") + '" width="150" height="250"></figure>' +
+      '<p class="dy-tname">' + esc(c.n) + (rec.r ? ' <span class="dy-trev">reversed</span>' : "") + "</p>" +
+      '<button type="button" class="btn btn-ghost btn-sm" data-dy="tarot">Open the reading</button>';
+  }
+  return '<div class="dy-tcard dy-tback' + (isToday ? "" : " is-past") + '">' + tarBackSVG() + "</div>" +
+    (isToday ? '<button type="button" class="btn btn-primary btn-sm" data-dy="turn">Turn today\u2019s card</button>' : "");
 }
 /* the strip: the month of the morning on the page, dots left to right */
 function dyStripHTML(b, sel, today) {
@@ -9366,16 +9415,22 @@ function dyStripHTML(b, sel, today) {
 function renderDiary() {
   const el = $("#viewDiary"); if (!el) return;
   const b = book(), today = new Date(), sel = dyDay(), isToday = dySame(sel, today);
-  const prev = dyNeighbour(b, sel, -1), next = dyNeighbour(b, sel, 1);
-  el.innerHTML = '<section class="dy">' +
-    '<header class="dy-head"><div class="dy-nav">' +
-      '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="-1" aria-label="Earlier morning"' + (prev ? "" : " disabled") + ">\u2039</button>" +
-      '<p class="dy-date' + (isToday ? " is-today" : "") + '">' + dyDateLine(sel) + "</p>" +
-      '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="1" aria-label="Later morning"' + (next ? "" : " disabled") + ">\u203a</button>" +
-      (isToday ? "" : '<button type="button" class="j3-btn" data-dy="today">Today</button>') +
-    "</div>" + dyStripHTML(b, sel, today) + "</header>" +
-    dyStationHTML(b, weekKeyOf(sel), dyDow(sel)) +
-    "</section>";
+  const prev = dyNeighbour(b, sel, -1), next = dyNeighbour(b, sel, 1), wk = weekKeyOf(sel), dow = dyDow(sel);
+  el.innerHTML = '<div class="dy2">' +
+    '<section class="dy-card dy-day">' + DY_ORN.frame +
+      '<p class="dy-ct dy-date' + (isToday ? " is-today" : "") + '">' + dyDateLong(sel) + "</p>" +
+      '<div class="dy-wd"><span class="dy-wdl"></span><span>' + DOW_LONG[dow] + '</span><span class="dy-wdl"></span></div>' +
+      '<div class="dy-nav">' +
+        '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="-1" aria-label="Earlier morning"' + (prev ? "" : " disabled") + ">\u2039</button>" +
+        (isToday ? "" : '<button type="button" class="j3-btn" data-dy="today">Today</button>') +
+        '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="1" aria-label="Later morning"' + (next ? "" : " disabled") + ">\u203a</button>" +
+      "</div>" + dyStripHTML(b, sel, today) +
+      '<div class="dy-orb">' + DY_ORN.medallion + '<div class="dy-orb-card">' + dyCardHTML(sel, isToday) + "</div></div>" +
+    "</section>" +
+    '<section class="dy-card dy-log">' + DY_ORN.frame + '<h2 class="dy-ct">Logbook</h2>' + DY_ORN.rule + dyPageHTML(b, wk, dow) + "</section>" +
+    '<section class="dy-card dy-moodc">' + DY_ORN.frame + '<h2 class="dy-ct">How I feel</h2>' + DY_ORN.rule + '<div class="dy-body dy-body-c">' + dyMoodHTML(b, wk, dow) + "</div></section>" +
+    '<section class="dy-card dy-linesc">' + DY_ORN.frame + '<div class="dy-body dy-body-c">' + dyLinesHTML(b, wk, dow) + "</div></section>" +
+    "</div>";
   el.querySelectorAll(".dy-page, .dy-line").forEach(dyAutosize);
 }
 function dyAutosize(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
@@ -9390,7 +9445,7 @@ if (window.ResizeObserver) {
 function dyLive(t) {
   if (t.classList.contains("dy-page")) {
     dyAutosize(t);
-    const mark = t.parentElement.querySelector(".dy-mark"), words = dyWords(t.value);
+    const st = t.closest(".dy-station"), mark = st ? st.querySelector(".dy-mark") : null, words = dyWords(t.value);
     if (mark) { mark.style.setProperty("--fill", Math.min(1, words / DY_MARK).toFixed(3)); mark.querySelector(".dy-count").textContent = words ? words : ""; }
   } else if (t.classList.contains("dy-line")) {
     dyAutosize(t); t.closest(".dy-lrow").classList.toggle("is-set", !!t.value.trim());
@@ -9429,6 +9484,10 @@ function dyAct(el) {
     return;
   }
   if (el.dataset.dy === "today") { dySel = null; renderDiary(); return; }
+  if (el.dataset.dy === "tarot") { setView("tarot"); return; }
+  if (el.dataset.dy === "turn") {           /* the same turn as the Tarot page; the diary redraws when the card has landed */
+    renderTarot(); tarTurn(); setTimeout(renderDiary, 260); return;
+  }
   if (el.dataset.dy === "step") {
     const n = dyNeighbour(b, dyDay(), +el.dataset.d); if (!n) return;
     dySel = dySame(n, new Date()) ? null : dyISO(n); renderDiary();
@@ -9451,7 +9510,7 @@ document.addEventListener("keydown", e => {
 document.addEventListener("focusin",  e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.add("is-writing"); });
 document.addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.remove("is-writing"); });
 document.addEventListener("click", e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"], [data-dy="mood"]');
+  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"], [data-dy="mood"], [data-dy="turn"], [data-dy="tarot"]');
   if (t) dyAct(t);
 });
 
