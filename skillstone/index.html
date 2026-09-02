@@ -1699,9 +1699,8 @@ button.d-plaque {
 .tar-dial .label { display: block; margin-bottom: var(--s2); }
 .tar-dial .row { display: flex; align-items: center; gap: var(--s4); }
 .tar-dial .n { font-family: var(--f-mono); font-size: 1.375rem; color: var(--gold); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
-/* the dial: a carved channel with a notch at the centre and a turned thumb. Two fills: lean
-   (the tarot — gold from the centre toward the thumb, so 50 shows none) and tank (the
-   gauges — gold from the left, like a level). Shared by both pages. */
+/* the dial: a carved channel with a notch at the centre and a turned thumb; gold runs from
+   the centre toward the thumb, so 50 — no lean — shows none. */
 .tar-dial input[type="range"] { flex: 1; }
 .dial-range { appearance: none; width: 100%; height: 44px; background: none; cursor: pointer; --v: 50%; }
 .dial-range::-webkit-slider-runnable-track {
@@ -1711,7 +1710,6 @@ button.d-plaque {
     linear-gradient(to right, var(--socket) min(50%, var(--v)), var(--gold) min(50%, var(--v)), var(--gold) max(50%, var(--v)), var(--socket) max(50%, var(--v)));
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.7), 0 1px 0 var(--bevel);
 }
-.dial-range.tank::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--gold) var(--v), var(--socket) var(--v)); }
 .dial-range::-webkit-slider-thumb {
   appearance: none; width: 22px; height: 22px; border-radius: 50%; margin-top: -8px;
   background: radial-gradient(circle at 50% 45%, #F6D48A 0 2px, var(--gold) 2.5px 100%);
@@ -1719,7 +1717,6 @@ button.d-plaque {
   box-shadow: 0 0 0 1px var(--bronze), 0 2px 6px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.35);
   transition: transform var(--t-fast) var(--e-out), opacity var(--t-fast) var(--e-out);
 }
-.dial-range.is-unset::-webkit-slider-thumb { opacity: 0.45; }
 @media (hover: hover) { .dial-range:hover::-webkit-slider-thumb { transform: scale(1.08); } }
 .dial-range:active::-webkit-slider-thumb { transform: scale(0.96); }
 .dial-range::-moz-range-track {
@@ -1727,12 +1724,10 @@ button.d-plaque {
   background: linear-gradient(to right, var(--socket) min(50%, var(--v)), var(--gold) min(50%, var(--v)), var(--gold) max(50%, var(--v)), var(--socket) max(50%, var(--v)));
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.7);
 }
-.dial-range.tank::-moz-range-track { background: linear-gradient(to right, var(--gold) var(--v), var(--socket) var(--v)); }
 .dial-range::-moz-range-thumb {
   width: 18px; height: 18px; border-radius: 50%; background: var(--gold); border: 2px solid #1A1408;
   box-shadow: 0 0 0 1px var(--bronze), 0 2px 6px rgba(0,0,0,0.55);
 }
-.dial-range.is-unset::-moz-range-thumb { opacity: 0.45; }
 .dial-range:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 .tar-dial-ends { display: flex; justify-content: space-between; font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bronze); margin-top: var(--s2); }
 
@@ -2839,15 +2834,12 @@ li.is-done .qg { color: var(--verdant); }
   transition: color var(--t-settle) var(--e-out);
 }
 .dy-line:focus { outline: none; color: var(--ink-wet); }
-/* the gauges: what is left in the tank, three channels, a dash until read */
-.dy-mood { margin-top: var(--s6); display: grid; gap: var(--s1); }
-.dy-mood-l { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin-bottom: var(--s1); }
-.dy-gauge { display: grid; grid-template-columns: 56px minmax(0, 1fr) 36px; align-items: center; column-gap: var(--s3); }
-.dy-gl { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bronze); cursor: help; }
-.dy-gch { display: flex; flex-direction: column; min-width: 0; }
-.dy-gends { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 0.5625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ash); margin-top: -8px; }
-.dy-gn { font-family: var(--f-mono); font-size: 1rem; color: var(--gold); font-variant-numeric: tabular-nums; text-align: right; }
-.dy-gauge.is-unset .dy-gn { color: var(--mortar-2); }
+/* the mood: five words in order, five plates; the chosen one is brass, the rest stone */
+.dy-mood { margin-top: var(--s6); display: grid; gap: var(--s2); }
+.dy-mood-l { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
+.dy-scale { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s1); }
+.dy-scale .btn { height: 44px; padding: 0 var(--s1); font-size: 0.625rem; letter-spacing: 0.06em; min-width: 0; }
+.dy-scale .btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 /* the gesture: while the page has focus, the hall dims around it */
 body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-writing .topbar,
 body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
@@ -8982,13 +8974,8 @@ function campAct(el) {
    surface; the date and its stepper, the month strip, the three lines and the gauges are
    quiet furniture. Second pass: mornings are walked left to right along the strip. */
 const DY_PAGE_MAX = 20000, DY_LINE_MAX = 200, DY_MARK = 100;
-/* the three gauges: key, name, empty end, full end, gloss. All read as what is left, so a
-   high number is always the good one. */
-const DY_MOOD = [
-  ["body",   "Body",   "Spent",   "Rested",  "Physical tiredness, read as what the body has left"],
-  ["social", "Social", "Drained", "Charged", "Social battery"],
-  ["mind",   "Mind",   "Foggy",   "Clear",   "Mental restedness"]
-];
+/* the five words of the mood, in order — the record keeps 1..5 */
+const DY_MOODS = ["Rough", "Low", "Even", "Good", "Bright"];
 /* one morning, sanitised: a string from the first shape becomes { page } */
 function dySan(v) {
   if (typeof v === "string") v = { page: v };
@@ -8996,14 +8983,17 @@ function dySan(v) {
   const page = String(v.page || "").slice(0, DY_PAGE_MAX);
   const three = Array.isArray(v.three) ? v.three.slice(0, 3).map(s => String(s || "").replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX)) : [];
   while (three.length && !three[three.length - 1]) three.pop();
-  const mood = {};
-  if (v.mood && typeof v.mood === "object") DY_MOOD.forEach(([k]) => {
-    const n = Number(v.mood[k]); if (v.mood[k] !== null && v.mood[k] !== "" && isFinite(n)) mood[k] = Math.max(0, Math.min(100, Math.round(n)));
-  });
+  let mood = null;
+  if (v.mood && typeof v.mood === "object") {          /* the short-lived gauges: their average, onto the five */
+    const vals = Object.values(v.mood).map(Number).filter(n => isFinite(n));
+    if (vals.length) mood = Math.min(5, Math.max(1, Math.round((vals.reduce((a, c) => a + c, 0) / vals.length) / 25) + 1));
+  } else if (v.mood !== undefined && v.mood !== null && v.mood !== "") {
+    const n = Math.round(Number(v.mood)); if (n >= 1 && n <= 5) mood = n;
+  }
   const e = {};
   if (page.trim()) e.page = page;
   if (three.some(Boolean)) e.three = three;
-  if (Object.keys(mood).length) e.mood = mood;
+  if (mood) e.mood = mood;
   if (!e.page && !e.three && !e.mood) return null;
   if (typeof v.at === "number" && isFinite(v.at)) e.at = v.at;
   return e;
@@ -9046,7 +9036,7 @@ function dyNeighbour(b, sel, dir) {
 
 /* the station: a page, three lines, three gauges — for one morning. The ritual mounts this unchanged. */
 function dyStationHTML(b, wk, dow) {
-  const e = dyGet(b, wk, dow) || {}, three = e.three || [], mood = e.mood || {}, words = dyWords(e.page);
+  const e = dyGet(b, wk, dow) || {}, three = e.three || [], mood = e.mood || 0, words = dyWords(e.page);
   const fill = Math.min(1, words / DY_MARK), at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
   let h = '<div class="dy-station"' + at + '>' +
     '<textarea class="dy-page" data-dy="page"' + at + ' rows="4" maxlength="' + DY_PAGE_MAX + '"' +
@@ -9056,17 +9046,10 @@ function dyStationHTML(b, wk, dow) {
     '<div class="dy-three">';
   for (let i = 0; i < 3; i++) h += '<div class="dy-lrow' + (three[i] ? " is-set" : "") + '"><span class="dy-num" aria-hidden="true">' + ["I", "II", "III"][i] + "</span>" +
     '<textarea class="dy-line" rows="1" data-dy="line"' + at + ' data-i="' + i + '" maxlength="' + DY_LINE_MAX + '" aria-label="' + ["First", "Second", "Third"][i] + ' of three">' + esc(three[i] || "") + "</textarea></div>";
-  h += '</div><div class="dy-mood"><span class="dy-mood-l">Mood</span>';
-  DY_MOOD.forEach(([k, name, lo, hi, gloss]) => {
-    const has = typeof mood[k] === "number", v = has ? mood[k] : 50;
-    h += '<div class="dy-gauge' + (has ? "" : " is-unset") + '">' +
-      '<span class="dy-gl has-tip" tabindex="0" data-tip="' + esc(gloss) + '">' + name + '<span class="vh">, ' + esc(gloss) + "</span></span>" +
-      '<div class="dy-gch"><input type="range" class="dial-range tank' + (has ? "" : " is-unset") + '" min="0" max="100" step="1" value="' + v + '" style="--v:' + (has ? v : 0) + '%"' +
-        ' data-dy="mood" data-k="' + k + '"' + at + ' aria-label="' + name + ', ' + lo.toLowerCase() + ' to ' + hi.toLowerCase() + '">' +
-      '<p class="dy-gends"><span>' + lo + "</span><span>" + hi + "</span></p></div>" +
-      '<span class="dy-gn">' + (has ? v : "\u2014") + "</span></div>";
-  });
-  return h + "</div></div>";
+  h += '</div><div class="dy-mood"><span class="dy-mood-l" id="dyMoodL">Mood</span><div class="dy-scale" role="radiogroup" aria-labelledby="dyMoodL">';
+  DY_MOODS.forEach((w, i) => { const on = mood === i + 1;
+    h += '<button type="button" role="radio" aria-checked="' + on + '" class="btn ' + (on ? "btn-primary" : "btn-ghost") + '" data-dy="mood" data-n="' + (i + 1) + '"' + at + '>' + w + "</button>"; });
+  return h + "</div></div></div>";
 }
 /* the strip: the month of the morning on the page, dots left to right */
 function dyStripHTML(b, sel, today) {
@@ -9110,31 +9093,41 @@ function dyLive(t) {
     if (mark) { mark.style.setProperty("--fill", Math.min(1, words / DY_MARK).toFixed(3)); mark.querySelector(".dy-count").textContent = words ? words : ""; }
   } else if (t.classList.contains("dy-line")) {
     dyAutosize(t); t.closest(".dy-lrow").classList.toggle("is-set", !!t.value.trim());
-  } else if (t.dataset.dy === "mood") {
-    const g = t.closest(".dy-gauge"); t.style.setProperty("--v", t.value + "%"); t.classList.remove("is-unset");
-    if (g) { g.classList.remove("is-unset"); g.querySelector(".dy-gn").textContent = t.value; }
   }
 }
-/* commit on change, like every field in the app */
-function dyEdit(t) {
-  const b = book(), wk = t.dataset.wk, dow = t.dataset.dow;
-  const w = (b.diary[wk] = b.diary[wk] || {});
-  const cur = dySan(w[dow]) || {};
-  const had = !!w[dow];
-  if (t.dataset.dy === "page") cur.page = t.value.slice(0, DY_PAGE_MAX);
-  else if (t.dataset.dy === "line") { const three = (cur.three || []).slice(); three[+t.dataset.i] = t.value.replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX); cur.three = three; }
-  else if (t.dataset.dy === "mood") { cur.mood = Object.assign({}, cur.mood || {}); cur.mood[t.dataset.k] = Math.max(0, Math.min(100, Math.round(+t.value))); }
+/* one commit path: read the morning, change it, sanitise, save, and mark the day's dot in
+   place — never a re-render that would steal the next field's focus */
+function dyCommit(wk, dow, mutate) {
+  const b = book(), w = (b.diary[wk] = b.diary[wk] || {});
+  const cur = dySan(w[dow]) || {}, had = !!w[dow];
+  mutate(cur);
   const next = dySan(cur);
   if (next) { if (cur.at) next.at = cur.at; else if (!had) next.at = Date.now(); w[dow] = next; }
   else delete w[dow];
   if (!Object.keys(w).length) delete b.diary[wk];
   save();
-  /* in place: the selected day's dot, never a re-render that would steal the next field's focus */
   const dot = document.querySelector("#viewDiary .dy-dot.is-sel");
   if (dot) dot.classList.toggle("is-on", !!next);
+  return next;
+}
+/* fields commit on change, like every field in the app */
+function dyEdit(t) {
+  dyCommit(t.dataset.wk, t.dataset.dow, cur => {
+    if (t.dataset.dy === "page") cur.page = t.value.slice(0, DY_PAGE_MAX);
+    else if (t.dataset.dy === "line") { const three = (cur.three || []).slice(); three[+t.dataset.i] = t.value.replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX); cur.three = three; }
+  });
 }
 function dyAct(el) {
   const b = book();
+  if (el.dataset.dy === "mood") {
+    const n = +el.dataset.n;
+    const next = dyCommit(el.dataset.wk, el.dataset.dow, cur => { if (cur.mood === n) delete cur.mood; else cur.mood = n; });
+    el.closest(".dy-scale").querySelectorAll('[data-dy="mood"]').forEach(b => {
+      const on = !!next && next.mood === +b.dataset.n;
+      b.setAttribute("aria-checked", String(on)); b.classList.toggle("btn-primary", on); b.classList.toggle("btn-ghost", !on);
+    });
+    return;
+  }
   if (el.dataset.dy === "today") { dySel = null; renderDiary(); return; }
   if (el.dataset.dy === "step") {
     const n = dyNeighbour(b, dyDay(), +el.dataset.d); if (!n) return;
@@ -9145,7 +9138,7 @@ function dyAct(el) {
 }
 document.addEventListener("change", e => {
   const t = e.target && e.target.closest && e.target.closest("[data-dy]");
-  if (t && (t.dataset.dy === "page" || t.dataset.dy === "line" || t.dataset.dy === "mood")) dyEdit(t);
+  if (t && (t.dataset.dy === "page" || t.dataset.dy === "line")) dyEdit(t);
 });
 document.addEventListener("input", e => { const t = e.target; if (t && t.closest && t.closest("#viewDiary") && t.dataset && t.dataset.dy) dyLive(t); });
 /* Enter does not break a line: it moves to the next, and off the third */
@@ -9158,7 +9151,7 @@ document.addEventListener("keydown", e => {
 document.addEventListener("focusin",  e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.add("is-writing"); });
 document.addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.remove("is-writing"); });
 document.addEventListener("click", e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"]');
+  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"], [data-dy="mood"]');
   if (t) dyAct(t);
 });
 
