@@ -2465,7 +2465,8 @@ li.is-done .qg { color: var(--verdant); }
   --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.12  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
   position: relative; perspective: 2000px;
   padding: 0 24px 40px;
-  background: url("assets/cover.webp") center / cover, #2A2018;
+  background-color: #2A1D12;
+  background-image: var(--paper-grain), radial-gradient(ellipse at 50% 35%, #45321F 0%, #2A1D12 72%);
   border: 1px solid rgba(0,0,0,0.65);
   border-radius: 6px 10px 10px 6px;
   box-shadow: var(--shadow-float), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -2px 0 rgba(0,0,0,0.4);
@@ -2487,12 +2488,14 @@ li.is-done .qg { color: var(--verdant); }
 .j3-lift { position: absolute; left: 0; right: 0; height: 0; z-index: 0; pointer-events: none; }
 .j3-lift.t { top: 0; }
 .j3-lift.b { bottom: 0; }
-.j3-lift::before, .j3-lift::after { content: ""; position: absolute; height: 2em; width: calc(50% + 20px);
+.j3-lift::before, .j3-lift::after { content: ""; position: absolute; height: 2em; width: 50%;
   background-color: var(--paper); background-image: var(--paper-grain); border-radius: 25%; }
-.j3-lift.t::before { top: -10px; right: 50%; transform: rotate(-2deg); border-top-left-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-.j3-lift.t::after  { top: -10px; left: 50%;  transform: rotate(2deg);  border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-.j3-lift.b::before { bottom: -10px; right: 50%; transform: rotate(2deg);  border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; }
-.j3-lift.b::after  { bottom: -10px; left: 50%;  transform: rotate(-2deg); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+/* pinned at the sheet’s outer corner: the outer edge stays the sheet’s edge, only the spine
+   end rises (top) or dips (foot) — about 21px over half a sheet at 2° */
+.j3-lift.t::before { top: 0; right: 50%; transform-origin: left top;  transform: rotate(-2deg); border-top-left-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.j3-lift.t::after  { top: 0; left: 50%;  transform-origin: right top; transform: rotate(2deg);  border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.j3-lift.b::before { bottom: 0; right: 50%; transform-origin: left bottom;  transform: rotate(2deg);  border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; }
+.j3-lift.b::after  { bottom: 0; left: 50%;  transform-origin: right bottom; transform: rotate(-2deg); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
 /* the pages: the two halves of the sheet. No background of their own — the sheet is the
    paper. The journal's tokens are redefined here, so every rule that paints parchment on
    stone paints ink on paper (on #F3EAD6: ink 13:1, dust 8.7:1, ash and ochre 6.2:1). */
