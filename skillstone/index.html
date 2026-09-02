@@ -2457,42 +2457,60 @@ li.is-done .qg { color: var(--verdant); }
    Two pages on one modular grid, hinged on a spine. The grid is felt, not seen
    (Muller-Brockmann): the only ruled marks are the spine, the page edges and the
    column rules the habit table genuinely needs. */
+/* the book: the owner's leather as a cover, showing 14px around two paper sheets */
 .j3 {
   --j3-rule: var(--mortar);
-  --j3-page: #3B3023;
   position: relative; perspective: 2000px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 3px minmax(0, 1fr);
-  background: var(--cave);
-  border: 1px solid var(--mortar);
-  border-radius: var(--r-lg);
-  box-shadow: inset 0 1px 0 var(--bevel), var(--shadow-float);
+  grid-template-columns: minmax(0, 1fr) 10px minmax(0, 1fr);
+  padding: 0 14px 16px;
+  background: url("assets/cover.webp") center / cover, #2A2018;
+  border: 1px solid rgba(0,0,0,0.65);
+  border-radius: 6px 10px 10px 6px;
+  box-shadow: var(--shadow-float), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -2px 0 rgba(0,0,0,0.4);
   overflow: hidden;
 }
-.j3-spine {
-  background: linear-gradient(90deg, rgba(0,0,0,0.45), var(--bronze) 45%, var(--bronze) 55%, rgba(0,0,0,0.45));
-  opacity: 0.55;
-}
-.j3-page { padding: var(--s5); background: var(--j3-page); min-width: 0; }
-/* the journal's pages: the same grain as the hall, the purple discarded, lit to leather-brown
-   under a light wash. The quest hall keeps the dark tile. */
+/* the gutter: shadow where the two sheets meet */
+.j3-spine { background: linear-gradient(90deg, rgba(0,0,0,0.25), rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.25)); }
+/* the sheets: paper, one whole sheet a page, and ink on it. The journal's tokens are
+   redefined here, so every rule that paints parchment on stone paints ink on paper —
+   each pairing checked against the paper (#E3D2AE): ink 9.4:1, dust 6.3:1, ash 4.5:1. */
 .j3-page {
-  background-image: linear-gradient(rgba(13,11,10,0.12), rgba(13,11,10,0.12)), url("assets/page.webp");
-  background-repeat: repeat; background-size: 512px 512px;
+  --parchment: #2B2117; --dust: #4A3B2A; --ash: #5F4E39;
+  --gold: #6E4A0E; --gold-2: #5C3E0B; --bronze: #7A5716; --ember: #9A3B22; --focus: #6E4A0E;
+  --cave: #F3E9D2; --stone-1: #E6D8B8; --stone-2: #DCCCA9; --stone-3: #CFBE98;
+  --mortar: rgba(43,33,23,0.30); --mortar-2: rgba(43,33,23,0.48); --socket: rgba(43,33,23,0.10); --bevel: rgba(255,255,255,0.5);
+  --j3-rule: rgba(43,33,23,0.28);
+  position: relative; padding: var(--s5); min-width: 0;
+  background-color: #E3D2AE; background-repeat: no-repeat; background-size: cover; background-position: center;
+  color: var(--parchment);
 }
+.j3-page.left  { background-image: url("assets/paper-1.webp"); box-shadow: inset -22px 0 28px -18px rgba(60,38,14,0.45); }
+.j3-page.right { background-image: url("assets/paper-2.webp"); box-shadow: inset 22px 0 28px -18px rgba(60,38,14,0.45); }
+/* the block of sheets under each page: stacked edges along the outer side and the foot */
+.j3-page::before, .j3-page::after { content: ""; position: absolute; pointer-events: none; }
+.j3-page::before { top: 4px; bottom: -6px; width: 7px; background: repeating-linear-gradient(to right, #EADAB6 0 1px, #C4B08A 1px 2px); box-shadow: 0 0 6px rgba(0,0,0,0.35); }
+.j3-page.left::before  { left: -7px; }
+.j3-page.right::before { right: -7px; }
+.j3-page::after { left: 0; right: 0; bottom: -7px; height: 7px; background: repeating-linear-gradient(to bottom, #EADAB6 0 1px, #C4B08A 1px 2px); box-shadow: 0 3px 6px rgba(0,0,0,0.4); }
+.j3-page.left::after  { left: -7px; }
+.j3-page.right::after { right: -7px; }
+/* the head plates keep a light inscription on the dark stone */
+.j3-page .j3-btn { color: #D9CCB0; }
+@media (hover: hover) { .j3-page .j3-btn:hover { color: #F3E9D2; } }
 .qh-left {
   background-image: linear-gradient(rgba(13,11,10,0.38), rgba(13,11,10,0.38)), url("assets/panel.webp");
   background-repeat: repeat; background-size: 512px 512px;
 }
-.j3-page.left  { box-shadow: inset -12px 0 18px -14px rgba(0,0,0,0.7); }
-.j3-page.right { box-shadow: inset 12px 0 18px -14px rgba(0,0,0,0.7); }
 
 .j3-head {
   grid-column: 1 / -1;
   display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
-  padding: var(--s4) var(--s5);
-  background: var(--stone-2);
-  border-bottom: 1px solid var(--j3-rule);
+  margin: 0 -14px var(--s3);
+  padding: var(--s4) calc(var(--s5) + 14px);
+  background: rgba(18,13,9,0.8);
+  border-bottom: 1px solid rgba(0,0,0,0.55);
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05);
 }
 .j3-week { font-family: var(--f-display); font-weight: 700; font-size: 1.125rem; color: var(--parchment); }
 .j3-away {
@@ -2548,6 +2566,7 @@ li.is-done .qg { color: var(--verdant); }
 .j3-face { position: absolute; inset: 0; backface-visibility: hidden; overflow: hidden; }
 .j3-face.back { transform: rotateY(180deg); }
 .j3-face > .j3-page, .j3-ghost > .j3-page { position: absolute; inset: 0; box-shadow: none; }
+.j3-face > .j3-page::before, .j3-face > .j3-page::after, .j3-ghost > .j3-page::before, .j3-ghost > .j3-page::after { display: none; }
 .j3-face::after { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--e-out);
   background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
 .j3-leaf.bwd .j3-face::after { background: linear-gradient(-90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
@@ -2790,6 +2809,10 @@ li.is-done .qg { color: var(--verdant); }
   .j3 { grid-template-columns: minmax(0, 1fr); }
   .j3-spine { display: none; }
   .j3-mark { display: none; }
+  .j3 { padding: 0 10px 12px; }
+  .j3-head { margin: 0 -10px var(--s3); padding-left: calc(var(--s5) + 10px); padding-right: calc(var(--s5) + 10px); }
+  .j3-page::before { display: none; }
+  .j3-page.left::after, .j3-page.right::after { left: 0; right: 0; }
   .j3-page.left, .j3-page.right { box-shadow: none; }
   .j3-page.right { border-top: 1px solid var(--j3-rule); }
 }
