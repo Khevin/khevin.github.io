@@ -3128,6 +3128,13 @@ body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
     </button>
   </div>
   <div class="cfg-sec">
+    <span class="cfg-h">Diary</span>
+    <div class="astro-switch" role="group" aria-label="Mood medallions">
+      <button type="button" data-action="moods" data-v="symbols" aria-pressed="true">Symbols</button>
+      <button type="button" data-action="moods" data-v="faces" aria-pressed="false">Faces</button>
+    </div>
+  </div>
+  <div class="cfg-sec">
     <span class="cfg-h">Cloud <span class="cloud-state" id="cloudState" aria-live="polite"></span></span>
   <div id="authBox" class="auth-box"></div>
   <form class="cloud-form" data-form="cloud">
@@ -5030,7 +5037,7 @@ function validV1(s) {
 /* a declaration, not a const arrow: SEED() calls this from load(), which runs long
    before this line is reached — a const would be in its temporal dead zone and a fresh
    board would crash on first open */
-function DEFAULT_HERO() { return { name: "Adventurer", cls: "wizard", clsName: "", portrait: null, birth: null, houses: "whole" }; }
+function DEFAULT_HERO() { return { name: "Adventurer", cls: "wizard", clsName: "", portrait: null, birth: null, houses: "whole", moods: "symbols" }; }
 /* Every content migration, in order, in ONE place. It used to be written out twice — at
    startup and in cloudPull — and every new migration had to be appended to both by hand.
    Three callers made that a liability instead of a latent one: a board arriving by import
@@ -5052,6 +5059,7 @@ function sanitize(s) {
     /* the birth is personal state: it syncs with the board and never ships in the seed */
     birth: sanBirth(hero.birth),
     houses: hero.houses === "placidus" ? "placidus" : "whole",
+    moods: hero.moods === "faces" ? "faces" : "symbols",       /* which medallion set the mood row shows */
     portrait: (typeof hero.portrait === "string" && hero.portrait.startsWith("data:image")) ? hero.portrait : null
   };
   s.sel = s.sel || null;
@@ -9279,7 +9287,8 @@ function dyStationHTML(b, wk, dow) {
     '<textarea class="dy-line" rows="1" data-dy="line"' + at + ' data-i="' + i + '" maxlength="' + DY_LINE_MAX + '" aria-label="' + ["First", "Second", "Third"][i] + ' of three">' + esc(three[i] || "") + "</textarea></div>";
   h += '</div><div class="dy-mood"><span class="dy-mood-l" id="dyMoodL">Mood</span><div class="dy-scale" role="radiogroup" aria-labelledby="dyMoodL">';
   /* the owner's medallions: both states in the button, the word beneath */
-  DY_MOODS.forEach((w, i) => { const on = mood === i + 1, base = "assets/moods/0" + (i + 1) + "-" + w.toLowerCase() + "-";
+  const set = (state.hero && state.hero.moods === "faces") ? "assets/moods/faces/" : "assets/moods/";
+  DY_MOODS.forEach((w, i) => { const on = mood === i + 1, base = set + "0" + (i + 1) + "-" + w.toLowerCase() + "-";
     h += '<button type="button" role="radio" aria-checked="' + on + '" class="dy-medal" data-dy="mood" data-n="' + (i + 1) + '"' + at + '>' +
       '<span class="dy-medal-img"><img class="unlit" src="' + base + 'unclicked.webp" alt="" width="64" height="64" draggable="false">' +
       '<img class="lit" src="' + base + 'clicked.webp" alt="" width="64" height="64" draggable="false"></span>' +
@@ -10775,7 +10784,13 @@ function className(hero) {
    from scratch, so the browser re-decodes it - on EVERY render, which is every click on
    a skill. That is the flicker. Rebuild only when the hero itself changed. */
 let heroSig = null;
+/* the panel's switch shows the board's choice */
+function renderMoodSwitch() {
+  const cur = (state.hero && state.hero.moods === "faces") ? "faces" : "symbols";
+  document.querySelectorAll('[data-action="moods"]').forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === cur)));
+}
 function renderHero() {
+  renderMoodSwitch();
   const hero = state.hero;
   const sig = [hero.name, hero.cls, hero.clsName, heroNaming,
                hero.portrait ? hero.portrait.length : 0, JSON.stringify(hero.birth || null)].join("\u0000");
@@ -12459,6 +12474,8 @@ document.addEventListener("click", e => {
                         { const inp = $("#rnInput"); if (inp) { inp.focus(); inp.select(); } } break;
     case "rename-cancel": renaming = false; renderDetail(false); break;
     case "bk-cancel":   $("#bookDlg").close(); break;
+    case "moods":       state.hero.moods = act.dataset.v === "faces" ? "faces" : "symbols"; save(); renderMoodSwitch();
+                        if (view === "diary") renderDiary(); break;
     case "cloud-off":   cloudDisconnect(); break;
     case "auth-google": authStart(); break;
     case "auth-out":    authSignOut(); break;
