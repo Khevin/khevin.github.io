@@ -163,13 +163,16 @@ The load-bearing component shared with `khev-tools/design-expert`. Anatomy:
                 ├─────────────────────────────────────────────┤
                 │   khevin-mituti  / portfolio                │
                 │   the work — what khevin ships for clients  │
+                ├─────────────────────────────────────────────┤
+                │   khevin-mituti  / skillstone               │
+                │   the character sheet — what khevin keeps for himself │
                 └─────────────────────────────────────────────┘
 ```
 
 Rules:
 - The brand block is always visible (`khev-tools/design-expert` or `khevin-mituti/portfolio`), with a small chevron `▾` after it indicating it's a switcher.
-- The current namespace shows a `✓` mark in the panel; the other namespace is unmarked.
-- Clicking the unmarked row navigates to the sibling site. A real navigation, not a fake tab — each surface owns its own URL.
+- The current namespace shows a `✓` mark in the panel; the other namespaces are unmarked. Three rows since 2 Sep 2026: `design-expert`, `portfolio`, `skillstone` (the last lives at `/skillstone/` and carries its own chrome, so it has no switcher of its own yet — the way back is the browser).
+- Clicking an unmarked row navigates to that surface. A real navigation, not a fake tab — each surface owns its own URL.
 - The panel uses `surface-200` background with a `1px solid var(--rule)` border. Radius `2px`. No shadow.
 - Each row is two lines: a mono namespace path (`khev-tools / design-expert`) and a one-line descriptor (`the plugin — what khevin makes for designers`).
 - Keyboard: the brand block is `tabindex="0"`. Space/Enter toggles the panel. Arrow keys move between rows. Escape closes.

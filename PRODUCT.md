@@ -98,6 +98,7 @@ The two surfaces share a font stack, a token base, and a hand. They live behind 
 ```
 khev-tools     / design-expert     ← the plugin (what Khevin makes for designers)
 khevin-mituti  / portfolio         ← the work (what Khevin ships for clients)
+khevin-mituti  / skillstone        ← the character sheet (what Khevin keeps for himself; a self-contained app at /skillstone/)
 ```
 
 The dropdown is the only structural indicator that they're related — visually, they are kin, not twins. Each surface owns its own register decision; both happen to be `brand` but design-expert leans more product-like in information density, while the portfolio leans more editorial in pace and rhythm.
