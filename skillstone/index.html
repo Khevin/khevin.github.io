@@ -776,12 +776,32 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .btn-primary:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.35); }
 .btn-primary:disabled { background: var(--stone-3); color: var(--ash); border-color: var(--mortar); box-shadow: none; text-shadow: none; cursor: not-allowed; }
 .btn-primary:disabled::before, .btn-primary:disabled::after { display: none; }
-.btn-ghost { background: transparent; border-color: var(--mortar); color: var(--dust); font-weight: 500; }
-@media (hover: hover) { .btn-ghost:hover { border-color: var(--mortar-2); background: var(--stone-2); color: var(--parchment); } }
-.btn-danger { background: transparent; border-color: var(--mortar); color: var(--ember); font-weight: 500; }
-@media (hover: hover) { .btn-danger:hover { border-color: var(--ember); background: rgba(216,121,90,0.08); } }
+/* the secondary button is a stone plate — the brass's family, a step back in the light:
+   carved, not cast. A stone gradient, a bevel, grain at ten percent, the label in the
+   display face in dust. Hover warms the border toward bronze; press sinks it. No sweep:
+   the sweep is what says primary. */
+.btn-ghost, .btn-danger {
+  position: relative; overflow: hidden; isolation: isolate;
+  font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase;
+  background: linear-gradient(180deg, #2F271E 0%, #292219 55%, #241E17 100%);
+  border-color: var(--mortar-2);
+  box-shadow: inset 0 1px 0 rgba(240,231,209,0.07), inset 0 -1px 0 rgba(0,0,0,0.35), 0 1px 0 rgba(0,0,0,0.5);
+  transition: border-color var(--t-fast) var(--e-out), color var(--t-fast) var(--e-out), box-shadow var(--t-fast) var(--e-out), transform var(--t-fast) var(--e-out), opacity var(--t-fast) var(--e-out);
+}
+.btn-ghost { color: var(--dust); }
+.btn-danger { color: var(--ember); }
+.btn-ghost::before, .btn-danger::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.10; mix-blend-mode: multiply; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+@media (hover: hover) {
+  .btn-ghost:hover { border-color: var(--bronze); color: var(--parchment); }
+  .btn-danger:hover { border-color: var(--ember); }
+}
+.btn-ghost:active, .btn-danger:active { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.4); }
 .btn-danger.armed { background: var(--ember); border-color: var(--ember); color: #1A0F0A; font-weight: 800; }
-.btn-sm { height: 34px; padding: 0 var(--s3); font-size: 0.875rem; }
+.btn-danger.armed::before { display: none; }
+.btn-sm { height: 34px; padding: 0 var(--s3); font-size: 0.6875rem; }   /* the inscription at 11px on the small plate */
 .hint-why { font-size: 0.875rem; color: var(--ash); margin-top: var(--s2); text-align: right; }
 
 @media (pointer: coarse) {
@@ -1757,22 +1777,6 @@ button.d-plaque {
 .tar-graph .gl { font-family: var(--f-mono); font-size: 9px; fill: var(--ash); }
 .tar-quiet { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); margin-top: var(--s5); }
 
-/* the bench: marked as a bench, and liftable in one cut when the flow stops needing it */
-.tar-bench {
-  display: flex; align-items: center; justify-content: center; gap: var(--s3); flex-wrap: wrap;
-  margin: var(--s7) auto 0; padding-top: var(--s4);
-  border-top: 1px dashed var(--mortar);
-}
-.tar-bench .label { color: var(--mortar-2); }
-.tar-bench button {
-  appearance: none; background: none; border: 1px dashed var(--mortar); border-radius: var(--r-sm);
-  min-height: 44px; padding: 0 var(--s3); cursor: pointer;
-  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--ash);
-  transition: color var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out);
-}
-@media (hover: hover) { .tar-bench button:hover { color: var(--dust); border-color: var(--mortar-2); } }
-.tar-bench button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-.tar-bench .n { font-family: var(--f-mono); font-size: 0.625rem; color: var(--mortar-2); }
 
 /* ================= the quest hall — three zones, one gold block ================= */
 .qh { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: var(--s6); align-items: start; }
@@ -2358,8 +2362,8 @@ li.is-done .qg { color: var(--verdant); }
 .bk-p:empty { display: none; }
 .dlg-sm form { max-width: 420px; }
 /* the one button in the app that destroys something says so in its own colour */
-.btn-danger { background: none; border: 1px solid rgba(200,84,58,0.5); color: var(--ember); }
-@media (hover: hover) { .btn-danger:hover { background: rgba(200,84,58,0.12); border-color: var(--ember); } }
+.btn-danger { border-color: rgba(200,84,58,0.5); color: var(--ember); }
+@media (hover: hover) { .btn-danger:hover { border-color: var(--ember); } }
 .bk-l { display: flex; flex-direction: column; gap: 4px;
   font-family: var(--f-mono); font-size: 0.5625rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--ash); }
@@ -2514,14 +2518,19 @@ li.is-done .qg { color: var(--verdant); }
   border-bottom: 1px solid var(--j3-rule);
 }
 .j3-sec-h .n { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); font-variant-numeric: tabular-nums; }
+/* the journal header button is the stone plate at 28px: no grain at this size, the
+   inscription at 10px */
 .j3-btn {
   appearance: none; flex: none;
-  background: var(--stone-2); color: var(--dust);
-  border: 1px solid var(--j3-rule); border-radius: var(--r-sm);
+  background: linear-gradient(180deg, #2F271E 0%, #292219 55%, #241E17 100%); color: var(--dust);
+  border: 1px solid var(--mortar-2); border-radius: var(--r-sm);
+  box-shadow: inset 0 1px 0 rgba(240,231,209,0.07), inset 0 -1px 0 rgba(0,0,0,0.35), 0 1px 0 rgba(0,0,0,0.5);
   min-height: 28px; padding: 0 var(--s3);
-  font-family: var(--f-ui); font-size: 0.75rem; font-weight: 600; cursor: pointer;
+  font-family: var(--f-display); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+  transition: border-color var(--t-fast) var(--e-out), color var(--t-fast) var(--e-out), transform var(--t-fast) var(--e-out), box-shadow var(--t-fast) var(--e-out);
 }
-@media (hover: hover) { .j3-btn:hover { border-color: var(--bronze); color: var(--gold); } }
+@media (hover: hover) { .j3-btn:hover { border-color: var(--bronze); color: var(--parchment); } }
+.j3-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.4); }
 
 /* a line you write on */
 .j3-row { display: flex; align-items: center; gap: 6px; min-height: 34px; position: relative; }
@@ -9055,6 +9064,9 @@ function renderDiary() {
   el.querySelectorAll(".dy-page").forEach(dyAutosize);
 }
 function dyAutosize(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+/* a height measured at one width is wrong at another: re-measure when the window changes */
+let dyResizeT = 0;
+window.addEventListener("resize", () => { clearTimeout(dyResizeT); dyResizeT = setTimeout(() => document.querySelectorAll("#viewDiary .dy-page").forEach(dyAutosize), 120); });
 /* while typing: the page grows and the rule fills. Nothing is saved until the field commits. */
 function dyLive(ta) {
   dyAutosize(ta);
@@ -9742,49 +9754,6 @@ function tarPick(k) { tarSel = k; renderTarot(); }
    Ten placeholder days so the gallery and the graph have something to be, plus the two
    controls the flow needs to be exercised. Deterministic from the salt, so a reset gives
    the same ten every time and a screenshot is comparable to the last one. */
-const TAR_FIXTURE_N = 10;
-function tarFixtures() {
-  const days = {};
-  const base = new Date(); base.setHours(12, 0, 0, 0);
-  for (let i = TAR_FIXTURE_N; i >= 1; i--) {
-    const d = new Date(base); d.setDate(d.getDate() - i);
-    const k = tarKey(d);
-    const h = tarHash("fixture\u00b7" + tarSalt() + "\u00b7" + k);
-    const pool = FEELINGS.flatMap(g => g[1]);
-    const nf = 1 + (h >>> 3) % 3;
-    const f = [];
-    for (let j = 0; j < nf; j++) {
-      const w = pool[(h >>> (5 + j * 4)) % pool.length];
-      if (f.indexOf(w) < 0) f.push(w);
-    }
-    days[k] = { c: h % 78, r: (h >>> 8) % 2 === 1, at: d.getTime(),
-                f, v: (h >>> 11) % 101, seen: 1, land: 1, fx: 1 };
-  }
-  return days;
-}
-/* a fresh draw for testing: today's record is dropped and the salt rolled, so the next
-   turn deals a different card. This is the one thing the ritual forbids, which is exactly
-   why it lives on the bench and says so. */
-function tarTestNew() {
-  takeSnapshot();
-  delete state.tarot.days[tarKey()];
-  state.tarot.salt = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-  tarSel = null; tarView = null;
-  save(); renderTarot();
-  showToast("Testing \u2014 today cleared and the salt rolled. Draw again.", true);
-}
-function tarTestReset() {
-  takeSnapshot();
-  state.tarot.days = tarFixtures();
-  tarSel = null; tarView = null;
-  save(); renderTarot();
-  showToast("Testing \u2014 reset to " + TAR_FIXTURE_N + " placeholder days.", true);
-}
-const tarBenchHTML = () =>
-  '<div class="tar-bench"><span class="label">Testing</span>' +
-  '<button type="button" data-tar="tnew">New reading</button>' +
-  '<button type="button" data-tar="treset">Reset to ' + TAR_FIXTURE_N + ' placeholders</button>' +
-  '<span class="n">' + Object.keys(state.tarot.days).length + " days on record</span></div>";
 
 /* ---------- pieces ---------- */
 function tarFaceHTML(c, rev, landing) {
@@ -9838,7 +9807,7 @@ function renderTarot(landing) {
       '<h2 class="tar-h0">Draw your daily card</h2>' +
       '<button type="button" class="tar-back" data-tar="turn" aria-label="Turn today\u2019s card">' +
       TAR_BACK_SVG + "</button>" +
-      tarBenchHTML() + "</div>";
+      "</div>";
     return;
   }
 
@@ -9852,7 +9821,7 @@ function renderTarot(landing) {
       tarPills(rev ? card.rkw : card.kw) +
       '<p class="tar-meaning">' + esc(rev ? card.rev : card.up) + "</p>" +
       '<p class="tar-go"><button type="button" class="btn btn-primary" data-tar="next">Continue</button></p>' +
-      tarBenchHTML() + "</div>";
+      "</div>";
     if (landing) setTimeout(() => {
       const c = el.querySelector(".tar-card"); if (c) c.classList.remove("is-flip-in");
     }, 240);
@@ -9876,7 +9845,7 @@ function renderTarot(landing) {
       '" aria-label="How you feel about this reading, 0 to 100"><span class="n">' + v + "</span></div>" +
       '<p class="tar-dial-ends"><span>Against me</span><span>With me</span></p></div>' +
       '<p class="tar-go"><button type="button" class="btn btn-primary" data-tar="finish">Finish the reading</button></p>' +
-      tarBenchHTML() + "</div>";
+      "</div>";
     const r = el.querySelector("#tarVal");
     if (r) { r.style.setProperty("--v", v + "%"); r.addEventListener("input", () => tarVal(r.value)); }
     return;
@@ -9910,7 +9879,7 @@ function renderTarot(landing) {
 
   const g = tarGraphHTML();
   if (g) h += '<div class="tar-graphsec"><span class="label">How it lands, over time</span>' + g + "</div>";
-  el.innerHTML = h + tarBenchHTML() + "</div>";
+  el.innerHTML = h + "</div>";
 
   /* center the selected card, then let the cursor own the strip */
   const strip = el.querySelector(".tar-strip");
@@ -12089,8 +12058,6 @@ document.addEventListener("click", e => {
       case "finish": tarFinish(); break;
       case "adjust": tarAdjust(); break;
       case "day":    tarPick(tar.dataset.k); break;
-      case "tnew":   tarTestNew(); break;
-      case "treset": tarTestReset(); break;
     }
     return;
   }
