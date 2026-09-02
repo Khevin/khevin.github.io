@@ -2967,7 +2967,7 @@ li.is-done .qg { color: var(--verdant); }
 .dy-vrow.is-set { border-bottom-color: rgba(232,176,84,0.45); }
 .dy-vl { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--mortar-2); transition: color var(--t-settle) var(--e-out); }
-.dy-vrow.is-set .dy-vl { color: var(--bronze); }
+.dy-vrow.is-set .dy-vl { color: var(--gold); }
 .dy-vrow:focus-within .dy-vl { color: var(--gold); }
 .dy-vin, .dy-pick { width: 100%; box-sizing: border-box; min-height: 32px; padding: 6px var(--s1);
   background: none; border: 0; color: var(--parchment); font-family: var(--f-read); font-size: 0.875rem; line-height: 1.4; }
@@ -2976,6 +2976,7 @@ li.is-done .qg { color: var(--verdant); }
 .dy-pick { appearance: none; cursor: pointer; padding-right: 18px;
   background: no-repeat right 2px center / 9px url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="%23A67B2E" stroke-width="1.6"/></svg>'); }
 .dy-pick.is-none { color: var(--mortar-2); }   /* nothing chosen yet reads as quiet as the empty lines beside it */
+.dy-pick:not(.is-none) { color: #FFFFFF; }     /* the chosen book is the one white thing on the plate: it reads as picked */
 .dy-pick option, .dy-pick optgroup { background: var(--stone-2); color: var(--parchment); }
 .dy-day { grid-row: 1 / 3; align-items: center; }
 .dy-log { grid-column: 2 / 4; }
@@ -9565,8 +9566,8 @@ function dyVowHTML(b, wk, dow) {
     ' aria-label="' + aria + '"></div>';
   return '<div class="dy-vow">' +
     '<div class="dy-vrow' + (e.book ? " is-set" : "") + '"><span class="dy-vl">Reading</span>' + pick + "</div>" +
-    field("one", "One thing", "cannot miss today", "The one thing today") +
-    field("thanks", "Grateful for", "", "Something to be grateful for") +
+    field("one", "#1", "most important thing", "The most important thing today") +
+    field("thanks", "Grateful for", "however small", "Something to be grateful for") +
     "</div>";
 }
 /* the medallions, in the set the owner chose */
@@ -9720,6 +9721,12 @@ function dyEdit(t) {
     else if (t.dataset.dy === "one" || t.dataset.dy === "thanks") cur[t.dataset.dy] = t.value.replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX);
     else if (t.dataset.dy === "book") cur.book = t.value;
   });
+  /* a commit does not re-render, so the row lights itself: the label golds, a chosen book whitens */
+  const row = t.closest && t.closest(".dy-vrow");
+  if (row) {
+    row.classList.toggle("is-set", !!String(t.value || "").trim());
+    if (t.classList.contains("dy-pick")) t.classList.toggle("is-none", !t.value);
+  }
 }
 function dyAct(el) {
   const b = book();
