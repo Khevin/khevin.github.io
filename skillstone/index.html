@@ -1677,8 +1677,8 @@ button.d-plaque {
 .tar-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .tar-chip[aria-pressed="true"] { color: var(--gold); border-color: var(--bronze); background: var(--stone-2); }
 /* the gloss: above the word, after a second of hover or on keyboard focus; edge chips keep it on the page */
-.tar-chip { position: relative; }
-.tar-chip::after {
+.tar-chip, .has-tip { position: relative; }
+.tar-chip::after, .has-tip::after {
   content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 2px); transform: translateX(-50%);
   width: max-content; max-width: min(220px, 70vw); padding: var(--s2) var(--s3);
   background: var(--stone-2); border: 1px solid var(--mortar-2); border-radius: var(--r-sm); box-shadow: var(--shadow-float);
@@ -1686,9 +1686,10 @@ button.d-plaque {
   opacity: 0; visibility: hidden; pointer-events: none; z-index: 5;
   transition: opacity var(--t-fast) var(--e-out) 0s, visibility 0s linear var(--t-fast);
 }
-.tar-chip:not([data-tip])::after { display: none; }
-@media (hover: hover) { .tar-chip:hover::after { opacity: 1; visibility: visible; transition-delay: 1s, 1s; } }
-.tar-chip:focus-visible::after { opacity: 1; visibility: visible; transition-delay: 1s, 1s; }
+.tar-chip:not([data-tip])::after, .has-tip:not([data-tip])::after { display: none; }
+@media (hover: hover) { .tar-chip:hover::after, .has-tip:hover::after { opacity: 1; visibility: visible; transition-delay: 1s, 1s; } }
+.tar-chip:focus-visible::after, .has-tip:focus-visible::after { opacity: 1; visibility: visible; transition-delay: 1s, 1s; }
+.has-tip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 .tar-fw .tar-chip:first-child::after { left: 0; transform: none; }
 .tar-fw .tar-chip:last-child::after { left: auto; right: 0; transform: none; }
 .vh { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
@@ -1698,35 +1699,41 @@ button.d-plaque {
 .tar-dial .label { display: block; margin-bottom: var(--s2); }
 .tar-dial .row { display: flex; align-items: center; gap: var(--s4); }
 .tar-dial .n { font-family: var(--f-mono); font-size: 1.375rem; color: var(--gold); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
-/* the dial: a carved channel with a notch at the centre; gold runs from the centre toward
-   wherever the thumb leans, so 50 — no lean — shows none. The thumb is a turned disc. */
-.tar-dial input[type="range"] { flex: 1; appearance: none; height: 44px; background: none; cursor: pointer; --v: 50%; }
-.tar-dial input[type="range"]::-webkit-slider-runnable-track {
+/* the dial: a carved channel with a notch at the centre and a turned thumb. Two fills: lean
+   (the tarot — gold from the centre toward the thumb, so 50 shows none) and tank (the
+   gauges — gold from the left, like a level). Shared by both pages. */
+.tar-dial input[type="range"] { flex: 1; }
+.dial-range { appearance: none; width: 100%; height: 44px; background: none; cursor: pointer; --v: 50%; }
+.dial-range::-webkit-slider-runnable-track {
   height: 6px; border-radius: 3px;
   background:
     linear-gradient(var(--bronze), var(--bronze)) no-repeat 50% 0 / 1px 6px,
     linear-gradient(to right, var(--socket) min(50%, var(--v)), var(--gold) min(50%, var(--v)), var(--gold) max(50%, var(--v)), var(--socket) max(50%, var(--v)));
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.7), 0 1px 0 var(--bevel);
 }
-.tar-dial input[type="range"]::-webkit-slider-thumb {
+.dial-range.tank::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--gold) var(--v), var(--socket) var(--v)); }
+.dial-range::-webkit-slider-thumb {
   appearance: none; width: 22px; height: 22px; border-radius: 50%; margin-top: -8px;
   background: radial-gradient(circle at 50% 45%, #F6D48A 0 2px, var(--gold) 2.5px 100%);
   border: 2px solid #1A1408;
   box-shadow: 0 0 0 1px var(--bronze), 0 2px 6px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.35);
-  transition: transform var(--t-fast) var(--e-out);
+  transition: transform var(--t-fast) var(--e-out), opacity var(--t-fast) var(--e-out);
 }
-@media (hover: hover) { .tar-dial input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.08); } }
-.tar-dial input[type="range"]:active::-webkit-slider-thumb { transform: scale(0.96); }
-.tar-dial input[type="range"]::-moz-range-track {
+.dial-range.is-unset::-webkit-slider-thumb { opacity: 0.45; }
+@media (hover: hover) { .dial-range:hover::-webkit-slider-thumb { transform: scale(1.08); } }
+.dial-range:active::-webkit-slider-thumb { transform: scale(0.96); }
+.dial-range::-moz-range-track {
   height: 6px; border-radius: 3px;
   background: linear-gradient(to right, var(--socket) min(50%, var(--v)), var(--gold) min(50%, var(--v)), var(--gold) max(50%, var(--v)), var(--socket) max(50%, var(--v)));
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.7);
 }
-.tar-dial input[type="range"]::-moz-range-thumb {
+.dial-range.tank::-moz-range-track { background: linear-gradient(to right, var(--gold) var(--v), var(--socket) var(--v)); }
+.dial-range::-moz-range-thumb {
   width: 18px; height: 18px; border-radius: 50%; background: var(--gold); border: 2px solid #1A1408;
   box-shadow: 0 0 0 1px var(--bronze), 0 2px 6px rgba(0,0,0,0.55);
 }
-.tar-dial input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+.dial-range.is-unset::-moz-range-thumb { opacity: 0.45; }
+.dial-range:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 .tar-dial-ends { display: flex; justify-content: space-between; font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bronze); margin-top: var(--s2); }
 
 /* stage 3: the gallery — today centered, half again as large; history trails left */
@@ -2781,13 +2788,24 @@ li.is-done .qg { color: var(--verdant); }
 .dy { max-width: 34em; margin: 0 auto; padding: var(--s6) var(--s4) var(--s8); font-size: 1.0625rem; }
 @media (min-width: 700px) { .dy { font-size: 1rem; } }
 .dy-head { display: flex; flex-direction: column; gap: var(--s3); margin-bottom: var(--s5); }
+/* the date, with the stepper that walks the written mornings — left is earlier */
+.dy-nav { display: flex; align-items: center; gap: var(--s3); }
+.dy-nav .dy-date { flex: 1; min-width: 0; }
+.dy-step { min-width: 28px; padding: 0 var(--s2); font-size: 0.875rem; line-height: 1; }
+.dy-step:disabled { opacity: 0.35; cursor: default; }
 .dy-date { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
 .dy-date.is-today { color: var(--gold); }
-/* the month: one dot a day, gold where a morning was written, today ringed — no number */
-.dy-month { display: flex; flex-wrap: wrap; gap: 6px; min-height: 6px; }
-.dy-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mortar-2); }
+/* the strip: the month of the morning on the page, one dot a day, gold where a morning was
+   written, today ringed in bronze, the morning on the page barred in gold. The dots are the
+   map, not the control — thirty to a row, none would hit the 44px floor. */
+.dy-strip { display: flex; flex-direction: column; gap: var(--s2); }
+.dy-mname { font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
+.dy-month { display: flex; flex-wrap: wrap; gap: 6px; min-height: 6px; padding-bottom: 6px; }
+.dy-dot { position: relative; width: 6px; height: 6px; border-radius: 50%; background: var(--mortar-2); }
 .dy-dot.is-on { background: var(--gold); }
+.dy-dot.is-fut { opacity: 0.4; }
 .dy-dot.is-today { box-shadow: 0 0 0 2px var(--stone-1), 0 0 0 3px var(--bronze); }
+.dy-dot.is-sel::after { content: ""; position: absolute; left: -1px; right: -1px; bottom: -6px; height: 2px; background: var(--gold); }
 /* the page: stone at rest, the pool with focus; grows, never scrolls inside itself */
 .dy-page {
   display: block; width: 100%; box-sizing: border-box; min-height: calc(4 * 1.6em + 2 * var(--s4));
@@ -2804,48 +2822,36 @@ li.is-done .qg { color: var(--verdant); }
 .dy-rule { flex: 1; height: 1px; background: linear-gradient(to right, var(--bronze) calc(var(--fill, 0) * 100%), var(--mortar) 0); }
 .dy-count { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
 .dy-count:empty { min-width: 0; }   /* no words yet: the rule runs the full width */
-/* three lines: wet while written, dry when they commit */
+/* three lines: a numeral leads each; unwritten sits on a dashed rule, written seals on a
+   solid bronze one; the text is italic, wet while written, dry when it commits */
 .dy-three { display: grid; }
+.dy-lrow { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: center; column-gap: var(--s2);
+  border-bottom: 1px dashed var(--mortar); transition: border-color var(--t-settle) var(--e-out); }
+.dy-lrow.is-set { border-bottom-style: solid; border-bottom-color: var(--bronze); }
+.dy-lrow:focus-within { border-bottom-color: var(--gold); }
+.dy-num { font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.06em; color: var(--mortar-2); text-align: center; transition: color var(--t-settle) var(--e-out); }
+.dy-lrow.is-set .dy-num { color: var(--bronze); }
+.dy-lrow:focus-within .dy-num { color: var(--gold); }
 .dy-line {
-  width: 100%; box-sizing: border-box; min-height: 44px; padding: 0 var(--s1);
-  background: none; border: 0; border-bottom: 1px dashed var(--mortar);
-  color: var(--ink-dry); font: inherit;
-  transition: color var(--t-settle) var(--e-out), border-color var(--t-fast) var(--e-out);
+  width: 100%; box-sizing: border-box; min-height: 44px; padding: 11px var(--s1);
+  background: none; border: 0; resize: none; overflow: hidden;
+  color: var(--ink-dry); font: inherit; font-style: italic; line-height: 1.45;
+  transition: color var(--t-settle) var(--e-out);
 }
-.dy-line:focus { outline: none; color: var(--ink-wet); border-bottom-color: var(--gold); }
-/* the drawer: closed on every load, its verb stated at rest */
-.dy-drawer { margin-top: var(--s7); }
-.dy-fold {
-  appearance: none; background: none; border: 0; min-height: 44px; padding: 0; cursor: pointer;
-  display: inline-flex; align-items: center; gap: var(--s2);
-  font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash);
-  transition: color var(--t-fast) var(--e-out);
-}
-.dy-fold svg { width: 14px; height: 14px; transition: transform var(--t-fast) var(--e-out); }
-.dy-fold[aria-expanded="true"] svg { transform: rotate(90deg); }
-@media (hover: hover) { .dy-fold:hover { color: var(--dust); } }
-.dy-fold:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
-.dy-past { margin-top: var(--s2); }
-.dy-none { font-size: 0.875rem; color: var(--ash); padding: var(--s2) 0; }
-.dy-mh { font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin: var(--s4) 0 var(--s1); }
-.dy-row {
-  display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: var(--s3); align-items: baseline;
-  width: 100%; min-height: 44px; padding: var(--s2) var(--s1);
-  background: none; border: 0; border-top: 1px solid rgba(62,53,39,0.5);
-  color: var(--dust); font: inherit; text-align: left; cursor: pointer;
-}
-@media (hover: hover) { .dy-row:hover .dy-rsnip { color: var(--parchment); } }
-.dy-row:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-sm); }
-.dy-rday { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); white-space: nowrap; }
-.dy-row[aria-expanded="true"] .dy-rday { color: var(--gold); }
-.dy-rtime { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); font-variant-numeric: tabular-nums; }
-.dy-rsnip { font-size: 0.875rem; color: var(--dust); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.dy-open { padding: var(--s2) 0 var(--s4); }
-.dy-open .dy-date { margin-bottom: var(--s3); }
+.dy-line:focus { outline: none; color: var(--ink-wet); }
+/* the gauges: what is left in the tank, three channels, a dash until read */
+.dy-mood { margin-top: var(--s6); display: grid; gap: var(--s1); }
+.dy-mood-l { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin-bottom: var(--s1); }
+.dy-gauge { display: grid; grid-template-columns: 56px minmax(0, 1fr) 36px; align-items: center; column-gap: var(--s3); }
+.dy-gl { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bronze); cursor: help; }
+.dy-gch { display: flex; flex-direction: column; min-width: 0; }
+.dy-gends { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 0.5625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ash); margin-top: -8px; }
+.dy-gn { font-family: var(--f-mono); font-size: 1rem; color: var(--gold); font-variant-numeric: tabular-nums; text-align: right; }
+.dy-gauge.is-unset .dy-gn { color: var(--mortar-2); }
 /* the gesture: while the page has focus, the hall dims around it */
 body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-writing .topbar,
-body.is-writing .dy-head, body.is-writing .dy-drawer { opacity: 0.6; }
-.hero, .tabs, .crests, .topbar, .dy-head, .dy-drawer { transition: opacity var(--t-pool) var(--e-out); }
+body.is-writing .dy-head, body.is-writing .dy-mood { opacity: 0.6; }
+.hero, .tabs, .crests, .topbar, .dy-head, .dy-mood { transition: opacity var(--t-pool) var(--e-out); }
 /* the hero's way in when there is no birth yet */
 .sign-pick.is-unset { color: var(--ash); }
 .sign-pick.is-unset .sig { color: var(--ash); }
@@ -8973,19 +8979,32 @@ function campAct(el) {
 
 /* ================= diary — the morning page ================= */
 /* Register product, layout zero-chrome canvas, one gesture (ink dries). The page is the
-   surface; the date, the month's dots, the three lines and the drawer are quiet furniture. */
+   surface; the date and its stepper, the month strip, the three lines and the gauges are
+   quiet furniture. Second pass: mornings are walked left to right along the strip. */
 const DY_PAGE_MAX = 20000, DY_LINE_MAX = 200, DY_MARK = 100;
+/* the three gauges: key, name, empty end, full end, gloss. All read as what is left, so a
+   high number is always the good one. */
+const DY_MOOD = [
+  ["body",   "Body",   "Spent",   "Rested",  "Physical tiredness, read as what the body has left"],
+  ["social", "Social", "Drained", "Charged", "Social battery"],
+  ["mind",   "Mind",   "Foggy",   "Clear",   "Mental restedness"]
+];
 /* one morning, sanitised: a string from the first shape becomes { page } */
 function dySan(v) {
   if (typeof v === "string") v = { page: v };
   if (!v || typeof v !== "object") return null;
   const page = String(v.page || "").slice(0, DY_PAGE_MAX);
-  const three = Array.isArray(v.three) ? v.three.slice(0, 3).map(s => String(s || "").trim().slice(0, DY_LINE_MAX)) : [];
+  const three = Array.isArray(v.three) ? v.three.slice(0, 3).map(s => String(s || "").replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX)) : [];
   while (three.length && !three[three.length - 1]) three.pop();
+  const mood = {};
+  if (v.mood && typeof v.mood === "object") DY_MOOD.forEach(([k]) => {
+    const n = Number(v.mood[k]); if (v.mood[k] !== null && v.mood[k] !== "" && isFinite(n)) mood[k] = Math.max(0, Math.min(100, Math.round(n)));
+  });
   const e = {};
   if (page.trim()) e.page = page;
   if (three.some(Boolean)) e.three = three;
-  if (!e.page && !e.three) return null;
+  if (Object.keys(mood).length) e.mood = mood;
+  if (!e.page && !e.three && !e.mood) return null;
   if (typeof v.at === "number" && isFinite(v.at)) e.at = v.at;
   return e;
 }
@@ -8996,132 +9015,150 @@ function dyMondayOfKey(wk) {
   return addDays(mondayOf(new Date(+m[1], 0, 4)), (+m[2] - 1) * 7);
 }
 const dyGet = (b, wk, dow) => (b.diary[wk] && b.diary[wk][dow]) || null;
+const dyGetDate = (b, d) => dyGet(b, weekKeyOf(d), dyDow(d));
+const dyISO = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const dyFromISO = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ""); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+const dySame = (a, c) => a.getFullYear() === c.getFullYear() && a.getMonth() === c.getMonth() && a.getDate() === c.getDate();
 const dyWords = s => { const x = String(s || "").trim(); return x ? x.split(/\s+/).length : 0; };
-const dyTime = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 const dyDateLine = d => DOW_LONG[dyDow(d)] + ", " + d.getDate() + " " + MONTHS[d.getMonth()];
-/* every written morning, newest first */
+/* every written morning, oldest first — the direction of the strip */
 function dyAll(b) {
   const out = [];
   Object.keys(b.diary).forEach(wk => {
     const mon = dyMondayOfKey(wk); if (!mon) return;
     Object.keys(b.diary[wk]).forEach(dow => { const e = b.diary[wk][dow]; if (e) out.push({ wk, dow: +dow, date: addDays(mon, +dow), e }); });
   });
-  return out.sort((a, c) => c.date - a.date);
+  return out.sort((a, c) => a.date - c.date);
 }
-let dyDrawer = false, dyOpen = null;           /* closed on every load; one past morning open at a time */
+let dySel = null;                              /* the morning on the page: null is today, else an ISO day */
+const dyDay = () => dyFromISO(dySel) || new Date();
+/* the stops of the stepper: every written morning, and today whether written or not */
+function dyStops(b) {
+  const today = new Date(), stops = dyAll(b).map(x => x.date).filter(d => !dySame(d, today) && d < today);
+  stops.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+  return stops;
+}
+function dyNeighbour(b, sel, dir) {
+  const stops = dyStops(b); let i = stops.findIndex(d => dySame(d, sel));
+  if (i < 0) { i = stops.findIndex(d => d > sel); if (dir < 0) i = (i < 0 ? stops.length : i); else if (i < 0) return null; else return stops[i]; }
+  const n = stops[i + dir]; return n || null;
+}
 
-/* the station: a page and three lines for one morning. The ritual mounts this unchanged. */
+/* the station: a page, three lines, three gauges — for one morning. The ritual mounts this unchanged. */
 function dyStationHTML(b, wk, dow) {
-  const e = dyGet(b, wk, dow) || {}, three = e.three || [], words = dyWords(e.page);
-  const fill = Math.min(1, words / DY_MARK);
-  let h = '<div class="dy-station" data-wk="' + wk + '" data-dow="' + dow + '">' +
-    '<textarea class="dy-page" data-dy="page" data-wk="' + wk + '" data-dow="' + dow + '" rows="4" maxlength="' + DY_PAGE_MAX + '"' +
+  const e = dyGet(b, wk, dow) || {}, three = e.three || [], mood = e.mood || {}, words = dyWords(e.page);
+  const fill = Math.min(1, words / DY_MARK), at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
+  let h = '<div class="dy-station"' + at + '>' +
+    '<textarea class="dy-page" data-dy="page"' + at + ' rows="4" maxlength="' + DY_PAGE_MAX + '"' +
       ' aria-label="The page"' + (e.page ? "" : ' placeholder="This morning I\u2026"') + '>' + esc(e.page || "") + "</textarea>" +
     '<div class="dy-mark" style="--fill:' + fill.toFixed(3) + '"><span class="dy-rule"></span>' +
       '<span class="dy-count">' + (words ? words : "") + "</span></div>" +
     '<div class="dy-three">';
-  for (let i = 0; i < 3; i++) h += '<input class="dy-line" type="text" data-dy="line" data-wk="' + wk + '" data-dow="' + dow + '" data-i="' + i +
-    '" maxlength="' + DY_LINE_MAX + '" aria-label="' + ["First", "Second", "Third"][i] + ' of three" value="' + esc(three[i] || "") + '">';
+  for (let i = 0; i < 3; i++) h += '<div class="dy-lrow' + (three[i] ? " is-set" : "") + '"><span class="dy-num" aria-hidden="true">' + ["I", "II", "III"][i] + "</span>" +
+    '<textarea class="dy-line" rows="1" data-dy="line"' + at + ' data-i="' + i + '" maxlength="' + DY_LINE_MAX + '" aria-label="' + ["First", "Second", "Third"][i] + ' of three">' + esc(three[i] || "") + "</textarea></div>";
+  h += '</div><div class="dy-mood"><span class="dy-mood-l">Mood</span>';
+  DY_MOOD.forEach(([k, name, lo, hi, gloss]) => {
+    const has = typeof mood[k] === "number", v = has ? mood[k] : 50;
+    h += '<div class="dy-gauge' + (has ? "" : " is-unset") + '">' +
+      '<span class="dy-gl has-tip" tabindex="0" data-tip="' + esc(gloss) + '">' + name + '<span class="vh">, ' + esc(gloss) + "</span></span>" +
+      '<div class="dy-gch"><input type="range" class="dial-range tank' + (has ? "" : " is-unset") + '" min="0" max="100" step="1" value="' + v + '" style="--v:' + (has ? v : 0) + '%"' +
+        ' data-dy="mood" data-k="' + k + '"' + at + ' aria-label="' + name + ', ' + lo.toLowerCase() + ' to ' + hi.toLowerCase() + '">' +
+      '<p class="dy-gends"><span>' + lo + "</span><span>" + hi + "</span></p></div>" +
+      '<span class="dy-gn">' + (has ? v : "\u2014") + "</span></div>";
+  });
   return h + "</div></div>";
 }
-function dyMonthHTML(b, today) {
-  const y = today.getFullYear(), m = today.getMonth(), n = new Date(y, m + 1, 0).getDate();
-  let h = '<div class="dy-month" role="img" aria-label="' + MONTHS[m] + ', mornings written">';
+/* the strip: the month of the morning on the page, dots left to right */
+function dyStripHTML(b, sel, today) {
+  const y = sel.getFullYear(), m = sel.getMonth(), n = new Date(y, m + 1, 0).getDate();
+  let h = '<div class="dy-strip"><p class="dy-mname">' + MONTHS[m] + (y === today.getFullYear() ? "" : " " + y) + "</p>" +
+    '<div class="dy-month" role="img" aria-label="' + MONTHS[m] + ', mornings written">';
   for (let d = 1; d <= n; d++) {
-    const dt = new Date(y, m, d), on = !!dyGet(b, weekKeyOf(dt), dyDow(dt));
-    h += '<span class="dy-dot' + (on ? " is-on" : "") + (d === today.getDate() ? " is-today" : "") + '"></span>';
+    const dt = new Date(y, m, d), on = !!dyGetDate(b, dt);
+    h += '<span class="dy-dot' + (on ? " is-on" : "") + (dySame(dt, today) ? " is-today" : "") + (dySame(dt, sel) ? " is-sel" : "") + (dt > today && !dySame(dt, today) ? " is-fut" : "") + '"></span>';
   }
-  return h + "</div>";
-}
-function dyPastHTML(b, today) {
-  const tk = weekKeyOf(today), td = dyDow(today);
-  const all = dyAll(b).filter(x => !(x.wk === tk && x.dow === td));
-  if (!all.length) return '<p class="dy-none">Nothing yet. Today is the first.</p>';
-  let h = "", lastM = "";
-  all.forEach(x => {
-    const mk = MONTHS[x.date.getMonth()] + (x.date.getFullYear() === today.getFullYear() ? "" : " " + x.date.getFullYear());
-    if (mk !== lastM) { h += '<p class="dy-mh">' + mk + "</p>"; lastM = mk; }
-    const open = dyOpen && dyOpen.wk === x.wk && dyOpen.dow === x.dow;
-    const snip = (x.e.page || (x.e.three || []).filter(Boolean)[0] || "").replace(/\s+/g, " ").trim();
-    h += '<button type="button" class="dy-row" data-dy="open" data-wk="' + x.wk + '" data-dow="' + x.dow + '" aria-expanded="' + open + '">' +
-      '<span class="dy-rday">' + DOW_LONG[x.dow].slice(0, 3) + " \u00b7 " + String(x.date.getDate()).padStart(2, "0") + "/" + String(x.date.getMonth() + 1).padStart(2, "0") + "</span>" +
-      '<span class="dy-rtime">' + (x.e.at ? dyTime(x.e.at) : "") + "</span>" +
-      '<span class="dy-rsnip">' + esc(snip.slice(0, 90)) + "</span></button>";
-    if (open) h += '<div class="dy-open"><p class="dy-date">' + dyDateLine(x.date) + "</p>" + dyStationHTML(b, x.wk, x.dow) + "</div>";
-  });
-  return h;
+  return h + "</div></div>";
 }
 function renderDiary() {
   const el = $("#viewDiary"); if (!el) return;
-  const b = book(), today = new Date(), wk = weekKeyOf(today), dow = dyDow(today);
+  const b = book(), today = new Date(), sel = dyDay(), isToday = dySame(sel, today);
+  const prev = dyNeighbour(b, sel, -1), next = dyNeighbour(b, sel, 1);
   el.innerHTML = '<section class="dy">' +
-    '<header class="dy-head"><p class="dy-date is-today">' + dyDateLine(today) + "</p>" + dyMonthHTML(b, today) + "</header>" +
-    dyStationHTML(b, wk, dow) +
-    '<div class="dy-drawer"><button type="button" class="dy-fold" data-dy="drawer" aria-expanded="' + dyDrawer + '" aria-controls="dyPast">' +
-      Q_SVG('<path d="M9 6l6 6-6 6"/>', "qg") + "Past mornings</button>" +
-      '<div class="dy-past" id="dyPast"' + (dyDrawer ? "" : " hidden") + ">" + (dyDrawer ? dyPastHTML(b, today) : "") + "</div></div>" +
+    '<header class="dy-head"><div class="dy-nav">' +
+      '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="-1" aria-label="Earlier morning"' + (prev ? "" : " disabled") + ">\u2039</button>" +
+      '<p class="dy-date' + (isToday ? " is-today" : "") + '">' + dyDateLine(sel) + "</p>" +
+      '<button type="button" class="j3-btn dy-step" data-dy="step" data-d="1" aria-label="Later morning"' + (next ? "" : " disabled") + ">\u203a</button>" +
+      (isToday ? "" : '<button type="button" class="j3-btn" data-dy="today">Today</button>') +
+    "</div>" + dyStripHTML(b, sel, today) + "</header>" +
+    dyStationHTML(b, weekKeyOf(sel), dyDow(sel)) +
     "</section>";
-  el.querySelectorAll(".dy-page").forEach(dyAutosize);
+  el.querySelectorAll(".dy-page, .dy-line").forEach(dyAutosize);
 }
 function dyAutosize(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
-/* a height measured at one width is wrong at another: re-measure when the window changes */
-let dyResizeT = 0;
-window.addEventListener("resize", () => { clearTimeout(dyResizeT); dyResizeT = setTimeout(() => document.querySelectorAll("#viewDiary .dy-page").forEach(dyAutosize), 120); });
-/* while typing: the page grows and the rule fills. Nothing is saved until the field commits. */
-function dyLive(ta) {
-  dyAutosize(ta);
-  const mark = ta.parentElement.querySelector(".dy-mark"), words = dyWords(ta.value);
-  if (mark) { mark.style.setProperty("--fill", Math.min(1, words / DY_MARK).toFixed(3)); mark.querySelector(".dy-count").textContent = words ? words : ""; }
+/* a height measured at one width is wrong at another: re-measure whenever the view’s column
+   changes width — a rotation, a resize, or a tab that first laid out at zero width */
+if (window.ResizeObserver) {
+  const dyRO = new ResizeObserver(() => document.querySelectorAll("#viewDiary .dy-page, #viewDiary .dy-line").forEach(dyAutosize));
+  const dyView = $("#viewDiary"); if (dyView) dyRO.observe(dyView);
+} else window.addEventListener("resize", () => document.querySelectorAll("#viewDiary .dy-page, #viewDiary .dy-line").forEach(dyAutosize));
+/* while typing: the page grows and the rule fills; a line grows and seals. Nothing is saved
+   until the field commits. */
+function dyLive(t) {
+  if (t.classList.contains("dy-page")) {
+    dyAutosize(t);
+    const mark = t.parentElement.querySelector(".dy-mark"), words = dyWords(t.value);
+    if (mark) { mark.style.setProperty("--fill", Math.min(1, words / DY_MARK).toFixed(3)); mark.querySelector(".dy-count").textContent = words ? words : ""; }
+  } else if (t.classList.contains("dy-line")) {
+    dyAutosize(t); t.closest(".dy-lrow").classList.toggle("is-set", !!t.value.trim());
+  } else if (t.dataset.dy === "mood") {
+    const g = t.closest(".dy-gauge"); t.style.setProperty("--v", t.value + "%"); t.classList.remove("is-unset");
+    if (g) { g.classList.remove("is-unset"); g.querySelector(".dy-gn").textContent = t.value; }
+  }
 }
 /* commit on change, like every field in the app */
 function dyEdit(t) {
   const b = book(), wk = t.dataset.wk, dow = t.dataset.dow;
   const w = (b.diary[wk] = b.diary[wk] || {});
   const cur = dySan(w[dow]) || {};
-  const page = cur.page || "", three = (cur.three || []).slice();
-  if (t.dataset.dy === "page") { const v = t.value.slice(0, DY_PAGE_MAX); cur.page = v; }
-  else { three[+t.dataset.i] = t.value.trim().slice(0, DY_LINE_MAX); cur.three = three; }
-  const had = !!(page.trim() || (cur.three || []).some(Boolean)) || !!w[dow];
+  const had = !!w[dow];
+  if (t.dataset.dy === "page") cur.page = t.value.slice(0, DY_PAGE_MAX);
+  else if (t.dataset.dy === "line") { const three = (cur.three || []).slice(); three[+t.dataset.i] = t.value.replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, DY_LINE_MAX); cur.three = three; }
+  else if (t.dataset.dy === "mood") { cur.mood = Object.assign({}, cur.mood || {}); cur.mood[t.dataset.k] = Math.max(0, Math.min(100, Math.round(+t.value))); }
   const next = dySan(cur);
-  if (next) { if (!next.at && !had) next.at = Date.now(); else if (cur.at) next.at = cur.at; w[dow] = next; }
+  if (next) { if (cur.at) next.at = cur.at; else if (!had) next.at = Date.now(); w[dow] = next; }
   else delete w[dow];
   if (!Object.keys(w).length) delete b.diary[wk];
   save();
-  /* in place: the dot for today, never a re-render that would steal the next field's focus */
-  const today = new Date();
-  if (wk === weekKeyOf(today) && +dow === dyDow(today)) {
-    const dot = document.querySelector("#viewDiary .dy-dot.is-today");
-    if (dot) dot.classList.toggle("is-on", !!next);
-  }
+  /* in place: the selected day's dot, never a re-render that would steal the next field's focus */
+  const dot = document.querySelector("#viewDiary .dy-dot.is-sel");
+  if (dot) dot.classList.toggle("is-on", !!next);
 }
 function dyAct(el) {
-  const b = book(), today = new Date();
-  if (el.dataset.dy === "drawer") {
-    dyDrawer = !dyDrawer;
-    el.setAttribute("aria-expanded", String(dyDrawer));
-    const past = $("#dyPast"); if (!past) return;
-    past.hidden = !dyDrawer; past.innerHTML = dyDrawer ? dyPastHTML(b, today) : "";
-    past.querySelectorAll(".dy-page").forEach(dyAutosize);
-    return;
-  }
-  if (el.dataset.dy === "open") {
-    const wk = el.dataset.wk, dow = +el.dataset.dow;
-    dyOpen = dyOpen && dyOpen.wk === wk && dyOpen.dow === dow ? null : { wk, dow };
-    const past = $("#dyPast"); if (!past) return;
-    past.innerHTML = dyPastHTML(b, today);
-    past.querySelectorAll(".dy-page").forEach(dyAutosize);
-    if (dyOpen) { const row = past.querySelector('.dy-row[aria-expanded="true"]'); if (row) row.focus(); }
+  const b = book();
+  if (el.dataset.dy === "today") { dySel = null; renderDiary(); return; }
+  if (el.dataset.dy === "step") {
+    const n = dyNeighbour(b, dyDay(), +el.dataset.d); if (!n) return;
+    dySel = dySame(n, new Date()) ? null : dyISO(n); renderDiary();
+    const same = document.querySelector('#viewDiary .dy-step[data-d="' + el.dataset.d + '"]');
+    if (same && !same.disabled) same.focus(); else { const d = document.querySelector("#viewDiary .dy-date"); if (d) d.focus(); }
   }
 }
 document.addEventListener("change", e => {
   const t = e.target && e.target.closest && e.target.closest("[data-dy]");
-  if (t && (t.dataset.dy === "page" || t.dataset.dy === "line")) dyEdit(t);
+  if (t && (t.dataset.dy === "page" || t.dataset.dy === "line" || t.dataset.dy === "mood")) dyEdit(t);
 });
-document.addEventListener("input", e => { if (e.target && e.target.classList && e.target.classList.contains("dy-page")) dyLive(e.target); });
+document.addEventListener("input", e => { const t = e.target; if (t && t.closest && t.closest("#viewDiary") && t.dataset && t.dataset.dy) dyLive(t); });
+/* Enter does not break a line: it moves to the next, and off the third */
+document.addEventListener("keydown", e => {
+  if (e.key !== "Enter" || !e.target.classList || !e.target.classList.contains("dy-line")) return;
+  e.preventDefault();
+  const lines = [...e.target.closest(".dy-three").querySelectorAll(".dy-line")], i = lines.indexOf(e.target);
+  if (i < lines.length - 1) lines[i + 1].focus(); else e.target.blur();
+});
 document.addEventListener("focusin",  e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.add("is-writing"); });
 document.addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.remove("is-writing"); });
 document.addEventListener("click", e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-dy="drawer"], [data-dy="open"]');
+  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"]');
   if (t) dyAct(t);
 });
 
@@ -9841,7 +9878,7 @@ function renderTarot(landing) {
           (FEEL_TIP[w] ? '<span class="vh">, ' + esc(FEEL_TIP[w]) + "</span>" : "") + "</button>").join("") +
         "</div></div>").join("") + "</div>" +
       '<div class="tar-dial"><label class="label" for="tarVal">How do you feel about it</label>' +
-      '<div class="row"><input type="range" id="tarVal" min="0" max="100" step="1" value="' + v +
+      '<div class="row"><input type="range" id="tarVal" class="dial-range" min="0" max="100" step="1" value="' + v +
       '" aria-label="How you feel about this reading, 0 to 100"><span class="n">' + v + "</span></div>" +
       '<p class="tar-dial-ends"><span>Against me</span><span>With me</span></p></div>' +
       '<p class="tar-go"><button type="button" class="btn btn-primary" data-tar="finish">Finish the reading</button></p>' +
