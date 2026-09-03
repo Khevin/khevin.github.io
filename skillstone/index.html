@@ -3007,8 +3007,11 @@ li.is-done .qg { color: var(--verdant); }
 .dy-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
 .dy-body-c { display: flex; flex-direction: column; justify-content: center; }
 /* the logbook is all page: the writing fills the card and only scrolls once it is longer than the card */
-.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0 -20px 0 108px; }   /* the writing column, 144px in from the frame on both sides; the scroller still runs out to the border so its bar sits at the edge */
-.dy-log .dy-body { display: flex; flex-direction: column; padding-right: 117px; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }   /* 117 + the 10px gutter + the 17 to the border = 144, the left gap */
+/* its notch bows outward, so the title needs no clearance above it: the same 25px it has
+   between the rule and the writing */
+.dy-log { padding-top: 24px; }
+.dy-log .dy-station { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0 -10px 0 108px; }   /* the writing column, 144px in from the frame on both sides; the scroller stops a bar’s width short of the edge so it clears the inner frame */
+.dy-log .dy-body { display: flex; flex-direction: column; padding-right: 107px; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent; }   /* 107 + the 10px gutter + the 27 to the border = 144, the left gap */
 .dy-log .dy-mark { margin-right: 127px; }   /* the word-mark rule ends where the writing ends */
 @media (max-width: 999px) { .dy-log .dy-station { margin-left: 0; } .dy-log .dy-body { padding-right: 9px; } .dy-log .dy-mark { margin-right: 19px; } }   /* stacked: the card’s own 36px is gap enough */
 .dy-log .dy-page { flex: 1 0 auto; }
