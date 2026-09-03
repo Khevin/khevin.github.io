@@ -509,8 +509,12 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 /* A drawn plate sits in the same box the emoji had. Every plate keeps its subject to the
    same 81% of the square, so a column of them lines up without any per-icon nudging. */
 .sk-plate { display: block; }
-.d-plaque .sk-plate { width: 52px; height: 52px; }
-.t-ico .sk-plate { width: 32px; height: 32px; margin: -3px auto; }
+/* No stone under a drawn plate. The art is already a framed object with a uniform margin of
+   its own, so the box was a frame around a frame — and taking it away buys twelve pixels the
+   art can use instead. */
+.d-plaque.is-plate { width: 64px; height: 64px; background: none; border: 0; box-shadow: none; border-radius: 0; }
+.d-plaque .sk-plate { width: 64px; height: 64px; }
+.t-ico .sk-plate { width: 40px; height: 40px; margin: -4px auto; }
 .ar .ico .sk-plate { width: 24px; height: 24px; }
 .d-head-main { min-width: 0; flex: 1; }
 .d-name { font-family: var(--f-display); font-weight: 700; font-size: 1.625rem; letter-spacing: 0.01em; line-height: 1.25; text-wrap: balance; }
@@ -8378,6 +8382,8 @@ const plateSlug = sk => {
 };
 /* the plate at the size asked for, or the emoji if this one was never drawn. The 32 is
    served below 40px and the 64 above it, so nothing is ever scaled up. */
+/* the header box: bare when it holds drawn art, stone when it holds an emoji */
+const plaqueCls = sk => "d-plaque" + (plateSlug(sk) ? " is-plate" : "");
 function skPlate(sk, px) {
   const k = plateSlug(sk);
   if (!k) return esc(sk.icon);
@@ -11736,7 +11742,7 @@ function tileHTML(s) {
   return `<button type="button" class="tile${max ? " is-max" : ""}" role="option"
     id="tile-${s.id}" data-tile="${s.id}" tabindex="-1"
     aria-pressed="${sel}" aria-selected="${sel}" aria-label="${esc(tileAria(s))}">
-    <span class="t-ico" aria-hidden="true">${skPlate(s, 32)}</span>
+    <span class="t-ico" aria-hidden="true">${skPlate(s, 40)}</span>
     <span class="frac${Number.isInteger(LV(s)) ? "" : " half"}" aria-hidden="true">
       <span class="fr-lv">${fmtLv(LV(s))}</span><span class="fr-sl"></span><span class="fr-cap">${MAX_LV}</span>
     </span>
@@ -12171,7 +12177,7 @@ function assessHTML(s) {
 
   return `
   <header class="d-head">
-    <span class="d-plaque" aria-hidden="true">${skPlate(s, 52)}</span>
+    <span class="${plaqueCls(s)}" aria-hidden="true">${skPlate(s, 64)}</span>
     <div class="d-head-main">
       <div class="assess-head">
         <h2 class="d-name">${esc(s.name)}</h2>
@@ -12262,7 +12268,7 @@ function skillHTML(s) {
   return `
   <header class="d-head">
     ${plateSlug(s)
-      ? `<span class="d-plaque" aria-hidden="true">${skPlate(s, 52)}</span>`
+      ? `<span class="${plaqueCls(s)}" aria-hidden="true">${skPlate(s, 64)}</span>`
       : `<button type="button" class="d-plaque" data-emopick data-emoapply="skill" data-val="${esc(s.icon)}"
       popovertarget="emoPop" aria-label="Change the icon for ${esc(s.name)}">${esc(s.icon)}</button>`}
     <div class="d-head-main">
