@@ -6390,6 +6390,13 @@ const MONTHS = ["January","February","March","April","May","June","July","August
                 "September","October","November","December"];
 const HAB_MARKS = ["none","partial","expected","excellent"];
 
+/* The day turns at five, not at midnight. Between those hours the owner is still in yesterday:
+   the card he drew is still his card, the page he wrote is still today's page, and the habit he
+   ticks lands on the day he has been living. Only the date parts of what this returns mean
+   anything — it is a calendar answer wearing a clock's clothes. Anything that wants the real
+   instant (a timestamp, a sync clock, a due date) keeps using Date directly. */
+const DAY_TURNS_AT = 5;
+function dayNow() { const d = new Date(); d.setHours(d.getHours() - DAY_TURNS_AT); return d; }
 function mondayOf(d) {
   const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
@@ -9503,10 +9510,10 @@ function dyAll(b) {
   return out.sort((a, c) => a.date - c.date);
 }
 let dySel = null;                              /* the morning on the page: null is today, else an ISO day */
-const dyDay = () => dyFromISO(dySel) || new Date();
+const dyDay = () => dyFromISO(dySel) || dayNow();
 /* the stops of the stepper: every written morning, and today whether written or not */
 function dyStops(b) {
-  const today = new Date(), stops = dyAll(b).map(x => x.date).filter(d => !dySame(d, today) && d < today);
+  const today = dayNow(), stops = dyAll(b).map(x => x.date).filter(d => !dySame(d, today) && d < today);
   stops.push(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
   return stops;
 }
@@ -9660,7 +9667,7 @@ function dyStripHTML(b, sel, today, prev, next) {
 }
 function renderDiary() {
   const el = $("#viewDiary"); if (!el) return;
-  const b = book(), today = new Date(), sel = dyDay(), isToday = dySame(sel, today);
+  const b = book(), today = dayNow(), sel = dyDay(), isToday = dySame(sel, today);
   const prev = dyNeighbour(b, sel, -1), next = dyNeighbour(b, sel, 1), wk = weekKeyOf(sel), dow = dyDow(sel);
   el.innerHTML = '<div class="dy2">' +
     '<section class="dy-card dy-day">' + dyFrame({ sprigs: ["bl", "br"], top: "sun", sides: true }) + '<div class="dy-day-body">' +
@@ -9745,7 +9752,7 @@ function dyAct(el) {
   if (el.dataset.dy === "view") { tarView = null; tarSel = tarKey(dyDay()); setView("tarot"); return; }   /* this day's reading, on the Tarot page */
   if (el.dataset.dy === "step") {
     const n = dyNeighbour(b, dyDay(), +el.dataset.d); if (!n) return;
-    dySel = dySame(n, new Date()) ? null : dyISO(n); renderDiary();
+    dySel = dySame(n, dayNow()) ? null : dyISO(n); renderDiary();
     const same = document.querySelector('#viewDiary .dy-step[data-d="' + el.dataset.d + '"]');
     if (same && !same.disabled) same.focus(); else { const d = document.querySelector("#viewDiary .dy-date"); if (d) d.focus(); }
   }
@@ -10294,7 +10301,7 @@ const FEEL_TIP = {
 };
 
 const tarKey = (d) => {
-  const x = d || new Date();
+  const x = d || dayNow();
   return x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" +
          String(x.getDate()).padStart(2, "0");
 };
@@ -10408,7 +10415,7 @@ function tarNameHTML(c, rev, small) {
   return '<h2 class="tar-name' + (small ? " sm" : "") + '">' + esc(c.n) + "</h2>" +
     (rev ? '<p class="tar-rev-l">Reversed</p>' : "");
 }
-const TAR_DATE = () => new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+const TAR_DATE = () => dayNow().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
 /* the landing values, over time — dots and a line, nothing else */
 function tarGraphHTML() {
@@ -10689,7 +10696,7 @@ function saveBookDialog() {
    in this week; give it a date, a price or a link and it becomes a reminder that
    travels with you. Clearing the date sends it back to the week you are looking at.
    That is the whole distinction, and the user never has to name it. */
-let j3Week = mondayOf(new Date());
+let j3Week = mondayOf(dayNow());
 let j3Cat = "All";
 let j3Sched = null;
 let j3Menu = null;      /* the one open row menu, by entry id */
@@ -10755,7 +10762,7 @@ function renderJ3() {
   const el = $("#viewJournal");
   if (!el) return;
   const b = book(), key = j3Key();
-  const today = new Date(), todayDow = (today.getDay() + 6) % 7;
+  const today = dayNow(), todayDow = (today.getDay() + 6) % 7;
   const isThisWeek = key === weekKeyOf(today);
   const checks = b.checks[key] || {};
   const days = b.days[key] || {};
@@ -10889,7 +10896,7 @@ function renderJ3() {
   right += '<div class="j3-weekend">' + dayHTML(5) + dayHTML(6) + "</div></div>";
 
   el.innerHTML =
-    '<div class="j3' + (isThisWeek ? " is-now" : (j3Week < mondayOf(new Date()) ? " is-past" : " is-future")) + '">' +
+    '<div class="j3' + (isThisWeek ? " is-now" : (j3Week < mondayOf(dayNow()) ? " is-past" : " is-future")) + '">' +
       '<div class="j3-head">' +
         '<div class="j3-nav">' +
           '<button type="button" data-j3="wk" data-d="-1" aria-label="Previous week">\u2039</button>' +
@@ -11079,7 +11086,7 @@ function j3Act(t) {
     }
     case "cycle":      j3Cycle(t); return;
     case "wk":         j3Turn(addDays(j3Week, Number(t.dataset.d) * 7)); return;
-    case "wk-today":   j3Turn(mondayOf(new Date())); return;
+    case "wk-today":   j3Turn(mondayOf(dayNow())); return;
     case "cat":        j3Cat = t.dataset.cat; break;
     case "e-del-note": if (b.notes[key]) cut(b.notes[key]); break;
     case "e-del-rem":  cut(b.reminders); break;
