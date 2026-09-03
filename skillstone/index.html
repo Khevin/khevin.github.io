@@ -7355,19 +7355,16 @@ function renderProf() {
   if (profSel && !all.some(s => s.id === profSel)) profSel = null;
   if (!profSel && all.length) profSel = all[0].id;
 
-  const WK = 604800000, now = Date.now();
-  const moved = all.filter(s => sessionsFor(s.id).some(x => now - x.ts < WK)).length;
-  const still = all.filter(s => profDormant(s)).length;
   const ever = sessions().length > 0;
 
-  /* Corum: the headline is the answer. Sunday night wants "what moved", not a title. */
-  let html = '<p class="pf-answer-line">' +
-    (!all.length ? "Nothing to practise yet."
-     : !ever ? '<span class="quiet">Nothing logged yet — an hour puts a skill at 13, a hundred hours at 58.</span>'
-     : (moved ? "<b>" + moved + "</b> moved this week" : '<span class="quiet">Nothing moved this week</span>') +
-       (still ? ' <span class="quiet">· <b>' + still + "</b> still for two months or more</span>" : "")) +
-    "</p>";
-
+  /* A board with something on it says nothing before the sections: the weekly count was a
+     status line about a week rather than an answer about the work, and the rule under it
+     was separating that sentence from the first heading. Both are gone and everything
+     moves up by both. What is left speaks only when the board is empty, where a bare page
+     with no explanation would be the worse thing. */
+  let html = !all.length ? '<p class="pf-answer-line">Nothing to practise yet.</p>'
+    : !ever ? '<p class="pf-answer-line">' + '<span class="quiet">Nothing logged yet — an hour puts a skill at 13, a hundred hours at 58.</span>' + "</p>"
+    : "";
   /* both groups stacked, the way the Skills board stacks its attributes */
   html += skSubOf(skSub).gs.map(k => GROUP[k]).filter(Boolean).map(g => {
     const list = profSkills(g.k);
