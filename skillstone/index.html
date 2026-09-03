@@ -255,6 +255,24 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .board-skills { padding: var(--s4); }
 .app > .board { position: sticky; top: var(--s5); }
 .board-head { display: flex; align-items: baseline; gap: var(--s3); padding: var(--s1) var(--s1) var(--s3); }
+/* Skills: one title, then the two halves of the sheet. The same three-part row the library
+   uses for a shelf — label, rule, count — so the two pages read as the same kind of page. */
+.sk-head { display: flex; align-items: baseline; gap: var(--s5); padding: 0 var(--s1) var(--s4); }
+.sk-subs { display: flex; gap: var(--s4); }
+.sk-sub { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent;
+  padding: 0 0 5px; cursor: pointer;
+  font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ash);
+  transition: color var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out); }
+.sk-sub[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
+@media (hover: hover) { .sk-sub:hover { color: var(--parchment); } }
+.sk-sub:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+.sk-rule { flex: 1; height: 1px; background: var(--mortar); align-self: center; min-width: var(--s4); }
+.sk-meta { white-space: nowrap; }
+.sk-m .tw { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); letter-spacing: 0.06em; }
+.sk-m b { font-family: var(--f-display); font-weight: 700; font-size: 1.0625rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.sk-m .of { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); margin-left: 4px; }
+@media (max-width: 720px) { .sk-head { flex-wrap: wrap; gap: var(--s3); } .sk-rule { display: none; } }
 .board-head .label { flex: none; }
 .board-head .headtools { flex: none; margin-left: auto; }
 /* the running total sits between the section name and the density switch, where the
@@ -1177,7 +1195,7 @@ button.d-plaque {
 
 /* the cloud panel — same floating grammar as the emoji and class pickers */
 /* the settings screen: the popover grown into a dialog — two columns of the same stone */
-.cfg-dlg { width: min(760px, 94vw); max-height: 92vh; overflow: auto; padding: var(--s6) var(--s6) var(--s7);
+.cfg-dlg { width: min(1126px, 94vw);   /* 88% of the 1280px shell: five card backs in one row */ max-height: 92vh; overflow: auto; padding: var(--s6) var(--s6) var(--s7);
   background: var(--stone-2); border: 1px solid var(--mortar-2); border-radius: var(--r-md);
   box-shadow: 0 24px 60px rgba(0,0,0,0.6), inset 0 1px 0 var(--bevel); color: var(--parchment); }
 .cfg-dlg::backdrop { background: rgba(8,7,6,0.62); }
@@ -1196,6 +1214,28 @@ button.d-plaque {
 .cfg-back .cn { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash); }
 .cfg-back[aria-checked="true"] .cn { color: var(--gold); }
 .cfg-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+/* the gears: eight cuts of the same cog, the chosen one on a lit plate */
+.cfg-gears { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s2); }
+.cfg-gearp { appearance: none; background: none; cursor: pointer; display: grid; justify-items: center; gap: 5px;
+  padding: var(--s2) var(--s2) 6px; min-width: 44px;
+  border: 1px solid transparent; border-radius: var(--r-sm); }
+.cfg-gearp img { display: block; width: 40px; height: 40px; transition: transform var(--t-fast) var(--e-out); }
+.cfg-gearp .cn { font-family: var(--f-display); font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash); }
+.cfg-gearp[aria-checked="true"] { border-color: var(--bronze); background: rgba(232,176,84,0.08); }
+.cfg-gearp[aria-checked="true"] .cn { color: var(--gold); }
+@media (hover: hover) { .cfg-gearp:hover img { transform: translateY(-2px); } }
+.cfg-gearp:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* which screens the particles belong on: independent, so plates rather than a segment */
+.cfg-where { appearance: none; padding: 7px var(--s3); cursor: pointer;
+  background: var(--stone-1); color: var(--dust);
+  border: 1px solid var(--j3-rule); border-radius: var(--r-sm);
+  font-family: var(--f-ui); font-size: 0.8125rem; font-weight: 600;
+  transition: border-color var(--t-fast) var(--e-out), color var(--t-fast) var(--e-out); }
+.cfg-where[aria-pressed="true"] { border-color: var(--bronze); background: rgba(232,176,84,0.09); color: var(--gold); }
+@media (hover: hover) { .cfg-where:hover { border-color: var(--mortar-2); color: var(--parchment); } }
+.cfg-where:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
 /* the sky's dials: the tarot's channel, filling from the left */
 .cfg-dials { display: grid; gap: 0; width: 100%; }
 .cfg-dial { display: grid; grid-template-columns: 60px minmax(0, 1fr) 40px; align-items: center; column-gap: var(--s3); }
@@ -3231,8 +3271,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
         aria-selected="false" aria-controls="viewCamp" tabindex="-1">Quests</button>
       <button type="button" class="tab" role="tab" id="tabSkills" data-view="skills"
         aria-selected="false" aria-controls="viewSkills" tabindex="-1">Skills</button>
-      <button type="button" class="tab" role="tab" id="tabProf" data-view="prof"
-        aria-selected="false" aria-controls="viewProf" tabindex="-1">Proficiency</button>
       <button type="button" class="tab" role="tab" id="tabTomes" data-view="tomes"
         aria-selected="false" aria-controls="viewTomes" tabindex="-1">Tomes</button>
       <button type="button" class="tab" role="tab" id="tabTarot" data-view="tarot"
@@ -3247,33 +3285,36 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     </div>
   </header>
 
-  <div class="app" id="viewSkills" role="tabpanel" aria-labelledby="tabSkills" hidden>
-    <section class="board board-skills" aria-label="Character sheet">
-      <div class="board-head">
-        <span class="label">Skills</span>
-        <span class="headtools">
-          <span class="board-total"><span class="tw">total</span> <b id="totalLv">0</b> <span class="of" id="totalOf"></span></span>
-        </span>
+  <div id="viewSkills" role="tabpanel" aria-labelledby="tabSkills" hidden>
+    <div class="sk-head">
+      <span class="j3-week">Skills</span>
+      <div class="sk-subs" role="tablist" aria-label="Which half of the sheet">
+        <button type="button" class="sk-sub" role="tab" id="subAttr" data-sub="attr"
+          aria-selected="true" aria-controls="subPaneAttr">Attributes</button>
+        <button type="button" class="sk-sub" role="tab" id="subProf" data-sub="prof"
+          aria-selected="false" aria-controls="subPaneProf" tabindex="-1">Proficiency</button>
       </div>
-      <div class="grid" id="grid" role="listbox" aria-label="Skill board — use arrow keys to browse, Enter to open"></div>
-    </section>
-
-    <section class="board board-detail" aria-label="Detail" id="detail"></section>
+      <span class="sk-rule" aria-hidden="true"></span>
+      <span class="sk-meta">
+        <span class="sk-m" data-for="attr"><span class="tw">total</span> <b id="totalLv">0</b> <span class="of" id="totalOf"></span></span>
+        <span class="sk-m" data-for="prof" hidden><span class="tw">logged</span> <b id="profTotal">0</b></span>
+      </span>
+    </div>
+    <div class="app" id="subPaneAttr" role="tabpanel" aria-labelledby="subAttr">
+      <section class="board board-skills" aria-label="Character sheet">
+        <div class="grid" id="grid" role="listbox" aria-label="Skill board — use arrow keys to browse, Enter to open"></div>
+      </section>
+      <section class="board board-detail" aria-label="Detail" id="detail"></section>
+    </div>
+    <div class="app" id="subPaneProf" role="tabpanel" aria-labelledby="subProf" hidden>
+      <section class="board board-skills" aria-label="Practised skills">
+        <div class="pf-board" id="profList" role="listbox" aria-label="Practised skills — arrow keys to browse, Enter to open"></div>
+      </section>
+      <section class="board board-detail" aria-label="Detail" id="profDetail"></section>
+    </div>
   </div>
 
   <div id="viewJournal" role="tabpanel" aria-labelledby="tabJournal" hidden></div>
-  <div class="app" id="viewProf" role="tabpanel" aria-labelledby="tabProf" hidden>
-    <section class="board board-skills" aria-label="Practised skills">
-      <div class="board-head">
-        <span class="label">Proficiency</span>
-        <span class="headtools">
-          <span class="board-total"><span class="tw">logged</span> <b id="profTotal">0</b></span>
-        </span>
-      </div>
-      <div class="pf-board" id="profList" role="listbox" aria-label="Practised skills — arrow keys to browse, Enter to open"></div>
-    </section>
-    <section class="board board-detail" aria-label="Detail" id="profDetail"></section>
-  </div>
   <div id="viewCamp" role="tabpanel" aria-labelledby="tabCamp" hidden></div>
   <div id="viewTarot" role="tabpanel" aria-labelledby="tabTarot" hidden></div>
   <div id="viewAstro" role="tabpanel" aria-label="Astrology" hidden></div>
@@ -3301,15 +3342,20 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 <dialog id="cfgDlg" class="cfg-dlg" aria-label="Settings">
   <div class="cfg-top"><h2 class="cfg-title">Settings</h2><button type="button" class="btn btn-ghost btn-sm" data-action="settings-close">Close</button></div>
   <div class="cfg-grid">
+  <div class="cfg-col">
   <section class="cfg-sec">
     <span class="cfg-h">Tarot</span>
     <span class="cfg-l">Card back</span>
     <div class="cfg-backs" id="cfgBacks" role="radiogroup" aria-label="Card back"></div>
-    <span class="cfg-l">Sky</span>
-    <div class="astro-switch" role="group" aria-label="The sky behind the cards">
+  </section>
+  <section class="cfg-sec">
+    <span class="cfg-h">Particles</span>
+    <div class="astro-switch" role="group" aria-label="Particles">
       <button type="button" data-action="sky-on" data-v="0" aria-pressed="false">Off</button>
       <button type="button" data-action="sky-on" data-v="1" aria-pressed="true">On</button>
     </div>
+    <span class="cfg-l">Screens</span>
+    <div class="cfg-row" id="cfgWhere" role="group" aria-label="Screens the particles appear on"></div>
     <div class="cfg-dials" id="cfgDials">
       <label class="cfg-dial"><span class="cfg-dl">Density</span><input type="range" class="dial-range tank" data-sky="density" min="10" max="100" step="1" value="60"><span class="cfg-dn">60</span></label>
       <label class="cfg-dial"><span class="cfg-dl">Opacity</span><input type="range" class="dial-range tank" data-sky="glow" min="10" max="100" step="1" value="55"><span class="cfg-dn">55</span></label>
@@ -3317,6 +3363,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
       <label class="cfg-dial"><span class="cfg-dl">Hue</span><input type="range" class="dial-range tank" data-sky="hue" min="0" max="360" step="1" value="26"><span class="cfg-dn">26</span></label>
     </div>
   </section>
+  </div>
   <div class="cfg-col">
   <section class="cfg-sec">
     <span class="cfg-h">Diary</span>
@@ -3327,9 +3374,11 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     </div>
   </section>
   <section class="cfg-sec">
-    <span class="cfg-h">Character</span>
-    <span class="cfg-l">Class</span>
-    <ul class="cls-list cfg-cls" id="cfgClsList" aria-label="Choose a class"></ul>
+    <span class="cfg-h">Gear</span>
+    <div class="cfg-gears" id="cfgGears" role="radiogroup" aria-label="The settings gear"></div>
+  </section>
+  <section class="cfg-sec">
+    <span class="cfg-h">Board</span>
     <button class="btn btn-ghost btn-sm" data-action="addskill" type="button">
       <svg class="g" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       Add skill
@@ -5257,7 +5306,12 @@ function DEFAULT_HERO() { return { name: "Adventurer", cls: "wizard", clsName: "
 function sanSky(s) {
   s = (s && typeof s === "object") ? s : {};
   const num = (v, lo, hi, d) => { const n = Math.round(Number(v)); return isFinite(n) ? Math.max(lo, Math.min(hi, n)) : d; };
-  return { on: s.on === 0 || s.on === false ? 0 : 1, density: num(s.density, 10, 100, 60), glow: num(s.glow, 10, 100, 55), drift: num(s.drift, 10, 100, 40), hue: num(s.hue, 0, 360, 26) };
+  /* Where they appear is a choice, not a property of the Tarot page. Tarot is on by
+     default because that is where they have always been; anything not on this list has
+     no answer and therefore no particles. */
+  const w = (s.where && typeof s.where === "object") ? s.where : {};
+  const where = { diary: w.diary ? 1 : 0, tarot: (w.tarot === 0 || w.tarot === false) ? 0 : 1 };
+  return { on: s.on === 0 || s.on === false ? 0 : 1, density: num(s.density, 10, 100, 60), glow: num(s.glow, 10, 100, 55), drift: num(s.drift, 10, 100, 40), hue: num(s.hue, 0, 360, 26), where };
 }
 /* Every content migration, in order, in ONE place. It used to be written out twice — at
    startup and in cloudPull — and every new migration had to be appended to both by hand.
@@ -5282,6 +5336,7 @@ function sanitize(s) {
     houses: hero.houses === "placidus" ? "placidus" : "whole",
     moods: hero.moods === "faces" ? "faces" : "symbols",       /* which medallion set the mood row shows */
     back: [0, 1, 2, 3, 4].indexOf(Math.round(Number(hero.back))) > -1 ? Math.round(Number(hero.back)) : 0,   /* which card back */
+    gear: ["runes", "brass", "bronze", "gilt", "inlay", "iron", "steel", "etched"].indexOf(hero.gear) > -1 ? hero.gear : "runes",
     sky: sanSky(hero.sky),
     portrait: (typeof hero.portrait === "string" && hero.portrait.startsWith("data:image")) ? hero.portrait : null
   };
@@ -6543,10 +6598,32 @@ function markSVG(m) {
 
 /* Journal 1 was removed in v4. The helpers above it - normaliseBook, book(), markSVG,
    isSched, schedLabel, schedTitle - stay: the journal is built on them. */
-const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", prof: "viewProf", tomes: "viewTomes", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro" };
+const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", tomes: "viewTomes", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro" };
 /* astrology has no tab: the plate is reached through the sun sign on the hero card */
-const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", prof: "tabProf", tomes: "tabTomes", tarot: "tabTarot", diary: "tabDiary" };
+const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", tomes: "tabTomes", tarot: "tabTarot", diary: "tabDiary" };
+/* which half of the Skills sheet is open. It outlives the session the way the view does,
+   because coming back to the tab you left is worth more than a fixed starting point. */
+let skSub = (() => { try { return localStorage.getItem("skillstone-sub") === "prof" ? "prof" : "attr"; } catch (e) { return "attr"; } })();
+function setSub(k) {
+  skSub = k === "prof" ? "prof" : "attr";
+  try { localStorage.setItem("skillstone-sub", skSub); } catch (e) {}
+  const pa = $("#subPaneAttr"), pp = $("#subPaneProf");
+  if (pa) pa.hidden = skSub !== "attr";
+  if (pp) pp.hidden = skSub !== "prof";
+  document.querySelectorAll("[data-sub]").forEach(b => {
+    const on = b.dataset.sub === skSub;
+    b.setAttribute("aria-selected", String(on));
+    b.tabIndex = on ? 0 : -1;
+  });
+  document.querySelectorAll(".sk-m").forEach(m => { m.hidden = m.dataset.for !== skSub; });
+  /* the attributes panel reads from the library, so it can go stale while it is hidden —
+     tick a book on the Tomes tab, come back, and the count was yesterday's */
+  if (skSub === "prof") renderProf(); else renderDetail(false);
+}
 function setView(v) {
+  /* Proficiency was its own tab until it became half of Skills; a view saved under the old
+     name still lands where it meant to */
+  if (v === "prof") { skSub = "prof"; v = "skills"; }
   view = VIEWS[v] ? v : "journal";
   Object.keys(VIEWS).forEach(k => {
     const p = $("#" + VIEWS[k]); if (p) p.hidden = k !== view;
@@ -6556,15 +6633,12 @@ function setView(v) {
   try { localStorage.setItem("skillstone-view", view); } catch (e) {}
   if (view === "journal") renderJ3();
   if (view === "tomes") renderTomes();
-  if (view === "prof") renderProf();
   if (view === "camp") renderCampaigns();
   if (view === "tarot") renderTarot();
-  skySet(view === "tarot");
+  skySet(skyHere(view));
   if (view === "astro") renderAstro();
   if (view === "diary") renderDiary();
-  /* the skill panel reads from the library, so it can go stale while it is hidden -
-     tick a book on the Tomes tab, come back, and the count was yesterday's */
-  if (view === "skills") renderDetail(false);
+  if (view === "skills") setSub(skSub);
 }
 
 /* ================= TOMES =================
@@ -7013,6 +7087,16 @@ function tomeCountText() {
   return readN + " read \u00b7 " + (readingN ? readingN + " reading \u00b7 " : "") +
     rows.length + " owned \u00b7 " + st.have + " / " + st.total + " recommended";
 }
+/* Eight cuts of one cog, all 102px webp on a transparent ground. Which one sits in the
+   corner is a hero field like the card back, so it rides the board and the cloud row. */
+const GEARS = [
+  ["runes", "Runes"], ["brass", "Brass"], ["bronze", "Bronze"], ["gilt", "Gilt"],
+  ["inlay", "Inlay"], ["iron", "Iron"], ["steel", "Steel"], ["etched", "Etched"]
+];
+const gearSrc = k => "assets/gears/gear-" + k + "-cut.webp";
+const gearKey = () => { const k = state.hero && state.hero.gear; return GEARS.some(g => g[0] === k) ? k : "runes"; };
+function applyGear() { const i = $("#cfgBtn img"); if (i) i.src = gearSrc(gearKey()); }
+
 let tomeOpen = null;      /* the book expanded in place */
 let tomeShelf = "All";
 let tomeTarget = null;    /* the invoker of the skill popover */
@@ -9520,12 +9604,15 @@ function skyFrame() {
   sky.raf = requestAnimationFrame(skyFrame);
 }
 /* the dials changed: rebuild the field at the new count and reseed, keeping the sky where it is */
+/* the screens the particles are allowed on, and whether this is one of them */
+const SKY_WHERE = [["diary", "Diary"], ["tarot", "Tarot"]];
+const skyHere = v => { const w = sanSky(state.hero && state.hero.sky).where; return !!w[v]; };
 function skyApply() {
   if (!sky) return;
   const n = skyCfg().n;
   if (sky.props.length !== n * SKY.props) sky.props = new Float32Array(n * SKY.props);
   for (let i = 0; i < sky.props.length; i += SKY.props) skySeed(i, true);
-  skySet(view === "tarot");
+  skySet(skyHere(view));
 }
 function skySet(on) {
   if (on && (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !skyCfg().on)) on = false;
@@ -11392,7 +11479,15 @@ function renderMoodSwitch() {
   const bx = $("#cfgBacks");
   if (bx) bx.innerHTML = TAR_BACKS.map((b, i) => '<button type="button" role="radio" class="cfg-back" data-action="back" data-n="' + i + '" aria-checked="' + (i === back) + '">' +
     '<span class="cb">' + b.svg + '</span><span class="cn">' + b.name + "</span></button>").join("");
+  const gk = gearKey(), gx = $("#cfgGears");
+  if (gx) gx.innerHTML = GEARS.map(([k, name]) =>
+    '<button type="button" role="radio" class="cfg-gearp" data-action="gear" data-k="' + k + '" aria-checked="' + (k === gk) + '">' +
+    '<img src="' + gearSrc(k) + '" alt="" width="40" height="40" draggable="false"><span class="cn">' + name + "</span></button>").join("");
+  applyGear();
   document.querySelectorAll('[data-action="sky-on"]').forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.v) === s.on)));
+  const wx = $("#cfgWhere");
+  if (wx) wx.innerHTML = SKY_WHERE.map(([k, name]) =>
+    '<button type="button" class="cfg-where" data-action="sky-where" data-k="' + k + '" aria-pressed="' + !!s.where[k] + '">' + name + "</button>").join("");
   const dials = $("#cfgDials"); if (dials) dials.classList.toggle("is-still", !s.on);
   document.querySelectorAll("[data-sky]").forEach(r => { const k = r.dataset.sky; r.value = s[k]; r.style.setProperty("--v", (k === "hue" ? s[k] / 3.6 : s[k]) + "%"); const n = r.parentElement.querySelector(".cfg-dn"); if (n) n.textContent = s[k]; });
 }
@@ -13026,6 +13121,8 @@ function bindKeys() {
 document.addEventListener("click", e => {
   const tab = e.target.closest("[data-view]");
   if (tab) { setView(tab.dataset.view); return; }
+  const half = e.target.closest("[data-sub]");
+  if (half) { setSub(half.dataset.sub); return; }
   const ast = e.target.closest("[data-astro]");
   if (ast) { astroAct(ast); return; }
   const ba = e.target.closest('[data-action="birth-open"], [data-action="birth-cancel"], [data-action="birth-manual"], [data-action="astro-open"]');
@@ -13100,6 +13197,8 @@ document.addEventListener("click", e => {
     case "back":        state.hero.back = TAR_BACKS[+act.dataset.n] ? +act.dataset.n : 0; save(); renderSettings();
                         if (view === "tarot") renderTarot(); break;
     case "sky-on":      { const s = sanSky(state.hero.sky); s.on = act.dataset.v === "1" ? 1 : 0; state.hero.sky = s; save(); renderSettings(); skyApply(); break; }
+    case "sky-where":   { const s = sanSky(state.hero.sky); const k = act.dataset.k; s.where[k] = s.where[k] ? 0 : 1; state.hero.sky = s; save(); renderSettings(); skySet(skyHere(view)); break; }
+    case "gear":        { state.hero.gear = act.dataset.k; save(); renderSettings(); break; }
     case "cloud-off":   cloudDisconnect(); break;
     case "auth-google": authStart(); break;
     case "auth-out":    authSignOut(); break;
