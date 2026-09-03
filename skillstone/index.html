@@ -3421,13 +3421,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     <div class="cfg-gears" id="cfgGears" role="radiogroup" aria-label="The settings gear"></div>
   </section>
   <section class="cfg-sec">
-    <span class="cfg-h">Board</span>
-    <button class="btn btn-ghost btn-sm" data-action="addskill" type="button">
-      <svg class="g" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-      Add skill
-    </button>
-  </section>
-  <section class="cfg-sec">
     <span class="cfg-h">Cloud <span class="cloud-state" id="cloudState" aria-live="polite"></span></span>
   <div id="authBox" class="auth-box"></div>
   <form class="cloud-form" data-form="cloud">
@@ -12272,19 +12265,7 @@ function skillHTML(s) {
       : `<button type="button" class="d-plaque" data-emopick data-emoapply="skill" data-val="${esc(s.icon)}"
       popovertarget="emoPop" aria-label="Change the icon for ${esc(s.name)}">${esc(s.icon)}</button>`}
     <div class="d-head-main">
-      ${renaming ? `
-      <form class="rn-form" data-form="rename">
-        <input type="text" id="rnInput" maxlength="40" value="${esc(s.name)}" aria-label="Skill name">
-        <button type="submit" class="btn btn-ghost btn-sm">Save</button>
-        <button type="button" class="btn btn-ghost btn-sm" data-action="rename-cancel">Cancel</button>
-      </form>` : `
-      <div class="name-row">
-        <h2 class="d-name">${esc(s.name)}</h2>
-        <button type="button" class="rename-btn" data-action="rename-open">rename</button>
-        <button type="button" class="remove-btn${removeArmed ? " armed" : ""}" data-action="remove"
-          aria-label="${removeArmed ? `Confirm removing ${esc(s.name)}` : `Remove ${esc(s.name)} from the sheet`}">${
-          removeArmed ? "click again to remove" : "remove"}</button>
-      </div>`}
+      <h2 class="d-name">${esc(s.name)}</h2>
       <p class="d-rank"><b>${rank(RUNG(s))}</b> · ${GROUP[s.attr].name} · rank ${fmtLv(LV(s))} of ${MAX_LV}</p>
       ${(() => {                     /* what has been READ toward this skill, not bought */
         const bs = skillTomes(s.id);
