@@ -3069,6 +3069,8 @@ li.is-done .qg { color: var(--verdant); }
   background: none; border: 0; color: var(--parchment); font-family: var(--f-read); font-size: 0.875rem; line-height: 1.4; }
 .dy-vin:focus, .dy-pick:focus { outline: none; color: var(--ink-wet); }
 .dy-vin::placeholder { color: var(--mortar-2); }
+/* the one field that runs past the column wraps instead of hiding the rest of the sentence */
+.dy-vta { resize: none; overflow: hidden; display: block; }
 .dy-pick { appearance: none; cursor: pointer; padding-right: 18px;
   background: no-repeat right 2px center / 9px url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="%23A67B2E" stroke-width="1.6"/></svg>'); }
 .dy-pick.is-none { color: var(--mortar-2); }   /* nothing chosen yet reads as quiet as the empty lines beside it */
@@ -9892,15 +9894,18 @@ function dyVowHTML(b, wk, dow) {
     (now.length ? '<optgroup label="Reading now">' + now.map(opt).join("") + "</optgroup>" : "") +
     (rest.length ? '<optgroup label="On the shelves">' + rest.map(opt).join("") + "</optgroup>" : "") +
     "</select>";
-  const field = (k, label, ph, aria) =>
+  const field = (k, label, ph, aria, grows) =>
     '<div class="dy-vrow' + (e[k] ? " is-set" : "") + '"><span class="dy-vl">' + label + "</span>" +
-    '<input type="text" class="dy-vin" data-dy="' + k + '"' + at + ' maxlength="' + DY_LINE_MAX +
-    '" value="' + esc(e[k] || "") + '"' + (ph ? ' placeholder="' + ph + '"' : "") +
-    ' aria-label="' + aria + '"></div>';
+    (grows
+      ? '<textarea class="dy-vin dy-vta" rows="1" data-dy="' + k + '"' + at + ' maxlength="' + DY_LINE_MAX +
+        '"' + (ph ? ' placeholder="' + ph + '"' : "") + ' aria-label="' + aria + '">' + esc(e[k] || "") + "</textarea>"
+      : '<input type="text" class="dy-vin" data-dy="' + k + '"' + at + ' maxlength="' + DY_LINE_MAX +
+        '" value="' + esc(e[k] || "") + '"' + (ph ? ' placeholder="' + ph + '"' : "") +
+        ' aria-label="' + aria + '">') + "</div>";
   return '<div class="dy-vow">' +
     '<div class="dy-vrow' + (e.book ? " is-set" : "") + '"><span class="dy-vl">Reading</span>' + pick + "</div>" +
     field("one", "#1 today", "most important thing", "The most important thing today") +
-    field("thanks", "Grateful for", "(however small)", "Something to be grateful for") +
+    field("thanks", "Grateful for", "(however small)", "Something to be grateful for", true) +
     "</div>";
 }
 /* the medallions, in the set the owner chose */
@@ -10013,18 +10018,23 @@ function renderDiary() {
     '<section class="dy-card dy-vowc" aria-label="Today">' + dyFrame({ top: "crest" }) +
       '<div class="dy-body dy-body-c">' + dyVowHTML(b, wk, dow) + "</div></section>" +
     "</div>";
-  el.querySelectorAll(".dy-page, .dy-line").forEach(dyAutosize);
+  el.querySelectorAll(dyGrowSel()).forEach(dyAutosize);
   const dayCard = el.querySelector(".dy-day");                       /* the listeners die with the nodes on the next render */
   if (dayCard) { dayCard.addEventListener("pointerenter", () => sunHeat(1)); dayCard.addEventListener("pointerleave", () => sunHeat(0)); }
   dyTilt(el.querySelector(".dy-tcard"));
 }
+/* Every field on this card that grows to fit what is in it. One list, because the same
+   three classes were written out at three call sites under two different scopes, and the
+   fourth would have been the one left behind. */
+const DY_GROW = [".dy-page", ".dy-line", ".dy-vta"];
+const dyGrowSel = scope => DY_GROW.map(c => (scope ? scope + " " : "") + c).join(", ");
 function dyAutosize(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
 /* a height measured at one width is wrong at another: re-measure whenever the view’s column
    changes width — a rotation, a resize, or a tab that first laid out at zero width */
 if (window.ResizeObserver) {
-  const dyRO = new ResizeObserver(() => document.querySelectorAll("#viewDiary .dy-page, #viewDiary .dy-line").forEach(dyAutosize));
+  const dyRO = new ResizeObserver(() => document.querySelectorAll(dyGrowSel("#viewDiary")).forEach(dyAutosize));
   const dyView = $("#viewDiary"); if (dyView) dyRO.observe(dyView);
-} else window.addEventListener("resize", () => document.querySelectorAll("#viewDiary .dy-page, #viewDiary .dy-line").forEach(dyAutosize));
+} else window.addEventListener("resize", () => document.querySelectorAll(dyGrowSel("#viewDiary")).forEach(dyAutosize));
 /* while typing: the page grows and the rule fills; a line grows and seals. Nothing is saved
    until the field commits. */
 function dyLive(t) {
@@ -10034,6 +10044,8 @@ function dyLive(t) {
     if (mark) { mark.style.setProperty("--fill", Math.min(1, words / DY_MARK).toFixed(3)); mark.querySelector(".dy-count").textContent = words ? words : ""; }
   } else if (t.classList.contains("dy-line")) {
     dyAutosize(t); t.closest(".dy-lrow").classList.toggle("is-set", !!t.value.trim());
+  } else if (t.classList.contains("dy-vta")) {
+    dyAutosize(t);
   }
 }
 /* one commit path: read the morning, change it, sanitise, save, and mark the day's dot in
@@ -10096,7 +10108,11 @@ document.addEventListener("change", e => {
 document.addEventListener("input", e => { const t = e.target; if (t && t.closest && t.closest("#viewDiary") && t.dataset && t.dataset.dy) dyLive(t); });
 /* Enter does not break a line: it moves to the next, and off the third */
 document.addEventListener("keydown", e => {
-  if (e.key !== "Enter" || !e.target.classList || !e.target.classList.contains("dy-line")) return;
+  if (!e.target.classList || e.key !== "Enter") return;
+  /* Grateful for wraps but does not break: the value is one thought however many rows it
+     takes to show it, and the commit has always flattened newlines away. */
+  if (e.target.classList.contains("dy-vta")) { e.preventDefault(); e.target.blur(); return; }
+  if (!e.target.classList.contains("dy-line")) return;
   e.preventDefault();
   const lines = [...e.target.closest(".dy-three").querySelectorAll(".dy-line")], i = lines.indexOf(e.target);
   if (i < lines.length - 1) lines[i + 1].focus(); else e.target.blur();
