@@ -4142,6 +4142,8 @@ const SEED = () => ({
     sk("spo","🏊","Swimming",0),
     sk("spo","🚴","Cycling",0),
     sk("spo","⚡","HIIT",0),
+    sk("spo","🛹","Skateboarding",0),
+    sk("spo","🏄","Surfing",0),
 
     sk("art","🎨","Painting",0),
     sk("art","✏️","Drawing",0),
@@ -5363,7 +5365,25 @@ function runPolish(s) {
   polishV18(s); polishV19(s); polishV20(s); polishV21(s); polishV22(s); polishV23(s);
   polishV24(s); polishV25(s); polishV26(s); polishV27(s); polishV28(s); polishV29(s);
   polishV30(s); polishV31(s); polishV32(s); polishV33(s); polishV34(s); polishV35(s);
-  polishV36(s);
+  polishV36(s); polishV37(s);
+  return s;
+}
+
+/* v37: Skateboarding and Surfing. Both were drawn before either existed on the board, so
+   this is the sheet catching up with the art. Hours-only, like HIIT — no ladder to climb
+   and no concepts to know, just a number that comes from time actually spent. */
+function polishV37(s) {
+  if (s.polish37) return s;
+  const add = [["\u{1F6F9}", "Skateboarding"], ["\u{1F3C4}", "Surfing"]];
+  const made = [];
+  add.forEach(([icon, name]) => {
+    if (s.skills.some(k => k.name === name)) return;
+    s.skills.push(sk("spo", icon, name, 0));
+    made.push(name);
+  });
+  s.polish37 = true;
+  if (made.length) s.journal.push({ ts: Date.now(), sid: null, kind: "sys",
+    text: "Sports gained " + made.join(" and ") + ". Both practised, not earned \u2014 the number comes from hours logged." });
   return s;
 }
 
@@ -8423,7 +8443,7 @@ const SKILL_PLATE = new Set([
      about a language than any drawn plate could, and they already have one. */
   "painting", "drawing", "music", "acting", "writing", "dancing", "ceramics",
   "hydraulics", "electricity", "mechanics", "woodworking", "metalworking", "perfumery", "tailoring",
-  "football", "swimming", "cycling", "hiit"
+  "football", "swimming", "cycling", "hiit", "skateboarding", "surfing"
 ]);
 const plateSlug = sk => {
   const k = String((sk && (sk.kbKey || sk.name)) || "").toLowerCase()
