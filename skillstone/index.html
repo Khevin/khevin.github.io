@@ -2238,6 +2238,21 @@ li.is-done .qg { color: var(--verdant); }
   text-transform: uppercase; color: var(--ash);
 }
 
+/* A room that exists and holds nothing yet. The quest hall's blank state, resized for a
+   round medallion rather than the wide table, and masked so the render's own square ground
+   dissolves into the page instead of sitting on it as a tile. */
+.tab-blank { display: grid; place-items: center; padding: var(--s8) 0 var(--s7); text-align: center; }
+.tab-blank img {
+  width: min(196px, 44%); height: auto; display: block; opacity: 0.4;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 44%, transparent 71%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 44%, transparent 71%);
+}
+.tab-blank p {
+  margin-top: calc(var(--s5) * -1);
+  font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ash);
+}
+
 /* middle: the quest. One gold block per screen — the next action. */
 .qd-kind { font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); display: flex; align-items: center; gap: var(--s2); }
 .qd-kind .k { color: var(--gold); }
@@ -3273,8 +3288,10 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
         aria-selected="false" aria-controls="viewSkills" tabindex="-1">Skills</button>
       <button type="button" class="tab" role="tab" id="tabTomes" data-view="tomes"
         aria-selected="false" aria-controls="viewTomes" tabindex="-1">Tomes</button>
-      <button type="button" class="tab" role="tab" id="tabTarot" data-view="tarot"
-        aria-selected="false" aria-controls="viewTarot" tabindex="-1">Tarot</button>
+      <button type="button" class="tab" role="tab" id="tabSpells" data-view="spells"
+        aria-selected="false" aria-controls="viewSpells" tabindex="-1">Spells</button>
+      <button type="button" class="tab" role="tab" id="tabInv" data-view="inv"
+        aria-selected="false" aria-controls="viewInv" tabindex="-1">Inventory</button>
     </nav>
 
     <div class="tools">
@@ -3316,7 +3333,19 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 
   <div id="viewJournal" role="tabpanel" aria-labelledby="tabJournal" hidden></div>
   <div id="viewCamp" role="tabpanel" aria-labelledby="tabCamp" hidden></div>
-  <div id="viewTarot" role="tabpanel" aria-labelledby="tabTarot" hidden></div>
+  <div id="viewTarot" role="tabpanel" aria-label="Tarot" hidden></div>
+  <div id="viewSpells" role="tabpanel" aria-labelledby="tabSpells" hidden>
+    <section class="tab-blank">
+      <img src="assets/quests/spare-lotus-moon.png" alt="" width="256" height="256" loading="lazy">
+      <p>Not built yet</p>
+    </section>
+  </div>
+  <div id="viewInv" role="tabpanel" aria-labelledby="tabInv" hidden>
+    <section class="tab-blank">
+      <img src="assets/quests/spare-castle-gate.png" alt="" width="256" height="256" loading="lazy">
+      <p>Not built yet</p>
+    </section>
+  </div>
   <div id="viewAstro" role="tabpanel" aria-label="Astrology" hidden></div>
   <div id="viewDiary" role="tabpanel" aria-labelledby="tabDiary" hidden></div>
   <div id="viewTomes" role="tabpanel" aria-labelledby="tabTomes" hidden></div>
@@ -6598,9 +6627,12 @@ function markSVG(m) {
 
 /* Journal 1 was removed in v4. The helpers above it - normaliseBook, book(), markSVG,
    isSched, schedLabel, schedTitle - stay: the journal is built on them. */
-const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", tomes: "viewTomes", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro" };
-/* astrology has no tab: the plate is reached through the sun sign on the hero card */
-const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", tomes: "tabTomes", tarot: "tabTarot", diary: "tabDiary" };
+const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", tomes: "viewTomes", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro", spells: "viewSpells", inv: "viewInv" };
+/* Two pages have no tab, for the same reason: they are reached from where they belong.
+   Astrology hangs off the sun sign on the hero card; the tarot hangs off the day's card in
+   the diary, which is how a reading is actually come by — because it is the morning, not
+   because you went looking for a page. */
+const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", tomes: "tabTomes", diary: "tabDiary", spells: "tabSpells", inv: "tabInv" };
 /* which half of the Skills sheet is open. It outlives the session the way the view does,
    because coming back to the tab you left is worth more than a fixed starting point. */
 let skSub = (() => { try { return localStorage.getItem("skillstone-sub") === "prof" ? "prof" : "attr"; } catch (e) { return "attr"; } })();
