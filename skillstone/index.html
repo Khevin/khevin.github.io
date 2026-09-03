@@ -6199,13 +6199,10 @@ function cloudSet(s, msg) {
   renderCloud(msg);
 }
 function renderCloud(msg) {
-  /* the button keeps one label forever: a control that resizes as its state changes
-     drags the whole bar with it. The state lives beside it, in a slot of fixed width. */
-  const b = $("#cfgBtn");
-  if (b) {
-    b.title = "Settings \u2014 cloud " + (cloudState === "error" ? "error" :
-              cloud ? "on \u00b7 board " + cloud.board : "off");
-  }
+  /* No tooltip on the gear. It covered the turn — you cannot watch a thing spin through a
+     box that appears the moment you point at it — and it printed the board id, the secret
+     half of the pairing, to anyone reading over a shoulder or watching a screen share. The
+     state is on the panel beside the word Cloud, which is where you would look for it. */
   const st = $("#cloudState");
   if (st) {
     st.textContent = cloudState === "off"   ? "off"
