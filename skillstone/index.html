@@ -516,6 +516,7 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .d-plaque .sk-plate { width: 64px; height: 64px; }
 .t-ico .sk-plate { width: 40px; height: 40px; margin: -4px auto; }
 .ar .ico .sk-plate { width: 24px; height: 24px; }
+.pf-ico .sk-plate { width: 24px; height: 24px; margin: -4px 0; }
 .d-head-main { min-width: 0; flex: 1; }
 .d-name { font-family: var(--f-display); font-weight: 700; font-size: 1.625rem; letter-spacing: 0.01em; line-height: 1.25; text-wrap: balance; }
 .d-rank { font-size: 0.875rem; color: var(--dust); margin-top: 2px; }
@@ -7337,7 +7338,7 @@ function profRowHTML(s) {
       '" tabindex="-1" aria-label="' + esc(s.name + " — proficiency " + lv + " of " + PROF_MAX +
       ", " + fmtHours(hrs) + " logged, last practised " + profStale(s)) + '">' +
       (profSel === s.id ? '<i class="sel-gem" aria-hidden="true"></i>' : "") +
-      '<span class="pf-ico" aria-hidden="true">' + skIcon(s) + "</span>" +
+      '<span class="pf-ico" aria-hidden="true">' + (plateSlug(s) ? skPlate(s, 24) : skIcon(s)) + "</span>" +
       '<span class="pf-nm"><span class="t">' + esc(s.name) + "</span>" +
         /* Tibia keeps the percent-to-next beside the value at all times, on the list
            itself — not only once you have opened something. */
@@ -7403,7 +7404,9 @@ function renderProfDetail() {
   el.innerHTML =
   '<div class="pf-detail-wrap' + (dormant ? " is-dormant" : "") + (hrs <= 0 ? " is-zero" : "") + '">' +
   '<header class="d-head">' +
-    (isLang(s)
+    (plateSlug(s)
+      ? '<span class="' + plaqueCls(s) + '" aria-hidden="true">' + skPlate(s, 64) + "</span>"
+      : isLang(s)
       ? '<span class="d-plaque is-flag" aria-hidden="true">' + skIcon(s) + "</span>"
       : '<button type="button" class="d-plaque" data-emopick data-emoapply="skill" data-val="' +
         esc(s.icon) + '" popovertarget="emoPop" aria-label="Change the icon for ' + esc(s.name) +
@@ -8415,7 +8418,12 @@ const SKILL_PLATE = new Set([
   "learning", "planning", "design", "observation", "critical-thinking", "adaptability",
   "math-logic", "memory", "conflict-resolution",
   "empathy", "composure", "thoughtfulness", "reliability", "mentorship", "survivalist",
-  "gardening", "health", "history", "social-sciences", "cooking"
+  "gardening", "health", "history", "social-sciences", "cooking",
+  /* the practised skills. The seven languages are deliberately absent: a flag says more
+     about a language than any drawn plate could, and they already have one. */
+  "painting", "drawing", "music", "acting", "writing", "dancing", "ceramics",
+  "hydraulics", "electricity", "mechanics", "woodworking", "metalworking", "perfumery", "tailoring",
+  "football", "swimming", "cycling", "hiit"
 ]);
 const plateSlug = sk => {
   const k = String((sk && (sk.kbKey || sk.name)) || "").toLowerCase()
