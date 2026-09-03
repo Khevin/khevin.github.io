@@ -3319,12 +3319,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   <div id="viewSkills" role="tabpanel" aria-labelledby="tabSkills" hidden>
     <div class="sk-head">
       <span class="j3-week">Skills</span>
-      <div class="sk-subs" role="tablist" aria-label="Which half of the sheet">
-        <button type="button" class="sk-sub" role="tab" id="subAttr" data-sub="attr"
-          aria-selected="true" aria-controls="subPaneAttr">Attributes</button>
-        <button type="button" class="sk-sub" role="tab" id="subProf" data-sub="prof"
-          aria-selected="false" aria-controls="subPaneProf" tabindex="-1">Proficiency</button>
-      </div>
+      <div class="sk-subs" id="skSubs" role="tablist" aria-label="Which half of the sheet"></div>
       <span class="sk-rule" aria-hidden="true"></span>
       <span class="sk-meta">
         <span class="sk-m" data-for="attr"><span class="tw">total</span> <b id="totalLv">0</b> <span class="of" id="totalOf"></span></span>
@@ -3860,7 +3855,14 @@ const LANG_FACETS = () => [
 const PROF = Object.fromEntries(PROF_GROUPS.map(g => [g.k, g]));
 const isProf = s => !!PROF[s.attr];
 /* every group a skill may legally belong to — pickers and sanitize read this, never ATTRS */
-const GROUPS = ATTRS.concat(PROF_GROUPS);
+/* A group that is climbed on a ladder like an attribute but rolls up into no crest, the way
+   Languages and Sports roll up into none. Three skills that were filed under Wisdom because
+   there was nowhere else to put them, and are not really judgment at all. */
+const SIDE_GROUPS = [
+  { k: "nat", name: "Nature", ab: "NAT", desc: "Growing things, going out, feeding people" }
+];
+const SIDE = Object.fromEntries(SIDE_GROUPS.map(g => [g.k, g]));
+const GROUPS = ATTRS.concat(SIDE_GROUPS).concat(PROF_GROUPS);
 const GROUP = Object.fromEntries(GROUPS.map(g => [g.k, g]));
 const ATTR = Object.fromEntries(ATTRS.map(a => [a.k, a]));
 
@@ -3871,6 +3873,8 @@ const SIG = {
   art: '<svg class="g sig" width="SZ" height="SZ" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 13.5 20 4.5a1.9 1.9 0 0 0-2.7-2.7l-9 9"/><path d="M8.5 11c-2 0-3.6 1.2-4.2 3.2-.5 1.7-.4 3.4-2.3 4.6 1.7 1.1 4.3 1.4 6 .6 1.9-.9 3-2.6 3-4.6"/></svg>',
   int: '<svg class="g sig" width="SZ" height="SZ" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 4.8 7 4.3 4 4.8V18c3-.5 6 0 8 1.7 2-1.7 5-2.2 8-1.7V4.8c-3-.5-6 0-8 1.7Z"/><path d="M12 6.5v13.2"/></svg>',
   wis: '<svg class="g sig" width="SZ" height="SZ" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12C6 6.6 18 6.6 21.5 12 18 17.4 6 17.4 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  /* Nature: a leaf on its stem, one stroke family */
+  nat: '<svg class="g sig" width="SZ" height="SZ" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20.5c-1-6 2.5-11 9.5-13 .5 6.5-2.5 11.5-9.5 13Z"/><path d="M4 21c1.5-4.5 4-7.5 7-9.5"/></svg>',
   /* Languages: a speech mark, two strokes, same family */
   lng: '<svg class="g sig" width="SZ" height="SZ" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.5h13v9h-7l-4 3.5v-3.5h-2Z"/><path d="M20.5 9.5v9h-2v3.5l-4-3.5h-2"/></svg>',
   /* Sports: a ball \u2014 one circle, two seams, same hand */
@@ -4118,8 +4122,8 @@ const SEED = () => ({
     ]),
     sk("cha","📜","Storytelling",0),
     sk("cha","😄","Humor",0),
-    sk("cha","👥","Networking",0),
     sk("cha","👑","Leadership",0),
+    sk("cha","👥","Networking",0),
     newSeducing(),
 
     sk("spo","⚽","Football",0,[],[
@@ -5358,6 +5362,29 @@ function runPolish(s) {
   polishV18(s); polishV19(s); polishV20(s); polishV21(s); polishV22(s); polishV23(s);
   polishV24(s); polishV25(s); polishV26(s); polishV27(s); polishV28(s); polishV29(s);
   polishV30(s); polishV31(s); polishV32(s); polishV33(s); polishV34(s); polishV35(s);
+  polishV36(s);
+  return s;
+}
+
+/* v36: Nature takes the three skills that were filed under Wisdom for want of anywhere
+   better — Gardening, Survivalist and Cooking are not judgment, and counting them toward a
+   judgment score made the crest describe skills its own page no longer shows. Leadership
+   also moves ahead of Networking on the board, the owner's own ordering. */
+function polishV36(s) {
+  if (s.polish36) return s;
+  const moved = [];
+  s.skills.forEach(k => {
+    if (k.attr === "wis" && ["Gardening", "Survivalist", "Cooking"].indexOf(k.name) > -1) {
+      k.attr = "nat"; moved.push(k.name);
+    }
+  });
+  const i = s.skills.findIndex(k => k.name === "Leadership" && k.attr === "cha");
+  const j = s.skills.findIndex(k => k.name === "Networking" && k.attr === "cha");
+  if (i > -1 && j > -1 && i > j) { const t = s.skills[i]; s.skills[i] = s.skills[j]; s.skills[j] = t; }
+  s.polish36 = true;
+  if (moved.length) s.journal.push({ ts: Date.now(), sid: null, kind: "sys",
+    text: "Nature is its own page now \u2014 " + moved.join(", ") +
+          " left Wisdom, so the Wisdom crest stopped counting skills it no longer shows." });
   return s;
 }
 
@@ -6642,22 +6669,50 @@ const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", 
 const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", tomes: "tabTomes", diary: "tabDiary", spells: "tabSpells", inv: "tabInv" };
 /* which half of the Skills sheet is open. It outlives the session the way the view does,
    because coming back to the tab you left is worth more than a fixed starting point. */
-let skSub = (() => { try { return localStorage.getItem("skillstone-sub") === "prof" ? "prof" : "attr"; } catch (e) { return "attr"; } })();
+/* Each half names the groups it shows and how they are scored: a ladder half climbs 0-10 by
+   prerequisite, an hours half fills 0-120 by logged practice. The two panes are reused, so
+   adding a half is a line here rather than a new page. */
+const SK_SUBS = [
+  { k: "attr", name: "Attributes",  gs: ["cha", "phy", "int", "wis"], hours: 0 },
+  { k: "prof", name: "Proficiency", gs: ["art", "crf"],               hours: 1 },
+  { k: "nat",  name: "Nature",      gs: ["nat"],                      hours: 0 },
+  { k: "lng",  name: "Languages",   gs: ["lng"],                      hours: 1 },
+  { k: "spo",  name: "Sports",      gs: ["spo"],                      hours: 1 }
+];
+const skSubOf = k => SK_SUBS.find(x => x.k === k) || SK_SUBS[0];
+let skSub = (() => { try { const v = localStorage.getItem("skillstone-sub");
+  return SK_SUBS.some(x => x.k === v) ? v : "attr"; } catch (e) { return "attr"; } })();
 function setSub(k) {
-  skSub = k === "prof" ? "prof" : "attr";
+  const half = skSubOf(k);
+  skSub = half.k;
   try { localStorage.setItem("skillstone-sub", skSub); } catch (e) {}
   const pa = $("#subPaneAttr"), pp = $("#subPaneProf");
-  if (pa) pa.hidden = skSub !== "attr";
-  if (pp) pp.hidden = skSub !== "prof";
+  if (pa) pa.hidden = !!half.hours;
+  if (pp) pp.hidden = !half.hours;
   document.querySelectorAll("[data-sub]").forEach(b => {
     const on = b.dataset.sub === skSub;
     b.setAttribute("aria-selected", String(on));
     b.tabIndex = on ? 0 : -1;
   });
-  document.querySelectorAll(".sk-m").forEach(m => { m.hidden = m.dataset.for !== skSub; });
-  /* the attributes panel reads from the library, so it can go stale while it is hidden —
+  document.querySelectorAll(".sk-m").forEach(m => { m.hidden = m.dataset.for !== (half.hours ? "prof" : "attr"); });
+  /* a ladder half reads from the library, so it can go stale while it is hidden —
      tick a book on the Tomes tab, come back, and the count was yesterday's */
-  if (skSub === "prof") renderProf(); else renderDetail(false);
+  if (half.hours) { renderProf(); return; }
+  /* the detail is this half's. A Nature page with Communication open beside it is the panel
+     describing something the board next to it does not show. */
+  const mine = state.skills.filter(k => half.gs.indexOf(k.attr) > -1);
+  const held = state.sel && state.sel.t === "s" && mine.some(k => k.id === state.sel.id);
+  if (!held && mine.length) state.sel = { t: "s", id: mine[0].id };
+  renderGrid();
+  renderDetail(false);
+}
+function renderSubs() {
+  const el = $("#skSubs");
+  if (!el) return;
+  el.innerHTML = SK_SUBS.map(x =>
+    '<button type="button" class="sk-sub" role="tab" data-sub="' + x.k + '" aria-controls="' +
+    (x.hours ? "subPaneProf" : "subPaneAttr") + '" aria-selected="' + (x.k === skSub) + '"' +
+    (x.k === skSub ? "" : ' tabindex="-1"') + ">" + esc(x.name) + "</button>").join("");
 }
 function setView(v) {
   /* Proficiency was its own tab until it became half of Skills; a view saved under the old
@@ -6677,7 +6732,7 @@ function setView(v) {
   skySet(skyHere(view));
   if (view === "astro") renderAstro();
   if (view === "diary") renderDiary();
-  if (view === "skills") setSub(skSub);
+  if (view === "skills") { renderSubs(); setSub(skSub); }
 }
 
 /* ================= TOMES =================
@@ -7299,7 +7354,7 @@ function profRowHTML(s) {
 function renderProf() {
   const el = $("#profList");
   if (!el) return;
-  const all = PROF_GROUPS.flatMap(g => profSkills(g.k));
+  const all = skSubOf(skSub).gs.flatMap(k => profSkills(k));
   if (profSel && !all.some(s => s.id === profSel)) profSel = null;
   if (!profSel && all.length) profSel = all[0].id;
 
@@ -7317,7 +7372,7 @@ function renderProf() {
     "</p>";
 
   /* both groups stacked, the way the Skills board stacks its attributes */
-  html += PROF_GROUPS.map(g => {
+  html += skSubOf(skSub).gs.map(k => GROUP[k]).filter(Boolean).map(g => {
     const list = profSkills(g.k);
     if (!list.length) return "";
     const st = profGroupStats(g.k);
@@ -11791,7 +11846,8 @@ function watchGridWidth() {
 
 function renderGrid() {
   const el = $("#grid");
-  el.innerHTML = ATTRS.map(a => {
+  if (!el) return;
+  el.innerHTML = skSubOf(skSub).gs.map(k => GROUP[k]).filter(Boolean).map(a => {
     const st = attrStats(a.k);
     if (!st.skills.length) return "";
     return `<div class="sect-head" data-sect="${a.k}">
@@ -11813,7 +11869,10 @@ function renderGrid() {
 function renderTotal() {
   /* proficiency skills are on a different scale and are deliberately not in this total —
      adding a 0-120 to a 0-10 would produce a number that means nothing */
-  const lev = state.skills.filter(s => !isProf(s));
+  /* only what this half is showing: a total counting skills on another page is a number
+     about something the reader cannot see */
+  const gs = skSubOf(skSub).gs;
+  const lev = state.skills.filter(s => !isProf(s) && gs.indexOf(s.attr) > -1);
   const tot = lev.reduce((a, s) => a + LV(s), 0);
   const max = lev.length * MAX_LV;
   const anyMacro = false;
