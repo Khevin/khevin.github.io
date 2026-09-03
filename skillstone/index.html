@@ -1221,7 +1221,7 @@ button.d-plaque {
 .cfg-back[aria-checked="true"] .cn { color: var(--gold); }
 .cfg-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 /* the gears: eight cuts of the same cog, the chosen one on a lit plate */
-.cfg-gears { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s2); }
+.cfg-gears { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
 .cfg-gearp { appearance: none; background: none; cursor: pointer; display: grid; justify-items: center; gap: 5px;
   padding: var(--s2) var(--s2) 6px; min-width: 44px;
   border: 1px solid transparent; border-radius: var(--r-sm); }
@@ -1253,9 +1253,13 @@ button.d-plaque {
 .cfg-gear { position: relative; width: 34px; height: 34px; padding: 0; background: none; border: 0; border-radius: 8px; cursor: pointer;
   display: grid; place-items: center; transition: transform var(--t-fast) var(--e-out), filter var(--t-base) var(--e-out); }
 .cfg-gear::before { content: ""; position: absolute; inset: -5px; }   /* the hand gets 44px; the eye gets 34 */
-.cfg-gear img { display: block; width: 34px; height: 34px; }
+/* Two nested boxes for the same reason the sun has two: an element cannot carry a CSS
+   animation and a scripted transform at once, so the wrapper takes the slow turn that never
+   stops and the image takes what the pointer adds. */
+.gear-turn { display: block; animation: sunTurn 110s linear infinite; }
+.cfg-gear img { display: block; width: 34px; height: 34px; transform: rotate(var(--gear-boost, 0deg)); }
 .cfg-gear:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-@media (hover: hover) { .cfg-gear:hover { filter: brightness(1.18) drop-shadow(0 0 6px rgba(232,176,84,0.28)); transform: translateY(-1px); } }
+@media (prefers-reduced-motion: reduce) { .gear-turn { animation: none; } }
 .cfg-gear:active { transform: translateY(1px) scale(0.97); }
 .cfg-sec { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; min-width: 0; }
 .cfg-row { display: flex; gap: var(--s2); flex-wrap: wrap; }
@@ -3302,7 +3306,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 
     <div class="tools">
       <button class="cfg-gear" id="cfgBtn" type="button" data-action="settings" aria-label="Settings">
-        <img src="assets/gears/gear-runes-cut.webp" alt="" width="34" height="34" draggable="false">
+        <span class="gear-turn"><img src="assets/gears/gear-gilt-cut.webp" alt="" width="34" height="34" draggable="false"></span>
       </button>
       <input type="file" id="portraitFile" accept="image/*" hidden>
     </div>
@@ -5371,7 +5375,7 @@ function sanitize(s) {
     houses: hero.houses === "placidus" ? "placidus" : "whole",
     moods: hero.moods === "faces" ? "faces" : "symbols",       /* which medallion set the mood row shows */
     back: [0, 1, 2, 3, 4].indexOf(Math.round(Number(hero.back))) > -1 ? Math.round(Number(hero.back)) : 0,   /* which card back */
-    gear: ["runes", "brass", "bronze", "gilt", "inlay", "iron", "steel", "etched"].indexOf(hero.gear) > -1 ? hero.gear : "runes",
+    gear: ["gilt", "inlay", "steel"].indexOf(hero.gear) > -1 ? hero.gear : "gilt",
     sky: sanSky(hero.sky),
     portrait: (typeof hero.portrait === "string" && hero.portrait.startsWith("data:image")) ? hero.portrait : null
   };
@@ -7127,12 +7131,9 @@ function tomeCountText() {
 }
 /* Eight cuts of one cog, all 102px webp on a transparent ground. Which one sits in the
    corner is a hero field like the card back, so it rides the board and the cloud row. */
-const GEARS = [
-  ["runes", "Runes"], ["brass", "Brass"], ["bronze", "Bronze"], ["gilt", "Gilt"],
-  ["inlay", "Inlay"], ["iron", "Iron"], ["steel", "Steel"], ["etched", "Etched"]
-];
+const GEARS = [["gilt", "Gilt"], ["inlay", "Inlay"], ["steel", "Steel"]];
 const gearSrc = k => "assets/gears/gear-" + k + "-cut.webp";
-const gearKey = () => { const k = state.hero && state.hero.gear; return GEARS.some(g => g[0] === k) ? k : "runes"; };
+const gearKey = () => { const k = state.hero && state.hero.gear; return GEARS.some(g => g[0] === k) ? k : "gilt"; };
 function applyGear() { const i = $("#cfgBtn img"); if (i) i.src = gearSrc(gearKey()); }
 
 let tomeOpen = null;      /* the book expanded in place */
@@ -9879,26 +9880,33 @@ function dyReadHTML(sel, isToday) {
     '<p class="tar-meaning">' + esc(rev ? c.rev : c.up) + "</p>" +
     (tarStage() === 3 ? '<p class="tar-landed"><button type="button" class="tar-adjust dy-view" data-dy="view">View</button></p>' : "") + "</div>";   /* the feelings, the dial and Adjust live on the Tarot page; View opens this day there */
 }
-/* The sun gathers speed under the pointer and coasts down after — never to a stop, since the
-   slow turn beneath it is a CSS animation that never pauses. The frame loop runs only while it
-   is hot or still coasting, so an idle diary costs nothing. */
-let sunA = 0, sunV = 0, sunHot = 0, sunT = 0, sunRAF = 0;
-function sunStep(t) {
-  const dt = Math.min(0.05, (t - sunT) / 1000); sunT = t;
-  const want = sunHot ? 150 : 0;                                     /* degrees a second the pointer asks for */
-  sunV += (want - sunV) * Math.min(1, dt * (sunHot ? 3.2 : 0.9));    /* quick to gather, slow to let go */
-  sunA = (sunA + sunV * dt) % 360;
-  const g = document.querySelector("#viewDiary .orn-boost");
-  if (!g) { sunRAF = 0; return; }
-  g.style.setProperty("--sun-boost", sunA.toFixed(2) + "deg");
-  if (!sunHot && sunV < 3.3) { sunRAF = 0; return; }   /* it hands off to the slow turn at the speed of the slow turn */
-  sunRAF = requestAnimationFrame(sunStep);
+/* A light that gathers speed under the pointer and coasts down after — never to a stop,
+   since the slow turn beneath it is a CSS animation that never pauses. The frame loop runs
+   only while it is hot or still coasting, so an idle page costs nothing.
+   Two things turn this way: the sun on the diary's day card, and the gear that opens the
+   settings. One loop rather than two, because a physics loop kept in two places drifts, and
+   the one that drifts is the one nobody is looking at. */
+function makeSpin(find, prop) {
+  let a = 0, v = 0, hot = 0, t0 = 0, raf = 0;
+  function step(t) {
+    const dt = Math.min(0.05, (t - t0) / 1000); t0 = t;
+    const want = hot ? 150 : 0;                                /* degrees a second the pointer asks for */
+    v += (want - v) * Math.min(1, dt * (hot ? 3.2 : 0.9));     /* quick to gather, slow to let go */
+    a = (a + v * dt) % 360;
+    const g = find();
+    if (!g) { raf = 0; return; }
+    g.style.setProperty(prop, a.toFixed(2) + "deg");
+    if (!hot && v < 3.3) { raf = 0; return; }   /* it hands off to the slow turn at the speed of the slow turn */
+    raf = requestAnimationFrame(step);
+  }
+  return function heat(on) {
+    hot = on ? 1 : 0;
+    if (reduced() || raf) return;
+    t0 = performance.now(); raf = requestAnimationFrame(step);
+  };
 }
-function sunHeat(on) {
-  sunHot = on ? 1 : 0;
-  if (reduced() || sunRAF) return;
-  sunT = performance.now(); sunRAF = requestAnimationFrame(sunStep);
-}
+const sunHeat = makeSpin(() => document.querySelector("#viewDiary .orn-boost"), "--sun-boost");
+const gearHeat = makeSpin(() => document.querySelector("#cfgBtn img"), "--gear-boost");
 /* the strip: the month of the morning on the page, dots left to right */
 function dyStripHTML(b, sel, today, prev, next) {
   const y = sel.getFullYear(), m = sel.getMonth(), n = new Date(y, m + 1, 0).getDate();
@@ -13456,6 +13464,10 @@ bindPop($("#readPop"), () => $(".d-tomes-btn"), 340, "left", () => {
       "<li><span class=\"rp-t\">" + esc(b.title) + "</span>" +
       (b.author ? '<span class="rp-a">' + esc(b.author) + "</span>" : "") + "</li>").join("") + "</ul>";
 });
+(() => {
+  const g = $("#cfgBtn");
+  if (g) { g.addEventListener("pointerenter", () => gearHeat(1)); g.addEventListener("pointerleave", () => gearHeat(0)); }
+})();
 bindCloud();
 loadCloud();
 renderCloud();
