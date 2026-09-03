@@ -3433,7 +3433,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 </dialog>
 <dialog id="bookDlg" class="bk-dlg" aria-label="Add a book">
   <form method="dialog" data-form="bk-save">
-    <p class="bk-h">Add a book</p>
+    <p class="bk-h" id="bkH">Add a book</p>
     <label class="bk-l">Title<input type="text" id="bkTitle" maxlength="160" required></label>
     <div class="bk-row">
       <label class="bk-l">Author<input type="text" id="bkAuthor" maxlength="80"></label>
@@ -3450,7 +3450,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     <div class="bk-l"><span class="bk-lg">Skills</span><div id="bkSkills" class="bk-skills"></div></div>
     <div class="bk-foot">
       <button type="button" class="btn btn-ghost btn-sm" data-action="bk-cancel">Cancel</button>
-      <button type="submit" class="btn btn-primary btn-sm">Add book</button>
+      <button type="submit" class="btn btn-primary btn-sm" id="bkOk">Add book</button>
     </div>
   </form>
 </dialog>
@@ -5407,7 +5407,7 @@ function sanitize(s) {
     const v = String(r.state == null ? "" : r.state).trim().toLowerCase();
     r.state = (v === "read" || v === "seal-6") ? v : "";
     if (!Array.isArray(r.tags)) r.tags = [];
-    if (!r.tags.length && !r.state) delete s.tomes[id];
+    if (tomeBare(r)) delete s.tomes[id];
   });
   return s;
 }
@@ -6044,7 +6044,11 @@ function boardStamp() {
   return t.length.toString(36) + ":" + h.toString(36);
 }
 /* the local board says something the cloud row has not been told */
-const cloudAhead = () => !!cloud && cloud.stamp !== boardStamp();
+/* A board that has never been stamped under this scheme is NOT evidence that the local
+   copy is the newer one — it is the absence of evidence. Resolving that in favour of the
+   local board pushes it over the cloud row, and a push cannot be undone; a pull can, because
+   cloudPull takes a snapshot first. So: ahead only when there is a stamp and it differs. */
+const cloudAhead = () => !!cloud && typeof cloud.stamp === "string" && cloud.stamp !== boardStamp();
 const cloudUrl = () => cloud.url.replace(/\/+$/, "") + "/rest/v1/" + CLOUD_TABLE;
 /* Only a JWT belongs in Authorization. The legacy anon key IS one; a
    sb_publishable_... key is not, and PostgREST tries to parse whatever sits in that
@@ -6863,6 +6867,42 @@ const tomeState = id => { const t = tomeRec(id); const v = t && t.state;
 const tomeRead = id => tomeState(id) === "read";
 const TOME_MARK = { "": "", reading: "\u2013", read: "\u2713" };
 const TOME_WORD = { "": "bought \u2014 not started", reading: "seal-6", read: "read" };
+/* A record earns its place in storage by holding something: a tick, a tag, or an edit.
+   Asking only about the first two is how an edit to a shelf book was written and then
+   swept away — by tomeWrite on the way in, and by the sanitizer on the next load. */
+function tomeBare(r) {
+  return !r.tags.length && !r.state &&
+    !["title", "author", "year", "blurb", "shelf"].some(k => typeof r[k] === "string" && r[k] !== "");
+}
+/* ---- a book as the library shows it ----
+   Every book is editable, not only the ones he typed in. A book of his own keeps its
+   fields in its own record, which is their home; a shelf book or a ladder's suggestion has
+   no record of its own to write to, so the change rides along in the tome record that
+   already holds its tick and its tags. Blank means no override, which is also how a field
+   is put back: clear it and the shelf's own answer returns. */
+function bookView(b) {
+  const r = tomeRec(b.id);
+  if (!r) return b;
+  const out = { ...b };
+  if (r.title) out.title = r.title;
+  if (r.author) out.author = r.author;
+  if (r.shelf && SHELVES.some(x => x.k === r.shelf)) out.shelf = r.shelf;
+  return out;
+}
+/* the year and the description before any edit. A suggested row was never in BOOKMETA:
+   its description is the ladder's own reason for recommending it, and its year slot names
+   the skills that asked for it. */
+function bookMetaSrc(b) {
+  if (b.rec) return [b.rec.skills.join(" \u00b7 "), b.rec.why || ""];
+  const own = b.own ? extraBooks().find(x => x.id === b.id) : null;
+  if (own) return [own.year || "", own.blurb || ""];
+  const m = BOOKMETA[b.id] || ["", ""];
+  return [m[0] || "", m[1] || ""];
+}
+function bookMeta(b) {
+  const r = tomeRec(b.id) || {}, m = bookMetaSrc(b);
+  return [r.year || m[0], r.blurb || m[1]];
+}
 function tomeWrite(id, fn) {
   const T = tomes();
   T[id] = T[id] || { tags: [], state: "" };
@@ -6872,7 +6912,7 @@ function tomeWrite(id, fn) {
     delete T[id].read;
   }
   fn(T[id]);
-  if (!T[id].tags.length && !T[id].state) delete T[id];
+  if (tomeBare(T[id])) delete T[id];
   save();
 }
 /* books added by hand; each carries the shelf it belongs to */
@@ -6957,6 +6997,17 @@ function matchStats() {
   return { total: keys.length, have: have.length, missing: keys.length - have.length };
 }
 
+/* Where the library stands, in one line. The full render and the in-place repaint after a
+   tick both draw it from here — writing it twice is how a tick came to drop the
+   recommendation count off the end of the header until the next full render. */
+function tomeCountText() {
+  const rows = allBooks();
+  const readN = rows.filter(b => tomeRead(b.id)).length;
+  const readingN = rows.filter(b => tomeState(b.id) === "seal-6").length;
+  const st = matchStats();
+  return readN + " read \u00b7 " + (readingN ? readingN + " reading \u00b7 " : "") +
+    rows.length + " owned \u00b7 " + st.have + " / " + st.total + " recommended";
+}
 let tomeOpen = null;      /* the book expanded in place */
 let tomeShelf = "All";
 let tomeTarget = null;    /* the invoker of the skill popover */
@@ -6976,17 +7027,12 @@ const shelfName = k => {
 function libraryRows() { return allBooks().concat(suggestedRows()); }
 /* how many READ books were tagged to this skill - the number the Skills tab shows */
 function skillTomes(skillId) {
-  return libraryRows().filter(b => tomeRead(b.id) && tomeTags(b.id).indexOf(skillId) > -1);
+  return libraryRows().filter(b => tomeRead(b.id) && tomeTags(b.id).indexOf(skillId) > -1).map(bookView);
 }
 
 function tomeRowHTML(b) {
   const tags = tomeTags(b.id), st = tomeState(b.id), open = tomeOpen === b.id;
-  const own = b.own ? extraBooks().find(x => x.id === b.id) : null;
-  /* a suggested row was never in BOOKMETA — its blurb is the ladder's own reason for
-     recommending it, and its "year" slot names the skills that asked for it */
-  const meta = b.rec ? [b.rec.skills.join(" \u00b7 "), b.rec.why, ""]
-             : own ? [own.year || "", own.blurb || "", ""]
-             : (BOOKMETA[b.id] || ["", "", ""]);
+  const meta = bookMeta(b);
   const next = tomeNext(st);
   let out = '<li class="tm-book' + (st ? " " + st : "") + (open ? " open" : "") + '">' +
     '<div class="tm-line">' +
@@ -7007,6 +7053,7 @@ function tomeRowHTML(b) {
           (meta[0] ? '<span class="tm-year">' + esc(meta[0]) + "</span>" : "") +
           '<button type="button" class="j3-btn" data-tm="skills" data-id="' + b.id +
             '" popovertarget="tomePop">Skills' + (tags.length ? " \u00b7 " + tags.length : "") + "</button>" +
+          '<button type="button" class="j3-btn" data-tm="edit" data-id="' + b.id + '">Edit</button>' +
           (b.own ? '<button type="button" class="j3-btn" data-tm="moveshelf" data-id="' + b.id +
             '" title="Move to another shelf">' + esc(shelfName(b.shelf)) + "</button>" : "") +
           (b.own ? '<button type="button" class="tm-del" data-tm="del" data-id="' + b.id + '">Remove</button>' : "") +
@@ -7023,20 +7070,20 @@ function tomeRowHTML(b) {
 function renderTomes() {
   const el = $("#viewTomes");
   if (!el) return;
-  const rows = allBooks();
-  const readN = rows.filter(b => tomeRead(b.id)).length;
-  const readingN = rows.filter(b => tomeState(b.id) === "seal-6").length;
+  /* every book as it is shown, edits and all — the shelf a book sits under is one of the
+     things he can edit, so the sections are grouped from the books rather than read off
+     the shelf definitions */
+  const rows = allBooks().map(bookView);
   const shelves = SHELVES;
-  const keep = () => true;
+  const byShelf = {};
+  rows.forEach(b => (byShelf[b.shelf] || (byShelf[b.shelf] = [])).push(b));
 
-  const sug = suggestedRows();
-  const st = matchStats();
+  const sug = suggestedRows().map(bookView);
   const hidden = !!state.hideSuggested;
 
   let html = '<div class="tm-head">' +
     '<span class="j3-week">The library</span>' +
-    '<span class="tm-count">' + readN + " read \u00b7 " + (readingN ? readingN + " reading \u00b7 " : "") +
-      rows.length + " owned \u00b7 " + st.have + " / " + st.total + " recommended</span>" +
+    '<span class="tm-count">' + tomeCountText() + "</span>" +
     '<button type="button" class="j3-btn" data-tm="hidesug" aria-pressed="' + hidden + '">' +
       (hidden ? "Show" : "Hide") + " suggestions</button>" +
     '<button type="button" class="j3-btn tm-add-btn" data-tm="new">+ Add book</button>' +
@@ -7044,10 +7091,7 @@ function renderTomes() {
 
   html += '<div class="tm-body">';
   shelves.forEach(s => {
-    const mine = extraBooks().filter(b => (b.shelf || "misc") === s.k)
-      .map(b => ({ id: b.id, title: b.title, author: b.author || "", shelf: s.k, own: true }));
-    const books = s.books.map(b => ({ id: b[0], title: b[1], author: b[2], shelf: s.k, own: false }))
-      .concat(mine).filter(keep);
+    const books = byShelf[s.k] || [];
     /* An empty shelf is a heading and a rule promising something that is not there. The
        key survives — it is where a Bought book with no shelf goes — so the section draws
        itself again the moment one lands on it. */
@@ -9609,7 +9653,7 @@ function dyLinesHTML(b, wk, dow) {
    answer; picking anything untouched marks it as being read, so choosing is a small commitment. */
 function dyVowHTML(b, wk, dow) {
   const e = dyGet(b, wk, dow) || {}, at = ' data-wk="' + wk + '" data-dow="' + dow + '"';
-  const rows = allBooks();
+  const rows = allBooks().map(bookView);
   const now = rows.filter(r => tomeState(r.id) === "seal-6").sort((x, y) => x.title.localeCompare(y.title));
   const rest = rows.filter(r => tomeState(r.id) !== "seal-6").sort((x, y) => x.title.localeCompare(y.title));
   const opt = r => '<option value="' + esc(r.id) + '"' + (e.book === r.id ? " selected" : "") + ">" + esc(r.title) + "</option>";
@@ -10614,7 +10658,7 @@ function renderTomePicker() {
   const wrap = $("#tomePickList");
   if (!wrap || !tomeTarget) return;
   const id = tomeTarget.dataset.id, tags = tomeTags(id);
-  const b = allBooks().find(x => x.id === id);
+  const b = allBooks().map(bookView).find(x => x.id === id);
   wrap.innerHTML = '<p class="tm-pick-h">' + esc(b ? b.title : "") + "</p>" +
     GROUPS.map(a => {
       const mine = state.skills.filter(x => x.attr === a.k);
@@ -10643,17 +10687,15 @@ function tomeAct(t) {
       const li = t.closest(".tm-book");
       t.textContent = TOME_MARK[st] || "";
       t.title = TOME_WORD[st] || "";
-      const bk = allBooks().find(x => x.id === id);
+      const bk = libraryRows().map(bookView).find(x => x.id === id);
       t.setAttribute("aria-label", (bk ? bk.title : "") + " — " + TOME_WORD[st] +
         ". Mark as " + TOME_WORD[next]);
       if (li) { li.classList.remove("seal-6", "read"); if (st) li.classList.add(st); }
-      const rows = allBooks();
-      const readN = rows.filter(x => tomeRead(x.id)).length;
-      const readingN = rows.filter(x => tomeState(x.id) === "seal-6").length;
       const head = $("#viewTomes").querySelector(".tm-count");
-      if (head) head.textContent = readN + " read · " + (readingN ? readingN + " reading · " : "") +
-        rows.length + " owned";
-      const sec = li && li.closest(".tm-shelf-sec");
+      if (head) head.textContent = tomeCountText();
+      /* Suggested readings is a <section> like the shelves but not a .tm-shelf-sec, so
+         closing on that class left its count stale until the next full render. */
+      const sec = li && li.closest("section");
       if (sec) {
         const all = [...sec.querySelectorAll(".tm-book")];
         const n = sec.querySelector(".tm-n");
@@ -10677,7 +10719,8 @@ function tomeAct(t) {
       save();
       break;
     }
-    case "new":    openBookDialog(); return;
+    case "new":    openBookDialog(null); return;
+    case "edit":   openBookDialog(id); return;
     case "skills": tomeTarget = t; return;      /* the popover opens declaratively */
     case "tag": {
       tomeWrite(id, r => {
@@ -10698,12 +10741,19 @@ function tomeAct(t) {
 
 /* one dialog instead of five inline fields: a book has more than a title, and a form
    that only takes a title guarantees the rest is never filled in */
-function openBookDialog() {
+/* The same dialog adds a book and edits one, because a book has the same fields either
+   way and a second form would drift from the first. Editing anything — a shelf book, a
+   ladder's suggestion, one he typed in — comes through here. */
+let bkEdit = null;
+function openBookDialog(id) {
   const d = $("#bookDlg");
   if (!d) return;
+  bkEdit = id || null;
+  const row = bkEdit ? libraryRows().find(x => x.id === bkEdit) : null;
+  if (bkEdit && !row) { bkEdit = null; return; }
   d.querySelector("form").reset();
-  $("#bkShelf").innerHTML = SHELVES.map(s =>
-    '<option value="' + s.k + '">' + esc(s.name) + "</option>").join("");
+  $("#bkShelf").innerHTML = SHELVES.map(x =>
+    '<option value="' + x.k + '">' + esc(x.name) + "</option>").join("");
   $("#bkSkills").innerHTML = GROUPS.map(a => {
     const mine = state.skills.filter(x => x.attr === a.k);
     if (!mine.length) return "";
@@ -10711,26 +10761,91 @@ function openBookDialog() {
       mine.map(x => '<button type="button" class="tm-pick" data-bk-skill="' + x.id +
         '" aria-pressed="false">' + esc(x.icon) + " " + esc(x.name) + "</button>").join("") + "</div>";
   }).join("");
+  /* a suggestion is not owned, so it has no shelf to sit on; the rest of it edits freely */
+  const shelfLab = $("#bkShelf").closest("label");
+  shelfLab.hidden = !!(row && row.rec);
+  if (row) {
+    const v = bookView(row), m = bookMeta(row);
+    $("#bkTitle").value = v.title;
+    $("#bkAuthor").value = v.author || "";
+    $("#bkYear").value = m[0];
+    $("#bkBlurb").value = m[1];
+    if (!shelfLab.hidden) $("#bkShelf").value = v.shelf;
+    const st = tomeState(row.id);
+    const rb = document.querySelector('input[name="bkstate"][value="' + st + '"]');
+    if (rb) rb.checked = true;
+    tomeTags(row.id).forEach(sid => {
+      const btn = document.querySelector('#bkSkills [data-bk-skill="' + sid + '"]');
+      if (btn) btn.setAttribute("aria-pressed", "true");
+    });
+  }
+  const head = bkEdit ? "Edit book" : "Add a book";
+  $("#bkH").textContent = head;
+  $("#bkOk").textContent = bkEdit ? "Save" : "Add book";
+  d.setAttribute("aria-label", head);
   d.showModal();
   $("#bkTitle").focus();
 }
+/* an override that matches what the shelf already said is not an override; dropping it
+   keeps the record small and lets a cleared field fall back to the original */
+function bkOvr(r, k, v, orig) { if (v && v !== orig) r[k] = v; else delete r[k]; }
+
 function saveBookDialog() {
   const title = ($("#bkTitle").value || "").trim();
   if (!title) { $("#bkTitle").focus(); return; }
-  const id = "own-" + uid();
-  extraBooks().push({
-    id, title: title.slice(0, 160),
-    author: ($("#bkAuthor").value || "").trim().slice(0, 80),
-    shelf: $("#bkShelf").value || "misc"
-  });
-  /* the description belongs on the record, not in BOOKMETA - that is a const in the
-     script and anything written into it is gone on the next load */
-  const rec = extraBooks()[extraBooks().length - 1];
-  rec.blurb = ($("#bkBlurb").value || "").trim().slice(0, 600);
-  rec.year = ($("#bkYear").value || "").trim().slice(0, 12);
+  const author = ($("#bkAuthor").value || "").trim().slice(0, 80);
+  const year = ($("#bkYear").value || "").trim().slice(0, 12);
+  const blurb = ($("#bkBlurb").value || "").trim().slice(0, 600);
+  const shelfOn = !$("#bkShelf").closest("label").hidden;
+  const shelf = $("#bkShelf").value || "misc";
   const tags = [...document.querySelectorAll('#bkSkills [aria-pressed="true"]')].map(b => b.dataset.bkSkill);
   const st = (document.querySelector('input[name="bkstate"]:checked') || {}).value || "";
-  if (tags.length || st) { const T = tomes(); T[id] = { tags, state: st }; }
+
+  if (bkEdit) {
+    const id = bkEdit, own = extraBooks().find(x => x.id === id);
+    if (own) {
+      /* his own book: these fields are its record, so they are written there rather than
+         shadowed by an override that would then have to be kept in step */
+      own.title = title.slice(0, 160);
+      own.author = author;
+      own.year = year;
+      own.blurb = blurb;
+      if (shelfOn) own.shelf = shelf;
+      tomeWrite(id, r => {
+        r.tags = tags; r.state = st;
+        ["title", "author", "year", "blurb", "shelf"].forEach(k => delete r[k]);
+      });
+    } else {
+      const src = libraryRows().find(x => x.id === id) || { title: "", author: "", shelf: "misc" };
+      const m = bookMetaSrc(src);
+      tomeWrite(id, r => {
+        r.tags = tags; r.state = st;
+        bkOvr(r, "title", title.slice(0, 160), src.title);
+        bkOvr(r, "author", author, src.author || "");
+        bkOvr(r, "year", year, m[0]);
+        bkOvr(r, "blurb", blurb, m[1]);
+        if (shelfOn) bkOvr(r, "shelf", shelf, src.shelf);
+      });
+    }
+    save();
+    $("#bookDlg").close();
+    renderTomes();
+    if (state.sel && state.sel.t === "s") renderDetail(false);
+    return;
+  }
+
+  const id = "own-" + uid();
+  extraBooks().push({ id, title: title.slice(0, 160), author, shelf, blurb, year });
+  /* He is adding a book the ladders already recommend, which until now meant the tick he
+     had put on the Suggested readings row stayed behind on an id nothing renders any more.
+     Carry the record across so buying a book does not read as un-reading it. */
+  const was = sugId(aliasNorm(title));
+  if (tomes()[was]) { tomes()[id] = tomes()[was]; delete tomes()[was]; }
+  if (tags.length || st) {
+    const T = tomes();
+    T[id] = T[id] || { tags: [], state: "" };
+    T[id].tags = tags; T[id].state = st;
+  }
   save();
   $("#bookDlg").close();
   renderTomes();
