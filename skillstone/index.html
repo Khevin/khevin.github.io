@@ -506,6 +506,12 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
   font-family: var(--f-emoji); font-size: 1.625rem;
 }
 .d-plaque .sig { color: var(--gold); }
+/* A drawn plate sits in the same box the emoji had. Every plate keeps its subject to the
+   same 81% of the square, so a column of them lines up without any per-icon nudging. */
+.sk-plate { display: block; }
+.d-plaque .sk-plate { width: 52px; height: 52px; }
+.t-ico .sk-plate { width: 32px; height: 32px; margin: -3px auto; }
+.ar .ico .sk-plate { width: 24px; height: 24px; }
 .d-head-main { min-width: 0; flex: 1; }
 .d-name { font-family: var(--f-display); font-weight: 700; font-size: 1.625rem; letter-spacing: 0.01em; line-height: 1.25; text-wrap: balance; }
 .d-rank { font-size: 0.875rem; color: var(--dust); margin-top: 2px; }
@@ -8354,6 +8360,29 @@ const FLAGS = {
   German: '<svg viewBox="0 0 24 17" aria-hidden="true"><rect width="24" height="5.67" fill="#111"/><rect y="5.67" width="24" height="5.67" fill="#DD0000"/><rect y="11.33" width="24" height="5.66" fill="#FFCE00"/></svg>',
   Italian: '<svg viewBox="0 0 24 17" aria-hidden="true"><rect width="8" height="17" fill="#008C45"/><rect x="8" width="8" height="17" fill="#F4F5F0"/><rect x="16" width="8" height="17" fill="#CD212A"/></svg>'
 };
+/* Which skills were drawn. A set rather than a guess, so a skill whose name merely looks
+   like one of these does not ask the network for a plate that was never made. */
+const SKILL_PLATE = new Set([
+  "communication", "storytelling", "humor", "networking", "leadership", "seducing",
+  "strength", "body-awareness", "endurance", "speed", "mobility",
+  "learning", "planning", "design", "observation", "critical-thinking", "adaptability",
+  "math-logic", "memory", "conflict-resolution",
+  "empathy", "composure", "thoughtfulness", "reliability", "mentorship", "survivalist",
+  "gardening", "health", "history", "social-sciences", "cooking"
+]);
+const plateSlug = sk => {
+  const k = String((sk && (sk.kbKey || sk.name)) || "").toLowerCase()
+    .replace(/&/g, " ").replace(/[^a-z0-9]+/g, " ").trim().replace(/ +/g, "-");
+  return SKILL_PLATE.has(k) ? k : null;
+};
+/* the plate at the size asked for, or the emoji if this one was never drawn. The 32 is
+   served below 40px and the 64 above it, so nothing is ever scaled up. */
+function skPlate(sk, px) {
+  const k = plateSlug(sk);
+  if (!k) return esc(sk.icon);
+  return '<img class="sk-plate" src="assets/skills/' + k + "-" + (px > 32 ? 64 : 32) +
+    '.png" alt="" width="' + px + '" height="' + px + '" loading="lazy" draggable="false">';
+}
 const skIcon = s => {
   const f = FLAGS[s.kbKey || s.name];
   return f ? '<span class="flag">' + f + "</span>" : esc(s.icon);
@@ -11699,7 +11728,7 @@ function tileHTML(s) {
   return `<button type="button" class="tile${max ? " is-max" : ""}" role="option"
     id="tile-${s.id}" data-tile="${s.id}" tabindex="-1"
     aria-pressed="${sel}" aria-selected="${sel}" aria-label="${esc(tileAria(s))}">
-    <span class="t-ico" aria-hidden="true">${esc(s.icon)}</span>
+    <span class="t-ico" aria-hidden="true">${skPlate(s, 32)}</span>
     <span class="frac${Number.isInteger(LV(s)) ? "" : " half"}" aria-hidden="true">
       <span class="fr-lv">${fmtLv(LV(s))}</span><span class="fr-sl"></span><span class="fr-cap">${MAX_LV}</span>
     </span>
@@ -12134,7 +12163,7 @@ function assessHTML(s) {
 
   return `
   <header class="d-head">
-    <span class="d-plaque" aria-hidden="true">${esc(s.icon)}</span>
+    <span class="d-plaque" aria-hidden="true">${skPlate(s, 52)}</span>
     <div class="d-head-main">
       <div class="assess-head">
         <h2 class="d-name">${esc(s.name)}</h2>
@@ -12224,8 +12253,10 @@ function skillHTML(s) {
 
   return `
   <header class="d-head">
-    <button type="button" class="d-plaque" data-emopick data-emoapply="skill" data-val="${esc(s.icon)}"
-      popovertarget="emoPop" aria-label="Change the icon for ${esc(s.name)}">${esc(s.icon)}</button>
+    ${plateSlug(s)
+      ? `<span class="d-plaque" aria-hidden="true">${skPlate(s, 52)}</span>`
+      : `<button type="button" class="d-plaque" data-emopick data-emoapply="skill" data-val="${esc(s.icon)}"
+      popovertarget="emoPop" aria-label="Change the icon for ${esc(s.name)}">${esc(s.icon)}</button>`}
     <div class="d-head-main">
       ${renaming ? `
       <form class="rn-form" data-form="rename">
@@ -12490,7 +12521,7 @@ function attrHTML(a) {
         return `
       <li><button type="button" class="ar${max ? " is-max" : ""}" data-tile="${s.id}"
         aria-label="${esc(tileAria(s))}">
-        <span class="ico" aria-hidden="true">${esc(s.icon)}</span>
+        <span class="ico" aria-hidden="true">${skPlate(s, 24)}</span>
         <span class="nm">${esc(s.name)}</span>
         <span class="fr"><b>${fmtLv(LV(s))}</b> ∕ ${MAX_LV}</span>
         <span class="mini" aria-hidden="true"><i style="width:${max ? 100 : p.pct}%"></i></span>
