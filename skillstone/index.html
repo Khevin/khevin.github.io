@@ -2607,13 +2607,39 @@ li.is-done .qg { color: var(--verdant); }
 .j3-title:focus-visible { outline: none; border-bottom-color: var(--gold); color: var(--parchment); }
 .j3-title::placeholder { color: var(--mortar-2); }
 .j3-nav { display: flex; gap: 4px; }
-.j3-nav button {
-  appearance: none; min-width: 34px; min-height: 34px; padding: 0 var(--s2);
-  background: var(--stone-1); color: var(--dust);
-  border: 1px solid var(--j3-rule); border-radius: var(--r-sm);
-  font-family: var(--f-ui); font-size: 0.8125rem; font-weight: 600; cursor: pointer;
+.j3-nav .j3-btn { min-width: 30px; padding: 0 var(--s2); display: inline-grid; place-items: center; }
+
+/* The week picker. The journal is kept by the week, so a week is what this picks: the row is
+   the target, not the day under the pointer. Three marks, one meaning each — a bead for a week
+   already written in, the gold frame for the week you have open, red for today. */
+#weekPop {
+  position: fixed; inset: auto; margin: 0;
+  width: 292px; padding: var(--s3);
+  background: var(--stone-2); border: 1px solid var(--mortar-2); border-radius: var(--r-md);
+  box-shadow: var(--shadow-float); color: var(--parchment);
 }
-@media (hover: hover) { .j3-nav button:hover { border-color: var(--mortar-2); color: var(--parchment); } }
+#weekPop:popover-open { display: flex; flex-direction: column; gap: var(--s2); }
+.wp-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.wp-month { font-family: var(--f-display); font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.wp-dows, .wp-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 10px; align-items: center; }
+.wp-dows { padding: 0 var(--s1); }
+.wp-dows span { font-family: var(--f-display); font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.06em; color: var(--ash); text-align: center; }
+.wp-weeks { display: flex; flex-direction: column; gap: 2px; }
+.wp-week { appearance: none; background: none; border: 1px solid transparent; border-radius: var(--r-sm);
+  padding: 5px var(--s1); min-height: 32px; cursor: pointer;
+  transition: background var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out); }
+.wp-d { font-family: var(--f-mono); font-size: 0.75rem; color: var(--dust); text-align: center; font-variant-numeric: tabular-nums; }
+.wp-d.out { color: var(--mortar-2); }
+.wp-d.today { color: #C4503F; font-weight: 600; }
+.wp-mark { width: 4px; height: 4px; border-radius: 50%; justify-self: center; }
+.wp-mark.on { background: var(--bronze); }
+@media (hover: hover) { .wp-week:hover { background: rgba(232,176,84,0.07); border-color: var(--mortar-2); } }
+.wp-week.is-open { border-color: var(--bronze); background: rgba(232,176,84,0.09); }
+.wp-week.is-open .wp-d { color: var(--parchment); }
+.wp-week .wp-d.today, .wp-week.is-open .wp-d.today { color: #C4503F; }   /* today stays red inside the open week too */
+.wp-week:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.wp-foot { display: flex; justify-content: flex-end; padding-top: var(--s1); border-top: 1px solid var(--mortar); }
+@media (pointer: coarse) { .wp-week { min-height: 44px; } }
 
 /* the ribbon: a satin-gold bookmark from the binding. Over the gutter when the book is open
    on this week; peeking from the top edge on the side where this week lies otherwise. The
@@ -3254,6 +3280,16 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   <div id="viewDiary" role="tabpanel" aria-labelledby="tabDiary" hidden></div>
   <div id="viewTomes" role="tabpanel" aria-labelledby="tabTomes" hidden></div>
 
+<div id="weekPop" popover aria-label="Pick a week">
+  <div class="wp-head">
+    <button type="button" class="j3-btn" data-j3="pickmon" data-d="-1" aria-label="Previous month">‹</button>
+    <span class="wp-month" id="wpMonth"></span>
+    <button type="button" class="j3-btn" data-j3="pickmon" data-d="1" aria-label="Next month">›</button>
+  </div>
+  <div class="wp-dows" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span><span></span></div>
+  <div class="wp-weeks" id="wpWeeks" role="group" aria-label="Weeks"></div>
+  <div class="wp-foot"><button type="button" class="j3-btn" data-j3="wk-today">This week</button></div>
+</div>
 <div id="classPop" popover>
   <ul class="cls-list" id="clsList" aria-label="Choose a class"></ul>
   <form class="cls-custom" data-form="customclass">
@@ -10773,6 +10809,50 @@ function j3RowMenu(e, delVerb, dow) {
     "</div>" : "");
 }
 
+/* one set, one stroke: the row reads as a word rather than three borrowed marks */
+const J3_ICO = (() => {
+  const w = '<svg class="g" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+  return { prev: w + '<path d="M9.5 3.5L5 8l4.5 4.5"/></svg>',
+           next: w + '<path d="M6.5 3.5L11 8l-4.5 4.5"/></svg>',
+           cal:  w + '<rect x="2.5" y="3.5" width="11" height="10" rx="1.5"/><path d="M2.5 6.8h11M5.6 2v2.6M10.4 2v2.6"/></svg>' };
+})();
+let weekPickBtn = null, j3PickMonth = null;
+/* has this week anything in it? a title, a note, a day's line, a habit ticked */
+function j3Has(key) {
+  const b = book();
+  if (b.titles[key]) return true;
+  if ((b.notes[key] || []).length) return true;
+  const d = b.days[key];
+  if (d && Object.values(d).some(a => Array.isArray(a) && a.length)) return true;
+  const c = b.checks[key];
+  return !!(c && Object.values(c).some(r => r && Object.values(r).some(Boolean)));
+}
+function renderWeekPick() {
+  const mEl = $("#wpMonth"), wEl = $("#wpWeeks");
+  if (!mEl || !wEl) return;
+  if (!j3PickMonth) j3PickMonth = new Date(j3Week.getFullYear(), j3Week.getMonth(), 1);
+  /* the head arrows borrow the nav's marks so the panel speaks the same set */
+  [["-1", J3_ICO.prev], ["1", J3_ICO.next]].forEach(([d, ico]) => {
+    const el = document.querySelector('#weekPop [data-j3="pickmon"][data-d="' + d + '"]');
+    if (el && !el.querySelector("svg")) el.innerHTML = ico;
+  });
+  const y = j3PickMonth.getFullYear(), mo = j3PickMonth.getMonth();
+  mEl.textContent = MONTHS[mo] + " " + y;
+  const last = new Date(y, mo + 1, 0), today = dayNow(), openKey = weekKeyOf(j3Week);
+  let h = "";
+  for (let st = mondayOf(new Date(y, mo, 1)); st <= last; st = addDays(st, 7)) {
+    const key = weekKeyOf(st), has = j3Has(key), open = key === openKey;
+    let row = "";
+    for (let i = 0; i < 7; i++) {
+      const d = addDays(st, i);
+      row += '<span class="wp-d' + (d.getMonth() !== mo ? " out" : "") + (dySame(d, today) ? " today" : "") + '">' + d.getDate() + "</span>";
+    }
+    h += '<button type="button" class="wp-week' + (open ? " is-open" : "") + '" data-j3="pick" data-iso="' + dyISO(st) +
+      '"' + (open ? ' aria-current="true"' : "") + ' aria-label="' + esc(weekRange(st)) + (has ? ", written in" : "") + '">' +
+      row + '<span class="wp-mark' + (has ? " on" : "") + '" aria-hidden="true"></span></button>';
+  }
+  wEl.innerHTML = h;
+}
 function renderJ3() {
   const el = $("#viewJournal");
   if (!el) return;
@@ -10914,9 +10994,9 @@ function renderJ3() {
     '<div class="j3' + (isThisWeek ? " is-now" : (j3Week < mondayOf(dayNow()) ? " is-past" : " is-future")) + '">' +
       '<div class="j3-head">' +
         '<div class="j3-nav">' +
-          '<button type="button" data-j3="wk" data-d="-1" aria-label="Previous week">\u2039</button>' +
-          '<button type="button" data-j3="wk-today">Today</button>' +
-          '<button type="button" data-j3="wk" data-d="1" aria-label="Next week">\u203a</button>' +
+          '<button type="button" class="j3-btn" data-j3="wk" data-d="-1" aria-label="Previous week">' + J3_ICO.prev + "</button>" +
+          '<button type="button" class="j3-btn" data-j3="pickopen" popovertarget="weekPop" aria-label="Pick a week">' + J3_ICO.cal + "</button>" +
+          '<button type="button" class="j3-btn" data-j3="wk" data-d="1" aria-label="Next week">' + J3_ICO.next + "</button>" +
         "</div>" +
         '<span class="j3-week">' + weekRange(j3Week) +
           (isThisWeek ? '<span class="j3-away j3-now">current week</span>' : '<span class="j3-away">not this week</span>') + "</span>" +
@@ -10977,6 +11057,7 @@ function j3Leaf(to) {
   void leaf.offsetWidth;                       /* commit the resting transform before anything moves */
   return { leaf, ghost, dir, from, to, halfW: pr.width / 2, release: () => { const p = document.querySelector("#viewJournal .j3-paper"); if (p) p.style.minHeight = ""; } };
 }
+function j3PopClose() { const p = $("#weekPop"); if (p && p.hidePopover && p.matches(":popover-open")) p.hidePopover(); }
 function j3Turn(to) {
   const s = j3Leaf(to); if (!s) return;
   s.leaf.classList.add("is-turning");
@@ -11101,7 +11182,15 @@ function j3Act(t) {
     }
     case "cycle":      j3Cycle(t); return;
     case "wk":         j3Turn(addDays(j3Week, Number(t.dataset.d) * 7)); return;
-    case "wk-today":   j3Turn(mondayOf(dayNow())); return;
+    case "wk-today":   j3PopClose(); j3Turn(mondayOf(dayNow())); return;
+    case "pickopen":   weekPickBtn = t; j3PickMonth = null; return;   /* the panel opens itself; this only says from where */
+    case "pickmon":    j3PickMonth = new Date(j3PickMonth.getFullYear(), j3PickMonth.getMonth() + Number(t.dataset.d), 1); renderWeekPick(); return;
+    case "pick": {
+      const p = t.dataset.iso.split("-").map(Number), to = mondayOf(new Date(p[0], p[1] - 1, p[2]));
+      j3PopClose();
+      if (+to !== +j3Week) j3Turn(to);
+      return;
+    }
     case "cat":        j3Cat = t.dataset.cat; break;
     case "e-del-note": if (b.notes[key]) cut(b.notes[key]); break;
     case "e-del-rem":  cut(b.reminders); break;
@@ -13073,6 +13162,7 @@ try { const v = localStorage.getItem("skillstone-view"); if (VIEWS[v]) view = v;
 setView(view);
 bindEmojiPicker();
 bindClassPicker();
+bindPop($("#weekPop"), () => weekPickBtn, 292, "left", renderWeekPick);
 bindPop($("#tomePop"), () => tomeTarget, 340, "left", renderTomePicker);
 bindPop($("#readPop"), () => $(".d-tomes-btn"), 340, "left", () => {
   const s = selSkill(); const w = $("#readPopList");
