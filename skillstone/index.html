@@ -229,8 +229,8 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .masthead {
   display: flex; flex-wrap: wrap; align-items: center;
   gap: var(--s3);
-  padding-bottom: var(--s3);
-  margin-bottom: var(--s5);
+  padding-bottom: 6px;
+  margin-bottom: var(--s3);   /* half the gap it had: the plates carry their own edge now */
 }
 .brand { display: flex; align-items: baseline; gap: var(--s3); min-width: 0; }
 .brand .mark { align-self: center; color: var(--gold); }
@@ -9082,9 +9082,11 @@ function qPanelHTML(d, c, pool) {
 /* ---------- selection resolution, shared by both render paths ---------- */
 function campResolve() {
   const cs = campVisible();
+  /* Opening the tab shows the empty table, not whichever campaign happens to be first —
+     the choice is the owner’s to make. A selection whose campaign has gone simply clears. */
   if (qCampSel === undefined || (qCampSel && !campById(qCampSel))) {
-    qCampSel = cs.length ? cs[0].id : null;
-    qSel = qCampSel ? campPreselect(campById(qCampSel)) : null;
+    qCampSel = null;
+    qSel = null;
   }
   const c = qCampSel ? campById(qCampSel) : null;
   const pool = c ? campPool(c) : null;
