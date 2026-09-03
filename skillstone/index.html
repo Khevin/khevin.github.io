@@ -2976,7 +2976,6 @@ li.is-done .qg { color: var(--verdant); }
 .dy-pick { appearance: none; cursor: pointer; padding-right: 18px;
   background: no-repeat right 2px center / 9px url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="%23A67B2E" stroke-width="1.6"/></svg>'); }
 .dy-pick.is-none { color: var(--mortar-2); }   /* nothing chosen yet reads as quiet as the empty lines beside it */
-.dy-pick:not(.is-none) { color: #FFFFFF; }     /* the chosen book is the one white thing on the plate: it reads as picked */
 .dy-pick option, .dy-pick optgroup { background: var(--stone-2); color: var(--parchment); }
 .dy-day { grid-row: 1 / 3; align-items: center; }
 .dy-log { grid-column: 2 / 4; }
@@ -3190,6 +3189,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     </div>
 
     <nav class="tabs" role="tablist" aria-label="Sections">
+      <button type="button" class="tab" role="tab" id="tabDiary" data-view="diary"
+        aria-selected="false" aria-controls="viewDiary" tabindex="-1">Diary</button>
       <button type="button" class="tab" role="tab" id="tabJournal" data-view="journal"
         aria-selected="true" aria-controls="viewJournal">Journal</button>
       <button type="button" class="tab" role="tab" id="tabCamp" data-view="camp"
@@ -3202,8 +3203,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
         aria-selected="false" aria-controls="viewTomes" tabindex="-1">Tomes</button>
       <button type="button" class="tab" role="tab" id="tabTarot" data-view="tarot"
         aria-selected="false" aria-controls="viewTarot" tabindex="-1">Tarot</button>
-      <button type="button" class="tab" role="tab" id="tabDiary" data-view="diary"
-        aria-selected="false" aria-controls="viewDiary" tabindex="-1">Diary</button>
     </nav>
 
     <div class="tools">
