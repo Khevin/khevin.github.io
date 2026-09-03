@@ -6111,17 +6111,47 @@ function LV(s) {                       // the score everything displays and deri
   return lvParts(s).total;
 }
 const RUNG = s => Math.floor(LV(s));   // which ladder rung that score stands on
+
+/* ================= THE SCORE =================
+   What a concept is worth: one level in the ladder's first third, two in the second, three
+   in the last. A milestone he set himself is worth a hard concept, because by the time a
+   skill has milestones they are the hardest thing on it.
+
+   The score is a SUM, never a mean and never a percentage: every step is one, two or three
+   whole levels with a named thing behind it. That is what makes it honest at this
+   resolution — a decimal would be averaging steps of unequal difficulty, which is the one
+   thing the measurement literature says not to do. */
+const CPT_W = bd => (bd <= 3 ? 1 : bd <= 6 ? 2 : 3);
+const MILE_W = 3;
+const SCORE_CAP = 99;
+function skScoreParts(sk) {
+  if (isProf(sk)) return null;                       /* hours skills keep their own 0-120 */
+  const kb = kbOf(sk), cs = (kb && kb.concepts) || [];
+  let got = 0, max = 0;
+  cs.forEach(c => { const v = CPT_W(c.band); max += v; if (markOf(sk, c.name) === "known") got += v; });
+  const ms = Array.isArray(sk.goals) ? sk.goals : [];
+  got += ms.filter(g => g.done).length * MILE_W;
+  max += ms.length * MILE_W;
+  return { got: Math.min(SCORE_CAP, got), max: Math.min(SCORE_CAP, max), any: max > 0 };
+}
+/* the number on the tile, and the ceiling it is climbing toward. A skill with no knowledge
+   base and no milestones has nothing to sum, so it keeps the rung it was granted rather
+   than reading zero out of a scale that does not apply to it. */
+function SCORE(sk) { const p = skScoreParts(sk); return p && p.any ? p.got : LV(sk); }
+function SCORE_MAX(sk) { const p = skScoreParts(sk); return p && p.any ? p.max : MAX_LV; }
 const fmtLv = n => (Number.isInteger(n) ? String(n) : n.toFixed(1));
 function attrStats(k) {
   const skills = state.skills.filter(s => s.attr === k)
     .sort((a, b) => (isWeb(b) ? 1 : 0) - (isWeb(a) ? 1 : 0));   // stable: webs still lead
   const n = skills.length;
-  const sum = skills.reduce((t, s) => t + LV(s), 0);
-  const max = n * MAX_LV;
+  /* summed scores against summed ceilings: skills no longer share one, so the attribute is
+     the proportion of its own total rather than a mean of numbers on different scales */
+  const sum = skills.reduce((t, s) => t + SCORE(s), 0);
+  const max = skills.reduce((t, s) => t + SCORE_MAX(s), 0);
   const mean = n ? sum / n : null;
-  /* the score is the mean expressed on the attribute's own twenty-point scale */
+  /* the crest is the proportion of everything this attribute could hold, on its own scale */
   return { skills, sum, max, mean, hasMacro: false,
-           level: n ? Math.floor(mean / MAX_LV * ATTR_MAX) : null };
+           level: max ? Math.floor(sum / max * ATTR_MAX) : null };
 }
 const derivedLevels = () => Object.fromEntries(ATTRS.map(a => [a.k, attrStats(a.k).level]));
 
@@ -11813,7 +11843,7 @@ function renderCrests() {
 }
 
 function tileAria(s) {
-  let a = `${s.name} — ${GROUP[s.attr].name}, level ${fmtLv(LV(s))} of ${MAX_LV}`;
+  let a = `${s.name} — ${GROUP[s.attr].name}, ${rank(RUNG(s))}, score ${SCORE(s)} of ${SCORE_MAX(s)}`;
   if (LV(s) >= MAX_LV) a += ", mastered";
   else if (isWeb(s)) a += `, scored from ${s.facets.length} facets`;
   else a += `, toward level ${s.level + 1}: ${gateLine(levelGate(s))}`;
@@ -11830,7 +11860,7 @@ function tileHTML(s) {
     aria-pressed="${sel}" aria-selected="${sel}" aria-label="${esc(tileAria(s))}">
     <span class="t-ico" aria-hidden="true">${skPlate(s, 40)}</span>
     <span class="frac${Number.isInteger(LV(s)) ? "" : " half"}" aria-hidden="true">
-      <span class="fr-lv">${fmtLv(LV(s))}</span><span class="fr-sl"></span><span class="fr-cap">${MAX_LV}</span>
+      <span class="fr-lv">${SCORE(s)}</span><span class="fr-sl"></span><span class="fr-cap">${SCORE_MAX(s)}</span>
     </span>
     <span class="t-name">${s.facets.length ? ICON.web : ""}<span class="nm">${esc(s.name)}</span></span>
     <span class="t-bar" aria-hidden="true"><i style="width:${max ? 100 : p.pct}%"></i></span>
@@ -11911,8 +11941,8 @@ function renderTotal() {
      about something the reader cannot see */
   const gs = skSubOf(skSub).gs;
   const lev = state.skills.filter(s => !isProf(s) && gs.indexOf(s.attr) > -1);
-  const tot = lev.reduce((a, s) => a + LV(s), 0);
-  const max = lev.length * MAX_LV;
+  const tot = lev.reduce((a, s) => a + SCORE(s), 0);
+  const max = lev.reduce((a, s) => a + SCORE_MAX(s), 0);
   const anyMacro = false;
   $("#totalLv").textContent = fmtLv(tot);
   $("#totalOf").textContent = "/ " + max;
@@ -11924,7 +11954,8 @@ function refreshTile(s) {
   const max = LV(s) >= MAX_LV;
   t.classList.toggle("is-max", max);
   t.querySelector(".frac").classList.toggle("half", !Number.isInteger(LV(s)));
-  t.querySelector(".fr-lv").textContent = fmtLv(LV(s));
+  t.querySelector(".fr-lv").textContent = SCORE(s);
+  t.querySelector(".fr-cap").textContent = SCORE_MAX(s);
   t.querySelector(".t-bar i").style.width = (max ? 100 : p.pct) + "%";
   t.setAttribute("aria-label", tileAria(s));
 }
@@ -12271,7 +12302,7 @@ function assessHTML(s) {
     <div class="d-head-main">
       <div class="assess-head">
         <h2 class="d-name">${esc(s.name)}</h2>
-        <span class="sub">assessing · currently level ${fmtLv(LV(s))}</span>
+        <span class="sub">assessing · ${rank(RUNG(s))}, score ${SCORE(s)}</span>
       </div>
       <p class="d-rank">answer what you can — every mark is a judgment, not a test</p>
     </div>
@@ -12363,7 +12394,7 @@ function skillHTML(s) {
       popovertarget="emoPop" aria-label="Change the icon for ${esc(s.name)}">${esc(s.icon)}</button>`}
     <div class="d-head-main">
       <h2 class="d-name">${esc(s.name)}</h2>
-      <p class="d-rank"><b>${rank(RUNG(s))}</b> · ${GROUP[s.attr].name} · rank ${fmtLv(LV(s))} of ${MAX_LV}</p>
+      <p class="d-rank"><b>${rank(RUNG(s))}</b> · ${GROUP[s.attr].name} · rung ${RUNG(s)} of ${MAX_LV}</p>
       ${(() => {                     /* what has been READ toward this skill, not bought */
         const bs = skillTomes(s.id);
         if (!bs.length) return "";
@@ -12392,8 +12423,8 @@ function skillHTML(s) {
 
   <div class="d-hero">
     <div class="d-lv">
-      <span class="n" id="heroLv">${fmtLv(LV(s))}</span>
-      <span class="cap">/ ${MAX_LV}</span>
+      <span class="n" id="heroLv">${SCORE(s)}</span>
+      <span class="cap" id="heroCap">/ ${SCORE_MAX(s)}</span>
       <span class="rk">${max ? "the ladder is complete" : `next: <b style="color:var(--parchment)">${rank(next)}</b>`}</span>
     </div>
     ${isWeb(s) ? `<div style="text-align:right">
@@ -12615,7 +12646,7 @@ function attrHTML(a) {
         aria-label="${esc(tileAria(s))}">
         <span class="ico" aria-hidden="true">${skPlate(s, 24)}</span>
         <span class="nm">${esc(s.name)}</span>
-        <span class="fr"><b>${fmtLv(LV(s))}</b> ∕ ${MAX_LV}</span>
+        <span class="fr"><b>${SCORE(s)}</b> ∕ ${SCORE_MAX(s)}</span>
         <span class="mini" aria-hidden="true"><i style="width:${max ? 100 : p.pct}%"></i></span>
         ${ICON.chev}
       </button></li>`; }).join("")}
@@ -12837,7 +12868,8 @@ function judgeFacet(s, fid, d) {
   trimJournal(); save();
   refreshWeb(s);            // surgical: polygon + digits + row states, focus stays put
   if (isWeb(s)) {           // ...but on a web skill the judgment also moves the score
-    const hv = $("#heroLv"); if (hv) hv.textContent = fmtLv(LV(s));
+    const hv = $("#heroLv"); if (hv) hv.textContent = SCORE(s);
+    const hc = $("#heroCap"); if (hc) hc.textContent = "/ " + SCORE_MAX(s);
     renderGrid();
     const dn = document.querySelectorAll(".derived-note");
     if (dn[0]) dn[0].textContent = `avg of ${s.facets.length} · ${facetMean(s).toFixed(2)}`;
