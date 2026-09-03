@@ -3055,10 +3055,10 @@ li.is-done .qg { color: var(--verdant); }
 .dy-card::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
 .dy-day::before { content: none; }   /* the owner's cut: the day keeps one frame; the fourth card takes the double line of his reference */
 /* the morning's three: a label, then the thing itself, hairlines between */
-.dy-vowc { padding: 34px 28px 26px; }
+.dy-vowc { padding: 30px 28px 18px; }   /* twelve off the frame so a wrapped line does not scroll */
 .dy-vow { display: grid; align-content: center; width: 100%; }
 .dy-vrow { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: center; column-gap: var(--s3);
-  padding: var(--s2) 0; border-bottom: 1px solid rgba(232,176,84,0.22); transition: border-color var(--t-settle) var(--e-out); }
+  padding: 6px 0; border-bottom: 1px solid rgba(232,176,84,0.22); transition: border-color var(--t-settle) var(--e-out); }
 .dy-vrow:last-child { border-bottom: 0; }
 .dy-vrow.is-set { border-bottom-color: rgba(232,176,84,0.45); }
 .dy-vl { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
