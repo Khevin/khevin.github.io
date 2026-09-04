@@ -758,6 +758,14 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .j-empty { font-size: 0.875rem; color: var(--ash); }
 
 /* attribute view rows */
+/* the master named under a facet's title, and the way back to it */
+.fc-up {
+  appearance: none; background: none; border: 0; padding: 0;
+  font: inherit; color: var(--dust); cursor: pointer;
+  border-bottom: 1px dashed var(--mortar-2);
+}
+@media (hover: hover) { .fc-up:hover { color: var(--gold); border-color: var(--gold); } }
+.fc-up:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .ar-list { list-style: none; display: flex; flex-direction: column; }
 .ar {
   display: flex; align-items: center; gap: var(--s3);
@@ -6232,8 +6240,25 @@ const chapterState = (c, ch) => chDone(ch) ? "complete"
 /* ---------- helpers ---------- */
 const $ = sel => document.querySelector(sel);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-const selSkill = () => (state.sel && state.sel.t === "s") ? state.skills.find(s => s.id === state.sel.id) || null : null;
-const selAttr = () => (state.sel && state.sel.t === "a") ? ATTR[state.sel.id] || null : null;
+  /* A facet is a third thing the board can point at, alongside a skill and an attribute.
+     It is addressed by its parent and its own id, because a facet id alone would mean
+     walking every skill to find out whose it is. */
+  const selFacet = () => {
+    if (!state.sel || state.sel.t !== "f") return null;
+    const sk = state.skills.find(x => x.id === state.sel.sid);
+    if (!sk) return null;
+    const f = (sk.facets || []).find(x => x.id === state.sel.fid);
+    return f ? { sk, f } : null;
+  };
+  /* A facet page shows the parent's concepts, and a tick on one is written to the
+     parent's assess record — so every action that reaches for "the selected skill" while
+     a facet is open has to find the parent, or the tick lands nowhere. */
+  const selSkill = () => {
+    if (state.sel && state.sel.t === "s") return state.skills.find(s => s.id === state.sel.id) || null;
+    if (state.sel && state.sel.t === "f") { const p = selFacet(); return p ? p.sk : null; }
+    return null;
+  };
+  const selAttr = () => (state.sel && state.sel.t === "a") ? ATTR[state.sel.id] || null : null;
 const prog = s => {
   const total = s.goals.length, done = s.goals.filter(x => x.done).length;
   return { done, total, pct: total ? Math.round(done / total * 100) : 0 };
@@ -6929,7 +6954,8 @@ function setSub(k) {
   /* the detail is this half's. A Nature page with Communication open beside it is the panel
      describing something the board next to it does not show. */
   const mine = state.skills.filter(k => half.gs.indexOf(k.attr) > -1);
-  const held = state.sel && state.sel.t === "s" && mine.some(k => k.id === state.sel.id);
+  const held = state.sel && ((state.sel.t === "s" && mine.some(k => k.id === state.sel.id)) ||
+                             (state.sel.t === "f" && mine.some(k => k.id === state.sel.sid)));
   if (!held && mine.length) state.sel = { t: "s", id: mine[0].id };
   renderGrid();
   renderDetail(false);
@@ -12170,8 +12196,10 @@ function watchGridWidth() {
    set in the same face at the same size and reads without a legend. */
 function fcellHTML(sk, f) {
   const p = facetParts(sk, f);
+  const sel = !!(state.sel && state.sel.t === "f" && state.sel.fid === f.id && !addMode);
   return `<button type="button" class="tile fcell${p.max ? "" : " is-nil"}"
     data-tile="${sk.id}" data-fcell="${f.id}" tabindex="-1" role="option"
+    aria-pressed="${sel}" aria-selected="${sel}"
     aria-label="${esc(f.name)} — ${esc(sk.name)}, ${p.max ? p.got + " of " + p.max + " concepts known" : "no concepts written yet"}">
     <span class="t-ico" aria-hidden="true">${facetPlate(sk, f, 32)}</span>
     <span class="frac${p.max ? fracW(p.got) : ""}" aria-hidden="true">${p.max
@@ -12243,8 +12271,9 @@ function renderGrid() {
       <span class="sum">${st.sum} / ${st.max}</span>
     </div><div class="sect-body"><div class="sect-cells">${st.skills.map(tileHTML).join("")}</div></div>`;
   }).join("");
-  const anchor = (state.sel && state.sel.t === "s" && !addMode)
-    ? el.querySelector(`#tile-${CSS.escape(state.sel.id)}`) : null;
+  const anchor = addMode ? null
+    : (state.sel && state.sel.t === "f") ? el.querySelector(`[data-fcell="${CSS.escape(state.sel.fid)}"]`)
+    : (state.sel && state.sel.t === "s") ? el.querySelector(`#tile-${CSS.escape(state.sel.id)}`) : null;
   const firstTile = anchor || el.querySelector(".tile:not(.cell-blank)");
   if (firstTile) firstTile.tabIndex = 0;   // the board can be empty now that Add lives in the masthead
   el.classList.add("compact");
@@ -12343,6 +12372,8 @@ function renderDetail(animate) {
   let html;
   if (addMode) html = newSkillHTML();
   else if (assessMode && selSkill()) html = assessHTML(selSkill());
+  /* before the skill check, which now resolves a facet to its parent */
+  else if (selFacet()) html = facetHTML(selFacet());
   else if (selSkill()) html = skillHTML(selSkill());
   else if (selAttr()) html = attrHTML(selAttr());
   else html = `<div class="d-in"><p style="color:var(--dust)">Pick a skill or an attribute from the sheet.</p></div>`;
@@ -12544,6 +12575,85 @@ function gateLine(gt) {
     " milestone" + (gt.ms.total === 1 ? "" : "s"));
   if (!bits.length) bits.push("no prerequisites set");
   return bits.join(" \u00b7 ");
+}
+
+/* ---- the master's contents ----
+   What an attribute's page has always been: a list of what is inside, each row a glyph, a
+   name, a fraction, a bar and a chevron. Two lists here rather than one, because the board
+   above it is in two tiers and a page that reordered them would be describing a different
+   thing from the one it sits beside. */
+function natFacetListHTML(sk) {
+  return NAT_TIERS.map(([tier, name]) => {
+    const mine = (sk.facets || []).filter(f => (f.tier || "f") === tier);
+    if (!mine.length) return "";
+    return `
+  <section class="sect" aria-label="${esc(name)} of ${esc(sk.name)}">
+    <span class="label">${esc(name)}</span>
+    <ul class="ar-list">
+      ${mine.map(f => {
+        const p = facetParts(sk, f);
+        const done = p.max > 0 && p.got >= p.max;
+        return `
+      <li><button type="button" class="ar${done ? " is-max" : ""}"
+        data-tile="${sk.id}" data-fcell="${f.id}"
+        aria-label="${esc(f.name)} \u2014 ${p.max ? p.got + " of " + p.max + " concepts learned" : "no concepts written yet"}">
+        <span class="ico" aria-hidden="true">${facetPlate(sk, f, 24)}</span>
+        <span class="nm">${esc(f.name)}</span>
+        <span class="fr">${p.max ? `<b>${p.got}</b> \u2215 ${p.max}` : "\u2014"}</span>
+        <span class="mini" aria-hidden="true"><i style="width:${p.max ? Math.round(p.got / p.max * 100) : 0}%"></i></span>
+        ${ICON.chev}
+      </button></li>`; }).join("")}
+    </ul>
+  </section>`;
+  }).join("");
+}
+
+/* ---- a facet's own page ----
+   The concepts carrying this facet's key, and nothing else. The master is named under the
+   title and is the way back up, which is the only navigation the page needs: it was opened
+   from either the board or the master's list, and both are one click behind it. */
+function facetHTML({ sk, f }) {
+  const kb = kbOf(sk);
+  const key = slugify(f.name);
+  const cs = ((kb && kb.concepts) || []).filter(c => c.facet === key)
+    .slice().sort((a, b) => a.band - b.band || a.name.localeCompare(b.name));
+  const p = facetParts(sk, f);
+  const pct = p.max ? Math.round(p.got / p.max * 100) : 0;
+  return `
+  <header class="d-head">
+    <span class="d-plaque${FACET_PLATE.has(facetSlug(sk, f)) ? " is-plate" : ""}" aria-hidden="true">${facetPlate(sk, f, 40)}</span>
+    <div class="d-head-main">
+      <h2 class="d-name">${esc(f.name)}</h2>
+      <p class="d-rank"><button type="button" class="fc-up" data-tile="${sk.id}">${esc(sk.name)}</button>
+        \u00b7 ${(f.tier || "f") === "f" ? "Fundamental" : "Discipline"}</p>
+    </div>
+  </header>
+
+  <div class="d-hero">
+    <div class="d-lv">
+      <span class="n${p.max ? "" : " none"}">${p.max ? p.got : "\u2013"}</span>
+      <span class="cap">/ ${p.max || 0}</span>
+    </div>
+  </div>
+
+  ${p.max ? `
+  <div class="xp">
+    <div class="xp-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"
+      aria-label="${esc(f.name)}: ${p.got} of ${p.max} concepts learned">
+      <span class="xp-fill${p.got >= p.max ? " full" : ""}" style="width:${pct}%"></span>
+    </div>
+  </div>
+
+  <section class="sect" aria-label="Concepts of ${esc(f.name)}">
+    <div class="gap-group">
+      <span class="label">Concepts</span>
+      <ul class="gap-list">${cs.map(c => gapLineHTML(sk, c)).join("")}</ul>
+    </div>
+  </section>` : `
+  <div class="gap-empty">
+    <h3>Nothing written yet</h3>
+    <p>No concepts carry this facet\u2019s key, so there is nothing here to learn or tick.</p>
+  </div>`}`;
 }
 
 function pathHTML(s, kb) {
@@ -12777,7 +12887,7 @@ function skillHTML(s) {
 
   </div>
 
-  ${kb ? pathHTML(s, kb) : ""}
+  ${s.attr === "nat" ? natFacetListHTML(s) : (kb ? pathHTML(s, kb) : "")}
   ${kb ? biblioHTML(s, kb) : ""}
 
   <section class="sect" aria-label="Journal">
@@ -12908,8 +13018,11 @@ function bindLadder() {
 
 function attrHTML(a) {
   const st = attrStats(a.k);
-  const meanPct = st.mean === null ? 0 : Math.round(st.mean / MAX_LV * 100);
-  const outOf = ATTR_MAX;
+  /* the proportion of everything this attribute could hold — the same arithmetic as the
+     fraction printed above it. It was mean / MAX_LV, an average skill score over ten, which
+     stopped meaning anything when a skill stopped being scored out of ten: Charisma at nine
+     percent complete was drawing a bar at forty. */
+  const pct = st.max ? Math.round(st.sum / st.max * 100) : 0;
   const attrJournal = state.journal.filter(j => j.kind === "attr" && j.aid === a.k);
 
   return `
@@ -12923,9 +13036,9 @@ function attrHTML(a) {
 
   <div class="d-hero">
     <div class="d-lv">
-      <span class="n${st.level === null ? " none" : ""}">${st.level === null ? "–" : st.level}</span>
-      <span class="cap">/ ${outOf}</span>
-      <span class="rk">${st.level === null ? "no skills yet" : `${st.skills.length} skill${st.skills.length === 1 ? "" : "s"} · <b style="color:var(--parchment)">${st.sum} / ${st.max}</b> · mean ${st.mean.toFixed(2)} of ${MAX_LV}, doubled`}</span>
+      <span class="n${st.level === null ? " none" : ""}">${st.level === null ? "–" : st.sum}</span>
+      <span class="cap">/ ${st.max}</span>
+      <span class="rk">${st.level === null ? "no skills yet" : `${st.skills.length} skill${st.skills.length === 1 ? "" : "s"}`}</span>
     </div>
     <button type="button" class="btn btn-ghost" data-action="addto" data-attr="${a.k}">${ICON.plus} Add skill</button>
   </div>
@@ -12937,13 +13050,9 @@ function attrHTML(a) {
     starts reading from it.</p>
   </div>` : `
   <div class="xp">
-    <div class="xp-cap">
-      <span class="to">Attribute reading — <b>derived, never set by hand</b></span>
-      <span class="num">${st.sum} / ${st.max} → mean ${st.mean.toFixed(2)} → <b>${st.level}</b> / ${outOf}</span>
-    </div>
-    <div class="xp-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${meanPct}"
-      aria-label="${a.name}: ${st.level} of ${outOf}, the mean of ${st.skills.length} skills doubled">
-      <span class="xp-fill" style="width:${meanPct}%"></span>
+    <div class="xp-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"
+      aria-label="${a.name}: ${st.sum} of ${st.max} across ${st.skills.length} skills">
+      <span class="xp-fill" style="width:${pct}%"></span>
     </div>
   </div>
 
@@ -12951,15 +13060,19 @@ function attrHTML(a) {
     <span class="label">Skills</span>
     <ul class="ar-list">
       ${st.skills.map(s => {
-        const p = levelGate(s);
-        const max = LV(s) >= MAX_LV;
+        /* the bar is the fraction above it. It ran on levelGate’s pct — progress toward the
+           next rung — under a fraction that counts concepts, so Storytelling at 20 of 41
+           drew a bar for something else entirely. */
+        const cap = SCORE_MAX(s), got = SCORE(s);
+        const bar = cap ? Math.round(got / cap * 100) : 0;
+        const max = got >= cap && cap > 0;
         return `
       <li><button type="button" class="ar${max ? " is-max" : ""}" data-tile="${s.id}"
         aria-label="${esc(tileAria(s))}">
         <span class="ico" aria-hidden="true">${skPlate(s, 24)}</span>
         <span class="nm">${esc(s.name)}</span>
-        <span class="fr"><b>${SCORE(s)}</b> ∕ ${SCORE_MAX(s)}</span>
-        <span class="mini" aria-hidden="true"><i style="width:${max ? 100 : p.pct}%"></i></span>
+        <span class="fr"><b>${got}</b> ∕ ${cap}</span>
+        <span class="mini" aria-hidden="true"><i style="width:${bar}%"></i></span>
         ${ICON.chev}
       </button></li>`; }).join("")}
     </ul>
@@ -13052,6 +13165,7 @@ function select(selObj, animate = true) {
   if (focusWasInBoard) {
     let t = null;
     if (addMode) t = document.querySelector('#grid [data-tile="__add"]');
+    else if (state.sel && state.sel.t === "f") t = document.querySelector(`[data-fcell="${CSS.escape(state.sel.fid)}"]`);
     else if (state.sel && state.sel.t === "s") t = document.getElementById("tile-" + state.sel.id);
     else if (state.sel && state.sel.t === "a") t = document.querySelector(`[data-crest="${state.sel.id}"]`);
     if (t) { if (t.classList.contains("tile")) t.tabIndex = 0; t.focus({ preventScroll: true }); }
@@ -13677,6 +13791,8 @@ document.addEventListener("click", e => {
      printed on it were swallowed by the selection before they were ever reached. */
   if (tileEl && !(act && tileEl.contains(act))) {
     if (tileEl.dataset.tile === "__add") select("__add");
+    /* a facet cell and a facet row both carry their parent AND their own id */
+    else if (tileEl.dataset.fcell) select({ t: "f", sid: tileEl.dataset.tile, fid: tileEl.dataset.fcell });
     else select({ t: "s", id: tileEl.dataset.tile });
     return;
   }
@@ -13876,6 +13992,11 @@ document.addEventListener("keydown", e => {
 sanitize(state);
 runPolish(state);
 questAudit();          // says so in the console if a quest points at nothing
+/* a facet whose parent has gone, or whose own id has, is as stale as a missing skill */
+if (state.sel && state.sel.t === "f") {
+  const par = state.skills.find(x => x.id === state.sel.sid);
+  if (!par || !(par.facets || []).some(x => x.id === state.sel.fid)) state.sel = null;
+}
 if (!state.sel || (state.sel.t === "s" && !state.skills.some(s => s.id === state.sel.id))) {
   state.sel = state.skills[0] ? { t: "s", id: state.skills[0].id } : null;
 }
