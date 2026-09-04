@@ -325,6 +325,23 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .grid > * { flex: none; }        /* a scrolling flex column would otherwise squash them */
 .sect-cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); }
 
+/* ---- the Nature board ----
+   Four across rather than three: a facet cell holds a glyph and a number, where a skill
+   tile holds a larger glyph and a fraction. */
+.grid.compact .nat-cells { grid-template-columns: repeat(4, 1fr); }
+.nat-src {
+  margin: -2px 2px var(--s1); font-family: var(--f-mono); font-size: 0.625rem;
+  letter-spacing: 0.06em; color: var(--ash);
+}
+.nat-tier {
+  display: block; margin: var(--s3) 2px var(--s1);
+  font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--mortar-2);
+}
+.sect-head .nat-sig { display: inline-flex; margin-right: 2px; }
+.sect-head .nat-sig img { display: block; }
+
+
 .sect-head {
   display: flex; align-items: center; gap: var(--s3);
   padding: var(--s3) 2px var(--s1);
@@ -376,13 +393,64 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .grid.compact .frac { grid-row: 1; grid-column: 2; width: 34px; height: 26px; }
 .grid.compact .fr-lv { font-size: 1rem; top: -2px; }
 .grid.compact .fr-sl { left: 15px; top: 5px; height: 17px; }
-.grid.compact .tile.is-max .fr-sl { left: 20px; }
 .grid.compact .fr-cap { font-size: 0.625rem; bottom: -1px; }
-.grid.compact .frac.half { width: 44px; }
-.grid.compact .frac.half .fr-sl { left: 25.5px; }
+/* The frame is sized by what is printed in it, not by what the number came from.
+   One digit clears the slash by 0.7px at 34px, so each extra character buys ~10px of
+   box and walks the slash the same distance right. */
+.grid.compact .frac.w2 { width: 45px; }
+.grid.compact .frac.w2 .fr-sl { left: 26px; }
+.grid.compact .frac.w3 { width: 54px; }
+.grid.compact .frac.w3 .fr-sl { left: 34px; }
 .grid.compact .t-name { display: none; }
 .grid.compact .t-bar { display: none; }
 .grid.compact .sect-head { padding-top: var(--s2); }
+
+/* ---- the facet cell ----
+   A compact tile's anatomy — glyph, number — plus the bar that lets a row of twelve be
+   compared without being read. Below the compact tile block on purpose: same specificity,
+   so the one written last is the one that wins. */
+.grid.compact .fcell {
+  position: relative;
+  grid-template-columns: auto auto; grid-template-rows: auto auto;
+  justify-content: center; align-items: center;
+  column-gap: 6px; row-gap: 5px;
+  min-height: 48px; padding: 6px 3px 7px;
+}
+.grid.compact .fcell .t-ico { grid-row: 1; grid-column: 1; line-height: 0; font-size: 1.375rem; }
+.grid.compact .fcell .fc-n {
+  grid-row: 1; grid-column: 2; min-width: 18px; text-align: left;
+  font-family: var(--f-display); font-weight: 700; font-size: 0.9375rem;
+  color: var(--gold); font-variant-numeric: tabular-nums; line-height: 1;
+  position: static;
+}
+/* judged low reads as low without being read; never judged is a dash, because never judged
+   and judged as nothing are two different facts */
+.grid.compact .fcell.is-low .fc-n { color: var(--bronze); }
+.grid.compact .fcell.is-nil .fc-n { color: var(--mortar-2); font-weight: 400; }
+.grid.compact .fcell .t-bar {
+  display: block; grid-row: 2; grid-column: 1 / -1;
+  height: 3px; margin: 0; width: 100%;
+  background: rgba(240,231,209,0.045);
+}
+.grid.compact .fcell.is-low .t-bar i { background: var(--bronze); }
+/* the two controls, on the cell that is pointed at. 17px at the cell's own edge - the
+   width the glyph was never using - so nothing has to move to make room for them. */
+.grid.compact .fcell .fc-adj {
+  position: absolute; top: 18px; transform: translateY(-50%);
+  width: 17px; height: 17px; display: grid; place-items: center;
+  padding: 0; border: 1px solid var(--mortar-2); border-radius: 4px;
+  background: var(--stone-3); color: var(--dust);
+  cursor: pointer; opacity: 0; pointer-events: none;
+  transition: opacity var(--t-fast) var(--e-out), color var(--t-fast) var(--e-out);
+}
+.grid.compact .fcell .fc-adj svg { width: 9px; height: 9px; }
+.grid.compact .fcell .fc-adj[data-d="-1"] { left: -1px; }
+.grid.compact .fcell .fc-adj[data-d="1"] { right: -1px; }
+.grid.compact .fcell:hover .fc-adj,
+.grid.compact .fcell:focus .fc-adj,
+.grid.compact .fcell:focus-within .fc-adj { opacity: 1; pointer-events: auto; }
+@media (hover: hover) { .grid.compact .fcell .fc-adj:hover { color: var(--gold); border-color: var(--bronze); } }
+.grid.compact .fcell .fc-adj:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .board-head .density {
   background: none; border: none; padding: 0 0 1px;
   border-bottom: 1px dashed var(--mortar-2);
@@ -426,12 +494,14 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .fr-sl { position: absolute; left: 18px; top: 7px; width: 1.5px; height: 21px; background: var(--mortar-2); transform: rotate(28deg); }
 .fr-cap { position: absolute; right: 0; bottom: -2px; font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); }
 .tile.is-max .fr-lv, .tile.is-max .fr-cap { color: var(--gold-2); }
-.tile.is-max .fr-sl { background: var(--bronze); left: 23px; top: 9px; }
-.tile.is-max .frac { width: 44px; }
-/* "5.5" is half again as wide as "5" - without this the decimal runs under the
-   slash. Same trick as .is-max: widen the glyph, walk the slash right. */
-.frac.half { width: 54px; }
-.frac.half .fr-sl { left: 33px; }
+/* mastery is a colour, not a width — the width is the printed number's business */
+.tile.is-max .fr-sl { background: var(--bronze); }
+/* "35" is twice as wide as "5" and "4.5" wider still - without this they run under the
+   slash. Widen the box by the character, walk the slash the same way. */
+.frac.w2 { width: 50px; }
+.frac.w2 .fr-sl { left: 29px; }
+.frac.w3 { width: 58px; }
+.frac.w3 .fr-sl { left: 37px; }
 
 .t-name {
   grid-row: 3; grid-column: 1 / -1;
@@ -4099,6 +4169,41 @@ function g(t) { return { t, done: false }; }
    on their own row; a milestone that only said "Learn: X · band N" was the same fact
    asked for twice. polishV14 removes the ones already written to boards. */
 function fc(icon, name, level) { return { id: uid(), icon, name, level }; }
+
+/* ---- Nature's twelve, three times over ----
+   Two tiers per skill: four fundamentals that everything else stands on, and eight
+   disciplines that are separate bodies of practice rather than steps on one path. The tier
+   is stored on the facet so the board can group without a second list to keep in step.
+
+   These are given, not invented at the keyboard: no add form, no delete, no rename. That is
+   why the detail panel's web section stays out of the way on this half. */
+const NAT_FACETS = {
+  Cooking: [
+    ["\u{1F525}", "Heat", "f"], ["\u{1F52A}", "Knife work", "f"],
+    ["\u23F1\uFE0F", "Kitchen efficiency", "f"], ["\u{1F3AF}", "Execution", "f"],
+    ["\u{1F944}", "Sauces", "d"], ["\u{1F9C1}", "Patisserie", "d"],
+    ["\u{1F9C2}", "Seasoning", "d"], ["\u{1F445}", "Flavor intuition", "d"],
+    ["\u{1F300}", "Texture", "d"], ["\u{1F34B}", "Acid", "d"],
+    ["\u{1F41F}", "Fish", "d"], ["\u{1F969}", "Other meats", "d"]
+  ],
+  Gardening: [
+    ["\u{1FAA8}", "Soil", "f"], ["\u{1F4A7}", "Water", "f"],
+    ["\u2600\uFE0F", "Light & siting", "f"], ["\u{1F33F}", "Propagation", "f"],
+    ["\u2702\uFE0F", "Pruning", "d"], ["\u{1F41B}", "Pests & disease", "d"],
+    ["\u267B\uFE0F", "Composting", "d"], ["\u{1FAD8}", "Seed saving", "d"],
+    ["\u{1F338}", "Perennials", "d"], ["\u{1F96C}", "Vegetables", "d"],
+    ["\u{1F333}", "Trees & shrubs", "d"], ["\u{1F4D0}", "Design & layout", "d"]
+  ],
+  Survivalist: [
+    ["\u26FA", "Shelter", "f"], ["\u{1F525}", "Fire", "f"],
+    ["\u{1F4A7}", "Water", "f"], ["\u{1F9ED}", "Navigation", "f"],
+    ["\u{1FA79}", "First aid", "d"], ["\u{1F344}", "Foraging", "d"],
+    ["\u{1FAA2}", "Knots & cordage", "d"], ["\u{1F326}\uFE0F", "Weather reading", "d"],
+    ["\u{1F3A3}", "Trapping & fishing", "d"], ["\u{1F52A}", "Tools & blades", "d"],
+    ["\u{1F526}", "Signalling", "d"], ["\u{1F5FA}\uFE0F", "Trip planning", "d"]
+  ]
+};
+const NAT_TIERS = [["f", "Fundamentals"], ["d", "Disciplines"]];
 function uid() {
   return (crypto.randomUUID) ? crypto.randomUUID()
     : "id-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -5367,7 +5472,25 @@ function runPolish(s) {
   polishV18(s); polishV19(s); polishV20(s); polishV21(s); polishV22(s); polishV23(s);
   polishV24(s); polishV25(s); polishV26(s); polishV27(s); polishV28(s); polishV29(s);
   polishV30(s); polishV31(s); polishV32(s); polishV33(s); polishV34(s); polishV35(s);
-  polishV36(s); polishV37(s);
+  polishV36(s); polishV37(s); polishV38(s);
+  return s;
+}
+
+/* v38: Nature's three skills are broken into twelve facets each, in two tiers. Given rather
+   than invented — they came out of the canvas, not out of the add form — so a skill that
+   already carries hand-made facets is left exactly as it is. */
+function polishV38(s) {
+  if (s.polish38) return s;
+  let n = 0;
+  Object.keys(NAT_FACETS).forEach(name => {
+    const k = s.skills.find(x => (x.kbKey || x.name) === name);
+    if (!k || (k.facets || []).length) return;
+    k.facets = NAT_FACETS[name].map(([icon, nm, tier]) => Object.assign(fc(icon, nm, 0), { tier }));
+    n++;
+  });
+  s.polish38 = true;
+  if (n) s.journal.push({ ts: Date.now(), sid: null, kind: "sys",
+    text: "Nature broke into facets \u2014 four fundamentals and eight disciplines apiece, judged by hand." });
   return s;
 }
 
@@ -6084,7 +6207,12 @@ const when = ts => {
 /* A decomposed skill is still one skill. It leads its section, and since v20 it counts
    once like everything else — weighing it double made an attribute nobody could check by
    eye against the numbers printed directly above it. */
-const isWeb = s => !!(s.facets && s.facets.length >= FACET_MIN_POLY);
+/* On Nature a facet is the map and a concept is the score: where both exist the concepts
+   win, and only Cooking — which has no concept list written yet — is read from its cells.
+   Everywhere else this is unchanged, so the five attribute webs keep the rung they have. */
+const hasConcepts = s => !!((kbOf(s) || {}).concepts || []).length;
+const isWeb = s => !!(s.facets && s.facets.length >= FACET_MIN_POLY) &&
+  (s.attr !== "nat" || !hasConcepts(s));
 /* A decomposed skill is scored by its parts: the polygon average, rounded to the
    nearest half. s.level is left alone in storage, so deleting the facets restores
    whatever was earned before — this is a reading, not a rewrite. */
@@ -6124,14 +6252,21 @@ const RUNG = s => Math.floor(LV(s));   // which ladder rung that score stands on
 const CPT_W = bd => (bd <= 3 ? 1 : bd <= 6 ? 2 : 3);
 const MILE_W = 3;
 const SCORE_CAP = 99;
+/* Nature counts flat: one level a concept, one level a milestone. The attributes taper
+   because their ladders were researched rung by rung and a band eight concept really is
+   three times the work of a band one; Nature's are not, and weighting them anyway would be
+   arithmetic wearing the costume of evidence. */
+const isFlat = sk => sk.attr === "nat";
 function skScoreParts(sk) {
   if (isProf(sk)) return null;                       /* hours skills keep their own 0-120 */
   const kb = kbOf(sk), cs = (kb && kb.concepts) || [];
+  const flat = isFlat(sk);
   let got = 0, max = 0;
-  cs.forEach(c => { const v = CPT_W(c.band); max += v; if (markOf(sk, c.name) === "known") got += v; });
+  cs.forEach(c => { const v = flat ? 1 : CPT_W(c.band); max += v; if (markOf(sk, c.name) === "known") got += v; });
   const ms = Array.isArray(sk.goals) ? sk.goals : [];
-  got += ms.filter(g => g.done).length * MILE_W;
-  max += ms.length * MILE_W;
+  const mw = flat ? 1 : MILE_W;
+  got += ms.filter(g => g.done).length * mw;
+  max += ms.length * mw;
   return { got: Math.min(SCORE_CAP, got), max: Math.min(SCORE_CAP, max), any: max > 0 };
 }
 /* the number on the tile, and the ceiling it is climbing toward. A skill with no knowledge
@@ -8486,6 +8621,21 @@ const plateSlug = sk => {
    served below 40px and the 64 above it, so nothing is ever scaled up. */
 /* the header box: bare when it holds drawn art, stone when it holds an emoji */
 const plaqueCls = sk => "d-plaque" + (plateSlug(sk) ? " is-plate" : "");
+/* ---- facet plates ----
+   A facet's filename is its skill's slug and its own, so Water under Gardening and Water
+   under Survivalist can be two different drawings. The set below is what has actually been
+   drawn; anything not in it wears its emoji, and nothing is requested that is not there —
+   an <img> that 404s is a broken frame on the board, not a graceful fallback. */
+const FACET_PLATE = new Set([]);
+const slugify = t => String(t || "").toLowerCase().replace(/&/g, " ")
+  .replace(/[^a-z0-9]+/g, " ").trim().replace(/ +/g, "-");
+const facetSlug = (sk, f) => slugify(sk.kbKey || sk.name) + "-" + slugify(f.name);
+function facetPlate(sk, f, px) {
+  const k = facetSlug(sk, f);
+  if (!FACET_PLATE.has(k)) return esc(f.icon);
+  return '<img class="sk-plate" src="assets/skills/' + k + "-" + (px > 32 ? 64 : 32) +
+    '.png" alt="" width="' + px + '" height="' + px + '" loading="lazy" draggable="false">';
+}
 function skPlate(sk, px) {
   const k = plateSlug(sk);
   if (!k) return esc(sk.icon);
@@ -11851,6 +12001,13 @@ function tileAria(s) {
   else if (s.facets.length) a += `, ${s.facets.length} self-judged facets`;
   return a;
 }
+/* How wide the fraction's frame has to be, read off the numerator that is going into it.
+   Two places print a tile - the render and the repaint - and they disagreed the last time
+   this was two expressions instead of one function. */
+function fracCls(sk) {
+  const n = String(SCORE(sk)).length;
+  return n > 2 ? " w3" : n > 1 ? " w2" : "";
+}
 function tileHTML(s) {
   const p = levelGate(s);
   const max = LV(s) >= MAX_LV;
@@ -11859,7 +12016,7 @@ function tileHTML(s) {
     id="tile-${s.id}" data-tile="${s.id}" tabindex="-1"
     aria-pressed="${sel}" aria-selected="${sel}" aria-label="${esc(tileAria(s))}">
     <span class="t-ico" aria-hidden="true">${skPlate(s, 40)}</span>
-    <span class="frac${Number.isInteger(LV(s)) ? "" : " half"}" aria-hidden="true">
+    <span class="frac${fracCls(s)}" aria-hidden="true">
       <span class="fr-lv">${SCORE(s)}</span><span class="fr-sl"></span><span class="fr-cap">${SCORE_MAX(s)}</span>
     </span>
     <span class="t-name">${s.facets.length ? ICON.web : ""}<span class="nm">${esc(s.name)}</span></span>
@@ -11912,9 +12069,72 @@ function watchGridWidth() {
   }).observe(el);
 }
 
+/* ---- a facet cell ----
+   The same shape as a compact tile — glyph, number — so a row of them is read the way the
+   attribute board is read. The two controls live on the cell and appear when it is pointed
+   at, which is the only thing that ever moves. */
+function fcellHTML(sk, f) {
+  const nil = f.level <= 0;
+  return `<div class="tile fcell${nil ? " is-nil" : f.level < 3 ? " is-low" : ""}"
+    data-tile="${sk.id}" data-fcell="${f.id}" tabindex="-1" role="option"
+    aria-label="${esc(f.name)} — ${esc(sk.name)}, judged ${f.level} of ${MAX_LV}">
+    <span class="t-ico" aria-hidden="true">${facetPlate(sk, f, 32)}</span>
+    <span class="fc-n" aria-hidden="true">${nil ? "\u2014" : f.level}</span>
+    <span class="t-bar" aria-hidden="true"><i style="width:${f.level / MAX_LV * 100}%"></i></span>
+    <button type="button" class="fc-adj" tabindex="-1" data-action="judge" data-sid="${sk.id}"
+      data-facet="${f.id}" data-d="-1" aria-label="Judge ${esc(f.name)} one lower">${ICON.minus}</button>
+    <button type="button" class="fc-adj" tabindex="-1" data-action="judge" data-sid="${sk.id}"
+      data-facet="${f.id}" data-d="1" aria-label="Judge ${esc(f.name)} one higher">${ICON.plusSm}</button>
+  </div>`;
+}
+/* ---- one Nature skill ----
+   The head carries the number and the line under it carries where the number came from,
+   because the cells below look identical whether they produced it or merely describe it. */
+function natSectionHTML(sk) {
+  const src = hasConcepts(sk)
+    ? "scored by its concepts"
+    : sk.facets.length ? "scored by these facets" : "nothing to score it by yet";
+  const tiers = NAT_TIERS.map(([t, name]) => {
+    const fs = sk.facets.filter(f => (f.tier || "f") === t);
+    if (!fs.length) return "";
+    return `<span class="nat-tier">${name}</span>
+      <div class="sect-cells nat-cells">${fs.map(f => fcellHTML(sk, f)).join("")}</div>`;
+  }).join("");
+  return `<div class="sect-head" data-sect="${sk.id}">
+    <button type="button" class="label sect-open" data-tile="${sk.id}"
+      aria-label="Open ${esc(sk.name)}"><span class="nat-sig">${skPlate(sk, 18)}</span>${esc(sk.name)}</button>
+    <span class="rule"></span>
+    <span class="sum" data-natsum="${sk.id}">${SCORE(sk)} / ${SCORE_MAX(sk)}</span>
+  </div><p class="nat-src">${src}</p><div class="sect-body">${tiers}</div>`;
+}
+/* a judgment moves one cell and one head — the whole board does not need redrawing */
+function refreshFacetCell(sk, f) {
+  const c = document.querySelector(`#grid [data-fcell="${f.id}"]`);
+  if (c) {
+    const nil = f.level <= 0;
+    c.classList.toggle("is-nil", nil);
+    c.classList.toggle("is-low", !nil && f.level < 3);
+    c.querySelector(".fc-n").textContent = nil ? "\u2014" : f.level;
+    c.querySelector(".t-bar i").style.width = (f.level / MAX_LV * 100) + "%";
+    c.setAttribute("aria-label", `${f.name} — ${sk.name}, judged ${f.level} of ${MAX_LV}`);
+  }
+  const h = document.querySelector(`[data-natsum="${sk.id}"]`);
+  if (h) h.textContent = SCORE(sk) + " / " + SCORE_MAX(sk);
+}
 function renderGrid() {
   const el = $("#grid");
   if (!el) return;
+  /* Nature is a board of facets under three skill heads, not a board of skills under one
+     group head: three tiles in a column built for twenty-eight was a strip and a void. */
+  if (skSub === "nat") {
+    const mine = state.skills.filter(k => k.attr === "nat");
+    el.innerHTML = mine.map(natSectionHTML).join("");
+    el.classList.add("compact");
+    const first = el.querySelector(".fcell");
+    if (first) first.tabIndex = 0;
+    renderCrests(); renderTotal(); renderHero();
+    return;
+  }
   el.innerHTML = skSubOf(skSub).gs.map(k => GROUP[k]).filter(Boolean).map(a => {
     const st = attrStats(a.k);
     if (!st.skills.length) return "";
@@ -11953,7 +12173,8 @@ function refreshTile(s) {
   const p = levelGate(s);
   const max = LV(s) >= MAX_LV;
   t.classList.toggle("is-max", max);
-  t.querySelector(".frac").classList.toggle("half", !Number.isInteger(LV(s)));
+  const fr = t.querySelector(".frac");
+  fr.className = "frac" + fracCls(s);
   t.querySelector(".fr-lv").textContent = SCORE(s);
   t.querySelector(".fr-cap").textContent = SCORE_MAX(s);
   t.querySelector(".t-bar i").style.width = (max ? 100 : p.pct) + "%";
@@ -12477,7 +12698,7 @@ function skillHTML(s) {
           <p>${esc(kb.ladder[next])}</p>
         </details>` : ""}
       </section>` : ""}
-      ${webSectionHTML(s)}
+      ${s.attr === "nat" ? "" : webSectionHTML(s)}
 
     </div>
 
@@ -12867,6 +13088,7 @@ function judgeFacet(s, fid, d) {
   }
   trimJournal(); save();
   refreshWeb(s);            // surgical: polygon + digits + row states, focus stays put
+  refreshFacetCell(s, f);   // ...and the cell on the board, which is the other place it shows
   if (isWeb(s)) {           // ...but on a web skill the judgment also moves the score
     const hv = $("#heroLv"); if (hv) hv.textContent = SCORE(s);
     const hc = $("#heroCap"); if (hc) hc.textContent = "/ " + SCORE_MAX(s);
@@ -13261,7 +13483,13 @@ function bindTooltip() {
     tipTimer = setTimeout(() => {
       const s = state.skills.find(x => x.id === t.dataset.tile);
       if (!s) return;
-      tip.innerHTML = `<b>${esc(s.name)}</b><span class="r">${rank(RUNG(s))}</span>
+      /* on the Nature board the cell is a facet, and its name is the thing the glyph
+         alone cannot say */
+      const f = t.dataset.fcell && s.facets.find(x => x.id === t.dataset.fcell);
+      tip.innerHTML = f
+        ? `<b>${esc(f.name)}</b><span class="r">${f.level ? f.level + " / " + MAX_LV : "unjudged"}</span>
+           <span class="m">${esc(s.name)}</span>`
+        : `<b>${esc(s.name)}</b><span class="r">${rank(RUNG(s))}</span>
         <span class="m">${esc(blurbOf(s) || GROUP[s.attr].name)}</span>`;
       const r = t.getBoundingClientRect();
       tip.style.left = Math.min(window.innerWidth - 252, Math.max(8, r.left)) + "px";
@@ -13295,6 +13523,17 @@ function bindKeys() {
       case "ArrowUp":    next = Math.max(0, cur - cols); break;
       case "Home":       next = 0; break;
       case "End":        next = tiles.length - 1; break;
+      /* a facet is judged where it sits. The two controls are mouse targets that appear on
+         the pointed-at cell, so without this the board would be adjustable by pointer only. */
+      case "-": case "_": case "+": case "=": {
+        const c = tiles[cur];
+        if (!c.classList.contains("fcell")) return;
+        const sk = state.skills.find(x => x.id === c.dataset.tile);
+        if (!sk) return;
+        e.preventDefault();
+        judgeFacet(sk, c.dataset.fcell, e.key === "-" || e.key === "_" ? -1 : 1);
+        return;
+      }
       default: return;
     }
     e.preventDefault();
@@ -13352,20 +13591,26 @@ document.addEventListener("click", e => {
   const crest = e.target.closest("[data-crest]");
   if (crest) { select({ t: "a", id: crest.dataset.crest }); return; }
 
+  const act = e.target.closest("[data-action]");
   const tileEl = e.target.closest("[data-tile]");
-  if (tileEl) {
+  /* an action inside a tile is the action, not the tile. A facet cell carries its skill's
+     id so that judging it knows what it belongs to, which used to mean the two controls
+     printed on it were swallowed by the selection before they were ever reached. */
+  if (tileEl && !(act && tileEl.contains(act))) {
     if (tileEl.dataset.tile === "__add") select("__add");
     else select({ t: "s", id: tileEl.dataset.tile });
     return;
   }
 
-  const act = e.target.closest("[data-action]");
   if (!act) return;
   const s = selSkill();
   switch (act.dataset.action) {
     case "levelup":     if (s) levelUp(s); break;
     case "cal":         if (s) calibrate(s, +act.dataset.d); break;
-    case "judge":       if (s) judgeFacet(s, act.dataset.facet, +act.dataset.d); break;
+    /* a cell on the board names its own skill: the selected one may be a different skill,
+       or none at all if the click landed on the control before the cell */
+    case "judge":       { const t = act.dataset.sid ? state.skills.find(x => x.id === act.dataset.sid) : s;
+                          if (t) judgeFacet(t, act.dataset.facet, +act.dataset.d); } break;
     case "delfacet":    if (s) delFacet(s, act.dataset.facet); break;
     case "delgoal":     if (s) delGoal(s, +act.dataset.goal); break;
     case "startfacets": facetFormOpen = true; renderDetail(false);
