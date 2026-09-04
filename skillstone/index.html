@@ -417,6 +417,9 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
   min-height: 48px; padding: 6px 3px 7px;
 }
 .grid.compact .fcell .t-ico { grid-row: 1; grid-column: 1; line-height: 0; font-size: 1.375rem; }
+/* 32, not the tile's 40: at 40 the two controls land on the glyph and on the number, and
+   an 85px cell has no edge left to put them in. */
+.grid.compact .fcell .t-ico .sk-plate { width: 32px; height: 32px; margin: 0; }
 .grid.compact .fcell .fc-n {
   grid-row: 1; grid-column: 2; min-width: 18px; text-align: left;
   font-family: var(--f-display); font-weight: 700; font-size: 0.9375rem;
@@ -4180,9 +4183,9 @@ const NAT_FACETS = {
     ["\u{1F525}", "Heat", "f"], ["\u{1F52A}", "Knife work", "f"],
     ["\u23F1\uFE0F", "Kitchen efficiency", "f"], ["\u{1F3AF}", "Execution", "f"],
     ["\u{1F944}", "Sauces", "d"], ["\u{1F9C1}", "Patisserie", "d"],
-    ["\u{1F9C2}", "Seasoning", "d"], ["\u{1F445}", "Flavor intuition", "d"],
+    ["\u{1F9C2}", "Seasoning", "d"], ["\u{1F445}", "Flavour intuition", "d"],
     ["\u{1F300}", "Texture", "d"], ["\u{1F34B}", "Acid", "d"],
-    ["\u{1F41F}", "Fish", "d"], ["\u{1F969}", "Other meats", "d"]
+    ["\u{1F9C8}", "Fat", "d"], ["\u{1F372}", "Other meals", "d"]
   ],
   Gardening: [
     ["\u{1FAA8}", "Soil", "f"], ["\u{1F4A7}", "Water", "f"],
@@ -5470,7 +5473,31 @@ function runPolish(s) {
   polishV18(s); polishV19(s); polishV20(s); polishV21(s); polishV22(s); polishV23(s);
   polishV24(s); polishV25(s); polishV26(s); polishV27(s); polishV28(s); polishV29(s);
   polishV30(s); polishV31(s); polishV32(s); polishV33(s); polishV34(s); polishV35(s);
-  polishV36(s); polishV37(s); polishV38(s);
+  polishV36(s); polishV37(s); polishV38(s); polishV39(s);
+  return s;
+}
+
+/* v39: Cooking follows its icons. Two are the same facet renamed and keep their judgment;
+   Fat is not Fish renamed, so it starts unjudged rather than inheriting an opinion about a
+   different thing. Nothing is dropped silently — if the old one had been judged, the
+   journal says the number did not carry and what it was. */
+function polishV39(s) {
+  if (s.polish39) return s;
+  const ck = s.skills.find(x => (x.kbKey || x.name) === "Cooking");
+  if (ck && Array.isArray(ck.facets)) {
+    const at = n => ck.facets.find(f => f.name === n);
+    [["Flavor intuition", "Flavour intuition"], ["Other meats", "Other meals"]].forEach(([was, now]) => {
+      const f = at(was); if (f && !at(now)) f.name = now;
+    });
+    const fish = at("Fish");
+    if (fish && !at("Fat")) {
+      const had = fish.level;
+      fish.name = "Fat"; fish.icon = "\u{1F9C8}"; fish.level = 0;
+      if (had > 0) s.journal.push({ ts: Date.now(), sid: ck.id, kind: "sys",
+        text: "Fish became Fat, which is a different thing \u2014 its judgment of " + had + " did not carry." });
+    }
+  }
+  s.polish39 = true;
   return s;
 }
 
@@ -8627,15 +8654,28 @@ const plaqueCls = sk => "d-plaque" + (plateSlug(sk) ? " is-plate" : "");
    under Survivalist can be two different drawings. The set below is what has actually been
    drawn; anything not in it wears its emoji, and nothing is requested that is not there —
    an <img> that 404s is a broken frame on the board, not a graceful fallback. */
-const FACET_PLATE = new Set([]);
+const FACET_PLATE = new Set([
+  "cooking-heat", "cooking-knife-work", "cooking-kitchen-efficiency", "cooking-execution",
+  "cooking-sauces", "cooking-patisserie", "cooking-seasoning", "cooking-flavour-intuition",
+  "cooking-texture", "cooking-acid", "cooking-fat", "cooking-other-meals", "gardening-soil",
+  "gardening-water", "gardening-light-siting", "gardening-propagation", "gardening-pruning",
+  "gardening-pests-disease", "gardening-composting", "gardening-seed-saving", "gardening-perennials",
+  "gardening-vegetables", "gardening-trees-shrubs", "gardening-design-layout", "survivalist-shelter",
+  "survivalist-fire", "survivalist-water", "survivalist-navigation", "survivalist-first-aid",
+  "survivalist-foraging", "survivalist-knots-cordage", "survivalist-weather-reading", "survivalist-trapping-fishing",
+  "survivalist-tools-blades", "survivalist-signalling", "survivalist-trip-planning"
+]);
 const slugify = t => String(t || "").toLowerCase().replace(/&/g, " ")
   .replace(/[^a-z0-9]+/g, " ").trim().replace(/ +/g, "-");
 const facetSlug = (sk, f) => slugify(sk.kbKey || sk.name) + "-" + slugify(f.name);
 function facetPlate(sk, f, px) {
   const k = facetSlug(sk, f);
   if (!FACET_PLATE.has(k)) return esc(f.icon);
-  return '<img class="sk-plate" src="assets/skills/' + k + "-" + (px > 32 ? 64 : 32) +
-    '.png" alt="" width="' + px + '" height="' + px + '" loading="lazy" draggable="false">';
+  /* the 64 at every size. skPlate serves the 32 below 40px to save bytes, which is right
+     for a board of 28 tiles; this is 36 cells at 32px read on a 2x screen, where a 32px
+     source in a 32px box is exactly half the pixels it needs. */
+  return '<img class="sk-plate" src="assets/skills/' + k +
+    '-64.png" alt="" width="' + px + '" height="' + px + '" loading="lazy" draggable="false">';
 }
 function skPlate(sk, px) {
   const k = plateSlug(sk);
