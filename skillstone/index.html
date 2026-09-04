@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" spellcheck="false">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1664,8 +1664,6 @@ button.d-plaque {
   font-variant-numeric: tabular-nums;
 }
 .pf-mins:focus-visible { outline: none; }
-.pf-mins::-webkit-outer-spin-button, .pf-mins::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.pf-mins { -moz-appearance: textfield; }
 .pf-unit { display: flex; border-left: 1px solid var(--mortar); }
 .pf-unit button {
   appearance: none; background: none; border: 0; min-width: 44px; padding: 0 var(--s2);
@@ -6207,12 +6205,9 @@ const when = ts => {
 /* A decomposed skill is still one skill. It leads its section, and since v20 it counts
    once like everything else — weighing it double made an attribute nobody could check by
    eye against the numbers printed directly above it. */
-/* On Nature a facet is the map and a concept is the score: where both exist the concepts
-   win, and only Cooking — which has no concept list written yet — is read from its cells.
-   Everywhere else this is unchanged, so the five attribute webs keep the rung they have. */
-const hasConcepts = s => !!((kbOf(s) || {}).concepts || []).length;
-const isWeb = s => !!(s.facets && s.facets.length >= FACET_MIN_POLY) &&
-  (s.attr !== "nat" || !hasConcepts(s));
+/* enough parts for a polygon to be worth drawing. It decides a DRAWING now and nothing
+   else — no level anywhere is read from these. */
+const isWeb = s => !!(s.facets && s.facets.length >= FACET_MIN_POLY);
 /* A decomposed skill is scored by its parts: the polygon average, rounded to the
    nearest half. s.level is left alone in storage, so deleting the facets restores
    whatever was earned before — this is a reading, not a rewrite. */
@@ -6228,8 +6223,11 @@ function facetMean(s) {
    painting at 150 hours reported "0 earned + 1 bonus". Branch on the model. */
 function lvParts(s) {
   const prof = isProf(s);
-  const base = prof ? profLevel(profHours(s))
-             : isWeb(s) ? Math.round(facetMean(s) * 2) / 2 : s.level;
+  /* a judgment is a reading, never a score. A self-assessment used to set the rung on any
+     skill broken into three or more parts, which gave those skills two sources for one
+     number — the cells said one thing, the concepts another, and nothing on screen said
+     which was answering. The rung comes from where every other skill's comes from. */
+  const base = prof ? profLevel(profHours(s)) : s.level;
   /* a quest-bought rung only applies where there is no hour log to pay into */
   const bonus = questBonus(s.id) + (prof ? 0 : questRungs(s.id));
   const cap = prof ? PROF_MAX : MAX_LV;
@@ -7653,11 +7651,11 @@ function renderProfDetail() {
       (peak > 0.001 ? "peak " + fmtHours(peak) + "/wk" : "nothing yet") + "</span><span>this week</span></span>" +
   "</div>" +
 
-  /* the four sides of a language are judged, not derived: they never move the 0-120 level,
-     which comes from the hour log, and they are labelled as self-judged for that reason */
+  /* the four sides of a language are judged, never derived: the 0-120 level comes from the
+     hour log and nothing here touches it. The heading says what these are. */
   ((s.facets || []).length
     ? '<section class="pf-sect"><span class="label">' + ICON.web +
-      ' The web \u2014 self-judged</span><div class="web-wrap">' + webSVG(s) +
+      ' Self-assessment</span><div class="web-wrap">' + webSVG(s) +
       '<ul class="fc-list">' + s.facets.map(f =>
         '<li class="fc" data-frow="' + f.id + '">' +
         '<span class="fc-ico" aria-hidden="true">' + esc(f.icon) + "</span>" +
@@ -7669,8 +7667,7 @@ function renderProfDetail() {
         '<button type="button" class="cal-btn" data-action="judge" data-facet="' + f.id +
           '" data-d="1" aria-label="Judge ' + esc(f.name) + ' one higher"' +
           (f.level >= MAX_LV ? " disabled" : "") + ">" + ICON.plusSm + "</button></li>").join("") +
-      '</ul><p class="fc-note">Judged, not earned \u2014 the level above comes from the hours.</p>' +
-      "</div></section>"
+      "</ul></div></section>"
     : "") +
 
   '<section class="pf-sect"><span class="label">Log a session</span>' +
@@ -7678,7 +7675,11 @@ function renderProfDetail() {
       [30, 60, 120].map(m => '<button type="button" class="pf-chip" data-pf="log" data-id="' +
         s.id + '" data-m="' + m + '">' + (m < 60 ? m + " min" : (m / 60) + "h") + "</button>").join("") +
       '<span class="pf-custom">' +
-        '<input type="number" class="pf-mins" id="pfMins" min="1" max="10000" step="1" placeholder="0" ' +
+        /* text, not number: <input type="number"> silently DROPS a comma, so "2,5" became
+           25 and two and a half hours were logged as twenty-five. inputmode keeps the
+           numeric keypad; parseMins below accepts either separator and refuses the rest. */
+        '<input type="text" class="pf-mins" id="pfMins" inputmode="decimal" ' +
+          'autocomplete="off" spellcheck="false" placeholder="0" ' +
           'aria-label="How long you practised">' +
         /* the unit is two states, so it is two buttons rather than a dropdown you have to
            open to find out what is in it */
@@ -8684,11 +8685,25 @@ function profAssessHTML(s) {
     (sug === null ? " disabled" : "") + ">Confirm</button></div></form>";
 }
 
+/* What the owner typed, in minutes, or null if it was not a number. A comma is a decimal
+   point here: it is the one a pt-BR keyboard puts under the thumb, and a field that
+   accepts it and then means something else is worse than a field that refuses it. */
+const MINS_CAP = 24 * 60;        /* one entry is one session, and a session fits in a day */
+function parseMins(raw, unit) {
+  const t = String(raw == null ? "" : raw).trim().replace(",", ".");
+  if (!/^\d*\.?\d+$/.test(t)) return null;
+  const v = parseFloat(t);
+  if (!(v > 0)) return null;
+  return Math.round(unit === "hour" ? v * 60 : v);
+}
 function profLog(sid, mins) {
   const s = state.skills.find(x => x.id === sid);
   if (!s || !(mins > 0)) return;
   const before = profLv(s);
-  sessions().push({ sid, ts: Date.now(), mins: Math.min(1440, Math.round(mins)) });
+  /* what was asked for, to the minute. This clamped at 1440 and said nothing, so a
+     30-hour entry was stored as 24 and the log agreed with itself about a number that
+     had never been typed. The ceiling lives at the entry point now, where it can refuse. */
+  sessions().push({ sid, ts: Date.now(), mins: Math.round(mins) });
   const after = profLv(s);
   /* a decade is a threshold, and crossing one is the only thing on this tab worth
      announcing — every other level is just the number moving */
@@ -8725,9 +8740,17 @@ function profAct(el) {
       break;
     }
     case "logcustom": {
-      const inp = $("#pfMins"); const v = inp ? +inp.value : 0;
-      if (v > 0) { profLog(id, profUnit === "hour" ? v * 60 : v); if (inp) inp.value = ""; }
-      else if (inp) { inp.focus(); }
+      const inp = $("#pfMins");
+      const mins = parseMins(inp && inp.value, profUnit);
+      if (mins === null) { if (inp) { inp.focus(); inp.select(); } break; }
+      /* refuse rather than truncate: the old code wrote 24h when 30h was typed */
+      if (mins > MINS_CAP) {
+        showToast("One session caps at 24h — " + fmtHours(mins / 60) + " is more than a day. Split it, or use Assess to set a starting prior.");
+        if (inp) { inp.focus(); inp.select(); }
+        break;
+      }
+      profLog(id, mins);
+      if (inp) inp.value = "";
       break;
     }
     case "unlog":   profUnlog(id, el.dataset.ts); break;
@@ -11040,7 +11063,9 @@ function renderTarot(landing) {
         '" data-tar="day" data-k="' + k + '" aria-pressed="' + (k === tarSel) +
         '" aria-label="' + esc(c2.n) + (r2.r ? ", reversed" : "") + ", " + k + '">' +
         '<img src="' + tarImg(c2) + '" alt="" loading="lazy" class="' + (r2.r ? "is-rev" : "") + '">' +
-        '<span class="d">' + (k === key ? "today" : esc(k.slice(5))) + "</span></button>";
+        /* its date, today's included. The word "today" was here and said what the card's
+           own size, opacity, border and shadow had already said four ways over. */
+        '<span class="d">' + esc(k.slice(5)) + "</span></button>";
     }).join("") + "</div>";
 
   h += '<div class="tar-readout">' +
@@ -11995,10 +12020,8 @@ function renderCrests() {
 function tileAria(s) {
   let a = `${s.name} — ${GROUP[s.attr].name}, ${rank(RUNG(s))}, score ${SCORE(s)} of ${SCORE_MAX(s)}`;
   if (LV(s) >= MAX_LV) a += ", mastered";
-  else if (isWeb(s)) a += `, scored from ${s.facets.length} facets`;
   else a += `, toward level ${s.level + 1}: ${gateLine(levelGate(s))}`;
-  if (s.facets.length >= FACET_MIN_POLY) a += `, web skill, ${s.facets.length} self-judged facets`;
-  else if (s.facets.length) a += `, ${s.facets.length} self-judged facets`;
+  if (s.facets.length) a += `, ${s.facets.length} parts self-assessed`;
   return a;
 }
 /* How wide the fraction's frame has to be, read off the numerator that is going into it.
@@ -12091,9 +12114,9 @@ function fcellHTML(sk, f) {
    The head carries the number and the line under it carries where the number came from,
    because the cells below look identical whether they produced it or merely describe it. */
 function natSectionHTML(sk) {
-  const src = hasConcepts(sk)
-    ? "scored by its concepts"
-    : sk.facets.length ? "scored by these facets" : "nothing to score it by yet";
+  /* the grid names itself. It said which of the two grids had produced the number above it,
+     which was worth a line while they could differ; neither does now. */
+  const src = "Self-assessment";
   const tiers = NAT_TIERS.map(([t, name]) => {
     const fs = sk.facets.filter(f => (f.tier || "f") === t);
     if (!fs.length) return "";
@@ -12661,18 +12684,7 @@ function skillHTML(s) {
     </div>`}
   </div>
 
-  ${isWeb(s) ? `
-  <div class="xp">
-    <div class="xp-cap">
-      <span class="to">Web average — <b>derived, not set by hand</b></span>
-      <span class="num">${facetMean(s).toFixed(2)} / ${MAX_LV}</span>
-    </div>
-    <div class="xp-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-      aria-valuenow="${Math.round(facetMean(s) / MAX_LV * 100)}"
-      aria-label="${esc(s.name)} scores ${fmtLv(LV(s))} of ${MAX_LV}, the average of ${s.facets.length} facets">
-      <span class="xp-fill" style="width:${Math.round(facetMean(s) / MAX_LV * 100)}%"></span>
-    </div>
-  </div>` : max ? `<div class="maxed"><div class="t">GRANDMASTER</div><p>Level ${MAX_LV} of ${MAX_LV}. Nothing left to prove here — keep it sharp.</p></div>` : `
+  ${max ? `<div class="maxed"><div class="t">GRANDMASTER</div><p>Level ${MAX_LV} of ${MAX_LV}. Nothing left to prove here — keep it sharp.</p></div>` : `
   <div class="xp">
     <div class="xp-cap">
       <span class="to">To Level ${next} — <b>${rank(next)}</b></span>
@@ -12768,15 +12780,15 @@ function webSectionHTML(s) {
       return `
   <section class="sect" aria-label="The web">
     <button type="button" class="btn btn-ghost btn-sm" data-action="startfacets">
-      ${ICON.web} Break into facets
+      ${ICON.web} Add a self-assessment
     </button>
   </section>`;
     }
     return `
   <section class="sect" aria-label="The web">
-    <span class="label">${ICON.web} The web — self-judged</span>
-    <p class="fc-note" style="margin-top:0">Break ${esc(s.name)} into facets to judge them
-    separately — add ${FACET_MIN_POLY} or more and the web appears.</p>
+    <span class="label">${ICON.web} Self-assessment</span>
+    <p class="fc-note" style="margin-top:0">Break ${esc(s.name)} into parts and judge them
+    separately — add ${FACET_MIN_POLY} or more and the polygon appears.</p>
     <form class="fc-add" data-form="addfacet">
       <input type="text" class="nmf" id="fcName" maxlength="30" placeholder="Facet name" aria-label="New facet name">
       <button type="button" class="emo-btn" id="fcEmoBtn" data-emopick data-val="🗿" popovertarget="emoPop" aria-label="Choose the facet icon — opens the emoji picker">🗿</button>
@@ -12785,8 +12797,8 @@ function webSectionHTML(s) {
   </section>`;
   }
   return `
-  <section class="sect" aria-label="The web — self-judged facets">
-    <span class="label">${ICON.web} The web — self-judged</span>
+  <section class="sect" aria-label="Self-assessment">
+    <span class="label">${ICON.web} Self-assessment</span>
     <div class="web-wrap">
       ${webSVG(s)}
       <ul class="fc-list">
@@ -12806,11 +12818,10 @@ function webSectionHTML(s) {
       </ul>
       ${s.facets.length < FACET_CAP ? `
       <form class="fc-add" data-form="addfacet" style="width:100%">
-        <input type="text" class="nmf" id="fcName" maxlength="30" placeholder="Facet name" aria-label="New facet name">
-        <button type="button" class="emo-btn" id="fcEmoBtn" data-emopick data-val="🗿" popovertarget="emoPop" aria-label="Choose the facet icon — opens the emoji picker">🗿</button>
+        <input type="text" class="nmf" id="fcName" maxlength="30" placeholder="What to judge" aria-label="Name of the part to judge">
+        <button type="button" class="emo-btn" id="fcEmoBtn" data-emopick data-val="🗿" popovertarget="emoPop" aria-label="Choose the icon — opens the emoji picker">🗿</button>
         <button type="submit" class="btn btn-ghost">${ICON.plus} Add</button>
-      </form>` : `<p class="fc-note">${FACET_CAP} facets is the cap — the web stays legible.</p>`}
-      <p class="fc-note">Judged, not earned — facets never feed levels or attributes.</p>
+      </form>` : `<p class="fc-note">${FACET_CAP} is the cap — the polygon stays legible.</p>`}
     </div>
   </section>`;
 }
@@ -13089,18 +13100,6 @@ function judgeFacet(s, fid, d) {
   trimJournal(); save();
   refreshWeb(s);            // surgical: polygon + digits + row states, focus stays put
   refreshFacetCell(s, f);   // ...and the cell on the board, which is the other place it shows
-  if (isWeb(s)) {           // ...but on a web skill the judgment also moves the score
-    const hv = $("#heroLv"); if (hv) hv.textContent = SCORE(s);
-    const hc = $("#heroCap"); if (hc) hc.textContent = "/ " + SCORE_MAX(s);
-    renderGrid();
-    const dn = document.querySelectorAll(".derived-note");
-    if (dn[0]) dn[0].textContent = `avg of ${s.facets.length} · ${facetMean(s).toFixed(2)}`;
-    if (dn[1]) dn[1].innerHTML = `${s.facets.reduce((t, f) => t + f.level, 0)} / ${s.facets.length} facets = ${facetMean(s).toFixed(2)} &rarr; <b>${fmtLv(LV(s))}</b>`;
-    const cap = document.querySelector(".xp-cap .num");
-    if (cap) cap.textContent = `${facetMean(s).toFixed(2)} / ${MAX_LV}`;
-    const fill = document.querySelector(".xp-fill");
-    if (fill) fill.style.width = Math.round(facetMean(s) / MAX_LV * 100) + "%";
-  }
   refreshJournalFor(s);
   showToast(`${f.name} judged at ${target}.`, true);
 }
@@ -13503,6 +13502,16 @@ function bindTooltip() {
   window.addEventListener("scroll", () => { clearTimeout(tipTimer); tip.classList.remove("show"); }, { passive: true });
   $("#grid").addEventListener("scroll", () => { clearTimeout(tipTimer); tip.classList.remove("show"); }, { passive: true });
 }
+
+/* Enter is Add, in the session field. It sits beside the button and had no way to reach
+   it: an input outside a form, so the key did nothing. */
+document.addEventListener("keydown", e => {
+  const t = e.target;
+  if (!t || t.id !== "pfMins" || e.key !== "Enter") return;
+  e.preventDefault();
+  const add = document.querySelector('[data-pf="logcustom"]');
+  if (add) profAct(add);
+});
 
 /* ---------- keyboard ---------- */
 function bindKeys() {
