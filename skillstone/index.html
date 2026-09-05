@@ -2973,6 +2973,10 @@ li.is-done .qg { color: var(--verdant); }
 }
 @media (hover: hover) { .j3-btn:hover { border-color: var(--bronze); color: var(--parchment); } }
 .j3-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.4); }
+/* a plate that is on holds the hover look: Rearrange while the grips are out */
+.j3-btn.is-on { border-color: var(--bronze); color: var(--parchment); }
+.j3-page .j3-btn.is-on { color: #F3E9D2; }
+.j3-sec-btns { display: flex; gap: 6px; flex: none; }
 
 /* a line you write on */
 .j3-row { display: flex; align-items: center; gap: 6px; min-height: 34px; position: relative; }
@@ -3114,6 +3118,31 @@ li.is-done .qg { color: var(--verdant); }
 /* the empty state IS the table: five ghost rows, so the shape reads before the content */
 .j3-habits.ghost { opacity: 0.45; pointer-events: none; }
 .j3-habits.ghost .j3-cell { cursor: default; }
+/* rearranging: the marks and the schedule go quiet and inert; each row grows a grip. The
+   lifted row is the quest step's lift on paper: a darker sheet, one ring, riding above. */
+.j3-habits.rearr { user-select: none; }
+.j3-habits.rearr .j3-cell, .j3-habits.rearr .hf { opacity: 0.4; pointer-events: none; }
+.j3-habits.rearr .j3-cell::after { display: none; }
+.j3-freq.still { display: inline-block; cursor: default; }
+.j3-grip {
+  appearance: none; background: none; border: 0; flex: none; padding: 0;
+  width: 28px; height: 34px; display: grid; place-items: center;
+  color: var(--mortar-2); border-radius: var(--r-sm); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+  transition: color var(--t-fast) var(--e-out);
+}
+.j3-grip svg { display: block; }
+@media (hover: hover) { .j3-grip:hover { color: var(--gold); } }
+.j3-grip:active { cursor: grabbing; }
+.j3-grip:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+@media (pointer: coarse) { .j3-grip { width: 44px; height: 44px; } }
+.j3-hname { flex: 1; min-width: 0; padding: 5px var(--s1) 5px 0; font-family: var(--f-ui); font-size: 0.875rem; color: var(--parchment); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.j3-hname.empty { color: var(--mortar-2); font-style: italic; }
+tr.j3-hrow.is-dragging td { background: var(--stone-2); box-shadow: inset 0 1px 0 var(--mortar-2), inset 0 -1px 0 var(--mortar-2); }
+tr.j3-hrow.is-dragging td:first-child { box-shadow: inset 1px 0 0 var(--mortar-2), inset 0 1px 0 var(--mortar-2), inset 0 -1px 0 var(--mortar-2); }
+tr.j3-hrow.is-dragging td:last-child { box-shadow: inset -1px 0 0 var(--mortar-2), inset 0 1px 0 var(--mortar-2), inset 0 -1px 0 var(--mortar-2); }
+tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
+.j3-habits tbody.is-reordering { cursor: grabbing; }
+.j3-habits tbody.is-reordering tr { user-select: none; }
 .j3-ghost-name {
   display: block; height: 8px; margin: 13px var(--s4) 13px 0;
   border-radius: 999px;
@@ -11568,6 +11597,7 @@ let j3Week = mondayOf(dayNow());
 let j3Cat = "All";
 let j3Sched = null;
 let j3Menu = null;      /* the one open row menu, by entry id */
+let j3Rearr = false;    /* the habits are being rearranged: grips out, marks inert */
 const j3Key = () => weekKeyOf(j3Week);
 
 /* Four categories, fixed. Typing a category was a decision the user should never have
@@ -11718,8 +11748,13 @@ function renderJ3() {
   bucket += "</section>";
 
   /* ---- habits ---- */
-  let habits = '<section class="j3-wide"><div class="j3-sec-h"><span class="label">Habits</span>' +
-    '<button type="button" class="j3-btn" data-j3="h-new">Add habit</button></div>';
+  /* two plates in the head: Add habit, and Rearrange — which reads Done while the rows carry
+     grips. It stands last, so its label can change width without shoving anything. With one
+     habit there is nothing to rearrange, and the plate is not shown. */
+  let habits = '<section class="j3-wide"><div class="j3-sec-h"><span class="label">Habits</span><div class="j3-sec-btns">' +
+    '<button type="button" class="j3-btn" data-j3="h-new">Add habit</button>' +
+    (b.habits.length > 1 ? '<button type="button" class="j3-btn' + (j3Rearr ? ' is-on' : '') + '" data-j3="h-rearr" aria-pressed="' + j3Rearr +
+      '">' + (j3Rearr ? 'Done' : 'Rearrange') + '</button>' : '') + '</div></div>';
   if (!b.habits.length) {
     /* the shape before the content: five ghost rows so the table is legible empty */
     habits += '<table class="j3-habits ghost" aria-hidden="true"><thead><tr><th class="hn">Habit</th><th></th>';
@@ -11735,12 +11770,27 @@ function renderJ3() {
     for (let d = 0; d < 7; d++) habits += '<td><span class="n">\u00b7</span></td>';
     habits += "</tr></tbody></table>";
   } else {
-    habits += '<table class="j3-habits"><thead><tr><th class="hn">Habit</th><th></th>';
+    habits += '<table class="j3-habits' + (j3Rearr ? ' rearr' : '') + '"><thead><tr><th class="hn">Habit</th><th></th>';
     for (let d = 0; d < 7; d++)
       habits += '<th' + (isThisWeek && d === todayDow ? ' class="today"' : "") + ">" + DOW_SHORT[d] + "</th>";
     habits += "</tr></thead><tbody>";
-    b.habits.forEach(hb => {
+    b.habits.forEach((hb, hi) => {
       const row = checks[hb.id] || {};
+      if (j3Rearr) {
+        /* the row while rearranging: a grip, the name as text, the marks kept but quiet. The
+           grip is the quest steps' grip; the drag is theirs too (see "dragging a row by its grip"). */
+        const nm = hb.name || 'unnamed habit';
+        habits += '<tr data-hid="' + hb.id + '" class="j3-hrow"><td class="hn"><div class="j3-row">' +
+          '<button type="button" class="j3-grip" data-j3="h-grip" data-id="' + hb.id +
+            '" aria-label="' + esc('Move ' + nm + ', ' + (hi + 1) + ' of ' + b.habits.length + '. Drag it, or press the up and down arrow keys.') +
+            '" title="Drag to move \u00b7 \u2191 \u2193 to step">' + GRIP_SVG + '</button>' +
+          '<span class="j3-hname' + (hb.name ? '' : ' empty') + '">' + esc(nm) + '</span></div></td>';
+        habits += '<td class="hf"><span class="j3-freq still" aria-hidden="true">' + schedLabel(hb) + '</span></td>';
+        for (let d = 0; d < 7; d++)
+          habits += '<td class="j3-cell' + (isSched(hb, d) ? ' sched' : '') + '" aria-hidden="true">' + markSVG(row[d]) + '</td>';
+        habits += '</tr>';
+        return;
+      }
       habits += '<tr><td class="hn"><div class="j3-row">' +
         '<input class="j3-in" data-j3="h-name" data-id="' + hb.id + '" value="' + esc(hb.name) +
           '" placeholder="name this habit\u2026" aria-label="Habit name">' +
@@ -11921,6 +11971,28 @@ document.addEventListener("pointerdown", e => { const b = e.target.closest && e.
 document.addEventListener("pointermove", j3PullMove);
 document.addEventListener("pointerup", j3PullEnd);
 document.addEventListener("pointercancel", j3PullEnd);
+
+/* the habits' order is the array's order. A drag commits the list as the grips stand;
+   the arrow keys move one place and put focus back on the same habit's grip. */
+function j3HabitOrder(ids) {
+  const b = book(), by = {};
+  b.habits.forEach(h => { by[h.id] = h; });
+  const next = ids.map(id => by[id]).filter(Boolean);
+  if (next.length !== b.habits.length) return;      /* a grip went missing: keep the model as it was */
+  if (next.every((h, i) => h === b.habits[i])) return;
+  b.habits = next; save();
+}
+document.addEventListener("keydown", e => {
+  const g = e.target.closest && e.target.closest(".j3-grip");
+  if (!g || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+  e.preventDefault();
+  const b = book(), i = b.habits.findIndex(h => h.id === g.dataset.id), j = i + (e.key === "ArrowUp" ? -1 : 1);
+  if (i < 0 || j < 0 || j >= b.habits.length) return;
+  const [h] = b.habits.splice(i, 1); b.habits.splice(j, 0, h);
+  save(); renderJ3();
+  const again = $("#viewJournal").querySelector('.j3-grip[data-id="' + g.dataset.id + '"]');
+  if (again) again.focus({ preventScroll: true });
+});
 document.addEventListener("keydown", e => {
   const b = e.target.closest && e.target.closest(".j3-corner");
   if (b && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); j3Turn(addDays(j3Week, Number(b.dataset.corner) * 7)); }
@@ -12030,10 +12102,12 @@ function j3Act(t) {
                          if (f) f.focus({ preventScroll: true });
                          return; }
     case "h-new":      { const nh = { id: uid(), name: "", schedule: { type: "days", days: [0,1,2,3,4,5,6] } };
-                         b.habits.push(nh); j3Sched = null; save(); renderJ3();
+                         b.habits.push(nh); j3Sched = null; j3Rearr = false; save(); renderJ3();
                          const f = $("#viewJournal").querySelector('[data-j3="h-name"][data-id="' + nh.id + '"]');
                          if (f) f.focus({ preventScroll: true });
                          return; }
+    case "h-rearr":    j3Rearr = !j3Rearr; j3Sched = null; break;
+    case "h-grip":     return;          /* the grip works by pointer and arrow keys, not by click */
     case "h-sched":    j3Sched = j3Sched === id ? null : id; break;
     case "s-day":      { const x = b.habits.find(y => y.id === id);
                          if (x) { const days = x.schedule.type === "days" ? x.schedule.days.slice() : [];
@@ -14210,7 +14284,7 @@ document.addEventListener("keydown", e => {
   if (c3) { e.preventDefault(); j3Cycle(c3); return; }
 });
 
-/* ---------- dragging a step by its grip ---------- */
+/* ---------- dragging a row by its grip: one mechanism, two lists (quest steps, habits) ---------- */
 /* The preview is the real list: the row is re-inserted between its neighbours as the
    pointer crosses their midpoints, and the numbers renumber live, so the order on screen
    at release is exactly the order that gets written. Midpoint-crossing is stable even with
@@ -14230,48 +14304,63 @@ document.addEventListener("keydown", e => {
   if (btn) btn.focus({ preventScroll: true });
 });
 
-let qDrag = null;
+/* A list joins by naming its grip, which element is a row, what to do after each move, how
+   to commit the order the grips stand in, and how to redraw. The quest steps renumber as
+   they move; the habits keep their totals row last, so a drop past the last habit lands
+   above it. */
+const GRIP_LISTS = [
+  { grip: ".qb-grip", row: g => g.closest("li"), isRow: () => true,
+    moved: ol => Array.from(ol.children).forEach((n, ix) => { const nn = n.querySelector(".ix"); if (nn) nn.textContent = ix + 1; }),
+    commit: (g, ol) => qStepOrder(g.dataset.id, Array.from(ol.querySelectorAll(".qb-grip")).map(x => x.dataset.s)),
+    render: () => renderCampaigns() },
+  { grip: ".j3-grip", row: g => g.closest("tr"), isRow: r => r.hasAttribute("data-hid"),
+    tail: list => list.querySelector("tr.j3-tot"),
+    commit: (g, list) => j3HabitOrder(Array.from(list.querySelectorAll(".j3-grip")).map(x => x.dataset.id)),
+    render: () => renderJ3() }
+];
+let gDrag = null;
 document.addEventListener("pointerdown", e => {
-  const g = e.target.closest && e.target.closest(".qb-grip");
-  if (!g || (e.pointerType === "mouse" && e.button !== 0)) return;
-  const li = g.closest("li"), ol = li && li.parentElement;
-  if (!ol) return;
-  qDrag = { id: g.dataset.id, li, ol, moved: false, y0: e.clientY };
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  const spec = GRIP_LISTS.find(x => e.target.closest && e.target.closest(x.grip));
+  if (!spec) return;
+  const g = e.target.closest(spec.grip), row = spec.row(g), list = row && row.parentElement;
+  if (!list) return;
+  gDrag = { spec, g, row, list, moved: false, y0: e.clientY };
   try { g.setPointerCapture(e.pointerId); } catch (_) {}
   e.preventDefault();
 });
 document.addEventListener("pointermove", e => {
-  if (!qDrag) return;
-  if (!qDrag.moved) {
-    if (Math.abs(e.clientY - qDrag.y0) < 4) return;   /* a click is not a drag yet */
-    qDrag.moved = true;
-    qDrag.li.classList.add("is-dragging");
-    qDrag.ol.classList.add("is-reordering");
+  if (!gDrag) return;
+  const { spec, row, list } = gDrag;
+  if (!gDrag.moved) {
+    if (Math.abs(e.clientY - gDrag.y0) < 4) return;   /* a click is not a drag yet */
+    gDrag.moved = true;
+    row.classList.add("is-dragging");
+    list.classList.add("is-reordering");
   }
-  /* the slot under the pointer: the first sibling whose midpoint is still below it */
-  let before = null;
-  for (const s of qDrag.ol.children) {
-    if (s === qDrag.li) continue;
-    const r = s.getBoundingClientRect();
-    if (e.clientY < r.top + r.height / 2) { before = s; break; }
+  /* the slot under the pointer: the first row whose midpoint is still below it */
+  let before = spec.tail ? spec.tail(list) : null;
+  for (const sib of list.children) {
+    if (sib === row || !spec.isRow(sib)) continue;
+    const r = sib.getBoundingClientRect();
+    if (e.clientY < r.top + r.height / 2) { before = sib; break; }
   }
-  if (before !== qDrag.li.nextElementSibling) {
-    qDrag.ol.insertBefore(qDrag.li, before);
-    Array.from(qDrag.ol.children).forEach((n, ix) => {
-      const nn = n.querySelector(".ix"); if (nn) nn.textContent = ix + 1; });
+  if (before !== row.nextElementSibling) {
+    list.insertBefore(row, before);
+    if (spec.moved) spec.moved(list);
   }
 });
-function qDragEnd(commit) {
-  const d = qDrag; qDrag = null;
+function gDragEnd(commit) {
+  const d = gDrag; gDrag = null;
   if (!d) return;
-  d.li.classList.remove("is-dragging");
-  d.ol.classList.remove("is-reordering");
+  d.row.classList.remove("is-dragging");
+  d.list.classList.remove("is-reordering");
   if (!d.moved) return;
-  if (commit) qStepOrder(d.id, Array.from(d.ol.querySelectorAll(".qb-grip")).map(g => g.dataset.s));
-  renderCampaigns();      /* committed or abandoned, the model is the truth again */
+  if (commit) d.spec.commit(d.g, d.list);
+  d.spec.render();      /* committed or abandoned, the model is the truth again */
 }
-document.addEventListener("pointerup", () => qDragEnd(true));
-document.addEventListener("pointercancel", () => qDragEnd(false));
+document.addEventListener("pointerup", () => gDragEnd(true));
+document.addEventListener("pointercancel", () => gDragEnd(false));
 /* the keyboard path the arrows carried: the grip itself takes ArrowUp / ArrowDown */
 document.addEventListener("keydown", e => {
   const g = e.target.closest && e.target.closest(".qb-grip");
