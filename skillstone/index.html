@@ -2973,9 +2973,7 @@ li.is-done .qg { color: var(--verdant); }
 }
 @media (hover: hover) { .j3-btn:hover { border-color: var(--bronze); color: var(--parchment); } }
 .j3-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.4); }
-/* a plate that is on holds the hover look: Rearrange while the grips are out */
-.j3-btn.is-on { border-color: var(--bronze); color: var(--parchment); }
-.j3-page .j3-btn.is-on { color: #F3E9D2; }
+/* the head's plates: one, or three while editing */
 .j3-sec-btns { display: flex; gap: 6px; flex: none; }
 
 /* a line you write on */
@@ -3118,12 +3116,11 @@ li.is-done .qg { color: var(--verdant); }
 /* the empty state IS the table: five ghost rows, so the shape reads before the content */
 .j3-habits.ghost { opacity: 0.45; pointer-events: none; }
 .j3-habits.ghost .j3-cell { cursor: default; }
-/* rearranging: the marks and the schedule go quiet and inert; each row grows a grip. The
-   lifted row is the quest step's lift on paper: a darker sheet, one ring, riding above. */
-.j3-habits.rearr { user-select: none; }
-.j3-habits.rearr .j3-cell, .j3-habits.rearr .hf { opacity: 0.4; pointer-events: none; }
-.j3-habits.rearr .j3-cell::after { display: none; }
-.j3-freq.still { display: inline-block; cursor: default; }
+/* editing habits: the day columns give way to one column of two actions — move (the quest
+   hall's grip) and remove. Remove strikes the row and is undone in place; Save makes it final. */
+.j3-habits.editing .j3-x { opacity: 1; width: 28px; height: 34px; }
+.j3-habits.editing th.ha, .j3-habits.editing td.ha { width: 76px; padding: 0; }
+.j3-acts { display: flex; align-items: center; justify-content: flex-end; gap: 2px; padding-right: 2px; }
 .j3-grip {
   appearance: none; background: none; border: 0; flex: none; padding: 0;
   width: 28px; height: 34px; display: grid; place-items: center;
@@ -3131,12 +3128,24 @@ li.is-done .qg { color: var(--verdant); }
   transition: color var(--t-fast) var(--e-out);
 }
 .j3-grip svg { display: block; }
-@media (hover: hover) { .j3-grip:hover { color: var(--gold); } }
-.j3-grip:active { cursor: grabbing; }
+@media (hover: hover) { .j3-grip:hover:not([disabled]) { color: var(--gold); } }
+.j3-grip:active:not([disabled]) { cursor: grabbing; }
 .j3-grip:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-@media (pointer: coarse) { .j3-grip { width: 44px; height: 44px; } }
+.j3-grip[disabled] { cursor: default; opacity: 0.35; }
+@media (pointer: coarse) {
+  .j3-grip, .j3-habits.editing .j3-x { width: 44px; height: 44px; }
+  .j3-habits.editing th.ha, .j3-habits.editing td.ha { width: 100px; }
+}
+/* the week view: the name and the schedule are text */
 .j3-hname { flex: 1; min-width: 0; padding: 5px var(--s1) 5px 0; font-family: var(--f-ui); font-size: 0.875rem; color: var(--parchment); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .j3-hname.empty { color: var(--mortar-2); font-style: italic; }
+.j3-freq.still { display: inline-block; cursor: default; }
+/* a struck row: name crossed, its controls dimmed, only the restore at full strength */
+.j3-habits tr.is-cut .j3-in, .j3-habits tr.is-cut .j3-freq { opacity: 0.4; }
+.j3-habits tr.is-cut .j3-in { text-decoration: line-through; }
+.j3-habits .j3-x.undo { color: var(--gold); font-size: 1rem; }
+@media (hover: hover) { .j3-habits .j3-x.undo:hover { color: var(--gold-2); } }
+/* the lifted row: the quest step's lift on paper — a darker sheet, one ring, riding above */
 tr.j3-hrow.is-dragging td { background: var(--stone-2); box-shadow: inset 0 1px 0 var(--mortar-2), inset 0 -1px 0 var(--mortar-2); }
 tr.j3-hrow.is-dragging td:first-child { box-shadow: inset 1px 0 0 var(--mortar-2), inset 0 1px 0 var(--mortar-2), inset 0 -1px 0 var(--mortar-2); }
 tr.j3-hrow.is-dragging td:last-child { box-shadow: inset -1px 0 0 var(--mortar-2), inset 0 1px 0 var(--mortar-2), inset 0 -1px 0 var(--mortar-2); }
@@ -3703,6 +3712,16 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     <div class="bk-foot">
       <button type="button" class="btn btn-ghost btn-sm" data-cmp="questdelno">Cancel</button>
       <button type="submit" class="btn btn-danger btn-sm">Delete quest</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="habDlg" class="bk-dlg dlg-sm" aria-label="Discard changes to habits">
+  <form method="dialog" data-form="hab-discard">
+    <p class="bk-h">Discard the changes to your habits?</p>
+    <p class="bk-p" id="habWhat"></p>
+    <div class="bk-foot">
+      <button type="button" class="btn btn-ghost btn-sm" data-j3="h-keep">Keep editing</button>
+      <button type="submit" class="btn btn-danger btn-sm">Discard changes</button>
     </div>
   </form>
 </dialog>
@@ -11597,7 +11616,7 @@ let j3Week = mondayOf(dayNow());
 let j3Cat = "All";
 let j3Sched = null;
 let j3Menu = null;      /* the one open row menu, by entry id */
-let j3Rearr = false;    /* the habits are being rearranged: grips out, marks inert */
+let j3Draft = null;     /* the habits being edited: a copy of the list, with _del and _new flags, until Save or Cancel */
 const j3Key = () => weekKeyOf(j3Week);
 
 /* Four categories, fixed. Typing a category was a decision the user should never have
@@ -11748,14 +11767,18 @@ function renderJ3() {
   bucket += "</section>";
 
   /* ---- habits ---- */
-  /* two plates in the head: Add habit, and Rearrange — which reads Done while the rows carry
-     grips. It stands last, so its label can change width without shoving anything. With one
-     habit there is nothing to rearrange, and the plate is not shown. */
+  /* one plate in the head — Edit habits (Add habit while there are none) — or, while editing,
+     three: Add habit, Cancel, Save. Everything structural lives behind the first; the week
+     view is for ticking, and nothing on it deletes. */
+  const editing = !!j3Draft;
   let habits = '<section class="j3-wide"><div class="j3-sec-h"><span class="label">Habits</span><div class="j3-sec-btns">' +
-    '<button type="button" class="j3-btn" data-j3="h-new">Add habit</button>' +
-    (b.habits.length > 1 ? '<button type="button" class="j3-btn' + (j3Rearr ? ' is-on' : '') + '" data-j3="h-rearr" aria-pressed="' + j3Rearr +
-      '">' + (j3Rearr ? 'Done' : 'Rearrange') + '</button>' : '') + '</div></div>';
-  if (!b.habits.length) {
+    (editing
+      ? '<button type="button" class="j3-btn" data-j3="h-new">Add habit</button>' +
+        '<button type="button" class="j3-btn" data-j3="h-cancel">Cancel</button>' +
+        '<button type="button" class="j3-btn" data-j3="h-save">Save</button>'
+      : '<button type="button" class="j3-btn" data-j3="h-edit">' + (b.habits.length ? "Edit habits" : "Add habit") + "</button>") +
+    '</div></div>';
+  if (!b.habits.length && !editing) {
     /* the shape before the content: five ghost rows so the table is legible empty */
     habits += '<table class="j3-habits ghost" aria-hidden="true"><thead><tr><th class="hn">Habit</th><th></th>';
     for (let d = 0; d < 7; d++)
@@ -11770,60 +11793,70 @@ function renderJ3() {
     for (let d = 0; d < 7; d++) habits += '<td><span class="n">\u00b7</span></td>';
     habits += "</tr></tbody></table>";
   } else {
-    habits += '<table class="j3-habits' + (j3Rearr ? ' rearr' : '') + '"><thead><tr><th class="hn">Habit</th><th></th>';
-    for (let d = 0; d < 7; d++)
-      habits += '<th' + (isThisWeek && d === todayDow ? ' class="today"' : "") + ">" + DOW_SHORT[d] + "</th>";
-    habits += "</tr></thead><tbody>";
-    b.habits.forEach((hb, hi) => {
+    /* editing: the seven day columns give way to one column of actions */
+    if (editing) habits += '<table class="j3-habits editing"><thead><tr><th class="hn">Habit</th><th class="hf"></th><th class="ha"></th></tr></thead><tbody>';
+    else {
+      habits += '<table class="j3-habits"><thead><tr><th class="hn">Habit</th><th></th>';
+      for (let d = 0; d < 7; d++)
+        habits += '<th' + (isThisWeek && d === todayDow ? ' class="today"' : "") + ">" + DOW_SHORT[d] + "</th>";
+      habits += "</tr></thead><tbody>";
+    }
+    const list = editing ? j3Draft.habits : b.habits;
+    list.forEach((hb, hi) => {
       const row = checks[hb.id] || {};
-      if (j3Rearr) {
-        /* the row while rearranging: a grip, the name as text, the marks kept but quiet. The
-           grip is the quest steps' grip; the drag is theirs too (see "dragging a row by its grip"). */
-        const nm = hb.name || 'unnamed habit';
-        habits += '<tr data-hid="' + hb.id + '" class="j3-hrow"><td class="hn"><div class="j3-row">' +
+      const nm = hb.name || "unnamed habit";
+      if (editing) {
+        /* the row while editing: the name to type, the schedule to set, and — where the marks
+           were — the two actions: move (the quest hall's grip) and remove. Remove strikes the
+           row; it is undone by the same button or by Cancel, and final only on Save. */
+        const cut = !!hb._del;
+        habits += '<tr data-hid="' + hb.id + '" class="j3-hrow' + (cut ? " is-cut" : "") + '"><td class="hn"><div class="j3-row">' +
+          '<input class="j3-in" data-j3="h-name" data-id="' + hb.id + '" value="' + esc(hb.name) +
+            '" placeholder="name this habit…" aria-label="Habit name"' + (cut ? " disabled" : "") + "></div></td>";
+        habits += '<td class="hf"><button type="button" class="j3-freq" data-j3="h-sched" data-id="' + hb.id +
+          '" title="' + esc(schedTitle(hb)) + '" aria-label="Schedule: ' + esc(schedTitle(hb)) + '"' + (cut ? " disabled" : "") + ">" + schedLabel(hb) + "</button></td>";
+        habits += '<td class="ha"><div class="j3-acts">' +
           '<button type="button" class="j3-grip" data-j3="h-grip" data-id="' + hb.id +
-            '" aria-label="' + esc('Move ' + nm + ', ' + (hi + 1) + ' of ' + b.habits.length + '. Drag it, or press the up and down arrow keys.') +
-            '" title="Drag to move \u00b7 \u2191 \u2193 to step">' + GRIP_SVG + '</button>' +
-          '<span class="j3-hname' + (hb.name ? '' : ' empty') + '">' + esc(nm) + '</span></div></td>';
-        habits += '<td class="hf"><span class="j3-freq still" aria-hidden="true">' + schedLabel(hb) + '</span></td>';
-        for (let d = 0; d < 7; d++)
-          habits += '<td class="j3-cell' + (isSched(hb, d) ? ' sched' : '') + '" aria-hidden="true">' + markSVG(row[d]) + '</td>';
-        habits += '</tr>';
+            '" aria-label="' + esc("Move " + nm + ", " + (hi + 1) + " of " + list.length + ". Drag it, or press the up and down arrow keys.") +
+            '" title="Drag to move · ↑ ↓ to step"' + (cut ? " disabled" : "") + ">" + GRIP_SVG + "</button>" +
+          '<button type="button" class="j3-x' + (cut ? " undo" : "") + '" data-j3="h-del" data-id="' + hb.id +
+            '" aria-label="' + esc((cut ? "Restore " : "Remove ") + nm) + '" title="' + (cut ? "Restore" : "Remove — undone by Cancel, final on Save") + '">' +
+            (cut ? "↶" : "×") + "</button></div></td></tr>";
+        if (j3Sched === hb.id && !cut) {
+          habits += '<tr class="j3-sched-row"><td colspan="3"><div class="j3-sched">';
+          for (let d = 0; d < 7; d++)
+            habits += '<button type="button" class="j3-dow" data-j3="s-day" data-id="' + hb.id + '" data-dow="' + d +
+              '" aria-pressed="' + isSched(hb, d) + '">' + DOW_SHORT[d] + "</button>";
+          habits += '<span class="n">or</span><input class="j3-mini price" type="number" min="1" max="7" data-j3="s-count" data-id="' +
+            hb.id + '" value="' + (hb.schedule.type === "count" ? hb.schedule.n : "") +
+            '" placeholder="n" aria-label="Times a week"><span class="n">× a week</span></div></td></tr>';
+        }
         return;
       }
-      habits += '<tr><td class="hn"><div class="j3-row">' +
-        '<input class="j3-in" data-j3="h-name" data-id="' + hb.id + '" value="' + esc(hb.name) +
-          '" placeholder="name this habit\u2026" aria-label="Habit name">' +
-        j3RowX("h-del", hb.id, "habit") + "</div></td>";
-      habits += '<td class="hf"><button type="button" class="j3-freq" data-j3="h-sched" data-id="' + hb.id +
-        '" title="' + esc(schedTitle(hb)) + '" aria-label="Schedule: ' + esc(schedTitle(hb)) + '">' + schedLabel(hb) + "</button></td>";
+      /* the week: the name and the schedule as text, the seven marks to tick */
+      habits += '<tr><td class="hn"><div class="j3-row"><span class="j3-hname' + (hb.name ? "" : " empty") + '">' + esc(nm) + "</span></div></td>";
+      habits += '<td class="hf"><span class="j3-freq still" title="' + esc(schedTitle(hb)) + '">' + schedLabel(hb) + "</span></td>";
       for (let d = 0; d < 7; d++) {
         const cur = row[d] || "none";
         const next = HAB_MARKS[(HAB_MARKS.indexOf(cur) + 1) % HAB_MARKS.length];
         habits += '<td class="j3-cell' + (isSched(hb, d) ? " sched" : "") + '" data-j3="cycle" data-id="' + hb.id +
           '" data-dow="' + d + '" role="button" tabindex="0"' +
-          ' title="' + esc(DOW_LONG[d] + " \u00b7 " + cur + " \u2192 " + next) + '"' +
+          ' title="' + esc(DOW_LONG[d] + " · " + cur + " → " + next) + '"' +
           ' aria-label="' + esc(hb.name + ", " + DOW_LONG[d] + ": " + cur + ". Next: " + next) + '">' +
           markSVG(row[d]) + "</td>";
       }
       habits += "</tr>";
-      if (j3Sched === hb.id) {
-        habits += '<tr><td colspan="9"><div class="j3-sched">';
-        for (let d = 0; d < 7; d++)
-          habits += '<button type="button" class="j3-dow" data-j3="s-day" data-id="' + hb.id + '" data-dow="' + d +
-            '" aria-pressed="' + isSched(hb, d) + '">' + DOW_SHORT[d] + "</button>";
-        habits += '<span class="n">or</span><input class="j3-mini price" type="number" min="1" max="7" data-j3="s-count" data-id="' +
-          hb.id + '" value="' + (hb.schedule.type === "count" ? hb.schedule.n : "") +
-          '" placeholder="n" aria-label="Times a week"><span class="n">\u00d7 a week</span></div></td></tr>';
-      }
     });
-    habits += '<tr class="j3-tot"><td class="hn"><span class="lbl">Marked</span></td><td></td>';
-    for (let d = 0; d < 7; d++) {
-      const n = b.habits.reduce((t, hb) => t + ((checks[hb.id] || {})[d] ? 1 : 0), 0);
-      habits += '<td><span class="n" data-j3tot="' + d + '">' + (n || "\u00b7") + "</span></td>";
+    if (!editing) {
+      habits += '<tr class="j3-tot"><td class="hn"><span class="lbl">Marked</span></td><td></td>';
+      for (let d = 0; d < 7; d++) {
+        const n = b.habits.reduce((t, hb) => t + ((checks[hb.id] || {})[d] ? 1 : 0), 0);
+        habits += '<td><span class="n" data-j3tot="' + d + '">' + (n || "·") + "</span></td>";
+      }
+      habits += "</tr>";
     }
-    habits += "</tr></tbody></table>";
-    habits += '<div class="j3-legend"><span>' + markSVG("partial") + "partial</span><span>" +
+    habits += "</tbody></table>";
+    if (!editing) habits += '<div class="j3-legend"><span>' + markSVG("partial") + "partial</span><span>" +
       markSVG("expected") + "done</span><span>" + markSVG("excellent") + "excellent</span></div>";
   }
   habits += '</section>';
@@ -11972,24 +12005,92 @@ document.addEventListener("pointermove", j3PullMove);
 document.addEventListener("pointerup", j3PullEnd);
 document.addEventListener("pointercancel", j3PullEnd);
 
-/* the habits' order is the array's order. A drag commits the list as the grips stand;
-   the arrow keys move one place and put focus back on the same habit's grip. */
+/* ---------- editing habits: a draft, then Save or Cancel ----------
+   Edit habits copies the list into a draft. Every structural change — a name, a schedule, the
+   order, a removal, an addition — happens to the draft; the week's marks are untouched until
+   Save writes the draft back. Remove strikes a row: undone by the same button or by Cancel,
+   final only on Save, which is also when the struck habit's marks go. Cancel with changes
+   pending asks first; Cancel with nothing changed just leaves. A × that deleted at once, with
+   its history, is how a habit was lost — nothing on the week view deletes any more. */
+const HAB_DEFAULT = () => ({ type: "days", days: [0, 1, 2, 3, 4, 5, 6] });
+function j3HabitsEdit(addOne) {
+  const b = book();
+  j3Draft = { habits: JSON.parse(JSON.stringify(b.habits)) };
+  j3Sched = null;
+  let focusId = null;
+  if (addOne) { const nh = { id: uid(), name: "", schedule: HAB_DEFAULT(), _new: true }; j3Draft.habits.push(nh); focusId = nh.id; }
+  renderJ3();
+  const f = $("#viewJournal").querySelector(focusId ? '[data-j3="h-name"][data-id="' + focusId + '"]' : '[data-j3="h-name"]');
+  if (f) f.focus({ preventScroll: true });
+}
+function j3HabitAdd() {
+  if (!j3Draft) { j3HabitsEdit(true); return; }
+  const nh = { id: uid(), name: "", schedule: HAB_DEFAULT(), _new: true };
+  j3Draft.habits.push(nh); j3Sched = null; renderJ3();
+  const f = $("#viewJournal").querySelector('[data-j3="h-name"][data-id="' + nh.id + '"]');
+  if (f) f.focus({ preventScroll: true });
+}
+/* what the draft would write: struck rows out, unnamed new rows out */
+const j3DraftLive = () => j3Draft.habits.filter(h => !h._del && !(h._new && !String(h.name).trim()));
+function j3DraftDiff() {
+  const b = book(), d = j3Draft, live = j3DraftLive();
+  const old = id => b.habits.find(x => x.id === id);
+  const kept = live.filter(h => !h._new);
+  const diff = {
+    removed: d.habits.filter(h => h._del).length,
+    added: live.filter(h => h._new).length,
+    renamed: kept.filter(h => old(h.id) && old(h.id).name !== h.name).length,
+    resched: kept.filter(h => old(h.id) && JSON.stringify(old(h.id).schedule) !== JSON.stringify(h.schedule)).length,
+    order: kept.map(h => h.id).join() !== b.habits.filter(x => kept.some(h => h.id === x.id)).map(x => x.id).join()
+  };
+  diff.any = !!(diff.removed || diff.added || diff.renamed || diff.resched || diff.order);
+  return diff;
+}
+function j3HabitsSave() {
+  const b = book(); if (!j3Draft) return;
+  const gone = j3Draft.habits.filter(h => h._del).map(h => h.id);
+  b.habits = j3DraftLive().map(h => ({ id: h.id, name: String(h.name).slice(0, 80), schedule: h.schedule }));
+  gone.forEach(id => Object.keys(b.checks).forEach(k => { if (b.checks[k]) delete b.checks[k][id]; }));
+  j3Draft = null; j3Sched = null;
+  save(); renderJ3();
+  const p = $("#viewJournal").querySelector('[data-j3="h-edit"]'); if (p) p.focus({ preventScroll: true });
+}
+function j3HabitsCancel(force) {
+  if (!j3Draft) return;
+  if (!force && j3DraftDiff().any) { j3DiscardAsk(); return; }
+  j3Draft = null; j3Sched = null; renderJ3();
+  const p = $("#viewJournal").querySelector('[data-j3="h-edit"]'); if (p) p.focus({ preventScroll: true });
+}
+/* the question names what would be lost — that is the information the screen does not show */
+function j3DiscardAsk() {
+  const dlg = $("#habDlg"); if (!dlg || !dlg.showModal) { j3HabitsCancel(true); return; }
+  const d = j3DraftDiff(), parts = [];
+  const one = (n, a, rest) => n === 1 ? a : n + " " + rest;
+  if (d.removed) parts.push(one(d.removed, "one habit removed", "habits removed"));
+  if (d.added) parts.push(one(d.added, "one added", "added"));
+  if (d.renamed) parts.push(one(d.renamed, "one renamed", "renamed"));
+  if (d.resched) parts.push(one(d.resched, "one schedule changed", "schedules changed"));
+  if (d.order) parts.push("the order changed");
+  $("#habWhat").textContent = parts.join(" · ");
+  dlg.showModal();
+  const keep = dlg.querySelector('[data-j3="h-keep"]'); if (keep) keep.focus();
+}
+/* the draft's order, as the grips stand after a drag — Save writes it */
 function j3HabitOrder(ids) {
-  const b = book(), by = {};
-  b.habits.forEach(h => { by[h.id] = h; });
+  if (!j3Draft) return;
+  const by = {}; j3Draft.habits.forEach(h => { by[h.id] = h; });
   const next = ids.map(id => by[id]).filter(Boolean);
-  if (next.length !== b.habits.length) return;      /* a grip went missing: keep the model as it was */
-  if (next.every((h, i) => h === b.habits[i])) return;
-  b.habits = next; save();
+  if (next.length !== j3Draft.habits.length) return;      /* a grip went missing: keep the draft as it was */
+  j3Draft.habits = next;
 }
 document.addEventListener("keydown", e => {
   const g = e.target.closest && e.target.closest(".j3-grip");
-  if (!g || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+  if (!g || !j3Draft || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
   e.preventDefault();
-  const b = book(), i = b.habits.findIndex(h => h.id === g.dataset.id), j = i + (e.key === "ArrowUp" ? -1 : 1);
-  if (i < 0 || j < 0 || j >= b.habits.length) return;
-  const [h] = b.habits.splice(i, 1); b.habits.splice(j, 0, h);
-  save(); renderJ3();
+  const i = j3Draft.habits.findIndex(h => h.id === g.dataset.id), j = i + (e.key === "ArrowUp" ? -1 : 1);
+  if (i < 0 || j < 0 || j >= j3Draft.habits.length) return;
+  const [h] = j3Draft.habits.splice(i, 1); j3Draft.habits.splice(j, 0, h);
+  renderJ3();
   const again = $("#viewJournal").querySelector('.j3-grip[data-id="' + g.dataset.id + '"]');
   if (again) again.focus({ preventScroll: true });
 });
@@ -12007,13 +12108,13 @@ function j3Edit(t) {
   switch (t.dataset.j3) {
     case "e-text": { const o = kind === "rem" ? rem() : note(); if (o) o.text = v; break; }
     case "b-text":  { const x = b.bucket.find(y => y.id === id); if (x) x.text = v; break; }
-    case "h-name":  { const x = b.habits.find(y => y.id === id); if (x) x.name = v; break; }
+    case "h-name":  { const x = j3Draft && j3Draft.habits.find(y => y.id === id); if (x) x.name = v.slice(0, 80); return; }
     case "d-text":  { const e = ((b.days[key] || {})[t.dataset.dow] || []).find(x => x.id === id);
                       if (e) e.text = v; break; }
     case "wk-title":{ if (v.trim()) b.titles[key] = v.trim().slice(0, 60); else delete b.titles[key]; break; }
-    case "s-count": { const x = b.habits.find(y => y.id === id);
+    case "s-count": { const x = j3Draft && j3Draft.habits.find(y => y.id === id);
                       if (x) x.schedule = { type: "count", n: Math.max(1, Math.min(7, Number(v) || 1)) };
-                      save(); renderJ3(); return; }
+                      renderJ3(); return; }
     default: return;
   }
   save();
@@ -12084,7 +12185,10 @@ function j3Act(t) {
     case "e-del-note": if (b.notes[key]) cut(b.notes[key]); break;
     case "e-del-rem":  cut(b.reminders); break;
     case "b-del":      cut(b.bucket); break;
-    case "h-del":      cut(b.habits); Object.keys(b.checks).forEach(k => delete b.checks[k][id]); break;
+    case "h-del":      { const x = j3Draft && j3Draft.habits.find(y => y.id === id);
+                         if (x) { if (x._new) j3Draft.habits.splice(j3Draft.habits.indexOf(x), 1); else x._del = !x._del;
+                                  if (j3Sched === id) j3Sched = null; }
+                         renderJ3(); return; }
     case "d-del":      if (b.days[key] && b.days[key][d]) cut(b.days[key][d]); break;
     case "b-done":     { const x = b.bucket.find(y => y.id === id);
                          if (x) { x.done = !x.done; if (x.done) x.doneWk = key; else delete x.doneWk; }
@@ -12101,20 +12205,19 @@ function j3Act(t) {
                          const f = $("#viewJournal").querySelector('[data-j3="b-text"][data-id="' + nb.id + '"]');
                          if (f) f.focus({ preventScroll: true });
                          return; }
-    case "h-new":      { const nh = { id: uid(), name: "", schedule: { type: "days", days: [0,1,2,3,4,5,6] } };
-                         b.habits.push(nh); j3Sched = null; j3Rearr = false; save(); renderJ3();
-                         const f = $("#viewJournal").querySelector('[data-j3="h-name"][data-id="' + nh.id + '"]');
-                         if (f) f.focus({ preventScroll: true });
-                         return; }
-    case "h-rearr":    j3Rearr = !j3Rearr; j3Sched = null; break;
+    case "h-new":      j3HabitAdd(); return;
+    case "h-edit":     j3HabitsEdit(!b.habits.length); return;
+    case "h-save":     j3HabitsSave(); return;
+    case "h-cancel":   j3HabitsCancel(false); return;
+    case "h-keep":     { const dg = $("#habDlg"); if (dg) dg.close(); return; }
     case "h-grip":     return;          /* the grip works by pointer and arrow keys, not by click */
-    case "h-sched":    j3Sched = j3Sched === id ? null : id; break;
-    case "s-day":      { const x = b.habits.find(y => y.id === id);
+    case "h-sched":    j3Sched = j3Sched === id ? null : id; renderJ3(); return;
+    case "s-day":      { const x = j3Draft && j3Draft.habits.find(y => y.id === id);
                          if (x) { const days = x.schedule.type === "days" ? x.schedule.days.slice() : [];
                                   const i = days.indexOf(Number(d));
                                   if (i > -1) days.splice(i, 1); else days.push(Number(d));
                                   x.schedule = { type: "days", days: days.sort((m, n) => m - n) }; }
-                         break; }
+                         renderJ3(); return; }
     default: return;
   }
   save();
@@ -14324,7 +14427,7 @@ document.addEventListener("pointerdown", e => {
   const spec = GRIP_LISTS.find(x => e.target.closest && e.target.closest(x.grip));
   if (!spec) return;
   const g = e.target.closest(spec.grip), row = spec.row(g), list = row && row.parentElement;
-  if (!list) return;
+  if (!list || g.disabled) return;      /* a struck row keeps its place */
   gDrag = { spec, g, row, list, moved: false, y0: e.clientY };
   try { g.setPointerCapture(e.pointerId); } catch (_) {}
   e.preventDefault();
@@ -14403,6 +14506,7 @@ document.addEventListener("submit", e => {
       showToast("Deleted: " + ((q && q.title) || "quest"), true); }
     return;
   }
+  if (f.dataset.form === "hab-discard") { const dlg = $("#habDlg"); if (dlg) dlg.close(); j3HabitsCancel(true); return; }
   if (f.dataset.form === "rew-save") { qRewDlgSave(); return; }
   if (f.dataset.form.indexOf("j3-") === 0) { j3Add(f); return; }
   if (f.dataset.form === "cloud") cloudConnect();
