@@ -1492,21 +1492,21 @@ button.d-plaque {
    border on ::before (2.5px on the lit left edge, 1px elsewhere, via the mask trick);
    the inner hairline and the four chamfer notches on ::after; the diamond finial is a
    real element (.sel-gem) the renderers add to the selected row. */
-.pf-row.is-sel .pf-line, .atl-card[aria-expanded="true"] {
+.pf-row.is-sel .pf-line {
   position: relative;
   background:
     linear-gradient(90deg, rgba(232,176,84,0.16), rgba(232,176,84,0.05) 45%, rgba(232,176,84,0.02)),
     var(--stone-2);
   box-shadow: -5px 0 16px -7px rgba(232,176,84,0.55);
 }
-.pf-row.is-sel .pf-line::before, .atl-card[aria-expanded="true"]::before {
+.pf-row.is-sel .pf-line::before {
   content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
   padding: 1px 1px 1px 2.5px;
   background: linear-gradient(90deg, var(--gold), #8A6423 45%, rgba(166,123,46,0.55));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
 }
-.pf-row.is-sel .pf-line::after, .atl-card[aria-expanded="true"]::after {
+.pf-row.is-sel .pf-line::after {
   content: ""; position: absolute; inset: 3px; pointer-events: none;
   border-radius: calc(var(--r-sm) - 2px);
   border: 1px solid rgba(166,123,46,0.35);
@@ -1894,7 +1894,7 @@ button.d-plaque {
 
 
 /* ================= the quest hall — three zones, one gold block ================= */
-.qh { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: var(--s6); align-items: start; }
+.qh { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: var(--s6); align-items: start; }
 .qh-main { border-left: 1px solid var(--mortar); padding-left: var(--s6); min-height: 60vh; }
 /* the reading measure is capped inside a wide panel; the lists take the full width */
 .qh-main .qd-note, .qh-main .qm-note { max-width: 62ch; }
@@ -1903,11 +1903,12 @@ button.d-plaque {
 .qm-work .q-next + .cx-sec, .qm-work .cx-sec:first-child { margin-top: var(--s4); }
 
 /* left: the Atlas over the log — one scrolling column, arcs above the work */
-.qh-head { display: flex; align-items: baseline; gap: var(--s3); padding: var(--s1) 0 var(--s2); }
+.qh-head { display: flex; align-items: center; gap: var(--s3); padding: var(--s1) var(--s3) var(--s3); }
+.qh-head::after { content: ""; height: 1px; background: var(--mortar); flex: 1; }
 .qh-head .count { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ash); margin-left: auto; }
-.atlas { list-style: none; display: grid; gap: 2px; }
-.atl { border-radius: var(--r-md); }
-.atl.is-open { background: rgba(41,34,26,0.55); box-shadow: inset 0 0 0 1px var(--mortar); }
+.atlas { list-style: none; display: grid; gap: 4px; }
+.atl { border-radius: 3px; border-bottom: 1px solid rgba(181,169,142,0.12); }
+.atl.is-open { background: rgba(41,34,26,0.82); box-shadow: inset 0 0 0 1px rgba(181,169,142,0.15); }
 /* the quests sit INSIDE their campaign, indented past the seal, so the containment is
    structural rather than implied by being nearby */
 /* the fold: a grid track that breathes 0fr\u21941fr. The clip layer owns overflow and can
@@ -1917,7 +1918,7 @@ button.d-plaque {
 .atl-body { overflow: hidden; min-height: 0; }
 /* his measure. --sx is where the spine runs inside the fold; the diamond, the line and
    every circle are placed from it, so the padding moves them together. */
-.atl-pad { padding: var(--s1) var(--s3) var(--s3) 24px; --sx: 3.5px; }
+.atl-pad { padding: 0 var(--s4) var(--s4) 24px; --sx: 3.5px; }
 .atl-pad .q-sec { margin-bottom: var(--s4); }
 .atl-pad .q-sec:last-child { margin-bottom: 0; }
 .atl-pad .q-empty { font-size: 0.8125rem; padding: var(--s2) 0; }
@@ -1949,13 +1950,14 @@ button.d-plaque {
 
 /* the chapter spine: a hairline down the fold with a diamond at the chapter and a node
    per quest — done filled, current ringed, upcoming empty */
-.q-chap { margin-top: var(--s3); }
+.q-chap { margin-top: var(--s4); }
 .q-chap-h {
   display: flex; align-items: center; gap: var(--s2);
-  font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--dust); padding: var(--s1) 0;
+  font-family: var(--f-display); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.065em; text-transform: uppercase;
+  color: #C9B993; padding: var(--s2) 0;
 }
-.q-chap-gem { width: 7px; height: 7px; transform: rotate(45deg); background: var(--bronze); flex: none; }
+.q-chap-gem { width: 7px; height: 7px; transform: rotate(45deg); background: #B49A69; flex: none; }
+.q-chap-count { margin-left: auto; font-family: var(--f-ui); font-size: 0.75rem; font-weight: 400; letter-spacing: 0; color: #B5A98E; }
 .q-spined { position: relative; padding-left: 20px; }
 .q-spined > li { position: relative; }
 /* each row draws its own segment: the first reaches up to touch the chapter's diamond,
@@ -1966,7 +1968,7 @@ button.d-plaque {
 }
 /* the gem's rotated box is 9.9px tall, so its centre is 4.95px above its bottom edge:
    starting there put 4.9px of line through the diamond. Start at the bottom edge. */
-.q-spined > li:first-child::before { top: -6.6px; }
+.q-spined > li:first-child::before { top: -11px; }
 .q-spined > li:last-child::before { bottom: 50%; }
 .q-node {
   position: absolute; left: calc(var(--sx) - 24px); top: 50%; margin-top: -4px;
@@ -1974,11 +1976,11 @@ button.d-plaque {
   border-radius: 50%; border: 1.5px solid var(--mortar-2); background: var(--cave); z-index: 1;
 }
 .q-node.done { background: var(--bronze); border-color: var(--bronze); }
-.q-node.cur { border-color: var(--gold); box-shadow: 0 0 5px rgba(232,176,84,0.6), inset 0 0 0 1.5px var(--cave); background: var(--gold); }
-.q-nm .qn { font-family: var(--f-mono); font-size: 0.8125rem; color: var(--ash); }
+.q-node.cur { border-color: #E2C18A; box-shadow: inset 0 0 0 1.5px var(--stone-2); background: #E2C18A; }
+.q-nm .qn { font-family: var(--f-ui); font-size: 0.875rem; color: #B5A98E; }
 
 /* ---------- the panel, reference anatomy ---------- */
-.qb-crumb { font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--s2); }
+.qb-crumb { font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; color: #C9B993; margin-bottom: var(--s2); }
 .qb-crumb .sep { color: var(--mortar-2); }
 .qb-head { display: flex; align-items: flex-start; gap: var(--s4); }
 .qb-head-l { min-width: 0; flex: 1; }
@@ -1999,7 +2001,7 @@ button.d-plaque {
 .q-prog { display: flex; align-items: center; flex: 1; min-width: 120px; }
 .q-dot { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--mortar-2); background: var(--cave); flex: none; }
 .q-dot.on { background: var(--gold); border-color: var(--gold-2, var(--gold)); }
-.q-dot.cur { border-color: var(--gold); box-shadow: 0 0 5px rgba(232,176,84,0.55); }
+.q-dot.cur { border-color: #E2C18A; }
 .q-seg { height: 2px; flex: 1; background: var(--socket); }
 .q-seg.on { background: var(--bronze); }
 
@@ -2007,7 +2009,7 @@ button.d-plaque {
 .q-next .row .qg { width: 16px; height: 16px; color: var(--gold); flex: none; margin: 0; }
 .q-next .row .t { flex: 1; font-size: 1rem; font-weight: 700; color: var(--parchment); }
 .q-next .row .t .n { display: block; font-size: 0.8125rem; color: var(--ash); font-weight: 400; margin-top: 2px; }
-.q-obj .ring.cur { border-color: var(--gold); box-shadow: 0 0 5px rgba(232,176,84,0.5); }
+.q-obj .ring.cur { border-color: #E2C18A; }
 
 .qb-adv { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--dust); margin-top: var(--s3); }
 .cx-sec .q-loot { margin-top: var(--s3); font-size: 0.875rem; }
@@ -2067,18 +2069,18 @@ button.d-plaque {
 .q-obj.is-reordering { cursor: grabbing; }
 .q-obj.is-reordering li { user-select: none; }
 /* the road ahead: written, reachable later, not selectable now */
-.q-later { margin-top: var(--s4); padding-top: var(--s3); border-top: 1px dashed var(--mortar); }
-.q-later-h { display: block; font-family: var(--f-mono); font-size: 0.5625rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--mortar-2); padding-bottom: var(--s2); }
+.q-later { margin-top: var(--s4); padding-top: var(--s3); border-top: 1px solid var(--mortar-2); }
+.q-later-h { display: block; font-family: var(--f-display); font-size: 0.6875rem; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #B5A98E; padding-bottom: var(--s2); }
 .q-lock-ch {
   display: grid; grid-template-columns: 16px minmax(0,1fr); gap: var(--s2);
   align-items: center; min-height: 34px; padding: 2px 0;
 }
-.q-lock-ch .qg { width: 13px; height: 13px; color: var(--mortar-2); margin: 0; }
+.q-lock-ch .qg { width: 13px; height: 13px; color: #A69A81; margin: 0; }
 .q-lock-ch .na { display: flex; align-items: baseline; gap: var(--s2); min-width: 0; }
-.q-lock-ch .na .t { font-size: 0.875rem; color: var(--ash); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.q-lock-ch .na .s { font-family: var(--f-mono); font-size: 0.5625rem; letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--mortar-2); margin-left: auto; flex: none; }
+.q-lock-ch .na .t { font-size: 0.875rem; color: #B5A98E; overflow-wrap: anywhere; }
+.q-lock-ch .na .s { font-family: var(--f-ui); font-size: 0.75rem; letter-spacing: 0;
+  color: #B5A98E; margin-left: auto; flex: none; }
 
 /* the act waiting behind this one — dashed, because it is not a thing yet */
 .q-nextact {
@@ -2090,8 +2092,8 @@ button.d-plaque {
 .q-nextact .na { display: grid; gap: 2px; min-width: 0; }
 .q-nextact .na .t { font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--ash); }
-.q-nextact .na .s { font-family: var(--f-mono); font-size: 0.5625rem; letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--mortar-2); }
+.q-nextact .na .s { font-family: var(--f-ui); font-size: 0.75rem; letter-spacing: 0;
+  color: #B5A98E; }
 .q-nextact .na .n { font-size: 0.8125rem; color: var(--ash); margin-top: 2px; text-wrap: pretty; }
 .q-nextact.is-ready { border-color: var(--bronze); }
 .q-nextact.is-ready .qg { color: var(--gold); }
@@ -2164,30 +2166,25 @@ button.d-plaque {
 .rw-reset { margin-right: auto; }
 
 .atl-card {
-  width: 100%; display: grid; grid-template-columns: 42px minmax(0,1fr) 40px 18px;
-  gap: var(--s3); align-items: center; min-height: 56px;
+  width: 100%; display: grid; grid-template-columns: 48px minmax(0,1fr) 16px;
+  gap: var(--s3); align-items: center; min-height: 82px;
   /* flush with its own accordion: selecting a campaign selects the whole block, so the
      frame has no business hanging outside it */
-  padding: var(--s2); margin: 0;
-  background: none; border: 0; border-radius: var(--r-sm);
+  padding: var(--s3); margin: 0;
+  background: none; border: 0; border-radius: 3px;
   color: inherit; text-align: left; cursor: pointer;
   transition: background var(--t-fast) var(--e-out);
 }
 @media (hover: hover) { .atl-card:hover { background: var(--stone-2); } }
 .atl-card:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .atl-card[aria-expanded="true"] {
-  background: linear-gradient(90deg, rgba(232,176,84,0.10), rgba(232,176,84,0.02));
-  box-shadow: inset 0 0 0 1px rgba(232,176,84,0.30);
+  background: rgba(191,157,95,0.08);
+  box-shadow: inset 0 -1px 0 rgba(181,169,142,0.18);
   position: relative;
 }
-.atl-card[aria-expanded="true"]::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
-  --b: linear-gradient(var(--gold), var(--gold));
-  background: var(--b) 0 0 / 9px 1px, var(--b) 0 0 / 1px 9px,
-              var(--b) 100% 0 / 9px 1px, var(--b) 100% 0 / 1px 9px,
-              var(--b) 0 100% / 9px 1px, var(--b) 0 100% / 1px 9px,
-              var(--b) 100% 100% / 9px 1px, var(--b) 100% 100% / 1px 9px;
-  background-repeat: no-repeat;
+.atl-card[aria-expanded="true"]::before {
+  content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px;
+  background: #CEAD74; border-radius: 0 1px 1px 0; pointer-events: none;
 }
 .seal {
   width: 38px; height: 38px; flex: none; display: grid; place-items: center;
@@ -2195,10 +2192,16 @@ button.d-plaque {
   background: var(--stone-2); color: var(--gold); box-shadow: inset 0 1px 0 var(--bevel);
 }
 .seal svg { width: 19px; height: 19px; }
-.atl-nm { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.atl-nm .t { font-family: var(--f-display); font-weight: 700; font-size: 0.875rem; color: var(--parchment);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0.02em; }
-.atl-nm .s { font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ash); }
+.atl-nm { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.atl-nm .t { font-family: var(--f-display); font-weight: 600; font-size: 0.9375rem; color: var(--parchment);
+  line-height: 1.35; overflow-wrap: anywhere; letter-spacing: 0; }
+.atl-nm .s { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
+  font-family: var(--f-ui); font-size: 0.8125rem; letter-spacing: 0; color: #B5A98E; }
+.atl-nm .s .atl-tally { margin-left: auto; font-variant-numeric: tabular-nums; }
+.atl-nm > .pf-track { margin-top: 2px; background: #14110E; }
+.atl-nm > .pf-track i { background: #BFA06A; }
+.atl-state { font-size: 0.75rem; color: var(--verdant); }
+.atl-state.warn { color: var(--ember); }
 .atl-nm .s .warn { color: var(--ember); }
 .atl-nm .s .done { color: var(--verdant); }
 .atl-pct { font-family: var(--f-mono); font-size: 0.875rem; color: var(--dust); text-align: right; font-variant-numeric: tabular-nums; }
@@ -2208,7 +2211,10 @@ button.d-plaque {
 .seal-img { overflow: hidden; background: var(--cave); }
 .seal-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .seal-big { width: 64px; height: 64px; }
-.atl-card .seal { width: 42px; height: 42px; }
+.atl-card .seal { width: 48px; height: 48px; }
+/* The illustration itself is the icon: no disc, ring, crop, or background scene. */
+.seal-sprite { border: 0; background: none; border-radius: 0; box-shadow: none; overflow: visible; }
+.seal-sprite img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: auto; }
 
 /* the middle stack: the campaign, a rule, the quest \u2014 the tree made visible */
 .qm-camp { display: flex; align-items: center; gap: var(--s4); }
@@ -2244,19 +2250,25 @@ button.d-plaque {
    several rounds, which is why the row read as the campaign frame slightly wrong.) */
 li.is-sel .q-line {
   position: relative;
-  background: linear-gradient(90deg, rgba(232,176,84,0.11), rgba(232,176,84,0.03) 55%, transparent);
-  box-shadow: inset 0 0 0 1px rgba(232,176,84,0.20);
+  background: rgba(204,175,122,0.10);
+  box-shadow: inset 2px 0 0 #CEAD74;
+  border-radius: 0 3px 3px 0;
 }
 .qg { width: 15px; height: 15px; color: var(--bronze); display: block; margin: 0 auto; }
 li.is-sel .qg { color: var(--gold); }
 .q-nm { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 /* dust for the list, parchment for the one you are on — a list where every row is the
    brightest colour has no selected row */
-.q-nm .t { font-size: 0.75rem; color: var(--dust); text-wrap: pretty; }
+.q-nm .t { font-size: 0.9375rem; line-height: 1.4; color: #C9BEA6; text-wrap: pretty; overflow-wrap: anywhere; }
 li.is-sel .q-nm .t { color: var(--parchment); }
-.q-nm .s { font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.04em; color: var(--ash); }
+.q-nm .s { font-family: var(--f-ui); font-size: 0.75rem; letter-spacing: 0; color: #B5A98E; }
+.q-row-progress { display: flex; align-items: center; gap: var(--s2); }
+.q-row-progress .pf-track { flex: 1; }
+.q-row-progress .s { flex: none; }
+.q-spined > li { border-top-color: transparent; }
 /* locked and done ride one layer down, never hidden */
-li.is-locked .q-line { opacity: 0.55; }
+li.is-locked .q-line { opacity: 1; }
+li.is-locked .q-nm .t { color: #B5A98E; }
 li.is-locked .qg { color: var(--ash); }
 li.is-done .t { color: var(--dust); }
 li.is-done .qg { color: var(--verdant); }
@@ -2413,6 +2425,20 @@ li.is-done .qg { color: var(--verdant); }
 @media (max-width: 860px) {
   .qh { grid-template-columns: 1fr; }
   .qh-main { border-left: 0; padding-left: 0; border-top: 1px solid var(--mortar); padding-top: var(--s5); }
+}
+@media (max-width: 1100px) and (min-width: 861px) {
+  .qh { grid-template-columns: 320px minmax(0,1fr); gap: var(--s5); }
+  .qh-main { padding-left: var(--s5); }
+  .qb-head { flex-wrap: wrap; }
+  .qb-head-r { padding-top: 0; }
+}
+@media (max-width: 560px) {
+  .qb-head { flex-direction: column; }
+  .qb-head-r { padding-top: 0; }
+  .qb-title { font-size: 1.5rem; }
+  .qb-strip { flex-wrap: wrap; gap: var(--s3); }
+  .q-lock-ch .na { flex-wrap: wrap; gap: 0 var(--s2); }
+  .q-nextact .na .s { font-family: var(--f-ui); font-size: 0.75rem; letter-spacing: 0; }
 }
 
 
@@ -2832,7 +2858,7 @@ li.is-done .qg { color: var(--verdant); }
 .j3-page .j3-btn { color: #D9CCB0; }
 @media (hover: hover) { .j3-page .j3-btn:hover { color: #F3E9D2; } }
 .qh-left {
-  background-image: linear-gradient(rgba(13,11,10,0.38), rgba(13,11,10,0.38)), url("assets/textures/panel.webp");
+  background-image: linear-gradient(rgba(20,17,13,0.78), rgba(20,17,13,0.78)), url("assets/textures/panel.webp");
   background-repeat: repeat; background-size: 512px 512px;
 }
 
@@ -9386,12 +9412,23 @@ const CAMP_SIGIL = {
   kanji: '<path d="M4 6.5h16"/><path d="M6.5 10.5h11"/><path d="M7.5 6.5 7 19.5"/><path d="M16.5 6.5l.5 13"/>',
   tree: '<path d="M12 20.5V5"/><path d="M12 8.5 8.5 12"/><path d="M12 8.5l3.5 3.5"/><path d="M12 13.5 7.5 18"/><path d="M12 13.5l4.5 4.5"/>'
 };
-const campSeal = (c, big) => CAMP_IMG[c.id]
-  ? '<span class="seal seal-img' + (big ? " seal-big" : "") + '" aria-hidden="true"><img src="assets/quests/' +
-    CAMP_IMG[c.id] + '.png" alt="" loading="lazy"></span>'
-  : '<span class="seal' + (big ? " seal-big" : "") + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
+/* Campaign objects share the Skills inventory-sprite style. Existing subjects reuse
+   that artwork; the three additional sprites are original matching illustrations. */
+const CAMP_SPRITE = {
+  "cmp-artist": "skills/painting", "cmp-design": "skills/design",
+  "cmp-health": "quests/seal-3-sprite", "cmp-carnaval": "quests/seal-4-sprite",
+  "cmp-gf": "skills/empathy", "cmp-reading": "skills/learning", "cmp-torii": "quests/seal-7-sprite"
+};
+function campSeal(c, big) {
+  const sprite = CAMP_SPRITE[c.id];
+  if (sprite) return '<span class="seal seal-sprite' + (big ? ' seal-big' : '') + '" aria-hidden="true">' +
+    '<img src="assets/' + sprite + '-64.png"' +
+    (sprite.startsWith('quests/') ? ' srcset="assets/' + sprite + '-128.png 2x"' : '') +
+    ' width="64" height="64" alt="" loading="lazy" decoding="async"></span>';
+  return '<span class="seal' + (big ? ' seal-big' : '') + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" ' +
     'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-    (CAMP_SIGIL[c.emblem] || CAMP_SIGIL.quill) + "</svg></span>";
+    (CAMP_SIGIL[c.emblem] || CAMP_SIGIL.quill) + '</svg></span>';
+}
 
 /* the kind-glyphs: a pennant for a main, a diamond for a side — and the lock and check
    the rows share. Same hand as the seals. */
@@ -9648,6 +9685,15 @@ function campPool(c) {
     .map(ch => ({ ch, n: ch.quests.length }));
   return { mains, sides: sworn("side"), sworn: host ? [] : swornMains, chapters, later, act, st };
 }
+/* The rail counts every quest it lists, including sworn quests merged into chapters.
+   Act unlocking still follows campaignStats; this is only the displayed work total. */
+function campProgress(c) {
+  const rows = c.chapters.flatMap(ch => ch.quests).concat(QLOG.filter(x => x.camp === c.id));
+  const ids = [...new Set(rows.map(x => x.id))];
+  const done = ids.filter(id => questDone(id)).length;
+  return { done, total: ids.length, pct: ids.length ? Math.round(done / ids.length * 100) : 0,
+    complete: ids.length > 0 && done === ids.length };
+}
 function campFree() {
   return qAllLog().filter(x => !x.camp || !campById(x.camp)).map(x => qDesc(x));
 }
@@ -9683,7 +9729,7 @@ function qRow(d, n, inCamp) {
   const sub = d.t === "camp" ? (p.need ? p.have + "/" + p.need + " steps" : "\u2192 " + esc(d.target))
     : d.locked ? ""
     : esc(d.x.category) + (p.need ? " \u00b7 " + p.have + "/" + p.need : "");
-  const bar = p && p.need && !d.locked;
+  const bar = p && p.need && p.have > 0 && !d.locked && !d.done;
   const node = d.done ? "done" : qSel === d.id ? "cur" : "";
   /* on a spine, the filled node and the full track already say "done" — a check would be
      the third telling. Off a spine (the free shelf) the glyph column is the only place it
@@ -9703,8 +9749,9 @@ function qRow(d, n, inCamp) {
       (d.locked ? ", locked" : d.done ? ", complete" : "") + '">' +
     glyph +
     '<span class="q-nm"><span class="t">' + (n ? '<span class="qn">' + n + ".</span> " : "") + esc(d.title) + "</span>" +
-      (bar ? '<span class="pf-track"><i class="' + (p.have > 0 ? "any" : "") + '" style="width:' + p.pct + '%"></i></span>'
-           : sub ? '<span class="s">' + sub + "</span>" : "") +
+      (bar ? '<span class="q-row-progress"><span class="pf-track"><i class="any" style="width:' + p.pct + '%"></i></span>' +
+        '<span class="s">' + p.have + '/' + p.need + ' steps</span></span>'
+           : !inCamp && sub ? '<span class="s">' + sub + "</span>" : "") +
     "</span></button></li>";
 }
 
@@ -9934,9 +9981,7 @@ function railSync() {
     li.classList.toggle("is-open", open);
     const btn = li.querySelector(".atl-card");
     btn.setAttribute("aria-expanded", open);
-    const gem = btn.querySelector(".sel-gem");
-    if (open && !gem) btn.insertAdjacentHTML("afterbegin", '<i class="sel-gem" aria-hidden="true"></i>');
-    if (!open && gem) gem.remove();
+    li.querySelector(".atl-fold").inert = !open;
   });
   rail.querySelectorAll(".q-list > li").forEach(li => {
     const btn = li.querySelector(".q-line");
@@ -9973,6 +10018,7 @@ function renderCampaigns() {
   if (!r.cs.length) left += '<p class="q-empty">No campaigns yet.</p>';
   left += '<ol class="atlas">' + r.cs.map(k => {
     const st = campaignStats(k);
+    const progress = campProgress(k);
     const open = qCampSel === k.id;
     const kp = campPool(k);
     let inner = "";
@@ -9982,7 +10028,8 @@ function renderCampaigns() {
       '<ol class="q-list q-spined">' + kp.sworn.map((q, i) => qRow(q, i + 1, true)).join("") + "</ol></div>";
     kp.chapters.forEach(g => {
       inner += '<div class="q-chap"><span class="q-chap-h"><span class="q-chap-gem" aria-hidden="true"></span>' +
-        esc(g.ch.name) + "</span>" +
+        esc(g.ch.name) + '<span class="q-chap-count" aria-label="' + g.quests.filter(q => q.done).length +
+          ' of ' + g.quests.length + ' quests complete">' + g.quests.filter(q => q.done).length + '/' + g.quests.length + '</span></span>' +
         '<ol class="q-list q-spined">' + g.quests.map((q, i) => qRow(q, i + 1, true)).join("") + "</ol></div>";
     });
     if (kp.sides.length) inner += '<div class="q-chap"><span class="q-chap-h"><span class="q-chap-gem" aria-hidden="true"></span>Side quests</span>' +
@@ -9992,7 +10039,7 @@ function renderCampaigns() {
        button that does nothing teaches the owner to distrust the buttons that do. */
     /* the acts he has written but not reached — the whole campaign, legible at last */
     if (kp.later.length) {
-      inner += '<div class="q-later"><span class="q-later-h">Ahead</span>' + kp.later.map(g =>
+      inner += '<div class="q-later"><span class="q-later-h">Chapters ahead</span>' + kp.later.map(g =>
         '<div class="q-lock-ch">' + Q_GLYPH.lock +
         '<span class="na"><span class="t">' + esc(g.ch.name) + "</span>" +
         '<span class="s">Act ' + (["I","II","III","IV","V"][g.ch.act - 1] || g.ch.act) +
@@ -10010,25 +10057,25 @@ function renderCampaigns() {
     }
     return '<li class="atl' + (open ? " is-open" : "") + '" data-cid="' + k.id + '">' +
       '<button type="button" class="atl-card" data-cmp="camp" data-id="' + k.id +
-      '" aria-expanded="' + open + '" aria-label="' + esc(k.name) + ", act " + st.act +
-      ", " + st.pct + '% complete">' +
-      (open ? '<i class="sel-gem" aria-hidden="true"></i>' : "") + campSeal(k) +
-      '<span class="atl-nm"><span class="t">' + esc(k.name) + '</span><span class="s">Act ' +
-        (ROM[(st.act || 1) - 1] || st.act) +
-        (st.complete ? ' \u00b7 <span class="done">complete</span>'
-          : st.stalled ? ' \u00b7 <span class="warn">stalled</span>' : " \u00b7 in progress") + "</span>" +
-      '<span class="pf-track"><i class="' + (st.pct > 0 ? "any" : "") + '" style="width:' + st.pct + '%"></i></span></span>' +
-      '<span class="atl-pct">' + st.pct + "%</span>" + QCHEV + "</button>" +
-      '<div class="atl-fold"><div class="atl-body"><div class="atl-pad">' +
+      '" aria-expanded="' + open + '" aria-controls="campaign-fold-' + esc(k.id) + '" aria-label="' + esc(k.name) + ", act " + st.act +
+      ", " + progress.done + " of " + progress.total + " quests complete, " + progress.pct + '%">' +
+      campSeal(k) +
+      '<span class="atl-nm"><span class="t">' + esc(k.name) + '</span><span class="s"><span>Act ' +
+        (ROM[(st.act || 1) - 1] || st.act) + '</span><span class="atl-tally">' +
+        progress.done + ' / ' + progress.total + ' quests</span></span>' +
+      (progress.complete ? '<span class="atl-state">Complete</span>' : st.stalled ? '<span class="atl-state warn">Stalled</span>' : '') +
+      '<span class="pf-track"><i class="' + (progress.pct > 0 ? "any" : "") + '" style="width:' + progress.pct + '%"></i></span></span>' +
+      QCHEV + "</button>" +
+      '<div class="atl-fold" id="campaign-fold-' + esc(k.id) + '"' + (open ? '' : ' inert') + '><div class="atl-body"><div class="atl-pad">' +
         (inner || '<p class="q-empty">No quests in this act.</p>') +
       "</div></div></div></li>";
   }).join("") + "</ol>";
 
   {
     left += '<section class="q-sec q-freeshelf' + (qFreeOpen ? " is-open" : "") + '">' +
-      '<button type="button" class="q-free-h" data-cmp="freetoggle" aria-expanded="' + qFreeOpen + '">' +
+      '<button type="button" class="q-free-h" data-cmp="freetoggle" aria-controls="side-quest-fold" aria-expanded="' + qFreeOpen + '">' +
       '<span class="label">Side quests<span class="n">' + r.free.length + "</span></span>" + QCHEV + "</button>" +
-      '<div class="atl-fold"><div class="atl-body"><ol class="q-list">' +
+      '<div class="atl-fold" id="side-quest-fold"' + (qFreeOpen ? '' : ' inert') + '><div class="atl-body"><ol class="q-list">' +
       r.free.map(q => qRow(q)).join("") + "</ol>" +
       '<div class="q-freeadd"><button type="button" class="btn btn-ghost btn-sm" data-cmp="questnew">' +
       "+ New side quest</button></div></div></div></section>";
@@ -10036,9 +10083,9 @@ function renderCampaigns() {
 
   if (r.done.length) {
     left += '<section class="q-sec q-freeshelf q-doneshelf' + (qDoneOpen ? " is-open" : "") + '">' +
-      '<button type="button" class="q-free-h" data-cmp="donetoggle" aria-expanded="' + qDoneOpen + '">' +
+      '<button type="button" class="q-free-h" data-cmp="donetoggle" aria-controls="completed-quest-fold" aria-expanded="' + qDoneOpen + '">' +
       '<span class="label">Completed<span class="n">' + r.done.length + "</span></span>" + QCHEV + "</button>" +
-      '<div class="atl-fold"><div class="atl-body"><ol class="q-list">' +
+      '<div class="atl-fold" id="completed-quest-fold"' + (qDoneOpen ? '' : ' inert') + '><div class="atl-body"><ol class="q-list">' +
       r.done.map(qDoneRow).join("") + "</ol></div></div></section>";
   }
 
@@ -10106,6 +10153,7 @@ function campAct(el) {
       if (shelf) {
         shelf.classList.toggle("is-open", qFreeOpen);
         shelf.querySelector(".q-free-h").setAttribute("aria-expanded", qFreeOpen);
+        shelf.querySelector(".atl-fold").inert = !qFreeOpen;
       } else renderCampaigns();
       break;
     }
@@ -10115,6 +10163,7 @@ function campAct(el) {
       if (shelf) {
         shelf.classList.toggle("is-open", qDoneOpen);
         shelf.querySelector(".q-free-h").setAttribute("aria-expanded", qDoneOpen);
+        shelf.querySelector(".atl-fold").inert = !qDoneOpen;
       } else renderCampaigns();
       break;
     }
