@@ -554,9 +554,6 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .d-rank { font-size: 0.875rem; color: var(--dust); margin-top: 2px; }
 .d-rank b { color: var(--gold); font-weight: 700; }
 
-.cal { flex: none; text-align: center; }
-.cal .label { display: block; margin-bottom: var(--s1); letter-spacing: 0.08em; }
-.cal-row { display: flex; align-items: center; gap: var(--s2); }
 .cal-btn {
   width: 32px; height: 32px;
   display: grid; place-items: center;
@@ -873,7 +870,6 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .btn-danger.armed { background: var(--ember); border-color: var(--ember); color: #1A0F0A; font-weight: 800; }
 .btn-danger.armed::before { display: none; }
 .btn-sm { height: 34px; padding: 0 var(--s3); font-size: 0.6875rem; }   /* the inscription at 11px on the small plate */
-.hint-why { font-size: 0.875rem; color: var(--ash); margin-top: var(--s2); text-align: right; }
 
 @media (pointer: coarse) {
   .btn, .btn-sm, .cal-btn { min-height: 44px; }
@@ -884,9 +880,6 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 /* ============ THE ASSESSMENT (v7) ============
    No new hues, no new material. The instrument speaks in mono
    (judged) until a human press strikes the number into gold.  */
-
-.assess-head { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; }
-.assess-head .sub { font-size: 0.875rem; color: var(--ash); }
 
 /* placement questions */
 .pq { margin-bottom: var(--s5); }
@@ -916,63 +909,6 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 }
 .pq-opt .ot { flex: 1; min-width: 0; text-wrap: pretty; }
 .pq-opt .ob { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); flex: none; margin-top: 4px; }
-
-/* the mark set — known / shaky / new. Three targets, three shapes. */
-.cx-list { list-style: none; display: flex; flex-direction: column; }
-.cx {
-  display: grid;
-  grid-template-columns: 26px minmax(0, 1fr) auto;
-  align-items: start;
-  column-gap: var(--s3);
-  padding: var(--s2);
-  margin: 0 calc(-1 * var(--s2));
-  border-radius: var(--r-sm);
-  transition: background var(--t-fast) var(--e-out);
-}
-@media (hover: hover) { .cx:hover { background: var(--stone-2); } }
-.cx .cb { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); padding-top: 3px; }
-.cx .cmain { min-width: 0; }
-.cx .cn { display: block; font-size: 1rem; color: var(--parchment); overflow-wrap: anywhere; }
-.cx .cd { display: block; font-size: 0.875rem; color: var(--ash); text-wrap: pretty; }
-.cx .clearn { display: block; font-size: 0.8125rem; color: var(--ash); margin-top: 2px; font-style: italic; }
-.cx.is-known .cn { color: var(--dust); }
-.marks { display: flex; gap: var(--s1); flex: none; }
-.mk {
-  display: inline-flex; align-items: center; gap: 5px;
-  height: 32px; padding: 0 var(--s2);
-  background: none; border: 1px solid transparent; border-radius: var(--r-sm);
-  color: var(--ash); font-family: var(--f-ui); font-size: 0.8125rem; font-weight: 500;
-  cursor: pointer; white-space: nowrap;
-  transition: color var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out);
-}
-@media (hover: hover) { .mk:hover { color: var(--dust); border-color: var(--mortar); } }
-.mk[aria-pressed="true"] { color: var(--parchment); border-color: var(--mortar-2); background: var(--stone-3); }
-.mk[data-m="known"][aria-pressed="true"] { color: var(--verdant); }
-.mk .gl { flex: none; }
-
-/* the assay line — the receipt, always visible, always live */
-.assay {
-  position: sticky; bottom: calc(-1 * var(--s5));
-  margin: var(--s5) calc(-1 * var(--s5)) calc(-1 * var(--s5));
-  padding: var(--s3) var(--s5) var(--s4);
-  background: var(--stone-3);
-  border-top: 1px solid var(--mortar);
-  box-shadow: 0 -8px 20px rgba(0,0,0,0.28);
-}
-.assay-row { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
-.assay-receipt {
-  font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust);
-  flex: 1; min-width: 220px; line-height: 1.5;
-}
-.assay-receipt b { color: var(--parchment); font-weight: 500; }
-.assay-find { display: block; color: var(--ash); margin-top: 2px; }
-.assay-num {
-  font-family: var(--f-mono); font-weight: 500; font-size: 1.875rem;
-  color: var(--gold); line-height: 1; font-variant-numeric: tabular-nums;
-}
-.assay-set { display: flex; align-items: center; gap: var(--s2); flex: none; }
-.assay-set .label { letter-spacing: 0.08em; }
-.assay-note { font-size: 0.8125rem; color: var(--ash); margin-top: var(--s2); }
 
 /* path to next level — the honest note + the gaps */
 .trans-note {
@@ -1194,13 +1130,9 @@ button.d-plaque {
 
 /* narrow: the action row drops beneath its text, never squeezing the measure */
 @media (max-width: 700px) {
-  .cx { grid-template-columns: 26px minmax(0, 1fr); }
-  .cx .marks { grid-column: 2; grid-row: 2; margin-top: var(--s1); flex-wrap: wrap; }
   .gap { grid-template-columns: 18px 26px minmax(0, 1fr); }
   .bib { grid-template-columns: 34px minmax(0, 1fr); }
   .bib-acts { grid-column: 2; grid-row: 2; margin-top: var(--s1); }
-  .assay { position: static; margin: var(--s5) calc(-1 * var(--s4)) calc(-1 * var(--s4)); padding: var(--s3) var(--s4) var(--s4); }
-  .assay-row { align-items: flex-start; }
 }
 
 /* emoji picker — recognition over recall (H6); grid to pick, field to paste */
@@ -4338,73 +4270,6 @@ function ensureAssess(s) {
 }
 const markOf = (s, cname) => (s.assess && s.assess.known && s.assess.known[cname]) || null;
 
-/* placement signal: mean of the bands the owner picked */
-function placementSignal(s, kb) {
-  const a = assessOf(s);
-  if (!a || !kb.placement) return { band: null, answered: 0, total: kb.placement ? kb.placement.length : 0 };
-  const picked = kb.placement.map((_, i) => a.placement[i]).filter(v => Number.isInteger(v));
-  if (!picked.length) return { band: null, answered: 0, total: kb.placement.length };
-  const mean = picked.reduce((t, v) => t + v, 0) / picked.length;
-  return { band: Math.round(mean), answered: picked.length, total: kb.placement.length, mean };
-}
-
-/* concept signal: the highest band whose cumulative coverage clears 70%.
-   shaky counts as half — and the halving is PRINTED wherever it is used. */
-function conceptSignal(s, kb) {
-  const concepts = kb.concepts || [];
-  let known = 0, shaky = 0, fresh = 0;
-  concepts.forEach(c => {
-    const m = markOf(s, c.name);
-    if (m === "known") known++;
-    else if (m === "shaky") shaky++;
-    else if (m === "new") fresh++;
-  });
-  const marked = known + shaky + fresh;
-  let band = 0;
-  for (let b = 1; b <= MAX_LV; b++) {
-    const inBand = concepts.filter(c => c.band <= b);
-    if (!inBand.length) continue;
-    let cov = 0;
-    inBand.forEach(c => {
-      const m = markOf(s, c.name);
-      if (m === "known") cov += 1;
-      else if (m === "shaky") cov += 0.5;
-    });
-    if (cov / inBand.length >= 0.7) band = b;
-  }
-  return { band: marked ? band : null, known, shaky, fresh, marked, total: concepts.length };
-}
-
-/* the suggestion: the LOWER signal governs. You cannot claim a level whose
-   concepts you do not hold, nor one your record does not support.        */
-function assay(s, kb) {
-  const p = placementSignal(s, kb);
-  const c = conceptSignal(s, kb);
-  let suggested = null, finding = null;
-  if (p.band !== null && c.band !== null) {
-    suggested = Math.min(p.band, c.band);
-    const spread = Math.abs(p.band - c.band);
-    if (spread >= 2) {
-      finding = p.band > c.band
-        ? `placement says ${p.band}, concepts say ${c.band} — the gap between them is your reading list`
-        : `concepts say ${c.band}, placement says ${p.band} — you know the theory; the practice is the gap`;
-    }
-  } else if (p.band !== null) suggested = p.band;
-  else if (c.band !== null) suggested = c.band;
-  return { p, c, suggested, finding };
-}
-function receiptText(a) {
-  const bits = [];
-  bits.push(a.p.band === null ? "placement —" : `placement ${a.p.band}`);
-  if (a.c.band === null) bits.push("concepts —");
-  else {
-    const half = a.c.shaky ? ` + ${a.c.shaky} shaky×½` : "";
-    bits.push(`concepts ${a.c.known} known${half} / ${a.c.total} → ${a.c.band}`);
-  }
-  bits.push(a.suggested === null ? "suggested —" : `suggested ${a.suggested}`);
-  return bits.join(" · ");
-}
-
 /* ---------- seed ---------- */
 function sk(attr, icon, name, level, goals, facets) {
   return { id: uid(), attr, icon, name, level, goals: goals || [], facets: facets || [], books: [], history: [] };
@@ -4900,8 +4765,6 @@ let snapshot = null;
 let toastTimer = null;
 let addMode = null;
 let facetFormOpen = false;        // transient: reveal the break-into-facets form
-let assessMode = false;           // the detail panel is the instrument right now
-let assaySet = null;              // the owner's override of the suggested level
 let pathAll = false;              // the path shows the whole road, not just the next rung
 let renaming = false;             // the header title is an input right now
 let removeArmed = false;          // the remove affordance is armed (two-step, like Reset)
@@ -5720,7 +5583,7 @@ function runPolish(s) {
   polishV18(s); polishV19(s); polishV20(s); polishV21(s); polishV22(s); polishV23(s);
   polishV24(s); polishV25(s); polishV26(s); polishV27(s); polishV28(s); polishV29(s);
   polishV30(s); polishV31(s); polishV32(s); polishV33(s); polishV34(s); polishV35(s);
-  polishV36(s); polishV37(s); polishV38(s); polishV39(s); polishV40(s);
+  polishV36(s); polishV37(s); polishV38(s); polishV39(s); polishV40(s); polishV41(s);
   return s;
 }
 
@@ -5742,6 +5605,23 @@ function polishV40(s) {
     });
   }
   s.polish40 = true;
+  return s;
+}
+
+/* v41: the rung reads from the score. Assess, Calibrate and Level up are gone, and with them
+   the hand-set level as a source. The field is left in storage; where the reading differs from
+   what was set, the journal says so once, so a board that opens lower than it closed carries
+   the reason with it. */
+function polishV41(s) {
+  if (s.polish41) return s;
+  (s.skills || []).forEach(k => {
+    if (isProf(k)) return;
+    const p = skScoreParts(k), now = p && p.any ? Math.floor(p.got * MAX_LV / p.max) : 0;
+    if (Number.isInteger(k.level) && k.level !== now)
+      s.journal.push({ ts: Date.now(), sid: k.id, kind: "level",
+        text: `Level ${now} — ${rank(now)} · read from the score (was set to ${k.level} by hand; that number stays in storage)` });
+  });
+  s.polish41 = true;
   return s;
 }
 
@@ -6290,10 +6170,10 @@ const QUESTS_DERIVED = [
     need: kb => 2, count: (s, kb) => readForSkill(s, kb).length,
     reward: { xp: 900 } },
   { id: "rung4", title: "Reach rung 4", note: "Adept. The point where the standard playbook starts going in.",
-    need: () => 4, count: s => s.level,
+    need: () => 4, count: s => RUNG(s),
     reward: { xp: 1200 } },
   { id: "rung7", title: "Reach rung 7", note: "Expert \u2014 the top ten per cent of people who do this.",
-    need: () => 7, count: s => s.level,
+    need: () => 7, count: s => RUNG(s),
     reward: { xp: 2400 } }
 ];
 const CAMPAIGN_SEED = [];   /* public build: a visitor starts with no campaigns */
@@ -6527,6 +6407,15 @@ function facetMean(s) {
   if (!s.facets.length) return 0;
   return s.facets.reduce((t, f) => t + f.level, 0) / s.facets.length;
 }
+/* The rung is read off the score, by the rule the crest already uses: the proportion of
+   everything this skill could hold, on the ladder's own scale. It used to be s.level, a
+   number set by hand behind Assess, Calibrate and Level up (7 Sep 2026). That field stays in
+   storage and nothing reads it, so the old rungs are there if the reading is ever reversed.
+   Integer arithmetic, so a score that is exactly a tenth of the ceiling lands on its rung. */
+function rungFromScore(s) {
+  const p = skScoreParts(s);
+  return p && p.any ? Math.floor(p.got * MAX_LV / p.max) : 0;
+}
 /* Earned plus granted, kept separable. lvParts() is what a panel prints, so a quest bonus
    never reads as something the owner set by hand. */
 /* One place decides what a level IS, for both models, so a panel cannot print a total that
@@ -6539,7 +6428,7 @@ function lvParts(s) {
      skill broken into three or more parts, which gave those skills two sources for one
      number — the cells said one thing, the concepts another, and nothing on screen said
      which was answering. The rung comes from where every other skill's comes from. */
-  const base = prof ? profLevel(profHours(s)) : s.level;
+  const base = prof ? profLevel(profHours(s)) : rungFromScore(s);
   /* a quest-bought rung only applies where there is no hour log to pay into */
   const bonus = questBonus(s.id) + (prof ? 0 : questRungs(s.id));
   const cap = prof ? PROF_MAX : MAX_LV;
@@ -6583,8 +6472,8 @@ function skScoreParts(sk) {
   return { got, max, any: max > 0 };
 }
 /* the number on the tile, and the ceiling it is climbing toward. A skill with no knowledge
-   base and no milestones has nothing to sum, so it keeps the rung it was granted rather
-   than reading zero out of a scale that does not apply to it. */
+   base and no milestones has nothing to sum, so it shows only what a quest granted, if
+   anything, rather than reading zero out of a scale that does not apply to it. */
 function SCORE(sk) { const p = skScoreParts(sk); return p && p.any ? p.got : LV(sk); }
 function SCORE_MAX(sk) { const p = skScoreParts(sk); return p && p.any ? p.max : MAX_LV; }
 const fmtLv = n => (Number.isInteger(n) ? String(n) : n.toFixed(1));
@@ -12579,7 +12468,7 @@ function renderCrests() {
 function tileAria(s) {
   let a = `${s.name} — ${GROUP[s.attr].name}, ${rank(RUNG(s))}, score ${SCORE(s)} of ${SCORE_MAX(s)}`;
   if (LV(s) >= MAX_LV) a += ", mastered";
-  else a += `, toward level ${s.level + 1}: ${gateLine(levelGate(s))}`;
+  else a += `, toward level ${RUNG(s) + 1}: ${gateLine(levelGate(s))}`;
   if (s.facets.length) a += `, ${s.facets.length} parts self-assessed`;
   return a;
 }
@@ -12830,7 +12719,6 @@ function renderDetail(animate) {
   const el = $("#detail");
   let html;
   if (addMode) html = newSkillHTML();
-  else if (assessMode && selSkill()) html = assessHTML(selSkill());
   /* before the skill check, which now resolves a facet to its parent */
   else if (selFacet()) html = facetHTML(selFacet());
   else if (selSkill()) html = skillHTML(selSkill());
@@ -12847,7 +12735,7 @@ function renderDetail(animate) {
 function journalHTML(entries) {
   const last = entries.slice(-8).reverse();
   return last.length === 0
-    ? `<p class="j-empty">No entries yet. Ticked milestones and level-ups land here.</p>`
+    ? `<p class="j-empty">No entries yet. Rungs earned and milestones ticked land here.</p>`
     : `<ul class="journal">${last.map(j => `
       <li class="j-row${j.kind === "level" || j.kind === "attr" ? " lvl" : ""}">
         ${ICON.gem}<span>${esc(j.text)}</span><span class="when">${when(j.ts)}</span>
@@ -12892,21 +12780,6 @@ function gapLineHTML(s, c) {
   </li>`;
 }
 
-/* Some levels turn on ONE specific book, because the book and the idea are the same
-   thing in practice. Keyed skill -> level -> title fragment. */
-const GATE_BOOK = {
-  "Design":        { 6: "Creative Strategy and the Business of Design" },
-  "Planning":      { 5: "The Pyramid Principle" },
-  "Communication": { 6: "Nonviolent Communication" }
-};
-/* Books STACK. Levels 1-3 are concepts only; from 4 on, every rung adds one more book to
-   a running total that is never paid off - level 6 owes three, level 9 owes six. The
-   number on screen is therefore the whole debt, not this rung's instalment, which is why
-   it reads 2 / 3 rather than 0 / 1. Level 10 is earned in the world, not on a checklist. */
-function booksNeeded(level) {
-  if (level <= 3 || level >= MAX_LV) return 0;
-  return level - 3;                       // 4:1 - 5:2 - 6:3 - 7:4 - 8:5 - 9:6
-}
 /* what counts as read toward a skill: a book ticked on its own reading list, or a tome
    tagged to this skill and marked read in the library */
 function readForSkill(s, kb) {
@@ -12926,113 +12799,31 @@ function readForSkill(s, kb) {
   });
   return out;
 }
-function gateFor(s, kb) {
-  const lvl = RUNG(s) + 1;
-  if (lvl > MAX_LV) return null;
-  const concepts = (kb.concepts || []).filter(c => c.band <= lvl);
-  const known = concepts.filter(c => markOf(s, c.name) === "known");
-  const read = readForSkill(s, kb);
-  const need = booksNeeded(lvl);
-  /* A gate book that is not on the skill's own list would brick the rung silently: no
-     amount of reading could satisfy it. The KB is meant to be edited, so the gate checks
-     that its own demand is answerable before making it, and says so in the console
-     rather than leaving a level quietly impossible. */
-  let want = (GATE_BOOK[kb.name] || {})[lvl] || null;
-  if (want && !(kb.books || []).some(b => b.title.toLowerCase().indexOf(want.toLowerCase()) > -1)) {
-    try { console.warn(`Skillstone: GATE_BOOK "${want}" is not on ${kb.name}'s reading list — ignoring it.`); } catch (_) {}
-    want = null;
-  }
-  const hasWant = !want || read.some(b => b.title.toLowerCase().indexOf(want.toLowerCase()) > -1);
-  return {
-    lvl, concepts, known, read, need, want, hasWant,
-    conceptsDone: concepts.length > 0 && known.length === concepts.length,
-    booksDone: read.length >= need,
-    pro: lvl === MAX_LV,
-    ok: lvl < MAX_LV && concepts.length > 0 && known.length === concepts.length &&
-        read.length >= need && hasWant
-  };
-}
-
-/* ---------- ONE gate, read by the button, the bar, the tiles and levelUp ----------
-   What earns a rung is the prerequisite work: every concept up to that band marked
-   known, and the running book debt paid. Milestones are the owner's own additions -
-   an empty list asks for nothing, a list with an unticked line stops the rung. A skill
-   with no knowledge base has no prerequisites to check, so it has only the milestones,
-   and says so rather than pretending to a standard it cannot hold. */
+/* ---------- ONE reading, shared by the bar, the tiles and the panel ----------
+   The rung is the score's proportion of the ceiling (rungFromScore), so what the next rung
+   asks for is a number of score points: how many more, out of the total, before the
+   proportion ticks over. No book debt and no milestone stands in the way any more - a
+   milestone counts on the score like a hard concept, and reading is its own record. */
 function levelGate(s) {
-  const lvl = RUNG(s) + 1;
-  const ms = { total: s.goals.length, done: s.goals.filter(x => x.done).length };
-  ms.ok = ms.done === ms.total;
-  const base = { lvl, ms, kb: null, g: null, pro: false, maxed: false,
-                 pct: 0, ok: false, why: [] };
-  /* Decomposing a skill used to exempt it from its own ladder — the gate returned here,
-     before it had looked at a single concept, because the rung was the polygon average and
-     nothing the owner could grant. The parts are a reading now, so the ladder applies to a
-     decomposed skill exactly as it applies to every other one. */
-  if (lvl > MAX_LV) { base.maxed = true; base.pct = 100; return base; }
-
-  const kb = kbOf(s);
-  const g = kb ? gateFor(s, kb) : null;
-  base.kb = kb; base.g = g;
-
-  /* the fraction: every prerequisite is one unit, milestones included */
-  let have = 0, want = 0;
-  if (g && !g.pro) {
-    have += g.known.length;                    want += g.concepts.length;
-    have += Math.min(g.read.length, g.need);   want += g.need;
-    if (g.want) { have += g.hasWant ? 1 : 0;   want += 1; }
-  }
-  have += ms.done; want += ms.total;
-  /* nothing to measure is not the same as everything done. A skill with no knowledge
-     base and no milestones leaves the track empty and lets the words say why, rather
-     than filling the bar to 100% on the strength of having asked for nothing. */
-  base.pct = want ? Math.round(have / want * 100) : 0;
-
-  if (g && g.pro) {                            // level 10 is not granted by a checklist
-    base.pro = true;
-    base.why = ["earned in the world - calibrate it by hand when it is true"];
-    return base;
-  }
-  if (!g) {                                    // no knowledge base: milestones or nothing
-    base.ok = ms.ok;
-    if (!ms.ok) base.why = [msLeft(ms)];
-    else if (!ms.total) base.why = ["no prerequisites recorded - this rung is yours to declare"];
-    return base;
-  }
-  const why = [];
-  if (!g.concepts.length) why.push("no concepts recorded at this band");
-  else if (!g.conceptsDone) {
-    const n = g.concepts.length - g.known.length;
-    why.push(n + " concept" + (n === 1 ? "" : "s") + " to learn");
-  }
-  if (!g.booksDone) {
-    const n = g.need - g.read.length;
-    why.push(n + " book" + (n === 1 ? "" : "s") + " to read");
-  }
-  if (!g.hasWant) why.push("read " + g.want);
-  if (!ms.ok) why.push(msLeft(ms));
-  base.why = why;
-  base.ok = g.ok && ms.ok;
+  const rung = RUNG(s), lvl = rung + 1;
+  const p = skScoreParts(s);
+  const got = p && p.any ? p.got : 0, max = p && p.any ? p.max : 0;
+  const base = { lvl, got, max, need: 0, toGo: 0, pct: 0, ok: false, maxed: false, why: [] };
+  if (rung >= MAX_LV) { base.maxed = true; base.pct = 100; base.ok = true; return base; }
+  /* nothing to measure is not the same as everything done: an empty track, and the words say why */
+  if (!max) { base.why = ["nothing here earns a rung yet"]; return base; }
+  base.need = Math.ceil(lvl * max / MAX_LV);      /* the smallest score that stands on the next rung */
+  base.toGo = Math.max(0, base.need - got);
+  base.pct = Math.round(got / max * 100);         /* the bar is the fraction printed above it */
+  base.ok = got >= max;
+  base.why = base.toGo ? [base.toGo + " to go"] : [];
   return base;
 }
-function msLeft(ms) {
-  const n = ms.total - ms.done;
-  return n + " milestone" + (n === 1 ? "" : "s") + " to go";
-}
-/* the one-line summary of what the next rung asks for */
+/* the one-line summary of where the score stands */
 function gateLine(gt) {
-  if (gt.pro) return "professional execution - no checklist grants it";
-  const g = gt.g, bits = [];
-  if (g) {
-    bits.push(g.known.length + " / " + g.concepts.length + " concepts");
-    if (g.need) bits.push(Math.min(g.read.length, g.need) + " / " + g.need +
-      " book" + (g.need === 1 ? "" : "s"));
-    if (g.want) bits.push((g.hasWant ? "\u2713" : "\u25cb") + " " + esc(g.want));
-  }
-  if (gt.ms.total) bits.push(gt.ms.done + " / " + gt.ms.total +
-    " milestone" + (gt.ms.total === 1 ? "" : "s"));
-  if (!bits.length) bits.push("no prerequisites set");
-  return bits.join(" \u00b7 ");
+  if (gt.maxed) return "the ladder is complete";
+  if (!gt.max) return gt.why[0];
+  return gt.got + " / " + gt.max + " · " + gt.toGo + " to go";
 }
 
 /* ---- the master's contents ----
@@ -13172,102 +12963,11 @@ function biblioHTML(s, kb) {
   </section>`;
 }
 
-/* ---------- the instrument ---------- */
-function assessHTML(s) {
-  const kb = kbOf(s);
-  if (!kb) return `<div class="d-in"><p class="kb-none">No knowledge base for ${esc(s.name)} yet.</p></div>`;
-  const a = assay(s, kb);
-  const shown = assaySet === null ? a.suggested : assaySet;
-  const marked = a.c.marked;
-
-  return `
-  <header class="d-head">
-    <span class="${plaqueCls(s)}" aria-hidden="true">${skPlate(s, 64)}</span>
-    <div class="d-head-main">
-      <div class="assess-head">
-        <h2 class="d-name">${esc(s.name)}</h2>
-        <span class="sub">assessing · ${rank(RUNG(s))}, score ${SCORE(s)}</span>
-      </div>
-      <p class="d-rank">answer what you can — every mark is a judgment, not a test</p>
-    </div>
-    <button type="button" class="btn btn-ghost btn-sm" data-action="assess-exit">Close</button>
-  </header>
-
-  <section class="sect" aria-label="Placement">
-    <span class="label">Placement · ${a.p.answered} of ${a.p.total} answered</span>
-    ${kb.placement.map((q, qi) => `
-    <div class="pq">
-      <span class="q">${esc(q.q)}</span>
-      <ul class="pq-opts">
-        ${q.options.map((o, oi) => {
-          const on = assessOf(s) && assessOf(s).placement[qi] === o.band;
-          return `<li><button type="button" class="pq-opt" data-action="place" data-q="${qi}" data-o="${oi}"
-            aria-pressed="${!!on}">
-            <span class="pip" aria-hidden="true"></span>
-            <span class="ot">${esc(o.text)}</span>
-            <span class="ob">${o.band}</span>
-          </button></li>`;
-        }).join("")}
-      </ul>
-    </div>`).join("")}
-  </section>
-
-  <section class="sect" aria-label="Concepts">
-    <span class="label">Concepts · ${marked} of ${a.c.total} marked</span>
-    <ul class="cx-list">
-      ${kb.concepts.slice().sort((x, y) => x.band - y.band).map(c => {
-        const m = markOf(s, c.name);
-        return `
-      <li class="cx${m === "known" ? " is-known" : ""}">
-        <span class="cb">${c.band}</span>
-        <span class="cmain">
-          <span class="cn">${esc(c.name)}${c.facet && c.facet !== "general" ? ` <span class="cb">· ${esc(c.facet)}</span>` : ""}</span>
-          <span class="cd">${esc(c.blurb)}</span>
-          ${m === "known" ? "" : `<span class="clearn">${esc(c.learn)}</span>`}
-        </span>
-        <span class="marks">
-          ${MARKS.map(mk => `<button type="button" class="mk" data-m="${mk.k}"
-            data-action="mark" data-c="${esc(c.name)}" aria-pressed="${m === mk.k}"
-            aria-label="${esc(c.name)}: ${mk.label}">
-            ${markGlyph(mk.k, m === mk.k)}${mk.label}
-          </button>`).join("")}
-        </span>
-      </li>`;
-      }).join("")}
-    </ul>
-  </section>
-
-  <div class="assay">
-    <div class="assay-row">
-      <span class="assay-receipt" id="assayReceipt">
-        ${esc(receiptText(a))}
-        ${a.finding ? `<span class="assay-find">${esc(a.finding)}</span>` : ""}
-      </span>
-      <span class="assay-set">
-        <span class="label">set</span>
-        <button type="button" class="cal-btn" data-action="assay-step" data-d="-1"
-          aria-label="Lower the level to confirm" ${shown === null || shown <= 0 ? "disabled" : ""}>${ICON.minus}</button>
-        <span class="assay-num" id="assayNum">${shown === null ? "–" : shown}</span>
-        <button type="button" class="cal-btn" data-action="assay-step" data-d="1"
-          aria-label="Raise the level to confirm" ${shown === null || shown >= MAX_LV ? "disabled" : ""}>${ICON.plusSm}</button>
-        <button type="button" class="btn btn-primary" data-action="assay-confirm"
-          ${shown === null ? "disabled" : ""}>Confirm</button>
-      </span>
-    </div>
-    <p class="assay-note">${shown === null
-      ? "Answer a placement question or mark a concept and the assay begins."
-      : (assaySet !== null && assaySet !== a.suggested
-          ? `Overriding the suggestion — the ledger will record both (suggested ${a.suggested}, set ${assaySet}).`
-          : "Confirm writes a calibration carrying this receipt. Nothing is written until you press it.")}</p>
-  </div>`;
-}
-
 function skillHTML(s) {
   const p = prog(s);
   const max = LV(s) >= MAX_LV;
   const next = RUNG(s) + 1;
   const gt = levelGate(s);
-  const canLevel = !max && gt.ok;
   const kb = kbOf(s);
 
   return `
@@ -13287,16 +12987,6 @@ function skillHTML(s) {
           <span class="t">${bs.length === 1 ? "tome read" : "tomes read"}</span></button></p>`;
       })()}
     </div>
-    ${kb ? `<button type="button" class="btn btn-ghost btn-sm" data-action="assess-open">Assess</button>` : ""}
-    ${`
-    <div class="cal">
-      <span class="label">Calibrate</span>
-      <div class="cal-row">
-        <button type="button" class="cal-btn" data-action="cal" data-d="-1" aria-label="Calibrate ${esc(s.name)} one level down" ${s.level <= 0 ? "disabled" : ""}>${ICON.minus}</button>
-        <span class="cal-num" aria-hidden="true">${s.level}</span>
-        <button type="button" class="cal-btn" data-action="cal" data-d="1" aria-label="Calibrate ${esc(s.name)} one level up" ${s.level >= MAX_LV ? "disabled" : ""}>${ICON.plusSm}</button>
-      </div>
-    </div>`}
   </header>
 
   <div class="d-hero">
@@ -13307,13 +12997,6 @@ function skillHTML(s) {
         <button type="button" class="lad-open" data-action="ladder"
           popovertarget="ladPop">view ladder</button></span>
     </div>
-    ${max ? "" : `<div style="text-align:right">
-      <button type="button" class="btn btn-primary" data-action="levelup" ${canLevel ? "" : "disabled"}
-        title="${canLevel ? `Advance to level ${next}` : esc(gt.why.join(" \u00b7 ") || "not yet")}">
-        ${ICON.up} Level up
-      </button>
-      ${canLevel ? "" : `<div class="hint-why">${esc(gt.why.join(" \u00b7 "))}</div>`}
-    </div>`}
   </div>
 
   ${max ? `<div class="maxed"><div class="t">GRANDMASTER</div><p>Level ${MAX_LV} of ${MAX_LV}. Nothing left to prove here — keep it sharp.</p></div>` : `
@@ -13355,10 +13038,10 @@ function skillHTML(s) {
 
       ${max ? "" : `
       <section class="sect" aria-label="Milestones">
-        <span class="label">Your own milestones${p.total ? ` for level ${next}` : ""}</span>
+        <span class="label">Your own milestones</span>
         <p class="ms-note">${p.total
-          ? `Yours, not the system's — every one has to be ticked before level ${next} is granted.`
-          : "Optional. Nothing here asks for anything; add a line and it becomes a condition of the next rung."}</p>
+          ? "Yours, not the system's — ticked, one counts on the score like a hard concept."
+          : "Optional — a line of your own; ticked, it counts on the score like a hard concept."}</p>
         ${p.total === 0 ? "" : `
         <ul class="ms-list">
           ${s.goals.map((gl, i) => {
@@ -13378,7 +13061,7 @@ function skillHTML(s) {
         ${s.goals.length < MS_CAP ? `
         <form class="ms-add" data-form="addgoal">
           <input type="text" id="msInput" maxlength="140" placeholder="e.g. Hold a 15-minute conversation without planning my reply"
-            aria-label="New milestone for level ${next}">
+            aria-label="New milestone">
           <button type="submit" class="btn btn-ghost">${ICON.plus} Add</button>
         </form>` : `<p class="ms-cap-note">${MS_CAP} milestones is the cap — finish one or trim the list.</p>`}
       </section>`}`;
@@ -13550,7 +13233,7 @@ function newSkillHTML() {
     <span class="d-plaque" aria-hidden="true">${ICON.plus}</span>
     <div class="d-head-main">
       <h2 class="d-name">New skill</h2>
-      <p class="d-rank">every skill starts at <b>${rank(0)}</b> — level 0 · calibrate it after</p>
+      <p class="d-rank">every skill starts at <b>${rank(0)}</b> — level 0</p>
     </div>
   </header>
   <form data-form="createskill">
@@ -13577,8 +13260,8 @@ function newSkillHTML() {
 }
 
 /* ---------- surgical refresh ---------- */
-/* the bar, the button and the tile all read levelGate — the same call the full render
-   makes, so a surgical refresh can never disagree with a repaint */
+/* the bar and the tile read levelGate — the same call the full render makes, so a
+   surgical refresh can never disagree with a repaint */
 function refreshXP(s) {
   const gt = levelGate(s);
   const line = gateLine(gt);
@@ -13589,16 +13272,6 @@ function refreshXP(s) {
   if (fill) { fill.style.width = gt.pct + "%"; fill.classList.toggle("full", gt.ok); }
   if (track) { track.setAttribute("aria-valuenow", gt.pct);
     track.setAttribute("aria-label", `Progress toward level ${gt.lvl}: ${line}`); }
-  const btn = document.querySelector('[data-action="levelup"]');
-  const canLevel = s.level < MAX_LV && gt.ok;
-  if (btn) {
-    const why = gt.why.join(" \u00b7 ");
-    btn.disabled = !canLevel;
-    btn.title = canLevel ? `Advance to level ${s.level + 1}` : (why || "not yet");
-    const hint = document.querySelector(".hint-why");
-    if (canLevel) { if (hint) hint.remove(); }
-    else if (hint) hint.textContent = why;
-  }
   refreshTile(s);
 }
 function refreshJournalFor(s) {
@@ -13613,7 +13286,6 @@ function select(selObj, animate = true) {
   const focusWasInBoard = document.activeElement && document.activeElement.closest &&
     !!document.activeElement.closest(".board-skills");
   facetFormOpen = false;
-  assessMode = false; assaySet = null;
   pathAll = false; renaming = false; disarmRemove();
   if (selObj === "__add") addMode = { attr: null };
   else { addMode = null; state.sel = selObj; }
@@ -13677,61 +13349,6 @@ function delGoal(s, i) {
   const inp = $("#msInput");
   if (inp) inp.focus({ preventScroll: true });
   showToast(`Milestone removed.`, true);
-}
-
-function levelUp(s) {
-  const gt = levelGate(s);
-  if (s.level >= MAX_LV || !gt.ok) return;
-  takeSnapshot();
-  const reached = s.level + 1;
-  /* the receipt names what actually bought the rung, so a level read back in six
-     months says which concepts and which books were behind it */
-  const paid = gt.g
-    ? [`${gt.g.known.length} concept${gt.g.known.length === 1 ? "" : "s"}`]
-        .concat(gt.g.need ? [`${gt.g.need} book${gt.g.need === 1 ? "" : "s"}`] : [])
-        .concat(gt.ms.total ? [`${gt.ms.total} milestone${gt.ms.total === 1 ? "" : "s"}`] : [])
-    : s.goals.map(x => x.t);
-  withDerived(() => {
-    s.history.push({ reached, goals: s.goals.map(x => x.t),
-                     paid: gt.g ? { concepts: gt.g.known.map(c => c.name),
-                                    books: gt.g.read.slice(0, gt.g.need).map(b => b.title) } : null,
-                     at: Date.now() });
-    s.level = reached;
-    s.goals = [];
-    state.journal.push({ ts: Date.now(), sid: s.id, kind: "level",
-      text: `Leveled up — ${reached} · ${rank(reached)}${paid.length ? ` (${paid.join(", ")})` : ""}` });
-  });
-  trimJournal(); save();
-  renderGrid();
-  renderDetail(false);
-  const n = $("#heroLv"); if (n) n.classList.add("pulse");
-  const t = document.getElementById("tile-" + s.id); if (t) t.classList.add("pulse");
-  const inp = $("#msInput");
-  if (inp && s.level < MAX_LV) inp.focus({ preventScroll: true });
-  showToast(`${s.name} is now level ${reached} — ${rank(reached)}.`, true);
-}
-
-function calibrate(s, d) {
-  const target = Math.max(0, Math.min(MAX_LV, s.level + d));
-  if (target === s.level) return;
-  takeSnapshot();
-  withDerived(() => {
-    s.level = target;
-    const last = state.journal[state.journal.length - 1];
-    if (last && last.kind === "cal" && last.sid === s.id && Date.now() - last.ts < 6000) {
-      last.text = `Calibrated to ${target} — ${rank(target)}`;
-      last.ts = Date.now();
-    } else {
-      state.journal.push({ ts: Date.now(), sid: s.id, kind: "cal", text: `Calibrated to ${target} — ${rank(target)}` });
-    }
-  });
-  trimJournal(); save();
-  renderGrid();
-  const dir = d > 0 ? "1" : "-1";
-  renderDetail(false);
-  const btn = document.querySelector(`[data-action="cal"][data-d="${dir}"]`);
-  if (btn && !btn.disabled) btn.focus({ preventScroll: true });
-  showToast(`${s.name} calibrated to ${target} — ${rank(target)}.`, true);
 }
 
 /* facets — judged, not earned */
@@ -13841,38 +13458,35 @@ function renameSkill(s) {
   showToast(`Renamed to "${s.name}".`, true);
 }
 
-/* ---------- assessment actions ---------- */
-function openAssess(s) {
-  ensureAssess(s);
-  assessMode = true; assaySet = null;
-  renderDetail(true);
-  $("#detail").scrollTop = 0;
-}
-function closeAssess() {
-  assessMode = false; assaySet = null;
-  save();                       // the draft persists; nothing was written to the level
-  renderGrid(); renderDetail(true);
-}
-function placeAnswer(s, qi, oi) {
-  const kb = kbOf(s); if (!kb) return;
-  const opt = kb.placement[qi] && kb.placement[qi].options[oi];
-  if (!opt) return;
-  const a = ensureAssess(s);
-  if (a.placement[qi] === opt.band) delete a.placement[qi];   // tap again to unset
-  else a.placement[qi] = opt.band;
-  assaySet = null;
-  save();
-  renderDetail(false);
-}
 function markConcept(s, cname, kind) {
   const a = ensureAssess(s);
-  if (a.known[cname] === kind) delete a.known[cname];         // tap again to unmark
-  else a.known[cname] = kind;
-  assaySet = null;
+  const was = RUNG(s);
+  /* a mark moves the score, and the score is the rung - so the crest and the total may move
+     with it, and withDerived journals the attribute when they do */
+  withDerived(() => {
+    if (a.known[cname] === kind) delete a.known[cname];       // tap again to unmark
+    else a.known[cname] = kind;
+    journalRung(s, was); renderCrests(); renderTotal();
+  });
   save();
   renderDetail(false);
-  refreshTile(s);            // a concept mark now moves the rung, so it moves the tile
+  refreshTile(s);            // the tile prints the score and its fraction
   refreshFacetCells(s);      // ...and on Nature it moves the cell the concept belongs to
+}
+/* A rung that moved is journaled once, with the score that moved it. A mark tapped on and
+   off within a few seconds edits the same line - or removes it, when the rung is back where
+   it started - rather than writing a rise and a fall nobody meant. */
+function journalRung(s, was) {
+  const now = RUNG(s);
+  if (now === was) return;
+  const p = skScoreParts(s);
+  const text = `Level ${now} — ${rank(now)} · ${p && p.any ? p.got + " of " + p.max + " on the score" : "read from the score"}`;
+  const last = state.journal[state.journal.length - 1];
+  if (last && last.kind === "level" && last.sid === s.id && Date.now() - last.ts < 6000) {
+    if (last.from === now) state.journal.pop();
+    else { last.text = text; last.ts = Date.now(); }
+  } else state.journal.push({ ts: Date.now(), sid: s.id, kind: "level", from: was, text });
+  trimJournal();
 }
 
 /* ---------- the concept dialog ----------
@@ -14070,34 +13684,6 @@ const CPT_LIVE = {
       : "The average of " + WORDS[n] + " dice: the ends need every die to agree and the middle can be reached many ways, so the shape bulges. The bell is already there.";
   }
 };
-function assayStep(s, d) {
-  const kb = kbOf(s); if (!kb) return;
-  const a = assay(s, kb);
-  const base = assaySet === null ? a.suggested : assaySet;
-  if (base === null) return;
-  assaySet = Math.max(0, Math.min(MAX_LV, base + d));
-  renderDetail(false);
-}
-function assayConfirm(s) {
-  const kb = kbOf(s); if (!kb) return;
-  const a = assay(s, kb);
-  const target = assaySet === null ? a.suggested : assaySet;
-  if (target === null) return;
-  takeSnapshot();
-  const receipt = receiptText(a);
-  const overrode = assaySet !== null && assaySet !== a.suggested;
-  withDerived(() => {
-    s.level = target;
-    const at = ensureAssess(s);
-    at.last = { ts: Date.now(), suggested: a.suggested, set: target, receipt };
-    state.journal.push({ ts: Date.now(), sid: s.id, kind: "cal",
-      text: `Assessed at ${target} — ${receipt}${overrode ? ` (set ${target} over suggested ${a.suggested})` : ""}` });
-  });
-  trimJournal(); save();
-  assessMode = false; assaySet = null;
-  renderGrid(); renderDetail(true);
-  showToast(`${s.name} assessed at ${target} — ${rank(target)}.`, true);
-}
 function bookRead(s, title) {
   /* the tick lands on the library row, not on a per-skill copy — so a book read for one
      skill is read for every skill that recommends it, and shows read on the shelf too */
@@ -14454,8 +14040,6 @@ document.addEventListener("click", e => {
   if (!act) return;
   const s = selSkill();
   switch (act.dataset.action) {
-    case "levelup":     if (s) levelUp(s); break;
-    case "cal":         if (s) calibrate(s, +act.dataset.d); break;
     /* a cell on the board names its own skill: the selected one may be a different skill,
        or none at all if the click landed on the control before the cell */
     case "judge":       { const t = act.dataset.sid ? state.skills.find(x => x.id === act.dataset.sid) : s;
@@ -14490,14 +14074,9 @@ document.addEventListener("click", e => {
                         { const i = $("#heroNameInput"); if (i) { i.focus(); i.select(); } } break;
     case "setclass":    setClass(act.dataset.cls); break;
     case "classpick":   renderClassList(); break;
-    case "assess-open": if (s) openAssess(s); break;
-    case "assess-exit": closeAssess(); break;
-    case "place":       if (s) placeAnswer(s, +act.dataset.q, +act.dataset.o); break;
     case "openconcept": if (s) openConcept(s, act.dataset.c); break;
     case "markcycle":   if (s) markConcept(s, act.dataset.c, act.dataset.m); break;
     case "mark":        if (s) markConcept(s, act.dataset.c, act.dataset.m); break;
-    case "assay-step":  if (s) assayStep(s, +act.dataset.d); break;
-    case "assay-confirm": if (s) assayConfirm(s); break;
     case "bookread":    if (s) bookRead(s, act.dataset.b); break;
     case "goalready":   if (s) confirmReadyGoal(s, +act.dataset.goal); break;
     case "addto":       addMode = { attr: act.dataset.attr }; renderGrid(); renderDetail(true); break;
