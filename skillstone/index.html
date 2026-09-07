@@ -2953,16 +2953,23 @@ li.is-done .qg { color: var(--verdant); }
 .j3-calendar a { color:var(--gold); text-underline-offset:3px; }
 /* adding an event: the form takes the calendar's own field grammar; times sit in one row */
 .j3-gcal-h { font:600 16px var(--f-display); margin:28px 0 12px; padding-top:20px; border-top:1px solid var(--j3-rule); }
-.j3-cal-bar { display:flex; align-items:center; justify-content:flex-end; gap:12px; margin-bottom:8px; }
-.j3-cal-bar .calendar-help { flex:1; margin:0; }
-.j3-ev { margin-bottom:12px; }
+/* the calendar view drops the gap under the tabs and gives the embed the height back */
+.j3-page.right:has(.j3-calendar) .j3-view-switch { margin-bottom:0; }
+.j3-calendar-settings { padding-top:20px; }
+.j3-calendar iframe { height:670px; }
+.j3-cal-frame { position:relative; }
+.j3-cal-plus { position:absolute; right:2px; bottom:2px; width:32px; height:32px; display:grid; place-items:center; padding:0;
+  background:#f3ead6; border:0; border-radius:50%; color:#6E4A0E; cursor:pointer; }
+@media (hover: hover) { .j3-cal-plus:hover { color:#4A2F06; background:#ecdfc4; } }
+.j3-cal-plus:focus-visible { outline:2px solid #6E4A0E; outline-offset:2px; }
+.j3-ev { margin:12px 0; }
 .j3-calendar textarea { flex-basis:100%; color:var(--parchment); background:rgba(255,255,255,.2); border:1px solid var(--j3-rule); padding:8px; font:inherit; resize:vertical; }
 .j3-ev-check { display:flex; align-items:center; gap:8px; color:var(--dust); font-size:13px; }
 .j3-ev-check input { flex:none; width:16px; height:16px; min-width:0; accent-color:var(--gold); }
 .j3-ev-times { display:flex; flex-wrap:wrap; gap:8px; flex-basis:100%; }
 .j3-ev-times label { flex-basis:auto; align-self:center; }
 .j3-ev-acts { display:flex; gap:8px; flex-basis:100%; }
-@media(max-width:700px) { .j3-calendar iframe { height:560px; } .j3-page .j3-weekend > .j3-day + .j3-day { border-left:0; padding-left:0; border-top:1px solid var(--j3-divider); padding-top:var(--s2); } }
+@media(max-width:700px) { .j3-calendar iframe { height:580px; } .j3-page .j3-weekend > .j3-day + .j3-day { border-left:0; padding-left:0; border-top:1px solid var(--j3-divider); padding-top:var(--s2); } }
 /* left page: 6 + 6, then 12 */
 .j3-left-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
 .j3-wide { grid-column: 1 / -1; }
@@ -6983,15 +6990,14 @@ async function gcalSubmit(form) {
   gcalBusy = true; gcalNote = ""; renderJ3();
   try {
     const ev = await gcalCall("create", { summary: d.summary, description: d.description, date: d.date, allDay: d.allDay, start: d.start, end: d.end, timeZone: gcalTZ() });
-    gcalNote = "Added “" + (ev.summary || d.summary) + "” — " + gcalWhen(d) + ".";
-    gcalDraft = null;                                  /* the draft is spent only on success */
-    showToast(gcalNote);
+    showToast("Added “" + (ev.summary || d.summary) + "” — " + gcalWhen(d) + ".");
+    gcalDraft = null; gcalNote = "";                   /* the draft is spent only on success */
   } catch (e) {
     gcalNote = e.message;                              /* the draft survives a refusal */
     if (e.code === "reconnect") gcal = { connected: false };
   }
   gcalBusy = false; renderJ3();
-  const f = document.querySelector("[data-gcal-form] [name=summary]") || document.querySelector("[data-gcal=new]");
+  const f = document.querySelector("[data-gcal-form] [name=summary]") || document.querySelector(".j3-cal-plus");
   if (f) f.focus({ preventScroll: true });
 }
 /* the connection card in Calendar settings, and the form above the embedded calendar */
@@ -7018,19 +7024,25 @@ function j3EventFormHTML() {
     '<button type="button" class="j3-btn" data-gcal="cancel"' + (gcalBusy ? " disabled" : "") + '>Cancel</button></div>' +
     (gcalNote ? '<p class="calendar-help" role="status">' + esc(gcalNote) + '</p>' : "") + '</form>';
 }
-function j3GcalBarHTML() {
-  if (!(gcal && gcal.connected)) return "";
-  return gcalDraft ? j3EventFormHTML() :
-    '<div class="j3-cal-bar"><button type="button" class="j3-btn" data-gcal="new">Add event</button>' +
-    (gcalNote ? '<span class="calendar-help" role="status">' + esc(gcalNote) + '</span>' : "") + '</div>';
-}
+/* the form, only while a draft is open; the way in is the + on the calendar's own corner */
+function j3GcalBarHTML() { return gcalDraft && gcal && gcal.connected ? j3EventFormHTML() : ""; }   /* a draft outlives a lost connection, and reappears with it */
+/* the plus sits where Google's own sits and covers it: the intuition that + means "new event"
+   is the one this page keeps. The glyph is a fifth larger and a little bolder than Google's. */
+const J3_PLUS = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 2.5v11M2.5 8h11"/></svg>';
+function j3CalPlusHTML() { return '<button type="button" class="j3-cal-plus" data-gcal="new" aria-label="Add an event">' + J3_PLUS + '</button>'; }
 document.addEventListener("click", e => {
   const b = e.target.closest && e.target.closest("[data-gcal]"); if (!b) return;
   const act = b.dataset.gcal;
   if (act === "connect") gcalConnectStart();
   else if (act === "retry") { gcal = null; gcalNote = ""; gcalEnsureStatus(); renderJ3(); }
   else if (act === "disconnect") gcalDisconnect();
-  else if (act === "new") { gcalDraft = gcalNewDraft(); gcalNote = ""; renderJ3(); const f = document.getElementById("gcal-title"); if (f) f.focus({ preventScroll: true }); }
+  else if (act === "new") {
+    if (!(gcal && gcal.connected)) {            /* the + is always there; unconnected, it leads to the connection */
+      gcalNote = "Connect Google Calendar to add events from here."; j3RightView = "settings"; gcalEnsureStatus(); renderJ3();
+      const c = document.querySelector("[data-gcal=connect], [data-gcal=retry]"); if (c) c.focus({ preventScroll: true }); return;
+    }
+    gcalDraft = gcalNewDraft(); gcalNote = ""; renderJ3(); const f = document.getElementById("gcal-title"); if (f) f.focus({ preventScroll: true });
+  }
   else if (act === "cancel") { gcalDraft = null; gcalNote = ""; renderJ3(); const f = document.querySelector("[data-gcal=new]"); if (f) f.focus({ preventScroll: true }); }
 });
 function gcalConnectStart() { gcalNote = ""; authStart({ calendar: true }); }
@@ -11854,7 +11866,7 @@ function j3CalendarURL(id) {
 function j3CalendarHTML() {
   const id = j3CalendarId();
   return '<section class="j3-calendar" aria-label="Google Calendar">' + j3GcalBarHTML() +
-    (id ? '<iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' :
+    (id ? '<div class="j3-cal-frame"><iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + j3CalPlusHTML() + '</div>' :
     '<h3>Your calendar, beside your notes</h3><p class="calendar-help">Choose a calendar in Settings to view your schedule here.</p><button type="button" class="j3-btn" data-jcal-view="settings">Set up calendar</button>') + '</section>';
 }
 function j3CalendarSettingsHTML() {
