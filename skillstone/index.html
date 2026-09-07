@@ -1236,8 +1236,7 @@ button.d-plaque {
   scrollbar-width: thin; scrollbar-color: var(--mortar-2) transparent; }
 .cfg-dlg::backdrop { background: rgb(8 7 6 / 72%); }
 .cfg-top { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: var(--s4);
-  padding: var(--s5) var(--s6); background: var(--stone-1); border-bottom: 1px solid var(--mortar); }
-.cfg-eyebrow { font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--s2); }
+  padding: var(--s5) var(--s6); background: var(--stone-1); }
 .cfg-title { font-family: var(--f-display); font-weight: 700; font-size: 1.75rem; line-height: 1.2; margin: 0 0 var(--s2); }
 .cfg-help { font-size: 1rem; line-height: 1.45; color: var(--dust); max-width: 48ch; }
 .cfg-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: var(--s7); padding: var(--s6); }
@@ -3645,7 +3644,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   <div class="cls-birth"><button type="button" class="btn btn-ghost btn-sm" data-action="birth-open">Enter your birth</button></div>
 </div>
 <dialog id="cfgDlg" class="cfg-dlg" aria-labelledby="cfgTitle">
-<div class="cfg-top"><div><p class="cfg-eyebrow">Your character sheet</p><h2 class="cfg-title" id="cfgTitle">Settings</h2><p class="cfg-help">Make this space your own.</p></div><button type="button" class="btn btn-ghost" data-action="settings-close" aria-label="Close settings">Close</button></div>
+<div class="cfg-top"><div><h2 class="cfg-title" id="cfgTitle">Settings</h2></div><button type="button" class="btn btn-ghost" data-action="settings-close" aria-label="Close settings">Close</button></div>
 <div class="cfg-grid"><div class="cfg-col"><section class="cfg-sec">
     <h3 class="cfg-h">Tarot</h3><p class="cfg-help">Choose the back of your daily cards.</p>
     
