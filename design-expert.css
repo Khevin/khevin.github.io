@@ -1486,8 +1486,8 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 /* ——— Hero art tile (terminal sequence above body-lg) ——— */
 .hero-art {
   width: 100%;
-  max-width: 256px;
-  aspect-ratio: 1 / 1;
+  max-width: 340px;
+  aspect-ratio: 340 / 256;
   border: 1px solid var(--rule);
   background: rgba(255,255,255,0.02);
   position: relative;
