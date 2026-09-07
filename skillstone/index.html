@@ -7131,12 +7131,16 @@ function j3GcalSettingsHTML(id) {
 /* ---- invitations: what the connected account has been asked to and has not answered ----
    The embed shows them but cannot answer; these rows can. The list is fetched once per
    connection and after each answer, and lives only in memory. */
-let gcalInvites = null, gcalInvBusy = false, gcalInvNote = "", gcalInvPending = null;
-function gcalInvitesReset() { gcalInvites = null; gcalInvNote = ""; gcalInvPending = null; }
+let gcalInvites = null, gcalInvWeek = null, gcalInvBusy = false, gcalInvNote = "", gcalInvPending = null;
+function gcalInvitesReset() { gcalInvites = null; gcalInvWeek = null; gcalInvNote = ""; gcalInvPending = null; }
+/* the week the Journal has open, Monday to Sunday: the list follows it */
 function gcalEnsureInvites() {
-  if (!(gcal && gcal.connected) || gcalInvites !== null || gcalInvBusy) return;
+  if (!(gcal && gcal.connected) || gcalInvBusy) return;
+  const wk = weekKeyOf(j3Week);
+  if (gcalInvites !== null && gcalInvWeek === wk) return;
   gcalInvBusy = true;
-  gcalCall("invites").then(r => { gcalInvites = r.invites || []; }, e => { gcalInvites = []; gcalInvNote = "Could not read invitations: " + e.message; if (e.code === "reconnect") gcal = { connected: false, client_id: gcal && gcal.client_id }; })
+  const from = dyISO(j3Week), to = dyISO(addDays(j3Week, 7));
+  gcalCall("invites", { from, to }).then(r => { gcalInvites = r.invites || []; gcalInvWeek = wk; }, e => { gcalInvites = []; gcalInvWeek = wk; gcalInvNote = "Could not read invitations: " + e.message; if (e.code === "reconnect") gcal = { connected: false, client_id: gcal && gcal.client_id }; })
     .then(() => { gcalInvBusy = false; if (view === "journal") renderJ3(); });
 }
 function gcalInvWhen(i) {
@@ -7166,7 +7170,7 @@ function j3InvitesHTML() {
   gcalEnsureInvites();
   const note = gcalInvNote ? '<p class="calendar-help j3-inv-note" role="status">' + esc(gcalInvNote) + '</p>' : "";
   if (!gcalInvites || !gcalInvites.length) return note;
-  return '<section class="j3-inv" aria-label="Invitations"><h3 class="j3-inv-h">Invitations · ' + gcalInvites.length + '</h3>' +
+  return '<section class="j3-inv" aria-label="Invitations"><h3 class="j3-inv-h">Invitations this week · ' + gcalInvites.length + '</h3>' +
     gcalInvites.map(i => '<div class="j3-inv-row" data-inv="' + esc(i.id) + '"><div class="j3-inv-what"><b>' + esc(i.summary) + '</b>' +
       '<span class="j3-inv-when">' + esc(gcalInvWhen(i)) + (i.organizer ? " · from " + esc(i.organizer) : "") + (i.guests > 2 ? " · " + i.guests + " guests" : "") + '</span></div>' +
       '<div class="j3-inv-acts">' + GCAL_RSVP.map(([v, t]) => '<button type="button" class="j3-btn" data-rsvp="' + v + '" data-ev="' + esc(i.id) + '"' + (gcalInvPending ? " disabled" : "") +
