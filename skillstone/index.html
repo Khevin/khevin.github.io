@@ -2860,6 +2860,7 @@ li.is-done .qg { color: var(--verdant); }
   --cave: #F8F1E1; --stone-1: #EADFC6; --stone-2: #E0D3B5; --stone-3: #D3C4A2;
   --mortar: rgba(43,33,23,0.30); --mortar-2: rgba(43,33,23,0.48); --socket: rgba(43,33,23,0.10); --bevel: rgba(255,255,255,0.5);
   --j3-rule: rgba(43,33,23,0.28);
+  --j3-divider: rgba(185, 103, 103, 0.34);
   position: relative; z-index: 1; min-width: 0;
   color: var(--parchment);
 }
@@ -2959,7 +2960,7 @@ li.is-done .qg { color: var(--verdant); }
 @media (hover: hover) { .j3-ribbon:not(:disabled):hover { height: 64px; } }
 .j3-ribbon:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 /* the turn: a leaf with two faces, hinged at the spine */
-.j3-leaf { position: absolute; z-index: 5; transform-style: preserve-3d; transition: transform 600ms cubic-bezier(0.45, 0, 0.2, 1); pointer-events: none; }
+.j3-leaf { position: absolute; z-index: 5; transform-style: preserve-3d; will-change: transform; pointer-events: none; }
 .j3-leaf.fwd { transform-origin: left center; }
 .j3-leaf.fwd.is-turning { transform: rotateY(-180deg); }
 .j3-leaf.bwd { transform-origin: right center; }
@@ -2984,12 +2985,29 @@ li.is-done .qg { color: var(--verdant); }
 .j3-face.pg-left,  .j3-ghost.pg-left  { box-shadow: inset -32px 0 32px -22px rgba(0,0,0,0.5); }
 .j3-face.pg-right, .j3-ghost.pg-right { box-shadow: inset 32px 0 32px -22px rgba(0,0,0,0.5); }
 .j3-face > .j3-page, .j3-ghost > .j3-page { position: absolute; inset: 28px 32px; z-index: 1; }   /* the sheet's padding; the gap is 2 × 32px */
-.j3-face::after { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--e-out);
+.j3-face::after { content: ""; position: absolute; inset: 0; opacity: var(--turn-shade, 0);
   background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
 .j3-leaf.bwd .j3-face::after { background: linear-gradient(-90deg, rgba(0,0,0,0.5), rgba(0,0,0,0) 45%); }
 .j3-leaf.is-turning .j3-face::after { opacity: 1; }
 .j3-ghost { position: absolute; z-index: 4; overflow: hidden; pointer-events: none; }
 
+/* Pale notebook ruling; the darker ink belongs to text and controls. */
+.j3-page .j3-sec-h { border-bottom-color: var(--j3-divider); }
+.j3-page .j3-day, .j3-page .j3-weekend, .j3-page .j3-day.today { border-top-color: var(--j3-divider); }
+.j3-page .j3-weekend > .j3-day + .j3-day { border-left: 1px solid var(--j3-divider); padding-left: var(--s3); }
+.j3-page.right .j3-view-switch { display:flex; align-items:center; gap:20px; margin:0 0 20px; border-bottom:1px solid var(--j3-divider); }
+.j3-view-switch button { appearance:none; border:0; border-bottom:2px solid transparent; background:none; padding:6px 0 9px; color:var(--ash); font:small-caps 14px var(--f-display); cursor:pointer; }
+.j3-view-switch button[aria-pressed="true"] { color:var(--parchment); border-bottom-color:#9b5147; }
+.j3-view-switch button:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
+.j3-calendar iframe { display:block; width:100%; height:650px; border:0; border-radius:3px; background:var(--paper); }
+.j3-calendar details { margin:16px 0; font-size:13px; color:var(--ash); }
+.j3-calendar summary { cursor:pointer; width:fit-content; }
+.j3-calendar form { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.j3-calendar label, .j3-calendar .calendar-help { flex-basis:100%; }
+.j3-calendar input { flex:1; min-width:120px; color:var(--parchment); background:rgba(255,255,255,.2); border:1px solid var(--j3-rule); padding:8px; }
+.j3-calendar .calendar-help { line-height:1.6; color:var(--ash); font-size:13px; }
+.j3-calendar a { color:var(--gold); text-underline-offset:3px; }
+@media(max-width:700px) { .j3-calendar iframe { height:560px; } .j3-page .j3-weekend > .j3-day + .j3-day { border-left:0; padding-left:0; border-top:1px solid var(--j3-divider); padding-top:var(--s2); } }
 /* left page: 6 + 6, then 12 */
 .j3-left-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
 .j3-wide { grid-column: 1 / -1; }
@@ -3260,7 +3278,7 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
 .j3-day.today .dn { color: var(--gold); }
 .j3-day.today .dd { color: var(--bronze); }
 /* on paper, every mark of "now" is the ribbon's red: the rule, the day, the pill */
-.j3-page .j3-day.today { border-top-color: #8C2D23; }
+.j3-page .j3-day.today { border-top-color: var(--j3-divider); }
 .j3-page .j3-day.today .dn { color: #8C2D23; }
 .j3-page .j3-day.today .dd { color: #A63A2E; }
 .j3-page .j3-today { background: linear-gradient(90deg, #8C2D23, #A63A2E 60%, #8C2D23); color: #F6EBDD; }
@@ -3273,7 +3291,7 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .j3-head { margin: 0 -10px var(--s3); padding-left: calc(var(--s5) + 10px); padding-right: calc(var(--s5) + 10px); }
   .j3-paper { grid-template-columns: minmax(0, 1fr); row-gap: var(--s5); padding: 20px 16px; min-height: 0; }
   .j3-page.left, .j3-page.right { box-shadow: none; }
-  .j3-page.right { border-top: 1px solid var(--j3-rule); }
+  .j3-page.right { border-top: 1px solid var(--j3-divider); }
 }
 @media (max-width: 700px) {
   .j3-left-grid, .j3-weekend { grid-template-columns: minmax(0, 1fr); }
@@ -11775,6 +11793,43 @@ function renderWeekPick() {
   }
   wEl.innerHTML = h;
 }
+let j3CalendarVisible = false;
+function j3CalendarKey() { return "skillstone-calendar:" + (auth && auth.user ? auth.user.id : "local"); }
+function j3CalendarId() {
+  try { const saved = localStorage.getItem(j3CalendarKey()); if (saved !== null) return saved; } catch (_) {}
+  return auth && auth.user ? auth.user.email || "" : "";
+}
+function j3CalendarURL(id) {
+  const date = d => [d.getFullYear(), String(d.getMonth()+1).padStart(2,"0"), String(d.getDate()).padStart(2,"0")].join("");
+  const q = new URLSearchParams({src:id, ctz:Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+    mode:window.innerWidth < 700 ? "AGENDA" : "WEEK", dates:date(j3Week)+"/"+date(addDays(j3Week,7)),
+    wkst:"2", showTitle:"0", showPrint:"0", showCalendars:"0", showTabs:"0", bgcolor:"#f3ead6"});
+  return "https://calendar.google.com/calendar/embed?" + q;
+}
+function j3CalendarHTML() {
+  const id = j3CalendarId();
+  return '<section class="j3-calendar" aria-label="Google Calendar">' +
+    (id ? '<iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' :
+    '<h3>Your calendar, beside your notes</h3><p class="calendar-help">Enter your Google Calendar email or calendar ID to view your schedule here.</p>') +
+    '<details'+(!id?' open':'')+'><summary>Calendar settings</summary><form data-jcal-form>' +
+    '<label for="j3-calendar-id">Calendar email or ID</label><input id="j3-calendar-id" name="calendar" value="'+esc(id)+'" placeholder="you@example.com" autocomplete="off">'+
+    '<button class="j3-btn" type="submit">Save</button><p class="calendar-help">Saved on this device. For a private calendar, sign in to its Google account in this browser. If the calendar stays blank, your browser may be blocking embedded sign-in.</p></form></details>' +
+    '<p class="calendar-help"><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">Open Google Calendar to sign in or edit events ↗</a></p></section>';
+}
+document.addEventListener("click", e => {
+  const button = e.target.closest && e.target.closest("[data-jcal-view]"); if (!button) return;
+  j3CalendarVisible = button.dataset.jcalView === "calendar"; renderJ3();
+  const next = document.querySelector('[data-jcal-view="'+button.dataset.jcalView+'"]'); if(next) next.focus({preventScroll:true});
+});
+document.addEventListener("submit", e => {
+  if (!e.target.matches("[data-jcal-form]")) return;
+  e.preventDefault(); const input = e.target.elements.calendar;
+  const id = input.value.trim();
+  if (id && !/^[^\s<>"@]+@[^\s<>"@]+$/.test(id)) { input.setCustomValidity("Use the calendar email or ID, rather than an embed link."); input.reportValidity(); return; }
+  try { localStorage.setItem(j3CalendarKey(),id); } catch (_) { input.setCustomValidity("This browser could not save the calendar setting."); input.reportValidity(); return; }
+  renderJ3();
+});
+document.addEventListener("input", e => { if(e.target.id === "j3-calendar-id") e.target.setCustomValidity(""); });
 function renderJ3() {
   const el = $("#viewJournal");
   if (!el) return;
@@ -11966,7 +12021,10 @@ function renderJ3() {
       '<div class="j3-paper">' +
         '<div class="j3-lift t" aria-hidden="true"></div>' +
         '<div class="j3-page left"><div class="j3-left-grid">' + notes + bucket + habits + "</div></div>" +
-        '<div class="j3-page right">' + right + "</div>" +
+        '<div class="j3-page right"><div class="j3-view-switch" role="group" aria-label="Right page view">' +
+          '<button type="button" data-jcal-view="notebook" aria-pressed="'+!j3CalendarVisible+'">Notebook</button>' +
+          '<button type="button" data-jcal-view="calendar" aria-pressed="'+j3CalendarVisible+'">Calendar</button></div>' +
+          (j3CalendarVisible ? j3CalendarHTML() : right) + "</div>" +
         '<div class="j3-lift b" aria-hidden="true"></div>' +
         '<div class="j3-fold" aria-hidden="true"></div>' +
         /* the corners: press and pull to turn; a tap or Enter turns outright */
@@ -11984,12 +12042,14 @@ function renderJ3() {
 /* build the leaf for a turn to `to`: renders the new week, returns the leaf and its ghost at
    rest (or null when nothing should animate). j3Turn releases it on a transition; the corner
    pull drives it by hand. */
+let j3ActiveTurn = null;
 function j3Leaf(to) {
+  if (j3ActiveTurn) j3ActiveTurn();
   const from = j3Week;
   if (+to === +from) return null;
   const dir = to > from ? 1 : -1;
   const old = document.querySelector("#viewJournal .j3");
-  const can = old && window.innerWidth >= 700 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const can = old && !j3CalendarVisible && window.innerWidth > 1100 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let oldL = null, oldR = null, oldH = 0;
   if (can) { oldL = old.querySelector(".j3-page.left").cloneNode(true); oldR = old.querySelector(".j3-page.right").cloneNode(true);
     const op = old.querySelector(".j3-paper"); oldH = op ? op.getBoundingClientRect().height : 0; }
@@ -12009,53 +12069,63 @@ function j3Leaf(to) {
   leaf.append(front, back);
   const ghost = document.createElement("div"); ghost.className = "j3-ghost " + (dir > 0 ? "pg-left" : "pg-right"); ghost.appendChild(dir > 0 ? oldL : oldR);
   place(leaf, dir > 0 ? rr : rl); place(ghost, dir > 0 ? rl : rr);
+  leaf.inert = true; ghost.inert = true;
+  leaf.setAttribute("aria-hidden", "true"); ghost.setAttribute("aria-hidden", "true");
   nb.append(ghost, leaf);
   void leaf.offsetWidth;                       /* commit the resting transform before anything moves */
-  return { leaf, ghost, dir, from, to, halfW: pr.width / 2, release: () => { const p = document.querySelector("#viewJournal .j3-paper"); if (p) p.style.minHeight = ""; } };
+  return { leaf, ghost, dir, from, to, halfW: pr.width / 2, release: () => { const p = document.querySelector("#viewJournal .j3-paper"); if (p === paper) p.style.minHeight = ""; } };
 }
 function j3PopClose() { const p = $("#weekPop"); if (p && p.hidePopover && p.matches(":popover-open")) p.hidePopover(); }
-function j3Turn(to) {
-  const s = j3Leaf(to); if (!s) return;
-  s.leaf.classList.add("is-turning");
-  setTimeout(() => s.ghost.remove(), 330);
-  const done = () => { s.leaf.remove(); s.release(); };
-  s.leaf.addEventListener("transitionend", done, { once: true });
-  setTimeout(done, 900);
+function j3PaintTurn(s, angle) {
+  s.leaf.style.transform = "rotateY(" + (s.dir > 0 ? -angle : angle) + "deg)";
+  s.leaf.style.setProperty("--turn-shade", (Math.sin(angle * Math.PI / 180) * .65).toFixed(3));
+  s.ghost.style.visibility = angle >= 90 ? "hidden" : "";
 }
-/* the corner pull: the leaf follows the hand; past a third it finishes, before it falls back */
+function j3AnimateTurn(s, from, to, finish) {
+  let frame = 0, started = null, ended = false;
+  const duration = Math.max(160, 480 * Math.abs(to-from)/180);
+  const done = () => {
+    if (ended) return; ended = true; cancelAnimationFrame(frame);
+    s.leaf.remove(); s.ghost.remove(); s.release();
+    if(j3ActiveTurn === done) j3ActiveTurn = null;
+  };
+  j3ActiveTurn = done;
+  const tick = now => {
+    if (!s.leaf.isConnected) { done(); return; }
+    if (started === null) started = now;
+    const t = Math.min(1,(now-started)/duration), eased = t*t*(3-2*t);
+    j3PaintTurn(s, from+(to-from)*eased);
+    if(t < 1) frame = requestAnimationFrame(tick);
+    else { done(); if(!finish) { j3Week=s.from; renderJ3(); } }
+  };
+  frame = requestAnimationFrame(tick);
+}
+function j3Turn(to) {
+  if (j3Pull) return;
+  const s = j3Leaf(to); if(s) j3AnimateTurn(s,0,180,true);
+}
 let j3Pull = null;
 function j3PullStart(e, btn) {
-  if (j3Pull || e.button) return;
-  const d = Number(btn.dataset.corner);
-  const s = j3Leaf(addDays(j3Week, d * 7));
-  if (!s) { return; }                          /* nothing to animate: the week has turned already */
-  s.leaf.style.transition = "none";
-  j3Pull = { s, x0: e.clientX, moved: false, angle: 0, id: e.pointerId };
-  try { btn.setPointerCapture(e.pointerId); } catch (x) {}
+  if(j3Pull || e.button) return;
+  const s = j3Leaf(addDays(j3Week, Number(btn.dataset.corner)*7)); if(!s) return;
+  j3Pull = {s,x0:e.clientX,moved:false,angle:0,id:e.pointerId,frame:0};
 }
 function j3PullMove(e) {
-  if (!j3Pull || e.pointerId !== j3Pull.id) return;
-  const p = j3Pull, dx = (e.clientX - p.x0) * (p.s.dir > 0 ? -1 : 1);
-  if (Math.abs(e.clientX - p.x0) > 4) p.moved = true;
-  p.angle = Math.max(0, Math.min(180, dx / p.s.halfW * 180));
-  p.s.leaf.style.transform = "rotateY(" + (p.s.dir > 0 ? -p.angle : p.angle) + "deg)";
-  p.s.ghost.style.visibility = p.angle > 90 ? "hidden" : "";
+  if(!j3Pull || e.pointerId !== j3Pull.id) return;
+  const p=j3Pull, dx=(e.clientX-p.x0)*(p.s.dir>0?-1:1);
+  if(Math.abs(e.clientX-p.x0)>4) p.moved=true;
+  p.angle=Math.max(0,Math.min(180,dx/p.s.halfW*180));
+  if(!p.frame) p.frame=requestAnimationFrame(()=>{p.frame=0;j3PaintTurn(p.s,p.angle);});
 }
 function j3PullEnd(e) {
-  if (!j3Pull || e.pointerId !== j3Pull.id) return;
-  const p = j3Pull; j3Pull = null;
-  const leaf = p.s.leaf, ghost = p.s.ghost, finish = !p.moved || p.angle > 60;
-  leaf.style.transition = "transform " + (finish ? 380 : 260) + "ms cubic-bezier(0.45, 0, 0.2, 1)";
-  void leaf.offsetWidth;
-  if (finish) {
-    leaf.style.transform = "rotateY(" + (p.s.dir > 0 ? -180 : 180) + "deg)";
-    setTimeout(() => ghost.remove(), 200);
-    setTimeout(() => { leaf.remove(); p.s.release(); }, 420);
-  } else {
-    leaf.style.transform = "rotateY(0deg)"; ghost.style.visibility = "";
-    setTimeout(() => { leaf.remove(); ghost.remove(); j3Week = p.s.from; renderJ3(); }, 280);   /* the re-render drops the hold */
-  }
+  if(!j3Pull || e.pointerId!==j3Pull.id) return;
+  const p=j3Pull; j3Pull=null; cancelAnimationFrame(p.frame);
+  j3PaintTurn(p.s,p.angle);
+  const finish=e.type!=="pointercancel" && (!p.moved || p.angle>60);
+  j3AnimateTurn(p.s,p.angle,finish?180:0,finish);
 }
+window.addEventListener("blur",()=>{if(j3Pull) j3PullEnd({pointerId:j3Pull.id,type:"pointercancel"});});
+
 document.addEventListener("pointerdown", e => { const b = e.target.closest && e.target.closest(".j3-corner"); if (b) { e.preventDefault(); j3PullStart(e, b); } });
 document.addEventListener("pointermove", j3PullMove);
 document.addEventListener("pointerup", j3PullEnd);
