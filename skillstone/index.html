@@ -13867,7 +13867,8 @@ function bindCptDialog() {
   /* Escape: the platform closes the dialog; this runs the same return-to-row afterwards */
   dlg.addEventListener("cancel", () => { setTimeout(cptShut, 0); });
   dlg.addEventListener("keydown", e => { if (e.key === "Escape") { e.preventDefault(); cptShut(); } });
-  dlg.addEventListener("close", () => { if (cptFor) cptShut(); });
+  /* a stale close event — queued by dlg.close(), delivered after the next lesson opened — must not shut the new one */
+  dlg.addEventListener("close", () => { if (cptFor && !dlg.open) cptShut(); });
 }
 
 /* ---------- live figures: the two a dial moves ----------
