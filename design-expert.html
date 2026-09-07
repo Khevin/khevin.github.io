@@ -49,7 +49,6 @@
     </button>
 
     <ul class="nav-primary" id="nav-primary">
-      <li><a href="#language">Commands</a></li>
       <li><a href="#library">Library</a></li>
       <li><a href="#pantheon">Pantheon</a></li>
       <li><a href="#install">Install</a></li>
@@ -85,7 +84,7 @@
         <p class="hero-copy">A complete design discipline — manifesto, craft, references, reviewer — installed into Claude Code as a single command.</p>
       </div>
       <div class="hero-col-art">
-        <div class="hero-art" data-cap="four verbs" aria-hidden="true">
+        <div class="hero-art" data-cap="one command" aria-hidden="true">
           <svg class="commands-art" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
             <rect class="term-frame" x="16" y="20" width="168" height="160" rx="2" />
             <line class="term-frame" x1="16" y1="34" x2="184" y2="34" />
@@ -96,22 +95,22 @@
             <g class="line-row r1">
               <text class="prompt" x="24" y="58">$</text>
               <text class="slash" x="34" y="58">/</text>
-              <text class="verb" x="40" y="58">design-expert:plan</text>
+              <text class="verb" x="40" y="58">design-expert a billing page</text>
             </g>
             <g class="line-row r2">
               <text class="prompt" x="24" y="82">$</text>
               <text class="slash" x="34" y="82">/</text>
-              <text class="verb" x="40" y="82">design-expert:build</text>
+              <text class="verb" x="40" y="82">design-expert make it better</text>
             </g>
             <g class="line-row r3">
               <text class="prompt" x="24" y="106">$</text>
               <text class="slash" x="34" y="106">/</text>
-              <text class="verb" x="40" y="106">design-expert:write</text>
+              <text class="verb" x="40" y="106">design-expert critique src/</text>
             </g>
             <g class="line-row r4">
               <text class="prompt" x="24" y="130">$</text>
               <text class="slash" x="34" y="130">/</text>
-              <text class="verb" x="40" y="130">design-expert:review</text>
+              <text class="verb" x="40" y="130">design-expert the error copy</text>
             </g>
             <rect class="cursor" x="24" y="152" width="5" height="9" />
             <text class="prompt" x="32" y="160" opacity="0.5">_</text>
@@ -128,62 +127,19 @@
     </div>
 
     <nav class="index">
-      <a href="#language"><span class="num">01</span><span>Commands</span></a>
-      <a href="#library"><span class="num">02</span><span>Library</span></a>
-      <a href="#pantheon"><span class="num">03</span><span>Pantheon</span></a>
-      <a href="#install"><span class="num">04</span><span>Install</span></a>
-      <a href="#faq"><span class="num">05</span><span>FAQ</span></a>
+      <a href="#library"><span class="num">01</span><span>Library</span></a>
+      <a href="#pantheon"><span class="num">02</span><span>Pantheon</span></a>
+      <a href="#install"><span class="num">03</span><span>Install</span></a>
+      <a href="#faq"><span class="num">04</span><span>FAQ</span></a>
     </nav>
   </div>
 </section>
 
-<!-- ============= 01 COMMANDS ============= -->
-<section class="section" id="language">
-  <div class="shell">
-    <div class="s-head">
-      <div class="num">01 — Commands</div>
-      <div>
-        <h2 class="section-title">Four verbs.<br />A shared <em style="font-style:italic; color:var(--accent);">vocabulary</em>.</h2>
-        <p class="body-lg">design-expert exposes itself through four commands. Each one points at a different mode of design work — the same modes a senior designer moves through every day. Type any of them in Claude Code with a target.</p>
-      </div>
-    </div>
-
-    <div class="cmd-grid">
-      <a class="cmd" href="#install">
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>plan</span>
-        <h4>Plan the design first.</h4>
-        <p>Discovery before pixels. Audience, register, brand voice, anti-references — captured as a brief the rest of the work reads. Stops the model from one-shotting a generic mock.</p>
-        <span class="ex">$ /design-expert:plan checkout flow for a calm clinical SaaS</span>
-      </a>
-      <a class="cmd" href="#install">
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>build</span>
-        <h4>Build it on the bar.</h4>
-        <p>From brief to real screens, real components, real type. Reads your tokens, respects your system, ships code — not a Figma mock the model can't render.</p>
-        <span class="ex">$ /design-expert:build pricing page from PLAN.md</span>
-      </a>
-      <a class="cmd" href="#install">
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>write</span>
-        <h4>Write copy that holds.</h4>
-        <p>Display lines, microcopy, error states, empty states — written in the voice the brief committed to, not in default-AI breeziness.</p>
-        <span class="ex">$ /design-expert:write hero for a calm clinical SaaS</span>
-      </a>
-      <a class="cmd" href="#install">
-        <span class="slug"><span class="slash">/</span>design-expert<span class="colon">:</span>review</span>
-        <h4>Review with a real reviewer.</h4>
-        <p>The work gets walked, scored against the foundations, and graded. The reviewer cites the principle behind every note — no vibes-based feedback, no "looks great, ship it."</p>
-        <span class="ex">$ /design-expert:review src/pages/pricing.tsx</span>
-      </a>
-    </div>
-
-    <p class="note" style="margin-top:18px; text-align:right;">All four commands read the same skill files. Edits to <span class="mono">SKILL.md</span> propagate everywhere.</p>
-  </div>
-</section>
-
-<!-- ============= 02 LIBRARY ============= -->
+<!-- ============= 01 LIBRARY ============= -->
 <section class="section" id="library">
   <div class="shell">
     <div class="s-head">
-      <div class="num">02 — The Library</div>
+      <div class="num">01 — The Library</div>
       <div>
         <h2 class="section-title">A small library<br />of <em style="font-style:italic; color:var(--accent);">skills</em>.</h2>
         <p class="body-lg">design-expert is markdown all the way down. Every file is a discipline. Every discipline is editable. You can read it, fork it, override a section in <span class="mono">PROJECT.md</span>, or hand the whole library to a junior on day one.</p>
@@ -298,11 +254,11 @@
   </div>
 </section>
 
-<!-- ============= 03 PANTHEON ============= -->
+<!-- ============= 02 PANTHEON ============= -->
 <section class="section" id="pantheon">
   <div class="shell">
     <div class="s-head">
-      <div class="num">03 — The Pantheon</div>
+      <div class="num">02 — The Pantheon</div>
       <div>
         <h2 class="section-title">The <em style="font-style:italic; color:var(--accent);">designers</em><br />the skill listens to.</h2>
         <p class="body-lg">A small canon, deliberately curated. Each name has a file in <span class="mono">design-gods/</span> with their work, their rules, and the moments when their judgment overrides the skill's defaults. This is the bar.</p>
@@ -412,15 +368,38 @@
         <h4><span class="first">Jan</span>Tschichold</h4>
         <p class="credo">Perfect typography is more a science than an art.</p>
       </button>
-    </div>
+      <button class="figure" type="button" data-god="itten">
+        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><circle cx="700" cy="700" r="560"/>
+    <circle cx="700" cy="700" r="400"/>
+    <path d="M 803.5 313.6 L 844.9 159.1"/>
+    <path d="M 596.5 313.6 L 555.1 159.1"/>
+    <path d="M 417.2 417.2 L 304.0 304.0"/>
+    <path d="M 313.6 596.5 L 159.1 555.1"/>
+    <path d="M 313.6 803.5 L 159.1 844.9"/>
+    <path d="M 417.2 982.8 L 304.0 1096.0"/>
+    <path d="M 596.5 1086.4 L 555.1 1240.9"/>
+    <path d="M 803.5 1086.4 L 844.9 1240.9"/>
+    <path d="M 982.8 982.8 L 1096.0 1096.0"/>
+    <path d="M 1086.4 803.5 L 1240.9 844.9"/>
+    <path d="M 1086.4 596.5 L 1240.9 555.1"/>
+    <path d="M 982.8 417.2 L 1096.0 304.0"/>
+    <path d="M 959.8 550.0 L 700.0 400.0 L 440.2 550.0 L 440.2 850.0 L 700.0 1000.0 L 959.8 850.0 Z"/>
+    <path d="M 700.0 400.0 L 959.8 850.0 L 440.2 850.0 Z"/>
+    <path d="M 700.0 700.0 L 829.9 625.0"/>
+    <path d="M 700.0 700.0 L 700.0 850.0"/>
+    <path d="M 700.0 700.0 L 570.1 625.0"/></g></svg></div>
+        <div class="top"><span class="num">18</span><span class="disc">Color</span></div>
+        <h4><span class="first">Johannes</span>Itten</h4>
+        <p class="credo">Color is life.</p>
+      </button>    </div>
   </div>
 </section>
 
-<!-- ============= 04 INSTALL ============= -->
+<!-- ============= 03 INSTALL ============= -->
 <section class="section" id="install">
   <div class="shell">
     <div class="s-head">
-      <div class="num">04 — Install</div>
+      <div class="num">03 — Install</div>
       <div>
         <h2 class="section-title"><em style="font-style:italic; color:var(--accent);">2 minute</em> install</h2>
         <p class="body-lg">design-expert ships as a Claude Code plugin under the khev-tools marketplace. Requires a current Claude Code build (run <span class="mono">claude --version</span>; update via Homebrew, npm, or the native installer if <span class="mono">/plugin</span> isn't recognized).</p>
@@ -432,7 +411,7 @@
       <div class="install-card">
         <div class="install-card__head">
           <h4>Add the marketplace, install the plugin.</h4>
-          <p>Two slash commands, run in sequence. The first registers the khev‑tools marketplace. The second installs design‑expert. Restart the session so the four <span class="mono">/design-expert</span> commands register.</p>
+          <p>Two slash commands, run in sequence. The first registers the khev‑tools marketplace. The second installs design‑expert. Restart the session so <span class="mono">/design-expert</span> registers.</p>
         </div>
         <div class="install-card__body">
         <div class="terminal" data-cmd="/plugin marketplace add https://github.com/Khevin/khev-tools&#10;/plugin install design-expert@khev-tools">
@@ -448,34 +427,35 @@
           <span class="comment"># clones over HTTPS · no SSH key required</span><br/>
           <br/>
           <span class="prompt">$</span> <span class="cmd-text">/plugin install</span> <span class="accent-c">design-expert@khev-tools</span><br/>
-          <span class="comment"># SKILL.md loaded · 14 markdown files · 17 design-gods</span>
+          <span class="comment"># one skill · five modes · 18 design-gods</span>
         </div>
         <div class="terminal-output">
           <span class="ok">✓</span> <span class="output-line">marketplace added · 1 plugin available</span><br/>
-          <span class="ok">✓</span> <span class="output-line">design-expert installed</span><br/>
-          <span class="ok">✓</span> <span class="output-line">/design-expert:plan · :build · :write · :review</span>
+          <span class="ok">✓</span> <span class="output-line">design-expert 2.0.0 installed</span><br/>
+          <span class="ok">✓</span> <span class="output-line">/design-expert registered · one command, five modes</span>
         </div>
         </div>
       </div>
 
       <div class="install-card">
         <div class="install-card__head">
-          <h4>Plan something. Then build it.</h4>
-          <p>A brief, then a build, then a review. Each command writes to disk — <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> from <span class="mono">/plan</span>, source files from <span class="mono">/build</span>, scored notes from <span class="mono">/review</span>.</p>
+          <h4>Describe the work. It picks the mode.</h4>
+          <p>One command, five modes: plan, build, iterate, review, write. Triage reads who you are, where the work lands, how your design system is implemented, and how big the change is, then prints one trace line before it works so you can correct any decision. Force a mode by naming it first: <span class="mono">/design-expert review …</span></p>
         </div>
         <div class="install-card__body">
         <div class="terminal">
           <div class="head-bar"><span></span><span></span><span></span></div>
-          <span class="prompt">$</span> <span class="cmd-text">/design-expert:plan</span> <span class="accent-c">a billing-settings page for a subscription SaaS</span><br/>
-          <span class="comment"># writes PRODUCT.md + DESIGN.md · audience, register, tokens, restrictions</span><br/>
+          <span class="prompt">$</span> <span class="cmd-text">/design-expert</span> <span class="accent-c">a billing-settings page for a subscription SaaS</span><br/>
+          <span class="comment"># new project → plan · discovery interview, the council, PRODUCT.md + DESIGN.md + DECISIONS.md</span><br/>
           <br/>
-          <span class="prompt">$</span> <span class="cmd-text">/design-expert:build</span> <span class="accent-c">billing-settings from PRODUCT.md + DESIGN.md</span><br/>
-          <span class="comment"># reads SKILL.md + the two briefs · ships components in src/billing/</span><br/>
+          <span class="prompt">$</span> <span class="cmd-text">/design-expert</span> <span class="accent-c">make it better</span><br/>
+          <span class="comment"># one section on the table → iterate · three to five proposals, then the change</span><br/>
           <br/>
-          <span class="prompt">$</span> <span class="cmd-text">/design-expert:review</span> <span class="accent-c">src/billing/</span>
+          <span class="prompt">$</span> <span class="cmd-text">/design-expert</span> <span class="accent-c">critique src/billing/, notes only</span><br/>
+          <span class="comment"># notes wanted → review · patterns your system mandates are never filed as slop</span>
         </div>
         <div class="terminal-output">
-          <span class="ok">✓</span> <span class="output-line">scored against 10-lens framework · 6 notes · 0 blockers</span>
+          <span class="ok">✓</span> <span class="output-line">Triage: role designer · DS system.md · register product · size iteration · mode iterate · tier capsule</span>
         </div>
         </div>
       </div>
@@ -484,13 +464,13 @@
   </div>
 </section>
 
-<!-- ============= 05 FAQ ============= -->
+<!-- ============= 04 FAQ ============= -->
 <section class="section" id="faq">
   <div class="shell">
     <div class="s-head">
-      <div class="num">05 — FAQ</div>
+      <div class="num">04 — FAQ</div>
       <div>
-        <h2 class="section-title">Six things you might be <em>wondering</em>.</h2>
+        <h2 class="section-title">Seven things you might be <em>wondering</em>.</h2>
         <p class="body-lg">Most of what a designer or engineer asks before installing. Short answers here — the long ones are in the markdown.</p>
       </div>
     </div>
@@ -501,7 +481,7 @@
         <div class="faq-entry__body">
           <div class="faq-entry__cat">What it is</div>
           <h4 class="faq-entry__q">Is design-expert just a system prompt?</h4>
-          <p class="faq-entry__a">No. It's a plugin: a manifest, a SKILL.md, four sub-commands, a 14-file markdown library, a 17-designer pantheon, and the curated <span class="mono">references/</span>, <span class="mono">styles/</span>, <span class="mono">voices/</span>, and <span class="mono">layouts.md</span> taxonomies the commands load on demand. The reviewer doesn't pull <span class="mono">typography.md</span>; the writer doesn't pull <span class="mono">output-format.md</span>. Context loads when context is needed, every byte earning its place.</p>
+          <p class="faq-entry__a">No. It is a plugin: a manifest, one <span class="mono">SKILL.md</span> that triages and routes, five modes (plan, build, iterate, review, write), a markdown library of about fifty files, an eighteen-designer pantheon that convenes as a council, and the curated <span class="mono">references/</span>, <span class="mono">styles/</span>, <span class="mono">voices/</span>, and <span class="mono">layouts.md</span> taxonomies the modes load on demand. Nothing loads that the work does not need.</p>
         </div>
       </li>
       <li class="faq-entry">
@@ -517,7 +497,7 @@
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Compatibility</div>
           <h4 class="faq-entry__q">Does it work with my design system?</h4>
-          <p class="faq-entry__a">Yes — that's the point. The build command reads your tokens, components, and existing screens before it generates anything. design-expert grows with your system rather than around it. Ship a per-surface <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> pair with your conventions and the skill treats them as the contract.</p>
+          <p class="faq-entry__a">Yes; it is the first thing the skill does. Before judging or building, triage looks for your system: <span class="mono">system.md</span>, <span class="mono">CLAUDE.md</span> token and copy sections, tokens in code, component folders, Figma libraries and variables, Claude Design projects. It asks how the system is implemented only when it finds nothing, and a pattern your system mandates is never filed as slop. Ship a per-surface <span class="mono">PRODUCT.md</span> + <span class="mono">DESIGN.md</span> pair and the skill treats them as the contract.</p>
         </div>
       </li>
       <li class="faq-entry">
@@ -525,7 +505,7 @@
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Compatibility</div>
           <h4 class="faq-entry__q">Cursor? Codex? Other harnesses?</h4>
-          <p class="faq-entry__a">The skill files are pure markdown and portable. Anywhere you can drop a system prompt, you can paste the contents of <span class="mono">SKILL.md</span> + the foundationals and get most of the value. The Claude-Code-shaped wrapper — slash commands, gate-driven workflows, marketplace install — is what's idiomatic today; a universal package will follow once the agent-skill protocol stabilizes across harnesses.</p>
+          <p class="faq-entry__a">The skill files are pure markdown and portable. Anywhere you can drop a system prompt, you can paste <span class="mono">SKILL.md</span> plus the foundationals and get most of the value. The Claude-Code-shaped parts (one slash command, triage, council seats as subagents, marketplace install) are what is idiomatic today; a universal package will follow once the agent-skill protocol settles.</p>
         </div>
       </li>
       <li class="faq-entry">
@@ -544,15 +524,23 @@
           <p class="faq-entry__a">Because it does what it says. The plugin is what you reach for when you want a designer in the loop and there isn't one in the room. The name is the contract.</p>
         </div>
       </li>
+      <li class="faq-entry">
+        <div class="faq-entry__num">Q · 07</div>
+        <div class="faq-entry__body">
+          <div class="faq-entry__cat">Council</div>
+          <h4 class="faq-entry__q">What does the council cost?</h4>
+          <p class="faq-entry__a">Nothing at small sizes: a touch-up consults nobody, and an iteration reads a few designer capsules in the main context. A plan or a redesign convenes real seats, one subagent per designer running in parallel on a smaller model, so a full room is a deliberate expense of a minute or two and a few hundred thousand tokens. The project record can seat a tag-filtered room instead, and every seat is logged so you can see which voices the work actually uses.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </section>
 
-<!-- ============= 06 CHANGELOG ============= -->
+<!-- ============= 05 CHANGELOG ============= -->
 <section class="section" id="changelog">
   <div class="shell">
     <div class="s-head sm">
-      <div class="num">06 — What's New</div>
+      <div class="num">05 — What's New</div>
       <div>
         <h3 class="section-title-sm">Recent updates.</h3>
         <p class="body">design-expert is the first plugin in the khev-tools marketplace. The skill itself is the product, and it ships small.</p>
@@ -562,11 +550,26 @@
     <div class="changelog">
       <div class="entry">
         <div class="meta">
-          <span class="ver" style="color: var(--accent);">v1.1.0</span>
+          <span class="ver" style="color: var(--accent);">v2.0.0</span>
+          September 7, 2026
+        </div>
+        <ul>
+          <li><strong>One command.</strong> <span class="mono">/design-expert</span> triages every request (who you are, where the work lands, how the design system is implemented, how big the change is, what you asked for) and runs the right mode: plan, build, iterate, review, or write. The four sub-commands are retired.</li>
+          <li><strong>The pantheon sits as a council.</strong> Plan convenes all eighteen designers as parallel seats, each reading only its own file; a chair turns their verdicts into rulings, contested points you are asked about, and recorded dissent. Redesigns and full reviews convene a room seated by the surface's tags; medium work gets a capsule consultation; trivial work gets none.</li>
+          <li><strong>Your design system first.</strong> Discovery reads <span class="mono">system.md</span>, <span class="mono">CLAUDE.md</span> token and copy sections, tokens in code, Figma libraries, and Claude Design projects before anything is judged. A pattern your system mandates is never filed as slop.</li>
+          <li><strong>Memory and targets.</strong> Role, receiver, deploy target, and system pointers are asked once and kept. Designers with Figma work in Figma for concepts and build; everyone else sees concepts on the Claude Design canvas and builds in code or briefs.</li>
+          <li><strong>Briefs stay briefs.</strong> <span class="mono">PRODUCT.md</span> and <span class="mono">DESIGN.md</span> carry word budgets; dated decisions go to <span class="mono">DECISIONS.md</span>.</li>
+          <li><strong>Three designers join.</strong> Paula Scher, Alan Cooper, and Johannes Itten; the pantheon is eighteen, and <span class="mono">#color</span> is a tag.</li>
+          <li><strong>Structural and rhetorical tells.</strong> A ninth anti-slop category: numbered section markers, decorative side-stripes, fragment triads, reversal formulas, dash-label headers.</li>
+        </ul>
+      </div>
+      <div class="entry">
+        <div class="meta">
+          <span class="ver">v1.1.0</span>
           May 2, 2026
         </div>
         <ul>
-          <li><strong>Library + Pantheon popovers.</strong> Tap any row in <span class="mono">02 — The Library</span> or any Pantheon card; a paper-card dialog lifts off the page. Four designers added; total seventeen.</li>
+          <li><strong>Library + Pantheon popovers.</strong> Tap any row in <span class="mono">01 — The Library</span> or any Pantheon card; a paper-card dialog lifts off the page. Four designers added; total seventeen.</li>
           <li><strong>Foundations expanded.</strong> New <span class="mono">grids.md</span> (Swiss + asymmetric); new <span class="mono">layouts.md</span> (32 patterns by register); <span class="mono">craft.md</span> gains the iteration-sizing framework.</li>
           <li><strong>Register, layout, intent gates wired in.</strong> <span class="mono">plan</span> opens with a register hard-ask; <span class="mono">build</span> enforces register, layout-catalog walk, aspect-ratio inventory, asset-fit re-check.</li>
           <li><strong>New taxonomies + self-review + slop catalog.</strong> <span class="mono">styles/</span> ships editorial and expressive; <span class="mono">voices/</span> ships ux-copy, long-form, and four marketing files by ad-lord. Impeccable's catalog folded into <span class="mono">anti-slop.md</span>.</li>
@@ -1052,6 +1055,16 @@ if ('IntersectionObserver' in window && libRows.length) {
       summary: "Wrote Die neue Typographie (1928), inventing modernist asymmetric typography. Then recanted in the 1940s, working at Penguin Books on classical, symmetrical book design. The whole arc names both registers a designer chooses between — asymmetric for hierarchy, symmetric for sustained reading.",
       quote: { text: 'Perfect typography is more a science than an art.', attr: 'The Form of the Book, 1975' },
       monogram: 'JT'
+    },
+    'itten': {
+      name: 'Johannes Itten',
+      life: '1888 — 1967',
+      tags: ['#color','#principles','#cognition','#manifesto'],
+      movement: 'Bauhaus preliminary course · color theory (Kunst der Farbe, 1961)',
+      summary: 'Bauhaus master who turned color from taste into a teachable system: the twelve-hue circle, the color sphere, the seven contrasts, and a subjective color that belongs to the client rather than the designer. Kunst der Farbe (1961) is still the clearest account of color as a discipline.',
+      quote: { text: 'Color is life; for a world without colors appears to us as dead.', attr: 'The Art of Color, 1961' },
+      monogram: 'JI',
+      portrait: 'itten-placeholder.svg'
     }
   };
 
@@ -1089,7 +1102,7 @@ if ('IntersectionObserver' in window && libRows.length) {
     // Try a real portrait; fall back to typographic monogram on error.
     const img = new Image();
     img.alt = g.name;
-    img.src = `./assets/design-gods/${key}.jpg`;
+    img.src = g.portrait ? `./assets/design-gods/${g.portrait}` : `./assets/design-gods/${key}.jpg`;
     img.onload = () => elPortrait.replaceChildren(img);
     img.onerror = () => renderMonogram(g.monogram);
     // Render monogram immediately so there's no empty flash while img loads
