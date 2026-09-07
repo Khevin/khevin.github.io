@@ -2962,13 +2962,12 @@ li.is-done .qg { color: var(--verdant); }
   background:#f3ead6; border:0; border-radius:50%; color:#6E4A0E; cursor:pointer; }
 @media (hover: hover) { .j3-cal-plus:hover { color:#4A2F06; background:#ecdfc4; } }
 .j3-cal-plus:focus-visible { outline:2px solid #6E4A0E; outline-offset:2px; }
-.j3-ev { margin:12px 0; }
-.j3-calendar textarea { flex-basis:100%; color:var(--parchment); background:rgba(255,255,255,.2); border:1px solid var(--j3-rule); padding:8px; font:inherit; resize:vertical; }
-.j3-ev-check { display:flex; align-items:center; gap:8px; color:var(--dust); font-size:13px; }
-.j3-ev-check input { flex:none; width:16px; height:16px; min-width:0; accent-color:var(--gold); }
-.j3-ev-times { display:flex; flex-wrap:wrap; gap:8px; flex-basis:100%; }
-.j3-ev-times label { flex-basis:auto; align-self:center; }
-.j3-ev-acts { display:flex; gap:8px; flex-basis:100%; }
+.j3-cal-acts { display:flex; flex-wrap:wrap; gap:8px; }
+/* the event dialog: the book dialog's grammar, two fields to a row where they pair */
+.gcal-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:var(--s3); }
+.gcal-check-in { display:flex; align-items:center; min-height:34px; }
+.gcal-check-in input { width:18px; height:18px; margin:0; accent-color:var(--gold); }
+.gcal-note { color:var(--ember); }
 @media(max-width:700px) { .j3-calendar iframe { height:580px; } .j3-page .j3-weekend > .j3-day + .j3-day { border-left:0; padding-left:0; border-top:1px solid var(--j3-divider); padding-top:var(--s2); } }
 /* left page: 6 + 6, then 12 */
 .j3-left-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
@@ -3744,6 +3743,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     </div>
   </form>
 </dialog>
+<dialog id="gcalDlg" class="bk-dlg" aria-labelledby="gcalTitle"></dialog>
 <dialog id="questDlg" class="bk-dlg" aria-label="New side quest">
   <form method="dialog" data-form="quest-save">
     <p class="bk-h">New side quest</p>
@@ -6818,8 +6818,7 @@ function authSave(s) {
   try { if (auth) localStorage.setItem(AUTH_KEY, JSON.stringify(auth)); else localStorage.removeItem(AUTH_KEY); } catch (e) {}
 }
 const b64url = buf => btoa(String.fromCharCode.apply(null, new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-async function authStart(opts) {
-  const calendar = !!(opts && opts.calendar);
+async function authStart() {
   const url = authUrl(), key = authKey();
   if (!/^https:\/\/\S+$/.test(url)) { cloudFail("The project URL must start with https://"); return; }
   if (!key) { cloudFail("Paste the project’s publishable key first — the sign-in needs it."); return; }
@@ -6827,14 +6826,10 @@ async function authStart(opts) {
   const raw = new Uint8Array(48); crypto.getRandomValues(raw);
   const verifier = b64url(raw.buffer);
   const challenge = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
-  try { sessionStorage.setItem(PKCE_KEY, JSON.stringify({ verifier, url, key, calendar })); } catch (e) {}
+  try { sessionStorage.setItem(PKCE_KEY, JSON.stringify({ verifier, url, key })); } catch (e) {}
   const back = location.origin + location.pathname;
-  /* connecting the calendar is the same handshake with Google's event scope asked for in the
-     request itself — offline, so a refresh token comes back, and with a consent prompt, so
-     Google issues one even to an account that already granted the login scopes */
   location.assign(url + "/auth/v1/authorize?provider=google&redirect_to=" + encodeURIComponent(back) +
-    "&code_challenge=" + challenge + "&code_challenge_method=S256" +
-    (calendar ? "&scopes=" + encodeURIComponent(GCAL_SCOPE) + "&access_type=offline&prompt=consent" : ""));
+    "&code_challenge=" + challenge + "&code_challenge_method=S256");
 }
 async function authToken(url, key, query, body) {
   const r = await fetch(url + "/auth/v1/token?grant_type=" + query, { method: "POST",
@@ -6864,10 +6859,9 @@ async function authFinish() {
   if (!p || !p.verifier) { cloudFail("Sign-in came back without its handshake \u2014 try again from this tab."); return false; }
   try {
     const s = await authToken(p.url, p.key, "pkce", { auth_code: code, code_verifier: p.verifier });
-    authSave(s);                                   /* Google's provider tokens are not in what is saved */
+    authSave(s);
     authCloudUrlKey = { url: p.url, key: p.key };
-    if (p.calendar) await gcalConnectFinish(s);    /* ...they go to the function, once, right here */
-    return { calendar: !!p.calendar };
+    return true;
   } catch (e) { cloudFail("Sign-in failed: " + e.message); return false; }
 }
 let authCloudUrlKey = null;
@@ -6922,26 +6916,32 @@ function renderAuth() {
 }
 async function authBoot() {
   authLoad();
-  const came = await authFinish();
+  /* Google's own return leg (the calendar connection) is recognised by its state and taken
+     first; the sign-in's return leg only sees a code that was not ours */
+  const cal = await gcalFinish();
+  const came = cal ? false : await authFinish();
   if (auth) { const ok = await authRefreshIfNeeded(); if (ok && (came || !cloud || !cloud.user)) await authConnect(); }
   renderAuth();
-  /* back from connecting the calendar: land where the button was, with the result under it */
-  if (came && came.calendar) { setView("journal"); j3RightView = "settings"; renderJ3(); }
+  if (cal) { setView("journal"); j3RightView = "settings"; renderJ3(); }   /* land where the button was, result under it */
   else if (auth) gcalEnsureStatus();
 }
 setInterval(() => { if (auth && !document.hidden) authRefreshIfNeeded(); }, 60000);
 
 /* ================= Google Calendar: events written from the Journal =================
-   The Journal shows a calendar; this lets it add to one. The permission is a separate, explicit
-   step — Connect Google Calendar — asked for in the authorization request with Google's
-   calendar.events.owned scope. The refresh token Google returns never touches this file's
-   storage: the return leg hands it to the gcal Edge Function, which keeps it server-side,
-   refreshes it with the client secret, and writes events to the account's primary calendar.
-   The page holds a status line and the draft of the form, in memory. */
-const GCAL_SCOPE = "https://www.googleapis.com/auth/calendar.events.owned";
-let gcal = null;                 /* { connected, email, calendar_id } or { connected: false, error } — never persisted */
+   The Journal shows a calendar; this lets it add to one — and to a calendar that need not belong
+   to the account signed in to Skillstone: a personal board, a work calendar. The connection is
+   its own Google grant, run against Google directly (authorization code with PKCE, the calendar's
+   email as the login hint), never through the Skillstone sign-in, so connecting the work calendar
+   cannot swap the personal board underneath it. Google's code comes back to this page and goes
+   once to the gcal Edge Function, which exchanges it with the client secret, keeps the refresh
+   token server-side bound to the Skillstone user, and writes events to the calendar named in
+   Calendar settings. The page holds a status line and the form's draft, in memory. */
+const GCAL_SCOPE = "openid email https://www.googleapis.com/auth/calendar.events.owned";
+const GCAL_PKCE_KEY = "skillstone-gcal-pkce";
+let gcal = null;                 /* { connected, email, calendar_id, client_id } or { connected:false, error } — never persisted */
 let gcalChecking = false, gcalBusy = false, gcalDraft = null, gcalNote = "";
 const gcalFnUrl = () => ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + "/functions/v1/gcal";
+const gcalIsEmail = v => /^[^ @]+@[^ @]+$/.test(v || "");
 async function gcalCall(action, body) {
   if (!auth) throw new Error("Sign in first.");
   if (!(await authRefreshIfNeeded())) throw new Error("Your sign-in expired — sign in again.");
@@ -6952,25 +6952,61 @@ async function gcalCall(action, body) {
   if (!r.ok) { const err = new Error((j && j.error) || ("HTTP " + r.status)); err.code = j && j.code; throw err; }
   return j || {};
 }
+async function gcalStatusNow() {
+  gcalChecking = true;
+  try { gcal = await gcalCall("status"); } catch (e) { gcal = { connected: false, error: e.message }; }
+  gcalChecking = false;
+}
 function gcalEnsureStatus() {
   if (!auth || gcal !== null || gcalChecking) return;
-  gcalChecking = true;
-  gcalCall("status").then(s => { gcal = s; }, e => { gcal = { connected: false, error: e.message }; })
-    .then(() => { gcalChecking = false; if (view === "journal") renderJ3(); });
+  gcalStatusNow().then(() => { if (view === "journal") renderJ3(); });
 }
-async function gcalConnectFinish(s) {
-  if (!s.provider_refresh_token && !s.provider_token) {
-    gcalNote = "Google returned no calendar permission — connect again and accept the calendar prompt."; return;
-  }
+/* to Google, as whichever account owns the calendar named in settings */
+async function gcalConnectStart() {
+  gcalNote = "";
+  if (!auth) { gcalNote = "Sign in to Skillstone first — the connection is kept with your board."; renderJ3(); return; }
+  if (!(gcal && gcal.client_id)) await gcalStatusNow();
+  if (!(gcal && gcal.client_id)) { gcalNote = "Could not reach the calendar service" + (gcal && gcal.error ? ": " + gcal.error : "") + "."; renderJ3(); return; }
+  if (!(self.crypto && crypto.subtle)) { gcalNote = "This browser cannot do the secure handshake."; renderJ3(); return; }
+  const raw = new Uint8Array(48); crypto.getRandomValues(raw);
+  const verifier = b64url(raw.buffer), st = b64url(crypto.getRandomValues(new Uint8Array(16)).buffer);
+  const challenge = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
+  const redirect = location.origin + location.pathname, calendar = j3CalendarId();
+  try { sessionStorage.setItem(GCAL_PKCE_KEY, JSON.stringify({ verifier, state: st, redirect, calendar })); } catch (e) {}
+  const q = new URLSearchParams({ client_id: gcal.client_id, redirect_uri: redirect, response_type: "code", scope: GCAL_SCOPE,
+    access_type: "offline", prompt: "consent", state: st, code_challenge: challenge, code_challenge_method: "S256" });
+  if (gcalIsEmail(calendar)) q.set("login_hint", calendar);        /* Google offers the calendar's own account first */
+  location.assign("https://accounts.google.com/o/oauth2/v2/auth?" + q);
+}
+/* the return leg from Google — ?code&state, or ?error&state — recognised by the state we kept */
+async function gcalFinish() {
+  const qs = new URLSearchParams(location.search);
+  const st = qs.get("state"); if (!st) return false;
+  let p = null; try { p = JSON.parse(sessionStorage.getItem(GCAL_PKCE_KEY) || "null"); } catch (e) {}
+  if (!p || p.state !== st) return false;                           /* not ours: the sign-in's leg, or stale */
+  try { sessionStorage.removeItem(GCAL_PKCE_KEY); } catch (e) {}
+  const code = qs.get("code"), err = qs.get("error");
+  history.replaceState(null, "", location.pathname + location.hash);
+  if (err || !code) { gcalNote = "Google did not connect the calendar" + (err ? ": " + err : "") + "."; return true; }
+  if (!auth) { gcalNote = "Sign in to Skillstone first, then connect the calendar again."; return true; }
   try {
-    gcal = await gcalCall("connect", { refresh_token: s.provider_refresh_token || null, access_token: s.provider_token || null });
-    gcalNote = "Google Calendar connected as " + (gcal.email || "your account") + ".";
+    gcal = await gcalCall("connect", { code, code_verifier: p.verifier, redirect_uri: p.redirect, calendar_id: p.calendar || "" });
+    gcalNote = "Connected as " + (gcal.email || "the Google account") + ". Events go to " + (gcal.calendar_id || "its calendar") + ".";
+    /* a calendar setting left empty takes the connected account's own calendar, so the tab shows it */
+    if (!j3CalendarId() && gcal.email) { try { localStorage.setItem(j3CalendarKey(), gcal.email); } catch (e) {} }
   } catch (e) { gcal = { connected: false }; gcalNote = "Could not connect the calendar: " + e.message; }
+  return true;
 }
 async function gcalDisconnect() {
-  try { await gcalCall("disconnect"); gcal = { connected: false }; gcalNote = "Calendar disconnected. Events already created stay in Google Calendar."; }
+  try { await gcalCall("disconnect"); gcal = { connected: false, client_id: gcal && gcal.client_id }; gcalNote = "Calendar disconnected. Events already created stay in Google Calendar."; }
   catch (e) { gcalNote = "Could not disconnect: " + e.message; }
   renderJ3();
+}
+/* the calendar named in settings changed while connected: the row follows it */
+async function gcalSetCalendar(id) {
+  if (!(gcal && gcal.connected)) return;
+  try { gcal = await gcalCall("calendar", { calendar_id: id }); }
+  catch (e) { gcalNote = "Saved here, but the calendar service did not take it: " + e.message; }
 }
 function gcalNewDraft() {
   const t = dayNow(), d = weekKeyOf(t) === weekKeyOf(j3Week) ? t : j3Week;
@@ -6982,50 +7018,70 @@ function gcalWhen(d) {
   const w = day.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
   return d.allDay ? w + ", all day" : w + ", " + d.start + "–" + d.end;
 }
+/* ---- the dialog: opened by the + on the calendar's corner; the draft outlives a close ---- */
+function gcalDlgOpen() {
+  if (!(gcal && gcal.connected)) {            /* the + is always there; unconnected, it leads to the connection */
+    gcalNote = "Connect Google Calendar to add events from here."; j3RightView = "settings"; gcalEnsureStatus(); renderJ3();
+    const c = document.querySelector("[data-gcal=connect], [data-gcal=retry]"); if (c) c.focus({ preventScroll: true }); return;
+  }
+  const dlg = $("#gcalDlg"); if (!dlg || !dlg.showModal) return;
+  if (!gcalDraft) gcalDraft = gcalNewDraft();
+  gcalNote = ""; gcalDlgRender();
+  if (!dlg.open) dlg.showModal();
+  const t = $("#gcalTitleIn"); if (t) t.focus();
+}
+function gcalDlgClose() { const dlg = $("#gcalDlg"); if (dlg && dlg.open) dlg.close(); }
+function gcalDlgRender() {
+  const dlg = $("#gcalDlg"), d = gcalDraft; if (!dlg || !d) return;
+  dlg.innerHTML = '<form data-gcal-form>' +
+    '<p class="bk-h" id="gcalTitle">Add an event</p>' +
+    '<p class="bk-p">' + esc(gcal && gcal.calendar_id ? "To " + gcal.calendar_id : "") + '</p>' +
+    '<label class="bk-l">Title<input type="text" id="gcalTitleIn" name="summary" maxlength="200" value="' + esc(d.summary) + '" required autocomplete="off"></label>' +
+    '<div class="gcal-row"><label class="bk-l">Date<input type="date" name="date" value="' + esc(d.date) + '" required></label>' +
+    '<label class="bk-l gcal-check"><span>All day</span><span class="gcal-check-in"><input type="checkbox" name="allDay"' + (d.allDay ? " checked" : "") + '></span></label></div>' +
+    '<div class="gcal-row gcal-times"' + (d.allDay ? " hidden" : "") + '><label class="bk-l">Start<input type="time" name="start" value="' + esc(d.start) + '"' + (d.allDay ? "" : " required") + '></label>' +
+    '<label class="bk-l">End<input type="time" name="end" value="' + esc(d.end) + '"' + (d.allDay ? "" : " required") + '></label></div>' +
+    '<label class="bk-l">Description<textarea name="description" rows="2" maxlength="2000">' + esc(d.description) + '</textarea></label>' +
+    (gcalNote ? '<p class="bk-p gcal-note" role="status">' + esc(gcalNote) + '</p>' : "") +
+    '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-gcal="cancel"' + (gcalBusy ? " disabled" : "") + '>Cancel</button>' +
+    '<button type="submit" class="btn btn-primary btn-sm"' + (gcalBusy ? " disabled" : "") + '>' + (gcalBusy ? "Adding…" : "Add to calendar") + '</button></div></form>';
+}
 async function gcalSubmit(form) {
   const d = gcalDraft; if (!d || gcalBusy) return;
-  const endEl = form.elements.end;
-  endEl.setCustomValidity(!d.allDay && d.end <= d.start ? "The end has to come after the start." : "");
+  form.elements.end.setCustomValidity(!d.allDay && d.end <= d.start ? "The end has to come after the start." : "");
   if (!form.reportValidity()) return;
-  gcalBusy = true; gcalNote = ""; renderJ3();
+  gcalBusy = true; gcalNote = ""; gcalDlgRender();
   try {
     const ev = await gcalCall("create", { summary: d.summary, description: d.description, date: d.date, allDay: d.allDay, start: d.start, end: d.end, timeZone: gcalTZ() });
+    gcalBusy = false; gcalDraft = null;               /* the draft is spent only on success */
+    gcalDlgClose();
     showToast("Added “" + (ev.summary || d.summary) + "” — " + gcalWhen(d) + ".");
-    gcalDraft = null; gcalNote = "";                   /* the draft is spent only on success */
+    renderJ3();                                       /* the embed reloads and shows it */
+    const plus = document.querySelector(".j3-cal-plus"); if (plus) plus.focus({ preventScroll: true });
   } catch (e) {
-    gcalNote = e.message;                              /* the draft survives a refusal */
-    if (e.code === "reconnect") gcal = { connected: false };
+    gcalBusy = false; gcalNote = e.message;           /* the draft survives a refusal */
+    if (e.code === "reconnect") { gcal = { connected: false, client_id: gcal && gcal.client_id }; gcalDlgClose(); j3RightView = "settings"; renderJ3(); return; }
+    gcalDlgRender(); const t = $("#gcalTitleIn"); if (t) t.focus({ preventScroll: true });
   }
-  gcalBusy = false; renderJ3();
-  const f = document.querySelector("[data-gcal-form] [name=summary]") || document.querySelector(".j3-cal-plus");
-  if (f) f.focus({ preventScroll: true });
 }
-/* the connection card in Calendar settings, and the form above the embedded calendar */
-function j3GcalSettingsHTML() {
+/* ---- the connection card in Calendar settings ---- */
+const gcalBtn = (act, label, off) => '<button type="button" class="j3-btn" data-gcal="' + act + '"' + (off ? " disabled" : "") + '>' + esc(label) + '</button>';
+function j3GcalSettingsHTML(id) {
+  const who = gcalIsEmail(id) ? id : "the calendar’s Google account";
   let body;
-  if (!auth) body = '<p class="calendar-help">Sign in with Google to let Skillstone add events to your primary calendar. Google will ask for permission to manage events on calendars you own; nothing else.</p><button type="button" class="j3-btn" data-gcal="connect">Connect Google Calendar</button>';
-  else if (gcal && gcal.connected) body = '<p class="calendar-help">Connected as <b>' + esc(gcal.email || auth.user.email || "") + '</b>. Events go to that account’s primary calendar.</p><button type="button" class="j3-btn" data-gcal="disconnect">Disconnect</button>';
-  else if (gcal && gcal.error) body = '<p class="calendar-help">Could not reach the calendar service: ' + esc(gcal.error) + '</p><button type="button" class="j3-btn" data-gcal="retry">Try again</button>';
+  if (!auth) body = '<p class="calendar-help">Sign in to Skillstone first — the connection is kept with your board. Then connect ' + esc(who) + ': Google asks for permission to manage events on calendars that account owns, nothing else, and your Skillstone sign-in stays as it is.</p>' + gcalBtn("connect", "Connect Google Calendar", true);
+  else if (gcal && gcal.connected) {
+    const mismatch = gcalIsEmail(id) && gcal.email && id.toLowerCase() !== gcal.email.toLowerCase();
+    body = '<p class="calendar-help">Connected as <b>' + esc(gcal.email || "") + '</b>. Events go to <b>' + esc(gcal.calendar_id || "primary") + '</b>.' +
+      (mismatch ? ' That is a different account from the calendar above — events reach ' + esc(id) + ' only if ' + esc(gcal.email) + ' can edit it. Reconnect as ' + esc(id) + ' if that is the one you meant.' : "") + '</p>' +
+      '<div class="j3-cal-acts">' + (mismatch ? gcalBtn("connect", "Reconnect as " + id) : "") + gcalBtn("disconnect", "Disconnect") + '</div>';
+  }
+  else if (gcal && gcal.error) body = '<p class="calendar-help">Could not reach the calendar service: ' + esc(gcal.error) + '</p>' + gcalBtn("retry", "Try again");
   else if (!gcal) body = '<p class="calendar-help">Checking the connection…</p>';
-  else body = '<p class="calendar-help">Not connected. Google will ask for permission to manage events on calendars you own; nothing else.</p><button type="button" class="j3-btn" data-gcal="connect">Connect Google Calendar</button>';
+  else body = '<p class="calendar-help">Not connected. Connecting sends you to Google as ' + esc(who) + ' — it asks for permission to manage events on calendars that account owns, nothing else. Your Skillstone sign-in stays as it is.</p>' + gcalBtn("connect", "Connect Google Calendar");
   return '<h3 class="j3-gcal-h">Add events from here</h3>' + body +
     (gcalNote ? '<p class="calendar-help" id="j3-gcal-status" role="status">' + esc(gcalNote) + '</p>' : "");
 }
-function j3EventFormHTML() {
-  const d = gcalDraft;
-  return '<form class="j3-ev" data-gcal-form aria-label="New event">' +
-    '<label for="gcal-title">Title</label><input id="gcal-title" name="summary" maxlength="200" value="' + esc(d.summary) + '" required autocomplete="off">' +
-    '<label for="gcal-date">Date</label><input id="gcal-date" name="date" type="date" value="' + esc(d.date) + '" required>' +
-    '<label class="j3-ev-check"><input type="checkbox" name="allDay"' + (d.allDay ? " checked" : "") + '> All day</label>' +
-    '<div class="j3-ev-times"' + (d.allDay ? " hidden" : "") + '><label for="gcal-start">Start</label><input id="gcal-start" name="start" type="time" value="' + esc(d.start) + '"' + (d.allDay ? "" : " required") + '>' +
-    '<label for="gcal-end">End</label><input id="gcal-end" name="end" type="time" value="' + esc(d.end) + '"' + (d.allDay ? "" : " required") + '></div>' +
-    '<label for="gcal-desc">Description</label><textarea id="gcal-desc" name="description" rows="2" maxlength="2000">' + esc(d.description) + '</textarea>' +
-    '<div class="j3-ev-acts"><button type="submit" class="j3-btn"' + (gcalBusy ? " disabled" : "") + '>' + (gcalBusy ? "Adding…" : "Add to calendar") + '</button>' +
-    '<button type="button" class="j3-btn" data-gcal="cancel"' + (gcalBusy ? " disabled" : "") + '>Cancel</button></div>' +
-    (gcalNote ? '<p class="calendar-help" role="status">' + esc(gcalNote) + '</p>' : "") + '</form>';
-}
-/* the form, only while a draft is open; the way in is the + on the calendar's own corner */
-function j3GcalBarHTML() { return gcalDraft && gcal && gcal.connected ? j3EventFormHTML() : ""; }   /* a draft outlives a lost connection, and reappears with it */
 /* the plus sits where Google's own sits and covers it: the intuition that + means "new event"
    is the one this page keeps. The glyph is a fifth larger and a little bolder than Google's. */
 const J3_PLUS = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 2.5v11M2.5 8h11"/></svg>';
@@ -7036,21 +7092,14 @@ document.addEventListener("click", e => {
   if (act === "connect") gcalConnectStart();
   else if (act === "retry") { gcal = null; gcalNote = ""; gcalEnsureStatus(); renderJ3(); }
   else if (act === "disconnect") gcalDisconnect();
-  else if (act === "new") {
-    if (!(gcal && gcal.connected)) {            /* the + is always there; unconnected, it leads to the connection */
-      gcalNote = "Connect Google Calendar to add events from here."; j3RightView = "settings"; gcalEnsureStatus(); renderJ3();
-      const c = document.querySelector("[data-gcal=connect], [data-gcal=retry]"); if (c) c.focus({ preventScroll: true }); return;
-    }
-    gcalDraft = gcalNewDraft(); gcalNote = ""; renderJ3(); const f = document.getElementById("gcal-title"); if (f) f.focus({ preventScroll: true });
-  }
-  else if (act === "cancel") { gcalDraft = null; gcalNote = ""; renderJ3(); const f = document.querySelector("[data-gcal=new]"); if (f) f.focus({ preventScroll: true }); }
+  else if (act === "new") gcalDlgOpen();
+  else if (act === "cancel") { gcalDlgClose(); const p = document.querySelector(".j3-cal-plus"); if (p) p.focus({ preventScroll: true }); }
 });
-function gcalConnectStart() { gcalNote = ""; authStart({ calendar: true }); }
 document.addEventListener("submit", e => { if (e.target.matches("[data-gcal-form]")) { e.preventDefault(); gcalSubmit(e.target); } });
 document.addEventListener("input", e => {
   const f = e.target.closest && e.target.closest("[data-gcal-form]"); if (!f || !gcalDraft) return;
   const t = e.target;
-  if (t.name === "allDay") { gcalDraft.allDay = t.checked; const w = f.querySelector(".j3-ev-times"); if (w) w.hidden = t.checked; f.elements.start.required = f.elements.end.required = !t.checked; }
+  if (t.name === "allDay") { gcalDraft.allDay = t.checked; const w = f.querySelector(".gcal-times"); if (w) w.hidden = t.checked; f.elements.start.required = f.elements.end.required = !t.checked; }
   else if (t.name in gcalDraft) { gcalDraft[t.name] = t.value; if (t.name === "start" || t.name === "end") f.elements.end.setCustomValidity(""); }
 });
 
@@ -11865,17 +11914,19 @@ function j3CalendarURL(id) {
 }
 function j3CalendarHTML() {
   const id = j3CalendarId();
-  return '<section class="j3-calendar" aria-label="Google Calendar">' + j3GcalBarHTML() +
+  return '<section class="j3-calendar" aria-label="Google Calendar">' +
     (id ? '<div class="j3-cal-frame"><iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + j3CalPlusHTML() + '</div>' :
     '<h3>Your calendar, beside your notes</h3><p class="calendar-help">Choose a calendar in Settings to view your schedule here.</p><button type="button" class="j3-btn" data-jcal-view="settings">Set up calendar</button>') + '</section>';
 }
 function j3CalendarSettingsHTML() {
+  const id = j3CalendarId();
   return '<section class="j3-calendar j3-calendar-settings" aria-label="Calendar settings">' +
     '<h3>Calendar settings</h3><form data-jcal-form>' +
-    '<label for="j3-calendar-id">Calendar email or ID</label><input id="j3-calendar-id" name="calendar" value="'+esc(j3CalendarId())+'" placeholder="you@example.com" autocomplete="off">' +
-    '<button class="j3-btn" type="submit">Save</button><p class="calendar-help">Saved on this device. For a private calendar, sign in to its Google account in this browser. If the calendar stays blank, your browser may be blocking embedded sign-in.</p></form>' +
+    '<label for="j3-calendar-id">Calendar email or ID</label><input id="j3-calendar-id" name="calendar" value="' + esc(id) + '" placeholder="you@company.com" autocomplete="off">' +
+    '<button class="j3-btn" type="submit">Save</button>' +
+    '<p class="calendar-help">The calendar the Calendar tab shows and new events go to — usually the email of the Google account that owns it, and it need not be the account you sign in to Skillstone with. Saved on this device. For a private calendar to show, be signed in to that Google account in this browser as well; if it stays blank, the browser may be blocking embedded sign-in.</p></form>' +
     '<p class="calendar-help"><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">Open Google Calendar to sign in or edit events ↗</a></p>' +
-    '<p class="calendar-help" id="j3-calendar-status" role="status"></p>' + j3GcalSettingsHTML() + '</section>';
+    '<p class="calendar-help" id="j3-calendar-status" role="status"></p>' + j3GcalSettingsHTML(id) + '</section>';
 }
 document.addEventListener("click", e => {
   const button = e.target.closest && e.target.closest("[data-jcal-view]"); if (!button) return;
@@ -11888,11 +11939,16 @@ document.addEventListener("submit", e => {
   if (!e.target.matches("[data-jcal-form]")) return;
   e.preventDefault(); const input = e.target.elements.calendar;
   const id = input.value.trim();
-  if (id && !/^[^\s<>"@]+@[^\s<>"@]+$/.test(id)) { input.setCustomValidity("Use the calendar email or ID, rather than an embed link."); input.reportValidity(); return; }
-  try { localStorage.setItem(j3CalendarKey(),id); } catch (_) { input.setCustomValidity("This browser could not save the calendar setting."); input.reportValidity(); return; }
-  renderJ3();
-  const status = document.getElementById("j3-calendar-status"); if(status) status.textContent = "Calendar saved. Open the Calendar tab to view it.";
-  const savedInput = document.getElementById("j3-calendar-id"); if(savedInput) savedInput.focus({preventScroll:true});
+  if (id && !/^[^ <>"@]+@[^ <>"@]+$/.test(id)) { input.setCustomValidity("Use the calendar email or ID, rather than an embed link."); input.reportValidity(); return; }
+  try { localStorage.setItem(j3CalendarKey(), id); } catch (_) { input.setCustomValidity("This browser could not save the calendar setting."); input.reportValidity(); return; }
+  /* connected, the row follows the setting, so new events go where the tab looks */
+  const done = () => {
+    renderJ3();
+    const status = document.getElementById("j3-calendar-status");
+    if (status) status.textContent = "Calendar saved." + (gcal && gcal.connected && id ? " New events go there too." : " Open the Calendar tab to view it.");
+    const savedInput = document.getElementById("j3-calendar-id"); if (savedInput) savedInput.focus({ preventScroll: true });
+  };
+  if (gcal && gcal.connected && id) gcalSetCalendar(id).then(done); else done();
 });
 document.addEventListener("input", e => { if(e.target.id === "j3-calendar-id") e.target.setCustomValidity(""); });
 function renderJ3() {
