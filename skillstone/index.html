@@ -11824,6 +11824,8 @@ function j3CalendarSettingsHTML() {
 }
 document.addEventListener("click", e => {
   const button = e.target.closest && e.target.closest("[data-jcal-view]"); if (!button) return;
+  if (j3ActiveTurn) j3ActiveTurn();
+  j3PopClose();
   j3RightView = button.dataset.jcalView; renderJ3();
   const next = document.querySelector('[data-jcal-view="'+button.dataset.jcalView+'"]'); if(next) next.focus({preventScroll:true});
 });
@@ -12012,19 +12014,19 @@ function renderJ3() {
   el.innerHTML =
     '<div class="j3' + (isThisWeek ? " is-now" : (j3Week < mondayOf(dayNow()) ? " is-past" : " is-future")) + '">' +
       '<div class="j3-head">' +
-        '<div class="j3-nav">' +
+        (j3RightView === "calendar" ? "" : '<div class="j3-nav">' +
           '<button type="button" class="j3-btn" data-j3="wk" data-d="-1" aria-label="Previous week">' + J3_ICO.prev + "</button>" +
           '<button type="button" class="j3-btn" data-j3="pickopen" popovertarget="weekPop" aria-label="Pick a week">' + J3_ICO.cal + "</button>" +
           '<button type="button" class="j3-btn" data-j3="wk" data-d="1" aria-label="Next week">' + J3_ICO.next + "</button>" +
-        "</div>" +
+        "</div>") +
         '<span class="j3-week">' + weekRange(j3Week) +
           (isThisWeek ? '<span class="j3-away j3-now">current week</span>' : '<span class="j3-away">not this week</span>') + "</span>" +
         '<input class="j3-title" data-j3="wk-title" value="' + esc(b.titles[key] || "") +
           '" placeholder="name this week\u2026" aria-label="Week title">' +
       "</div>" +
       /* the ribbon: over the gutter on this week; peeking from the edge where this week lies otherwise */
-      '<div class="j3-mark"><button type="button" class="j3-ribbon" data-j3="wk-today" aria-label="' +
-        (isThisWeek ? "This week" : "Back to this week") + '"' + (isThisWeek ? " disabled" : "") + "></button></div>" +
+      (j3RightView === "calendar" ? "" : '<div class="j3-mark"><button type="button" class="j3-ribbon" data-j3="wk-today" aria-label="' +
+        (isThisWeek ? "This week" : "Back to this week") + '"' + (isThisWeek ? " disabled" : "") + "></button></div>") +
       /* one sheet: the pen's model — lift blocks and the fold are painted on the sheet itself */
       '<div class="j3-paper">' +
         '<div class="j3-lift t" aria-hidden="true"></div>' +
@@ -12037,8 +12039,8 @@ function renderJ3() {
         '<div class="j3-lift b" aria-hidden="true"></div>' +
         '<div class="j3-fold" aria-hidden="true"></div>' +
         /* the corners: press and pull to turn; a tap or Enter turns outright */
-        '<button type="button" class="j3-corner bl" data-corner="-1" aria-label="Previous week"></button>' +
-        '<button type="button" class="j3-corner br" data-corner="1" aria-label="Next week"></button>' +
+        (j3RightView === "calendar" ? "" : '<button type="button" class="j3-corner bl" data-corner="-1" aria-label="Previous week"></button>' +
+        '<button type="button" class="j3-corner br" data-corner="1" aria-label="Next week"></button>') +
       "</div>" +
     "</div>";
 }
@@ -12053,6 +12055,7 @@ function renderJ3() {
    pull drives it by hand. */
 let j3ActiveTurn = null;
 function j3Leaf(to) {
+  if (j3RightView === "calendar") return null;
   if (j3ActiveTurn) j3ActiveTurn();
   const from = j3Week;
   if (+to === +from) return null;
@@ -12115,7 +12118,7 @@ function j3Turn(to) {
 }
 let j3Pull = null;
 function j3PullStart(e, btn) {
-  if(j3Pull || e.button) return;
+  if(j3RightView === "calendar" || j3Pull || e.button) return;
   const s = j3Leaf(addDays(j3Week, Number(btn.dataset.corner)*7)); if(!s) return;
   j3Pull = {s,x0:e.clientX,moved:false,angle:0,id:e.pointerId,frame:0};
 }
