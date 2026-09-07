@@ -2968,6 +2968,16 @@ li.is-done .qg { color: var(--verdant); }
 .gcal-check-in { display:flex; align-items:center; min-height:34px; }
 .gcal-check-in input { width:18px; height:18px; margin:0; accent-color:var(--gold); }
 .gcal-note { color:var(--ember); }
+.gcal-hint { margin-top:calc(-1 * var(--s2)); font-size:0.75rem; }
+.gcal-colors { border:0; padding:0; margin:0; display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.gcal-colors legend { padding:0; margin-bottom:4px; float:left; width:100%; }
+.gcal-sw { position:relative; display:inline-grid; place-items:center; width:28px; height:28px; cursor:pointer; }
+.gcal-sw input { position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; }
+.gcal-sw .sw { width:20px; height:20px; border-radius:50%; border:2px solid transparent; box-shadow:0 0 0 1px rgba(0,0,0,0.35) inset; }
+.gcal-sw .sw.none { background:var(--cave); border-color:var(--mortar-2); }
+.gcal-sw input:checked + .sw { outline:2px solid var(--gold); outline-offset:2px; }
+.gcal-sw input:focus-visible + .sw { outline:2px solid var(--focus); outline-offset:2px; }
+.gcal-meet .gcal-check-in { gap:8px; font-family:var(--f-ui); font-size:0.875rem; letter-spacing:0; text-transform:none; color:var(--dust); }
 @media(max-width:700px) { .j3-calendar iframe { height:580px; } .j3-page .j3-weekend > .j3-day + .j3-day { border-left:0; padding-left:0; border-top:1px solid var(--j3-divider); padding-top:var(--s2); } }
 /* left page: 6 + 6, then 12 */
 .j3-left-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
@@ -7011,8 +7021,15 @@ async function gcalSetCalendar(id) {
 }
 function gcalNewDraft() {
   const t = dayNow(), d = weekKeyOf(t) === weekKeyOf(j3Week) ? t : j3Week;
-  return { summary: "", date: dyISO(d), allDay: false, start: "09:00", end: "10:00", description: "" };
+  return { summary: "", date: dyISO(d), allDay: false, start: "09:00", end: "10:00", description: "", location: "", guests: "", colorId: "", meet: false };
 }
+/* Google's eleven event colours, by the names its own picker uses */
+const GCAL_COLORS = [["1", "Lavender", "#7986cb"], ["2", "Sage", "#33b679"], ["3", "Grape", "#8e24aa"], ["4", "Flamingo", "#e67c73"],
+  ["5", "Banana", "#f6c026"], ["6", "Tangerine", "#f5511d"], ["7", "Peacock", "#039be5"], ["8", "Graphite", "#616161"],
+  ["9", "Blueberry", "#3f51b5"], ["10", "Basil", "#0b8043"], ["11", "Tomato", "#d60000"]];
+/* guests are typed as one line — commas, spaces or semicolons between — and checked one by one */
+const gcalGuests = s => String(s || "").split(/[\s,;]+/).filter(Boolean);
+const gcalBadGuest = s => gcalGuests(s).find(g => !/^[^ @]+@[^ @]+\.[^ @]+$/.test(g)) || null;
 const gcalTZ = () => (Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Sao_Paulo");
 function gcalWhen(d) {
   const day = new Date(d.date + "T12:00:00");
@@ -7042,6 +7059,14 @@ function gcalDlgRender() {
     '<label class="bk-l gcal-check"><span>All day</span><span class="gcal-check-in"><input type="checkbox" name="allDay"' + (d.allDay ? " checked" : "") + '></span></label></div>' +
     '<div class="gcal-row gcal-times"' + (d.allDay ? " hidden" : "") + '><label class="bk-l">Start<input type="time" name="start" value="' + esc(d.start) + '"' + (d.allDay ? "" : " required") + '></label>' +
     '<label class="bk-l">End<input type="time" name="end" value="' + esc(d.end) + '"' + (d.allDay ? "" : " required") + '></label></div>' +
+    '<label class="bk-l">Location<input type="text" name="location" maxlength="500" value="' + esc(d.location || "") + '" autocomplete="off"></label>' +
+    '<label class="bk-l">Guests<input type="text" name="guests" value="' + esc(d.guests || "") + '" placeholder="emails, separated by commas" autocomplete="off" spellcheck="false"></label>' +
+    '<p class="bk-p gcal-hint">Guests receive Google’s invitation email.</p>' +
+    '<fieldset class="gcal-colors"><legend class="bk-l">Colour</legend>' +
+      '<label class="gcal-sw" title="Calendar’s colour"><input type="radio" name="colorId" value=""' + (d.colorId ? "" : " checked") + '><span class="sw none" aria-hidden="true"></span><span class="vh">Calendar’s colour</span></label>' +
+      GCAL_COLORS.map(([id, name, hex]) => '<label class="gcal-sw" title="' + name + '"><input type="radio" name="colorId" value="' + id + '"' + (d.colorId === id ? " checked" : "") + '><span class="sw" style="background:' + hex + '" aria-hidden="true"></span><span class="vh">' + name + '</span></label>').join("") +
+    '</fieldset>' +
+    '<label class="bk-l gcal-meet"><span class="gcal-check-in"><input type="checkbox" name="meet"' + (d.meet ? " checked" : "") + '> Add a Google Meet link</span></label>' +
     '<label class="bk-l">Description<textarea name="description" rows="2" maxlength="2000">' + esc(d.description) + '</textarea></label>' +
     (gcalNote ? '<p class="bk-p gcal-note" role="status">' + esc(gcalNote) + '</p>' : "") +
     '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-gcal="cancel"' + (gcalBusy ? " disabled" : "") + '>Cancel</button>' +
@@ -7050,13 +7075,18 @@ function gcalDlgRender() {
 async function gcalSubmit(form) {
   const d = gcalDraft; if (!d || gcalBusy) return;
   form.elements.end.setCustomValidity(!d.allDay && d.end <= d.start ? "The end has to come after the start." : "");
+  const bad = gcalBadGuest(d.guests);
+  form.elements.guests.setCustomValidity(bad ? "Not an email address: " + bad : "");
   if (!form.reportValidity()) return;
   gcalBusy = true; gcalNote = ""; gcalDlgRender();
   try {
-    const ev = await gcalCall("create", { summary: d.summary, description: d.description, date: d.date, allDay: d.allDay, start: d.start, end: d.end, timeZone: gcalTZ() });
+    const guests = gcalGuests(d.guests);
+    const ev = await gcalCall("create", { summary: d.summary, description: d.description, date: d.date, allDay: d.allDay, start: d.start, end: d.end, timeZone: gcalTZ(),
+      location: d.location || "", attendees: guests, colorId: d.colorId || "", meet: !!d.meet });
     gcalBusy = false; gcalDraft = null;               /* the draft is spent only on success */
     gcalDlgClose();
-    showToast("Added “" + (ev.summary || d.summary) + "” — " + gcalWhen(d) + ".");
+    showToast("Added “" + (ev.summary || d.summary) + "” — " + gcalWhen(d) +
+      (guests.length ? " · " + guests.length + " guest" + (guests.length === 1 ? "" : "s") + " invited" : "") + (ev.meet ? " · Meet link made" : "") + ".");
     renderJ3();                                       /* the embed reloads and shows it */
     const plus = document.querySelector(".j3-cal-plus"); if (plus) plus.focus({ preventScroll: true });
   } catch (e) {
@@ -7101,7 +7131,9 @@ document.addEventListener("input", e => {
   const f = e.target.closest && e.target.closest("[data-gcal-form]"); if (!f || !gcalDraft) return;
   const t = e.target;
   if (t.name === "allDay") { gcalDraft.allDay = t.checked; const w = f.querySelector(".gcal-times"); if (w) w.hidden = t.checked; f.elements.start.required = f.elements.end.required = !t.checked; }
-  else if (t.name in gcalDraft) { gcalDraft[t.name] = t.value; if (t.name === "start" || t.name === "end") f.elements.end.setCustomValidity(""); }
+  else if (t.name === "meet") gcalDraft.meet = t.checked;
+  else if (t.name === "colorId") gcalDraft.colorId = t.value;
+  else if (t.name in gcalDraft) { gcalDraft[t.name] = t.value; if (t.name === "start" || t.name === "end") f.elements.end.setCustomValidity(""); if (t.name === "guests") t.setCustomValidity(""); }
 });
 
 function cloudDisconnect() {
