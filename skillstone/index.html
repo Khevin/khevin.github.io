@@ -2119,10 +2119,14 @@ button.d-plaque {
 .camp-seal-cur .seal { width: 64px; height: 64px; }
 .camp-seal-cur .seal svg { width: 30px; height: 30px; }
 .camp-top-f { display: grid; grid-template-columns: minmax(0, 1fr) 160px; gap: var(--s3); }
-.camp-seals { border: 0; padding: 0; margin: 0; min-width: 0; }
-.camp-seals legend { padding: 0; margin-bottom: 4px; }
-.camp-seal-strip { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: thin; scrollbar-color: var(--mortar-2) transparent; }
-.camp-seal-opt { appearance: none; flex: none; background: none; border: 0; padding: 2px; border-radius: 50%; cursor: pointer; opacity: 0.72; }
+.camp-seal-btn { appearance: none; background: none; border: 0; padding: 0; border-radius: 50%; cursor: pointer; display: block; }
+.camp-seal-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+@media (hover: hover) { .camp-seal-btn:hover .seal { border-color: var(--bronze); } }
+/* the seal picker: the emoji picker's shape, drawn seals in a grid */
+.camp-sealpop { position: fixed; inset: auto; margin: 0; width: 336px; padding: var(--s3); background: var(--stone-2); border: 1px solid var(--mortar-2); border-radius: var(--r-lg); box-shadow: var(--shadow-float); color: var(--parchment); }
+.camp-sealpop::backdrop { background: transparent; }
+.camp-seal-grid { display: grid; grid-template-columns: repeat(7, 42px); gap: 4px; max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--mortar-2) transparent; }
+.camp-seal-opt { appearance: none; background: none; border: 0; padding: 1px; border-radius: 50%; cursor: pointer; opacity: 0.78; display: grid; place-items: center; }
 .camp-seal-opt .seal { width: 40px; height: 40px; }
 .camp-seal-opt .seal svg { width: 19px; height: 19px; }
 .camp-seal-opt .seal img { width: 40px; height: 40px; }
@@ -2130,31 +2134,30 @@ button.d-plaque {
 .camp-seal-opt:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; opacity: 1; }
 @media (hover: hover) { .camp-seal-opt:hover { opacity: 1; } }
 .camp-acts { display: grid; gap: var(--s3); }
+/* one act, then a rule, then the next: the spine holds the act, the rule separates them */
 .camp-ch { border-left: 2px solid var(--mortar-2); padding-left: var(--s3); display: grid; gap: var(--s2); }
+.camp-ch + .camp-ch { border-top: 1px solid var(--mortar); padding-top: var(--s4); margin-top: var(--s1); }
 .camp-ch-h { display: grid; grid-template-columns: 96px minmax(0, 1fr) 32px; gap: var(--s2); align-items: center; }
-.camp-act, .camp-ch-name, .camp-q-t, .camp-q-s {
+.camp-act, .camp-ch-name, .camp-q-t {
   background: var(--cave); color: var(--parchment); border: 1px solid var(--mortar); border-radius: var(--r-sm);
   padding: var(--s2); min-height: 34px; font-family: var(--f-ui); font-size: 0.875rem; min-width: 0; }
-.camp-act, .camp-q-s { font-size: 0.8125rem; }
-.camp-act:focus-visible, .camp-ch-name:focus-visible, .camp-q-t:focus-visible, .camp-q-s:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.camp-act { font-size: 0.8125rem; }
+.camp-act:focus-visible, .camp-ch-name:focus-visible, .camp-q-t:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .camp-ch-name { font-family: var(--f-display); font-weight: 700; letter-spacing: 0.02em; }
 .camp-qs { list-style: none; display: grid; gap: var(--s2); margin: 0; padding: 0; }
-.camp-q { display: grid; grid-template-columns: 10px minmax(0, 1fr) 150px 32px; gap: var(--s2); align-items: center; }
+.camp-q { display: grid; grid-template-columns: 10px minmax(0, 1fr) 32px; gap: var(--s2); align-items: center; }
 .camp-q-gem { width: 6px; height: 6px; transform: rotate(45deg); background: var(--mortar-2); justify-self: center; }
 .camp-x { appearance: none; width: 32px; height: 32px; display: grid; place-items: center; background: none; border: 0; border-radius: var(--r-sm); color: var(--ash); cursor: pointer; }
 .camp-x svg { width: 14px; height: 14px; }
 @media (hover: hover) { .camp-x:hover { color: var(--ember); background: rgba(200,84,58,0.08); } }
 .camp-x:focus-visible { outline: 2px solid var(--focus); }
 .camp-x-blank { width: 32px; height: 32px; }
-.camp-add { appearance: none; justify-self: start; background: none; border: 0; padding: 4px 0; cursor: pointer;
-  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--dust); }
-@media (hover: hover) { .camp-add:hover { color: var(--gold-2); } }
-.camp-add:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.camp-add { justify-self: start; }
 .camp-add-act { margin-top: var(--s1); }
 @media (max-width: 640px) {
   .camp-top-f { grid-template-columns: 1fr; }
-  .camp-q { grid-template-columns: 10px minmax(0, 1fr) 32px; }
-  .camp-q-s { grid-column: 2; }
+  .camp-seal-grid { grid-template-columns: repeat(6, 42px); }
+  .camp-sealpop { width: 296px; }
 }
 
 /* one row per skill the quest pays: which, and how much */
@@ -6348,7 +6351,9 @@ function questsFor(s) {
     progress: { have: d.count(s, kb), need: d.need(kb) }
   })));
 }
-const allQuests = () => QUESTS_MAIN.concat(state.skills.flatMap(questsFor));
+/* a campaign quest written without a skill yet is still a quest: it can be opened, given
+   steps and rewards, and completed — it pays nothing until Rewards & impact names a skill */
+const allQuests = () => QUESTS_MAIN.concat(state.skills.flatMap(questsFor)).concat(campaignQuests().filter(x => !x.target));
 /* A quest whose target is not a skill pays nothing and cannot be claimed — it is simply
    invisible, which is the worst kind of broken. Three of the seeded Nihongo quests pointed
    at "Languages", which is a shelf in the library and not a skill on the board. Run once at
@@ -9583,7 +9588,7 @@ function campSealHTML(seal, big) {
 }
 function campDraftFrom(c) {
   if (!c) return { id: null, name: "", note: "", horizon: "", emblem: "quill", sprite: "",
-    chapters: [{ id: null, act: 1, name: "", quests: [{ id: null, title: "", target: "" }] }] };
+    chapters: [{ id: null, act: 1, name: "", quests: [{ id: null, title: "" }] }] };
   return { id: c.id, name: c.name, note: c.note || "", horizon: c.horizon || "", emblem: c.emblem || "quill", sprite: c.sprite || CAMP_SPRITE[c.id] || "",
     chapters: c.chapters.map(ch => ({ id: ch.id, act: ch.act || 1, name: ch.name, quests: ch.quests.map(x => ({ id: x.id, title: x.title, target: x.target || "" })) })) };
 }
@@ -9600,39 +9605,40 @@ function campDlgRender(focusSel) {
   const dlg = $("#campDlg"), d = campEdit; if (!dlg || !d) return;
   const cur = d.sprite ? "sprite:" + d.sprite : "sigil:" + d.emblem;
   const seals = campSeals();
-  const skillOpts = qRewSkillOpts("");
   dlg.innerHTML = '<form data-form="camp-save" method="dialog">' +
     '<p class="bk-h" id="campDlgTitle">' + (d.id ? "Edit campaign" : "New campaign") + '</p>' +
     '<div class="camp-top">' +
-      '<div class="camp-seal-cur">' + campSealHTML(seals.find(s => s.key === cur) || seals[0], true) + '</div>' +
+      /* the seal is the picker's own button: press it and the seals come up beside it, as the emoji do */
+      '<button type="button" class="camp-seal-btn" popovertarget="sealPop" aria-label="Choose the seal — opens the seal picker"><span class="camp-seal-cur">' + campSealHTML(seals.find(s => s.key === cur) || seals[0], true) + '</span></button>' +
       '<div class="camp-top-f">' +
         '<label class="bk-l">Name<input type="text" id="campName" name="name" maxlength="80" value="' + esc(d.name) + '" required autocomplete="off"></label>' +
         '<label class="bk-l">Horizon<input type="date" name="horizon" value="' + esc(d.horizon) + '"></label>' +
       '</div></div>' +
-    '<label class="bk-l">What it is for<textarea name="note" rows="2" maxlength="300">' + esc(d.note) + '</textarea></label>' +
-    '<fieldset class="camp-seals"><legend class="bk-l">Seal</legend><div class="camp-seal-strip" role="listbox" aria-label="Seal">' +
+    '<div id="sealPop" class="camp-sealpop" popover aria-label="Seal"><div class="camp-seal-grid" role="listbox">' +
       seals.map(s => '<button type="button" class="camp-seal-opt' + (s.key === cur ? " is-cur" : "") + '" data-cmp="campseal" data-seal="' + esc(s.key) + '" role="option" aria-selected="' + (s.key === cur) + '" title="' + esc(s.sigil || s.sprite.split("/").pop().replace(/-sprite$/, "").replace(/-/g, " ")) + '">' + campSealHTML(s) + '</button>').join("") +
-    '</div></fieldset>' +
+    '</div></div>' +
+    '<label class="bk-l">What it is for<textarea name="note" rows="2" maxlength="300">' + esc(d.note) + '</textarea></label>' +
     '<div class="camp-acts"><span class="bk-l">Acts</span>' +
       d.chapters.map((ch, ci) => '<div class="camp-ch" data-ch="' + ci + '">' +
         '<div class="camp-ch-h">' +
           '<select class="camp-act" name="act-' + ci + '" aria-label="Act">' + ROMAN.map((r, i) => '<option value="' + (i + 1) + '"' + (ch.act === i + 1 ? " selected" : "") + '>Act ' + r + '</option>').join("") + '</select>' +
           '<input type="text" class="camp-ch-name" name="ch-' + ci + '" value="' + esc(ch.name) + '" placeholder="Chapter name" maxlength="60" required aria-label="Chapter name">' +
-          (ch.id ? "" : '<button type="button" class="camp-x" data-cmp="campdelch" data-ch="' + ci + '" aria-label="Remove this act">' + ICON.x + '</button>') +
+          (ch.id || d.chapters.length < 2 ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelch" data-ch="' + ci + '" aria-label="Remove this act">' + ICON.x + '</button>') +
         '</div>' +
         '<ol class="camp-qs">' + ch.quests.map((q, qi) => '<li class="camp-q">' +
           '<span class="camp-q-gem" aria-hidden="true"></span>' +
           '<input type="text" class="camp-q-t" name="q-' + ci + '-' + qi + '" value="' + esc(q.title) + '" placeholder="Quest" maxlength="120" required aria-label="Quest title">' +
-          '<select class="camp-q-s" name="s-' + ci + '-' + qi + '" aria-label="Skill it pays" required>' + skillOpts.replace('value="' + esc(q.target) + '"', 'value="' + esc(q.target) + '" selected') + '</select>' +
-          (q.id ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelq" data-ch="' + ci + '" data-q="' + qi + '" aria-label="Remove this quest">' + ICON.x + '</button>') +
+          (q.id || ch.quests.length < 2 ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelq" data-ch="' + ci + '" data-q="' + qi + '" aria-label="Remove this quest">' + ICON.x + '</button>') +
         '</li>').join("") + '</ol>' +
-        '<button type="button" class="camp-add" data-cmp="campaddq" data-ch="' + ci + '">+ Quest</button>' +
+        '<button type="button" class="btn btn-ghost btn-sm camp-add" data-cmp="campaddq" data-ch="' + ci + '">+ Quest</button>' +
       '</div>').join("") +
-      '<button type="button" class="camp-add camp-add-act" data-cmp="campaddch">+ Act</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm camp-add camp-add-act" data-cmp="campaddch">+ Act</button>' +
     '</div>' +
-    '<p class="bk-p">Steps and rewards are added on each quest once it exists.</p>' +
+    '<p class="bk-p">Steps, and the skills a quest pays, are added on each quest once it exists.</p>' +
     '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-cmp="campcancel">Cancel</button>' +
     '<button type="submit" class="btn btn-primary btn-sm">' + (d.id ? "Save changes" : "Create campaign") + '</button></div></form>';
+  /* the picker is rebuilt with the form, so it is bound with it — placed beside the seal it belongs to */
+  bindPop(dlg.querySelector("#sealPop"), () => dlg.querySelector(".camp-seal-btn"), 336, "left");
   if (focusSel) { const f = dlg.querySelector(focusSel); if (f) f.focus(); }
 }
 /* the draft follows every keystroke, so a re-render for a new row loses nothing */
@@ -9646,35 +9652,40 @@ document.addEventListener("input", e => {
   else if ((m = n.match(/^act-(\d+)$/))) campEdit.chapters[+m[1]].act = +t.value;
   else if ((m = n.match(/^ch-(\d+)$/))) campEdit.chapters[+m[1]].name = t.value;
   else if ((m = n.match(/^q-(\d+)-(\d+)$/))) campEdit.chapters[+m[1]].quests[+m[2]].title = t.value;
-  else if ((m = n.match(/^s-(\d+)-(\d+)$/))) campEdit.chapters[+m[1]].quests[+m[2]].target = t.value;
 });
 function campDraftAddChapter() {
   if (!campEdit) return;
   const last = campEdit.chapters[campEdit.chapters.length - 1];
-  campEdit.chapters.push({ id: null, act: last ? last.act : 1, name: "", quests: [{ id: null, title: "", target: "" }] });
+  campEdit.chapters.push({ id: null, act: last ? last.act : 1, name: "", quests: [{ id: null, title: "" }] });
   campDlgRender('[name="ch-' + (campEdit.chapters.length - 1) + '"]');
 }
 function campDraftAddQuest(ci) {
   if (!campEdit || !campEdit.chapters[ci]) return;
-  campEdit.chapters[ci].quests.push({ id: null, title: "", target: "" });
+  campEdit.chapters[ci].quests.push({ id: null, title: "" });
   campDlgRender('[name="q-' + ci + '-' + (campEdit.chapters[ci].quests.length - 1) + '"]');
 }
+/* a campaign keeps at least one act, and an act at least one quest — the row's × is not
+   drawn when it is the last, and the draft refuses in any case */
 function campDraftDelChapter(ci) {
-  if (!campEdit || !campEdit.chapters[ci] || campEdit.chapters[ci].id) return;   /* a saved chapter is not removed here */
+  if (!campEdit || !campEdit.chapters[ci] || campEdit.chapters[ci].id || campEdit.chapters.length < 2) return;
   campEdit.chapters.splice(ci, 1);
-  if (!campEdit.chapters.length) campEdit.chapters.push({ id: null, act: 1, name: "", quests: [{ id: null, title: "", target: "" }] });
   campDlgRender(".camp-add-act");
 }
 function campDraftDelQuest(ci, qi) {
-  const ch = campEdit && campEdit.chapters[ci]; if (!ch || !ch.quests[qi] || ch.quests[qi].id) return;
+  const ch = campEdit && campEdit.chapters[ci]; if (!ch || !ch.quests[qi] || ch.quests[qi].id || ch.quests.length < 2) return;
   ch.quests.splice(qi, 1);
   campDlgRender('[data-cmp="campaddq"][data-ch="' + ci + '"]');
 }
+/* picking a seal changes the seal, in place — the form is not rebuilt around an open picker */
 function campDraftSeal(key) {
   if (!campEdit || !key) return;
   if (key.indexOf("sigil:") === 0) { campEdit.emblem = key.slice(6); campEdit.sprite = ""; }
   else campEdit.sprite = key.slice(7);
-  campDlgRender('[data-seal="' + key.replace(/"/g, "") + '"]');
+  const dlg = $("#campDlg"), seal = campSeals().find(s => s.key === key);
+  const cur = dlg && dlg.querySelector(".camp-seal-cur"); if (cur && seal) cur.innerHTML = campSealHTML(seal, true);
+  if (dlg) dlg.querySelectorAll(".camp-seal-opt").forEach(b => { const on = b.dataset.seal === key; b.classList.toggle("is-cur", on); b.setAttribute("aria-selected", on); });
+  const pop = dlg && dlg.querySelector("#sealPop"); if (pop && pop.matches(":popover-open")) pop.hidePopover();
+  const btn = dlg && dlg.querySelector(".camp-seal-btn"); if (btn) btn.focus({ preventScroll: true });
 }
 const campNewId = p => p + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 function campDlgSave() {
@@ -9698,7 +9709,7 @@ function campDlgSave() {
     dc.quests.forEach(dq => {
       let q = dq.id ? ch.quests.find(x => x.id === dq.id) : null;
       if (!q) { q = { id: campNewId("q"), title: "", target: "", due: "", note: "", objectives: [] }; ch.quests.push(q); }
-      q.title = dq.title.trim().slice(0, 120); q.target = dq.target || "";
+      q.title = dq.title.trim().slice(0, 120); if (dq.target) q.target = dq.target;
     });
     keep.push(ch.id);
   });
