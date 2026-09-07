@@ -2942,6 +2942,10 @@ li.is-done .qg { color: var(--verdant); }
 .j3-view-switch button[aria-pressed="true"] { color:var(--parchment); border-bottom-color:#9b5147; }
 .j3-view-switch button:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
 /* Blend at the page's stacking context so Google's white surfaces reveal the actual paper beneath. */
+/* the embed is white and the page is darkened onto the book, so the embed's paper is the page's
+   own paper — the same grain as Notebook and Settings — and only Google's ink and colour print
+   through. (Blending the frame or the iframe itself does nothing to a cross-origin frame; the
+   page is the level at which Chromium flattens it.) */
 .j3-page.right:has(.j3-calendar) { mix-blend-mode: darken; }
 .j3-calendar iframe { display:block; width:100%; height:650px; border:0; border-radius:3px; background:transparent; }
 .j3-calendar-settings h3 { font:600 16px var(--f-display); margin:0 0 20px; }
@@ -12007,7 +12011,7 @@ function j3CalendarURL(id) {
   const date = d => [d.getFullYear(), String(d.getMonth()+1).padStart(2,"0"), String(d.getDate()).padStart(2,"0")].join("");
   const q = new URLSearchParams({src:id, ctz:Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
     mode:window.innerWidth < 700 ? "AGENDA" : "WEEK", dates:date(j3Week)+"/"+date(addDays(j3Week,7)),
-    wkst:"2", showTitle:"0", showPrint:"0", showCalendars:"0", showTabs:"0", bgcolor:"#f3ead6"});
+    wkst:"2", showTitle:"0", showPrint:"0", showCalendars:"0", showTabs:"0", bgcolor:"#ffffff"});
   return "https://calendar.google.com/calendar/embed?" + q;
 }
 function j3CalendarHTML() {
