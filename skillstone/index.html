@@ -2978,6 +2978,15 @@ li.is-done .qg { color: var(--verdant); }
 .gcal-sw input:checked + .sw { outline:2px solid var(--gold); outline-offset:2px; }
 .gcal-sw input:focus-visible + .sw { outline:2px solid var(--focus); outline-offset:2px; }
 .gcal-meet .gcal-check-in { gap:8px; font-family:var(--f-ui); font-size:0.875rem; letter-spacing:0; text-transform:none; color:var(--dust); }
+/* invitations under the calendar: one row each, three plates, gone once answered */
+.j3-inv { margin-top:12px; }
+.j3-inv-h { font:600 14px var(--f-display); margin:0 0 4px; }
+.j3-inv-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-top:1px solid var(--j3-divider); }
+.j3-inv-what { min-width:0; display:flex; flex-direction:column; gap:2px; }
+.j3-inv-what b { font-size:14px; overflow-wrap:anywhere; }
+.j3-inv-when { font-size:12px; color:var(--ash); }
+.j3-inv-acts { display:flex; gap:6px; flex:none; }
+.j3-inv-note { margin-top:8px; }
 @media(max-width:700px) { .j3-calendar iframe { height:580px; } .j3-page .j3-weekend > .j3-day + .j3-day { border-left:0; padding-left:0; border-top:1px solid var(--j3-divider); padding-top:var(--s2); } }
 /* left page: 6 + 6, then 12 */
 .j3-left-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
@@ -7001,6 +7010,7 @@ async function gcalFinish() {
   if (!auth) { gcalNote = "Sign in to Skillstone first, then connect the calendar again."; return true; }
   try {
     gcal = await gcalCall("connect", { code, code_verifier: p.verifier, redirect_uri: p.redirect, calendar_id: p.calendar || "" });
+    gcalInvitesReset();
     gcalNote = "";                                                    /* the card itself says who and where */
     showToast("Google Calendar connected as " + (gcal.email || "the Google account") + ".");
     /* a calendar setting left empty takes the connected account's own calendar, so the tab shows it */
@@ -7009,7 +7019,7 @@ async function gcalFinish() {
   return true;
 }
 async function gcalDisconnect() {
-  try { await gcalCall("disconnect"); gcal = { connected: false, client_id: gcal && gcal.client_id }; gcalNote = "Calendar disconnected. Events already created stay in Google Calendar."; }
+  try { await gcalCall("disconnect"); gcal = { connected: false, client_id: gcal && gcal.client_id }; gcalInvitesReset(); gcalNote = "Calendar disconnected. Events already created stay in Google Calendar."; }
   catch (e) { gcalNote = "Could not disconnect: " + e.message; }
   renderJ3();
 }
@@ -7021,8 +7031,10 @@ async function gcalSetCalendar(id) {
 }
 function gcalNewDraft() {
   const t = dayNow(), d = weekKeyOf(t) === weekKeyOf(j3Week) ? t : j3Week;
-  return { summary: "", date: dyISO(d), allDay: false, start: "09:00", end: "10:00", description: "", location: "", guests: "", colorId: "", meet: false };
+  return { summary: "", date: dyISO(d), allDay: false, start: "09:00", end: "10:00", description: "", location: "", guests: "", colorId: "", meet: false, repeat: "", until: "" };
 }
+const GCAL_REPEATS = [["", "Does not repeat"], ["daily", "Every day"], ["weekdays", "Every weekday"], ["weekly", "Every week"], ["fortnightly", "Every two weeks"], ["monthly", "Every month"], ["yearly", "Every year"]];
+const GCAL_REPEAT_WORDS = { daily: "daily", weekdays: "on weekdays", weekly: "weekly", fortnightly: "every two weeks", monthly: "monthly", yearly: "yearly" };
 /* Google's eleven event colours, by the names its own picker uses */
 const GCAL_COLORS = [["1", "Lavender", "#7986cb"], ["2", "Sage", "#33b679"], ["3", "Grape", "#8e24aa"], ["4", "Flamingo", "#e67c73"],
   ["5", "Banana", "#f6c026"], ["6", "Tangerine", "#f5511d"], ["7", "Peacock", "#039be5"], ["8", "Graphite", "#616161"],
@@ -7067,6 +7079,8 @@ function gcalDlgRender() {
       GCAL_COLORS.map(([id, name, hex]) => '<label class="gcal-sw" title="' + name + '"><input type="radio" name="colorId" value="' + id + '"' + (d.colorId === id ? " checked" : "") + '><span class="sw" style="background:' + hex + '" aria-hidden="true"></span><span class="vh">' + name + '</span></label>').join("") +
     '</fieldset>' +
     '<label class="bk-l gcal-meet"><span class="gcal-check-in"><input type="checkbox" name="meet"' + (d.meet ? " checked" : "") + '> Add a Google Meet link</span></label>' +
+    '<div class="gcal-row"><label class="bk-l">Repeats<select name="repeat">' + GCAL_REPEATS.map(([v, t]) => '<option value="' + v + '"' + ((d.repeat || "") === v ? " selected" : "") + '>' + t + '</option>').join("") + '</select></label>' +
+    '<label class="bk-l gcal-until"' + (d.repeat ? "" : " hidden") + '>Until<input type="date" name="until" value="' + esc(d.until || "") + '" min="' + esc(d.date) + '"></label></div>' +
     '<label class="bk-l">Description<textarea name="description" rows="2" maxlength="2000">' + esc(d.description) + '</textarea></label>' +
     (gcalNote ? '<p class="bk-p gcal-note" role="status">' + esc(gcalNote) + '</p>' : "") +
     '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-gcal="cancel"' + (gcalBusy ? " disabled" : "") + '>Cancel</button>' +
@@ -7077,16 +7091,17 @@ async function gcalSubmit(form) {
   form.elements.end.setCustomValidity(!d.allDay && d.end <= d.start ? "The end has to come after the start." : "");
   const bad = gcalBadGuest(d.guests);
   form.elements.guests.setCustomValidity(bad ? "Not an email address: " + bad : "");
+  form.elements.until.setCustomValidity(d.repeat && d.until && d.until < d.date ? "The last day has to be on or after the first." : "");
   if (!form.reportValidity()) return;
   gcalBusy = true; gcalNote = ""; gcalDlgRender();
   try {
     const guests = gcalGuests(d.guests);
     const ev = await gcalCall("create", { summary: d.summary, description: d.description, date: d.date, allDay: d.allDay, start: d.start, end: d.end, timeZone: gcalTZ(),
-      location: d.location || "", attendees: guests, colorId: d.colorId || "", meet: !!d.meet });
+      location: d.location || "", attendees: guests, colorId: d.colorId || "", meet: !!d.meet, repeat: d.repeat || "", until: d.repeat ? d.until || "" : "" });
     gcalBusy = false; gcalDraft = null;               /* the draft is spent only on success */
     gcalDlgClose();
     showToast("Added “" + (ev.summary || d.summary) + "” — " + gcalWhen(d) +
-      (guests.length ? " · " + guests.length + " guest" + (guests.length === 1 ? "" : "s") + " invited" : "") + (ev.meet ? " · Meet link made" : "") + ".");
+      (guests.length ? " · " + guests.length + " guest" + (guests.length === 1 ? "" : "s") + " invited" : "") + (ev.meet ? " · Meet link made" : "") + (d.repeat ? " · repeats " + GCAL_REPEAT_WORDS[d.repeat] : "") + ".");
     renderJ3();                                       /* the embed reloads and shows it */
     const plus = document.querySelector(".j3-cal-plus"); if (plus) plus.focus({ preventScroll: true });
   } catch (e) {
@@ -7113,6 +7128,51 @@ function j3GcalSettingsHTML(id) {
   return '<h3 class="j3-gcal-h">Add events from here</h3>' + body +
     (gcalNote ? '<p class="calendar-help" id="j3-gcal-status" role="status">' + esc(gcalNote) + '</p>' : "");
 }
+/* ---- invitations: what the connected account has been asked to and has not answered ----
+   The embed shows them but cannot answer; these rows can. The list is fetched once per
+   connection and after each answer, and lives only in memory. */
+let gcalInvites = null, gcalInvBusy = false, gcalInvNote = "", gcalInvPending = null;
+function gcalInvitesReset() { gcalInvites = null; gcalInvNote = ""; gcalInvPending = null; }
+function gcalEnsureInvites() {
+  if (!(gcal && gcal.connected) || gcalInvites !== null || gcalInvBusy) return;
+  gcalInvBusy = true;
+  gcalCall("invites").then(r => { gcalInvites = r.invites || []; }, e => { gcalInvites = []; gcalInvNote = "Could not read invitations: " + e.message; if (e.code === "reconnect") gcal = { connected: false, client_id: gcal && gcal.client_id }; })
+    .then(() => { gcalInvBusy = false; if (view === "journal") renderJ3(); });
+}
+function gcalInvWhen(i) {
+  const s = i.start || {};
+  if (s.date) { const d = new Date(s.date + "T12:00:00"); return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) + ", all day"; }
+  if (s.dateTime) { const d = new Date(s.dateTime), e = i.end && i.end.dateTime ? new Date(i.end.dateTime) : null; const t = x => x.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) + ", " + t(d) + (e ? "–" + t(e) : ""); }
+  return "";
+}
+const GCAL_RSVP = [["accepted", "Yes", "Accepted"], ["tentative", "Maybe", "Answered maybe to"], ["declined", "No", "Declined"]];
+async function gcalRsvp(id, response) {
+  const inv = (gcalInvites || []).find(x => x.id === id); if (!inv || gcalInvPending) return;
+  gcalInvPending = id; gcalInvNote = ""; renderJ3();
+  try {
+    await gcalCall("rsvp", { eventId: id, response });
+    gcalInvites = gcalInvites.filter(x => x.id !== id);
+    const word = (GCAL_RSVP.find(r => r[0] === response) || [])[2] || "Answered";
+    showToast(word + " “" + inv.summary + "”.");
+  } catch (e) {
+    gcalInvNote = e.message;
+    if (e.code === "reconnect") { gcal = { connected: false, client_id: gcal && gcal.client_id }; gcalInvitesReset(); j3RightView = "settings"; }
+  }
+  gcalInvPending = null; renderJ3();
+}
+function j3InvitesHTML() {
+  if (!(gcal && gcal.connected)) return "";
+  gcalEnsureInvites();
+  const note = gcalInvNote ? '<p class="calendar-help j3-inv-note" role="status">' + esc(gcalInvNote) + '</p>' : "";
+  if (!gcalInvites || !gcalInvites.length) return note;
+  return '<section class="j3-inv" aria-label="Invitations"><h3 class="j3-inv-h">Invitations · ' + gcalInvites.length + '</h3>' +
+    gcalInvites.map(i => '<div class="j3-inv-row" data-inv="' + esc(i.id) + '"><div class="j3-inv-what"><b>' + esc(i.summary) + '</b>' +
+      '<span class="j3-inv-when">' + esc(gcalInvWhen(i)) + (i.organizer ? " · from " + esc(i.organizer) : "") + (i.guests > 2 ? " · " + i.guests + " guests" : "") + '</span></div>' +
+      '<div class="j3-inv-acts">' + GCAL_RSVP.map(([v, t]) => '<button type="button" class="j3-btn" data-rsvp="' + v + '" data-ev="' + esc(i.id) + '"' + (gcalInvPending ? " disabled" : "") +
+        ' aria-label="' + esc(t + " to " + i.summary) + '">' + (gcalInvPending === i.id ? "…" : t) + '</button>').join("") + '</div></div>').join("") + note + '</section>';
+}
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-rsvp]"); if (b) gcalRsvp(b.dataset.ev, b.dataset.rsvp); });
 /* the plus sits where Google's own sits and covers it: the intuition that + means "new event"
    is the one this page keeps. The glyph is a fifth larger and a little bolder than Google's. */
 const J3_PLUS = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 2.5v11M2.5 8h11"/></svg>';
@@ -7132,6 +7192,7 @@ document.addEventListener("input", e => {
   const t = e.target;
   if (t.name === "allDay") { gcalDraft.allDay = t.checked; const w = f.querySelector(".gcal-times"); if (w) w.hidden = t.checked; f.elements.start.required = f.elements.end.required = !t.checked; }
   else if (t.name === "meet") gcalDraft.meet = t.checked;
+  else if (t.name === "repeat") { gcalDraft.repeat = t.value; const w = f.querySelector(".gcal-until"); if (w) w.hidden = !t.value; f.elements.until.setCustomValidity(""); }
   else if (t.name === "colorId") gcalDraft.colorId = t.value;
   else if (t.name in gcalDraft) { gcalDraft[t.name] = t.value; if (t.name === "start" || t.name === "end") f.elements.end.setCustomValidity(""); if (t.name === "guests") t.setCustomValidity(""); }
 });
@@ -11948,7 +12009,7 @@ function j3CalendarURL(id) {
 function j3CalendarHTML() {
   const id = j3CalendarId();
   return '<section class="j3-calendar" aria-label="Google Calendar">' +
-    (id ? '<div class="j3-cal-frame"><iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + j3CalPlusHTML() + '</div>' :
+    (id ? '<div class="j3-cal-frame"><iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + j3CalPlusHTML() + '</div>' + j3InvitesHTML() :
     '<h3>Your calendar, beside your notes</h3><p class="calendar-help">Choose a calendar in Settings to view your schedule here.</p><button type="button" class="j3-btn" data-jcal-view="settings">Set up calendar</button>') + '</section>';
 }
 function j3CalendarSettingsHTML() {
