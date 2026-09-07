@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — Skillstone</title>
+<meta name="description" content="What Skillstone stores, where, and what it never does.">
+<style>
+  :root { --stone: #1B1712; --stone-2: #241E17; --mortar: #3E3527; --parchment: #F0E7D1; --dust: #B5A98E; --ash: #90866F; --gold: #E8B054; }
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; }
+  body { margin: 0; background: var(--stone); color: var(--dust); font: 1.0625rem/1.6 Georgia, 'Times New Roman', serif; }
+  main { max-width: 42rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+  h1 { font-size: 1.75rem; color: var(--parchment); margin: 0 0 0.25rem; font-weight: 600; letter-spacing: 0.01em; }
+  h2 { font-size: 1.125rem; color: var(--parchment); margin: 2rem 0 0.5rem; font-weight: 600; }
+  p, li { margin: 0 0 0.75rem; }
+  ul { padding-left: 1.25rem; }
+  .meta { font-family: ui-monospace, 'IBM Plex Mono', monospace; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash); margin-bottom: 2rem; }
+  a { color: var(--gold); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  nav { font-family: ui-monospace, 'IBM Plex Mono', monospace; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; display: flex; gap: 1.25rem; margin-bottom: 2.5rem; }
+  nav a { color: var(--dust); }
+  strong { color: var(--parchment); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <nav aria-label="Skillstone"><a href="./">← Skillstone</a><a href="terms.html">Terms</a><a href="https://khevin.com/">khevin.com</a></nav>
+  <h1>Privacy</h1>
+  <p class="meta">Skillstone · effective 7 September 2026</p>
+
+  <p>Skillstone is a personal skill-tracking sheet made by Khevin Mituti and published at <a href="https://khevin.com/skillstone/">khevin.com/skillstone</a>. It runs entirely in your browser. This page says what it stores, where that goes, and what it never does.</p>
+
+  <h2>What you put in stays in your browser</h2>
+  <p>Everything on the sheet is written by you: skills and the concepts you mark as learned, milestones, habits, journal entries, quests, books, daily moods and diary text, a hero name and portrait if you set one, and a birth date and place if you enter one for the astrology page. All of it is saved in your browser's local storage under the key <strong>skillstone</strong>, along with a few view preferences. Nothing is sent anywhere unless you turn on sync.</p>
+
+  <h2>Sync, if you turn it on</h2>
+  <p>Sync is off by default. When you connect it, your board is stored as one row in a database hosted by <a href="https://supabase.com/">Supabase</a>, so another browser can open the same sheet. Two ways exist:</p>
+  <ul>
+    <li><strong>Sign in with Google.</strong> Skillstone receives your Google account's email address and a user id, keeps them in your browser to bind your board to your account, and shows the email in Settings so you can see which account is connected. It does not receive your password and does not read anything else from your Google account.</li>
+    <li><strong>Pairing code.</strong> A board id and a key are kept in your browser and let another device open the same row. Anyone holding the code can read and write that board, which is why the app tells you to keep it.</li>
+  </ul>
+  <p>Signing out or pressing Disconnect removes the credentials from that browser. The row itself stays in the database until you ask for it to be removed (see below), so a device you sign in on later still finds your board.</p>
+
+  <h2>Third parties the page talks to</h2>
+  <ul>
+    <li><strong>Google Fonts</strong> serves the typefaces, so Google's servers see the request, including your IP address.</li>
+    <li><strong>Supabase</strong> receives your board only when sync is on.</li>
+    <li><strong>Google</strong> handles the sign-in exchange only when you choose Sign in with Google.</li>
+  </ul>
+  <p>There is no analytics script, no advertising, no tracking pixel and no cookie set by Skillstone. The app does not profile you and does not sell or share your data.</p>
+
+  <h2>Removing your data</h2>
+  <p>Clearing this site's data in your browser removes the local copy. To have a synced row deleted, or to ask what is held for your account, write through the contact on <a href="https://khevin.com/">khevin.com</a>; the row is deleted on request and the deletion confirmed.</p>
+
+  <h2>Children</h2>
+  <p>Skillstone is not directed at children under 16 and does not knowingly collect their data.</p>
+
+  <h2>Changes</h2>
+  <p>If this page changes, the date at the top changes with it. Nothing here is retroactive: a change applies from the day it is published.</p>
+</main>
+</body>
+</html>

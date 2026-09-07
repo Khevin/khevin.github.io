@@ -216,6 +216,16 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 /* +10%: the board column was tight against its own scrollbar */
 .wrap { max-width: 1280px; margin: 0 auto; padding: var(--s5) var(--s5) var(--s7); }
 
+/* the colophon: one short line under everything — the two policies and the way back to the
+   portfolio. Deliberately small; it is the last thing on the page, not a section of it. */
+.foot { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 0 var(--s2);
+  padding: var(--s1) var(--s4); border-top: 1px solid var(--mortar);
+  font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash); }
+.foot a { color: var(--dust); text-decoration: none; padding: var(--s2) var(--s2); }
+.foot a:hover { color: var(--gold-2); }
+.foot a:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; border-radius: 2px; }
+.foot .dot { color: var(--mortar-2); }
+
 /* one bar: photo, name + class, attributes, tabs, tools — left to right, with a single
    rule under the whole thing. Everything in it has a flex basis so nothing gets crushed;
    below ~1000px the bar wraps rather than squeezing. */
@@ -3576,6 +3586,12 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   <div id="viewAstro" role="tabpanel" aria-label="Astrology" hidden></div>
   <div id="viewDiary" role="tabpanel" aria-labelledby="tabDiary" hidden></div>
   <div id="viewTomes" role="tabpanel" aria-labelledby="tabTomes" hidden></div>
+
+<footer class="foot" aria-label="Colophon">
+  <a href="privacy.html">Privacy</a><span class="dot" aria-hidden="true">·</span>
+  <a href="terms.html">Terms</a><span class="dot" aria-hidden="true">·</span>
+  <a href="https://khevin.com/" rel="author">khevin.com</a>
+</footer>
 
 <div id="weekPop" popover aria-label="Pick a week">
   <div class="wp-head">
