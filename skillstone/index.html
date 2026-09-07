@@ -2659,6 +2659,14 @@ li.is-done .qg { color: var(--verdant); }
   scrollbar-width: thin; scrollbar-color: var(--mortar-2) transparent;
 }
 .bk-h { font-family: var(--f-display); font-weight: 700; font-size: 1.125rem; color: var(--parchment); }
+/* the title row: the title, and a × on the same line — every book dialog closes the same way */
+.bk-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+.bk-top .bk-h { min-width: 0; }
+.bk-x { appearance: none; flex: none; width: 32px; height: 32px; margin: -6px -6px -6px 0; display: grid; place-items: center;
+  background: none; border: 0; border-radius: var(--r-sm); color: var(--ash); cursor: pointer; }
+.bk-x svg { width: 14px; height: 14px; }
+@media (hover: hover) { .bk-x:hover { color: var(--parchment); background: rgba(240,231,209,0.06); } }
+.bk-x:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .bk-p { font-size: 0.875rem; line-height: var(--lh); color: var(--dust); }
 .bk-p:empty { display: none; }
 .dlg-sm form { max-width: 420px; }
@@ -3783,7 +3791,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 </div>
 <dialog id="stepDlg" class="bk-dlg" aria-label="Add a step">
   <form method="dialog" data-form="step-save">
-    <p class="bk-h">Add a step</p>
+    <div class="bk-top"><p class="bk-h">Add a step</p><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <label class="bk-l">Title<input type="text" id="stTitle" maxlength="120" required></label>
     <label class="bk-l">Description<textarea id="stNote" rows="2" maxlength="300"></textarea></label>
     <label class="bk-l bk-yr">Due date<input type="date" id="stDue"></label>
@@ -3795,7 +3803,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 </dialog>
 <dialog id="birthDlg" class="bk-dlg" aria-label="Your birth">
   <form method="dialog" data-form="birth-save">
-    <p class="bk-h">Your birth</p>
+    <div class="bk-top"><p class="bk-h">Your birth</p><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="bk-row">
       <label class="bk-l">Date<input type="date" id="bDate" required></label>
       <label class="bk-l bk-yr">Time<input type="time" id="bTime"></label>
@@ -3818,7 +3826,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 </dialog>
 <dialog id="delDlg" class="bk-dlg dlg-sm" aria-label="Delete this quest">
   <form method="dialog" data-form="del-quest">
-    <p class="bk-h">Delete <span id="delWhat"></span>?</p>
+    <div class="bk-top"><p class="bk-h">Delete <span id="delWhat"></span>?</p><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <p class="bk-p" id="delCost"></p>
     <div class="bk-foot">
       <button type="button" class="btn btn-ghost btn-sm" data-cmp="questdelno">Cancel</button>
@@ -3828,7 +3836,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 </dialog>
 <dialog id="habDlg" class="bk-dlg dlg-sm" aria-label="Discard changes to habits">
   <form method="dialog" data-form="hab-discard">
-    <p class="bk-h">Discard the changes to your habits?</p>
+    <div class="bk-top"><p class="bk-h">Discard the changes to your habits?</p><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <p class="bk-p" id="habWhat"></p>
     <div class="bk-foot">
       <button type="button" class="btn btn-ghost btn-sm" data-j3="h-keep">Keep editing</button>
@@ -3840,7 +3848,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 <dialog id="campDlg" class="bk-dlg camp-dlg" aria-labelledby="campDlgTitle"></dialog>
 <dialog id="questDlg" class="bk-dlg" aria-label="New side quest">
   <form method="dialog" data-form="quest-save">
-    <p class="bk-h">New side quest</p>
+    <div class="bk-top"><p class="bk-h">New side quest</p><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <label class="bk-l">Name<input type="text" id="qnTitle" maxlength="120" required></label>
     <label class="bk-l">Description<textarea id="qnNote" rows="3" maxlength="400"></textarea></label>
     <div class="bk-foot">
@@ -3851,7 +3859,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 </dialog>
 <dialog id="rewDlg" class="bk-dlg" aria-label="Rewards and impact">
   <form method="dialog" data-form="rew-save">
-    <p class="bk-h">Rewards &amp; impact</p>
+    <div class="bk-top"><p class="bk-h">Rewards &amp; impact</p><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div id="rwRows" class="rw-rows"></div>
     <button type="button" class="btn btn-ghost btn-sm rw-add" data-cmp="rewrow">+ Add a skill</button>
     <div class="bk-foot">
@@ -3863,7 +3871,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 </dialog>
 <dialog id="bookDlg" class="bk-dlg" aria-label="Add a book">
   <form method="dialog" data-form="bk-save">
-    <p class="bk-h" id="bkH">Add a book</p>
+    <div class="bk-top"><p class="bk-h" id="bkH">Add a book</p><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <label class="bk-l">Title<input type="text" id="bkTitle" maxlength="160" required></label>
     <div class="bk-row">
       <label class="bk-l">Author<input type="text" id="bkAuthor" maxlength="80"></label>
@@ -7142,7 +7150,7 @@ function gcalDlgClose() { const dlg = $("#gcalDlg"); if (dlg && dlg.open) dlg.cl
 function gcalDlgRender() {
   const dlg = $("#gcalDlg"), d = gcalDraft; if (!dlg || !d) return;
   dlg.innerHTML = '<form data-gcal-form>' +
-    '<p class="bk-h" id="gcalTitle">Add an event</p>' +
+    '<div class="bk-top"><p class="bk-h" id="gcalTitle">Add an event</p>' + BK_X + '</div>' +
     '<p class="bk-p">' + esc(gcal && gcal.calendar_id ? "To " + gcal.calendar_id : "") + '</p>' +
     '<label class="bk-l">Title<input type="text" id="gcalTitleIn" name="summary" maxlength="200" value="' + esc(d.summary) + '" required autocomplete="off"></label>' +
     '<div class="gcal-row"><label class="bk-l">Date<input type="date" name="date" value="' + esc(d.date) + '" required></label>' +
@@ -7273,6 +7281,11 @@ document.addEventListener("click", e => {
   else if (act === "cancel") { gcalDlgClose(); const p = document.querySelector(".j3-cal-plus"); if (p) p.focus({ preventScroll: true }); }
 });
 document.addEventListener("submit", e => { if (e.target.matches("[data-gcal-form]")) { e.preventDefault(); gcalSubmit(e.target); } });
+/* the × on a dialog's title row does what Escape does: close it, and let its close listeners clean up */
+document.addEventListener("click", e => {
+  const x = e.target.closest && e.target.closest("[data-dlg-close]"); if (!x) return;
+  const d = x.closest("dialog"); if (d && d.open) d.close();
+});
 document.addEventListener("input", e => {
   const f = e.target.closest && e.target.closest("[data-gcal-form]"); if (!f || !gcalDraft) return;
   const t = e.target;
@@ -9289,7 +9302,7 @@ function profAssessHTML(s) {
   /* .bk-dlg form is styled by descendant selector — the same dialog shell as Add a book,
      so there is one dialog in this app, not two that merely resemble each other */
   const total = placementFor(s).length;
-  return '<form method="dialog"><p class="bk-h">Assess ' + esc(s.name) + "</p>" +
+  return '<form method="dialog"><div class="bk-top"><p class="bk-h">Assess ' + esc(s.name) + "</p>" + BK_X + "</div>" +
     '<p class="bk-sub">Five questions, five honest answers. Pick the one you have actually done.</p>' +
     placementFor(s).map((q, qi) =>
       '<div class="pq"><span class="q">' + esc(q.q) + '</span><ul class="pq-opts">' +
@@ -9606,7 +9619,7 @@ function campDlgRender(focusSel) {
   const cur = d.sprite ? "sprite:" + d.sprite : "sigil:" + d.emblem;
   const seals = campSeals();
   dlg.innerHTML = '<form data-form="camp-save" method="dialog">' +
-    '<p class="bk-h" id="campDlgTitle">' + (d.id ? "Edit campaign" : "New campaign") + '</p>' +
+    '<div class="bk-top"><p class="bk-h" id="campDlgTitle">' + (d.id ? "Edit campaign" : "New campaign") + '</p>' + BK_X + '</div>' +
     '<div class="camp-top">' +
       /* the seal is the picker's own button: press it and the seals come up beside it, as the emoji do */
       '<button type="button" class="camp-seal-btn" popovertarget="sealPop" aria-label="Choose the seal — opens the seal picker"><span class="camp-seal-cur">' + campSealHTML(seals.find(s => s.key === cur) || seals[0], true) + '</span></button>' +
@@ -14069,6 +14082,8 @@ function journalRung(s, was) {
    around its KB blurb and reading line, so every row behaves the same way. The mark control
    sits in the head: the dialog is where a concept gets ticked, and the row behind follows. */
 let cptFor = null;                       /* { sid, cname, origin } while the dialog is open */
+/* the close on every book dialog's title row; the static dialogs carry the same markup inline */
+const BK_X = '<button type="button" class="bk-x" data-dlg-close aria-label="Close">' + ICON.x + '</button>';
 const CPT_NEXT = { "new": "shaky", "shaky": "known", "known": "new" };
 const CPT_WORD = { "new": "not learned", "shaky": "shaky", "known": "learned" };
 function cptConcept(s, cname) {
