@@ -6991,7 +6991,8 @@ async function gcalFinish() {
   if (!auth) { gcalNote = "Sign in to Skillstone first, then connect the calendar again."; return true; }
   try {
     gcal = await gcalCall("connect", { code, code_verifier: p.verifier, redirect_uri: p.redirect, calendar_id: p.calendar || "" });
-    gcalNote = "Connected as " + (gcal.email || "the Google account") + ". Events go to " + (gcal.calendar_id || "its calendar") + ".";
+    gcalNote = "";                                                    /* the card itself says who and where */
+    showToast("Google Calendar connected as " + (gcal.email || "the Google account") + ".");
     /* a calendar setting left empty takes the connected account's own calendar, so the tab shows it */
     if (!j3CalendarId() && gcal.email) { try { localStorage.setItem(j3CalendarKey(), gcal.email); } catch (e) {} }
   } catch (e) { gcal = { connected: false }; gcalNote = "Could not connect the calendar: " + e.message; }
