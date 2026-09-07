@@ -1847,6 +1847,11 @@ button.d-plaque {
 
 /* ================= the quest hall — three zones, one gold block ================= */
 .qh { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: var(--s6); align-items: start; }
+/* two columns, two scrolls: the rail stays put and scrolls inside itself with no bar showing;
+   the panel is the page and uses the page's own scrollbar */
+.qh-left { position: sticky; top: var(--s4); max-height: calc(100vh - var(--s4) * 2); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.qh-left::-webkit-scrollbar { display: none; }
+@media (max-width: 960px) { .qh-left { position: static; max-height: none; overflow: visible; } }
 .qh-main { border-left: 1px solid var(--mortar); padding-left: var(--s6); min-height: 60vh; }
 /* the reading measure is capped inside a wide panel; the lists take the full width */
 .qh-main .qd-note, .qh-main .qm-note { max-width: 62ch; }
@@ -2101,7 +2106,56 @@ button.d-plaque {
   .qb-addstep .btn[disabled]:hover, .qb-rewhead .btn[disabled]:hover {
     border-color: var(--mortar); background: none; color: var(--dust); }
 }
-.q-freeadd { padding: var(--s2) 0 var(--s1); }
+.q-freeadd { padding: var(--s2) 0 var(--s1); display: flex; flex-wrap: wrap; gap: var(--s2); }
+/* the quiet way into editing: a line of text at the foot of the fold, not a plate */
+.atl-edit { margin: var(--s3) 0 0; text-align: right; }
+.atl-edit-link { appearance: none; background: none; border: 0; padding: 4px 0; cursor: pointer;
+  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--ash); text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .atl-edit-link:hover { color: var(--gold-2); } }
+.atl-edit-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+/* the campaign dialog: the book dialog's grammar; the seal beside the name, the acts as a spine */
+.camp-dlg { width: min(640px, 94vw); }
+.camp-top { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: var(--s4); align-items: start; }
+.camp-seal-cur .seal { width: 64px; height: 64px; }
+.camp-seal-cur .seal svg { width: 30px; height: 30px; }
+.camp-top-f { display: grid; grid-template-columns: minmax(0, 1fr) 160px; gap: var(--s3); }
+.camp-seals { border: 0; padding: 0; margin: 0; min-width: 0; }
+.camp-seals legend { padding: 0; margin-bottom: 4px; }
+.camp-seal-strip { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: thin; scrollbar-color: var(--mortar-2) transparent; }
+.camp-seal-opt { appearance: none; flex: none; background: none; border: 0; padding: 2px; border-radius: 50%; cursor: pointer; opacity: 0.72; }
+.camp-seal-opt .seal { width: 40px; height: 40px; }
+.camp-seal-opt .seal svg { width: 19px; height: 19px; }
+.camp-seal-opt .seal img { width: 40px; height: 40px; }
+.camp-seal-opt.is-cur { opacity: 1; outline: 2px solid var(--gold); outline-offset: 1px; }
+.camp-seal-opt:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; opacity: 1; }
+@media (hover: hover) { .camp-seal-opt:hover { opacity: 1; } }
+.camp-acts { display: grid; gap: var(--s3); }
+.camp-ch { border-left: 2px solid var(--mortar-2); padding-left: var(--s3); display: grid; gap: var(--s2); }
+.camp-ch-h { display: grid; grid-template-columns: 96px minmax(0, 1fr) 32px; gap: var(--s2); align-items: center; }
+.camp-act, .camp-ch-name, .camp-q-t, .camp-q-s {
+  background: var(--cave); color: var(--parchment); border: 1px solid var(--mortar); border-radius: var(--r-sm);
+  padding: var(--s2); min-height: 34px; font-family: var(--f-ui); font-size: 0.875rem; min-width: 0; }
+.camp-act, .camp-q-s { font-size: 0.8125rem; }
+.camp-act:focus-visible, .camp-ch-name:focus-visible, .camp-q-t:focus-visible, .camp-q-s:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.camp-ch-name { font-family: var(--f-display); font-weight: 700; letter-spacing: 0.02em; }
+.camp-qs { list-style: none; display: grid; gap: var(--s2); margin: 0; padding: 0; }
+.camp-q { display: grid; grid-template-columns: 10px minmax(0, 1fr) 150px 32px; gap: var(--s2); align-items: center; }
+.camp-q-gem { width: 6px; height: 6px; transform: rotate(45deg); background: var(--mortar-2); justify-self: center; }
+.camp-x { appearance: none; width: 32px; height: 32px; display: grid; place-items: center; background: none; border: 0; border-radius: var(--r-sm); color: var(--ash); cursor: pointer; }
+.camp-x svg { width: 14px; height: 14px; }
+@media (hover: hover) { .camp-x:hover { color: var(--ember); background: rgba(200,84,58,0.08); } }
+.camp-x:focus-visible { outline: 2px solid var(--focus); }
+.camp-x-blank { width: 32px; height: 32px; }
+.camp-add { appearance: none; justify-self: start; background: none; border: 0; padding: 4px 0; cursor: pointer;
+  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--dust); }
+@media (hover: hover) { .camp-add:hover { color: var(--gold-2); } }
+.camp-add:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.camp-add-act { margin-top: var(--s1); }
+@media (max-width: 640px) {
+  .camp-top-f { grid-template-columns: 1fr; }
+  .camp-q { grid-template-columns: 10px minmax(0, 1fr) 32px; }
+  .camp-q-s { grid-column: 2; }
+}
 
 /* one row per skill the quest pays: which, and how much */
 .rw-rows { display: grid; gap: var(--s2); }
@@ -2967,6 +3021,19 @@ li.is-done .qg { color: var(--verdant); }
 @media (hover: hover) { .j3-cal-plus:hover { color:#4A2F06; background:#ecdfc4; } }
 .j3-cal-plus:focus-visible { outline:2px solid #6E4A0E; outline-offset:2px; }
 .j3-cal-acts { display:flex; flex-wrap:wrap; gap:8px; }
+/* settings: one row per fact — the field with its Save, the connection with its state */
+.j3-calendar .j3-set-row { display:flex; gap:8px; margin-top:0; align-items:center; }
+.j3-calendar .j3-set-row input { flex:1; }
+.j3-calendar .calendar-help { margin-top:8px; }
+.j3-gcal-h { margin-top:24px; }
+.j3-conn { display:flex; align-items:center; gap:10px; flex-wrap:wrap; min-height:34px; }
+.j3-conn-dot { width:9px; height:9px; border-radius:50%; background:var(--j3-rule); flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.25); }
+.j3-conn-dot.on { background:#3E7A47; }
+.j3-conn-dot.warn { background:#B5651D; }
+.j3-conn-line { font-size:14px; color:var(--dust); }
+.j3-conn-line b { color:var(--parchment); font-weight:600; }
+.j3-conn .j3-cal-acts { margin-left:auto; }
+.j3-set-foot { margin-top:24px; padding-top:12px; border-top:1px solid var(--j3-rule); }
 /* the event dialog: the book dialog's grammar, two fields to a row where they pair */
 .gcal-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:var(--s3); }
 .gcal-check-in { display:flex; align-items:center; min-height:34px; }
@@ -3767,6 +3834,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   </form>
 </dialog>
 <dialog id="gcalDlg" class="bk-dlg" aria-labelledby="gcalTitle"></dialog>
+<dialog id="campDlg" class="bk-dlg camp-dlg" aria-labelledby="campDlgTitle"></dialog>
 <dialog id="questDlg" class="bk-dlg" aria-label="New side quest">
   <form method="dialog" data-form="quest-save">
     <p class="bk-h">New side quest</p>
@@ -5839,6 +5907,7 @@ function sanitize(s) {
   /* campaigns are the owner's to edit, so only the shape is enforced, never the content */
   s.campaigns = (Array.isArray(s.campaigns) ? s.campaigns : []).filter(c => c && c.id).map(c => ({
     id: String(c.id), name: String(c.name || "Untitled"), emblem: String(c.emblem || "quill"),
+    sprite: c.sprite ? String(c.sprite) : "",
     swornName: c.swornName ? String(c.swornName) : "",
     swornChapter: c.swornChapter ? String(c.swornChapter) : "",
     /* an act he can see coming and write when he arrives */
@@ -6288,7 +6357,7 @@ function questAudit() {
   const flat = QUESTS_SKILL.concat(campaignQuests()).map(x => ({ id: x.id, target: x.target }));
   const gains = QLOG.flatMap(x => (x.gains || []).map(g => ({ id: x.id, target: g.target })));
   const bad = flat.concat(gains)
-    .filter(x => !state.skills.some(s => (s.kbKey || s.name) === x.target))
+    .filter(x => x.target && !state.skills.some(s => (s.kbKey || s.name) === x.target))
     .map(x => x.id + " -> " + x.target);
   if (bad.length) try {
     console.warn("Skillstone: " + bad.length + " quest(s) target a skill that does not exist:\n  " +
@@ -7118,18 +7187,22 @@ async function gcalSubmit(form) {
 const gcalBtn = (act, label, off) => '<button type="button" class="j3-btn" data-gcal="' + act + '"' + (off ? " disabled" : "") + '>' + esc(label) + '</button>';
 function j3GcalSettingsHTML(id) {
   const who = gcalIsEmail(id) ? id : "the calendar’s Google account";
-  let body;
-  if (!auth) body = '<p class="calendar-help">Sign in to Skillstone first — the connection is kept with your board. Then connect ' + esc(who) + ': Google asks for permission to manage events on calendars that account owns, nothing else, and your Skillstone sign-in stays as it is.</p>' + gcalBtn("connect", "Connect Google Calendar", true);
+  let dot = "off", line, acts = "", help = "";
+  if (!auth) { line = "Not connected"; acts = gcalBtn("connect", "Connect Google Calendar", true); help = "Sign in to Skillstone first; the connection is kept with your board."; }
   else if (gcal && gcal.connected) {
     const mismatch = gcalIsEmail(id) && gcal.email && id.toLowerCase() !== gcal.email.toLowerCase();
-    body = '<p class="calendar-help">Connected as <b>' + esc(gcal.email || "") + '</b>. Events go to <b>' + esc(gcal.calendar_id || "primary") + '</b>.' +
-      (mismatch ? ' That is a different account from the calendar above — events reach ' + esc(id) + ' only if ' + esc(gcal.email) + ' can edit it. Reconnect as ' + esc(id) + ' if that is the one you meant.' : "") + '</p>' +
-      '<div class="j3-cal-acts">' + (mismatch ? gcalBtn("connect", "Reconnect as " + id) : "") + gcalBtn("disconnect", "Disconnect") + '</div>';
+    dot = mismatch ? "warn" : "on";
+    line = "Connected as <b>" + esc(gcal.email || "") + "</b>";
+    acts = (mismatch ? gcalBtn("connect", "Reconnect as " + id) : "") + gcalBtn("disconnect", "Disconnect");
+    if (mismatch) help = "Not the calendar’s owner — events reach " + esc(id) + " only if " + esc(gcal.email) + " can edit it.";
   }
-  else if (gcal && gcal.error) body = '<p class="calendar-help">Could not reach the calendar service: ' + esc(gcal.error) + '</p>' + gcalBtn("retry", "Try again");
-  else if (!gcal) body = '<p class="calendar-help">Checking the connection…</p>';
-  else body = '<p class="calendar-help">Not connected. Connecting sends you to Google as ' + esc(who) + ' — it asks for permission to manage events on calendars that account owns, nothing else. Your Skillstone sign-in stays as it is.</p>' + gcalBtn("connect", "Connect Google Calendar");
-  return '<h3 class="j3-gcal-h">Add events from here</h3>' + body +
+  else if (gcal && gcal.error) { dot = "warn"; line = "Calendar service unreachable"; acts = gcalBtn("retry", "Try again"); help = esc(gcal.error); }
+  else if (!gcal) { line = "Checking…"; }
+  else { line = "Not connected"; acts = gcalBtn("connect", "Connect Google Calendar"); help = "Google will ask, as " + esc(who) + ", for permission to manage events on calendars it owns — nothing else. Your Skillstone sign-in stays as it is."; }
+  return '<h3 class="j3-gcal-h">Writing to it</h3>' +
+    '<div class="j3-conn"><span class="j3-conn-dot ' + dot + '" aria-hidden="true"></span><span class="j3-conn-line">' + line + '</span>' +
+    (acts ? '<span class="j3-cal-acts">' + acts + '</span>' : "") + '</div>' +
+    (help ? '<p class="calendar-help">' + help + '</p>' : "") +
     (gcalNote ? '<p class="calendar-help" id="j3-gcal-status" role="status">' + esc(gcalNote) + '</p>' : "");
 }
 /* ---- invitations: what the connected account has been asked to and has not answered ----
@@ -7378,8 +7451,8 @@ const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", 
    adding a half is a line here rather than a new page. */
 const SK_SUBS = [
   { k: "attr", name: "Attributes",  gs: ["cha", "phy", "int", "wis"], hours: 0 },
-  { k: "prof", name: "Proficiency", gs: ["art", "crf"],               hours: 1 },
   { k: "nat",  name: "Nature",      gs: ["nat"],                      hours: 0 },
+  { k: "prof", name: "Proficiency", gs: ["art", "crf"],               hours: 1 },
   { k: "lng",  name: "Languages",   gs: ["lng"],                      hours: 1 },
   { k: "spo",  name: "Sports",      gs: ["spo"],                      hours: 1 }
 ];
@@ -9490,6 +9563,155 @@ function qDelDlgOpen(id) {
   if (no) no.focus();
 }
 
+/* ---------- the campaign dialog: written once, edited from the rail ----------
+   One book dialog for both. A campaign is a name, a note, a horizon and a seal, then its acts:
+   each a chapter with an act numeral, a name, and the quests it holds — title and the skill
+   it pays, nothing more; steps and rewards are the quest's own business once it exists. The
+   edit form is the same form filled in: existing chapters and quests can be renamed and moved
+   between acts but not removed here (a quest with history has its own delete), and new ones
+   are added to any act. The draft lives in memory until Save. */
+let campEdit = null;
+const ROMAN = ["I", "II", "III", "IV", "V"];
+const campSeals = () => [
+  ...Object.keys(CAMP_SIGIL).map(k => ({ key: "sigil:" + k, sigil: k })),
+  ...["quests/seal-3-sprite", "quests/seal-4-sprite", "quests/seal-7-sprite"].map(s => ({ key: "sprite:" + s, sprite: s })),
+  ...[...SKILL_PLATE].sort().map(k => ({ key: "sprite:skills/" + k, sprite: "skills/" + k }))
+];
+function campSealHTML(seal, big) {
+  if (seal.sprite) return '<span class="seal seal-sprite' + (big ? " seal-big" : "") + '" aria-hidden="true"><img src="assets/' + seal.sprite + '-64.png" width="64" height="64" alt="" loading="lazy" decoding="async"></span>';
+  return '<span class="seal' + (big ? " seal-big" : "") + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (CAMP_SIGIL[seal.sigil] || CAMP_SIGIL.quill) + "</svg></span>";
+}
+function campDraftFrom(c) {
+  if (!c) return { id: null, name: "", note: "", horizon: "", emblem: "quill", sprite: "",
+    chapters: [{ id: null, act: 1, name: "", quests: [{ id: null, title: "", target: "" }] }] };
+  return { id: c.id, name: c.name, note: c.note || "", horizon: c.horizon || "", emblem: c.emblem || "quill", sprite: c.sprite || CAMP_SPRITE[c.id] || "",
+    chapters: c.chapters.map(ch => ({ id: ch.id, act: ch.act || 1, name: ch.name, quests: ch.quests.map(x => ({ id: x.id, title: x.title, target: x.target || "" })) })) };
+}
+function campDlgOpen(id) {
+  const dlg = $("#campDlg"); if (!dlg || !dlg.showModal) return;
+  campEdit = campDraftFrom(id ? campById(id) : null);
+  if (!campEdit) return;
+  campDlgRender();
+  if (!dlg.open) dlg.showModal();
+  const t = $("#campName"); if (t) t.focus();
+}
+function campDlgClose() { const dlg = $("#campDlg"); if (dlg && dlg.open) dlg.close(); campEdit = null; }
+function campDlgRender(focusSel) {
+  const dlg = $("#campDlg"), d = campEdit; if (!dlg || !d) return;
+  const cur = d.sprite ? "sprite:" + d.sprite : "sigil:" + d.emblem;
+  const seals = campSeals();
+  const skillOpts = qRewSkillOpts("");
+  dlg.innerHTML = '<form data-form="camp-save" method="dialog">' +
+    '<p class="bk-h" id="campDlgTitle">' + (d.id ? "Edit campaign" : "New campaign") + '</p>' +
+    '<div class="camp-top">' +
+      '<div class="camp-seal-cur">' + campSealHTML(seals.find(s => s.key === cur) || seals[0], true) + '</div>' +
+      '<div class="camp-top-f">' +
+        '<label class="bk-l">Name<input type="text" id="campName" name="name" maxlength="80" value="' + esc(d.name) + '" required autocomplete="off"></label>' +
+        '<label class="bk-l">Horizon<input type="date" name="horizon" value="' + esc(d.horizon) + '"></label>' +
+      '</div></div>' +
+    '<label class="bk-l">What it is for<textarea name="note" rows="2" maxlength="300">' + esc(d.note) + '</textarea></label>' +
+    '<fieldset class="camp-seals"><legend class="bk-l">Seal</legend><div class="camp-seal-strip" role="listbox" aria-label="Seal">' +
+      seals.map(s => '<button type="button" class="camp-seal-opt' + (s.key === cur ? " is-cur" : "") + '" data-cmp="campseal" data-seal="' + esc(s.key) + '" role="option" aria-selected="' + (s.key === cur) + '" title="' + esc(s.sigil || s.sprite.split("/").pop().replace(/-sprite$/, "").replace(/-/g, " ")) + '">' + campSealHTML(s) + '</button>').join("") +
+    '</div></fieldset>' +
+    '<div class="camp-acts"><span class="bk-l">Acts</span>' +
+      d.chapters.map((ch, ci) => '<div class="camp-ch" data-ch="' + ci + '">' +
+        '<div class="camp-ch-h">' +
+          '<select class="camp-act" name="act-' + ci + '" aria-label="Act">' + ROMAN.map((r, i) => '<option value="' + (i + 1) + '"' + (ch.act === i + 1 ? " selected" : "") + '>Act ' + r + '</option>').join("") + '</select>' +
+          '<input type="text" class="camp-ch-name" name="ch-' + ci + '" value="' + esc(ch.name) + '" placeholder="Chapter name" maxlength="60" required aria-label="Chapter name">' +
+          (ch.id ? "" : '<button type="button" class="camp-x" data-cmp="campdelch" data-ch="' + ci + '" aria-label="Remove this act">' + ICON.x + '</button>') +
+        '</div>' +
+        '<ol class="camp-qs">' + ch.quests.map((q, qi) => '<li class="camp-q">' +
+          '<span class="camp-q-gem" aria-hidden="true"></span>' +
+          '<input type="text" class="camp-q-t" name="q-' + ci + '-' + qi + '" value="' + esc(q.title) + '" placeholder="Quest" maxlength="120" required aria-label="Quest title">' +
+          '<select class="camp-q-s" name="s-' + ci + '-' + qi + '" aria-label="Skill it pays" required>' + skillOpts.replace('value="' + esc(q.target) + '"', 'value="' + esc(q.target) + '" selected') + '</select>' +
+          (q.id ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelq" data-ch="' + ci + '" data-q="' + qi + '" aria-label="Remove this quest">' + ICON.x + '</button>') +
+        '</li>').join("") + '</ol>' +
+        '<button type="button" class="camp-add" data-cmp="campaddq" data-ch="' + ci + '">+ Quest</button>' +
+      '</div>').join("") +
+      '<button type="button" class="camp-add camp-add-act" data-cmp="campaddch">+ Act</button>' +
+    '</div>' +
+    '<p class="bk-p">Steps and rewards are added on each quest once it exists.</p>' +
+    '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-cmp="campcancel">Cancel</button>' +
+    '<button type="submit" class="btn btn-primary btn-sm">' + (d.id ? "Save changes" : "Create campaign") + '</button></div></form>';
+  if (focusSel) { const f = dlg.querySelector(focusSel); if (f) f.focus(); }
+}
+/* the draft follows every keystroke, so a re-render for a new row loses nothing */
+document.addEventListener("input", e => {
+  const dlg = e.target.closest && e.target.closest("#campDlg"); if (!dlg || !campEdit) return;
+  const t = e.target, n = t.name || "";
+  let m;
+  if (n === "name") campEdit.name = t.value;
+  else if (n === "note") campEdit.note = t.value;
+  else if (n === "horizon") campEdit.horizon = t.value;
+  else if ((m = n.match(/^act-(\d+)$/))) campEdit.chapters[+m[1]].act = +t.value;
+  else if ((m = n.match(/^ch-(\d+)$/))) campEdit.chapters[+m[1]].name = t.value;
+  else if ((m = n.match(/^q-(\d+)-(\d+)$/))) campEdit.chapters[+m[1]].quests[+m[2]].title = t.value;
+  else if ((m = n.match(/^s-(\d+)-(\d+)$/))) campEdit.chapters[+m[1]].quests[+m[2]].target = t.value;
+});
+function campDraftAddChapter() {
+  if (!campEdit) return;
+  const last = campEdit.chapters[campEdit.chapters.length - 1];
+  campEdit.chapters.push({ id: null, act: last ? last.act : 1, name: "", quests: [{ id: null, title: "", target: "" }] });
+  campDlgRender('[name="ch-' + (campEdit.chapters.length - 1) + '"]');
+}
+function campDraftAddQuest(ci) {
+  if (!campEdit || !campEdit.chapters[ci]) return;
+  campEdit.chapters[ci].quests.push({ id: null, title: "", target: "" });
+  campDlgRender('[name="q-' + ci + '-' + (campEdit.chapters[ci].quests.length - 1) + '"]');
+}
+function campDraftDelChapter(ci) {
+  if (!campEdit || !campEdit.chapters[ci] || campEdit.chapters[ci].id) return;   /* a saved chapter is not removed here */
+  campEdit.chapters.splice(ci, 1);
+  if (!campEdit.chapters.length) campEdit.chapters.push({ id: null, act: 1, name: "", quests: [{ id: null, title: "", target: "" }] });
+  campDlgRender(".camp-add-act");
+}
+function campDraftDelQuest(ci, qi) {
+  const ch = campEdit && campEdit.chapters[ci]; if (!ch || !ch.quests[qi] || ch.quests[qi].id) return;
+  ch.quests.splice(qi, 1);
+  campDlgRender('[data-cmp="campaddq"][data-ch="' + ci + '"]');
+}
+function campDraftSeal(key) {
+  if (!campEdit || !key) return;
+  if (key.indexOf("sigil:") === 0) { campEdit.emblem = key.slice(6); campEdit.sprite = ""; }
+  else campEdit.sprite = key.slice(7);
+  campDlgRender('[data-seal="' + key.replace(/"/g, "") + '"]');
+}
+const campNewId = p => p + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+function campDlgSave() {
+  const d = campEdit, dlg = $("#campDlg"); if (!d || !dlg) return;
+  const form = dlg.querySelector("form");
+  /* the form's own validity first: names, chapter names, quest titles and their skills */
+  if (form && !form.reportValidity()) return;
+  if (!d.name.trim()) return;
+  takeSnapshot();
+  const isNew = !d.id;
+  const c = isNew ? { id: campNewId("cmp"), name: "", emblem: "quill", sprite: "", swornName: "", swornChapter: "", nextAct: null,
+    note: "", horizon: "", archived: false, chapters: [] } : campById(d.id);
+  if (!c) return;
+  c.name = d.name.trim().slice(0, 80); c.note = d.note.trim().slice(0, 300); c.horizon = d.horizon || "";
+  c.emblem = d.emblem || "quill"; c.sprite = d.sprite || "";
+  const keep = [];
+  d.chapters.forEach(dc => {
+    let ch = dc.id ? c.chapters.find(x => x.id === dc.id) : null;
+    if (!ch) { ch = { id: campNewId("ch"), act: 1, name: "", icon: "hand", note: "", done: "", milestones: [], quests: [], risks: [] }; c.chapters.push(ch); }
+    ch.act = dc.act || 1; ch.name = dc.name.trim().slice(0, 60);
+    dc.quests.forEach(dq => {
+      let q = dq.id ? ch.quests.find(x => x.id === dq.id) : null;
+      if (!q) { q = { id: campNewId("q"), title: "", target: "", due: "", note: "", objectives: [] }; ch.quests.push(q); }
+      q.title = dq.title.trim().slice(0, 120); q.target = dq.target || "";
+    });
+    keep.push(ch.id);
+  });
+  /* chapters in act order, as they read in the rail */
+  c.chapters.sort((a, b) => (a.act - b.act) || (keep.indexOf(a.id) - keep.indexOf(b.id)));
+  if (isNew) campaigns().push(c);
+  save();
+  campDlgClose();
+  qCampSel = c.id; qSel = campPreselect(c);
+  renderCampaigns();
+  showToast(isNew ? "Campaign written — open a quest to add its steps." : "Campaign saved.", true);
+}
+
 /* ---------- the new-quest dialog ---------- */
 function qQuestDlgOpen() {
   const dlg = $("#questDlg");
@@ -9653,7 +9875,7 @@ const CAMP_SPRITE = {
   "cmp-gf": "skills/empathy", "cmp-reading": "skills/learning", "cmp-torii": "quests/seal-7-sprite"
 };
 function campSeal(c, big) {
-  const sprite = CAMP_SPRITE[c.id];
+  const sprite = c.sprite || CAMP_SPRITE[c.id];      /* the owner's pick first, then the painted set */
   if (sprite) return '<span class="seal seal-sprite' + (big ? ' seal-big' : '') + '" aria-hidden="true">' +
     '<img src="assets/' + sprite + '-64.png"' +
     (sprite.startsWith('quests/') ? ' srcset="assets/' + sprite + '-128.png 2x"' : '') +
@@ -10301,6 +10523,7 @@ function renderCampaigns() {
       QCHEV + "</button>" +
       '<div class="atl-fold" id="campaign-fold-' + esc(k.id) + '"' + (open ? '' : ' inert') + '><div class="atl-body"><div class="atl-pad">' +
         (inner || '<p class="q-empty">No quests in this act.</p>') +
+        '<p class="atl-edit"><button type="button" class="atl-edit-link" data-cmp="campedit" data-id="' + k.id + '">Edit campaign</button></p>' +
       "</div></div></div></li>";
   }).join("") + "</ol>";
 
@@ -10311,7 +10534,8 @@ function renderCampaigns() {
       '<div class="atl-fold" id="side-quest-fold"' + (qFreeOpen ? '' : ' inert') + '><div class="atl-body"><ol class="q-list">' +
       r.free.map(q => qRow(q)).join("") + "</ol>" +
       '<div class="q-freeadd"><button type="button" class="btn btn-ghost btn-sm" data-cmp="questnew">' +
-      "+ New side quest</button></div></div></div></section>";
+      "+ New side quest</button>" +
+      '<button type="button" class="btn btn-ghost btn-sm" data-cmp="campnew">+ Create campaign</button></div></div></div></section>';
   }
 
   if (r.done.length) {
@@ -10362,6 +10586,14 @@ function campAct(el) {
     case "stepcancel": { const dlg = $("#stepDlg"); if (dlg) dlg.close(); stepFor = null; break; }
     case "stepdel": qStepDel(d.id, d.s); renderCampaigns(); break;
     case "questnew":    qQuestDlgOpen(); break;
+    case "campnew":     campDlgOpen(null); break;
+    case "campedit":    campDlgOpen(d.id); break;
+    case "campcancel":  campDlgClose(); break;
+    case "campaddch":   campDraftAddChapter(); break;
+    case "campaddq":    campDraftAddQuest(+d.ch); break;
+    case "campdelch":   campDraftDelChapter(+d.ch); break;
+    case "campdelq":    campDraftDelQuest(+d.ch, +d.q); break;
+    case "campseal":    campDraftSeal(d.seal); break;
     case "questcancel": { const dlg = $("#questDlg"); if (dlg) dlg.close(); break; }
     case "questdel":   qDelDlgOpen(d.id); break;
     case "questdelno": { const dlg = $("#delDlg"); if (dlg) dlg.close(); delFor = null; break; }
@@ -12020,15 +12252,20 @@ function j3CalendarHTML() {
     (id ? '<div class="j3-cal-frame"><iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' + j3CalPlusHTML() + '</div>' + j3InvitesHTML() :
     '<h3>Your calendar, beside your notes</h3><p class="calendar-help">Choose a calendar in Settings to view your schedule here.</p><button type="button" class="j3-btn" data-jcal-view="settings">Set up calendar</button>') + '</section>';
 }
+/* Two facts, two rows: which calendar, and whether Skillstone may write to it. Everything
+   else this pane used to say is either visible already or belongs in PRODUCT.md. */
 function j3CalendarSettingsHTML() {
   const id = j3CalendarId();
   return '<section class="j3-calendar j3-calendar-settings" aria-label="Calendar settings">' +
-    '<h3>Calendar settings</h3><form data-jcal-form>' +
-    '<label for="j3-calendar-id">Calendar email or ID</label><input id="j3-calendar-id" name="calendar" value="' + esc(id) + '" placeholder="you@company.com" autocomplete="off">' +
-    '<button class="j3-btn" type="submit">Save</button>' +
-    '<p class="calendar-help">The calendar the Calendar tab shows and new events go to — usually the email of the Google account that owns it, and it need not be the account you sign in to Skillstone with. Saved on this device. For a private calendar to show, be signed in to that Google account in this browser as well; if it stays blank, the browser may be blocking embedded sign-in.</p></form>' +
-    '<p class="calendar-help"><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">Open Google Calendar to sign in or edit events ↗</a></p>' +
-    '<p class="calendar-help" id="j3-calendar-status" role="status"></p>' + j3GcalSettingsHTML(id) + '</section>';
+    '<h3>Calendar</h3><form data-jcal-form class="j3-set-row">' +
+    '<label for="j3-calendar-id" class="vh">Calendar email or ID</label>' +
+    '<input id="j3-calendar-id" name="calendar" value="' + esc(id) + '" placeholder="calendar email or ID" autocomplete="off" spellcheck="false">' +
+    '<button class="j3-btn" type="submit">Save</button></form>' +
+    '<p class="calendar-help">Shown in the Calendar tab; new events go there. Usually the email of the Google account that owns it.</p>' +
+    '<p class="calendar-help" id="j3-calendar-status" role="status"></p>' +
+    j3GcalSettingsHTML(id) +
+    '<p class="calendar-help j3-set-foot">Blank calendar? Sign in to that account at <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">calendar.google.com ↗</a> in this browser.</p>' +
+    '</section>';
 }
 document.addEventListener("click", e => {
   const button = e.target.closest && e.target.closest("[data-jcal-view]"); if (!button) return;
@@ -12238,7 +12475,7 @@ function renderJ3() {
           '" placeholder="name this week\u2026" aria-label="Week title">' +
       "</div>" +
       /* the ribbon: over the gutter on this week; peeking from the edge where this week lies otherwise */
-      (j3RightView === "calendar" ? "" : '<div class="j3-mark"><button type="button" class="j3-ribbon" data-j3="wk-today" aria-label="' +
+      ('<div class="j3-mark"><button type="button" class="j3-ribbon" data-j3="wk-today" aria-label="' +
         (isThisWeek ? "This week" : "Back to this week") + '"' + (isThisWeek ? " disabled" : "") + "></button></div>") +
       /* one sheet: the pen's model — lift blocks and the fold are painted on the sheet itself */
       '<div class="j3-paper">' +
@@ -14538,6 +14775,7 @@ document.addEventListener("submit", e => {
   if (f.dataset.form === "rename" && s) renameSkill(s);
   if (f.dataset.form === "bk-save") { saveBookDialog(); return; }
   if (f.dataset.form === "step-save") { qStepDlgSave(); return; }
+  if (f.dataset.form === "camp-save") { campDlgSave(); return; }
   if (f.dataset.form === "quest-save") { qQuestDlgSave(); return; }
   if (f.dataset.form === "birth-save") { birthDlgSave(); return; }
   if (f.dataset.form === "del-quest") {
