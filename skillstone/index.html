@@ -3002,8 +3002,8 @@ li.is-done .qg { color: var(--verdant); }
 /* Blend at the page's stacking context so Google's white surfaces reveal the actual paper beneath. */
 .j3-page.right:has(.j3-calendar) { mix-blend-mode: darken; }
 .j3-calendar iframe { display:block; width:100%; height:650px; border:0; border-radius:3px; background:transparent; }
-.j3-calendar details { margin:16px 0; font-size:13px; color:var(--ash); }
-.j3-calendar summary { cursor:pointer; width:fit-content; }
+.j3-calendar-settings h3 { font:600 16px var(--f-display); margin:0 0 20px; }
+.j3-calendar-settings { padding-top:8px; }
 .j3-calendar form { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
 .j3-calendar label, .j3-calendar .calendar-help { flex-basis:100%; }
 .j3-calendar input { flex:1; min-width:120px; color:var(--parchment); background:rgba(255,255,255,.2); border:1px solid var(--j3-rule); padding:8px; }
@@ -11795,7 +11795,7 @@ function renderWeekPick() {
   }
   wEl.innerHTML = h;
 }
-let j3CalendarVisible = false;
+let j3RightView = "notebook";
 function j3CalendarKey() { return "skillstone-calendar:" + (auth && auth.user ? auth.user.id : "local"); }
 function j3CalendarId() {
   try { const saved = localStorage.getItem(j3CalendarKey()); if (saved !== null) return saved; } catch (_) {}
@@ -11812,15 +11812,19 @@ function j3CalendarHTML() {
   const id = j3CalendarId();
   return '<section class="j3-calendar" aria-label="Google Calendar">' +
     (id ? '<iframe title="Google Calendar — selected week" src="'+esc(j3CalendarURL(id))+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>' :
-    '<h3>Your calendar, beside your notes</h3><p class="calendar-help">Enter your Google Calendar email or calendar ID to view your schedule here.</p>') +
-    '<details'+(!id?' open':'')+'><summary>Calendar settings</summary><form data-jcal-form>' +
-    '<label for="j3-calendar-id">Calendar email or ID</label><input id="j3-calendar-id" name="calendar" value="'+esc(id)+'" placeholder="you@example.com" autocomplete="off">'+
-    '<button class="j3-btn" type="submit">Save</button><p class="calendar-help">Saved on this device. For a private calendar, sign in to its Google account in this browser. If the calendar stays blank, your browser may be blocking embedded sign-in.</p></form></details>' +
-    '<p class="calendar-help"><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">Open Google Calendar to sign in or edit events ↗</a></p></section>';
+    '<h3>Your calendar, beside your notes</h3><p class="calendar-help">Choose a calendar in Settings to view your schedule here.</p><button type="button" class="j3-btn" data-jcal-view="settings">Set up calendar</button>') + '</section>';
+}
+function j3CalendarSettingsHTML() {
+  return '<section class="j3-calendar j3-calendar-settings" aria-label="Calendar settings">' +
+    '<h3>Calendar settings</h3><form data-jcal-form>' +
+    '<label for="j3-calendar-id">Calendar email or ID</label><input id="j3-calendar-id" name="calendar" value="'+esc(j3CalendarId())+'" placeholder="you@example.com" autocomplete="off">' +
+    '<button class="j3-btn" type="submit">Save</button><p class="calendar-help">Saved on this device. For a private calendar, sign in to its Google account in this browser. If the calendar stays blank, your browser may be blocking embedded sign-in.</p></form>' +
+    '<p class="calendar-help"><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">Open Google Calendar to sign in or edit events ↗</a></p>' +
+    '<p class="calendar-help" id="j3-calendar-status" role="status"></p></section>';
 }
 document.addEventListener("click", e => {
   const button = e.target.closest && e.target.closest("[data-jcal-view]"); if (!button) return;
-  j3CalendarVisible = button.dataset.jcalView === "calendar"; renderJ3();
+  j3RightView = button.dataset.jcalView; renderJ3();
   const next = document.querySelector('[data-jcal-view="'+button.dataset.jcalView+'"]'); if(next) next.focus({preventScroll:true});
 });
 document.addEventListener("submit", e => {
@@ -11830,6 +11834,8 @@ document.addEventListener("submit", e => {
   if (id && !/^[^\s<>"@]+@[^\s<>"@]+$/.test(id)) { input.setCustomValidity("Use the calendar email or ID, rather than an embed link."); input.reportValidity(); return; }
   try { localStorage.setItem(j3CalendarKey(),id); } catch (_) { input.setCustomValidity("This browser could not save the calendar setting."); input.reportValidity(); return; }
   renderJ3();
+  const status = document.getElementById("j3-calendar-status"); if(status) status.textContent = "Calendar saved. Open the Calendar tab to view it.";
+  const savedInput = document.getElementById("j3-calendar-id"); if(savedInput) savedInput.focus({preventScroll:true});
 });
 document.addEventListener("input", e => { if(e.target.id === "j3-calendar-id") e.target.setCustomValidity(""); });
 function renderJ3() {
@@ -12024,9 +12030,10 @@ function renderJ3() {
         '<div class="j3-lift t" aria-hidden="true"></div>' +
         '<div class="j3-page left"><div class="j3-left-grid">' + notes + bucket + habits + "</div></div>" +
         '<div class="j3-page right"><div class="j3-view-switch" role="group" aria-label="Right page view">' +
-          '<button type="button" data-jcal-view="notebook" aria-pressed="'+!j3CalendarVisible+'">Notebook</button>' +
-          '<button type="button" data-jcal-view="calendar" aria-pressed="'+j3CalendarVisible+'">Calendar</button></div>' +
-          (j3CalendarVisible ? j3CalendarHTML() : right) + "</div>" +
+          '<button type="button" data-jcal-view="notebook" aria-pressed="'+(j3RightView === "notebook")+'">Notebook</button>' +
+          '<button type="button" data-jcal-view="calendar" aria-pressed="'+(j3RightView === "calendar")+'">Calendar</button>' +
+          '<button type="button" data-jcal-view="settings" aria-pressed="'+(j3RightView === "settings")+'">Settings</button></div>' +
+          (j3RightView === "calendar" ? j3CalendarHTML() : j3RightView === "settings" ? j3CalendarSettingsHTML() : right) + "</div>" +
         '<div class="j3-lift b" aria-hidden="true"></div>' +
         '<div class="j3-fold" aria-hidden="true"></div>' +
         /* the corners: press and pull to turn; a tap or Enter turns outright */
@@ -12051,7 +12058,7 @@ function j3Leaf(to) {
   if (+to === +from) return null;
   const dir = to > from ? 1 : -1;
   const old = document.querySelector("#viewJournal .j3");
-  const can = old && !j3CalendarVisible && window.innerWidth > 1100 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const can = old && j3RightView === "notebook" && window.innerWidth > 1100 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let oldL = null, oldR = null, oldH = 0;
   if (can) { oldL = old.querySelector(".j3-page.left").cloneNode(true); oldR = old.querySelector(".j3-page.right").cloneNode(true);
     const op = old.querySelector(".j3-paper"); oldH = op ? op.getBoundingClientRect().height : 0; }
