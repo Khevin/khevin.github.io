@@ -9623,6 +9623,8 @@ function campDlgOpen(id) {
 function campDlgClose() { const dlg = $("#campDlg"); if (dlg && dlg.open) dlg.close(); campEdit = null; }
 function campDlgRender(focusSel) {
   const dlg = $("#campDlg"), d = campEdit; if (!dlg || !d) return;
+  /* the form is the scroll container; rebuilding it would put the reader back at the top */
+  const prevForm = dlg.querySelector("form"), scrollY = prevForm ? prevForm.scrollTop : 0;
   const cur = d.sprite ? "sprite:" + d.sprite : "sigil:" + d.emblem;
   const seals = campSeals();
   dlg.innerHTML = '<form data-form="camp-save" method="dialog">' +
@@ -9672,7 +9674,8 @@ function campDlgRender(focusSel) {
     '<button type="submit" class="btn btn-primary btn-sm">' + (d.id ? "Save changes" : "Create campaign") + '</button></div></form>';
   /* the picker is rebuilt with the form, so it is bound with it — placed beside the seal it belongs to */
   bindPop(dlg.querySelector("#sealPop"), () => dlg.querySelector(".camp-seal-btn"), 336, "left");
-  if (focusSel) { const f = dlg.querySelector(focusSel); if (f) f.focus(); }
+  const form = dlg.querySelector("form"); if (form && scrollY) form.scrollTop = scrollY;
+  if (focusSel) { const f = dlg.querySelector(focusSel); if (f) f.focus({ preventScroll: true }); }
 }
 /* the draft follows every keystroke, so a re-render for a new row loses nothing */
 document.addEventListener("input", e => {
