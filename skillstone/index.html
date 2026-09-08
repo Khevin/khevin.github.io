@@ -2152,6 +2152,13 @@ button.d-plaque {
 @media (hover: hover) { .camp-x:hover { color: var(--ember); background: rgba(200,84,58,0.08); } }
 .camp-x:focus-visible { outline: 2px solid var(--focus); }
 .camp-x-blank { width: 32px; height: 32px; }
+/* struck until save: the row dims and its name crosses out; the × has turned into the way back */
+.camp-q.is-del .camp-q-t, .camp-ch.is-del .camp-ch-name, .camp-ch.is-del .camp-act { text-decoration: line-through; color: var(--ash); opacity: 0.6; }
+.camp-ch.is-del .camp-q-t { text-decoration: line-through; }
+.camp-x.is-undo { color: var(--gold); }
+.camp-x.is-undo svg { width: 15px; height: 15px; }
+@media (hover: hover) { .camp-x.is-undo:hover { color: var(--gold-2); background: rgba(232,176,84,0.08); } }
+.camp-del-note { color: var(--bronze); }
 .camp-add { justify-self: start; }
 .camp-add-act { margin-top: var(--s1); }
 @media (max-width: 640px) {
@@ -9632,21 +9639,34 @@ function campDlgRender(focusSel) {
     '</div></div>' +
     '<label class="bk-l">What it is for<textarea name="note" rows="2" maxlength="300">' + esc(d.note) + '</textarea></label>' +
     '<div class="camp-acts"><span class="bk-l">Acts</span>' +
-      d.chapters.map((ch, ci) => '<div class="camp-ch" data-ch="' + ci + '">' +
+      d.chapters.map((ch, ci) => {
+        /* a saved row is struck, not dropped: the × turns to ↶ and Save is the only thing that is final;
+           an unsaved row simply goes. Neither the last live act nor an act's last live quest offers it. */
+        const liveCh = d.chapters.filter(x => !x.del).length;
+        const chX = ch.del
+          ? '<button type="button" class="camp-x is-undo" data-cmp="campdelch" data-ch="' + ci + '" aria-label="Keep this act">' + Q_GLYPH.undo + '</button>'
+          : (liveCh < 2 ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelch" data-ch="' + ci + '" aria-label="' + (ch.id ? "Remove this act and its quests on save" : "Remove this act") + '">' + ICON.x + '</button>');
+        const liveQ = ch.quests.filter(x => !x.del).length;
+        return '<div class="camp-ch' + (ch.del ? " is-del" : "") + '" data-ch="' + ci + '">' +
         '<div class="camp-ch-h">' +
-          '<select class="camp-act" name="act-' + ci + '" aria-label="Act">' + ROMAN.map((r, i) => '<option value="' + (i + 1) + '"' + (ch.act === i + 1 ? " selected" : "") + '>Act ' + r + '</option>').join("") + '</select>' +
-          '<input type="text" class="camp-ch-name" name="ch-' + ci + '" value="' + esc(ch.name) + '" placeholder="Chapter name" maxlength="60" required aria-label="Chapter name">' +
-          (ch.id || d.chapters.length < 2 ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelch" data-ch="' + ci + '" aria-label="Remove this act">' + ICON.x + '</button>') +
+          '<select class="camp-act" name="act-' + ci + '" aria-label="Act"' + (ch.del ? " disabled" : "") + '>' + ROMAN.map((r, i) => '<option value="' + (i + 1) + '"' + (ch.act === i + 1 ? " selected" : "") + '>Act ' + r + '</option>').join("") + '</select>' +
+          '<input type="text" class="camp-ch-name" name="ch-' + ci + '" value="' + esc(ch.name) + '" placeholder="Chapter name" maxlength="60"' + (ch.del ? " disabled" : " required") + ' aria-label="Chapter name">' +
+          chX +
         '</div>' +
-        '<ol class="camp-qs">' + ch.quests.map((q, qi) => '<li class="camp-q">' +
+        '<ol class="camp-qs">' + ch.quests.map((q, qi) => {
+          const gone = ch.del || q.del;
+          const qX = ch.del ? '<span class="camp-x-blank" aria-hidden="true"></span>'
+            : q.del ? '<button type="button" class="camp-x is-undo" data-cmp="campdelq" data-ch="' + ci + '" data-q="' + qi + '" aria-label="Keep this quest">' + Q_GLYPH.undo + '</button>'
+            : (liveQ < 2 ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelq" data-ch="' + ci + '" data-q="' + qi + '" aria-label="' + (q.id ? "Remove this quest on save" : "Remove this quest") + '">' + ICON.x + '</button>');
+          return '<li class="camp-q' + (gone ? " is-del" : "") + '">' +
           '<span class="camp-q-gem" aria-hidden="true"></span>' +
-          '<input type="text" class="camp-q-t" name="q-' + ci + '-' + qi + '" value="' + esc(q.title) + '" placeholder="Quest" maxlength="120" required aria-label="Quest title">' +
-          (q.id || ch.quests.length < 2 ? '<span class="camp-x-blank" aria-hidden="true"></span>' : '<button type="button" class="camp-x" data-cmp="campdelq" data-ch="' + ci + '" data-q="' + qi + '" aria-label="Remove this quest">' + ICON.x + '</button>') +
-        '</li>').join("") + '</ol>' +
-        '<button type="button" class="btn btn-ghost btn-sm camp-add" data-cmp="campaddq" data-ch="' + ci + '">+ Quest</button>' +
-      '</div>').join("") +
+          '<input type="text" class="camp-q-t" name="q-' + ci + '-' + qi + '" value="' + esc(q.title) + '" placeholder="Quest" maxlength="120"' + (gone ? " disabled" : " required") + ' aria-label="Quest title">' +
+          qX + '</li>'; }).join("") + '</ol>' +
+        (ch.del ? "" : '<button type="button" class="btn btn-ghost btn-sm camp-add" data-cmp="campaddq" data-ch="' + ci + '">+ Quest</button>') +
+      '</div>'; }).join("") +
       '<button type="button" class="btn btn-ghost btn-sm camp-add camp-add-act" data-cmp="campaddch">+ Act</button>' +
     '</div>' +
+    (() => { const n = campDraftRemovals(d); return n ? '<p class="bk-p camp-del-note" role="status">' + n + (n === 1 ? " quest goes" : " quests go") + " when you save — with any steps, rewards and completion they carry. Nothing is removed until then.</p>" : ""; })() +
     '<p class="bk-p">Steps, and the skills a quest pays, are added on each quest once it exists.</p>' +
     '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-cmp="campcancel">Cancel</button>' +
     '<button type="submit" class="btn btn-primary btn-sm">' + (d.id ? "Save changes" : "Create campaign") + '</button></div></form>';
@@ -9679,15 +9699,34 @@ function campDraftAddQuest(ci) {
 }
 /* a campaign keeps at least one act, and an act at least one quest — the row's × is not
    drawn when it is the last, and the draft refuses in any case */
+/* how many saved quests the draft would remove on save: struck quests, plus every quest of a struck act */
+function campDraftRemovals(d) {
+  return d.chapters.reduce((n, ch) => n + (ch.del ? ch.quests.filter(q => q.id).length : ch.quests.filter(q => q.id && q.del).length), 0);
+}
 function campDraftDelChapter(ci) {
-  if (!campEdit || !campEdit.chapters[ci] || campEdit.chapters[ci].id || campEdit.chapters.length < 2) return;
-  campEdit.chapters.splice(ci, 1);
+  const d = campEdit, ch = d && d.chapters[ci]; if (!ch) return;
+  if (ch.del) { ch.del = false; campDlgRender('[data-cmp="campdelch"][data-ch="' + ci + '"]'); return; }       /* ↶ keeps it */
+  if (d.chapters.filter(x => !x.del).length < 2) return;                                                       /* the last live act stays */
+  if (ch.id) { ch.del = true; campDlgRender('[data-cmp="campdelch"][data-ch="' + ci + '"]'); return; }         /* saved: struck until save */
+  d.chapters.splice(ci, 1);
   campDlgRender(".camp-add-act");
 }
 function campDraftDelQuest(ci, qi) {
-  const ch = campEdit && campEdit.chapters[ci]; if (!ch || !ch.quests[qi] || ch.quests[qi].id || ch.quests.length < 2) return;
+  const ch = campEdit && campEdit.chapters[ci], q = ch && ch.quests[qi]; if (!q || ch.del) return;
+  if (q.del) { q.del = false; campDlgRender('[data-cmp="campdelq"][data-ch="' + ci + '"][data-q="' + qi + '"]'); return; }
+  if (ch.quests.filter(x => !x.del).length < 2) return;                                                        /* an act keeps one live quest */
+  if (q.id) { q.del = true; campDlgRender('[data-cmp="campdelq"][data-ch="' + ci + '"][data-q="' + qi + '"]'); return; }
   ch.quests.splice(qi, 1);
   campDlgRender('[data-cmp="campaddq"][data-ch="' + ci + '"]');
+}
+/* a quest leaving a campaign takes its record with it: the claim is reversed first by its receipt,
+   as a deleted side quest's is, so the XP it paid does not stay stranded in the ledger */
+function campQuestForget(id) {
+  const Q = quests();
+  if (Q.done[id]) qUnclaim(id, true);
+  [Q.done, Q.obj, Q.steps, Q.adopt, Q.rew].forEach(m => { if (m) delete m[id]; });
+  Q.active = Q.active.filter(a => a !== id);
+  if (qSel === id) qSel = null;
 }
 /* picking a seal changes the seal, in place — the form is not rebuilt around an open picker */
 function campDraftSeal(key) {
@@ -9704,7 +9743,7 @@ const campNewId = p => p + "-" + Date.now().toString(36) + Math.random().toStrin
 function campDlgSave() {
   const d = campEdit, dlg = $("#campDlg"); if (!d || !dlg) return;
   const form = dlg.querySelector("form");
-  /* the form's own validity first: names, chapter names, quest titles and their skills */
+  /* the form's own validity first: the name, live chapter names, live quest titles (struck rows are disabled, so unchecked) */
   if (form && !form.reportValidity()) return;
   if (!d.name.trim()) return;
   takeSnapshot();
@@ -9715,12 +9754,18 @@ function campDlgSave() {
   c.name = d.name.trim().slice(0, 80); c.note = d.note.trim().slice(0, 300); c.horizon = d.horizon || "";
   c.emblem = d.emblem || "quill"; c.sprite = d.sprite || "";
   const keep = [];
+  let removed = 0;
   d.chapters.forEach(dc => {
     let ch = dc.id ? c.chapters.find(x => x.id === dc.id) : null;
+    if (dc.del) {                                            /* a struck act goes with every quest in it */
+      if (ch) { ch.quests.forEach(q => { campQuestForget(q.id); removed++; }); c.chapters = c.chapters.filter(x => x !== ch); }
+      return;
+    }
     if (!ch) { ch = { id: campNewId("ch"), act: 1, name: "", icon: "hand", note: "", done: "", milestones: [], quests: [], risks: [] }; c.chapters.push(ch); }
     ch.act = dc.act || 1; ch.name = dc.name.trim().slice(0, 60);
     dc.quests.forEach(dq => {
       let q = dq.id ? ch.quests.find(x => x.id === dq.id) : null;
+      if (dq.del) { if (q) { campQuestForget(q.id); ch.quests = ch.quests.filter(x => x !== q); removed++; } return; }
       if (!q) { q = { id: campNewId("q"), title: "", target: "", due: "", note: "", objectives: [] }; ch.quests.push(q); }
       q.title = dq.title.trim().slice(0, 120); if (dq.target) q.target = dq.target;
     });
@@ -9733,7 +9778,7 @@ function campDlgSave() {
   campDlgClose();
   qCampSel = c.id; qSel = campPreselect(c);
   renderCampaigns();
-  showToast(isNew ? "Campaign written — open a quest to add its steps." : "Campaign saved.", true);
+  showToast(isNew ? "Campaign written — open a quest to add its steps." : removed ? "Campaign saved — " + removed + (removed === 1 ? " quest removed." : " quests removed.") : "Campaign saved.", true);
 }
 
 /* ---------- the new-quest dialog ---------- */
