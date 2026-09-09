@@ -1,0 +1,2986 @@
+{
+  "schemaVersion": 1,
+  "libraryId": "nihongo-curriculum",
+  "snapshotId": "snap-7c5832544319",
+  "revision": 1,
+  "contentHash": "7c5832544319943578c9f186863b6f5f9b786ae137ecffd2690a8e14547c918b",
+  "exportedAt": "2026-09-09T03:17:27.840Z",
+  "sourceAppUrl": "https://khevin.com/nihongo/app.html",
+  "exporterVersion": "0.2.0-build-script",
+  "deckIds": [
+    "basic",
+    "numbers",
+    "people",
+    "nature",
+    "sky-seasons",
+    "time",
+    "school",
+    "colors",
+    "body",
+    "animals",
+    "rooms",
+    "places",
+    "food-drink",
+    "animals-2",
+    "verbs",
+    "adjectives",
+    "onomatopoeia"
+  ],
+  "files": {
+    "cards": "cards.json",
+    "lessons": "lessons.json",
+    "glossary": "glossary.json"
+  },
+  "assets": [
+    {
+      "assetHash": "01020ab7d4e12670bb17062bf787442ec21a9b153084a5ea67862a277ef4a85f",
+      "mime": "image/webp",
+      "bytes": 6402,
+      "width": 500,
+      "height": 500,
+      "path": "assets/01020ab7d4e12670bb17062bf787442ec21a9b153084a5ea67862a277ef4a85f.webp",
+      "sourcePath": "images/kanji/宀.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-roof",
+      "imageKey": "kanji/宀",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "028eaeeb95ba1158b87a3b7388a6ce30ba353a933fd3564a4eee12554e6fb8f9",
+      "mime": "image/webp",
+      "bytes": 10216,
+      "width": 500,
+      "height": 500,
+      "path": "assets/028eaeeb95ba1158b87a3b7388a6ce30ba353a933fd3564a4eee12554e6fb8f9.webp",
+      "sourcePath": "images/kanji/気.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-spirit",
+      "imageKey": "kanji/気",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "05280e76b454cb8466ea9246e7c065a480688dcb262b18d2b05d96c4352bb8b2",
+      "mime": "image/webp",
+      "bytes": 9492,
+      "width": 500,
+      "height": 500,
+      "path": "assets/05280e76b454cb8466ea9246e7c065a480688dcb262b18d2b05d96c4352bb8b2.webp",
+      "sourcePath": "images/kanji/双.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-pair",
+      "imageKey": "kanji/双",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "0bbbb4b5f34ae72b75c0da1e4eb44ee82e0c502dcc1a6d8bd599556291890f2b",
+      "mime": "image/webp",
+      "bytes": 14510,
+      "width": 500,
+      "height": 500,
+      "path": "assets/0bbbb4b5f34ae72b75c0da1e4eb44ee82e0c502dcc1a6d8bd599556291890f2b.webp",
+      "sourcePath": "images/kanji/土曜日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-doyoubi",
+      "imageKey": "kanji/土曜日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "0c385a9aba9ae9a9508d381518907beae07f5b1a3c9ae85a9a211fbcacb1731c",
+      "mime": "image/webp",
+      "bytes": 12708,
+      "width": 600,
+      "height": 600,
+      "path": "assets/0c385a9aba9ae9a9508d381518907beae07f5b1a3c9ae85a9a211fbcacb1731c.webp",
+      "sourcePath": "images/kanji/森.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-forest",
+      "imageKey": "kanji/森",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "0cb5f0578074b2b93c54b3c62a39277264e53952715ebb120cd78ffe4ebe51c4",
+      "mime": "image/webp",
+      "bytes": 9860,
+      "width": 600,
+      "height": 600,
+      "path": "assets/0cb5f0578074b2b93c54b3c62a39277264e53952715ebb120cd78ffe4ebe51c4.webp",
+      "sourcePath": "images/kanji/川.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-river",
+      "imageKey": "kanji/川",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "0d2f4935673a44ae0c961482c644b9e021ba694542c2f648f2ac98ad04040734",
+      "mime": "image/webp",
+      "bytes": 10916,
+      "width": 600,
+      "height": 600,
+      "path": "assets/0d2f4935673a44ae0c961482c644b9e021ba694542c2f648f2ac98ad04040734.webp",
+      "sourcePath": "images/vocabulary/ぴょんぴょん.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-pyonpyon",
+      "imageKey": "vocabulary/ぴょんぴょん",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1218f9cf75aabec9d499f42684d381ebd7bf8cb2cdf423145907c5b8847878e0",
+      "mime": "image/webp",
+      "bytes": 17504,
+      "width": 500,
+      "height": 500,
+      "path": "assets/1218f9cf75aabec9d499f42684d381ebd7bf8cb2cdf423145907c5b8847878e0.webp",
+      "sourcePath": "images/kanji/雪.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-snow",
+      "imageKey": "kanji/雪",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "134eb949ee770fe576920da1d56de2d682b5925d81f451d5f3947dbabab97cac",
+      "mime": "image/webp",
+      "bytes": 18462,
+      "width": 500,
+      "height": 500,
+      "path": "assets/134eb949ee770fe576920da1d56de2d682b5925d81f451d5f3947dbabab97cac.webp",
+      "sourcePath": "images/kanji/買.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-buy",
+      "imageKey": "kanji/買",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1423da369c97641976f76a13c01db1016bb25720a081c96599c5ab06194f5186",
+      "mime": "image/webp",
+      "bytes": 17962,
+      "width": 500,
+      "height": 500,
+      "path": "assets/1423da369c97641976f76a13c01db1016bb25720a081c96599c5ab06194f5186.webp",
+      "sourcePath": "images/kanji/冬.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-winter",
+      "imageKey": "kanji/冬",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "151523775629e556ac11bff65b16fbb3ba663d0f688e34db5bdfd9282e5d99f5",
+      "mime": "image/webp",
+      "bytes": 6828,
+      "width": 600,
+      "height": 600,
+      "path": "assets/151523775629e556ac11bff65b16fbb3ba663d0f688e34db5bdfd9282e5d99f5.webp",
+      "sourcePath": "images/vocabulary/コロコロ.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-korokoro",
+      "imageKey": "vocabulary/コロコロ",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "167ba8a50f7e6b5af89ab17033a15645ecfb752f2e9847dfe7d88445de45cf05",
+      "mime": "image/webp",
+      "bytes": 20574,
+      "width": 500,
+      "height": 500,
+      "path": "assets/167ba8a50f7e6b5af89ab17033a15645ecfb752f2e9847dfe7d88445de45cf05.webp",
+      "sourcePath": "images/kanji/水曜日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-suiyoubi",
+      "imageKey": "kanji/水曜日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "168e1b62f7f7c33734ec34ad3eb57af7bef69970a8e9f6ddbb37eee0730fde64",
+      "mime": "image/webp",
+      "bytes": 6600,
+      "width": 500,
+      "height": 500,
+      "path": "assets/168e1b62f7f7c33734ec34ad3eb57af7bef69970a8e9f6ddbb37eee0730fde64.webp",
+      "sourcePath": "images/kanji/元.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-origin",
+      "imageKey": "kanji/元",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1794e721f3ca49bc18383f7e204d87770e73ab8587ad7738521fedb968c3337c",
+      "mime": "image/webp",
+      "bytes": 35524,
+      "width": 500,
+      "height": 500,
+      "path": "assets/1794e721f3ca49bc18383f7e204d87770e73ab8587ad7738521fedb968c3337c.webp",
+      "sourcePath": "images/kanji/春.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-spring",
+      "imageKey": "kanji/春",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "17ae5c1869c19113c0aefcbc48cfc31cc4fcf83112a054f848a81a396512b7f6",
+      "mime": "image/webp",
+      "bytes": 12406,
+      "width": 600,
+      "height": 600,
+      "path": "assets/17ae5c1869c19113c0aefcbc48cfc31cc4fcf83112a054f848a81a396512b7f6.webp",
+      "sourcePath": "images/kanji/林.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-woods",
+      "imageKey": "kanji/林",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "17f4d973c5264999519d1fcbe7328feba628cab2796092511425237cf316f021",
+      "mime": "image/webp",
+      "bytes": 21720,
+      "width": 500,
+      "height": 500,
+      "path": "assets/17f4d973c5264999519d1fcbe7328feba628cab2796092511425237cf316f021.webp",
+      "sourcePath": "images/kanji/灰色.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-gray",
+      "imageKey": "kanji/灰色",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "17f5e3dc1b8215bcd77160eb399a9234af65367e45a24be45f1be961f8e346af",
+      "mime": "image/webp",
+      "bytes": 29674,
+      "width": 500,
+      "height": 500,
+      "path": "assets/17f5e3dc1b8215bcd77160eb399a9234af65367e45a24be45f1be961f8e346af.webp",
+      "sourcePath": "images/kanji/元気.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-genki",
+      "imageKey": "kanji/元気",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "18f717eb952a63fd01f13c34d8e9f466eeca377c6b524ebdc96fc46b1443fdd6",
+      "mime": "image/webp",
+      "bytes": 9098,
+      "width": 600,
+      "height": 600,
+      "path": "assets/18f717eb952a63fd01f13c34d8e9f466eeca377c6b524ebdc96fc46b1443fdd6.webp",
+      "sourcePath": "images/vocabulary/くすくす.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-kusukusu",
+      "imageKey": "vocabulary/くすくす",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1c41d5264d33e1997091cfa9930609a083701fad68677a94470af9751890c5c8",
+      "mime": "image/webp",
+      "bytes": 15816,
+      "width": 600,
+      "height": 600,
+      "path": "assets/1c41d5264d33e1997091cfa9930609a083701fad68677a94470af9751890c5c8.webp",
+      "sourcePath": "images/vocabulary/ちくちく.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-chikuchiku",
+      "imageKey": "vocabulary/ちくちく",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1dceb2045c08258aa5747ba22c94d6aee26bbced7e70a16e3571bc0b2d4be1b5",
+      "mime": "image/webp",
+      "bytes": 8064,
+      "width": 600,
+      "height": 600,
+      "path": "assets/1dceb2045c08258aa5747ba22c94d6aee26bbced7e70a16e3571bc0b2d4be1b5.webp",
+      "sourcePath": "images/kanji/本.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-book",
+      "imageKey": "kanji/本",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1e3504886b6f42a864030bae8643d33312312de42b5fc6cb07bf01c5104aa9f4",
+      "mime": "image/webp",
+      "bytes": 14792,
+      "width": 421,
+      "height": 500,
+      "path": "assets/1e3504886b6f42a864030bae8643d33312312de42b5fc6cb07bf01c5104aa9f4.webp",
+      "sourcePath": "images/kanji/書.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-write",
+      "imageKey": "kanji/書",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1e94c391c8691d7dcfb3998e62f43880b793c686eb3f5df2b57bfecc0a0b9564",
+      "mime": "image/webp",
+      "bytes": 12026,
+      "width": 600,
+      "height": 600,
+      "path": "assets/1e94c391c8691d7dcfb3998e62f43880b793c686eb3f5df2b57bfecc0a0b9564.webp",
+      "sourcePath": "images/vocabulary/ふにゃふにゃ.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-funyafunya",
+      "imageKey": "vocabulary/ふにゃふにゃ",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "1eb187b520e038e234e3b6a911dec1dd481ddab819afd1cad3d3a26ee982c562",
+      "mime": "image/webp",
+      "bytes": 14138,
+      "width": 500,
+      "height": 500,
+      "path": "assets/1eb187b520e038e234e3b6a911dec1dd481ddab819afd1cad3d3a26ee982c562.webp",
+      "sourcePath": "images/kanji/元々.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-motomoto",
+      "imageKey": "kanji/元々",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "229b2156621eeb898d7e1fa7ed802ed905ab9de5ed195ef3d9750003aba1a9f2",
+      "mime": "image/webp",
+      "bytes": 18266,
+      "width": 600,
+      "height": 600,
+      "path": "assets/229b2156621eeb898d7e1fa7ed802ed905ab9de5ed195ef3d9750003aba1a9f2.webp",
+      "sourcePath": "images/kanji/子.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-child",
+      "imageKey": "kanji/子",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "231000cf026a7471d18c99ee624d5037669aa6d3af53de9981b159e1c5437666",
+      "mime": "image/webp",
+      "bytes": 14358,
+      "width": 500,
+      "height": 500,
+      "path": "assets/231000cf026a7471d18c99ee624d5037669aa6d3af53de9981b159e1c5437666.webp",
+      "sourcePath": "images/kanji/風.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-wind",
+      "imageKey": "kanji/風",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "2459ee7bc4f7d4c5f2887bc610a3ba5af3ebf7342f4b5649a3268037e37ff05b",
+      "mime": "image/webp",
+      "bytes": 18886,
+      "width": 600,
+      "height": 600,
+      "path": "assets/2459ee7bc4f7d4c5f2887bc610a3ba5af3ebf7342f4b5649a3268037e37ff05b.webp",
+      "sourcePath": "images/kanji/開 (3).webp",
+      "sourceKind": "shipped-variant",
+      "slotId": "flash-open",
+      "imageKey": "kanji/開",
+      "variant": 3,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "2767d2e48a8aa00e5092a234179a509ac921ed8ed553266e58f10323be5c4c42",
+      "mime": "image/webp",
+      "bytes": 21844,
+      "width": 500,
+      "height": 500,
+      "path": "assets/2767d2e48a8aa00e5092a234179a509ac921ed8ed553266e58f10323be5c4c42.webp",
+      "sourcePath": "images/kanji/紫.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-purple",
+      "imageKey": "kanji/紫",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "284621056fe70d5b9a96b702d473a0ac4306c4019ddff3e22b52110df418f077",
+      "mime": "image/webp",
+      "bytes": 16278,
+      "width": 500,
+      "height": 500,
+      "path": "assets/284621056fe70d5b9a96b702d473a0ac4306c4019ddff3e22b52110df418f077.webp",
+      "sourcePath": "images/kanji/色.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-color",
+      "imageKey": "kanji/色",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "285d616c51af90f267da1919b3f8802d86f38d8a14b7bb34d067ffb1cb3e7684",
+      "mime": "image/webp",
+      "bytes": 12098,
+      "width": 500,
+      "height": 500,
+      "path": "assets/285d616c51af90f267da1919b3f8802d86f38d8a14b7bb34d067ffb1cb3e7684.webp",
+      "sourcePath": "images/kanji/世.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-generation",
+      "imageKey": "kanji/世",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "2c23c378b02b912129bd8586df2fb4e2c522b9701f283401bd6188540d1b698d",
+      "mime": "image/webp",
+      "bytes": 14958,
+      "width": 500,
+      "height": 500,
+      "path": "assets/2c23c378b02b912129bd8586df2fb4e2c522b9701f283401bd6188540d1b698d.webp",
+      "sourcePath": "images/kanji/木曜日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-mokuyoubi",
+      "imageKey": "kanji/木曜日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "307843339dce2a8c226e8246428a81046bab13f369fa8f30ad161f8a64c22afc",
+      "mime": "image/webp",
+      "bytes": 11504,
+      "width": 500,
+      "height": 500,
+      "path": "assets/307843339dce2a8c226e8246428a81046bab13f369fa8f30ad161f8a64c22afc.webp",
+      "sourcePath": "images/kanji/子猫.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-koneko",
+      "imageKey": "kanji/子猫",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "31d50beaf0412c2aade249252d169dbc2bd7570ef80e0f7a8873aeb328b063c2",
+      "mime": "image/webp",
+      "bytes": 19172,
+      "width": 500,
+      "height": 500,
+      "path": "assets/31d50beaf0412c2aade249252d169dbc2bd7570ef80e0f7a8873aeb328b063c2.webp",
+      "sourcePath": "images/kanji/京.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-capital",
+      "imageKey": "kanji/京",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "330dca7bff55a9fb3df9cab6bdb3343d796f2acbb2fe32374962de51b6a5a380",
+      "mime": "image/webp",
+      "bytes": 14340,
+      "width": 500,
+      "height": 500,
+      "path": "assets/330dca7bff55a9fb3df9cab6bdb3343d796f2acbb2fe32374962de51b6a5a380.webp",
+      "sourcePath": "images/kanji/穴.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-hole",
+      "imageKey": "kanji/穴",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "34a0d64800b9ddfa305fc8517d49246d5ff949f41350e7b6930b6661e6de60a1",
+      "mime": "image/webp",
+      "bytes": 16750,
+      "width": 600,
+      "height": 600,
+      "path": "assets/34a0d64800b9ddfa305fc8517d49246d5ff949f41350e7b6930b6661e6de60a1.webp",
+      "sourcePath": "images/kanji/氷.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-ice",
+      "imageKey": "kanji/氷",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "38609728d160900e15ab63da933fae12be4e02cfc195760786ea9a1016caf21a",
+      "mime": "image/webp",
+      "bytes": 12524,
+      "width": 600,
+      "height": 600,
+      "path": "assets/38609728d160900e15ab63da933fae12be4e02cfc195760786ea9a1016caf21a.webp",
+      "sourcePath": "images/kanji/口.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-mouth",
+      "imageKey": "kanji/口",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "392c1222783a6b9e10c18247d86ddbfa4d48f93346e06eb7c8613a45a1c5f777",
+      "mime": "image/webp",
+      "bytes": 21570,
+      "width": 600,
+      "height": 600,
+      "path": "assets/392c1222783a6b9e10c18247d86ddbfa4d48f93346e06eb7c8613a45a1c5f777.webp",
+      "sourcePath": "images/kanji/兄弟.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-kyoudai",
+      "imageKey": "kanji/兄弟",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "3a38c5c4a5ceaaa0196dc0475cf1842b7b6f90ab59843243c8fccd4b2af28363",
+      "mime": "image/webp",
+      "bytes": 17218,
+      "width": 600,
+      "height": 600,
+      "path": "assets/3a38c5c4a5ceaaa0196dc0475cf1842b7b6f90ab59843243c8fccd4b2af28363.webp",
+      "sourcePath": "images/kanji/馬.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-horse",
+      "imageKey": "kanji/馬",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "3ab2d613795255e164bfbcf83011e9e6422bc65aff9492ab65cff969332f314b",
+      "mime": "image/webp",
+      "bytes": 18698,
+      "width": 600,
+      "height": 600,
+      "path": "assets/3ab2d613795255e164bfbcf83011e9e6422bc65aff9492ab65cff969332f314b.webp",
+      "sourcePath": "images/kanji/開 (2).webp",
+      "sourceKind": "shipped-variant",
+      "slotId": "flash-open",
+      "imageKey": "kanji/開",
+      "variant": 2,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "3ab70afea8d59a23086edd926615d4fd814cc95e509fa9eb7d2671b7f4407772",
+      "mime": "image/webp",
+      "bytes": 14246,
+      "width": 500,
+      "height": 500,
+      "path": "assets/3ab70afea8d59a23086edd926615d4fd814cc95e509fa9eb7d2671b7f4407772.webp",
+      "sourcePath": "images/kanji/今.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-now",
+      "imageKey": "kanji/今",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "41599023eedbe348e4cdd8cd2a9b6f7eef65606f782fa897c137cfe0421d7a17",
+      "mime": "image/webp",
+      "bytes": 21792,
+      "width": 500,
+      "height": 500,
+      "path": "assets/41599023eedbe348e4cdd8cd2a9b6f7eef65606f782fa897c137cfe0421d7a17.webp",
+      "sourcePath": "images/kanji/天気.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-weather",
+      "imageKey": "kanji/天気",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "461af33aa903fcdf5f22b2e927dcbb70d3528dac1967c31a8e47c27494712fe3",
+      "mime": "image/webp",
+      "bytes": 13566,
+      "width": 500,
+      "height": 500,
+      "path": "assets/461af33aa903fcdf5f22b2e927dcbb70d3528dac1967c31a8e47c27494712fe3.webp",
+      "sourcePath": "images/kanji/行.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-go",
+      "imageKey": "kanji/行",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "468453586e974a3df3878f3204f85fa7ea589e944b290cae0dfd7f27f8c9d5d9",
+      "mime": "image/webp",
+      "bytes": 10980,
+      "width": 500,
+      "height": 500,
+      "path": "assets/468453586e974a3df3878f3204f85fa7ea589e944b290cae0dfd7f27f8c9d5d9.webp",
+      "sourcePath": "images/kanji/名.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-name",
+      "imageKey": "kanji/名",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "46e8243e0fd3baf9a351c3bf11fbe286e3d5452b24816ad20850f2439c937985",
+      "mime": "image/webp",
+      "bytes": 16078,
+      "width": 500,
+      "height": 500,
+      "path": "assets/46e8243e0fd3baf9a351c3bf11fbe286e3d5452b24816ad20850f2439c937985.webp",
+      "sourcePath": "images/kanji/字.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-character",
+      "imageKey": "kanji/字",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "48a20f636d6fe55f764a2e9a2040b1ce91ccd0118518c96ddf1dc7ac263701ed",
+      "mime": "image/webp",
+      "bytes": 10024,
+      "width": 500,
+      "height": 500,
+      "path": "assets/48a20f636d6fe55f764a2e9a2040b1ce91ccd0118518c96ddf1dc7ac263701ed.webp",
+      "sourcePath": "images/kanji/黒鳥.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-black-swan",
+      "imageKey": "kanji/黒鳥",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "48cd3c693dba4d6321f68fbf2adb43bf51f040a1b99580c664cc84dc1f8688ad",
+      "mime": "image/webp",
+      "bytes": 25528,
+      "width": 600,
+      "height": 600,
+      "path": "assets/48cd3c693dba4d6321f68fbf2adb43bf51f040a1b99580c664cc84dc1f8688ad.webp",
+      "sourcePath": "images/kanji/田.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-ricefield",
+      "imageKey": "kanji/田",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "49299f7a420d33621764c2f3db76fcef14ec3c53b4a1410ec62c7997ce2d355b",
+      "mime": "image/webp",
+      "bytes": 10048,
+      "width": 500,
+      "height": 500,
+      "path": "assets/49299f7a420d33621764c2f3db76fcef14ec3c53b4a1410ec62c7997ce2d355b.webp",
+      "sourcePath": "images/kanji/子犬.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-koinu",
+      "imageKey": "kanji/子犬",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "49d41ad2f5ed84f62c21ec3f7c82003c2ff42b1980b3aec706ae0396f217fb3d",
+      "mime": "image/webp",
+      "bytes": 25560,
+      "width": 500,
+      "height": 500,
+      "path": "assets/49d41ad2f5ed84f62c21ec3f7c82003c2ff42b1980b3aec706ae0396f217fb3d.webp",
+      "sourcePath": "images/kanji/学.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-learn",
+      "imageKey": "kanji/学",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "49f0138df517e247d6eb2f438ac5fd242bdb7146c761e2bc44f033e3d1d72134",
+      "mime": "image/webp",
+      "bytes": 25810,
+      "width": 500,
+      "height": 500,
+      "path": "assets/49f0138df517e247d6eb2f438ac5fd242bdb7146c761e2bc44f033e3d1d72134.webp",
+      "sourcePath": "images/kanji/草.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-grass",
+      "imageKey": "kanji/草",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "4d1c012092b72b189a363fa3fe197b1a94a903e8fcf62a67c8c19751d3dfd6fe",
+      "mime": "image/webp",
+      "bytes": 8188,
+      "width": 500,
+      "height": 500,
+      "path": "assets/4d1c012092b72b189a363fa3fe197b1a94a903e8fcf62a67c8c19751d3dfd6fe.webp",
+      "sourcePath": "images/kanji/立.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-stand",
+      "imageKey": "kanji/立",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "4d22a05bcb8c4f6f78b3fb27c41c762058424fc361047cd583acec671b327321",
+      "mime": "image/webp",
+      "bytes": 9144,
+      "width": 500,
+      "height": 500,
+      "path": "assets/4d22a05bcb8c4f6f78b3fb27c41c762058424fc361047cd583acec671b327321.webp",
+      "sourcePath": "images/kanji/犬.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-dog",
+      "imageKey": "kanji/犬",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "4db6da77f6cc83b5ebe9ced3fd0b411c87b18ec0d728a1bb8129f99c19d45fab",
+      "mime": "image/webp",
+      "bytes": 17750,
+      "width": 500,
+      "height": 500,
+      "path": "assets/4db6da77f6cc83b5ebe9ced3fd0b411c87b18ec0d728a1bb8129f99c19d45fab.webp",
+      "sourcePath": "images/kanji/止.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-stop",
+      "imageKey": "kanji/止",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "4f094cf5e0296eeec8f82a2ec4785d006e888bc5718e7be221ad64062466c63e",
+      "mime": "image/webp",
+      "bytes": 10728,
+      "width": 600,
+      "height": 600,
+      "path": "assets/4f094cf5e0296eeec8f82a2ec4785d006e888bc5718e7be221ad64062466c63e.webp",
+      "sourcePath": "images/kanji/王.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-king",
+      "imageKey": "kanji/王",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "503ef7955f40eab6624c1ee73f3e2367d56b6ef53bb7bc18f1635a21093c9d14",
+      "mime": "image/webp",
+      "bytes": 34302,
+      "width": 500,
+      "height": 500,
+      "path": "assets/503ef7955f40eab6624c1ee73f3e2367d56b6ef53bb7bc18f1635a21093c9d14.webp",
+      "sourcePath": "images/kanji/黄.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-yellow",
+      "imageKey": "kanji/黄",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "524907ee5a5509863bbbe73b8e1c2aacc94bddd44f453e691bf6accf4e0f598a",
+      "mime": "image/webp",
+      "bytes": 12800,
+      "width": 500,
+      "height": 500,
+      "path": "assets/524907ee5a5509863bbbe73b8e1c2aacc94bddd44f453e691bf6accf4e0f598a.webp",
+      "sourcePath": "images/kanji/魚.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-fish",
+      "imageKey": "kanji/魚",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "5278c72583df6350c397cb1424c10f6f87ed86b976b91fbbcb9f0fc4a8e9e561",
+      "mime": "image/webp",
+      "bytes": 11126,
+      "width": 500,
+      "height": 500,
+      "path": "assets/5278c72583df6350c397cb1424c10f6f87ed86b976b91fbbcb9f0fc4a8e9e561.webp",
+      "sourcePath": "images/kanji/雲.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-cloud",
+      "imageKey": "kanji/雲",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "52e92576158f13b9b2f76ce81193581f5fc34191e3e90b5c1e8e8424a05bd768",
+      "mime": "image/webp",
+      "bytes": 5372,
+      "width": 500,
+      "height": 500,
+      "path": "assets/52e92576158f13b9b2f76ce81193581f5fc34191e3e90b5c1e8e8424a05bd768.webp",
+      "sourcePath": "images/kanji/万.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-ten-thousand",
+      "imageKey": "kanji/万",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "5786d16784be76a76dc5378d2668003824f2ad651b11ee2f08cc489bc9ae1724",
+      "mime": "image/webp",
+      "bytes": 15830,
+      "width": 600,
+      "height": 600,
+      "path": "assets/5786d16784be76a76dc5378d2668003824f2ad651b11ee2f08cc489bc9ae1724.webp",
+      "sourcePath": "images/kanji/兄.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-oniisan",
+      "imageKey": "kanji/兄",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "582ea1151e9fc97cc5b8cb04c549456a9a3090a6da6f30c472a99ff62fd01ff9",
+      "mime": "image/webp",
+      "bytes": 16244,
+      "width": 600,
+      "height": 600,
+      "path": "assets/582ea1151e9fc97cc5b8cb04c549456a9a3090a6da6f30c472a99ff62fd01ff9.webp",
+      "sourcePath": "images/kanji/足.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-foot",
+      "imageKey": "kanji/足",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "59334f3d3f6f7ecdfb55d83f340112eb7df071272c835031120194111fb974c0",
+      "mime": "image/webp",
+      "bytes": 8086,
+      "width": 600,
+      "height": 600,
+      "path": "assets/59334f3d3f6f7ecdfb55d83f340112eb7df071272c835031120194111fb974c0.webp",
+      "sourcePath": "images/kanji/耳.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-ear",
+      "imageKey": "kanji/耳",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "5aca5a50eeec49d550a69daeaf45f13f9a96c598bf44453bc3583fefded3f19d",
+      "mime": "image/webp",
+      "bytes": 23814,
+      "width": 600,
+      "height": 600,
+      "path": "assets/5aca5a50eeec49d550a69daeaf45f13f9a96c598bf44453bc3583fefded3f19d.webp",
+      "sourcePath": "images/kanji/妹.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-imouto",
+      "imageKey": "kanji/妹",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "5bf318677e0e582d7419a72cb69130fad878727943e1b065b78d25eac47ded43",
+      "mime": "image/webp",
+      "bytes": 14178,
+      "width": 500,
+      "height": 500,
+      "path": "assets/5bf318677e0e582d7419a72cb69130fad878727943e1b065b78d25eac47ded43.webp",
+      "sourcePath": "images/kanji/金.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-gold",
+      "imageKey": "kanji/金",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "5c5cc95cc98afa6163ad0070504cc20073946355c37fb7effd870493bfc391d5",
+      "mime": "image/webp",
+      "bytes": 44392,
+      "width": 600,
+      "height": 600,
+      "path": "assets/5c5cc95cc98afa6163ad0070504cc20073946355c37fb7effd870493bfc391d5.webp",
+      "sourcePath": "images/kanji/本 (2).webp",
+      "sourceKind": "shipped-variant",
+      "slotId": "flash-book",
+      "imageKey": "kanji/本",
+      "variant": 2,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6166569ca291585ab4ef0b3f909a55d5ffeebf11fd537b545b77a942ea565ffa",
+      "mime": "image/webp",
+      "bytes": 10326,
+      "width": 600,
+      "height": 600,
+      "path": "assets/6166569ca291585ab4ef0b3f909a55d5ffeebf11fd537b545b77a942ea565ffa.webp",
+      "sourcePath": "images/kanji/月.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-moon",
+      "imageKey": "kanji/月",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "61e315931092ab712fbb39be75e0376b6728722c1ef7c45ed73e10bf7b2a9c84",
+      "mime": "image/webp",
+      "bytes": 17302,
+      "width": 500,
+      "height": 500,
+      "path": "assets/61e315931092ab712fbb39be75e0376b6728722c1ef7c45ed73e10bf7b2a9c84.webp",
+      "sourcePath": "images/kanji/会.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-meet",
+      "imageKey": "kanji/会",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6229cbd10a49d87724a1b50d8fc0c0fd54ae79f32a1cd51232f60fb077d05f6e",
+      "mime": "image/webp",
+      "bytes": 9002,
+      "width": 500,
+      "height": 500,
+      "path": "assets/6229cbd10a49d87724a1b50d8fc0c0fd54ae79f32a1cd51232f60fb077d05f6e.webp",
+      "sourcePath": "images/kanji/年.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-year",
+      "imageKey": "kanji/年",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "651c0a24a2bca1b0897ba7afa8a17eae935fc7af9137eafd850e048925644e39",
+      "mime": "image/webp",
+      "bytes": 10898,
+      "width": 600,
+      "height": 600,
+      "path": "assets/651c0a24a2bca1b0897ba7afa8a17eae935fc7af9137eafd850e048925644e39.webp",
+      "sourcePath": "images/kanji/土.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-earth",
+      "imageKey": "kanji/土",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "656eecc3b449782422b04cf1902f76e7de43e4be2c00babf11490bb01c2ec8b0",
+      "mime": "image/webp",
+      "bytes": 7120,
+      "width": 600,
+      "height": 600,
+      "path": "assets/656eecc3b449782422b04cf1902f76e7de43e4be2c00babf11490bb01c2ec8b0.webp",
+      "sourcePath": "images/kanji/小.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-small",
+      "imageKey": "kanji/小",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "66efc5aa779e822745dbebdb2b7ff21be8f49b31d6435a988fa2beead3bdb8c7",
+      "mime": "image/webp",
+      "bytes": 11500,
+      "width": 600,
+      "height": 600,
+      "path": "assets/66efc5aa779e822745dbebdb2b7ff21be8f49b31d6435a988fa2beead3bdb8c7.webp",
+      "sourcePath": "images/kanji/自.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-self",
+      "imageKey": "kanji/自",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "68f9fa11954e82dc80da00f1a699250eebf869f31612dd892666261f58554f87",
+      "mime": "image/webp",
+      "bytes": 16144,
+      "width": 500,
+      "height": 500,
+      "path": "assets/68f9fa11954e82dc80da00f1a699250eebf869f31612dd892666261f58554f87.webp",
+      "sourcePath": "images/kanji/狐.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-fox",
+      "imageKey": "kanji/狐",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6908dd9539d6d207c223e91b54bae2e0a8459aefb72b0c540ad25e5d70e93770",
+      "mime": "image/webp",
+      "bytes": 13578,
+      "width": 500,
+      "height": 500,
+      "path": "assets/6908dd9539d6d207c223e91b54bae2e0a8459aefb72b0c540ad25e5d70e93770.webp",
+      "sourcePath": "images/kanji/曜.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-you",
+      "imageKey": "kanji/曜",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6950d2c99ac67400fb6198e17bc68521f8d755b493d3850c4dd83375657768a9",
+      "mime": "image/webp",
+      "bytes": 32444,
+      "width": 600,
+      "height": 600,
+      "path": "assets/6950d2c99ac67400fb6198e17bc68521f8d755b493d3850c4dd83375657768a9.webp",
+      "sourcePath": "images/kanji/青.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-blue",
+      "imageKey": "kanji/青",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6a4913ef7d0223cad72880de51317746c2cd51ddb3533dcba9d2fcbe119b2cb5",
+      "mime": "image/webp",
+      "bytes": 12684,
+      "width": 500,
+      "height": 500,
+      "path": "assets/6a4913ef7d0223cad72880de51317746c2cd51ddb3533dcba9d2fcbe119b2cb5.webp",
+      "sourcePath": "images/kanji/鼻.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-nose",
+      "imageKey": "kanji/鼻",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6ace46507d12e501a31f4b5c3d14d6dd83e846c09f8faa5060e9ae413cce75a4",
+      "mime": "image/webp",
+      "bytes": 13380,
+      "width": 500,
+      "height": 500,
+      "path": "assets/6ace46507d12e501a31f4b5c3d14d6dd83e846c09f8faa5060e9ae413cce75a4.webp",
+      "sourcePath": "images/kanji/星.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-star",
+      "imageKey": "kanji/星",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6bf3c653917183179ea2ca35cc451acf0fb02412cc5a488bae04646b9dcb29c8",
+      "mime": "image/webp",
+      "bytes": 16512,
+      "width": 500,
+      "height": 500,
+      "path": "assets/6bf3c653917183179ea2ca35cc451acf0fb02412cc5a488bae04646b9dcb29c8.webp",
+      "sourcePath": "images/kanji/火曜日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-kayoubi",
+      "imageKey": "kanji/火曜日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6c0dc42713671ca7bd84fad4595390c78d7ca02ab2abe2d112412cf02792f412",
+      "mime": "image/webp",
+      "bytes": 16154,
+      "width": 600,
+      "height": 600,
+      "path": "assets/6c0dc42713671ca7bd84fad4595390c78d7ca02ab2abe2d112412cf02792f412.webp",
+      "sourcePath": "images/kanji/村.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-village",
+      "imageKey": "kanji/村",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6eb83085e79fb22c2fcc08a24a498a1d907a25a49f61cd99c6e5e02d2e7747e1",
+      "mime": "image/webp",
+      "bytes": 11496,
+      "width": 600,
+      "height": 600,
+      "path": "assets/6eb83085e79fb22c2fcc08a24a498a1d907a25a49f61cd99c6e5e02d2e7747e1.webp",
+      "sourcePath": "images/vocabulary/ぽよぽよ.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-poyopoyo",
+      "imageKey": "vocabulary/ぽよぽよ",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "6f50eaf4bcceb5ec51f0b868ebbff05fc8e4efdb14088c1f364be2df25409304",
+      "mime": "image/webp",
+      "bytes": 19334,
+      "width": 600,
+      "height": 600,
+      "path": "assets/6f50eaf4bcceb5ec51f0b868ebbff05fc8e4efdb14088c1f364be2df25409304.webp",
+      "sourcePath": "images/vocabulary/にゃーにゃー.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-nyanya",
+      "imageKey": "vocabulary/にゃーにゃー",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "72c769f3e01aa8c085dc7601da4404140e01ab223dbb7ff2c031d1e7c9ec835b",
+      "mime": "image/webp",
+      "bytes": 22912,
+      "width": 600,
+      "height": 600,
+      "path": "assets/72c769f3e01aa8c085dc7601da4404140e01ab223dbb7ff2c031d1e7c9ec835b.webp",
+      "sourcePath": "images/kanji/石.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-stone",
+      "imageKey": "kanji/石",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "7486c24e08c67e46e1d5c2de264cf81e0453cf10fe7891ba6f3633f27f5efb70",
+      "mime": "image/webp",
+      "bytes": 11000,
+      "width": 600,
+      "height": 600,
+      "path": "assets/7486c24e08c67e46e1d5c2de264cf81e0453cf10fe7891ba6f3633f27f5efb70.webp",
+      "sourcePath": "images/kanji/下.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-down",
+      "imageKey": "kanji/下",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "75e2c078a8cc81ec60f3342d6f843f7bc0427111374624e363824fa2ee676743",
+      "mime": "image/webp",
+      "bytes": 17526,
+      "width": 500,
+      "height": 500,
+      "path": "assets/75e2c078a8cc81ec60f3342d6f843f7bc0427111374624e363824fa2ee676743.webp",
+      "sourcePath": "images/kanji/分.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-minute",
+      "imageKey": "kanji/分",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "76a224c26749437d57d1ae2360a948ff964ccebe7f6bf43eebdc9c77d3cc9787",
+      "mime": "image/webp",
+      "bytes": 12452,
+      "width": 500,
+      "height": 500,
+      "path": "assets/76a224c26749437d57d1ae2360a948ff964ccebe7f6bf43eebdc9c77d3cc9787.webp",
+      "sourcePath": "images/kanji/工.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-craft",
+      "imageKey": "kanji/工",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "76b2a4071bfacc3cdbea623958e925f81a8bdf780ba54e89d8f8a500f18b4c71",
+      "mime": "image/webp",
+      "bytes": 26396,
+      "width": 500,
+      "height": 500,
+      "path": "assets/76b2a4071bfacc3cdbea623958e925f81a8bdf780ba54e89d8f8a500f18b4c71.webp",
+      "sourcePath": "images/kanji/界.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-boundary",
+      "imageKey": "kanji/界",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "774419cc00bf379aff46bd420998885148b9579648c4e4b91073dfce50b85b98",
+      "mime": "image/webp",
+      "bytes": 11510,
+      "width": 600,
+      "height": 600,
+      "path": "assets/774419cc00bf379aff46bd420998885148b9579648c4e4b91073dfce50b85b98.webp",
+      "sourcePath": "images/vocabulary/ぴたり.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-pitari",
+      "imageKey": "vocabulary/ぴたり",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "78dfbbd8d110155549d04a32a48df54d331aa33e6671a45490a8a9c41f22cda4",
+      "mime": "image/webp",
+      "bytes": 23854,
+      "width": 600,
+      "height": 600,
+      "path": "assets/78dfbbd8d110155549d04a32a48df54d331aa33e6671a45490a8a9c41f22cda4.webp",
+      "sourcePath": "images/kanji/赤 (2).webp",
+      "sourceKind": "shipped-variant",
+      "slotId": "flash-red",
+      "imageKey": "kanji/赤",
+      "variant": 2,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "7af4936c09153f9642ba3694aca57c18896b68f5bcb725ba46a4b7bb7be784bd",
+      "mime": "image/webp",
+      "bytes": 13866,
+      "width": 500,
+      "height": 500,
+      "path": "assets/7af4936c09153f9642ba3694aca57c18896b68f5bcb725ba46a4b7bb7be784bd.webp",
+      "sourcePath": "images/kanji/空.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-sky",
+      "imageKey": "kanji/空",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "7c91b23fe7ece9025738f3b4a06fafdff7a797b92dca5ababfb542750b4569c6",
+      "mime": "image/webp",
+      "bytes": 20384,
+      "width": 500,
+      "height": 500,
+      "path": "assets/7c91b23fe7ece9025738f3b4a06fafdff7a797b92dca5ababfb542750b4569c6.webp",
+      "sourcePath": "images/kanji/聞.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-hear",
+      "imageKey": "kanji/聞",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "7d0125712772f17ac45565af6e3b599047454c242b73eebaed2c9476ec17465a",
+      "mime": "image/webp",
+      "bytes": 19602,
+      "width": 600,
+      "height": 600,
+      "path": "assets/7d0125712772f17ac45565af6e3b599047454c242b73eebaed2c9476ec17465a.webp",
+      "sourcePath": "images/kanji/大.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-big",
+      "imageKey": "kanji/大",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "7e7a303fea0a3cc154532b44a712f8d102fe69ed47dd925796aa58ca3a497c7f",
+      "mime": "image/webp",
+      "bytes": 17988,
+      "width": 600,
+      "height": 600,
+      "path": "assets/7e7a303fea0a3cc154532b44a712f8d102fe69ed47dd925796aa58ca3a497c7f.webp",
+      "sourcePath": "images/kanji/門.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-gate",
+      "imageKey": "kanji/門",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "7fa3f3dd14c5c3736e614ee252d03b3a0b8635fe99070b8e75588cc85f157ff3",
+      "mime": "image/webp",
+      "bytes": 43870,
+      "width": 500,
+      "height": 500,
+      "path": "assets/7fa3f3dd14c5c3736e614ee252d03b3a0b8635fe99070b8e75588cc85f157ff3.webp",
+      "sourcePath": "images/kanji/寺.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-temple",
+      "imageKey": "kanji/寺",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "82d7b17a87e879245d2b7d4c996ffd27d03c419348aae61d93b2ea9ac8f4ebbb",
+      "mime": "image/webp",
+      "bytes": 23266,
+      "width": 600,
+      "height": 600,
+      "path": "assets/82d7b17a87e879245d2b7d4c996ffd27d03c419348aae61d93b2ea9ac8f4ebbb.webp",
+      "sourcePath": "images/kanji/男.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-man",
+      "imageKey": "kanji/男",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "858404702c01412952ee59f75f9cdff2b1bc6ed01913503800f56c6e854b4433",
+      "mime": "image/webp",
+      "bytes": 26134,
+      "width": 500,
+      "height": 500,
+      "path": "assets/858404702c01412952ee59f75f9cdff2b1bc6ed01913503800f56c6e854b4433.webp",
+      "sourcePath": "images/kanji/葉.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-leaf",
+      "imageKey": "kanji/葉",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "871fd0df733dbe9eade6646a9e3bebc4b6c288ab4821d359fcf6b264e52142e8",
+      "mime": "image/webp",
+      "bytes": 8318,
+      "width": 500,
+      "height": 500,
+      "path": "assets/871fd0df733dbe9eade6646a9e3bebc4b6c288ab4821d359fcf6b264e52142e8.webp",
+      "sourcePath": "images/kanji/友.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-friend",
+      "imageKey": "kanji/友",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "8822c31c9991b55395bbb592278e64e674f76bb06984a977a25e95d596a224c2",
+      "mime": "image/webp",
+      "bytes": 21306,
+      "width": 600,
+      "height": 600,
+      "path": "assets/8822c31c9991b55395bbb592278e64e674f76bb06984a977a25e95d596a224c2.webp",
+      "sourcePath": "images/kanji/黒.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-black",
+      "imageKey": "kanji/黒",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "8d1b57be2b475ca6aac86681cdf99d1fe5afe0424125fdd17b391466763cfb49",
+      "mime": "image/webp",
+      "bytes": 7502,
+      "width": 600,
+      "height": 600,
+      "path": "assets/8d1b57be2b475ca6aac86681cdf99d1fe5afe0424125fdd17b391466763cfb49.webp",
+      "sourcePath": "images/kanji/手.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-hand",
+      "imageKey": "kanji/手",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "8d2d173009bbc2acf0cc21e3211e48875d456c4017fb7e17059bcec1bc2d6250",
+      "mime": "image/webp",
+      "bytes": 21968,
+      "width": 500,
+      "height": 500,
+      "path": "assets/8d2d173009bbc2acf0cc21e3211e48875d456c4017fb7e17059bcec1bc2d6250.webp",
+      "sourcePath": "images/kanji/鮫.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-shark",
+      "imageKey": "kanji/鮫",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "8d4c2b4170f678b3c3ff3a4e2c4b1359c5aa8413376873fd043a92ac8476d6b6",
+      "mime": "image/webp",
+      "bytes": 38030,
+      "width": 600,
+      "height": 600,
+      "path": "assets/8d4c2b4170f678b3c3ff3a4e2c4b1359c5aa8413376873fd043a92ac8476d6b6.webp",
+      "sourcePath": "images/kanji/赤.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-red",
+      "imageKey": "kanji/赤",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "8de9ccf43c0f32787bc11dc4005332e217d9b406dd508f2f6f67ccd55397eaff",
+      "mime": "image/webp",
+      "bytes": 20950,
+      "width": 500,
+      "height": 500,
+      "path": "assets/8de9ccf43c0f32787bc11dc4005332e217d9b406dd508f2f6f67ccd55397eaff.webp",
+      "sourcePath": "images/kanji/心.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-heart",
+      "imageKey": "kanji/心",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "9175dc901439a32e307db3e8375e5f3f628e9f2e021138233ea6b94f55fb16e7",
+      "mime": "image/webp",
+      "bytes": 20852,
+      "width": 500,
+      "height": 500,
+      "path": "assets/9175dc901439a32e307db3e8375e5f3f628e9f2e021138233ea6b94f55fb16e7.webp",
+      "sourcePath": "images/kanji/牛.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-cow",
+      "imageKey": "kanji/牛",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "91b55007c95e894e764d8c47098477aa967749d82b68073a5569f9b941694a14",
+      "mime": "image/webp",
+      "bytes": 9572,
+      "width": 600,
+      "height": 600,
+      "path": "assets/91b55007c95e894e764d8c47098477aa967749d82b68073a5569f9b941694a14.webp",
+      "sourcePath": "images/kanji/白.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-white",
+      "imageKey": "kanji/白",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "91c2e27bea7d9a9cca80801249cc16b45e65965ae42e5abbd73e3afcc962edb1",
+      "mime": "image/webp",
+      "bytes": 5016,
+      "width": 600,
+      "height": 600,
+      "path": "assets/91c2e27bea7d9a9cca80801249cc16b45e65965ae42e5abbd73e3afcc962edb1.webp",
+      "sourcePath": "images/kanji/人.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-person",
+      "imageKey": "kanji/人",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "92d37c0666c4e327ec04d374663c92f538368a0ef9f621f85b4d26b5a349f943",
+      "mime": "image/webp",
+      "bytes": 19532,
+      "width": 600,
+      "height": 600,
+      "path": "assets/92d37c0666c4e327ec04d374663c92f538368a0ef9f621f85b4d26b5a349f943.webp",
+      "sourcePath": "images/kanji/開.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-open",
+      "imageKey": "kanji/開",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "9438950d6c37cf1aae2ab88cebdddfc9f43f4d97e95f8158644ff2ce6fff0ee0",
+      "mime": "image/webp",
+      "bytes": 30618,
+      "width": 600,
+      "height": 600,
+      "path": "assets/9438950d6c37cf1aae2ab88cebdddfc9f43f4d97e95f8158644ff2ce6fff0ee0.webp",
+      "sourcePath": "images/kanji/円.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-yen",
+      "imageKey": "kanji/円",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "97859cfb0fc2cc34f21a26aebdd967f8f03f8103a549f9ff7425c7ec4820e93f",
+      "mime": "image/webp",
+      "bytes": 22602,
+      "width": 600,
+      "height": 600,
+      "path": "assets/97859cfb0fc2cc34f21a26aebdd967f8f03f8103a549f9ff7425c7ec4820e93f.webp",
+      "sourcePath": "images/kanji/見.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-look",
+      "imageKey": "kanji/見",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "9d8692f5726a80db05dd70c86e690ea1db8d029625a5dd6d119535294e4bc827",
+      "mime": "image/webp",
+      "bytes": 17618,
+      "width": 500,
+      "height": 500,
+      "path": "assets/9d8692f5726a80db05dd70c86e690ea1db8d029625a5dd6d119535294e4bc827.webp",
+      "sourcePath": "images/kanji/猫.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-cat",
+      "imageKey": "kanji/猫",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "9f667ab8e4bf86cf8cd475c1eb3b505e79451fc42b7069d8af3b60d314e68595",
+      "mime": "image/webp",
+      "bytes": 11270,
+      "width": 600,
+      "height": 600,
+      "path": "assets/9f667ab8e4bf86cf8cd475c1eb3b505e79451fc42b7069d8af3b60d314e68595.webp",
+      "sourcePath": "images/kanji/木.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-tree",
+      "imageKey": "kanji/木",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "a0535566b29cb69055d0c2f85d807a7bb3b5b2234c6111151da28aa6a102cad8",
+      "mime": "image/webp",
+      "bytes": 19262,
+      "width": 500,
+      "height": 500,
+      "path": "assets/a0535566b29cb69055d0c2f85d807a7bb3b5b2234c6111151da28aa6a102cad8.webp",
+      "sourcePath": "images/kanji/月曜日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-getsuyoubi",
+      "imageKey": "kanji/月曜日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "a0c5d48b0739d482e20d0eaed8050fe9a8881c8caf56ed5e21f27606e4e65ee4",
+      "mime": "image/webp",
+      "bytes": 28624,
+      "width": 600,
+      "height": 600,
+      "path": "assets/a0c5d48b0739d482e20d0eaed8050fe9a8881c8caf56ed5e21f27606e4e65ee4.webp",
+      "sourcePath": "images/kanji/町.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-town",
+      "imageKey": "kanji/町",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "a811c310938b6afbe6f7780fd89f53c04017331d24c07ddcd6a45024a6879bae",
+      "mime": "image/webp",
+      "bytes": 14468,
+      "width": 500,
+      "height": 500,
+      "path": "assets/a811c310938b6afbe6f7780fd89f53c04017331d24c07ddcd6a45024a6879bae.webp",
+      "sourcePath": "images/kanji/寸.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-sun",
+      "imageKey": "kanji/寸",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "a8710a3561aac17e05e399c90f3389fbe0d716689395d635df48829b2f80340f",
+      "mime": "image/webp",
+      "bytes": 9360,
+      "width": 500,
+      "height": 500,
+      "path": "assets/a8710a3561aac17e05e399c90f3389fbe0d716689395d635df48829b2f80340f.webp",
+      "sourcePath": "images/kanji/玉.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-jewel",
+      "imageKey": "kanji/玉",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "a8978050933e2006e13384d6fc91c409590771909c6cf28c48f2c85862e1aa85",
+      "mime": "image/webp",
+      "bytes": 14344,
+      "width": 500,
+      "height": 500,
+      "path": "assets/a8978050933e2006e13384d6fc91c409590771909c6cf28c48f2c85862e1aa85.webp",
+      "sourcePath": "images/kanji/体.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-body",
+      "imageKey": "kanji/体",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "ad6af98e5e7e24b78941d8291f144745ee8ac56c0428ec4791586bfd06596e48",
+      "mime": "image/webp",
+      "bytes": 5786,
+      "width": 500,
+      "height": 500,
+      "path": "assets/ad6af98e5e7e24b78941d8291f144745ee8ac56c0428ec4791586bfd06596e48.webp",
+      "sourcePath": "images/kanji/天.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-heaven",
+      "imageKey": "kanji/天",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "af7c708436ae572509849a0d97cbe65ce800849b796841e88b7d236ccbda91bb",
+      "mime": "image/webp",
+      "bytes": 17686,
+      "width": 500,
+      "height": 500,
+      "path": "assets/af7c708436ae572509849a0d97cbe65ce800849b796841e88b7d236ccbda91bb.webp",
+      "sourcePath": "images/kanji/日曜日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-nichiyoubi",
+      "imageKey": "kanji/日曜日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "b1c3d4b6b3e93825930d9b67a7cbd1413132b89de29eeb932fd9ff061f59fefd",
+      "mime": "image/webp",
+      "bytes": 7724,
+      "width": 600,
+      "height": 600,
+      "path": "assets/b1c3d4b6b3e93825930d9b67a7cbd1413132b89de29eeb932fd9ff061f59fefd.webp",
+      "sourcePath": "images/kanji/日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-sun",
+      "imageKey": "kanji/日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "b8b08bd8f6746017721a491ad1728054e25e630f79e1c85c7532da4b1e74054f",
+      "mime": "image/webp",
+      "bytes": 21730,
+      "width": 600,
+      "height": 600,
+      "path": "assets/b8b08bd8f6746017721a491ad1728054e25e630f79e1c85c7532da4b1e74054f.webp",
+      "sourcePath": "images/kanji/国.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-country",
+      "imageKey": "kanji/国",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "bb6a9c59585f397e2cd8b2e1c06c9558cc0c2e22f6687f120cfd44e9a77b5367",
+      "mime": "image/webp",
+      "bytes": 7998,
+      "width": 600,
+      "height": 600,
+      "path": "assets/bb6a9c59585f397e2cd8b2e1c06c9558cc0c2e22f6687f120cfd44e9a77b5367.webp",
+      "sourcePath": "images/vocabulary/にこにこ.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-nikoniko",
+      "imageKey": "vocabulary/にこにこ",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "be0816daec7dc88e5bbbbfb1078e5eac5ac3d401ed3b33dd285d8dd238ad66b9",
+      "mime": "image/webp",
+      "bytes": 21576,
+      "width": 500,
+      "height": 455,
+      "path": "assets/be0816daec7dc88e5bbbbfb1078e5eac5ac3d401ed3b33dd285d8dd238ad66b9.webp",
+      "sourcePath": "images/kanji/秋.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-autumn",
+      "imageKey": "kanji/秋",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "bef93c6dd132f46f7e44e336ca142c664d6195f9c14507107e7f63c1569a3ca6",
+      "mime": "image/webp",
+      "bytes": 25958,
+      "width": 600,
+      "height": 600,
+      "path": "assets/bef93c6dd132f46f7e44e336ca142c664d6195f9c14507107e7f63c1569a3ca6.webp",
+      "sourcePath": "images/kanji/鶏.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-chicken",
+      "imageKey": "kanji/鶏",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "c07959283a73a41b1fc2ed0587ee5c84a72beeec4547c179279037db5985dc37",
+      "mime": "image/webp",
+      "bytes": 15812,
+      "width": 600,
+      "height": 600,
+      "path": "assets/c07959283a73a41b1fc2ed0587ee5c84a72beeec4547c179279037db5985dc37.webp",
+      "sourcePath": "images/kanji/上.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-up",
+      "imageKey": "kanji/上",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "c4e5f9fa01dfe1de61291a08c9a5e11265155a87a5e5534bc50e1737ac3bd17d",
+      "mime": "image/webp",
+      "bytes": 64190,
+      "width": 500,
+      "height": 500,
+      "path": "assets/c4e5f9fa01dfe1de61291a08c9a5e11265155a87a5e5534bc50e1737ac3bd17d.webp",
+      "sourcePath": "images/kanji/世界.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-sekai",
+      "imageKey": "kanji/世界",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "c615dab5b347d7362a4ccbfae910edad7704137216f00646bd425354f4500d20",
+      "mime": "image/webp",
+      "bytes": 11790,
+      "width": 600,
+      "height": 600,
+      "path": "assets/c615dab5b347d7362a4ccbfae910edad7704137216f00646bd425354f4500d20.webp",
+      "sourcePath": "images/kanji/生.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-life",
+      "imageKey": "kanji/生",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "c831d68c5aa6a4ba143554a43ac56d1831e83ac8f3acfdbd93f4625163764a54",
+      "mime": "image/webp",
+      "bytes": 18544,
+      "width": 500,
+      "height": 500,
+      "path": "assets/c831d68c5aa6a4ba143554a43ac56d1831e83ac8f3acfdbd93f4625163764a54.webp",
+      "sourcePath": "images/kanji/貝.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-shellfish",
+      "imageKey": "kanji/貝",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "caefd0242325d585acac6086901a1c7267c9445d38e578a22293e8cad6cf99d4",
+      "mime": "image/webp",
+      "bytes": 9236,
+      "width": 600,
+      "height": 600,
+      "path": "assets/caefd0242325d585acac6086901a1c7267c9445d38e578a22293e8cad6cf99d4.webp",
+      "sourcePath": "images/kanji/水.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-water",
+      "imageKey": "kanji/水",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "cbb8c89dbdff61d2110b31ee397e5e1ccac868d4437138c777f0a38f5e257afd",
+      "mime": "image/webp",
+      "bytes": 9988,
+      "width": 600,
+      "height": 600,
+      "path": "assets/cbb8c89dbdff61d2110b31ee397e5e1ccac868d4437138c777f0a38f5e257afd.webp",
+      "sourcePath": "images/kanji/山.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-mtn",
+      "imageKey": "kanji/山",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "cbf33f9716679962285c62caa32a3f2ff2714cb8c1619ba9f08e886a3e786aab",
+      "mime": "image/webp",
+      "bytes": 10084,
+      "width": 600,
+      "height": 600,
+      "path": "assets/cbf33f9716679962285c62caa32a3f2ff2714cb8c1619ba9f08e886a3e786aab.webp",
+      "sourcePath": "images/vocabulary/ぽたぽた.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-potapota",
+      "imageKey": "vocabulary/ぽたぽた",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "ccacf4a7ebea9ddb140c2ff149d50c709712feead316e86258b652b75c54f23e",
+      "mime": "image/webp",
+      "bytes": 18510,
+      "width": 600,
+      "height": 600,
+      "path": "assets/ccacf4a7ebea9ddb140c2ff149d50c709712feead316e86258b652b75c54f23e.webp",
+      "sourcePath": "images/kanji/蛙.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-frog",
+      "imageKey": "kanji/蛙",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "cf6b172c6db2d64bd044fdaf4bd1aaea416d009d2c0ef7a71f6da93c7491d730",
+      "mime": "image/webp",
+      "bytes": 39922,
+      "width": 500,
+      "height": 500,
+      "path": "assets/cf6b172c6db2d64bd044fdaf4bd1aaea416d009d2c0ef7a71f6da93c7491d730.webp",
+      "sourcePath": "images/kanji/世間.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-seken",
+      "imageKey": "kanji/世間",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d01d1fa6339fb9a9ef6befee6dfcace93f3860605b6a1a4f9cf4eb7c59c0ff39",
+      "mime": "image/webp",
+      "bytes": 15990,
+      "width": 500,
+      "height": 500,
+      "path": "assets/d01d1fa6339fb9a9ef6befee6dfcace93f3860605b6a1a4f9cf4eb7c59c0ff39.webp",
+      "sourcePath": "images/kanji/茶.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-tea",
+      "imageKey": "kanji/茶",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d0cb37e0817f96319fe6aab71e06e8f904686237e79a193abc401e5628f3b42e",
+      "mime": "image/webp",
+      "bytes": 18480,
+      "width": 600,
+      "height": 600,
+      "path": "assets/d0cb37e0817f96319fe6aab71e06e8f904686237e79a193abc401e5628f3b42e.webp",
+      "sourcePath": "images/kanji/女.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-woman",
+      "imageKey": "kanji/女",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d0d3103b1de32d7de993eb47dfa1b7644fd05402bd2a8cd279f3f363b85cb1f7",
+      "mime": "image/webp",
+      "bytes": 20242,
+      "width": 500,
+      "height": 500,
+      "path": "assets/d0d3103b1de32d7de993eb47dfa1b7644fd05402bd2a8cd279f3f363b85cb1f7.webp",
+      "sourcePath": "images/kanji/緑.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-green",
+      "imageKey": "kanji/緑",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d203f4dd154de4907210490e8484ddc313ad801547a1fa324a6e1ca311be28e0",
+      "mime": "image/webp",
+      "bytes": 15088,
+      "width": 600,
+      "height": 600,
+      "path": "assets/d203f4dd154de4907210490e8484ddc313ad801547a1fa324a6e1ca311be28e0.webp",
+      "sourcePath": "images/kanji/火.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-fire",
+      "imageKey": "kanji/火",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d4afcf997037cfc6e22ecd89670b73ed863278a6726d4d7413f7091e5169a901",
+      "mime": "image/webp",
+      "bytes": 23814,
+      "width": 500,
+      "height": 500,
+      "path": "assets/d4afcf997037cfc6e22ecd89670b73ed863278a6726d4d7413f7091e5169a901.webp",
+      "sourcePath": "images/kanji/双子.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-futago",
+      "imageKey": "kanji/双子",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d6dd90ac10e6cecaf87ebb90d02be0cf00970bb8c45c771d01c54ac7a8fc8605",
+      "mime": "image/webp",
+      "bytes": 22708,
+      "width": 600,
+      "height": 600,
+      "path": "assets/d6dd90ac10e6cecaf87ebb90d02be0cf00970bb8c45c771d01c54ac7a8fc8605.webp",
+      "sourcePath": "images/kanji/姉.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-oneesan",
+      "imageKey": "kanji/姉",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d8157724b74be5d791a4adbfb0aef54538f5318a5e7df20e5c5fec1bd868cf03",
+      "mime": "image/webp",
+      "bytes": 12418,
+      "width": 500,
+      "height": 500,
+      "path": "assets/d8157724b74be5d791a4adbfb0aef54538f5318a5e7df20e5c5fec1bd868cf03.webp",
+      "sourcePath": "images/kanji/百.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-hundred",
+      "imageKey": "kanji/百",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "d8ae9908b4a6a04ff1a0c20f4a9766990ff9358c7650a8132ced04a581f70c90",
+      "mime": "image/webp",
+      "bytes": 20684,
+      "width": 600,
+      "height": 600,
+      "path": "assets/d8ae9908b4a6a04ff1a0c20f4a9766990ff9358c7650a8132ced04a581f70c90.webp",
+      "sourcePath": "images/kanji/母.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-mother",
+      "imageKey": "kanji/母",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "de7eec0dfbc87169ba02711e428670678b4bf0387a4cc099f7a5f16926b996ad",
+      "mime": "image/webp",
+      "bytes": 35284,
+      "width": 600,
+      "height": 600,
+      "path": "assets/de7eec0dfbc87169ba02711e428670678b4bf0387a4cc099f7a5f16926b996ad.webp",
+      "sourcePath": "images/kanji/鯨.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-whale",
+      "imageKey": "kanji/鯨",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "df7c897cee5501fda992a152f09cafb9591dd195c6d24a1f2dc1243e59e6a427",
+      "mime": "image/webp",
+      "bytes": 20262,
+      "width": 600,
+      "height": 600,
+      "path": "assets/df7c897cee5501fda992a152f09cafb9591dd195c6d24a1f2dc1243e59e6a427.webp",
+      "sourcePath": "images/kanji/雨.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-rain",
+      "imageKey": "kanji/雨",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e1f881522d017337f4b2918a7bc264f6802705b57eae68917cd96fde47e1cba4",
+      "mime": "image/webp",
+      "bytes": 15052,
+      "width": 500,
+      "height": 500,
+      "path": "assets/e1f881522d017337f4b2918a7bc264f6802705b57eae68917cd96fde47e1cba4.webp",
+      "sourcePath": "images/kanji/花.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-flower",
+      "imageKey": "kanji/花",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e20a759019d2eea9a5214fd0e0f87cdd252f4887ffad34c1dac5d879a5b547f7",
+      "mime": "image/webp",
+      "bytes": 17306,
+      "width": 500,
+      "height": 500,
+      "path": "assets/e20a759019d2eea9a5214fd0e0f87cdd252f4887ffad34c1dac5d879a5b547f7.webp",
+      "sourcePath": "images/kanji/云.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-say-classical",
+      "imageKey": "kanji/云",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e315d662c5fcd2722613a3ba4b74eef88f66ac8a273a3576c4ccf471040de796",
+      "mime": "image/webp",
+      "bytes": 18272,
+      "width": 500,
+      "height": 500,
+      "path": "assets/e315d662c5fcd2722613a3ba4b74eef88f66ac8a273a3576c4ccf471040de796.webp",
+      "sourcePath": "images/kanji/休.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-rest",
+      "imageKey": "kanji/休",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e44c172d9354df07a7633595a973bf1c47150733cc6cc064a51873b60778fe43",
+      "mime": "image/webp",
+      "bytes": 6482,
+      "width": 500,
+      "height": 500,
+      "path": "assets/e44c172d9354df07a7633595a973bf1c47150733cc6cc064a51873b60778fe43.webp",
+      "sourcePath": "images/kanji/白鳥.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-swan",
+      "imageKey": "kanji/白鳥",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e4cb46a4c6745bda7e46952409838298dfa8e40cdcd373f3a2c94fca87837571",
+      "mime": "image/webp",
+      "bytes": 14090,
+      "width": 600,
+      "height": 600,
+      "path": "assets/e4cb46a4c6745bda7e46952409838298dfa8e40cdcd373f3a2c94fca87837571.webp",
+      "sourcePath": "images/kanji/岩.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-rock",
+      "imageKey": "kanji/岩",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e587380a8202de0ad42b6557a594d99ece4da3a225d1ee602af904a3aa19d829",
+      "mime": "image/webp",
+      "bytes": 18984,
+      "width": 500,
+      "height": 500,
+      "path": "assets/e587380a8202de0ad42b6557a594d99ece4da3a225d1ee602af904a3aa19d829.webp",
+      "sourcePath": "images/kanji/時.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-hour",
+      "imageKey": "kanji/時",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e701e0e9a21f569b5f947f26b2171fdcec3863a0016e51cc7a0c065557144a4c",
+      "mime": "image/webp",
+      "bytes": 22700,
+      "width": 600,
+      "height": 600,
+      "path": "assets/e701e0e9a21f569b5f947f26b2171fdcec3863a0016e51cc7a0c065557144a4c.webp",
+      "sourcePath": "images/kanji/好.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-like",
+      "imageKey": "kanji/好",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e7b2f49a40269cbb102300c8e704b9fb777abecb1b84ac593dba9f53bbcd4edc",
+      "mime": "image/webp",
+      "bytes": 8374,
+      "width": 600,
+      "height": 600,
+      "path": "assets/e7b2f49a40269cbb102300c8e704b9fb777abecb1b84ac593dba9f53bbcd4edc.webp",
+      "sourcePath": "images/kanji/目.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-eye",
+      "imageKey": "kanji/目",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "e8523e3cd4a316b4cac08ecbb983ee6a3c93e239f6c4fab9bf9870b7f4b2b029",
+      "mime": "image/webp",
+      "bytes": 18422,
+      "width": 600,
+      "height": 600,
+      "path": "assets/e8523e3cd4a316b4cac08ecbb983ee6a3c93e239f6c4fab9bf9870b7f4b2b029.webp",
+      "sourcePath": "images/kanji/虫.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-insect",
+      "imageKey": "kanji/虫",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "eb87bb16f6d84890b87e359ad0e6698102f2a3c64fefe0192ff82cbe1577ccf0",
+      "mime": "image/webp",
+      "bytes": 11786,
+      "width": 500,
+      "height": 500,
+      "path": "assets/eb87bb16f6d84890b87e359ad0e6698102f2a3c64fefe0192ff82cbe1577ccf0.webp",
+      "sourcePath": "images/kanji/竹.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-bamboo",
+      "imageKey": "kanji/竹",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "eef46400be5068808b538d27fc835331257c96493d47415a6e8d9800828f6f4e",
+      "mime": "image/webp",
+      "bytes": 22918,
+      "width": 600,
+      "height": 600,
+      "path": "assets/eef46400be5068808b538d27fc835331257c96493d47415a6e8d9800828f6f4e.webp",
+      "sourcePath": "images/kanji/弟.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-otouto",
+      "imageKey": "kanji/弟",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "ef1561c99700d516a683f10ee4e3a73c6a4474b77132d172556b659f0307f646",
+      "mime": "image/webp",
+      "bytes": 20208,
+      "width": 500,
+      "height": 500,
+      "path": "assets/ef1561c99700d516a683f10ee4e3a73c6a4474b77132d172556b659f0307f646.webp",
+      "sourcePath": "images/kanji/夏.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-summer",
+      "imageKey": "kanji/夏",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "f125ab3713ea252335dc2b9b8960198673bf9c6cacbe5dd30f5841f7e6332590",
+      "mime": "image/webp",
+      "bytes": 16090,
+      "width": 500,
+      "height": 500,
+      "path": "assets/f125ab3713ea252335dc2b9b8960198673bf9c6cacbe5dd30f5841f7e6332590.webp",
+      "sourcePath": "images/kanji/半.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-half-num",
+      "imageKey": "kanji/半",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "f28836890e9ffdcd6626144d0a6acc85d52546b378c8359ac32ae0e7c04fc5eb",
+      "mime": "image/webp",
+      "bytes": 15372,
+      "width": 500,
+      "height": 500,
+      "path": "assets/f28836890e9ffdcd6626144d0a6acc85d52546b378c8359ac32ae0e7c04fc5eb.webp",
+      "sourcePath": "images/kanji/車.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-vehicle",
+      "imageKey": "kanji/車",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "f28c9e322a63beeebc5af3e1b87972a555b9e7d680899647b6ee9c5df5c12ee2",
+      "mime": "image/webp",
+      "bytes": 5240,
+      "width": 600,
+      "height": 600,
+      "path": "assets/f28c9e322a63beeebc5af3e1b87972a555b9e7d680899647b6ee9c5df5c12ee2.webp",
+      "sourcePath": "images/kanji/入.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-enter",
+      "imageKey": "kanji/入",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "f3cbe0919dfba3946afb61ed8ca6f7093134b72df299683e0132c356f5fce5e6",
+      "mime": "image/webp",
+      "bytes": 11480,
+      "width": 600,
+      "height": 600,
+      "path": "assets/f3cbe0919dfba3946afb61ed8ca6f7093134b72df299683e0132c356f5fce5e6.webp",
+      "sourcePath": "images/kanji/出.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-exit",
+      "imageKey": "kanji/出",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "f3eacd2200c5a8088383dbf0fd7e1de31a7b3b57bc3cc6d6e0677c0c6297c62a",
+      "mime": "image/webp",
+      "bytes": 17388,
+      "width": 500,
+      "height": 500,
+      "path": "assets/f3eacd2200c5a8088383dbf0fd7e1de31a7b3b57bc3cc6d6e0677c0c6297c62a.webp",
+      "sourcePath": "images/kanji/金曜日.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-kinyoubi",
+      "imageKey": "kanji/金曜日",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "f417a3aa376631485cd07a6ecd764e611f22765c7585ec889aa1dce3fe09151b",
+      "mime": "image/webp",
+      "bytes": 14288,
+      "width": 600,
+      "height": 600,
+      "path": "assets/f417a3aa376631485cd07a6ecd764e611f22765c7585ec889aa1dce3fe09151b.webp",
+      "sourcePath": "images/kanji/父.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-father",
+      "imageKey": "kanji/父",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "assetHash": "fd69888733c91679e3ca48d3230708f91dd4c718ba951e0c7d8bf00fac56c6a5",
+      "mime": "image/webp",
+      "bytes": 22932,
+      "width": 600,
+      "height": 600,
+      "path": "assets/fd69888733c91679e3ca48d3230708f91dd4c718ba951e0c7d8bf00fac56c6a5.webp",
+      "sourcePath": "images/kanji/姉妹.webp",
+      "sourceKind": "shipped",
+      "slotId": "flash-shimai",
+      "imageKey": "kanji/姉妹",
+      "variant": 1,
+      "framing": {
+        "fit": "contain",
+        "s": 1,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "counts": {
+    "cards": 262,
+    "images": 155,
+    "missingImages": 81
+  }
+}
