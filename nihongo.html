@@ -241,6 +241,28 @@
     color: var(--jp-ink-3);
   }
 
+  /* ── a branch behind the bar ──────────────────────────────────────
+     The study app's own sakura paper, cropped to the richest branch and
+     laid behind the navbar's empty middle. It is masked to fade before it
+     reaches the switcher on one side and the links on the other, and it
+     sits at z-index -1 so it passes under the text rather than over it.
+     Scoped to this page: the portfolio keeps its own plain bar. */
+  nav.top .inner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* the asset is cut out of its paper and feathered, so it needs no mask:
+       it simply ends where the branch ends */
+    background: url("./nihongo/images/bg/global/nav-sakura.webp") 47% 17% / auto 215% no-repeat;
+    opacity: .85;
+  }
+  @media (max-width: 700px) {
+    /* the bar is nearly all control at this width; the branch would crowd it */
+    nav.top .inner::before { display: none; }
+  }
+
   /* the one nav item that leaves the page carries the accent */
   .nav-open {
     color: var(--jp-gold-dark) !important;
@@ -378,7 +400,7 @@
       </li>
       <li role="option" aria-selected="false" data-href="./index.html" tabindex="-1">
         <span class="ns-row">
-          <span class="mark" aria-hidden="true">&#10003;</span>
+          <span class="mark" aria-hidden="true"></span>
           <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
         </span>
         <span class="ns-desc">the work &mdash; what khevin ships for clients</span>
