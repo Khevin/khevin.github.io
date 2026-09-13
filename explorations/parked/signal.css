@@ -108,21 +108,20 @@ nav.top {
 .about-grid .hats-art img,
 .hats-art--inline img { aspect-ratio: 1894 / 830; }
 
-/* The name, left, in the title face — a wordmark rather than a file path.
-   Fraunces has no true small caps (font-feature-settings: "smcp" moves nothing),
-   so these are synthesised. That is usually a bad trade on a high-contrast
-   serif, because scaling a capital down thins its strokes with it; at 900 the
-   face is dense enough that the scaled caps still read solid, which is the only
-   reason this works. Checked against real caps stepped down to the same height
-   before settling on it. */
+/* The name, left, in the title face — a wordmark rather than a file path, set
+   lowercase the way the reference draws it. Fraunces at 900 has enough colour
+   in the lowercase that it holds its own against the nav opposite without
+   needing caps to do the work. The two declarations after the family are both
+   defensive: styles.css uppercases this element and adds mono tracking to it,
+   and neither belongs on a serif wordmark. */
 .brand-switch .ns {
   font-family: 'Fraunces', Georgia, serif;
   font-weight: 900;
-  font-size: 20px;
-  font-variant-caps: small-caps;
-  letter-spacing: 0.005em;
+  font-size: 21px;
+  letter-spacing: -0.012em;
   color: var(--ink);
-  text-transform: none;
+  text-transform: lowercase;
+  font-variant-caps: normal;
 }
 .brand-switch:hover .ns { color: var(--accent); }
 /* The namespace the trigger stands for stays in the accessibility tree: a
