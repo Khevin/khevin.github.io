@@ -198,6 +198,98 @@
     margin: 0 0 16px;
     text-transform: lowercase;
   }
+
+  /* ── two doors: the app, and the reader ──────────────────────────── */
+  .jp-doors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 14px;
+    margin: 8px 0 48px;
+  }
+  .jp-enter { margin: 0; }                     /* the door now lives in the grid */
+  .jp-enter-link { max-width: none; height: 100%; }
+  /* The second door is not open yet: same shape, quieter ink, no lift. */
+  .jp-enter-link.is-soon {
+    border-left-color: var(--jp-gold-soft);
+    cursor: default;
+    box-shadow: none;
+  }
+  .jp-enter-link.is-soon:hover {
+    transform: none;
+    border-color: var(--jp-edge);
+    border-left-color: var(--jp-gold-soft);
+    box-shadow: none;
+  }
+  .jp-enter-link.is-soon .jp-enter-label { color: var(--jp-ink-2); }
+  .jp-door-mark {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    flex: none;
+    font-family: var(--serif-jp);
+    font-size: 22px;
+    color: var(--jp-gold-dark);
+    background: var(--jp-paper-2);
+    border: 1px solid var(--jp-edge);
+    border-radius: 6px;
+  }
+  .jp-soon {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--jp-ink-3);
+  }
+
+  /* ── the why ─────────────────────────────────────────────────────── */
+  .jp-vision {
+    max-width: 68ch;
+    margin: 0 0 44px;
+  }
+  .jp-vision p {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.62;
+    color: var(--jp-ink-2);
+    margin: 0 0 14px;
+  }
+  .jp-vision p:last-child { margin-bottom: 0; }
+  .jp-vision em { color: var(--jp-ink); font-style: italic; }
+
+  /* ── gallery ─────────────────────────────────────────────────────── */
+  .jp-shots {
+    display: grid;
+    /* four detail tiles read as two pairs, not a row of three and an orphan */
+    grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+    gap: 18px;
+    margin: 0 0 8px;
+  }
+  .jp-shot { margin: 0; }
+  .jp-shot.is-wide { grid-column: 1 / -1; }
+  .jp-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--jp-edge);
+    border-radius: 6px;
+    background: var(--jp-paper-2);
+    box-shadow: 0 2px 10px rgba(100,72,30,0.09);
+  }
+  .jp-shot figcaption {
+    margin-top: 8px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--jp-ink-2);
+  }
+  .jp-shot figcaption b {
+    font-weight: 600;
+    font-style: normal;
+    color: var(--jp-ink);
+  }
+  @media (max-width: 640px) {
+    .jp-vision p { font-size: 16px; }
+  }
 </style>
 </head>
 <body data-page="nihongo">
@@ -206,7 +298,7 @@
 <nav class="top">
   <div class="inner">
     <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
-      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">nihongo</span>
       <span class="chev" aria-hidden="true">&#9662;</span>
     </button>
 
@@ -218,7 +310,7 @@
         </span>
         <span class="ns-desc">the plugin &mdash; what khevin makes for designers</span>
       </li>
-      <li role="option" aria-selected="true" data-href="./index.html" class="current" tabindex="0">
+      <li role="option" aria-selected="false" data-href="./index.html" tabindex="-1">
         <span class="ns-row">
           <span class="mark" aria-hidden="true">&#10003;</span>
           <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
@@ -231,6 +323,13 @@
           <span>khevin-mituti<span class="slash">/</span><span class="child">skillstone</span></span>
         </span>
         <span class="ns-desc">the character sheet &mdash; what khevin keeps for himself</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="./nihongo.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">✓</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">nihongo</span></span>
+        </span>
+        <span class="ns-desc">the study space &mdash; what khevin is learning</span>
       </li>
     </ul>
 
@@ -245,7 +344,6 @@
       <li><a href="./process.html">process</a></li>
       <li><a href="./blog.html">blog</a></li>
       <li><a href="./books.html">library</a></li>
-      <li><a href="./nihongo.html" aria-current="page" lang="ja">日本語</a></li>
       <li><a href="./about-me.html">about</a></li>
     </ul>
   </div>
@@ -279,15 +377,33 @@
 <section class="section">
   <div class="shell">
 
-    <div class="jp-enter">
-      <a href="./nihongo/app.html" class="jp-enter-link">
-        <img class="jp-enter-mark" src="./nihongo/images/logo.webp" alt="" aria-hidden="true" />
-        <span class="jp-enter-body">
-          <span class="jp-enter-label">勉強アプリを開く<br>Open the study app</span>
-          <span class="jp-enter-sub">Vocabulary &middot; Flashcards &middot; Dictionary &middot; Sentences</span>
+    <div class="jp-doors">
+      <div class="jp-enter">
+        <a href="./nihongo/app.html" class="jp-enter-link">
+          <img class="jp-enter-mark" src="./nihongo/images/logo.webp" alt="" aria-hidden="true" />
+          <span class="jp-enter-body">
+            <span class="jp-enter-label">勉強アプリを開く<br>Open the study app</span>
+            <span class="jp-enter-sub">Vocabulary &middot; Flashcards &middot; Dictionary &middot; Sentences</span>
+          </span>
+          <span class="jp-enter-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+      <div class="jp-enter">
+        <span class="jp-enter-link is-soon">
+          <span class="jp-door-mark" lang="ja" aria-hidden="true">札</span>
+          <span class="jp-enter-body">
+            <span class="jp-enter-label">日本語リーダー<br>Nihongo Reader &mdash; Chrome extension</span>
+            <span class="jp-enter-sub">Read any Japanese page with my own cards</span>
+            <span class="jp-soon">in testing &mdash; not in the store yet</span>
+          </span>
         </span>
-        <span class="jp-enter-arrow" aria-hidden="true">&rarr;</span>
-      </a>
+      </div>
+    </div>
+
+    <div class="jp-vision">
+      <p>I started this because the apps I tried all taught the same 500 words in the same order, and none of them knew what I had already learned. So the rule here is the opposite: <em>everything is tied to what I have actually studied.</em> A word I meet in a story links back to the card I drew for it, the sentence I broke apart, the picture I made to remember it.</p>
+      <p>The study app is the desk. The reader extension is the part I am most excited about: it takes that same desk out into the wild, so a Nintendo page or a news article becomes readable in place &mdash; the sentence broken into particle-tagged blocks, each word carrying my own mnemonic, every kanji I look at quietly counted as an encounter.</p>
+      <p>It is not a product and there is no roadmap. It grows in the direction I happen to be studying, which is why there is a whole world for eating out, and why the dictionary knows the word for Pokédex.</p>
     </div>
 
     <p class="jp-section-label">what&rsquo;s inside</p>
@@ -296,33 +412,67 @@
       <div class="jp-sec">
         <span class="jp-sec-glyph" lang="ja" aria-hidden="true">語</span>
         <h4>Vocabulary books</h4>
-        <p>Themed word lists &mdash; home, travel, dining &mdash; each paired with a watercolor cheatsheet.</p>
+        <p>Themed word lists &mdash; home, food, stays, the internet &mdash; each word illustrated and tied to a watercolour cheatsheet.</p>
       </div>
       <div class="jp-sec">
         <span class="jp-sec-glyph" lang="ja" aria-hidden="true">札</span>
         <h4>Flashcards</h4>
-        <p>Kanji and vocabulary decks, front and back, with animated stroke-order and a progress bar.</p>
+        <p>Kanji and vocabulary decks with animated stroke order, hand-made mnemonic pictures, and spaced review.</p>
       </div>
       <div class="jp-sec">
         <span class="jp-sec-glyph" lang="ja" aria-hidden="true">文</span>
         <h4>Writing &amp; grammar</h4>
-        <p>Kana, particles, sentence structure, and pitch-accent basics &mdash; worked through step by step.</p>
+        <p>Kana, particles and sentence structure, taught as coloured blocks you can read left to right.</p>
       </div>
       <div class="jp-sec">
         <span class="jp-sec-glyph" lang="ja" aria-hidden="true">話</span>
         <h4>Shadowing studio</h4>
-        <p>Hear a phrase, record yourself, and get scored on rhythm, clarity, pitch, and naturalness.</p>
+        <p>Hear a phrase, record yourself, and get scored on rhythm, clarity, pitch and naturalness.</p>
       </div>
       <div class="jp-sec">
         <span class="jp-sec-glyph" lang="ja" aria-hidden="true">食</span>
         <h4>Food &amp; dining</h4>
-        <p>A whole eating-out world &mdash; restaurant menus, a food gallery, and flavor &amp; texture guides.</p>
+        <p>A whole eating-out world &mdash; menus, a food gallery, and guides to flavour and texture words.</p>
       </div>
       <div class="jp-sec">
         <span class="jp-sec-glyph" lang="ja" aria-hidden="true">辞</span>
         <h4>Dictionary</h4>
-        <p>Searchable word list with readings, meanings, and JLPT level tags.</p>
+        <p>Every everyday kanji with its readings and meaning, plus the game vocabulary I keep running into.</p>
       </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">読</span>
+        <h4>The reader</h4>
+        <p>A Chrome extension that reads the page you are on, in the same blocks, against your own cards.</p>
+      </div>
+    </div>
+
+    <p class="jp-section-label" id="gallery">a look inside</p>
+
+    <div class="jp-shots">
+      <figure class="jp-shot is-wide">
+        <img src="./nihongo/images/showcase/reader-on-zelda.webp" alt="The Nihongo Reader extension open on a Japanese Zelda page: a floating bar at the bottom shows the sentence as coloured blocks, and a side panel explains each word." loading="lazy" width="1600" height="755" />
+        <figcaption><b>The reader, out in the wild.</b> A chapter page from 時のオカリナ, read in place. The bar carries the sentence; the panel carries my cards.</figcaption>
+      </figure>
+      <figure class="jp-shot is-wide">
+        <img src="./nihongo/images/showcase/reader-blocks.webp" alt="A close-up of the reader's block row: ハイラル王国の辺境 に 広がる 森 には, each word a coloured chevron and each particle a diamond." loading="lazy" width="1400" height="286" />
+        <figcaption><b>One sentence, taken apart.</b> Nouns, verbs and particles get their own shape and colour, the same language the grammar lessons use.</figcaption>
+      </figure>
+      <figure class="jp-shot">
+        <img src="./nihongo/images/showcase/vocabulary-fruits.webp" alt="The vocabulary section showing a grid of illustrated fruit cards with Japanese names and taste tags." loading="lazy" width="1600" height="800" />
+        <figcaption><b>Vocabulary books.</b> Every word gets a picture, a reading and the tags that matter &mdash; here, which fruits are sweet and which are sour.</figcaption>
+      </figure>
+      <figure class="jp-shot">
+        <img src="./nihongo/images/showcase/textures.webp" alt="The textures world: a row of texture words above an illustrated card for さくさく with a sawtooth line drawing." loading="lazy" width="1147" height="869" />
+        <figcaption><b>Textures.</b> Each texture word is drawn as the line it feels like: a soft wave for もちもち, a sawtooth for さくさく.</figcaption>
+      </figure>
+      <figure class="jp-shot">
+        <img src="./nihongo/images/showcase/flashcards-review.webp" alt="A flashcard under review showing the kanji 日 beside its mnemonic picture, with spaced-repetition buttons underneath." loading="lazy" width="1600" height="804" />
+        <figcaption><b>Review.</b> The card, its picture, its readings, and four honest answers about how it went.</figcaption>
+      </figure>
+      <figure class="jp-shot">
+        <img src="./nihongo/images/showcase/kanji-card.webp" alt="A kanji detail card for 色 showing large stroke-order artwork and its readings." loading="lazy" width="1144" height="667" />
+        <figcaption><b>One kanji, up close.</b> Stroke order, readings, and the story I wrote to keep it in my head.</figcaption>
+      </figure>
     </div>
 
   </div>
