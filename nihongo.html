@@ -266,6 +266,8 @@
   }
   .jp-shot { margin: 0; }
   .jp-shot.is-wide { grid-column: 1 / -1; }
+  /* a card is taller than it is wide: cap it so it sits level with its neighbour */
+  .jp-shot.is-tall img { max-height: 430px; width: auto; margin: 0 auto; }
   .jp-shot img {
     display: block;
     width: 100%;
@@ -450,12 +452,12 @@
 
     <div class="jp-shots">
       <figure class="jp-shot is-wide">
-        <img src="./nihongo/images/showcase/reader-on-zelda.webp" alt="The Nihongo Reader extension open on a Japanese Zelda page: a floating bar at the bottom shows the sentence as coloured blocks, and a side panel explains each word." loading="lazy" width="1600" height="755" />
-        <figcaption><b>The reader, out in the wild.</b> A chapter page from 時のオカリナ, read in place. The bar carries the sentence; the panel carries my cards.</figcaption>
+        <img src="./nihongo/images/showcase/reader-on-zelda.webp" alt="The Nihongo Reader extension open on a Japanese Zelda page: a selected sentence with the 札 button beside it, a floating bar showing the sentence as coloured blocks, and a side panel listing the words and their kanji." loading="lazy" width="1600" height="764" />
+        <figcaption><b>The reader, out in the wild.</b> A chapter page from 時のオカリナ. Select a line, tap 札, and the bar takes the sentence apart while the panel lists the words, their readings and every kanji inside them.</figcaption>
       </figure>
       <figure class="jp-shot is-wide">
-        <img src="./nihongo/images/showcase/reader-blocks.webp" alt="A close-up of the reader's block row: ハイラル王国の辺境 に 広がる 森 には, each word a coloured chevron and each particle a diamond." loading="lazy" width="1400" height="286" />
-        <figcaption><b>One sentence, taken apart.</b> Nouns, verbs and particles get their own shape and colour, the same language the grammar lessons use.</figcaption>
+        <img src="./nihongo/images/showcase/sentence-blocks.webp" alt="A sentence diagram for 私は私の可愛い猫とアニメを見る: each word is a coloured chevron, each particle a diamond, with a legend naming the role of each piece." loading="lazy" width="1400" height="460" />
+        <figcaption><b>One sentence, taken apart.</b> &ldquo;I watch anime with my cute cat.&rdquo; Words are chevrons, particles are diamonds, and the verb closes the line. The reader draws the pages you visit in this same alphabet.</figcaption>
       </figure>
       <figure class="jp-shot">
         <img src="./nihongo/images/showcase/vocabulary-fruits.webp" alt="The vocabulary section showing a grid of illustrated fruit cards with Japanese names and taste tags." loading="lazy" width="1600" height="800" />
@@ -465,9 +467,9 @@
         <img src="./nihongo/images/showcase/textures.webp" alt="The textures world: a row of texture words above an illustrated card for さくさく with a sawtooth line drawing." loading="lazy" width="1147" height="869" />
         <figcaption><b>Textures.</b> Each texture word is drawn as the line it feels like: a soft wave for もちもち, a sawtooth for さくさく.</figcaption>
       </figure>
-      <figure class="jp-shot">
-        <img src="./nihongo/images/showcase/flashcards-review.webp" alt="A flashcard under review showing the kanji 日 beside its mnemonic picture, with spaced-repetition buttons underneath." loading="lazy" width="1600" height="804" />
-        <figcaption><b>Review.</b> The card, its picture, its readings, and four honest answers about how it went.</figcaption>
+      <figure class="jp-shot is-tall">
+        <img src="./nihongo/images/showcase/kanji-tree.webp" alt="A flashcard for the kanji 木: an illustration of a tree whose trunk and branches are the character itself, with the readings き and ボク and the meaning tree / wood." loading="lazy" width="539" height="745" />
+        <figcaption><b>A card, front to back.</b> The picture is the mnemonic: 木 is a tree, drawn as the character it is, with its readings and meaning underneath.</figcaption>
       </figure>
       <figure class="jp-shot">
         <img src="./nihongo/images/showcase/kanji-card.webp" alt="A kanji detail card for 色 showing large stroke-order artwork and its readings." loading="lazy" width="1144" height="667" />
