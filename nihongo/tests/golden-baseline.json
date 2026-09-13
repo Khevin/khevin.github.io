@@ -1771,11 +1771,11 @@
       "ok": true,
       "surfaces": {
         "main-inner": {
-          "len": 1144,
-          "text": "一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia card list glyph 筆 · Brush ▾ 明朝 · Mincho ゴシック · Gothic 教科書 · Textbook 筆 · Brush ✓ ノト · Noto Sans text 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook 筆 · Brush ノト · Noto Sans bg randomnonefuji.webpsakura.webpshoji.webptemple.webpwaves.webp translations show hide 絵 · 漢字 · よみかた 日 kun ひ · on ニチ MEANING sun / day EXAMPLES 日曜日 NICHIYŌbi Sunday 毎日 MAINICHI every day 日の出 hinode sunrise ALSO READS ひ 火 fire SEE ALSO 星 star 時 hour / time 日曜日 Sunday 曜 day of the week / shining 書 write / book / calligraphy 日 ひ · ニチ sun / day COMPOSED OF No constituent radicals listed. STROKES 4 画 — the total stroke count for this kanji. stroke order via Wiktionary · CC BY-SA H #12 · day #12 day This character is meant to represent the sun. Recalling an old TV set, the arrow running through it can be seen as an aerial. Remembering the Kanji — James Heisig, 4th Ed. 4画 うら 裏 まえ ← 前 つぎ 次 → 単語札 英 —",
+          "len": 1156,
+          "text": "一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia Study cards card list glyph 筆 · Brush ▾ 明朝 · Mincho ゴシック · Gothic 教科書 · Textbook 筆 · Brush ✓ ノト · Noto Sans text 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook 筆 · Brush ノト · Noto Sans bg randomnonefuji.webpsakura.webpshoji.webptemple.webpwaves.webp translations show hide 絵 · 漢字 · よみかた 日 kun ひ · on ニチ MEANING sun / day EXAMPLES 日曜日 NICHIYŌbi Sunday 毎日 MAINICHI every day 日の出 hinode sunrise ALSO READS ひ 火 fire SEE ALSO 星 star 時 hour / time 日曜日 Sunday 曜 day of the week / shining 書 write / book / calligraphy 日 ひ · ニチ sun / day COMPOSED OF No constituent radicals listed. STROKES 4 画 — the total stroke count for this kanji. stroke order via Wiktionary · CC BY-SA H #12 · day #12 day This character is meant to represent the sun. Recalling an old TV set, the arrow running through it can be seen as an aerial. Remembering the Kanji — James Heisig, 4th Ed. 4画 うら 裏 まえ ← 前 つぎ 次 → 単語札 英 —",
           "tagCounts": {
             "div": 57,
-            "button": 46,
+            "button": 47,
             "span": 154,
             "svg": 9,
             "rect": 1,
@@ -1799,6 +1799,7 @@
             "data-flash-class",
             "data-flash-en",
             "data-flash-jump",
+            "data-flash-study",
             "data-flash-view",
             "data-flipped",
             "data-fontdd-pick",
@@ -1808,7 +1809,7 @@
             "data-testcard-flip",
             "data-testcard-nav"
           ],
-          "controls": 47,
+          "controls": 48,
           "imgSrcs": [
             "/nihongo/images/stroke/%E6%97%A5-order.gif"
           ]
@@ -1941,11 +1942,11 @@
       "ok": true,
       "surfaces": {
         "main-inner": {
-          "len": 992,
-          "text": "一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia card list glyph 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook ノト · Noto Sans text 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook ノト · Noto Sans bg randomnonefuji.webpsakura.webpshoji.webptemple.webpwaves.webp 英 — 日 ひ · ニチ sun / day 4画 月 つき · ゲツ moon / month 4画 山 やま · サン mountain 3画 川 かわ · セン river 3画 木 き · ボク tree / wood 4画 本 もと · ホン book / origin / root 5画 火 ひ · カ fire 4画 水 みず · スイ water 4画 氷 こおり · ヒョウ ice 5画 土 つち · ド earth / soil / Saturday 3画 田 た · デン rice field 5画 大 おお · ダイ big / large 3画 小 ちい · ショウ small 3画 円 まる · エン yen / circle 4画 王 おう · オウ king 4画 生 い · セイ life / give birth / student 5画 玉 たま · ギョク jewel / ball 5画 国 くに · コク country 8画 金 かね · キン gold / money / metal 8画 車 くるま · シャ vehicle / car 7画",
+          "len": 1004,
+          "text": "一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia Study cards card list glyph 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook ノト · Noto Sans text 明朝 · Mincho ▾ 明朝 · Mincho ✓ ゴシック · Gothic 教科書 · Textbook ノト · Noto Sans bg randomnonefuji.webpsakura.webpshoji.webptemple.webpwaves.webp 英 — 日 ひ · ニチ sun / day 4画 月 つき · ゲツ moon / month 4画 山 やま · サン mountain 3画 川 かわ · セン river 3画 木 き · ボク tree / wood 4画 本 もと · ホン book / origin / root 5画 火 ひ · カ fire 4画 水 みず · スイ water 4画 氷 こおり · ヒョウ ice 5画 土 つち · ド earth / soil / Saturday 3画 田 た · デン rice field 5画 大 おお · ダイ big / large 3画 小 ちい · ショウ small 3画 円 まる · エン yen / circle 4画 王 おう · オウ king 4画 生 い · セイ life / give birth / student 5画 玉 たま · ギョク jewel / ball 5画 国 くに · コク country 8画 金 かね · キン gold / money / metal 8画 車 くるま · シャ vehicle / car 7画",
           "tagCounts": {
             "div": 8,
-            "button": 51,
+            "button": 52,
             "span": 236,
             "svg": 2,
             "rect": 1,
@@ -1960,12 +1961,13 @@
             "data-flash-class",
             "data-flash-en",
             "data-flash-jump-idx",
+            "data-flash-study",
             "data-flash-view",
             "data-fontdd-pick",
             "data-fontdd-target",
             "data-fontdd-trigger"
           ],
-          "controls": 52,
+          "controls": 53,
           "imgSrcs": []
         },
         "main-stepper": {

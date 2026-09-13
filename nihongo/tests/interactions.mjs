@@ -52,7 +52,7 @@ async function freshPage(browser, port) {
 async function main() {
   const server = await startServer();
   const port = server.address().port;
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.BROWSER_CHANNEL ? { channel: process.env.BROWSER_CHANNEL } : {});
   try {
     // ── BUG-1: word lookup lands on the Dictionary page ─────────────────────
     {
@@ -688,7 +688,9 @@ async function main() {
         const entry = document.querySelector('[data-flash-review]');
         out.sidebarEntry = !!entry;
         entry.click(); await sleep(100);
-        out.emptyStateShown = /復習するカードは ありません/.test(document.body.textContent);
+        out.emptyStateShown = /Nothing due right now/.test(document.body.textContent);
+        const size = document.querySelector('[data-review-limit]');
+        size.value = '10'; size.dispatchEvent(new Event('change'));
         document.querySelector('[data-review-learn]').click(); await sleep(120);
         out.questionState = !!document.querySelector('.flash-review.is-question');
         // The lean review card: the question side is the kanji ALONE.
@@ -704,16 +706,16 @@ async function main() {
           /ひ/.test((back.querySelector('.review-card-readings') || {}).textContent || '');
         out.fourChips = document.querySelectorAll('[data-rate]').length === 4;
         const startQueueLen = APP._review.queue.length;
-        // rate Again via key 1 → re-queues this sitting
+        // Again keeps the finite round intact; FSRS schedules its next review.
         window.dispatchEvent(new KeyboardEvent('keydown', { key: '1', bubbles: true })); await sleep(120);
-        out.againRequeued = APP._review.queue.length === startQueueLen + 1 && APP._review.idx === 1;
+        out.againScheduled = APP._review.queue.length === startQueueLen && APP._review.idx === 1 && !SRS.isDue(APP._review.queue[0]);
         // rate the rest Good to reach the close
         while (APP._review.idx < APP._review.queue.length) {
           APP._review.revealed = true; renderFlashcards(document.getElementById('main-inner')); await sleep(15);
           window.dispatchEvent(new KeyboardEvent('keydown', { key: '3', bubbles: true })); await sleep(15);
         }
         await sleep(100);
-        out.doneState = /きょうの復習は おわり/.test(document.body.textContent);
+        out.doneState = /Round complete/.test(document.body.textContent);
         out.trackedAfter = SRS.counts().tracked;
         // exit back to browse
         document.querySelector('[data-review-exit]').click(); await sleep(100);
@@ -724,7 +726,7 @@ async function main() {
       check('R1-UI sidebar entry + empty state + learn seeds a session', r.sidebarEntry && r.emptyStateShown, `entry=${r.sidebarEntry} empty=${r.emptyStateShown}`);
       check('R1-UI question is the kanji alone (no browse chrome)', r.questionState && r.frontIsBareKanji && r.noBrowseChrome, `q=${r.questionState} bare=${r.frontIsBareKanji} lean=${r.noBrowseChrome}`);
       check('R1-UI back = kanji + image + meaning + readings, four chips', r.answerState && r.backHasAll && r.fourChips, `a=${r.answerState} back=${r.backHasAll} chips=${r.fourChips}`);
-      check('R1-UI "Again" re-queues the card this sitting', r.againRequeued === true, `requeued=${r.againRequeued}`);
+      check('R1-UI "Again" waits for its scheduled review', r.againScheduled === true, `scheduled=${r.againScheduled}`);
       check('R1-UI session closes quietly and exit returns to browse', r.doneState && r.trackedAfter === 10 && r.backToBrowse, `done=${r.doneState} tracked=${r.trackedAfter} browse=${r.backToBrowse}`);
       await page.close();
     }
