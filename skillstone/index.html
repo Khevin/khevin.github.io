@@ -2306,6 +2306,165 @@ li.is-done .qg { color: var(--verdant); }
 /* A room that exists and holds nothing yet. The quest hall's blank state, resized for a
    round medallion rather than the wide table, and masked so the render's own square ground
    dissolves into the page instead of sitting on it as a tile. */
+/* ---------- the inventory ----------
+   An ARPG panel: the figure between its slots, the wardrobe in a grid beneath, and art around
+   the whole thing. The art is two custom properties and nothing else, so the placeholders here
+   can be swapped for a real painting without touching a rule below them. */
+.iv-hall { position: relative; padding: var(--s2) 0 var(--s7); }
+.iv-art {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
+  --iv-art-l: url("assets/quests/spare-castle-gate.png");
+  --iv-art-r: url("assets/quests/spare-lotus-moon.png");
+}
+.iv-art i {
+  position: absolute; top: 50%; translate: 0 -50%; width: min(420px, 32vw); aspect-ratio: 1;
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  opacity: 0.24; filter: sepia(0.35) saturate(0.6);
+}
+.iv-art-l { left: 0; background-image: var(--iv-art-l);
+  -webkit-mask-image: linear-gradient(to right, #000 35%, transparent 95%);
+  mask-image: linear-gradient(to right, #000 35%, transparent 95%); }
+.iv-art-r { right: 0; background-image: var(--iv-art-r);
+  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 95%);
+  mask-image: linear-gradient(to left, #000 35%, transparent 95%); }
+@media (prefers-reduced-motion: no-preference) { .iv-art i { transition: opacity var(--t-slow, 0.4s) ease; } }
+
+.iv-panel {
+  position: relative; z-index: 1;
+  width: min(1000px, 100%); margin: 0 auto; padding: var(--s5);
+  background-image: linear-gradient(rgba(20,17,13,0.87), rgba(20,17,13,0.92)), url("assets/textures/panel.webp");
+  background-repeat: repeat; background-size: auto, 512px 512px;
+  border: 1px solid var(--mortar-2); border-radius: var(--r-lg);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.55), inset 0 1px 0 rgba(240,231,209,0.06), var(--shadow-float);
+}
+/* three shelves in one panel, named in the banner where the panel's own title would be */
+.iv-tabs {
+  display: flex; align-items: center; justify-content: center; gap: var(--s6);
+  padding-bottom: var(--s3); margin-bottom: var(--s5); border-bottom: 1px solid var(--mortar);
+}
+.iv-tabs button {
+  appearance: none; position: relative; background: none; border: 0; padding: var(--s2) var(--s1); cursor: pointer;
+  font-family: var(--f-display); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ash);
+}
+@media (hover: hover) { .iv-tabs button:hover { color: var(--dust); } }
+.iv-tabs button[aria-selected="true"] { color: var(--parchment); }
+.iv-tabs button[aria-selected="true"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: calc(-1 * var(--s3) - 1px);
+  height: 2px; background: var(--gold);
+}
+.iv-tabs button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+
+/* the figure and its slots */
+.iv-fig { display: grid; grid-template-columns: auto auto auto; gap: var(--s5); align-items: start; justify-content: center; padding: var(--s2) 0 var(--s1); }
+.iv-col { display: grid; gap: var(--s3); align-content: start; }
+.iv-slot { appearance: none; display: grid; gap: 5px; justify-items: center; width: 88px; background: none; border: 0; padding: 0; cursor: pointer; }
+.iv-slot-face {
+  width: 76px; height: 76px; display: grid; place-items: center; overflow: hidden;
+  background: linear-gradient(180deg, rgba(32,27,20,0.9), rgba(16,13,10,0.96));
+  border: 1px solid var(--mortar); border-radius: var(--r-sm); color: var(--mortar-2);
+  box-shadow: inset 0 1px 0 rgba(240,231,209,0.05), inset 0 -10px 16px rgba(0,0,0,0.45);
+  transition: border-color var(--t-fast) var(--e-out), box-shadow var(--t-fast) var(--e-out);
+}
+.iv-slot-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.iv-slot-g { width: 30px; height: 30px; }
+.iv-slot-nm {
+  font-family: var(--f-mono); font-size: 0.5625rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ash); max-width: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.iv-slot.is-on .iv-slot-face { border-color: var(--bronze); box-shadow: inset 0 0 0 1px rgba(232,176,84,0.18), 0 0 14px rgba(232,176,84,0.1); }
+.iv-slot.is-on .iv-slot-nm { color: var(--dust); }
+.iv-slot.is-cur .iv-slot-face { border-color: var(--gold); }
+@media (hover: hover) { .iv-slot:hover .iv-slot-face { border-color: var(--bronze); } }
+.iv-slot:focus-visible { outline: none; }
+.iv-slot:focus-visible .iv-slot-face { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.iv-doll-wrap { display: grid; justify-items: center; gap: var(--s3); align-content: start; padding: var(--s1) var(--s4) 0; }
+.iv-doll { --iv-skin: #4a4034; width: min(232px, 100%); height: auto; display: block; filter: drop-shadow(0 10px 24px rgba(0,0,0,0.55)); }
+.iv-doll-cap {
+  display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; justify-content: center;
+  font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash);
+}
+.iv-strip { appearance: none; background: none; border: 0; padding: 2px 0; cursor: pointer; font: inherit; color: var(--dust); text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .iv-strip:hover { color: var(--gold-2); } }
+.iv-strip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+
+/* the wardrobe: what to show, then the grid of it */
+.iv-bar { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; margin: var(--s6) 0 var(--s3); padding-top: var(--s4); border-top: 1px solid var(--mortar); }
+.iv-filters { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; min-width: 0; }
+.iv-f {
+  appearance: none; display: inline-flex; align-items: baseline; gap: 6px; min-height: 30px;
+  background: none; border: 1px solid transparent; border-radius: 999px; padding: 4px var(--s3); cursor: pointer;
+  font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash);
+}
+.iv-f .n { font-variant-numeric: tabular-nums; color: var(--mortar-2); }
+@media (hover: hover) { .iv-f:hover { color: var(--dust); } }
+.iv-f.is-cur { color: var(--parchment); border-color: var(--mortar-2); background: var(--socket); }
+.iv-f.is-cur .n { color: var(--bronze); }
+.iv-f:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.iv-add { flex: none; }
+
+.iv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(94px, 1fr)); gap: var(--s2); }
+.iv-cell { position: relative; }
+.iv-cell-b {
+  appearance: none; width: 100%; display: grid; gap: 5px; justify-items: center; padding: var(--s2) 5px; cursor: pointer;
+  background: linear-gradient(180deg, rgba(32,27,20,0.75), rgba(16,13,10,0.88));
+  border: 1px solid var(--mortar); border-radius: var(--r-sm);
+  transition: border-color var(--t-fast) var(--e-out);
+}
+@media (hover: hover) { .iv-cell-b:hover { border-color: var(--bronze); } }
+.iv-cell-b:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.iv-cell-face { width: 58px; height: 58px; display: grid; place-items: center; overflow: hidden; border-radius: 3px; }
+.iv-cell-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.iv-swatch { width: 100%; height: 100%; display: block; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45); }
+.iv-cell-nm { font-size: 0.6875rem; color: var(--dust); text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iv-cell.is-worn .iv-cell-b { border-color: var(--gold); box-shadow: inset 0 0 0 1px rgba(232,176,84,0.2); }
+.iv-cell.is-worn .iv-cell-nm { color: var(--parchment); }
+.iv-cell-edit {
+  appearance: none; position: absolute; top: 3px; right: 3px; width: 26px; height: 26px; display: grid; place-items: center;
+  background: rgba(16,13,10,0.7); border: 0; border-radius: 50%; color: var(--ash); cursor: pointer; opacity: 0;
+  transition: opacity var(--t-fast) var(--e-out);
+}
+.iv-cell-edit svg { width: 13px; height: 13px; }
+.iv-cell:hover .iv-cell-edit, .iv-cell-edit:focus-visible { opacity: 1; }
+@media (hover: none) { .iv-cell-edit { opacity: 0.75; } }
+.iv-cell-edit:focus-visible { outline: 2px solid var(--focus); }
+@media (hover: hover) { .iv-cell-edit:hover { color: var(--parchment); } }
+.iv-empty { color: var(--ash); font-size: 0.875rem; text-align: center; padding: var(--s6) 0; }
+
+/* writing a garment */
+.gear-dlg { width: min(560px, 94vw); }
+.gear-top { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s4); align-items: start; }
+.gear-preview { width: 72px; height: 72px; display: block; overflow: hidden; border: 1px solid var(--mortar-2); border-radius: var(--r-sm); box-shadow: inset 0 1px 0 rgba(240,231,209,0.07); }
+.gear-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gear-top-f { display: grid; grid-template-columns: minmax(0, 1fr) 152px; gap: var(--s3); }
+.gear-colors { border: 0; padding: 0; margin: 0; min-width: 0; }
+.gear-colors legend { padding: 0; margin-bottom: 4px; }
+.gear-sw-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.gear-sw { appearance: none; width: 28px; height: 28px; padding: 0; border-radius: 50%; border: 1px solid rgba(0,0,0,0.5); cursor: pointer; }
+.gear-sw.is-cur { outline: 2px solid var(--gold); outline-offset: 2px; }
+.gear-sw:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.gear-pick { display: inline-grid; place-items: center; width: 28px; height: 28px; overflow: hidden; border-radius: 50%; border: 1px dashed var(--mortar-2); cursor: pointer; }
+.gear-pick input { width: 44px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; }
+.gear-hint { font-size: 0.75rem; color: var(--ash); margin-top: 6px; }
+.gear-photo { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); }
+.gear-photo-note { flex: 1; min-width: 150px; font-size: 0.75rem; color: var(--ash); }
+.gear-del { margin-right: auto; }
+
+@media (max-width: 820px) {
+  .iv-fig { grid-template-columns: 1fr; justify-items: center; gap: var(--s5); }
+  .iv-doll-wrap { order: -1; padding: 0; }
+  .iv-doll { width: min(168px, 56%); }
+  .iv-col { grid-auto-flow: column; grid-auto-columns: 1fr; width: 100%; max-width: 372px; gap: var(--s2); }
+  .iv-slot { width: auto; }
+  .iv-slot-face { width: 100%; max-width: 76px; aspect-ratio: 1; height: auto; }
+  .iv-slot-nm { max-width: 84px; }
+  .iv-panel { padding: var(--s4) var(--s3); }
+  .iv-tabs { gap: var(--s4); }
+  .gear-top-f { grid-template-columns: 1fr; }
+  .iv-art i { width: 48vw; opacity: 0.1; }
+}
+
 .tab-blank { display: grid; place-items: center; padding: var(--s8) 0 var(--s7); text-align: center; }
 .tab-blank img {
   width: min(196px, 44%); height: auto; display: block; opacity: 0.4;
@@ -3653,8 +3812,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
         aria-selected="false" aria-controls="viewCamp" tabindex="-1">Quests</button>
       <button type="button" class="tab" role="tab" id="tabSkills" data-view="skills"
         aria-selected="false" aria-controls="viewSkills" tabindex="-1">Skills</button>
-      <button type="button" class="tab" role="tab" id="tabTomes" data-view="tomes"
-        aria-selected="false" aria-controls="viewTomes" tabindex="-1">Tomes</button>
       <button type="button" class="tab" role="tab" id="tabSpells" data-view="spells"
         aria-selected="false" aria-controls="viewSpells" tabindex="-1">Spells</button>
       <button type="button" class="tab" role="tab" id="tabInv" data-view="inv"
@@ -3703,14 +3860,32 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     </section>
   </div>
   <div id="viewInv" role="tabpanel" aria-labelledby="tabInv" hidden>
-    <section class="tab-blank">
-      <img src="assets/quests/spare-castle-gate.png" alt="" width="256" height="256" loading="lazy">
-      <p>Not built yet</p>
-    </section>
+    <div class="iv-hall">
+      <!-- the art around the panel. Placeholders from the set already shipped; swapping in the
+           real painting is three custom properties and nothing else. -->
+      <div class="iv-art" aria-hidden="true"><i class="iv-art-l"></i><i class="iv-art-r"></i></div>
+      <section class="iv-panel" aria-label="Inventory">
+        <div class="iv-tabs" role="tablist" aria-label="Inventory sections">
+          <button type="button" role="tab" id="ivTabGear" data-inv="sub" data-shelf="gear"
+            aria-selected="true" aria-controls="invEquip">Equipment</button>
+          <button type="button" role="tab" id="ivTabTomes" data-inv="sub" data-shelf="tomes"
+            aria-selected="false" aria-controls="viewTomes" tabindex="-1">Tomes</button>
+          <button type="button" role="tab" id="ivTabGames" data-inv="sub" data-shelf="games"
+            aria-selected="false" aria-controls="invGames" tabindex="-1">Games</button>
+        </div>
+        <div id="invEquip" role="tabpanel" aria-labelledby="ivTabGear"></div>
+        <div id="viewTomes" role="tabpanel" aria-labelledby="ivTabTomes" hidden></div>
+        <div id="invGames" role="tabpanel" aria-labelledby="ivTabGames" hidden>
+          <section class="tab-blank">
+            <img src="assets/quests/spare-lotus-moon.png" alt="" width="256" height="256" loading="lazy">
+            <p>Nothing on this shelf yet</p>
+          </section>
+        </div>
+      </section>
+    </div>
   </div>
   <div id="viewAstro" role="tabpanel" aria-label="Astrology" hidden></div>
   <div id="viewDiary" role="tabpanel" aria-labelledby="tabDiary" hidden></div>
-  <div id="viewTomes" role="tabpanel" aria-labelledby="tabTomes" hidden></div>
 
 <footer class="foot" aria-label="Colophon">
   <a href="privacy.html">Privacy</a><span class="dot" aria-hidden="true">·</span>
@@ -3852,6 +4027,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   </form>
 </dialog>
 <dialog id="gcalDlg" class="bk-dlg" aria-labelledby="gcalTitle"></dialog>
+<dialog id="gearDlg" class="bk-dlg gear-dlg" aria-labelledby="gearDlgTitle"></dialog>
+<input type="file" id="gearFile" accept="image/*" hidden>
 <dialog id="campDlg" class="bk-dlg camp-dlg" aria-labelledby="campDlgTitle"></dialog>
 <dialog id="questDlg" class="bk-dlg" aria-label="New side quest">
   <form method="dialog" data-form="quest-save">
@@ -5922,6 +6099,24 @@ function sanitize(s) {
         note: String(o.note || ""), due: String(o.due || "") }))
     }))
   };
+  /* the wardrobe: garments the owner entered, and which one is worn in each slot. Only the
+     shape is enforced — a garment is his description of his own clothes. A worn id pointing
+     at a garment that has since been deleted, or that has moved to another slot, is dropped
+     rather than left dangling. */
+  {
+    const wr = (s.wardrobe && typeof s.wardrobe === "object") ? s.wardrobe : {};
+    const items = (Array.isArray(wr.items) ? wr.items : []).filter(x => x && x.id).slice(0, GEAR_CAP).map(x => ({
+      id: String(x.id), name: String(x.name || "Untitled").slice(0, 60),
+      slot: WEAR_BY[x.slot] ? String(x.slot) : "top",
+      color: /^#[0-9a-fA-F]{6}$/.test(x.color) ? String(x.color) : "#6b6257",
+      note: String(x.note || "").slice(0, 80),
+      img: (typeof x.img === "string" && x.img.startsWith("data:image")) ? x.img : ""
+    }));
+    const worn = {};
+    WEAR.forEach(w => { const id = (wr.worn || {})[w.k];
+      if (typeof id === "string" && items.some(x => x.id === id && x.slot === w.k)) worn[w.k] = id; });
+    s.wardrobe = { items, worn };
+  }
   /* campaigns are the owner's to edit, so only the shape is enforced, never the content */
   s.campaigns = (Array.isArray(s.campaigns) ? s.campaigns : []).filter(c => c && c.id).map(c => ({
     id: String(c.id), name: String(c.name || "Untitled"), emblem: String(c.emblem || "quill"),
@@ -7463,12 +7658,12 @@ function markSVG(m) {
 
 /* Journal 1 was removed in v4. The helpers above it - normaliseBook, book(), markSVG,
    isSched, schedLabel, schedTitle - stay: the journal is built on them. */
-const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", tomes: "viewTomes", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro", spells: "viewSpells", inv: "viewInv" };
+const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro", spells: "viewSpells", inv: "viewInv" };
 /* Two pages have no tab, for the same reason: they are reached from where they belong.
    Astrology hangs off the sun sign on the hero card; the tarot hangs off the day's card in
    the diary, which is how a reading is actually come by — because it is the morning, not
    because you went looking for a page. */
-const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", tomes: "tabTomes", diary: "tabDiary", spells: "tabSpells", inv: "tabInv" };
+const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", diary: "tabDiary", spells: "tabSpells", inv: "tabInv" };
 /* which half of the Skills sheet is open. It outlives the session the way the view does,
    because coming back to the tab you left is worth more than a fixed starting point. */
 /* Each half names the groups it shows and how they are scored: a ladder half climbs 0-10 by
@@ -7521,6 +7716,9 @@ function setView(v) {
   /* Proficiency was its own tab until it became half of Skills; a view saved under the old
      name still lands where it meant to */
   if (v === "prof") { skSub = "prof"; v = "skills"; }
+  /* the library was a tab of its own until it became a shelf of the inventory; a view saved
+     under the old name still lands on the shelf it meant */
+  if (v === "tomes") { invSub = "tomes"; v = "inv"; }
   view = VIEWS[v] ? v : "journal";
   Object.keys(VIEWS).forEach(k => {
     const p = $("#" + VIEWS[k]); if (p) p.hidden = k !== view;
@@ -7529,13 +7727,353 @@ function setView(v) {
   });
   try { localStorage.setItem("skillstone-view", view); } catch (e) {}
   if (view === "journal") renderJ3();
-  if (view === "tomes") renderTomes();
+  if (view === "inv") invEnter();
   if (view === "camp") renderCampaigns();
   if (view === "tarot") renderTarot();
   skySet(skyHere(view));
   if (view === "astro") renderAstro();
   if (view === "diary") renderDiary();
   if (view === "skills") { renderSubs(); setSub(skSub); }
+}
+
+/* ================= INVENTORY =================
+   A wardrobe in the grammar of an ARPG stash: the figure in the middle, its slots down both
+   flanks, and everything owned in a grid below. Headwear and accessories on the left, the
+   garments themselves on the right — the order a person dresses in, rather than an arbitrary
+   split of eight slots into two columns.
+
+   The figure is drawn, not photographed. A garment carries a colour, and the figure paints the
+   region that garment covers, so an outfit can be tried on before any photograph exists. A
+   photograph, where there is one, is the garment's face in the grid; it is shrunk to 160px on
+   the way in, because the board travels as one JSON row and a wardrobe of full-size photos
+   would not fit through it.
+
+   Clicking a garment in the grid puts it on, or takes it off if it is already on. Clicking a
+   filled slot takes that garment off; clicking an empty one filters the grid to what fits
+   there — the slot asks the question and the grid answers it. */
+const GEAR_CAP = 200;
+const WEAR = [
+  { k: "hat",   name: "Hat",        side: "l" },
+  { k: "eyes",  name: "Eyewear",    side: "l" },
+  { k: "neck",  name: "Neck",       side: "l" },
+  { k: "wrist", name: "Wrist",      side: "l" },
+  { k: "outer", name: "Overshirt",  side: "r" },
+  { k: "top",   name: "Top",        side: "r" },
+  { k: "legs",  name: "Trousers",   side: "r" },
+  { k: "feet",  name: "Shoes",      side: "r" }
+];
+const WEAR_BY = Object.fromEntries(WEAR.map(w => [w.k, w]));
+const IV_PEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.5 4.5 19.5 8.5 9 19H5v-4z"/></svg>';
+/* the empty slot's mark, in the crest hand: one weight, round caps, no emoji in the chrome */
+const WEAR_GLYPH = {
+  hat:   '<path d="M6.5 16.5h11"/><path d="M8 16.5a4 4 0 0 1 8 0"/><path d="M17.5 16.5h3"/><path d="M3.5 16.5h3"/>',
+  eyes:  '<path d="M3 9.5h18"/><path d="M4.5 9.5v2a3 3 0 0 0 6 0v-2"/><path d="M13.5 9.5v2a3 3 0 0 0 6 0v-2"/><path d="M10.5 11h3"/>',
+  neck:  '<path d="M6.5 4.5A8 8 0 0 0 12 12a8 8 0 0 0 5.5-7.5"/><path d="m12 13 2.2 3.2L12 19.5 9.8 16.2Z"/>',
+  wrist: '<circle cx="12" cy="12" r="4.5"/><path d="M9.6 7.9 9 4.5h6l-.6 3.4"/><path d="M9.6 16.1 9 19.5h6l-.6-3.4"/>',
+  outer: '<path d="M9 4 4.5 6.2V20h15V6.2L15 4"/><path d="m9 4 3 4 3-4"/><path d="M12 8.5V20"/>',
+  top:   '<path d="M9 4 4 6.6l1.9 3.6L8 9.2V20h8V9.2l2.1 1L20 6.6 15 4"/><path d="M9 4a3 3 0 0 0 6 0"/>',
+  legs:  '<path d="M7.5 4h9l.6 16h-3.7L12 11l-1.4 9H6.9Z"/>',
+  feet:  '<path d="M3.5 16h9l4.2 2H20a.5.5 0 0 1 .5.5V20h-17Z"/><path d="M3.5 16V9l3-1 1.8 2.8L12.5 15"/>'
+};
+const wardrobe = () => {
+  if (!state.wardrobe || typeof state.wardrobe !== "object") state.wardrobe = { items: [], worn: {} };
+  if (!Array.isArray(state.wardrobe.items)) state.wardrobe.items = [];
+  if (!state.wardrobe.worn || typeof state.wardrobe.worn !== "object") state.wardrobe.worn = {};
+  return state.wardrobe;
+};
+const gearById = id => wardrobe().items.find(x => x.id === id) || null;
+const gearWorn = k => gearById(wardrobe().worn[k]);
+const INV_SUBS = ["gear", "tomes", "games"];
+const INV_PANE = { gear: "invEquip", tomes: "viewTomes", games: "invGames" };
+const INV_TAB = { gear: "ivTabGear", tomes: "ivTabTomes", games: "ivTabGames" };
+let invSub = (() => { try { const v = localStorage.getItem("skillstone-inv-sub");
+  return INV_SUBS.indexOf(v) > -1 ? v : "gear"; } catch (e) { return "gear"; } })();
+let gearFilter = "";      /* which slot the grid is showing, "" for everything */
+let gearEdit = null;      /* the garment being written, until Save */
+
+/* ---------- the figure ----------
+   Layered the way clothes are: body, trousers, top, overshirt, shoes, then what goes on over
+   all of it. A region whose slot is empty is not drawn, and the body shows through. */
+function invDollHTML() {
+  const c = k => { const it = gearWorn(k); return it ? it.color : null; };
+  const hat = c("hat"), eyes = c("eyes"), neck = c("neck"), wrist = c("wrist");
+  const outer = c("outer"), top = c("top"), legs = c("legs"), feet = c("feet");
+  const S = 'stroke="rgba(18,14,10,0.5)" stroke-width="1.4" stroke-linejoin="round"';
+  let g = '<g fill="var(--iv-skin)" stroke="rgba(18,14,10,0.35)" stroke-width="1.2" stroke-linejoin="round">' +
+    '<ellipse cx="70" cy="46" rx="20" ry="23"/>' +
+    '<path d="M62 64h16v16H62z"/>' +
+    '<path d="M44 80q26-9 52 0l-4 74q-24 7-48 0z"/>' +
+    '<path d="M44 82 30 87l-7 74 12 3 13-73z"/>' +
+    '<path d="M96 82l14 5 7 74-12 3-13-73z"/>' +
+    '<ellipse cx="29" cy="168" rx="7.5" ry="9"/><ellipse cx="111" cy="168" rx="7.5" ry="9"/>' +
+    '<path d="M42 150h56l-2 30H44z"/>' +
+    '<path d="M44 176h24l-3 96H47z"/><path d="M72 176h24l3 96H75z"/></g>';
+  if (legs) g += '<path ' + S + ' fill="' + esc(legs) + '" d="M39 148h62l-2 32-4 92H73l-3-84-3 84H45l-4-92z"/>';
+  if (top) g += '<path ' + S + ' fill="' + esc(top) + '" d="M53 74 42 79l-12 8 9 15 10-7v63q21 7 42 0v-63l10 7 9-15-12-8-11-5q-13 10-24 0z"/>';
+  /* two front panels joined at the collar, open down the middle so the top still reads
+     under it, and a sleeve on each arm that runs the whole way to the wrist */
+  if (outer) g += '<g ' + S + ' fill="' + esc(outer) + '">' +
+    '<path d="M44 78 27 85l-7 76 16 4 12-71z"/>' +
+    '<path d="M96 78l17 7 7 76-16 4-12-71z"/>' +
+    '<path d="M52 74q18 14 36 0l10 6 3 78-27 4-2-72h-4l-2 72-27-4 3-78z"/></g>';
+  if (feet) g += '<g ' + S + ' fill="' + esc(feet) + '">' +
+    '<path d="M43 256h22l3 18H41z"/><path d="M75 256h22l3 18H73z"/></g>';
+  if (wrist) g += '<path ' + S + ' fill="' + esc(wrist) + '" d="m103 149 13 3-2 12-13-3z"/>';
+  if (neck) g += '<g ' + S + ' fill="' + esc(neck) + '">' +
+    '<path d="M57 65q13 18 26 0l-4-2q-9 13-18 0z"/><path d="m70 82 4.5 7-4.5 7-4.5-7z"/></g>';
+  if (hat) g += '<g ' + S + ' fill="' + esc(hat) + '">' +
+    '<path d="M49 41a21 20 0 0 1 42 0v3H49z"/><path d="M43 44h54v6H43z"/></g>';
+  if (eyes) g += '<g ' + S + ' fill="' + esc(eyes) + '">' +
+    '<rect x="52" y="40" width="15" height="10" rx="4"/><rect x="73" y="40" width="15" height="10" rx="4"/>' +
+    '<path d="M67 43.5h6v2.5h-6z"/></g>';
+  return '<svg class="iv-doll" viewBox="0 0 140 290" role="img" aria-label="' + esc(invOutfitWords()) + '">' + g + "</svg>";
+}
+function invOutfitWords() {
+  const on = WEAR.map(w => { const it = gearWorn(w.k); return it ? it.name : null; }).filter(Boolean);
+  return on.length ? "Wearing " + on.join(", ") : "Nothing on yet";
+}
+
+/* ---------- the panel ---------- */
+const gearFace = it => it.img
+  ? '<img src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async">'
+  : '<span class="iv-swatch" style="background:' + esc(it.color) + '"></span>';
+function gearCellHTML(it, worn) {
+  return '<div class="iv-cell' + (worn ? " is-worn" : "") + '">' +
+    '<button type="button" class="iv-cell-b" data-inv="wear" data-id="' + esc(it.id) + '" aria-pressed="' + !!worn + '"' +
+      ' title="' + esc(it.name + (it.note ? " — " + it.note : "")) + '"' +
+      ' aria-label="' + esc(it.name + ", " + WEAR_BY[it.slot].name + (worn ? ", worn. Take it off." : ". Put it on.")) + '">' +
+      '<span class="iv-cell-face">' + gearFace(it) + "</span>" +
+      '<span class="iv-cell-nm">' + esc(it.name) + "</span></button>" +
+    '<button type="button" class="iv-cell-edit" data-inv="gearedit" data-id="' + esc(it.id) + '"' +
+      ' aria-label="Edit ' + esc(it.name) + '">' + IV_PEN + "</button></div>";
+}
+function invSlotHTML(w) {
+  const it = gearWorn(w.k), on = !!it;
+  const face = on ? gearFace(it)
+    : '<svg class="iv-slot-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[w.k] + "</svg>";
+  return '<button type="button" class="iv-slot' + (on ? " is-on" : "") + (gearFilter === w.k ? " is-cur" : "") +
+    '" data-inv="slot" data-k="' + w.k + '" aria-label="' + esc(w.name + ": " + (on ? it.name + ". Take it off." : "empty. Show what fits here.")) + '">' +
+    '<span class="iv-slot-face">' + face + "</span>" +
+    '<span class="iv-slot-nm">' + esc(on ? it.name : w.name) + "</span></button>";
+}
+function renderInv() {
+  const el = $("#invEquip");
+  if (!el) return;
+  const W = wardrobe();
+  const order = WEAR.map(w => w.k);
+  const shown = W.items.filter(x => !gearFilter || x.slot === gearFilter)
+    .sort((a, b) => (order.indexOf(a.slot) - order.indexOf(b.slot)) || a.name.localeCompare(b.name));
+  const wornCount = WEAR.filter(w => gearWorn(w.k)).length;
+
+  let h = '<div class="iv-fig">' +
+    '<div class="iv-col">' + WEAR.filter(w => w.side === "l").map(invSlotHTML).join("") + "</div>" +
+    '<div class="iv-doll-wrap">' + invDollHTML() +
+      '<p class="iv-doll-cap">' + (wornCount ? wornCount + " of " + WEAR.length + " slots filled" : "Nothing on yet") +
+      (wornCount ? '<button type="button" class="iv-strip" data-inv="strip">Take it all off</button>' : "") + "</p></div>" +
+    '<div class="iv-col">' + WEAR.filter(w => w.side === "r").map(invSlotHTML).join("") + "</div>" +
+    "</div>";
+
+  h += '<div class="iv-bar"><div class="iv-filters" role="group" aria-label="Show">' +
+      '<button type="button" class="iv-f' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
+      WEAR.map(w => '<button type="button" class="iv-f' + (gearFilter === w.k ? " is-cur" : "") + '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (gearFilter === w.k) + '">' +
+        esc(w.name) + '<span class="n">' + W.items.filter(x => x.slot === w.k).length + "</span></button>").join("") +
+    "</div>" +
+    '<button type="button" class="btn btn-ghost btn-sm iv-add" data-inv="gearnew">+ Add clothing</button></div>';
+
+  h += shown.length
+    ? '<div class="iv-grid">' + shown.map(it => gearCellHTML(it, W.worn[it.slot] === it.id)).join("") + "</div>"
+    : '<p class="iv-empty">' + (W.items.length
+        ? "Nothing in the wardrobe goes in that slot yet."
+        : "The wardrobe is empty. Add a garment and it lands here, ready to put on.") + "</p>";
+  el.innerHTML = h;
+}
+/* three shelves in one panel; only the one on show is rendered, and the library renders itself */
+function invSyncSubs() {
+  INV_SUBS.forEach(k => {
+    const p = $("#" + INV_PANE[k]); if (p) p.hidden = k !== invSub;
+    const t = $("#" + INV_TAB[k]);
+    if (t) { t.setAttribute("aria-selected", String(k === invSub)); t.tabIndex = k === invSub ? 0 : -1; }
+  });
+}
+function invEnter() {
+  invSyncSubs();
+  if (invSub === "tomes") renderTomes();
+  else if (invSub === "gear") renderInv();
+}
+function invSetSub(k) {
+  invSub = INV_SUBS.indexOf(k) > -1 ? k : "gear";
+  try { localStorage.setItem("skillstone-inv-sub", invSub); } catch (e) {}
+  invEnter();
+  const t = $("#" + INV_TAB[invSub]); if (t) t.focus({ preventScroll: true });
+}
+function gearWear(id) {
+  const it = gearById(id); if (!it) return;
+  const W = wardrobe();
+  if (W.worn[it.slot] === id) delete W.worn[it.slot]; else W.worn[it.slot] = id;
+  save(); renderInv();
+  const b = document.querySelector('.iv-cell-b[data-id="' + id + '"]'); if (b) b.focus({ preventScroll: true });
+}
+function gearTakeOff(k) {
+  const W = wardrobe(); if (!W.worn[k]) return;
+  delete W.worn[k]; save(); renderInv();
+  const b = document.querySelector('.iv-slot[data-k="' + k + '"]'); if (b) b.focus({ preventScroll: true });
+}
+function gearStrip() {
+  const W = wardrobe(); if (!Object.keys(W.worn).length) return;
+  takeSnapshot(); W.worn = {}; save(); renderInv();
+  showToast("Everything off.", true);
+}
+
+/* ---------- writing a garment ----------
+   One book dialog adds and edits, as the campaign one does. The photograph is optional and
+   shrunk before it is kept; the colour is what the figure wears either way. */
+const GEAR_COLORS = ["#16161a", "#3c3f4a", "#6b6257", "#8d8377", "#c8bda6", "#f0e7d1",
+  "#2f4f4f", "#3d5a80", "#6a8caf", "#4c6b3c", "#7d3c3c", "#a9532f", "#c58b3a", "#5d5a7a"];
+function gearDlgOpen(id) {
+  const dlg = $("#gearDlg"); if (!dlg || !dlg.showModal) return;
+  const it = id ? gearById(id) : null;
+  if (id && !it) return;
+  gearEdit = it ? Object.assign({}, it) : { id: null, name: "", slot: gearFilter || "top", color: "#6b6257", note: "", img: "" };
+  gearDlgRender();
+  if (!dlg.open) dlg.showModal();
+  const t = $("#gearName"); if (t) t.focus();
+}
+function gearDlgClose() { const dlg = $("#gearDlg"); if (dlg && dlg.open) dlg.close(); gearEdit = null; }
+function gearDlgRender(focusSel) {
+  const dlg = $("#gearDlg"), d = gearEdit; if (!dlg || !d) return;
+  const was = dlg.querySelector("form"), sy = was ? was.scrollTop : 0;
+  dlg.innerHTML = '<form data-form="gear-save" method="dialog">' +
+    '<div class="bk-top"><p class="bk-h" id="gearDlgTitle">' + (d.id ? "Edit garment" : "Add clothing") + "</p>" + BK_X + "</div>" +
+    '<div class="gear-top">' +
+      '<span class="gear-preview" style="background:' + esc(d.color) + '">' +
+        (d.img ? '<img src="' + esc(d.img) + '" alt="">' : "") + "</span>" +
+      '<div class="gear-top-f">' +
+        '<label class="bk-l">Name<input type="text" id="gearName" name="name" maxlength="60" value="' + esc(d.name) + '" required autocomplete="off" placeholder="the black linen shirt"></label>' +
+        '<label class="bk-l">Worn on<select name="slot">' + WEAR.map(w =>
+          '<option value="' + w.k + '"' + (d.slot === w.k ? " selected" : "") + ">" + esc(w.name) + "</option>").join("") + "</select></label>" +
+      "</div></div>" +
+    '<fieldset class="gear-colors"><legend class="bk-l">Colour</legend><div class="gear-sw-row">' +
+      GEAR_COLORS.map(c => '<button type="button" class="gear-sw' + (c === d.color.toLowerCase() ? " is-cur" : "") +
+        '" data-inv="gearcolor" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
+      '<label class="gear-pick"><input type="color" name="color" value="' + esc(d.color) + '" aria-label="Any other colour"></label>' +
+    "</div><p class=\"gear-hint\">This is what the figure wears.</p></fieldset>" +
+    '<label class="bk-l">Note<input type="text" name="note" maxlength="80" value="' + esc(d.note) + '" placeholder="brand, where it lives, what it goes with" autocomplete="off"></label>' +
+    '<div class="gear-photo"><button type="button" class="btn btn-ghost btn-sm" data-inv="gearphoto">' +
+      (d.img ? "Replace photo" : "Add a photo") + "</button>" +
+      (d.img ? '<button type="button" class="btn btn-ghost btn-sm" data-inv="gearphotox">Remove photo</button>' : "") +
+      '<span class="gear-photo-note">Optional, and kept at 160px — the board travels as one row.</span></div>' +
+    '<div class="bk-foot">' +
+      (d.id ? '<button type="button" class="btn btn-danger btn-sm gear-del" data-inv="geardel">Delete</button>' : "") +
+      '<button type="button" class="btn btn-ghost btn-sm" data-inv="gearcancel">Cancel</button>' +
+      '<button type="submit" class="btn btn-primary btn-sm">' + (d.id ? "Save changes" : "Add to the wardrobe") + "</button></div></form>";
+  const now = dlg.querySelector("form"); if (now && sy) now.scrollTop = sy;
+  if (focusSel) { const n = dlg.querySelector(focusSel); if (n) n.focus({ preventScroll: true }); }
+}
+/* the draft follows every keystroke, so a re-render for a photo loses nothing */
+document.addEventListener("input", e => {
+  const dlg = e.target.closest && e.target.closest("#gearDlg"); if (!dlg || !gearEdit) return;
+  const t = e.target;
+  if (t.name === "name") gearEdit.name = t.value;
+  else if (t.name === "note") gearEdit.note = t.value;
+  else if (t.name === "slot") gearEdit.slot = t.value;
+  else if (t.name === "color") { gearEdit.color = t.value; gearDlgPreview(); }
+});
+function gearDlgPreview() {
+  const dlg = $("#gearDlg"); if (!dlg || !gearEdit) return;
+  const p = dlg.querySelector(".gear-preview"); if (p) p.style.background = gearEdit.color;
+  dlg.querySelectorAll(".gear-sw").forEach(b => b.classList.toggle("is-cur", b.dataset.c === gearEdit.color.toLowerCase()));
+}
+function gearDraftColor(c) {
+  if (!gearEdit || !c) return;
+  gearEdit.color = c;
+  const inp = $("#gearDlg").querySelector('input[name="color"]'); if (inp) inp.value = c;
+  gearDlgPreview();
+}
+/* a photograph shrinks on the way in: 160px on its long side, then JPEG. A wardrobe of
+   full-size photographs would not fit through one Supabase row, and nothing here needs one. */
+function gearShrink(file, cb) {
+  const url = URL.createObjectURL(file), img = new Image();
+  img.onload = () => {
+    const max = 160, r = Math.min(1, max / Math.max(img.width, img.height));
+    const cv = document.createElement("canvas");
+    cv.width = Math.max(1, Math.round(img.width * r));
+    cv.height = Math.max(1, Math.round(img.height * r));
+    cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+    URL.revokeObjectURL(url);
+    let out = null; try { out = cv.toDataURL("image/jpeg", 0.72); } catch (err) { out = null; }
+    cb(out);
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); cb(null); };
+  img.src = url;
+}
+function gearPhotoPick() {
+  const inp = $("#gearFile"); if (!inp) return;
+  inp.value = "";
+  inp.onchange = () => {
+    const f = inp.files && inp.files[0]; if (!f || !gearEdit) return;
+    gearShrink(f, out => {
+      if (!out) { showToast("That image could not be read.", false, true); return; }
+      if (!gearEdit) return;
+      gearEdit.img = out; gearDlgRender('[data-inv="gearphoto"]');
+    });
+  };
+  inp.click();
+}
+function gearDlgSave() {
+  const d = gearEdit, dlg = $("#gearDlg"); if (!d || !dlg) return;
+  const form = dlg.querySelector("form");
+  if (form && !form.reportValidity()) return;
+  const name = d.name.trim(); if (!name) return;
+  const W = wardrobe();
+  if (!d.id && W.items.length >= GEAR_CAP) {
+    showToast("The wardrobe holds " + GEAR_CAP + " garments. Delete one to add another.", false, true); return;
+  }
+  takeSnapshot();
+  let it = d.id ? gearById(d.id) : null;
+  const isNew = !it;
+  if (!it) { it = { id: "gr-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }; W.items.push(it); }
+  const moved = !isNew && it.slot !== d.slot;
+  it.name = name.slice(0, 60); it.slot = d.slot; it.color = d.color;
+  it.note = d.note.trim().slice(0, 80); it.img = d.img || "";
+  /* a garment that moved to another slot cannot stay worn in the one it left */
+  if (moved) WEAR.forEach(w => { if (W.worn[w.k] === it.id && w.k !== it.slot) delete W.worn[w.k]; });
+  save(); gearDlgClose(); renderInv();
+  showToast(isNew ? "“" + it.name + "” is in the wardrobe." : "“" + it.name + "” saved.", true);
+}
+function gearDelete() {
+  const d = gearEdit; if (!d || !d.id) return;
+  const it = gearById(d.id); if (!it) return;
+  takeSnapshot();
+  const W = wardrobe();
+  W.items = W.items.filter(x => x.id !== d.id);
+  WEAR.forEach(w => { if (W.worn[w.k] === d.id) delete W.worn[w.k]; });
+  save(); gearDlgClose(); renderInv();
+  showToast("“" + it.name + "” is out of the wardrobe.", true);
+}
+function invAct(el) {
+  const d = el.dataset;
+  switch (d.inv) {
+    case "sub":        invSetSub(d.shelf); break;
+    case "slot":
+      if (gearWorn(d.k)) gearTakeOff(d.k);
+      else { gearFilter = gearFilter === d.k ? "" : d.k; renderInv();
+        const b = document.querySelector('.iv-slot[data-k="' + d.k + '"]'); if (b) b.focus({ preventScroll: true }); }
+      break;
+    case "wear":       gearWear(d.id); break;
+    case "strip":      gearStrip(); break;
+    case "filter": {
+      gearFilter = d.k || ""; renderInv();
+      const b = document.querySelector('.iv-f[data-k="' + (d.k || "") + '"]'); if (b) b.focus({ preventScroll: true });
+      break;
+    }
+    case "gearnew":    gearDlgOpen(null); break;
+    case "gearedit":   gearDlgOpen(d.id); break;
+    case "gearcancel": gearDlgClose(); break;
+    case "gearcolor":  gearDraftColor(d.c); break;
+    case "gearphoto":  gearPhotoPick(); break;
+    case "gearphotox": if (gearEdit) { gearEdit.img = ""; gearDlgRender('[data-inv="gearphoto"]'); } break;
+    case "geardel":    gearDelete(); break;
+  }
 }
 
 /* ================= TOMES =================
@@ -14653,6 +15191,8 @@ document.addEventListener("click", e => {
   if (cmp) { campAct(cmp); return; }
   const pf = e.target.closest("[data-pf]");
   if (pf) { profAct(pf); return; }
+  const iv = e.target.closest("[data-inv]");
+  if (iv) { invAct(iv); return; }
   const tm = e.target.closest("[data-tm]");
   if (tm) { tomeAct(tm); if (tm.dataset.tm !== "skills") return; }
 
@@ -14850,6 +15390,7 @@ document.addEventListener("submit", e => {
   if (f.dataset.form === "bk-save") { saveBookDialog(); return; }
   if (f.dataset.form === "step-save") { qStepDlgSave(); return; }
   if (f.dataset.form === "camp-save") { campDlgSave(); return; }
+  if (f.dataset.form === "gear-save") { gearDlgSave(); return; }
   if (f.dataset.form === "quest-save") { qQuestDlgSave(); return; }
   if (f.dataset.form === "birth-save") { birthDlgSave(); return; }
   if (f.dataset.form === "del-quest") {
