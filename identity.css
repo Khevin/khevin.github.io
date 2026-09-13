@@ -8,10 +8,24 @@
   --serif: 'Manrope', Arial, sans-serif;
   --sans: 'Manrope', Arial, sans-serif;
   --mono: 'Manrope', Arial, sans-serif;
+  /* The whole neutral ramp, not just the top of it. styles.css tints its two
+     shades toward a cream page; leaving them behind meant 47 surfaces — the
+     namespace dropdown loudest among them — went on painting beige on white.
+     Each step keeps the paper's own faint blue cast and matches the luminance
+     drop the old ramp had (6.5 and 6.3), so hovers stay as quiet as they were. */
   --paper: #fcfdff;
+  --paper-warm: #f5f5f7;
+  --paper-deep: #edeef0;
+  --ink-faintest: #c2c2c4;      /* same luminance as the old #C9C2B2 */
+  --ink-faint: #959597;         /* likewise #9A958A, whose warmth showed on small labels */
+
   --accent: #c93123;
   --accent-deep: #ac271c;
-  --accent-soft: #f0c4b8;
+  /* A tint of this page's red, not the old salmon — that was mixed toward
+     cream and goes muddy on white. Lighter, too: the current row already says
+     so with a tick and red text, and the fill should be the quietest of the
+     three signals rather than the loudest. */
+  --accent-soft: #f5e0e0;
 
   /* One curve for everything that inverts. Slow out of the gate, quick through
      the middle, long settle — it reads as the row leaning in rather than
