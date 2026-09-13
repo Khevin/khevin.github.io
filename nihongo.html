@@ -29,9 +29,9 @@
     --jp-paper:     #f9ebe7;
     --jp-paper-2:   #fdf6f3;
     --jp-edge:      #eed8d3;
-    --jp-gold:      #b48a4a;
-    --jp-gold-dark: #8d6630;
-    --jp-gold-soft: #dcbfb2;
+    --jp-accent:      #c07f88;
+    --jp-accent-deep: #b24c5d;
+    --jp-accent-soft: #dcbfb2;
     --jp-ink:       #3a2818;
     --jp-ink-2:     #6b5740;
     --jp-ink-3:     #9c8681;
@@ -70,7 +70,7 @@
     font-family: var(--serif-jp);
     font-weight: 800;
     font-size: clamp(100px, 18vw, 180px);
-    color: var(--jp-gold-soft);
+    color: var(--jp-accent-soft);
     line-height: 1;
     user-select: none;
     opacity: 0.55;
@@ -92,7 +92,7 @@
     padding: 22px 24px;
     background: var(--jp-paper);
     border: 1px solid var(--jp-edge);
-    border-left: 4px solid var(--jp-gold);
+    border-left: 4px solid var(--jp-accent);
     border-radius: 6px;
     text-decoration: none;
     color: var(--jp-ink);
@@ -101,8 +101,8 @@
     box-shadow: 0 2px 8px rgba(100,72,30,0.07);
   }
   .jp-enter-link:hover {
-    border-color: var(--jp-gold);
-    border-left-color: var(--jp-gold-dark);
+    border-color: var(--jp-accent);
+    border-left-color: var(--jp-accent-deep);
     box-shadow: 0 4px 18px rgba(100,72,30,0.13);
     transform: translateY(-1px);
   }
@@ -138,7 +138,7 @@
   }
   .jp-enter-arrow {
     font-size: 20px;
-    color: var(--jp-gold);
+    color: var(--jp-accent);
     flex: 0 0 auto;
     transition: transform .15s;
   }
@@ -168,7 +168,7 @@
     top: 0;
     bottom: 0;
     width: 3px;
-    background: var(--jp-gold-soft);
+    background: var(--jp-accent-soft);
     border-radius: 3px 0 0 3px;
   }
   .jp-sec-glyph {
@@ -176,7 +176,7 @@
     font-family: var(--serif-jp);
     font-weight: 700;
     font-size: 28px;
-    color: var(--jp-gold-dark);
+    color: var(--jp-accent-deep);
     margin-bottom: 10px;
     line-height: 1;
   }
@@ -218,14 +218,14 @@
   .jp-enter-link { max-width: none; height: 100%; }
   /* The second door is not open yet: same shape, quieter ink, no lift. */
   .jp-enter-link.is-soon {
-    border-left-color: var(--jp-gold-soft);
+    border-left-color: var(--jp-accent-soft);
     cursor: default;
     box-shadow: none;
   }
   .jp-enter-link.is-soon:hover {
     transform: none;
     border-color: var(--jp-edge);
-    border-left-color: var(--jp-gold-soft);
+    border-left-color: var(--jp-accent-soft);
     box-shadow: none;
   }
   .jp-enter-link.is-soon .jp-enter-label { color: var(--jp-ink-2); }
@@ -235,7 +235,7 @@
     flex: none;
     font-family: var(--serif-jp);
     font-size: 22px;
-    color: var(--jp-gold-dark);
+    color: var(--jp-accent-deep);
     background: var(--jp-paper-2);
     border: 1px solid var(--jp-edge);
     border-radius: 6px;
@@ -273,7 +273,7 @@
 
   /* the one nav item that leaves the page carries the accent */
   .nav-open {
-    color: var(--jp-gold-dark) !important;
+    color: var(--jp-accent-deep) !important;
   }
   .nav-open:hover { color: var(--jp-ink) !important; }
 
