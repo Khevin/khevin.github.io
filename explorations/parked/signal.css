@@ -1,0 +1,313 @@
+/* Signal — the shared identity across every page of the exploration.
+   Type, palette, the nav, and the ink-inversion row.
+   Page-specific work lives alongside this (see signal-original.css). */
+
+:root {
+  --serif: 'Manrope', Arial, sans-serif;
+  --sans: 'Manrope', Arial, sans-serif;
+  --mono: 'Manrope', Arial, sans-serif;
+  --paper: #fcfdff;
+  --accent: #c93123;
+  --accent-deep: #ac271c;
+  --accent-soft: #f0c4b8;
+
+  /* One curve for everything that inverts. Slow out of the gate, quick through
+     the middle, long settle — it reads as the row leaning in rather than
+     snapping, which is what makes the pull-inward feel physical. */
+  --signal-curve: cubic-bezier(.22, .68, .16, 1);
+  --signal-in: 460ms;
+  --signal-out: 620ms;
+}
+
+/* ---------- display type ---------- */
+.hero.v5 .h-block h1.hx-display,
+.section-title,
+.work-list .item .title,
+.contact-block .l h2,
+.snip-pop__name,
+.principle h2,
+.shelf-title,
+.notes-year .year,
+.page-hero-grid .l h1,
+.library-h1 {
+  /* Fraunces 900 is the title face. The --display-* hooks stay so another can
+     still be tried from devtools without editing this file; the nav picker that
+     used to drive them is gone. Candidates still live in display-fonts.css and
+     title-fonts.html sets them all side by side. */
+  font-family: var(--display-font, 'Fraunces'), Georgia, serif;
+  font-weight: var(--display-weight, 900);
+  letter-spacing: var(--display-track, -0.025em);
+  /* Holds the cap height at Archivo Black's ratio, so changing the face did not
+     quietly resize every heading across four pages. */
+  font-size-adjust: cap-height 0.73;
+  /* No synthesised bold or oblique — a family missing the cut being asked for
+     should show its real one, not a smeared approximation. */
+  font-synthesis: none;
+}
+
+.hero.v5 .h-block h1 .b,
+.section-title em,
+.work-list .item .title em,
+.contact-block .l h2 em,
+.principle h2 em,
+.notes-year .year em,
+.page-hero-grid .l h1 em,
+.library-h1 em {
+  font-style: normal;
+}
+
+.hero.v5 .dispatches h4,
+.disciplines .d h4,
+.clients-strip h3,
+.snip .info h4,
+.process .step h4,
+.principle .disc,
+.note-entry .title {
+  font-family: var(--sans);
+  font-weight: 600;
+}
+
+.hero.v5 .dispatches h4 em,
+.clients-strip h3 em,
+.process .step .top .big,
+.note-entry .title em {
+  font-style: normal;
+}
+
+/* ---------- nav ----------
+   Solid paper, not a translucent blur. The blur let the red bar read straight
+   through the header, which made anything landing slightly under it look like
+   a rendering fault rather than a scrolled page. */
+nav.top {
+  background: var(--paper);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Jumping to a section has to clear that nav with room to spare. The lazy
+   hats image sits directly above #clients with no intrinsic dimensions, so it
+   measures zero until its bytes arrive and then pops — which is what was
+   throwing the Work anchor: the scroll was computed against a document that
+   grew by the height of an illustration a moment later. Reserving its box from
+   the aspect ratio makes the landing deterministic. */
+.section { scroll-margin-top: 88px; }
+.about-grid .hats-art img,
+.hats-art--inline img { aspect-ratio: 1894 / 830; }
+
+/* Sans, Title Case, sitting right — and the page you are on drops out of that
+   rhythm entirely into Fraunces italic in red. The point of the Ogilvy nav is
+   that the current item is not the same word emphasised; it is a different
+   voice. Weight or colour alone would read as a hover state. */
+nav.top ul.primary {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: capitalize;
+  letter-spacing: 0.005em;
+  gap: clamp(18px, 2.1vw, 32px);
+  align-items: baseline;
+}
+nav.top ul.primary a {
+  color: var(--ink-2);
+  transition: color var(--m-fast);
+}
+nav.top ul.primary a:hover { color: var(--ink); }
+nav.top ul.primary a[aria-current='page'] {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+}
+nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
+
+/* ---------- the ink row ----------
+   The identity's one interaction. A row inverts to ink on hover and, at the
+   same time, draws its own contents inward — the band stays put at full width
+   while the text and the arrow walk in from both edges. Reaching for a row
+   narrows it, which makes the pointer feel like it has weight.
+
+   `--row-pad` is the whole mechanism: padding, not transform, so the ink band
+   is unaffected and only the content moves. Both directions are transitioned on
+   the base rule, so leaving animates out on its own, a little slower than it
+   came in. */
+/* ---------- 04 selected work ---------- */
+.work-list .item {
+  --row-pad: 0px;
+  padding-left: var(--row-pad);
+  padding-right: var(--row-pad);
+  background-color: transparent;
+  transition:
+    background-color var(--signal-out) var(--signal-curve),
+    padding var(--signal-out) var(--signal-curve);
+}
+.work-list .item:hover {
+  --row-pad: clamp(18px, 2.8vw, 48px);
+  background-color: var(--ink);
+  transition-duration: var(--signal-in);
+}
+/* Every child fades independently on the same curve, so the type lightens as
+   the ground darkens instead of flashing at the end of the background fade. */
+.work-list .item .title,
+.work-list .item .title em,
+.work-list .item .desc,
+.work-list .item .meta-tags,
+.work-list .item .arrow {
+  transition: color var(--signal-out) var(--signal-curve);
+}
+.work-list .item:hover .title { color: var(--paper); }
+/* The project name keeps its accent on the dark row — it is the reason the em
+   is there, and it gives the row a second red note beside the arrow. */
+.work-list .item:hover .title em { color: var(--accent); }
+.work-list .item:hover .desc { color: #a8a29a; }
+.work-list .item:hover .meta-tags { color: #8d877e; }
+.work-list .item:hover .arrow { color: var(--accent); }
+.work-list .item:hover,
+.work-list .item:hover .title,
+.work-list .item:hover .desc,
+.work-list .item:hover .meta-tags,
+.work-list .item:hover .arrow {
+  transition-duration: var(--signal-in);
+}
+/* The arrow already had a nudge; it now rides on top of the inward pull. */
+.work-list .item .arrow {
+  transition: color var(--signal-out) var(--signal-curve),
+              transform var(--signal-in) var(--signal-curve);
+}
+
+/* ---------- 06 process CTA ----------
+   Same inversion, no inward pull — the band is a destination, not a list row,
+   and pulling its single line inward would read as a wobble. */
+.process-more {
+  background: var(--paper);
+  border-top-color: var(--accent);
+  border-left-color: var(--accent);
+  transition:
+    background-color var(--signal-out) var(--signal-curve),
+    border-color var(--signal-out) var(--signal-curve);
+}
+.process-more .lead,
+.process-more .lead em,
+.process-more .arrow {
+  transition: color var(--signal-out) var(--signal-curve),
+              transform var(--signal-in) var(--signal-curve);
+}
+.process-more:hover {
+  background-color: var(--ink);
+  border-top-color: var(--accent);
+  border-left-color: var(--accent);
+  transition-duration: var(--signal-in);
+}
+.process-more:hover .lead { color: var(--paper); }
+.process-more:hover .lead em { color: var(--accent); }
+.process-more:hover .arrow { color: var(--accent); }
+.process-more:hover .lead,
+.process-more:hover .lead em,
+.process-more:hover .arrow { transition-duration: var(--signal-in); }
+
+/* ---------- process page ----------
+   Colour inversion only — no inward pull. The cards are in a hairline grid, so
+   they start on paper rather than transparent: going transparent would expose
+   the grid's own black gutter behind every card at once. And unlike a list row,
+   a card holds a paragraph — moving its padding reflows five lines of body copy
+   mid-transition, which reads as a shudder rather than a grab. */
+.principle {
+  background-color: var(--paper);
+  transition: background-color var(--signal-out) var(--signal-curve);
+}
+.principle:hover {
+  background-color: var(--ink);
+  transition-duration: var(--signal-in);
+}
+.principle h2,
+.principle h2 em,
+.principle p,
+.principle .aside,
+.principle .disc {
+  transition: color var(--signal-out) var(--signal-curve);
+}
+.principle:hover h2 { color: var(--paper); }
+.principle:hover h2 em { color: var(--accent); }
+.principle:hover p { color: #a8a29a; }
+/* The pull-quote stays light rather than red — it is small italic text, and red
+   on ink only clears 3.34:1, which is a large-text number. */
+.principle:hover .aside { color: #d8d3ca; }
+.principle:hover .disc { color: #8d877e; }
+.principle:hover h2,
+.principle:hover h2 em,
+.principle:hover p,
+.principle:hover .aside,
+.principle:hover .disc { transition-duration: var(--signal-in); }
+
+/* ---------- notes ---------- */
+.note-entry {
+  --row-pad: 0px;
+  padding-left: var(--row-pad);
+  padding-right: var(--row-pad);
+  background-color: transparent;
+  transition:
+    background-color var(--signal-out) var(--signal-curve),
+    padding var(--signal-out) var(--signal-curve);
+}
+.note-entry:hover,
+.note-entry:focus-visible {
+  --row-pad: clamp(18px, 2.8vw, 48px);
+  background-color: var(--ink);
+  transition-duration: var(--signal-in);
+}
+.note-entry .date,
+.note-entry .title,
+.note-entry .title em,
+.note-entry .where,
+.note-entry .arrow {
+  transition: color var(--signal-out) var(--signal-curve),
+              transform var(--signal-in) var(--signal-curve);
+}
+.note-entry:hover .title { color: var(--paper); }
+.note-entry:hover .title em { color: var(--accent); }
+.note-entry:hover .date { color: #8d877e; }
+.note-entry:hover .where { color: #8d877e; }
+.note-entry:hover .arrow { color: var(--accent); }
+.note-entry:hover .date,
+.note-entry:hover .title,
+.note-entry:hover .title em,
+.note-entry:hover .where,
+.note-entry:hover .arrow { transition-duration: var(--signal-in); }
+
+/* ---------- signature ----------
+   The asset is black artwork on transparency. On the Signal paper that is
+   already right; the filter hook is here so it survives if this block is ever
+   set on ink, since a PNG cannot take currentColor. */
+.signature { opacity: .92; }
+.contact-block.is-ink .signature { filter: invert(1); opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .work-list .item,
+  .principle,
+  .note-entry,
+  .process-more { transition-duration: 1ms; }
+}
+
+/* Coarse pointers have no hover to animate out of, and a sticky :hover on a
+   tapped row would leave it stranded in ink. */
+@media (hover: none) {
+  /* Rows sit on open paper, so transparent is their resting ground. */
+  .work-list .item:hover,
+  .note-entry:hover {
+    --row-pad: 0px;
+    background-color: transparent;
+  }
+  /* Cards do not: the principles grid paints its hairlines with its own black
+     background, and .process-more sits on an explicit paper fill. Resetting
+     either to transparent shows what is behind them. */
+  .principle:hover,
+  .process-more:hover { background-color: var(--paper); }
+  .work-list .item:hover .title,
+  .work-list .item:hover .title em,
+  .note-entry:hover .title,
+  .principle:hover h2 { color: var(--ink); }
+  .work-list .item:hover .desc,
+  .principle:hover p { color: var(--ink-soft); }
+  .process-more:hover .lead { color: var(--ink); }
+}

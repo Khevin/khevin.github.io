@@ -15,7 +15,7 @@
   const CONTACT_LINKS = [
     { kind: 'Email',    label: 'hi@khevin.com',    href: 'mailto:hi@khevin.com' },
     { kind: 'LinkedIn', label: '/in/khevin',       href: 'https://www.linkedin.com/in/khevin', external: true },
-    { kind: 'Writing',  label: 'medium / @khevin', href: 'https://medium.com/@khevin',         external: true },
+    { kind: 'Blog',     label: 'medium / @khevin', href: 'https://medium.com/@khevin',         external: true },
   ];
 
   $$('[data-contact-links]').forEach((host) => {
@@ -137,8 +137,12 @@
       const t = document.getElementById(id);
       if (!t) return;
       e.preventDefault();
+      /* Clear the sticky nav by measuring it, rather than by a constant that
+         was correct for one version of the header. */
+      const bar = document.querySelector('nav.top');
+      const offset = (bar ? bar.getBoundingClientRect().height : 56) + 12;
       window.scrollTo({
-        top: t.getBoundingClientRect().top + window.scrollY - 60,
+        top: t.getBoundingClientRect().top + window.scrollY - offset,
         behavior: reduced ? 'auto' : 'smooth',
       });
     });

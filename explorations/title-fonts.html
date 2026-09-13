@@ -1,0 +1,105 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Title fonts — Signal</title>
+<link rel="stylesheet" href="../fonts.css" />
+<link rel="stylesheet" href="../display-fonts.css" />
+<style>
+  :root { --ink: #1a1815; --paper: #fcfdff; --accent: #c93123; --faint: #c9c2b2; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+         font: 14px/1.5 'Manrope', system-ui, sans-serif; padding: 40px clamp(20px, 4vw, 56px) 96px; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  h1 { font-family: 'Archivo Black', sans-serif; font-weight: 400; font-size: 34px;
+       letter-spacing: -0.03em; margin: 0 0 6px; }
+  .intro { color: #545454; max-width: 62ch; margin: 0 0 12px; }
+  .controls { display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+              border-top: 1px solid var(--faint); border-bottom: 1px solid var(--faint);
+              padding: 14px 0; margin: 22px 0 0; position: sticky; top: 0; background: var(--paper); z-index: 2; }
+  .controls label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #9a958a; }
+  .controls input[type=text] { font: inherit; padding: 7px 10px; width: min(420px, 52vw);
+                               border: 1px solid var(--faint); border-radius: 2px; background: transparent; color: var(--ink); }
+  .controls input[type=range] { vertical-align: middle; }
+
+  .row { border-bottom: 1px solid #ece7db; padding: 26px 0 30px; }
+  .row.missing { opacity: .45; }
+  .meta { display: flex; gap: 14px; align-items: baseline; margin: 0 0 10px; }
+  .name { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .spec { font-size: 11px; letter-spacing: .05em; color: #9a958a; }
+  .tag { font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+         border: 1px solid var(--faint); border-radius: 2px; padding: 2px 6px; color: #9a958a; }
+
+  /* Every specimen is pinned to the same CAP HEIGHT, not the same font-size —
+     otherwise a condensed face reads as "smaller" and the comparison becomes
+     about size rather than letterform. */
+  .line { margin: 0; line-height: .96; font-weight: 400; font-synthesis: none;
+          font-size-adjust: cap-height 0.73; word-break: break-word; }
+  .line em { color: var(--accent); font-style: normal; }
+</style>
+
+<div class="wrap">
+  <h1>Title fonts</h1>
+  <p class="intro">Every candidate in the nav picker, set at one cap height so you are comparing
+    letterforms and not sizes. Type your own line to test it. Greyed rows are licensed faces that
+    are not installed on this machine — nothing can be shown for them here.</p>
+
+  <div class="controls">
+    <label for="t">Line</label>
+    <input id="t" type="text" value="Big rooms. Small rooms. Same bar." />
+    <label for="s">Size</label>
+    <input id="s" type="range" min="30" max="120" value="62" />
+    <span class="spec" id="sv">62px</span>
+  </div>
+
+  <div id="rows"></div>
+</div>
+
+<script src="./display-font-list.js"></script>
+<script>
+(() => {
+  const { selfHosted, licensed } = window.SIGNAL_FONTS;
+  const ALL = [...selfHosted, ...licensed];
+  const rows = document.getElementById('rows');
+  const input = document.getElementById('t');
+  const size = document.getElementById('s');
+  const sv = document.getElementById('sv');
+
+  const ctx = document.createElement('canvas').getContext('2d');
+  const SAMPLE = 'WHOAmMiljl 0123 ggyy';
+  const width = (f) => { ctx.font = `72px ${f}`; return ctx.measureText(SAMPLE).width; };
+  const resolves = (family) =>
+    ['monospace', 'serif', 'sans-serif'].every((g) => width(`"${family}", ${g}`) !== width(g));
+
+  const render = () => {
+    const text = input.value || 'Big rooms. Small rooms. Same bar.';
+    [...rows.children].forEach((row) => {
+      const line = row.querySelector('.line');
+      line.textContent = text;
+      line.style.fontSize = size.value + 'px';
+    });
+    sv.textContent = size.value + 'px';
+  };
+
+  const start = async () => {
+    await Promise.all(selfHosted.map((f) =>
+      document.fonts.load(`${f.weight} 72px "${f.family}"`).catch(() => {})
+    ));
+    rows.innerHTML = ALL.map((f) => {
+      const ok = resolves(f.family);
+      const tag = licensed.includes(f)
+        ? (ok ? '<span class="tag">installed here</span>' : '<span class="tag">not installed</span>')
+        : '';
+      return `<div class="row${ok ? '' : ' missing'}">
+        <div class="meta"><span class="name">${f.label}</span>
+          <span class="spec">${f.weight} · tracking ${f.track}</span>${tag}</div>
+        <p class="line" style="font-family:'${f.family}',Arial,sans-serif;font-weight:${f.weight};letter-spacing:${f.track}"></p>
+      </div>`;
+    }).join('');
+    render();
+  };
+
+  input.addEventListener('input', render);
+  size.addEventListener('input', render);
+  start();
+})();
+</script>

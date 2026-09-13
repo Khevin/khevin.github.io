@@ -1,0 +1,121 @@
+/* Home page only. Type, palette, the ink row and the Broad lettering all live
+   in signal.css; what is left here is the 1960s bar that only this page has,
+   plus where the lettering sits inside the about header. */
+
+/* Clients: a red bar interior above a continuous near-black counter. */
+#clients {
+  background: #1a1815;
+  color: #fcfdff;
+  padding-top: 0;
+
+  /* The roster below the counter is one black field split in two by a single
+     line, so the air has to be symmetrical about that line.
+
+     --roster-gap does the real work: equal above and below the rule.
+     The field's TOP edge is not ours to set — the bar illustration ends in its
+     own black counter surface, indistinguishable from this background, and that
+     tail already reads as the top margin. Adding a margin under .s-head on top
+     of it was the "weird padding": roughly 270px of nothing before the first
+     roster. So the top edge is the illustration's, and --roster-foot is tuned
+     to answer it at the bottom. */
+  --roster-gap: clamp(40px, 4.4vw, 60px);
+  --roster-foot: clamp(72px, 9vw, 128px);
+  padding-bottom: var(--roster-foot);
+}
+#clients .s-head {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  min-height: 600px;
+  aspect-ratio: 2 / 1;
+  background: #c93123 url('../assets/bar-signal.png') center bottom / cover no-repeat;
+  /* styles.css puts 56px under every .s-head. Here that stacks on top of the
+     illustration's own counter tail, which is the same black — so it reads as
+     one oversized gap rather than as two separate margins. */
+  margin-bottom: 0;
+}
+#clients .s-head > div {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(64px, 6vw, 104px) var(--gutter) 100px;
+}
+#clients .section-title {
+  color: #fcfdff;
+  max-width: 62%;
+  text-wrap: initial;
+}
+#clients .section-title em { color: #1a1815; }
+#clients .glass-art { display: none; }
+#clients .body-lg { color: #fcfdff; max-width: 52%; }
+/* No rule above the first roster — the counter edge already closes the red bar,
+   and a second line there made the lower rule read as a lid on the bottom half
+   rather than as the thing dividing the two. Only the second strip is ruled. */
+#clients .clients-strip {
+  border-top: 0;
+  padding-top: 0;
+}
+#clients .clients-strip--next {
+  border-top: 1px solid #514b44;
+  margin-top: var(--roster-gap);
+  padding-top: var(--roster-gap);
+}
+#clients .clients-strip .col-l h3 { color: #fcfdff; }
+/* The roster headings take the page's own red, not a tint of it — the pale
+   salmon read as a fourth colour and went chalky against the counter. */
+#clients .clients-strip .col-l h3 em { color: var(--accent); }
+#clients .client-strip-img img { filter: brightness(0) invert(1); opacity: .9; }
+@media (min-width: 1800px) {
+  #clients .s-head { aspect-ratio: auto; min-height: 780px; background-size: 100% 100%; }
+}
+@media (max-width: 900px) {
+  #clients .s-head { min-height: 560px; }
+  #clients .s-head > div { padding-top: 60px; }
+  #clients .section-title { font-size: clamp(40px, 5.6vw, 58px); }
+  #clients .body-lg { font-size: 18px; }
+}
+@media (max-width: 600px) {
+  /* The copy sits ON the illustration here, the same as it does on desktop —
+     the artwork was drawn with its left 62% deliberately empty for exactly
+     this. It used to be detached into an ::after band below the text, which
+     read as two separate blocks stacked up.
+
+     `100% auto` anchored bottom-left is what makes it work: the art keeps its
+     own 2:1 ratio at full width along the bottom, so the glass and the counter
+     stay whole, and the red field above simply grows to whatever the text
+     needs. `cover` cannot do this — at a phone's ratio it would crop the empty
+     left zone and the vignette both. */
+  #clients .s-head {
+    min-height: 0;
+    aspect-ratio: auto;
+    background-size: 100% auto;
+    background-position: left bottom;
+  }
+  /* The bottom padding is the counter: the art's lowest band runs black across
+     the full width, so the copy has to finish above it or it sets black on
+     black. 30vw ≈ 60% of the art's height at any phone size. */
+  #clients .s-head > div { padding: 44px var(--gutter) 30vw; }
+  #clients .section-title {
+    /* Inside the empty zone, with the gutters already taken off. Sized so
+       "Small rooms." very nearly fills that column — the headline carries the
+       art here, and at the old size it was only reaching 55% of the width.
+       It stays three lines: the copy has hard breaks, and the only way to a
+       fourth is wrapping "Small rooms.", which strands "Small" on its own. */
+    max-width: 66%;
+    /* Sized off the COLUMN, not the viewport. The column is 66% of
+       (100vw - 2 gutters), so `9.5vw - 6px` tracks it and the headline fills a
+       steady ~94% of the measure at every phone size. A plain vw value drifts,
+       because the fixed gutters are a bigger share of a small screen — and
+       font-size-adjust scales the used size up from the nominal one, so the
+       margin has to be real rather than eyeballed. */
+    font-size: clamp(26px, calc(9.5vw - 6px), 46px);
+  }
+  #clients .body-lg { max-width: 66%; font-size: 16px; }
+}
+@media (max-width: 330px) {
+  /* The headline size bottoms out at 26px, so below roughly this width the 66%
+     column can no longer hold "Small rooms." and it breaks mid-headline. Giving
+     back some of the empty zone is the lesser cost — there is no vignette to
+     collide with this far left. */
+  #clients .section-title,
+  #clients .body-lg { max-width: 74%; }
+}

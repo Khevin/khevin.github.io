@@ -1569,6 +1569,25 @@ nav.top ul.primary a:hover { color: var(--ink); }
 }
 /* Contact links · shared component (used in #contact and on /about).
    Markup is rendered from CONTACT_LINKS in script.js — keep styling here. */
+/* A signature above the addresses — the page signs off before it hands over
+   the ways to reach him. Decorative: the name is already in the masthead, so
+   it carries alt="" and stays out of the accessibility tree. */
+.signature {
+  display: block;
+  /* The artwork is 147px wide, so that is the ceiling. Scaling a raster
+     signature past its own pixels is where it stops reading as a hand and
+     starts reading as a scan — a 2x export would let it sit larger. */
+  width: min(147px, 100%);
+  aspect-ratio: 147 / 56;
+  height: auto;
+  /* The nudge left lines the first stroke up with the link labels below,
+     rather than with the artwork's own bounding box. */
+  margin: 0 0 20px -4px;
+}
+@media (max-width: 900px) {
+  .signature { margin-bottom: 14px; }
+}
+
 .contact-links {
   border-top: 1px dashed var(--ink-faintest);
 }
