@@ -98,6 +98,7 @@ const APP = {
     if (v === 'doors') return 'rooms';
     return v;
   })(),
+  flashLevel:   lsGet('jp:flashLevel', 'N5'),
   flashIdx:     0,
   flashShowEn:  lsGet('jp:flashShowEn', true),
   // Card flip state — false = front (image + meaning + examples), true =
@@ -299,6 +300,7 @@ function applySection(s, { updateHash = true, persist = true, render = true } = 
   // silently skips the sidebar render and the cascade misses its stroke.
   if (prev === 'flashcards' || s === 'flashcards') {
     _lastRenderedFlashClass = null;
+    _lastRenderedFlashCats = null;
   }
   // Leaving Speaking → release the mic (permission-aware; see
   // SpeakingRecorder.release) + the playback AudioContext.
@@ -12430,7 +12432,35 @@ function seeAlsoCards(card) {
 // (see setSection) so re-entry from another section forces a fresh
 // render and triggers the tier-2 brush as part of the cascade.
 let _lastRenderedFlashClass = null;
+let _lastRenderedFlashCats = null;
+
+// The JLPT ladder, hardest last. N5 is the entry level and holds everything
+// that exists today; the rest are the shape of where this is going, shown so
+// the ladder is legible rather than hidden until it is full.
+const FLASH_LEVELS = [
+  { id: 'N5', glyph: '五', ja: 'N5', en: 'first steps' },
+  { id: 'N4', glyph: '四', ja: 'N4', en: 'everyday' },
+  { id: 'N3', glyph: '三', ja: 'N3', en: 'bridge' },
+  { id: 'N2', glyph: '二', ja: 'N2', en: 'fluent reading' },
+  { id: 'N1', glyph: '一', ja: 'N1', en: 'mastery' },
+];
+const ENTRY_LEVEL = 'N5';
+
+// Every deck is an N5 deck for now. A deck carrying a `level` of its own wins,
+// so splitting the ladder later is a data change, not a code change.
+function classesForLevel(levelId) {
+  return (window.FLASHCARD_CLASSES || []).filter(c => (c.level || ENTRY_LEVEL) === levelId);
+}
+function levelOfClass(classId) {
+  const c = (window.FLASHCARD_CLASSES || []).find(x => x.id === classId);
+  return (c && c.level) || ENTRY_LEVEL;
+}
+
 function renderFlashSidebar() {
+  if (!classesForLevel(APP.flashLevel).length && classesForLevel(levelOfClass(APP.flashClassId)).length) {
+    APP.flashLevel = levelOfClass(APP.flashClassId);
+    lsSet('jp:flashLevel', APP.flashLevel);
+  }
   const el = document.getElementById('flash-sidebar');
   if (!el) return;
   // Skip the rebuild if the sidebar already shows the current class, mode,
@@ -12440,7 +12470,8 @@ function renderFlashSidebar() {
   // key so entering review (or rating cards down to zero due) refreshes
   // the 復習 row.
   const srsDue = (typeof SRS !== 'undefined' && SRS.available()) ? SRS.counts().due : 0;
-  const sidebarKey = APP.flashClassId + '|' + (APP.flashMode || 'browse') + '|' + srsDue;
+  const sidebarKey = APP.flashLevel + '|' + (APP.flashMode || 'browse') + '|' + srsDue;
+  renderFlashCatsSidebar();
   if (_lastRenderedFlashClass === sidebarKey) return;
   _lastRenderedFlashClass = sidebarKey;
   const classes = window.FLASHCARD_CLASSES || [];
@@ -12460,17 +12491,18 @@ function renderFlashSidebar() {
         </button>
       </li>
     </ul>` : ''}
-    <div class="flash-sidebar-head">categories</div>
+    <div class="flash-sidebar-head">levels</div>
     <ul class="cat-list">
-      ${classes.map(c => {
-        const isActive = !inReview && c.id === APP.flashClassId;
+      ${FLASH_LEVELS.map(lv => {
+        const n = classesForLevel(lv.id).length;
+        const isActive = !inReview && lv.id === APP.flashLevel;
         return `
         <li>
-          <button class="cat-item ${isActive ? 'active' : ''}" data-flash-cat="${c.id}">
-            <span class="cat-glyph">${c.glyph}</span>
+          <button class="cat-item ${isActive ? 'active' : ''}${n ? '' : ' is-empty'}" data-flash-level="${lv.id}">
+            <span class="cat-glyph">${lv.glyph}</span>
             <span class="cat-label">
-              <span class="cat-ja">${escHTML(c.titleJa)}</span>
-              <span class="cat-en">${escHTML(c.titleEn)}</span>
+              <span class="cat-ja">${escHTML(lv.ja)}</span>
+              <span class="cat-en">${escHTML(lv.en)}${n ? ' · ' + n : ''}</span>
             </span>
             ${isActive ? activeBrushHTML(2) : ''}
           </button>
@@ -12482,6 +12514,56 @@ function renderFlashSidebar() {
   if (reviewBtn) reviewBtn.addEventListener('click', () => {
     if (APP.flashMode !== 'review') enterReviewMode();
   });
+  el.querySelectorAll('[data-flash-level]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.flashLevel;
+      if (id === APP.flashLevel && APP.flashMode !== 'review') return;
+      APP.flashLevel = id;
+      lsSet('jp:flashLevel', id);
+      APP.flashMode = 'browse';
+      // Land on the first deck of the level we just opened; an empty level
+      // keeps the current deck so the card area never goes blank.
+      const first = classesForLevel(id)[0];
+      if (first) {
+        APP.flashClassId = first.id;
+        lsSet('jp:flashClass', first.id);
+        APP.flashIdx = 0;
+        APP.flashFlipped = false;
+      }
+      if (typeof applyContextBg === 'function') applyContextBg();
+      renderFlashcards(document.getElementById('main-inner'));
+    });
+  });
+}
+
+// ── the third column: the decks inside the open level ──────────────────────
+function renderFlashCatsSidebar() {
+  const el = document.getElementById('flash-cats-sidebar');
+  if (!el) return;
+  const inReview = APP.flashMode === 'review';
+  const classes = classesForLevel(APP.flashLevel);
+  const key = APP.flashLevel + '|' + APP.flashClassId + '|' + (APP.flashMode || 'browse');
+  if (_lastRenderedFlashCats === key) return;
+  _lastRenderedFlashCats = key;
+  el.innerHTML = `
+    <div class="flash-sidebar-head">${escHTML(APP.flashLevel)} decks</div>
+    ${classes.length ? `<ul class="cat-list">
+      ${classes.map(c => {
+        const isActive = !inReview && c.id === APP.flashClassId;
+        return `
+        <li>
+          <button class="cat-item ${isActive ? 'active' : ''}" data-flash-cat="${c.id}">
+            <span class="cat-glyph">${c.glyph}</span>
+            <span class="cat-label">
+              <span class="cat-ja">${escHTML(c.titleJa)}</span>
+              <span class="cat-en">${escHTML(c.titleEn)}</span>
+            </span>
+            ${isActive ? activeBrushHTML(3) : ''}
+          </button>
+        </li>
+      `;
+      }).join('')}
+    </ul>` : `<p class="cat-empty">Nothing at this level yet. Everything written so far lives in ${ENTRY_LEVEL}.</p>`}`;
   el.querySelectorAll('[data-flash-cat]').forEach(btn => {
     btn.addEventListener('click', () => {
       if (btn.dataset.flashCat === APP.flashClassId && APP.flashMode !== 'review') return;
@@ -12511,7 +12593,17 @@ function renderFlashcards(container) {
   if (APP.flashMode === 'review') return renderReview(container);
   const classes = window.FLASHCARD_CLASSES || [];
   if (!classes.length) { container.innerHTML = '<div class="empty-state">No flashcards loaded.</div>'; return; }
-  const cls = classes.find(c => c.id === APP.flashClassId) || classes[0];
+  // An open level with nothing in it says so here too, rather than leaving a
+  // card from another level on screen under the wrong heading.
+  if (!classesForLevel(APP.flashLevel).length) {
+    container.innerHTML = '<div class="empty-state">' + escHTML(APP.flashLevel) + ' is empty for now. Every deck written so far sits in ' + ENTRY_LEVEL + '.</div>';
+    renderFlashSidebar();
+    return;
+  }
+  // The mobile strip and the deck lookup both follow the open level, so the
+  // small-screen fallback shows the same decks the sidebar does.
+  const levelClasses = classesForLevel(APP.flashLevel);
+  const cls = levelClasses.find(c => c.id === APP.flashClassId) || levelClasses[0];
   // Filter out cards marked vocabOnly:true — these are vocabulary words
   // that live in a class's `cards` array so they show up in places like
   // the writing/colors reference grid (which reads from FLASHCARD_CLASSES),
@@ -12649,7 +12741,7 @@ function renderFlashcards(container) {
   if (APP.flashView === 'list') {
     container.innerHTML = `
       <div class="class-strip">
-        ${classes.map(c => `
+        ${levelClasses.map(c => `
           <button class="class-tab ${c.id === APP.flashClassId ? 'active' : ''}" data-flash-class="${c.id}">
             <span class="glyph">${c.glyph}</span>
             <span class="label">
@@ -12734,7 +12826,7 @@ function renderFlashcards(container) {
 
   container.innerHTML = `
     <div class="class-strip">
-      ${classes.map(c => `
+      ${levelClasses.map(c => `
         <button class="class-tab ${c.id === APP.flashClassId ? 'active' : ''}" data-flash-class="${c.id}">
           <span class="glyph">${c.glyph}</span>
           <span class="label">

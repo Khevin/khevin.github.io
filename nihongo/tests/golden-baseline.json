@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-06-12",
+  "capturedAt": "2026-09-13",
   "states": {
     "vocab/default": {
       "ok": true,
@@ -1880,20 +1880,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 288,
-          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 105,
+          "text": "study 復 復習 review levels 五 N5 first steps · 17 四 N4 everyday 三 N3 bridge 二 N2 fluent reading 一 N1 mastery",
           "tagCounts": {
             "div": 2,
             "ul": 2,
-            "li": 18,
-            "button": 18,
-            "span": 72
+            "li": 6,
+            "button": 6,
+            "span": 24
           },
           "dataAttrs": [
-            "data-flash-cat",
+            "data-flash-level",
             "data-flash-review"
           ],
-          "controls": 18,
+          "controls": 6,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2036,20 +2036,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 288,
-          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 105,
+          "text": "study 復 復習 review levels 五 N5 first steps · 17 四 N4 everyday 三 N3 bridge 二 N2 fluent reading 一 N1 mastery",
           "tagCounts": {
             "div": 2,
             "ul": 2,
-            "li": 18,
-            "button": 18,
-            "span": 72
+            "li": 6,
+            "button": 6,
+            "span": 24
           },
           "dataAttrs": [
-            "data-flash-cat",
+            "data-flash-level",
             "data-flash-review"
           ],
-          "controls": 18,
+          "controls": 6,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2206,20 +2206,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 288,
-          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 105,
+          "text": "study 復 復習 review levels 五 N5 first steps · 17 四 N4 everyday 三 N3 bridge 二 N2 fluent reading 一 N1 mastery",
           "tagCounts": {
             "div": 2,
             "ul": 2,
-            "li": 18,
-            "button": 18,
-            "span": 72
+            "li": 6,
+            "button": 6,
+            "span": 24
           },
           "dataAttrs": [
-            "data-flash-cat",
+            "data-flash-level",
             "data-flash-review"
           ],
-          "controls": 18,
+          "controls": 6,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2358,20 +2358,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 288,
-          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 105,
+          "text": "study 復 復習 review levels 五 N5 first steps · 17 四 N4 everyday 三 N3 bridge 二 N2 fluent reading 一 N1 mastery",
           "tagCounts": {
             "div": 2,
             "ul": 2,
-            "li": 18,
-            "button": 18,
-            "span": 72
+            "li": 6,
+            "button": 6,
+            "span": 24
           },
           "dataAttrs": [
-            "data-flash-cat",
+            "data-flash-level",
             "data-flash-review"
           ],
-          "controls": 18,
+          "controls": 6,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2522,20 +2522,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 288,
-          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 105,
+          "text": "study 復 復習 review levels 五 N5 first steps · 17 四 N4 everyday 三 N3 bridge 二 N2 fluent reading 一 N1 mastery",
           "tagCounts": {
             "div": 2,
             "ul": 2,
-            "li": 18,
-            "button": 18,
-            "span": 72
+            "li": 6,
+            "button": 6,
+            "span": 24
           },
           "dataAttrs": [
-            "data-flash-cat",
+            "data-flash-level",
             "data-flash-review"
           ],
-          "controls": 18,
+          "controls": 6,
           "imgSrcs": []
         },
         "writing-sidebar": {
@@ -2686,20 +2686,20 @@
           "imgSrcs": []
         },
         "flash-sidebar": {
-          "len": 288,
-          "text": "study 復 復習 review categories 一 きほん Basic 千 すうじ Numbers 人 ひと People 森 しぜん Nature 世 しゃかい Society 今 とき Time 学 がっこう School 色 いろ Colors 体 からだ Body 犬 どうぶつ Animals 室 へや Rooms 東 ばしょ Places & Compass 食 たべもの・のみもの Food & Drink 狼 やせいどうぶつ Animals II 行 どうし Verbs 高 けいようし Adjectives 音 オノマトペ Onomatopoeia",
+          "len": 105,
+          "text": "study 復 復習 review levels 五 N5 first steps · 17 四 N4 everyday 三 N3 bridge 二 N2 fluent reading 一 N1 mastery",
           "tagCounts": {
             "div": 2,
             "ul": 2,
-            "li": 18,
-            "button": 18,
-            "span": 72
+            "li": 6,
+            "button": 6,
+            "span": 24
           },
           "dataAttrs": [
-            "data-flash-cat",
+            "data-flash-level",
             "data-flash-review"
           ],
-          "controls": 18,
+          "controls": 6,
           "imgSrcs": []
         },
         "writing-sidebar": {

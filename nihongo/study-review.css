@@ -116,7 +116,9 @@
 /* Hide the category rail during recall; Pause brings it back with setup. */
 @media (min-width: 761px) {
   .app.show-flash-sidebar:has(.flash-review:is(.is-question, .is-answer)) { grid-template-columns: 188px 1fr; }
-  .app.show-flash-sidebar:has(.flash-review:is(.is-question, .is-answer)) .flash-sidebar { display: none; }
+  /* A card in hand gets the width: both menu columns step aside. */
+  .app.show-flash-sidebar:has(.flash-review:is(.is-question, .is-answer)) .flash-sidebar,
+  .app.show-flash-sidebar:has(.flash-review:is(.is-question, .is-answer)) .flash-cats-sidebar { display: none; }
 }
 .app.show-flash-sidebar:has(.flash-review) .main::before { opacity: .28; }
 /* Keep the unrelated, offscreen vocabulary drawer out of Study's focus order. */

@@ -4174,7 +4174,28 @@
     overflow-y: auto; overflow-x: hidden;
   }
   .app.show-flash-sidebar .flash-sidebar { display: block; }
-  .app.show-flash-sidebar { grid-template-columns: 188px 160px 1fr; }
+
+  /* The deck column: one step lighter than the level column beside it, the
+     same relationship vocabulary uses between its categories and its books. */
+  .flash-cats-sidebar {
+    display: none;
+    background: color-mix(in srgb, var(--paper-edge) 18%, var(--paper) 82%);
+    border-right: 1px solid rgba(141,102,48,0.12);
+    padding: 16px 10px;
+    position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; overflow-x: hidden;
+    z-index: 5;
+  }
+  .app.show-flash-sidebar .flash-cats-sidebar { display: block; }
+  .cat-item.is-empty { opacity: .55; }
+  .cat-empty {
+    font-family: var(--font-menu-en);
+    font-style: italic; font-size: 11px; line-height: 1.5;
+    color: var(--ink-4);
+    padding: 2px 8px;
+  }
+  /* main nav → study + levels → decks → the card */
+  .app.show-flash-sidebar { grid-template-columns: 188px 160px 160px 1fr; }
 
   .flash-sidebar-head {
     font-family: var(--font-menu-en); font-style: italic;
@@ -4257,8 +4278,14 @@
   @media (min-width: 761px) {
     .app.show-flash-sidebar .class-strip { display: none; }
   }
-  @media (max-width: 760px) {
+  /* Narrow laptops: the ladder folds away before the decks do, since the
+     decks are what you actually click between. */
+  @media (max-width: 1100px) {
+    .app.show-flash-sidebar { grid-template-columns: 188px 160px 1fr; }
     .flash-sidebar { display: none !important; }
+  }
+  @media (max-width: 760px) {
+    .flash-sidebar, .flash-cats-sidebar { display: none !important; }
     .app.show-flash-sidebar { grid-template-columns: 1fr; }
   }
 
