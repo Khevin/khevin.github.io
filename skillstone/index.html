@@ -7955,142 +7955,330 @@ const ivCloth = c => ({
   rim:  ivMix(c, "#F6CB74", 0.45)
 });
 const ICL = (c, d, w) => '<path fill="none" stroke="' + c + '" stroke-width="' + (w || 1.3) + '" stroke-linecap="round" stroke-linejoin="round" d="' + d + '"/>';
+/* ---------- the painting kit ----------
+   Every drawing is lit the same way: one key light from the upper left, cloth graded from a lit
+   face to a shadowed hem, a warm rim on the contour the light hits, occlusion where a part sits
+   under another. Six values come out of the garment's one colour; the fittings do not — brass is
+   brass and leather is leather whatever the cloth is, which is what keeps a buckle from reading
+   as a fold. */
+const IV_BRASS = "#A67B2E", IV_BRASS_HI = "#F6CB74", IV_BRASS_LO = "#4A340F";
+const IV_LEATHER = "#6B4A28", IV_LEATHER_HI = "#8C6A3A", IV_CORD = "#E8D9B4";
+const ivDefs = (uid, p) => '<defs><linearGradient id="' + uid + '" x1="0.12" y1="0" x2="0.9" y2="1">' +
+  '<stop offset="0" stop-color="' + p.lit + '"/><stop offset="0.52" stop-color="' + p.base + '"/>' +
+  '<stop offset="1" stop-color="' + p.dark + '"/></linearGradient></defs>';
+/* metal takes a fourth stop: the bounce light along its lower edge is what makes it metal */
+const ivDefsMetal = (uid, p) => '<defs><linearGradient id="' + uid + '" x1="0.22" y1="0" x2="0.78" y2="1">' +
+  '<stop offset="0" stop-color="' + p.lit + '"/><stop offset="0.34" stop-color="' + p.base + '"/>' +
+  '<stop offset="0.74" stop-color="' + p.dark + '"/><stop offset="1" stop-color="' + p.lit + '"/></linearGradient></defs>';
+const ivPart = (p, fill, d) => '<path fill="' + fill + '" stroke="' + p.edge + '" stroke-width="0.9" stroke-linejoin="round" d="' + d + '"/>';
+const ivFold = (p, d, w) => '<path fill="none" stroke="' + p.deep + '" stroke-width="' + (w || 0.75) + '" opacity="0.8" stroke-linecap="round" stroke-linejoin="round" d="' + d + '"/>';
+const ivRim = (p, d, w) => '<path fill="none" stroke="' + p.rim + '" stroke-width="' + (w || 0.85) + '" opacity="0.85" stroke-linecap="round" stroke-linejoin="round" d="' + d + '"/>';
+const ivStud = (cx, cy, r) => '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + IV_BRASS + '" stroke="' + IV_BRASS_LO + '" stroke-width="0.3"/>' +
+  '<circle cx="' + (cx - r * 0.3) + '" cy="' + (cy - r * 0.3) + '" r="' + (r * 0.32) + '" fill="' + IV_BRASS_HI + '" opacity="0.9"/>';
+const ivStrap = d => '<path fill="' + IV_LEATHER + '" stroke="#2B1B0C" stroke-width="0.5" stroke-linejoin="round" d="' + d + '"/>';
+
+/* the tops are one torso and a choice of sleeve, neck and hem — which is how the real ones differ */
+const IV_BODY = "M13.6 8.2c-1.2 3.8-2 9.8-2.4 16.8-.2 4.4-.3 7.6-.3 9.6 6 1.7 12.2 1.7 18.2 0 0-2-.1-5.2-.3-9.6-.4-7-1.2-13-2.4-16.8-2-.8-10.8-.8-12.8 0Z";
+const IV_HEM = "M10.9 32.2c6 1.7 12.2 1.7 18.2 0v2.4c-6 1.7-12.2 1.7-18.2 0Z";
+const IV_SLV_L = "M13.6 8.2C9.6 9 6.6 11.2 5 15c-1 2.6-1.4 5.4-1.2 8.6l5.7 1.2c.1-4.4 1.1-9.6 2.9-13.4Z";
+const IV_SLV_R = "M26.4 8.2c4 .8 7 3 8.6 6.8 1 2.6 1.4 5.4 1.2 8.6l-5.7 1.2c-.1-4.4-1.1-9.6-2.9-13.4Z";
+const IV_SLVS_L = "M13.6 8.2C10 9 7.4 10.8 6 13.8c-.7 1.6-1.1 3.2-1.2 4.8l5.7 1.2c.3-3.6 1.3-7.2 3.1-11.6Z";
+const IV_SLVS_R = "M26.4 8.2c3.6.8 6.2 2.6 7.6 5.6.7 1.6 1.1 3.2 1.2 4.8l-5.7 1.2c-.3-3.6-1.3-7.2-3.1-11.6Z";
+const IV_CUFF_L = "M3.7 23.3 9.6 24.5 9 28.1 3.1 26.9Z";
+const IV_CUFF_R = "M36.3 23.3 30.4 24.5 31 28.1 36.9 26.9Z";
+const IV_CUFFS_L = "M4.4 18.2 10.5 19.4 10 22.4 3.9 21.2Z";
+const IV_CUFFS_R = "M35.6 18.2 29.5 19.4 30 22.4 36.1 21.2Z";
+const IV_FOLDS = "M15.4 20c.5 4.4.3 8.6-.3 11.8M24.6 20c-.5 4.4-.3 8.6.3 11.8M20 21.4c.2 3.8.1 7-.2 9.8";
+const IV_RIM_LONG = "M13.4 8.4C9.8 9.2 7 11.4 5.4 15M13.8 8.6c-1.1 3.7-1.9 9.5-2.3 16.2";
+const IV_RIM_SHORT = "M13.5 8.4C10.2 9.2 7.8 11 6.4 13.8M13.8 8.6c-1.1 3.7-1.9 9.5-2.3 16.2";
+const ivTop = (p, g, sleeves, neck, extra) => sleeves + ivPart(p, g, IV_BODY) + ivPart(p, p.dark, IV_HEM) +
+  (neck || "") + ivFold(p, IV_FOLDS) + (extra || "");
+/* An outer layer hangs open. Two panels with real air between them and the shadow of whatever
+   is under it showing through — without the gap it is just a top with a seam drawn on. */
+const ivOuter = (p, g) => ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) +
+  ivPart(p, p.deep, IV_CUFF_L) + ivPart(p, p.deep, IV_CUFF_R) +
+  '<path fill="' + p.deep + '" d="M17.4 8.4h5.2v27.6h-5.2Z"/>' +
+  ivPart(p, g, "M13.6 8.2c-1.2 3.8-2 9.8-2.4 16.8-.2 4.4-.3 7.6-.3 9.6 2.5.7 5 1.1 7.5 1.2V9.4Z") +
+  ivPart(p, g, "M26.4 8.2c1.2 3.8 2 9.8 2.4 16.8.2 4.4.3 7.6.3 9.6-2.5.7-5 1.1-7.5 1.2V9.4Z") +
+  ivFold(p, "M15 20c.4 4.4.2 8.6-.4 11.8M25 20c-.4 4.4-.2 8.6.4 11.8");
+
 const GEAR_ICON = {
   top: {
-    tee: c => ICN(c, "M15 5 6 9.5l3 7.5 4-2V35h14V15l4 2 3-7.5L25 5a5 5 0 0 1-10 0Z"),
-    hoodie: c => ICN(ivShade(c, -0.1), "M20 2.5c-4.2 0-7.5 2-7.5 4.8S16 11.5 20 11.5s7.5-1.5 7.5-4.2S24.2 2.5 20 2.5Z") +
-      ICN(c, "M14 6 5 10.5l2.5 9 4.5-1.5V35h16V18l4.5 1.5L35 10.5 26 6c0 3-3 5.2-6 5.2S14 9 14 6Z",
-        ICL(ivShade(c, -0.26), "M13 25.5c2.5 4 11.5 4 14 0") + ICL(ivShade(c, 0.42), "M17.5 12.5v5M22.5 12.5v5")),
-    sweater: c => ICN(c, "M15 5 5 9.5l1.5 11 5-1V35h17V19.5l5 1L35 9.5 25 5a5 5 0 0 1-10 0Z",
-      ICL(ivShade(c, -0.24), "M6.8 18.8 11.6 18M33.2 18.8 28.4 18M12 32.2h16")),
-    /* The first piece drawn as an item rather than a symbol: a laced linen shirt lit from the
-       upper left, cloth graded down into shadow, brass at the throat that stays brass whatever
-       colour the cloth is. Everything below the collar is derived from the one colour, so the
-       wardrobe still needs no second asset per garment. */
-    shirt: (c, uid) => { const p = ivCloth(c); const g = "url(#" + uid + ")";
-      return '<defs><linearGradient id="' + uid + '" x1="0.12" y1="0" x2="0.9" y2="1">' +
-        '<stop offset="0" stop-color="' + p.lit + '"/><stop offset="0.52" stop-color="' + p.base + '"/>' +
-        '<stop offset="1" stop-color="' + p.dark + '"/></linearGradient></defs>' +
-        '<g stroke="' + p.edge + '" stroke-width="0.9" stroke-linejoin="round">' +
-          '<path fill="' + g + '" d="M13.6 8.2C9.6 9 6.6 11.2 5 15c-1 2.6-1.4 5.4-1.2 8.6l5.7 1.2c.1-4.4 1.1-9.6 2.9-13.4Z"/>' +
-          '<path fill="' + g + '" d="M26.4 8.2c4 .8 7 3 8.6 6.8 1 2.6 1.4 5.4 1.2 8.6l-5.7 1.2c-.1-4.4-1.1-9.6-2.9-13.4Z"/>' +
-          '<path fill="' + p.deep + '" d="M3.7 23.3 9.6 24.5 9 28.1 3.1 26.9Z"/>' +
-          '<path fill="' + p.deep + '" d="M36.3 23.3 30.4 24.5 31 28.1 36.9 26.9Z"/>' +
-          '<path fill="' + g + '" d="M13.6 8.2c-1.2 3.8-2 9.8-2.4 16.8-.2 4.4-.3 7.6-.3 9.6 6 1.7 12.2 1.7 18.2 0 0-2-.1-5.2-.3-9.6-.4-7-1.2-13-2.4-16.8-2-.8-10.8-.8-12.8 0Z"/>' +
-          '<path fill="' + p.dark + '" d="M10.9 32.2c6 1.7 12.2 1.7 18.2 0v2.4c-6 1.7-12.2 1.7-18.2 0Z"/>' +
-          '<path fill="' + p.deep + '" d="M18.6 8.4h2.8l.5 10c-.9.3-2.9.3-3.8 0Z"/>' +
-          '<path fill="' + p.lit + '" d="M15.4 5.4c1.8-.8 7.4-.8 9.2 0l.3 2.6c-2.1-.9-7.7-.9-9.8 0Z"/></g>' +
-        '<g fill="none" stroke-linecap="round">' +
-          '<path stroke="' + p.deep + '" stroke-width="0.75" opacity="0.8" d="M15.4 20c.5 4.4.3 8.6-.3 11.8M24.6 20c-.5 4.4-.3 8.6.3 11.8M20 21.4c.2 3.8.1 7-.2 9.8"/>' +
-          '<path stroke="' + p.rim + '" stroke-width="0.85" opacity="0.85" d="M13.4 8.4C9.8 9.2 7 11.4 5.4 15M13.8 8.6c-1.1 3.7-1.9 9.5-2.3 16.2"/>' +
-          '<path stroke="#E8D9B4" stroke-width="0.8" opacity="0.9" d="m18.4 10 3.2 2.3m0-2.3-3.2 2.3m0 1.1 3.2 2.3m0-2.3-3.2 2.3"/></g>' +
-        '<g fill="#A67B2E"><circle cx="18.2" cy="9.8" r="0.62"/><circle cx="21.8" cy="9.8" r="0.62"/>' +
-          '<circle cx="18.2" cy="13.2" r="0.62"/><circle cx="21.8" cy="13.2" r="0.62"/>' +
-          '<circle cx="18.3" cy="16.6" r="0.62"/><circle cx="21.7" cy="16.6" r="0.62"/></g>'; },
-    polo: c => ICN(c, "M15 5 6 9.5l3 7.5 4-2V35h14V15l4 2 3-7.5L25 5l-5 5.5Z",
-      ICN(ivShade(c, -0.14), "M15 5 20 10.5 15.2 12.6 13.4 6.1Z") + ICN(ivShade(c, -0.14), "M25 5 20 10.5 24.8 12.6 26.6 6.1Z") +
-      ICL(ivShade(c, -0.3), "M20 11.5v6.5")),
-    tank: c => ICN(c, "M15 5c0 3.6 2.4 6.2 5 6.2s5-2.6 5-6.2l4.6 2.6V35H10.4V7.6Z")
+    /* a plain linen undershirt: short sleeves, a bound round neck, nothing to fasten */
+    tee: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivTop(p, g,
+        ivPart(p, g, IV_SLVS_L) + ivPart(p, g, IV_SLVS_R) + ivPart(p, p.deep, IV_CUFFS_L) + ivPart(p, p.deep, IV_CUFFS_R),
+        ivPart(p, p.deep, "M15.6 7.6c1.4 2.4 7.4 2.4 8.8 0l1.1.6c-1.7 3-9.3 3-11 0Z"),
+        ivRim(p, IV_RIM_SHORT)); },
+    /* a hooded tunic: the hood behind the shoulders, a pouch across the belly, two cord ends */
+    hoodie: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, p.dark, "M20 1.6c-5.2 0-9.4 2.9-9.4 6.8 0 3.4 3.4 5.8 9.4 5.8s9.4-2.4 9.4-5.8c0-3.9-4.2-6.8-9.4-6.8Z") +
+        ivTop(p, g,
+          ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) + ivPart(p, p.deep, IV_CUFF_L) + ivPart(p, p.deep, IV_CUFF_R),
+          ivPart(p, p.deep, "M14.8 8.4c1.4 3.6 8 3.6 10.4 0l1 .7c-2.6 4.6-9.9 4.6-12.4 0Z"),
+          ivPart(p, p.dark, "M13.4 21.6c1.4 3.6 11.8 3.6 13.2 0l.7 6.4c-2.2 2.6-12.4 2.6-14.6 0Z") +
+          ivRim(p, IV_RIM_LONG) +
+          '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.9" stroke-linecap="round" opacity="0.9" d="M17.5 13v5.4M22.5 13v5.4"/>' +
+          ivStud(17.5, 12.6, 0.6) + ivStud(22.5, 12.6, 0.6)); },
+    /* wool: heavy cuffs, a ribbed hem and one cable up the chest */
+    sweater: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivTop(p, g,
+        ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) + ivPart(p, p.deep, IV_CUFF_L) + ivPart(p, p.deep, IV_CUFF_R),
+        ivPart(p, p.deep, "M15.2 7.4c1.6 2.8 7.9 2.8 9.6 0l1.2.8c-2 3.6-10 3.6-12 0Z"),
+        ivFold(p, "M18.4 12.6c1.4 1.4 1.8 3.4 1.6 5.4M21.6 12.6c-1.4 1.4-1.8 3.4-1.6 5.4M18.4 19c1.4 1.4 1.8 3.4 1.6 5.4M21.6 19c-1.4 1.4-1.8 3.4-1.6 5.4", 0.7) +
+        ivFold(p, "M12.2 31.6c5 1.4 10.6 1.4 15.6 0", 0.9) + ivRim(p, IV_RIM_LONG)); },
+    shirt: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivTop(p, g,
+        ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) + ivPart(p, p.deep, IV_CUFF_L) + ivPart(p, p.deep, IV_CUFF_R),
+        ivPart(p, p.deep, "M18.6 8.4h2.8l.5 10c-.9.3-2.9.3-3.8 0Z") +
+        ivPart(p, p.lit, "M15.4 5.4c1.8-.8 7.4-.8 9.2 0l.3 2.6c-2.1-.9-7.7-.9-9.8 0Z"),
+        ivRim(p, IV_RIM_LONG) +
+        '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.8" opacity="0.9" stroke-linecap="round" d="m18.4 10 3.2 2.3m0-2.3-3.2 2.3m0 1.1 3.2 2.3m0-2.3-3.2 2.3"/>' +
+        ivStud(18.2, 9.8, 0.62) + ivStud(21.8, 9.8, 0.62) + ivStud(18.2, 13.2, 0.62) +
+        ivStud(21.8, 13.2, 0.62) + ivStud(18.3, 16.6, 0.62) + ivStud(21.7, 16.6, 0.62)); },
+    /* short sleeves, a soft collar and two buttons: the shirt's lighter cousin */
+    polo: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivTop(p, g,
+        ivPart(p, g, IV_SLVS_L) + ivPart(p, g, IV_SLVS_R) + ivPart(p, p.deep, IV_CUFFS_L) + ivPart(p, p.deep, IV_CUFFS_R),
+        ivPart(p, p.deep, "M18.7 8.2h2.6l.3 6.4c-.8.3-2.6.3-3.3 0Z") +
+        ivPart(p, p.lit, "M14.8 7.4 20 12.2l-4.8 2-1.6-6.4Z") + ivPart(p, p.lit, "M25.2 7.4 20 12.2l4.8 2 1.6-6.4Z"),
+        ivRim(p, IV_RIM_SHORT) + ivStud(20, 10, 0.62) + ivStud(20, 13.2, 0.62)); },
+    /* a sleeveless jerkin: two straps and a body, nothing else to say */
+    tank: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M15 5.2c0 3.8 2.4 6.6 5 6.6s5-2.8 5-6.6l4.6 2.8c.4 8 .6 18.6.4 26.8-6 1.7-14 1.7-20 0-.2-8.2 0-18.8.4-26.8Z") +
+        ivPart(p, p.dark, "M10.4 32.2c6 1.7 13.2 1.7 19.2 0v2.6c-6 1.7-13.2 1.7-19.2 0Z") +
+        ivFold(p, IV_FOLDS) + ivRim(p, "M15.1 5.4c-.3 3.6-.5 8.6-.6 13.6M15 5.4 10.6 8c-.3 5-.5 11.2-.5 16.6") }
   },
   outer: {
-    /* five open-front layers that have to be told apart at 46 pixels, so each one carries a
-       cue no other one has: the overshirt its patch pockets, the jacket its knitted hem band,
-       the hoodie its hood, the blazer its long notch lapels, the coat its length and belt. */
-    shacket: c => ICN(c, "M15 5 5 9.5l1.5 11 4.5-1V35h9V11ZM25 5l10 4.5-1.5 11-4.5-1V35h-9V11Z",
-      ICN(ivShade(c, -0.2), "M12.4 16.5h5.2v3.6h-5.2ZM22.4 16.5h5.2v3.6h-5.2Z")),
-    jacket: c => ICN(c, "M15 5 5 9.5l1.5 11 4.5-1V32.5h9V11ZM25 5l10 4.5-1.5 11-4.5-1V32.5h-9V11Z",
-      ICN(ivShade(c, -0.16), "M15 5 20 11.5 13.8 13.4 12.4 6Z") + ICN(ivShade(c, -0.16), "M25 5 20 11.5 26.2 13.4 27.6 6Z") +
-      ICN(ivShade(c, -0.3), "M10.6 32h18.8v4.2H10.6Z")),
-    hoodie: c => ICN(ivShade(c, -0.16), "M20 1c-5.6 0-10 3.1-10 7.3 0 3.6 3.6 6.2 10 6.2s10-2.6 10-6.2C30 4.1 25.6 1 20 1Z") +
-      ICN(c, "M14.5 9.5 5 13.5l2 9 4-1V35.5h9V15ZM25.5 9.5l9.5 4-2 9-4-1V35.5h-9V15Z",
-        ICL(ivShade(c, 0.42), "M17.4 16v5M22.6 16v5")),
-    blazer: c => ICN(c, "M15 5 5 9.5l1.5 11 4.5-1V35h9V12ZM25 5l10 4.5-1.5 11-4.5-1V35h-9V12Z",
-      ICN(ivShade(c, -0.18), "M15 5 20 17.5 12.6 18.4 11.4 6.2Z") + ICN(ivShade(c, -0.18), "M25 5 20 17.5 27.4 18.4 28.6 6.2Z") +
-      '<circle cx="20" cy="23.5" r="1.4" fill="' + ivShade(c, -0.4) + '"/>'),
-    coat: c => ICN(c, "M15 3.5 5.5 8l1.5 12.5 4-1V38.5h9V10.5ZM25 3.5 34.5 8l-1.5 12.5-4-1V38.5h-9V10.5Z",
-      ICN(ivShade(c, -0.14), "M15 3.5 20 10.5 13.4 12.6 12 4.8Z") + ICN(ivShade(c, -0.14), "M25 3.5 20 10.5 26.6 12.6 28 4.8Z") +
-      ICL(ivShade(c, -0.38), "M11 22.5h18", 3) +
-      '<g fill="' + ivShade(c, -0.4) + '"><circle cx="16.4" cy="16" r="1.1"/><circle cx="16.4" cy="30" r="1.1"/><circle cx="16.4" cy="35.5" r="1.1"/></g>')
+    /* an overtunic worn open, with two patch pouches */
+    shacket: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivOuter(p, g, 35) +
+        ivPart(p, p.dark, "M12.6 16.4h4.8v4.2h-4.8Z") + ivPart(p, p.dark, "M22.6 16.4h4.8v4.2h-4.8Z") +
+        ivRim(p, IV_RIM_LONG); },
+    /* a gambeson: quilted in rows, with a heavy band at the hem */
+    jacket: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivOuter(p, g, 32.6) +
+        ivPart(p, p.deep, "M10.8 32.2h18.4v3.4H10.8Z") +
+        ivFold(p, "M11.6 16.4h7M21.4 16.4h7M11.8 21.6h6.6M21.6 21.6h6.6M12 26.8h6.4M21.6 26.8h6.4", 0.7) +
+        ivRim(p, IV_RIM_LONG); },
+    /* a hooded mantle: the hood behind, a clasp at the throat */
+    hoodie: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, p.dark, "M20 1.6c-5.2 0-9.4 2.9-9.4 6.8 0 3.4 3.4 5.8 9.4 5.8s9.4-2.4 9.4-5.8c0-3.9-4.2-6.8-9.4-6.8Z") +
+        ivOuter(p, g, 35) +
+        '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.9" stroke-linecap="round" opacity="0.9" d="M17.4 14v5M22.6 14v5"/>' +
+        ivRim(p, IV_RIM_LONG) + ivStud(20, 15.4, 1.05); },
+    /* a doublet: long notch lapels and one clasp */
+    blazer: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivOuter(p, g, 35) +
+        ivPart(p, p.deep, "M14.4 8 18.4 18.6l-5 .7-1-11.3Z") + ivPart(p, p.deep, "M25.6 8 21.6 18.6l5 .7 1-11.3Z") +
+        ivRim(p, IV_RIM_LONG) + ivStud(20, 23.6, 1.1); },
+    /* a travelling coat: longer, belted, three fastenings down the left */
+    coat: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M13.6 6.4C9.6 7.2 6.6 9.4 5 13.2c-1 2.6-1.4 5.4-1.2 8.6l5.7 1.2c.1-4.4 1.1-9.6 2.9-13.4Z") +
+        ivPart(p, g, "M26.4 6.4c4 .8 7 3 8.6 6.8 1 2.6 1.4 5.4 1.2 8.6l-5.7 1.2c-.1-4.4-1.1-9.6-2.9-13.4Z") +
+        ivPart(p, p.deep, "M3.7 21.5 9.6 22.7 9 26.3 3.1 25.1Z") + ivPart(p, p.deep, "M36.3 21.5 30.4 22.7 31 26.3 36.9 25.1Z") +
+        '<path fill="' + p.deep + '" d="M17.4 6.6h5.2v31h-5.2Z"/>' +
+        ivPart(p, g, "M13.6 6.4c-1.3 4.2-2.2 11-2.6 19-.2 5-.3 8.8-.3 11.2 2.5.7 5 1.1 7.5 1.2V9.6Z") +
+        ivPart(p, g, "M26.4 6.4c1.3 4.2 2.2 11 2.6 19 .2 5 .3 8.8.3 11.2-2.5.7-5 1.1-7.5 1.2V9.6Z") +
+        ivPart(p, p.deep, "M14.2 6 18.4 9.8l-5.2 1.4-1-5.2Z") + ivPart(p, p.deep, "M25.8 6 21.6 9.8l5.2 1.4 1-5.2Z") +
+        ivStrap("M10.8 21.4h18.4v3H10.8Z") +
+        '<rect x="18.3" y="20.6" width="3.4" height="4.6" rx="0.6" fill="' + IV_BRASS + '" stroke="' + IV_BRASS_LO + '" stroke-width="0.4"/>' +
+        ivFold(p, "M15.4 27c-.2 3.4-.3 6.6-.3 9.4M24.6 27c.2 3.4.3 6.6.3 9.4") +
+        ivRim(p, "M13.4 6.6C9.8 7.4 7 9.6 5.4 13.2M13.8 6.8c-1.2 4.1-2.1 10.7-2.5 18") +
+        ivStud(15.4, 13.4, 0.7) + ivStud(15.2, 30, 0.7) + ivStud(15.2, 34.4, 0.7) }
   },
   legs: {
-    jeans: c => ICN(c, "M10 4h20l1 7-1.5 25h-6.5L20 17l-3 19h-6.5L9 11Z",
-      ICL(ivShade(c, -0.28), "M9.4 10.2h21.2", 2.2) + ICL(ivShade(c, -0.24), "M12 14h3.4M28 14h-3.4")),
-    chinos: c => ICN(c, "M11 4h18l1 7-1 25h-6L20 18l-3 18h-6L10 11Z",
-      ICL(ivShade(c, -0.26), "M10.4 10.2h19.2", 2)),
-    joggers: c => ICN(c, "M10 4h20l1 7-1.4 20.4c-.1 2-1.1 3.1-3.1 3.1h-1.8c-2 0-3-1.1-3.1-3.1L20 18l-1.6 13.4c-.1 2-1.1 3.1-3.1 3.1h-1.8c-2 0-3-1.1-3.1-3.1L9 11Z",
-      ICL(ivShade(c, -0.3), "M9.4 10.2h21.2", 2.4) + ICL(ivShade(c, -0.3), "M11 31h5.8M23.2 31H29", 2.2)),
-    shorts: c => ICN(c, "M10 5h20l1 6-1 14h-7l-3-9-3 9h-7l-1-14Z",
-      ICL(ivShade(c, -0.28), "M9.6 10.6h20.8", 2.2))
+    /* a leather belt and brass rivets are what make a hard-wearing trouser read as one */
+    jeans: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivPart(p, g, "M10 5h20l1 7-1.5 24h-6.5L20 18l-3 18h-6.5L9 12Z") +
+        ivStrap("M9.2 6.6h21.6v3.4H9.2Z") +
+        '<rect x="18.2" y="5.8" width="3.6" height="5" rx="0.6" fill="' + IV_BRASS + '" stroke="' + IV_BRASS_LO + '" stroke-width="0.4"/>' +
+        ivFold(p, "M12.4 13.4c-.3 2.6-.4 5-.4 7M27.6 13.4c.3 2.6.4 5 .4 7") +
+        ivRim(p, "M10.2 12.4c-.2 2.8-.2 5.6-.1 8") + ivStud(12.4, 12.4, 0.62) + ivStud(27.6, 12.4, 0.62); },
+    chinos: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivPart(p, g, "M11 5h18l1 7-1 24h-6L20 19l-3 17h-6L10 12Z") +
+        ivPart(p, p.dark, "M10.4 6.8h19.2v3.2H10.4Z") +
+        ivFold(p, "M14.6 15c-.3 5-.4 10-.4 14.6M25.4 15c.3 5 .4 10 .4 14.6") +
+        ivRim(p, "M11.2 12.4c-.2 3-.2 6-.1 8.6"); },
+    joggers: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivPart(p, g, "M10 5h20l1 7-1.4 19.4c-.1 2-1.1 3.1-3.1 3.1h-1.8c-2 0-3-1.1-3.1-3.1L20 19l-1.6 12.4c-.1 2-1.1 3.1-3.1 3.1h-1.8c-2 0-3-1.1-3.1-3.1L9 12Z") +
+        ivPart(p, p.deep, "M10 6.4h20v3.4H10Z") +
+        ivPart(p, p.deep, "M11 30.4h5.9l-.1 3.4h-5.6ZM23.1 30.4H29l-.2 3.4h-5.6Z") +
+        ivFold(p, "M14.6 15c-.3 4.4-.4 8.8-.4 12.8M25.4 15c.3 4.4.4 8.8.4 12.8") +
+        '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.85" stroke-linecap="round" opacity="0.9" d="M18.4 8.2h3.2"/>' +
+        ivRim(p, "M10.2 12.4c-.2 3-.2 6-.1 8.6"); },
+    shorts: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivPart(p, g, "M10 6h20l1 6-1 14h-7l-3-9-3 9h-7l-1-14Z") +
+        ivPart(p, p.dark, "M9.6 7.4h20.8v3.2H9.6Z") +
+        ivFold(p, "M14.4 15c-.2 3.4-.3 6.6-.3 9M25.6 15c.2 3.4.3 6.6.3 9") +
+        ivRim(p, "M10.6 12.8c-.1 2.6-.1 5.2 0 7.4") }
   },
   feet: {
-    sneakers: c => ICN(c, "M4 27h10l7-5 5 3c3 1.5 9 2 10 5v3H4Z",
-      ICL(ivShade(c, -0.4), "M4 30.6h32", 2.4) + ICL(ivShade(c, -0.26), "M15 24.2l3 3.8M18.8 22.4l3 3.8")),
-    boots: c => ICN(c, "M12 5h9v15c0 4 6 4 10 6 3 1.5 5 2.5 5 5v2H12Z",
-      ICL(ivShade(c, -0.4), "M12 31.2h24", 2.6) + ICL(ivShade(c, -0.26), "M13 12h7M13 18h7")),
-    loafers: c => ICN(c, "M5 28h11l6-4 5 2c3 1 9 1.5 9 4v2H5Z",
-      ICL(ivShade(c, 0.36), "M11.4 26.6h5.2", 2) + ICL(ivShade(c, -0.38), "M5 31.2h30", 2))
+    /* a soft turnshoe: a leather toe cap, lacing across the throat, a stitched sole */
+    sneakers: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M4 27h10l7-5.4 5.2 3.2c3.1 1.6 9.2 2 9.8 5.2v3H4Z") +
+        ivStrap("M25.4 24.4c3.4 1.6 9.6 2 10.6 5.6H26.6Z") +
+        ivPart(p, p.deep, "M3.4 30.2h33.2v3.2H3.4Z") +
+        '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.8" stroke-linecap="round" opacity="0.9" d="m14.6 24.2 3.6 2.6m0-2.6-3.6 2.6m4.6-5 3.6 2.6m0-2.6-3.6 2.6"/>' +
+        ivRim(p, "M4.4 26.9h9.4l6.8-5.2") + ivStud(4.6, 31.8, 0.55) + ivStud(35.4, 31.8, 0.55); },
+    /* a riding boot: a tall shaft, a strap and buckle, a heavy heel */
+    boots: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M12 5h9.4v14.6c0 4.2 6 4.2 10 6.2 3 1.6 5 2.6 5 5.2v2H12Z") +
+        ivStrap("M11.4 10.4h10.6v3.2H11.4Z") +
+        '<rect x="19.4" y="9.6" width="3.2" height="4.8" rx="0.6" fill="' + IV_BRASS + '" stroke="' + IV_BRASS_LO + '" stroke-width="0.4"/>' +
+        ivPart(p, p.deep, "M11.6 30.4h24.8v3.2H11.6Z") +
+        ivFold(p, "M13.6 17.4h7.6M13.6 22.6c1.8 2.4 5 3.2 8.4 4.2") +
+        ivRim(p, "M12.4 5.4v14.2"); },
+    /* a flat slipper with a strap over the vamp */
+    loafers: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M5 28h11l6.2-4.2 5 2.2c3 1 9 1.6 9 4.2v2H5Z") +
+        ivStrap("M10.6 25.6h6.6v2.6h-6.6Z") +
+        ivPart(p, p.deep, "M4.4 30.4h31.4v3h-31.4Z") +
+        ivRim(p, "M5.4 27.9h10.4l6-4") + ivStud(13.9, 26.9, 0.6) }
   },
   hat: {
-    cap: c => ICN(c, "M9 23a11 10 0 0 1 22 0Z") +
-      ICN(ivShade(c, -0.18), "M29 19.6h6c1.7 0 2.7 1 2.7 2s-1 2-2.7 2h-6Z") +
-      ICN(ivShade(c, -0.1), "M8.6 22.6h22.8v3.2H8.6Z"),
-    beanie: c => ICN(c, "M9.5 24a10.5 11.5 0 0 1 21 0Z") + ICN(ivShade(c, -0.2), "M8 23.6h24v5.6H8Z"),
-    brim: c => ICN(c, "M12.5 21c0-7 3-11.5 7.5-11.5S27.5 14 27.5 21Z") +
-      ICN(ivShade(c, -0.16), "M5 21h30c1.9 0 3 .9 3 2s-1.1 2-3 2H5c-1.9 0-3-.9-3-2s1.1-2 3-2Z") +
-      ICL(ivShade(c, -0.36), "M13.2 19.4c4 1.6 9.6 1.6 13.6 0", 2.6),
-    bucket: c => ICN(c, "M12.5 21.5a7.5 9.5 0 0 1 15 0Z") +
-      ICN(ivShade(c, -0.16), "M9.5 21.2h21l5 7.2c1.3 1.9.3 3.2-2 3.2H6.5c-2.3 0-3.3-1.3-2-3.2Z")
+    cap: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M9 23a11 10 0 0 1 22 0Z") +
+        ivStrap("M29 19.4h6.2c1.8 0 2.9 1.1 2.9 2.2s-1.1 2.2-2.9 2.2H29Z") +
+        ivPart(p, p.deep, "M8.6 22.6h22.8v3.4H8.6Z") +
+        ivFold(p, "M14.4 22.4c.6-4.6 2.6-7.8 5.6-9M25.6 22.4c-.6-4.6-2.6-7.8-5.6-9", 0.7) +
+        ivRim(p, "M9.6 22.2C10.4 16.6 14.6 13 20 13") + ivStud(20, 15.6, 0.7); },
+    beanie: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M9.5 24a10.5 11.5 0 0 1 21 0Z") +
+        ivPart(p, p.deep, "M8 23.4h24v5.8H8Z") +
+        ivFold(p, "M14.6 23.6c.2-5.4 2.2-9 5.4-10.4M25.4 23.6c-.2-5.4-2.2-9-5.4-10.4M11.8 24.6v3.6M16 24.6v3.6M24 24.6v3.6M28.2 24.6v3.6", 0.7) +
+        ivRim(p, "M10.4 23.4C10.8 17.4 14.8 13 20 12.6"); },
+    brim: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M12.5 21c0-7 3-11.5 7.5-11.5S27.5 14 27.5 21Z") +
+        ivPart(p, g, "M5 21h30c1.9 0 3 .9 3 2s-1.1 2-3 2H5c-1.9 0-3-.9-3-2s1.1-2 3-2Z") +
+        ivStrap("M12.7 18.6c3.9 1.6 10.7 1.6 14.6 0v2.6c-3.9 1.6-10.7 1.6-14.6 0Z") +
+        ivFold(p, "M16.4 18c.2-4.6 1.4-7.4 3.6-8.4", 0.7) +
+        ivRim(p, "M13.4 20.4c.2-6.2 2.8-10.2 6.6-10.4M6 21.4h-1") + ivStud(24.6, 20, 0.75); },
+    bucket: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M12.5 21.5a7.5 9.5 0 0 1 15 0Z") +
+        ivPart(p, g, "M9.5 21.2h21l5 7.2c1.3 1.9.3 3.2-2 3.2H6.5c-2.3 0-3.3-1.3-2-3.2Z") +
+        ivFold(p, "M14.6 27.4c3.4 1.4 7.4 1.4 10.8 0M16.2 20.8c.2-5.2 1.4-8.4 3.6-9.6", 0.7) +
+        ivRim(p, "M13.4 21c.1-5.8 2.6-9.6 6.4-9.8M10.2 22.4 7 27") }
   },
   eyes: {
-    sun: c => ICN(c, "M4 15h13.5v4.5a6.75 6.75 0 0 1-13.5 0Z") + ICN(c, "M22.5 15H36v4.5a6.75 6.75 0 0 1-13.5 0Z") +
-      ICN(ivShade(c, -0.22), "M17 16.4h6v2.2h-6Z"),
-    specs: c => '<g fill="none" stroke="' + c + '" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">' +
-      '<circle cx="11.5" cy="20" r="7"/><circle cx="28.5" cy="20" r="7"/><path d="M18.5 19.4h3"/><path d="M4.6 17.6 2 14.6M35.4 17.6 38 14.6"/></g>'
+    /* smoked glass in a brass frame */
+    sun: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        ivPart(p, g, "M4 15h13.5v4.5a6.75 6.75 0 0 1-13.5 0Z") +
+        ivPart(p, g, "M22.5 15H36v4.5a6.75 6.75 0 0 1-13.5 0Z") +
+        '<path fill="' + IV_BRASS + '" stroke="' + IV_BRASS_LO + '" stroke-width="0.4" d="M3.4 13.6h33.2v2.2H3.4ZM17.2 16.2h5.6v2h-5.6Z"/>' +
+        ivRim(p, "M5.6 16.6c-.1 1.8.4 3.2 1.4 4.4M24.1 16.6c-.1 1.8.4 3.2 1.4 4.4", 1); },
+    specs: (c, uid) => { const p = ivCloth(c), pu = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<g fill="none" stroke="' + pu + '" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">' +
+        '<circle cx="11.5" cy="20" r="7"/><circle cx="28.5" cy="20" r="7"/>' +
+        '<path d="M18.5 19.4h3"/><path d="M4.6 17.6 2 14.6M35.4 17.6 38 14.6"/></g>' +
+        '<g fill="none" stroke="' + p.rim + '" stroke-width="0.8" opacity="0.85" stroke-linecap="round">' +
+        '<path d="M7.4 16.6a6 6 0 0 1 3.4-2M24.4 16.6a6 6 0 0 1 3.4-2"/></g>' }
   },
   neck: {
-    chain: c => ICL(c, "M9 6.5a13.5 12.5 0 0 0 22 0", 2.4) + ICN(c, "m20 18.5 3.6 5.2-3.6 5.2-3.6-5.2Z"),
-    /* the tails go on first so the loop reads as a ring the neck goes through, not a lozenge */
-    scarf: c => ICN(ivShade(c, -0.1), "M13.6 12h6.8v22.5c0 1.7-1.1 2.7-2.9 2.7h-1c-1.8 0-2.9-1-2.9-2.7Z") +
-      ICN(ivShade(c, -0.26), "M20.8 12h6.4v17.4c0 1.6-1 2.6-2.7 2.6h-1c-1.7 0-2.7-1-2.7-2.6Z") +
-      '<ellipse cx="20" cy="11" rx="11" ry="7.4" fill="none" stroke="' + c + '" stroke-width="5.6"/>' +
-      '<ellipse cx="20" cy="11" rx="11" ry="7.4" fill="none" stroke="rgba(8,6,4,0.4)" stroke-width="0.9"/>'
+    chain: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<path fill="none" stroke="' + g + '" stroke-width="2.6" stroke-linecap="round" d="M9 6.5a13.5 12.5 0 0 0 22 0"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="0.8" opacity="0.8" stroke-linecap="round" d="M9.8 7.8a12 11 0 0 0 4.6 6.4"/>' +
+        ivPart(p, g, "m20 18 4 5.6-4 5.6-4-5.6Z") +
+        '<path fill="' + p.rim + '" opacity="0.65" d="m20 19.6 2.4 3.4-2.4 1.4-2.4-1.4Z"/>' },
+    /* A ring with something hanging off it is a hand mirror, whichever way it is shaded — two
+       goes at that proved it. So: the band draped across, a knot where it crosses itself, and
+       two fringed tails. Nothing round in it to be mistaken for anything round. */
+    scarf: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M15.4 19.6h5.8l1 14.6h-7.8Z") +
+        ivPart(p, p.dark, "M21.2 19.6h4.9l.8 10.6h-6.5Z") +
+        ivPart(p, g, "M2.6 6.8c6 6 28.8 6 34.8 0v4.8c-6 6-28.8 6-34.8 0Z") +
+        ivPart(p, p.lit, "M16.6 12.4h6.8c1.1 0 2 .9 2 2v3.8c0 1.1-.9 2-2 2h-6.8c-1.1 0-2-.9-2-2v-3.8c0-1.1.9-2 2-2Z") +
+        ivFold(p, "M15.2 22.4h6.2M15.5 26.8h6.2M21.6 23.2h5M21.8 26.6h5", 0.7) +
+        ivFold(p, "M15 34.2v2.4M17.2 34.2v2.4M19.4 34.2v2.4M21.6 34.2v2.4M21.9 30.2v2.2M23.7 30.2v2.2M25.5 30.2v2.2", 0.85) +
+        ivRim(p, "M3.2 7.6c2.6 2.4 8.6 3.8 15 4.2M15 20.4c-.2 4.4-.1 8.8.2 13", 1) }
   },
   wrist: {
-    watch: c => ICN(ivShade(c, -0.34), "M15.4 3.5h9.2v11.2h-9.2ZM15.4 25.3h9.2v11.2h-9.2Z") +
-      ICN(c, "M20 12.2a7.8 7.8 0 1 1 0 15.6 7.8 7.8 0 0 1 0-15.6Z") +
-      ICL(ivShade(c, 0.5), "M20 16v4h3.2", 1.6),
-    band: c => '<ellipse cx="20" cy="20" rx="11" ry="8.6" fill="none" stroke="' + c + '" stroke-width="4.6"/>',
-    /* a cuff is an open bangle: the gap is the whole difference between it and a band */
-    cuff: c => '<path fill="none" stroke="' + c + '" stroke-width="6.4" stroke-linecap="round" d="M25.5 12.4a10.5 8.6 0 1 1-11 0"/>' +
-      '<g fill="' + ivShade(c, -0.3) + '"><circle cx="25.8" cy="12" r="2.1"/><circle cx="14.2" cy="12" r="2.1"/></g>'
+    watch: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        ivStrap("M15.4 3.5h9.2v11.6h-9.2ZM15.4 24.9h9.2v11.6h-9.2Z") +
+        '<path fill="none" stroke="' + IV_LEATHER_HI + '" stroke-width="0.5" opacity="0.7" d="M16.6 6h6.8M16.6 33.4h6.8"/>' +
+        ivPart(p, g, "M20 11.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8Z") +
+        ivPart(p, p.deep, "M20 14a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z") +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1" opacity="0.85" stroke-linecap="round" d="M14.4 15.4a8 8 0 0 1 4.2-3"/>' +
+        '<path fill="none" stroke="' + IV_CORD + '" stroke-width="1.1" stroke-linecap="round" d="M20 16.4V20h3"/>' },
+    band: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<ellipse cx="20" cy="20" rx="11" ry="8.6" fill="none" stroke="' + g + '" stroke-width="4.8"/>' +
+        '<ellipse cx="20" cy="20" rx="11" ry="8.6" fill="none" stroke="' + p.edge + '" stroke-width="0.8"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="0.9" opacity="0.8" stroke-linecap="round" d="M11.6 16.4a10 7 0 0 1 5.4-4.2"/>' + ivStud(20, 11.6, 1.1); },
+    /* a vambrace, which is the honest medieval word for a cuff */
+    cuff: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<path fill="none" stroke="' + g + '" stroke-width="6.6" stroke-linecap="round" d="M25.5 12.4a10.5 8.6 0 1 1-11 0"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1" opacity="0.8" stroke-linecap="round" d="M12.4 18.6a10 8 0 0 1 2.6-6"/>' +
+        ivStud(25.8, 12, 2.1) + ivStud(14.2, 12, 2.1) }
   },
-  /* the jewellery: small objects drawn large, because the box they sit in is 40 pixels and a
-     stud drawn to scale would be one grey dot four times over */
   ear: {
-    stud: c => ICN(ivShade(c, -0.3), "M18.4 21h3.2v13h-3.2Z") +
-      ICN(c, "M20 5a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z", ICL(ivShade(c, 0.55), "M15.6 11.4a6 6 0 0 1 4.6-3", 2)),
-    hoop: c => '<circle cx="20" cy="23" r="12" fill="none" stroke="' + c + '" stroke-width="4.4"/>' +
-      '<path fill="none" stroke="' + ivShade(c, -0.2) + '" stroke-width="2.6" stroke-linecap="round" d="M16 11.6V7.5a4 4 0 0 1 8 0"/>',
-    drop: c => '<path fill="none" stroke="' + ivShade(c, -0.2) + '" stroke-width="2.4" stroke-linecap="round" d="M16.6 8.2V6a3.4 3.4 0 0 1 6.8 0v1.6"/>' +
-      ICN(c, "M20 9.5a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4Z") +
-      ICN(c, "M20 17.5c4.6 4.6 6.8 8.4 6.8 11.5A6.8 6.8 0 0 1 13.2 29c0-3.1 2.2-6.9 6.8-11.5Z",
-        ICL(ivShade(c, 0.5), "M17 27.5a3.6 3.6 0 0 1 1.8-4.4", 1.8))
+    stud: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) + ivStrap("M18.4 21h3.2v13h-3.2Z") +
+        ivPart(p, g, "M20 5a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z") +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="2" opacity="0.8" stroke-linecap="round" d="M15.6 11.4a6 6 0 0 1 4.6-3"/>' },
+    hoop: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<circle cx="20" cy="23" r="12" fill="none" stroke="' + g + '" stroke-width="4.6"/>' +
+        '<circle cx="20" cy="23" r="12" fill="none" stroke="' + p.edge + '" stroke-width="0.8"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1" opacity="0.85" stroke-linecap="round" d="M11.6 18.4a11 11 0 0 1 5-6"/>' +
+        '<path fill="none" stroke="' + p.dark + '" stroke-width="2.6" stroke-linecap="round" d="M16 11.6V7.5a4 4 0 0 1 8 0"/>' },
+    drop: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<path fill="none" stroke="' + p.dark + '" stroke-width="2.4" stroke-linecap="round" d="M16.6 8.2V6a3.4 3.4 0 0 1 6.8 0v1.6"/>' +
+        ivPart(p, g, "M20 9.4a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z") +
+        ivPart(p, g, "M20 17.5c4.6 4.6 6.8 8.4 6.8 11.5A6.8 6.8 0 0 1 13.2 29c0-3.1 2.2-6.9 6.8-11.5Z") +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1.4" opacity="0.8" stroke-linecap="round" d="M17.2 27a3.8 3.8 0 0 1 1.8-4.6"/>' }
   },
   nose: {
-    ring: c => '<circle cx="20" cy="22.5" r="12.5" fill="none" stroke="' + c + '" stroke-width="4.2"/>' +
-      ICN(ivShade(c, 0.28), "M20 5.6a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z"),
-    stud: c => ICN(ivShade(c, -0.3), "M18.6 20h2.8v14h-2.8Z") +
-      ICN(c, "m20 4 7.2 5.4-2.8 8.8h-8.8L12.8 9.4Z", ICL(ivShade(c, 0.55), "m20 8 -2.6 2.6", 1.8))
+    ring: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<circle cx="20" cy="22.5" r="12.5" fill="none" stroke="' + g + '" stroke-width="4.4"/>' +
+        '<circle cx="20" cy="22.5" r="12.5" fill="none" stroke="' + p.edge + '" stroke-width="0.8"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1" opacity="0.85" stroke-linecap="round" d="M11.2 17.6a11.5 11.5 0 0 1 5.4-6.4"/>' +
+        ivStud(20, 9, 3.2); },
+    stud: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) + ivStrap("M18.6 20h2.8v14h-2.8Z") +
+        ivPart(p, g, "m20 4 7.6 5.6-2.9 9.2h-9.4L12.4 9.6Z") +
+        '<path fill="' + p.rim + '" opacity="0.6" d="m20 6.2 4.6 3.4-4.6 2.6-4.6-2.6Z"/>' }
   },
   ring: {
-    band: c => '<ellipse cx="20" cy="21.5" rx="12" ry="13.5" fill="none" stroke="' + c + '" stroke-width="5"/>' +
-      '<ellipse cx="20" cy="21.5" rx="12" ry="13.5" fill="none" stroke="rgba(8,6,4,0.4)" stroke-width="0.9"/>',
-    signet: c => '<ellipse cx="20" cy="23.5" rx="11.5" ry="12" fill="none" stroke="' + c + '" stroke-width="4.6"/>' +
-      ICN(c, "M20 3.4c4.4 0 7.6 2.6 7.6 5.6S24.4 15 20 15s-7.6-2.6-7.6-6 3.2-5.6 7.6-5.6Z",
-        ICL(ivShade(c, -0.34), "M17.4 9.2h5.2M20 6.8v4.8", 1.6)),
-    stone: c => '<ellipse cx="20" cy="24.5" rx="11.5" ry="11.5" fill="none" stroke="' + c + '" stroke-width="4.6"/>' +
-      ICN(ivShade(c, -0.16), "M13.6 12.2h12.8l-2.2 3.4H15.8Z") +
-      ICN(ivShade(c, 0.3), "m20 2.6 6.6 6-6.6 4.4-6.6-4.4Z", ICL(ivShade(c, 0.6), "m20 5.4-3 3.2", 1.6))
+    band: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<ellipse cx="20" cy="21.5" rx="12" ry="13.5" fill="none" stroke="' + g + '" stroke-width="5.2"/>' +
+        '<ellipse cx="20" cy="21.5" rx="12" ry="13.5" fill="none" stroke="' + p.edge + '" stroke-width="0.85"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1.1" opacity="0.85" stroke-linecap="round" d="M11.4 14.6a12 13 0 0 1 5.6-5.8"/>' },
+    signet: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<ellipse cx="20" cy="23.5" rx="11.5" ry="12" fill="none" stroke="' + g + '" stroke-width="4.8"/>' +
+        '<ellipse cx="20" cy="23.5" rx="11.5" ry="12" fill="none" stroke="' + p.edge + '" stroke-width="0.8"/>' +
+        ivPart(p, g, "M20 3.2c4.6 0 8 2.7 8 5.9s-3.4 6.1-8 6.1-8-2.9-8-6.1 3.4-5.9 8-5.9Z") +
+        '<path fill="none" stroke="' + p.deep + '" stroke-width="1.5" stroke-linecap="round" d="M17.2 9.2h5.6M20 6.6v5"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1" opacity="0.85" stroke-linecap="round" d="M14.2 6.4a7 5 0 0 1 4-2.4M11.8 17.6a11 11 0 0 1 3.8-5"/>' },
+    stone: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefsMetal(uid, p) +
+        '<ellipse cx="20" cy="24.5" rx="11.5" ry="11.5" fill="none" stroke="' + g + '" stroke-width="4.8"/>' +
+        '<ellipse cx="20" cy="24.5" rx="11.5" ry="11.5" fill="none" stroke="' + p.edge + '" stroke-width="0.8"/>' +
+        '<path fill="' + IV_BRASS + '" stroke="' + IV_BRASS_LO + '" stroke-width="0.4" d="M13.2 11.8h13.6l-2.4 3.8H15.6Z"/>' +
+        ivPart(p, p.lit, "m20 2.2 7 6.4-7 4.8-7-4.8Z") +
+        '<path fill="' + p.rim + '" opacity="0.7" d="m20 4.6 4 3.6-4 2.6-4-2.6Z"/>' +
+        '<path fill="none" stroke="' + p.rim + '" stroke-width="1" opacity="0.8" stroke-linecap="round" d="M11.4 19.4a11 11 0 0 1 3.6-5.2"/>' }
   }
 };
 /* the garment lying flat, at whatever size the face it sits in asks for */
