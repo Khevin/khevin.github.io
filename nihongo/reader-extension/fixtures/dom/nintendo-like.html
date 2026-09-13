@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>extraction fixture — Nintendo-like markup</title>
+<style>
+  .sp { display: none; }              /* mobile-only break, hidden on desktop like the real page */
+  .hidden-twin { display: none; }     /* duplicate copy of a paragraph for another breakpoint */
+  .reveal { visibility: hidden; }     /* pre-scroll state of body text on the real page */
+  .modal { display: none; }
+  .badge { display: inline-block; }
+</style>
+</head>
+<body>
+  <h2 id="heading"><img id="alt-heading" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="運命に導くトライフォース"></h2>
+  <h3><img id="empty-alt" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt=""></h3>
+
+  <p id="intro" class="text">3つの力をつかさどる聖三角<span class="hyphen">――</span>トライフォース。<br>はるか昔にこの世界を創りし<br class="sp">三大神がのこした力で、<br class="sp">触れた者の願いをかなえるとされる。</p>
+  <p id="intro-twin" class="text hidden-twin">3つの力をつかさどる聖三角――トライフォース。（隠しコピー）</p>
+
+  <p id="profile">女性ばかりのゲルド族において、<br>百年に一度だけ生まれる男性。<br>底知れぬ野望を抱き、<br>トライフォースを手に入れようと<ruby>目論<rt>もくろ</rt></ruby>む。</p>
+
+  <p id="nested">ある日、<span class="badge">森の<b>守り神</b></span>「デクの樹サマ」から、<i>自身が</i>背負う運命を告げられる。</p>
+
+  <p id="pre-reveal" class="reveal">まだ表示されていない段落。</p>
+
+  <div class="modal"><p id="modal-text">冒険の鍵となる「オカリナ」は、特別な力を持つ不思議な楽器。</p></div>
+
+  <div id="two-blocks">
+    <p id="b1">コキリの森で暮らす少年。</p>
+    <p id="b2">ハイラル王国の姫君。</p>
+  </div>
+
+  <p id="form-line">名前：<input value="入力された文字"> <textarea>編集中の文字</textarea> <span contenteditable="true">編集可能</span> 以上。</p>
+  <script>window.__scriptText = '見えないスクリプト文字';</script>
+</body>
+</html>

@@ -6,7 +6,7 @@ Thumbs.db
 
 # Node deps + lock files for the nihongo image-optimization scripts.
 nihongo/node_modules/
-nihongo/package-lock.json
+# nihongo/package-lock.json is committed (pinned deps for the reader extension).
 
 # Scratch + WIP artefacts.
 *.tmp
@@ -21,3 +21,15 @@ nihongo/*.pdf
 *.swp
 .idea/
 .vscode/
+
+# Generated unpacked extension bundle (load locally; not deployed via Pages).
+nihongo/reader-extension/dist/
+
+# Generated sample library package for the reader extension (rebuild with `npm run build:sample-library`).
+nihongo/reader-extension/fixtures/sample-library.zip
+
+# KANJIDIC2 download cache for scripts/build-kanji-index.mjs (the generated kanji-index.json is committed)
+nihongo/.cache/
+
+# Separate private repo, cloned inside this one by mistake-proofing; never publish it here.
+lastro-playbook/

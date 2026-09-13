@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Nihongo Reader",
+  "version": "0.5.0",
+  "description": "Read Japanese websites with your own Nihongo cards: select text, tap 札, see the sentence as particle-tagged blocks, open your mnemonics.",
+  "minimum_chrome_version": "116",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAikVGKe+o3T9iPfr4tcZRaXr5lP/W+zsi4EZqx2dcuja99KM/JaNejjD/qC6b0vcxbogfE8JZfmodB2LaqIjfOrXfMM0HCAdukTDnslma8bkRoItM4blXBlxaiF1oeeTbvtZEYoJfGqhF66sK06QZqU/KgoJldc5Mi2TB3y3D3a95im7nIjw1reC5dzxi7bQzNDNWuHGhELZNRptUo9diA+9P/qXOP2sVhLEu0Fo4vcvy/q/0VWF/Jj6Vj6NiEWa6nEZHM7mc9KbsfCEARteDZxhs+vHYZjr/3qZLA69FAeaHAMqjVpezyOiAX6zUo3/8fF62rbiPt8lbrXOEC3x8dwIDAQAB",
+  "permissions": ["sidePanel", "storage", "offscreen", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "content_scripts": [
+    { "matches": ["http://*/*", "https://*/*"], "js": ["content.js"], "run_at": "document_idle", "all_frames": false }
+  ],
+  "action": { "default_title": "Nihongo Reader", "default_popup": "popup.html" },
+  "commands": {
+    "study-selection": {
+      "suggested_key": { "default": "Alt+Shift+N" },
+      "description": "Study the selected Japanese text with Nihongo"
+    }
+  },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "side_panel": { "default_path": "sidepanel.html" }
+}

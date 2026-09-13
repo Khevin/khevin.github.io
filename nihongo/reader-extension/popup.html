@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Nihongo Reader</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="brand"><h1>Nihongo Reader</h1><span class="version" id="version"></span></div>
+    <label class="switch"><input type="checkbox" id="enabled"><span class="track"></span><span class="sr-only">Enabled</span></label>
+  </header>
+  <p class="hint" id="hint">Select Japanese text on any page and tap the 札 button that appears.</p>
+  <div class="row">
+    <button class="btn primary" id="study">Study selection</button>
+    <button class="btn" id="panel">Open side panel</button>
+  </div>
+  <label class="site"><input type="checkbox" id="mute"> Off on <span id="host">this site</span></label>
+
+  <!-- One disclosure per subject: the categories have edges, the popover stays
+       short, and every control is named by its own label above it. -->
+  <details class="sec" open>
+    <summary class="sec-head">reading</summary>
+    <div class="field">
+      <span class="lbl" id="lvl-label">Blocks show</span>
+      <span class="seg" role="group" aria-labelledby="lvl-label"><button data-level="words" id="lvl-words">Words</button><button data-level="phrases" id="lvl-phrases">Phrases</button></span>
+    </div>
+    <div class="field">
+      <span class="lbl">Show by default</span>
+      <div class="toggles">
+        <label><input type="checkbox" id="romaji"> romaji</label>
+        <label><input type="checkbox" id="furigana"> furigana</label>
+      </div>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary class="sec-head">voice</summary>
+    <div class="field">
+      <label class="lbl" for="ttsVoice">Listen with</label>
+      <select class="control" id="ttsVoice"></select>
+    </div>
+    <div class="field">
+      <label class="lbl" for="gcloudTtsKey">Cloud Text-to-Speech key</label>
+      <input class="control" type="password" id="gcloudTtsKey" autocomplete="off">
+      <div class="row tight"><button class="btn mini" id="ttsTest">Test voice</button><button class="btn mini" id="ttsImport">Import from the app</button></div>
+      <p class="note" id="ttsHint">The same key as the Nihongo app. Without it, Listen uses the browser voice.</p>
+    </div>
+    <div class="field">
+      <label class="lbl" for="ttsRate">Speech rate</label>
+      <span class="rate"><input type="range" id="ttsRate" min="0.5" max="1.3" step="0.05"> <output id="ttsRateOut" for="ttsRate">0.85</output></span>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary class="sec-head">translation</summary>
+    <div class="field">
+      <label class="lbl" for="translateTo">Language</label>
+      <select class="control" id="translateTo"><option value="en">English</option><option value="pt-BR">Português (Brasil)</option></select>
+    </div>
+    <div class="field">
+      <label class="lbl" for="translateProvider">Service</label>
+      <select class="control" id="translateProvider"><option value="gtx">Google Translate (no key)</option><option value="cloud">Google Cloud (API key)</option></select>
+    </div>
+    <div class="field">
+      <label class="lbl" for="translateKey">Cloud Translation key</label>
+      <input class="control" type="password" id="translateKey" autocomplete="off">
+      <p class="note">Only for the Cloud service, and only if that key has Cloud Translation enabled. <a href="https://docs.cloud.google.com/translate/docs/setup" target="_blank" rel="noopener">Setup help</a></p>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary class="sec-head">pictures</summary>
+    <div class="field">
+      <label class="lbl" for="pixabayKey">Pixabay key</label>
+      <input class="control" type="password" id="pixabayKey" autocomplete="off">
+      <p class="note">First choice. A free <a href="https://pixabay.com/api/docs/" target="_blank" rel="noopener">Pixabay key</a> searches in Japanese.</p>
+    </div>
+    <div class="field">
+      <label class="lbl" for="imagesKey">Google Custom Search key</label>
+      <input class="control" type="password" id="imagesKey" autocomplete="off">
+    </div>
+    <div class="field">
+      <label class="lbl" for="imagesCx">Search engine id</label>
+      <input class="control" type="text" id="imagesCx" autocomplete="off">
+      <p class="note">Both fields together give real Google Images, from a <a href="https://programmablesearchengine.google.com/" target="_blank" rel="noopener">Programmable Search Engine</a>. With no key, pictures come from Wikimedia Commons.</p>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary class="sec-head">app</summary>
+    <div class="field">
+      <label class="lbl" for="appUrl">Nihongo URL</label>
+      <input class="control" type="url" id="appUrl" placeholder="https://khevin.com/nihongo/app.html">
+      <p class="note">Where the reader looks for library updates.</p>
+    </div>
+    <div class="field">
+      <span class="lbl">Study shortcut</span>
+      <span class="kbd">Alt + Shift + N</span>
+    </div>
+  </details>
+
+  <p class="lib" id="usage">today: …</p>
+  <p class="lib" id="lib">library: …</p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

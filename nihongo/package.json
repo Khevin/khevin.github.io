@@ -10,9 +10,18 @@
     "validate-data": "node scripts/validate-data.mjs",
     "build-vendor": "node scripts/build-vendor.mjs",
     "verify": "node scripts/validate-data.mjs && node tests/capture.mjs tests/golden-after.json && node tests/compare.mjs tests/golden-baseline.json tests/golden-after.json",
-    "test:interactions": "node tests/interactions.mjs"
+    "test:interactions": "node tests/interactions.mjs",
+    "test:study": "node tests/study.e2e.mjs",
+    "build:reader": "node scripts/build-reader.mjs",
+    "test:reader": "node --test \"reader-core/**/*.test.mjs\" \"reader-extension/tests/unit/*.test.mjs\" && node reader-extension/tests/extract.test.mjs && node reader-extension/tests/repository.test.mjs && node reader-extension/tests/library-sync.test.mjs",
+    "test:reader:e2e": "node reader-extension/tests/extension.e2e.mjs && node reader-extension/tests/panel.e2e.mjs && node reader-extension/tests/bar.e2e.mjs && node reader-extension/tests/popup.e2e.mjs && node reader-extension/tests/async-ui.e2e.mjs",
+    "build:sample-library": "node scripts/build-sample-library.mjs",
+    "build:library": "node scripts/build-sample-library.mjs",
+    "build:kanji": "node scripts/build-kanji-index.mjs"
   },
   "dependencies": {
+    "@patdx/kuromoji": "1.0.4",
+    "fflate": "0.8.2",
     "sharp": "^0.33.0"
   },
   "devDependencies": {

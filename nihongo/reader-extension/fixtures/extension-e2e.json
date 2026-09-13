@@ -1,0 +1,241 @@
+{
+  "generatedAt": "2026-09-09T01:24:01.672Z",
+  "mode": "B: served dist with MV3 CSP header in headless shell (extension load NOT verified)",
+  "attemptLog": [
+    "playwright chromium (headless): browserType.launchPersistentContext: spawn UNKNOWN",
+    "system chrome (headless): panel page did not load — extension not installed in this browser"
+  ],
+  "extensionId": "bpkdpokjcikodoeepjfbbpmbfjlmmnlm",
+  "panelUrl": "http://127.0.0.1:59144/sidepanel.html?probe=csp",
+  "chrome": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+  "host": {
+    "cpu": "AMD Ryzen 5 5600 6-Core Processor",
+    "cores": 12,
+    "platform": "win32 10.0.26200"
+  },
+  "cold": [
+    {
+      "buildMs": 287,
+      "pageObservedMs": 270
+    },
+    {
+      "buildMs": 278,
+      "pageObservedMs": 247
+    },
+    {
+      "buildMs": 276,
+      "pageObservedMs": 278
+    },
+    {
+      "buildMs": 272,
+      "pageObservedMs": 248
+    },
+    {
+      "buildMs": 271,
+      "pageObservedMs": 233
+    }
+  ],
+  "warm": {
+    "runs": 20,
+    "chars": 200,
+    "p50": 0.6,
+    "p95": 2.1,
+    "samples": [
+      2.3,
+      1,
+      0.8,
+      0.5,
+      2.1,
+      0.7,
+      0.8,
+      0.6,
+      0.6,
+      0.5,
+      0.5,
+      0.8,
+      0.5,
+      0.6,
+      0.6,
+      0.5,
+      0.6,
+      0.6,
+      0.6,
+      0.4
+    ]
+  },
+  "reconstruction": [
+    {
+      "text": "私は本を読みます。",
+      "tokens": 7,
+      "ok": true
+    },
+    {
+      "text": "コキリの森で暮らす少年。",
+      "tokens": 7,
+      "ok": true
+    },
+    {
+      "text": "𠮷野家で牛丼を食べた。",
+      "tokens": 9,
+      "ok": true
+    }
+  ],
+  "consoleErrors": [],
+  "files": [
+    {
+      "name": "tid.dat.gz",
+      "gzBytes": 1605820,
+      "rawBytes": 10485760,
+      "ms": 139
+    },
+    {
+      "name": "check.dat.gz",
+      "gzBytes": 3111633,
+      "rawBytes": 8388608,
+      "ms": 181
+    },
+    {
+      "name": "tid_map.dat.gz",
+      "gzBytes": 1485576,
+      "rawBytes": 4194304,
+      "ms": 237
+    },
+    {
+      "name": "tid_pos.dat.gz",
+      "gzBytes": 5916009,
+      "rawBytes": 41943040,
+      "ms": 238
+    },
+    {
+      "name": "cc.dat.gz",
+      "gzBytes": 1692067,
+      "rawBytes": 3463716,
+      "ms": 274
+    },
+    {
+      "name": "base.dat.gz",
+      "gzBytes": 3956825,
+      "rawBytes": 8388608,
+      "ms": 276
+    },
+    {
+      "name": "unk.dat.gz",
+      "gzBytes": 10512,
+      "rawBytes": 10485760,
+      "ms": 276
+    },
+    {
+      "name": "unk_pos.dat.gz",
+      "gzBytes": 10540,
+      "rawBytes": 10485760,
+      "ms": 275
+    },
+    {
+      "name": "unk_map.dat.gz",
+      "gzBytes": 1190,
+      "rawBytes": 1048576,
+      "ms": 275
+    },
+    {
+      "name": "unk_char.dat.gz",
+      "gzBytes": 306,
+      "rawBytes": 65536,
+      "ms": 275
+    },
+    {
+      "name": "unk_compat.dat.gz",
+      "gzBytes": 338,
+      "rawBytes": 262144,
+      "ms": 275
+    },
+    {
+      "name": "unk_invoke.dat.gz",
+      "gzBytes": 1140,
+      "rawBytes": 1048576,
+      "ms": 275
+    }
+  ],
+  "memory": {
+    "worker": null,
+    "page": {
+      "usedJSHeapSize": 10000000
+    },
+    "afterWarm": {
+      "worker": null
+    }
+  },
+  "cspProbe": {
+    "evalBlocked": true,
+    "functionCtorBlocked": true,
+    "inlineBlocked": true
+  },
+  "summary": {
+    "coldBuildMs": {
+      "runs": 5,
+      "samples": [
+        287,
+        278,
+        276,
+        272,
+        271
+      ],
+      "p50": 276,
+      "p95": 287
+    },
+    "warmTokenizeMs": {
+      "runs": 20,
+      "chars": 200,
+      "p50": 0.6,
+      "p95": 2.1
+    },
+    "dictRawBytes": 100260388,
+    "dictGzBytes": 17791956
+  },
+  "checks": [
+    {
+      "name": "worker ready on every cold page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "12 dictionary files inflated via DecompressionStream",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reconstruction: 私は本を読みます。",
+      "pass": true,
+      "detail": "7 tokens"
+    },
+    {
+      "name": "reconstruction: コキリの森で暮らす少年。",
+      "pass": true,
+      "detail": "7 tokens"
+    },
+    {
+      "name": "reconstruction: 𠮷野家で牛丼を食べた。",
+      "pass": true,
+      "detail": "9 tokens"
+    },
+    {
+      "name": "no console errors from the bundle (module worker, ESM, no eval)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "MV3 CSP in force: eval, Function() and inline script blocked for page code",
+      "pass": true,
+      "detail": "{\"evalBlocked\":true,\"functionCtorBlocked\":true,\"inlineBlocked\":true}"
+    },
+    {
+      "name": "cold start target ≤ 3000 ms (p95)",
+      "pass": true,
+      "detail": "287 ms"
+    },
+    {
+      "name": "warm 200-char tokenize ≤ 300 ms (p95)",
+      "pass": true,
+      "detail": "2.1 ms"
+    }
+  ]
+}

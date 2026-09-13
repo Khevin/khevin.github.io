@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "libraryId": "nihongo-curriculum",
-  "snapshotId": "snap-7c5832544319",
-  "revision": 1,
-  "contentHash": "7c5832544319943578c9f186863b6f5f9b786ae137ecffd2690a8e14547c918b",
-  "exportedAt": "2026-09-09T03:17:27.840Z",
+  "snapshotId": "snap-56646250915e",
+  "revision": 2,
+  "contentHash": "56646250915e7fb45dba40a9597f9896a97c1ca2670667ae2ca39aed0bf7bee0",
+  "exportedAt": "2026-09-13T15:54:11.694Z",
   "sourceAppUrl": "https://khevin.com/nihongo/app.html",
   "exporterVersion": "0.2.0-build-script",
   "deckIds": [

@@ -1,0 +1,5721 @@
+{
+  "summary": {
+    "generatedAt": "2026-09-08T21:03:52.965Z",
+    "source": "data.js window.FLASHCARD_CLASSES + images/ (filesystem probe)",
+    "rules": "slot=flash-${card.id}; folder=card.imageFolder||cls.imageFolder||kanji; key=folder/kanji; exts webp,png,jpg,jpeg; variants \" (2..9)\" until first gap",
+    "totals": {
+      "classes": 17,
+      "cards": 262,
+      "withKanjiField": 245,
+      "found": 152,
+      "missing": 81,
+      "unavailable": 29,
+      "imageFiles": 156,
+      "variantFiles": 4,
+      "distinctHashes": 155,
+      "totalBytes": 2664166,
+      "totalMiB": 2.54,
+      "largestFileBytes": 64190,
+      "maxDimension": 600
+    },
+    "perClass": [
+      {
+        "classId": "basic",
+        "folder": "kanji",
+        "cards": 20,
+        "found": 20,
+        "missing": 0,
+        "unavailable": 0
+      },
+      {
+        "classId": "numbers",
+        "folder": "kanji",
+        "cards": 17,
+        "found": 3,
+        "missing": 0,
+        "unavailable": 14
+      },
+      {
+        "classId": "people",
+        "folder": "kanji",
+        "cards": 25,
+        "found": 20,
+        "missing": 2,
+        "unavailable": 3
+      },
+      {
+        "classId": "nature",
+        "folder": "kanji",
+        "cards": 15,
+        "found": 14,
+        "missing": 0,
+        "unavailable": 1
+      },
+      {
+        "classId": "sky-seasons",
+        "folder": "kanji",
+        "cards": 21,
+        "found": 18,
+        "missing": 0,
+        "unavailable": 3
+      },
+      {
+        "classId": "time",
+        "folder": "kanji",
+        "cards": 28,
+        "found": 17,
+        "missing": 10,
+        "unavailable": 1
+      },
+      {
+        "classId": "school",
+        "folder": "kanji",
+        "cards": 12,
+        "found": 5,
+        "missing": 5,
+        "unavailable": 2
+      },
+      {
+        "classId": "colors",
+        "folder": "kanji",
+        "cards": 13,
+        "found": 10,
+        "missing": 3,
+        "unavailable": 0
+      },
+      {
+        "classId": "body",
+        "folder": "kanji",
+        "cards": 20,
+        "found": 10,
+        "missing": 8,
+        "unavailable": 2
+      },
+      {
+        "classId": "animals",
+        "folder": "kanji",
+        "cards": 21,
+        "found": 14,
+        "missing": 5,
+        "unavailable": 2
+      },
+      {
+        "classId": "rooms",
+        "folder": "kanji",
+        "cards": 9,
+        "found": 2,
+        "missing": 7,
+        "unavailable": 0
+      },
+      {
+        "classId": "places",
+        "folder": "kanji",
+        "cards": 12,
+        "found": 2,
+        "missing": 10,
+        "unavailable": 0
+      },
+      {
+        "classId": "food-drink",
+        "folder": "food",
+        "cards": 10,
+        "found": 0,
+        "missing": 9,
+        "unavailable": 1
+      },
+      {
+        "classId": "animals-2",
+        "folder": "kanji",
+        "cards": 2,
+        "found": 1,
+        "missing": 1,
+        "unavailable": 0
+      },
+      {
+        "classId": "verbs",
+        "folder": "kanji",
+        "cards": 16,
+        "found": 6,
+        "missing": 10,
+        "unavailable": 0
+      },
+      {
+        "classId": "adjectives",
+        "folder": "kanji",
+        "cards": 10,
+        "found": 0,
+        "missing": 10,
+        "unavailable": 0
+      },
+      {
+        "classId": "onomatopoeia",
+        "folder": "vocabulary",
+        "cards": 11,
+        "found": 10,
+        "missing": 1,
+        "unavailable": 0
+      }
+    ],
+    "duplicateCardIds": [
+      {
+        "id": "sun",
+        "cardKeys": [
+          "basic/sun",
+          "sky-seasons/sun"
+        ],
+        "slotId": "flash-sun"
+      },
+      {
+        "id": "tea",
+        "cardKeys": [
+          "colors/tea",
+          "food-drink/tea"
+        ],
+        "slotId": "flash-tea"
+      }
+    ],
+    "duplicateKanji": [
+      {
+        "kanji": "半",
+        "cardKeys": [
+          "numbers/half-num",
+          "time/half"
+        ]
+      },
+      {
+        "kanji": "茶",
+        "cardKeys": [
+          "colors/tea",
+          "food-drink/tea"
+        ]
+      }
+    ],
+    "missing": [
+      {
+        "cardKey": "people/i-private",
+        "kanji": "私",
+        "imageKey": "kanji/私"
+      },
+      {
+        "cardKey": "people/public",
+        "kanji": "公",
+        "imageKey": "kanji/公"
+      },
+      {
+        "cardKey": "time/after",
+        "kanji": "後",
+        "imageKey": "kanji/後"
+      },
+      {
+        "cardKey": "time/what",
+        "kanji": "何",
+        "imageKey": "kanji/何"
+      },
+      {
+        "cardKey": "time/early",
+        "kanji": "早",
+        "imageKey": "kanji/早"
+      },
+      {
+        "cardKey": "time/late",
+        "kanji": "遅",
+        "imageKey": "kanji/遅"
+      },
+      {
+        "cardKey": "time/morning",
+        "kanji": "朝",
+        "imageKey": "kanji/朝"
+      },
+      {
+        "cardKey": "time/noon",
+        "kanji": "昼",
+        "imageKey": "kanji/昼"
+      },
+      {
+        "cardKey": "time/evening",
+        "kanji": "夕",
+        "imageKey": "kanji/夕"
+      },
+      {
+        "cardKey": "time/night",
+        "kanji": "夜",
+        "imageKey": "kanji/夜"
+      },
+      {
+        "cardKey": "time/before",
+        "kanji": "前",
+        "imageKey": "kanji/前"
+      },
+      {
+        "cardKey": "time/ahead",
+        "kanji": "先",
+        "imageKey": "kanji/先"
+      },
+      {
+        "cardKey": "school/school",
+        "kanji": "校",
+        "imageKey": "kanji/校"
+      },
+      {
+        "cardKey": "school/writing",
+        "kanji": "文",
+        "imageKey": "kanji/文"
+      },
+      {
+        "cardKey": "school/say",
+        "kanji": "言",
+        "imageKey": "kanji/言"
+      },
+      {
+        "cardKey": "school/talk",
+        "kanji": "話",
+        "imageKey": "kanji/話"
+      },
+      {
+        "cardKey": "school/read",
+        "kanji": "読",
+        "imageKey": "kanji/読"
+      },
+      {
+        "cardKey": "colors/momoiro",
+        "kanji": "桃色",
+        "imageKey": "kanji/桃色"
+      },
+      {
+        "cardKey": "colors/pink",
+        "kanji": "ピンク",
+        "imageKey": "kanji/ピンク"
+      },
+      {
+        "cardKey": "colors/orange",
+        "kanji": "オレンジ",
+        "imageKey": "kanji/オレンジ"
+      },
+      {
+        "cardKey": "body/neck",
+        "kanji": "首",
+        "imageKey": "kanji/首"
+      },
+      {
+        "cardKey": "body/hit",
+        "kanji": "打",
+        "imageKey": "kanji/打"
+      },
+      {
+        "cardKey": "body/hold",
+        "kanji": "持",
+        "imageKey": "kanji/持"
+      },
+      {
+        "cardKey": "body/head",
+        "kanji": "頭",
+        "imageKey": "kanji/頭"
+      },
+      {
+        "cardKey": "body/face",
+        "kanji": "顔",
+        "imageKey": "kanji/顔"
+      },
+      {
+        "cardKey": "body/hair",
+        "kanji": "髪",
+        "imageKey": "kanji/髪"
+      },
+      {
+        "cardKey": "body/tooth",
+        "kanji": "歯",
+        "imageKey": "kanji/歯"
+      },
+      {
+        "cardKey": "body/arm",
+        "kanji": "腕",
+        "imageKey": "kanji/腕"
+      },
+      {
+        "cardKey": "animals/bird",
+        "kanji": "鳥",
+        "imageKey": "kanji/鳥"
+      },
+      {
+        "cardKey": "animals/pig",
+        "kanji": "豚",
+        "imageKey": "kanji/豚"
+      },
+      {
+        "cardKey": "animals/snake",
+        "kanji": "蛇",
+        "imageKey": "kanji/蛇"
+      },
+      {
+        "cardKey": "animals/octopus",
+        "kanji": "蛸",
+        "imageKey": "kanji/蛸"
+      },
+      {
+        "cardKey": "animals/turtle",
+        "kanji": "亀",
+        "imageKey": "kanji/亀"
+      },
+      {
+        "cardKey": "rooms/door",
+        "kanji": "戸",
+        "imageKey": "kanji/戸"
+      },
+      {
+        "cardKey": "rooms/close",
+        "kanji": "閉",
+        "imageKey": "kanji/閉"
+      },
+      {
+        "cardKey": "rooms/window",
+        "kanji": "窓",
+        "imageKey": "kanji/窓"
+      },
+      {
+        "cardKey": "rooms/floor",
+        "kanji": "床",
+        "imageKey": "kanji/床"
+      },
+      {
+        "cardKey": "rooms/ceiling",
+        "kanji": "天井",
+        "imageKey": "kanji/天井"
+      },
+      {
+        "cardKey": "rooms/shelf",
+        "kanji": "棚",
+        "imageKey": "kanji/棚"
+      },
+      {
+        "cardKey": "rooms/bookshelf",
+        "kanji": "本棚",
+        "imageKey": "kanji/本棚"
+      },
+      {
+        "cardKey": "places/left",
+        "kanji": "左",
+        "imageKey": "kanji/左"
+      },
+      {
+        "cardKey": "places/right",
+        "kanji": "右",
+        "imageKey": "kanji/右"
+      },
+      {
+        "cardKey": "places/middle",
+        "kanji": "中",
+        "imageKey": "kanji/中"
+      },
+      {
+        "cardKey": "places/east",
+        "kanji": "東",
+        "imageKey": "kanji/東"
+      },
+      {
+        "cardKey": "places/west",
+        "kanji": "西",
+        "imageKey": "kanji/西"
+      },
+      {
+        "cardKey": "places/south",
+        "kanji": "南",
+        "imageKey": "kanji/南"
+      },
+      {
+        "cardKey": "places/north",
+        "kanji": "北",
+        "imageKey": "kanji/北"
+      },
+      {
+        "cardKey": "places/house",
+        "kanji": "家",
+        "imageKey": "kanji/家"
+      },
+      {
+        "cardKey": "places/shop",
+        "kanji": "店",
+        "imageKey": "kanji/店"
+      },
+      {
+        "cardKey": "places/station",
+        "kanji": "駅",
+        "imageKey": "kanji/駅"
+      },
+      {
+        "cardKey": "food-drink/rice-grain",
+        "kanji": "米",
+        "imageKey": "food/米"
+      },
+      {
+        "cardKey": "food-drink/cooked-rice",
+        "kanji": "飯",
+        "imageKey": "food/飯"
+      },
+      {
+        "cardKey": "food-drink/eat",
+        "kanji": "食",
+        "imageKey": "food/食"
+      },
+      {
+        "cardKey": "food-drink/drink",
+        "kanji": "飲",
+        "imageKey": "food/飲"
+      },
+      {
+        "cardKey": "food-drink/tea",
+        "kanji": "茶",
+        "imageKey": "food/茶"
+      },
+      {
+        "cardKey": "food-drink/alcohol",
+        "kanji": "酒",
+        "imageKey": "food/酒"
+      },
+      {
+        "cardKey": "food-drink/meat",
+        "kanji": "肉",
+        "imageKey": "food/肉"
+      },
+      {
+        "cardKey": "food-drink/egg",
+        "kanji": "卵",
+        "imageKey": "food/卵"
+      },
+      {
+        "cardKey": "food-drink/gohan",
+        "kanji": "御飯",
+        "imageKey": "food/御飯"
+      },
+      {
+        "cardKey": "animals-2/wolf",
+        "kanji": "狼",
+        "imageKey": "kanji/狼"
+      },
+      {
+        "cardKey": "verbs/come",
+        "kanji": "来",
+        "imageKey": "kanji/来"
+      },
+      {
+        "cardKey": "verbs/sell",
+        "kanji": "売",
+        "imageKey": "kanji/売"
+      },
+      {
+        "cardKey": "verbs/know",
+        "kanji": "知",
+        "imageKey": "kanji/知"
+      },
+      {
+        "cardKey": "verbs/think",
+        "kanji": "思",
+        "imageKey": "kanji/思"
+      },
+      {
+        "cardKey": "verbs/wait",
+        "kanji": "待",
+        "imageKey": "kanji/待"
+      },
+      {
+        "cardKey": "verbs/return",
+        "kanji": "帰",
+        "imageKey": "kanji/帰"
+      },
+      {
+        "cardKey": "verbs/cut",
+        "kanji": "切",
+        "imageKey": "kanji/切"
+      },
+      {
+        "cardKey": "verbs/run",
+        "kanji": "走",
+        "imageKey": "kanji/走"
+      },
+      {
+        "cardKey": "verbs/work",
+        "kanji": "働",
+        "imageKey": "kanji/働"
+      },
+      {
+        "cardKey": "verbs/busy",
+        "kanji": "忙",
+        "imageKey": "kanji/忙"
+      },
+      {
+        "cardKey": "adjectives/tall",
+        "kanji": "高",
+        "imageKey": "kanji/高"
+      },
+      {
+        "cardKey": "adjectives/cheap",
+        "kanji": "安",
+        "imageKey": "kanji/安"
+      },
+      {
+        "cardKey": "adjectives/many",
+        "kanji": "多",
+        "imageKey": "kanji/多"
+      },
+      {
+        "cardKey": "adjectives/few",
+        "kanji": "少",
+        "imageKey": "kanji/少"
+      },
+      {
+        "cardKey": "adjectives/old",
+        "kanji": "古",
+        "imageKey": "kanji/古"
+      },
+      {
+        "cardKey": "adjectives/new",
+        "kanji": "新",
+        "imageKey": "kanji/新"
+      },
+      {
+        "cardKey": "adjectives/long",
+        "kanji": "長",
+        "imageKey": "kanji/長"
+      },
+      {
+        "cardKey": "adjectives/short",
+        "kanji": "短",
+        "imageKey": "kanji/短"
+      },
+      {
+        "cardKey": "adjectives/strong",
+        "kanji": "強",
+        "imageKey": "kanji/強"
+      },
+      {
+        "cardKey": "adjectives/weak",
+        "kanji": "弱",
+        "imageKey": "kanji/弱"
+      },
+      {
+        "cardKey": "onomatopoeia/wanwan",
+        "kanji": "ワンワン",
+        "imageKey": "vocabulary/ワンワン"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "cardKey": "basic/sun",
+      "classId": "basic",
+      "cardId": "sun",
+      "kanji": "日",
+      "kind": "kanji",
+      "slotId": "flash-sun",
+      "folder": "kanji",
+      "imageKey": "kanji/日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/日.webp",
+          "ext": "webp",
+          "bytes": 7724,
+          "sha256": "b1c3d4b6b3e93825930d9b67a7cbd1413132b89de29eeb932fd9ff061f59fefd",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/moon",
+      "classId": "basic",
+      "cardId": "moon",
+      "kanji": "月",
+      "kind": "kanji",
+      "slotId": "flash-moon",
+      "folder": "kanji",
+      "imageKey": "kanji/月",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/月.webp",
+          "ext": "webp",
+          "bytes": 10326,
+          "sha256": "6166569ca291585ab4ef0b3f909a55d5ffeebf11fd537b545b77a942ea565ffa",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/mtn",
+      "classId": "basic",
+      "cardId": "mtn",
+      "kanji": "山",
+      "kind": "kanji",
+      "slotId": "flash-mtn",
+      "folder": "kanji",
+      "imageKey": "kanji/山",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/山.webp",
+          "ext": "webp",
+          "bytes": 9988,
+          "sha256": "cbb8c89dbdff61d2110b31ee397e5e1ccac868d4437138c777f0a38f5e257afd",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/river",
+      "classId": "basic",
+      "cardId": "river",
+      "kanji": "川",
+      "kind": "kanji",
+      "slotId": "flash-river",
+      "folder": "kanji",
+      "imageKey": "kanji/川",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/川.webp",
+          "ext": "webp",
+          "bytes": 9860,
+          "sha256": "0cb5f0578074b2b93c54b3c62a39277264e53952715ebb120cd78ffe4ebe51c4",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/tree",
+      "classId": "basic",
+      "cardId": "tree",
+      "kanji": "木",
+      "kind": "kanji",
+      "slotId": "flash-tree",
+      "folder": "kanji",
+      "imageKey": "kanji/木",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/木.webp",
+          "ext": "webp",
+          "bytes": 11270,
+          "sha256": "9f667ab8e4bf86cf8cd475c1eb3b505e79451fc42b7069d8af3b60d314e68595",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/book",
+      "classId": "basic",
+      "cardId": "book",
+      "kanji": "本",
+      "kind": "kanji",
+      "slotId": "flash-book",
+      "folder": "kanji",
+      "imageKey": "kanji/本",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/本.webp",
+          "ext": "webp",
+          "bytes": 8064,
+          "sha256": "1dceb2045c08258aa5747ba22c94d6aee26bbced7e70a16e3571bc0b2d4be1b5",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        },
+        {
+          "variant": 2,
+          "path": "images/kanji/本 (2).webp",
+          "ext": "webp",
+          "bytes": 44392,
+          "sha256": "5c5cc95cc98afa6163ad0070504cc20073946355c37fb7effd870493bfc391d5",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/fire",
+      "classId": "basic",
+      "cardId": "fire",
+      "kanji": "火",
+      "kind": "kanji",
+      "slotId": "flash-fire",
+      "folder": "kanji",
+      "imageKey": "kanji/火",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/火.webp",
+          "ext": "webp",
+          "bytes": 15088,
+          "sha256": "d203f4dd154de4907210490e8484ddc313ad801547a1fa324a6e1ca311be28e0",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/water",
+      "classId": "basic",
+      "cardId": "water",
+      "kanji": "水",
+      "kind": "kanji",
+      "slotId": "flash-water",
+      "folder": "kanji",
+      "imageKey": "kanji/水",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/水.webp",
+          "ext": "webp",
+          "bytes": 9236,
+          "sha256": "caefd0242325d585acac6086901a1c7267c9445d38e578a22293e8cad6cf99d4",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/ice",
+      "classId": "basic",
+      "cardId": "ice",
+      "kanji": "氷",
+      "kind": "kanji",
+      "slotId": "flash-ice",
+      "folder": "kanji",
+      "imageKey": "kanji/氷",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/氷.webp",
+          "ext": "webp",
+          "bytes": 16750,
+          "sha256": "34a0d64800b9ddfa305fc8517d49246d5ff949f41350e7b6930b6661e6de60a1",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/earth",
+      "classId": "basic",
+      "cardId": "earth",
+      "kanji": "土",
+      "kind": "kanji",
+      "slotId": "flash-earth",
+      "folder": "kanji",
+      "imageKey": "kanji/土",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/土.webp",
+          "ext": "webp",
+          "bytes": 10898,
+          "sha256": "651c0a24a2bca1b0897ba7afa8a17eae935fc7af9137eafd850e048925644e39",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/ricefield",
+      "classId": "basic",
+      "cardId": "ricefield",
+      "kanji": "田",
+      "kind": "kanji",
+      "slotId": "flash-ricefield",
+      "folder": "kanji",
+      "imageKey": "kanji/田",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/田.webp",
+          "ext": "webp",
+          "bytes": 25528,
+          "sha256": "48cd3c693dba4d6321f68fbf2adb43bf51f040a1b99580c664cc84dc1f8688ad",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/big",
+      "classId": "basic",
+      "cardId": "big",
+      "kanji": "大",
+      "kind": "kanji",
+      "slotId": "flash-big",
+      "folder": "kanji",
+      "imageKey": "kanji/大",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/大.webp",
+          "ext": "webp",
+          "bytes": 19602,
+          "sha256": "7d0125712772f17ac45565af6e3b599047454c242b73eebaed2c9476ec17465a",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/small",
+      "classId": "basic",
+      "cardId": "small",
+      "kanji": "小",
+      "kind": "kanji",
+      "slotId": "flash-small",
+      "folder": "kanji",
+      "imageKey": "kanji/小",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/小.webp",
+          "ext": "webp",
+          "bytes": 7120,
+          "sha256": "656eecc3b449782422b04cf1902f76e7de43e4be2c00babf11490bb01c2ec8b0",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/yen",
+      "classId": "basic",
+      "cardId": "yen",
+      "kanji": "円",
+      "kind": "kanji",
+      "slotId": "flash-yen",
+      "folder": "kanji",
+      "imageKey": "kanji/円",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/円.webp",
+          "ext": "webp",
+          "bytes": 30618,
+          "sha256": "9438950d6c37cf1aae2ab88cebdddfc9f43f4d97e95f8158644ff2ce6fff0ee0",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/king",
+      "classId": "basic",
+      "cardId": "king",
+      "kanji": "王",
+      "kind": "kanji",
+      "slotId": "flash-king",
+      "folder": "kanji",
+      "imageKey": "kanji/王",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/王.webp",
+          "ext": "webp",
+          "bytes": 10728,
+          "sha256": "4f094cf5e0296eeec8f82a2ec4785d006e888bc5718e7be221ad64062466c63e",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/life",
+      "classId": "basic",
+      "cardId": "life",
+      "kanji": "生",
+      "kind": "kanji",
+      "slotId": "flash-life",
+      "folder": "kanji",
+      "imageKey": "kanji/生",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/生.webp",
+          "ext": "webp",
+          "bytes": 11790,
+          "sha256": "c615dab5b347d7362a4ccbfae910edad7704137216f00646bd425354f4500d20",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/jewel",
+      "classId": "basic",
+      "cardId": "jewel",
+      "kanji": "玉",
+      "kind": "kanji",
+      "slotId": "flash-jewel",
+      "folder": "kanji",
+      "imageKey": "kanji/玉",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/玉.webp",
+          "ext": "webp",
+          "bytes": 9360,
+          "sha256": "a8710a3561aac17e05e399c90f3389fbe0d716689395d635df48829b2f80340f",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/country",
+      "classId": "basic",
+      "cardId": "country",
+      "kanji": "国",
+      "kind": "kanji",
+      "slotId": "flash-country",
+      "folder": "kanji",
+      "imageKey": "kanji/国",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/国.webp",
+          "ext": "webp",
+          "bytes": 21730,
+          "sha256": "b8b08bd8f6746017721a491ad1728054e25e630f79e1c85c7532da4b1e74054f",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/gold",
+      "classId": "basic",
+      "cardId": "gold",
+      "kanji": "金",
+      "kind": "kanji",
+      "slotId": "flash-gold",
+      "folder": "kanji",
+      "imageKey": "kanji/金",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/金.webp",
+          "ext": "webp",
+          "bytes": 14178,
+          "sha256": "5bf318677e0e582d7419a72cb69130fad878727943e1b065b78d25eac47ded43",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "basic/vehicle",
+      "classId": "basic",
+      "cardId": "vehicle",
+      "kanji": "車",
+      "kind": "kanji",
+      "slotId": "flash-vehicle",
+      "folder": "kanji",
+      "imageKey": "kanji/車",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/車.webp",
+          "ext": "webp",
+          "bytes": 15372,
+          "sha256": "f28836890e9ffdcd6626144d0a6acc85d52546b378c8359ac32ae0e7c04fc5eb",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "numbers/one",
+      "classId": "numbers",
+      "cardId": "one",
+      "kanji": "一",
+      "kind": "kanji",
+      "slotId": "flash-one",
+      "folder": "kanji",
+      "imageKey": "kanji/一",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/two",
+      "classId": "numbers",
+      "cardId": "two",
+      "kanji": "二",
+      "kind": "kanji",
+      "slotId": "flash-two",
+      "folder": "kanji",
+      "imageKey": "kanji/二",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/three",
+      "classId": "numbers",
+      "cardId": "three",
+      "kanji": "三",
+      "kind": "kanji",
+      "slotId": "flash-three",
+      "folder": "kanji",
+      "imageKey": "kanji/三",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/four",
+      "classId": "numbers",
+      "cardId": "four",
+      "kanji": "四",
+      "kind": "kanji",
+      "slotId": "flash-four",
+      "folder": "kanji",
+      "imageKey": "kanji/四",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/five",
+      "classId": "numbers",
+      "cardId": "five",
+      "kanji": "五",
+      "kind": "kanji",
+      "slotId": "flash-five",
+      "folder": "kanji",
+      "imageKey": "kanji/五",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/six",
+      "classId": "numbers",
+      "cardId": "six",
+      "kanji": "六",
+      "kind": "kanji",
+      "slotId": "flash-six",
+      "folder": "kanji",
+      "imageKey": "kanji/六",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/seven",
+      "classId": "numbers",
+      "cardId": "seven",
+      "kanji": "七",
+      "kind": "kanji",
+      "slotId": "flash-seven",
+      "folder": "kanji",
+      "imageKey": "kanji/七",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/eight",
+      "classId": "numbers",
+      "cardId": "eight",
+      "kanji": "八",
+      "kind": "kanji",
+      "slotId": "flash-eight",
+      "folder": "kanji",
+      "imageKey": "kanji/八",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/nine",
+      "classId": "numbers",
+      "cardId": "nine",
+      "kanji": "九",
+      "kind": "kanji",
+      "slotId": "flash-nine",
+      "folder": "kanji",
+      "imageKey": "kanji/九",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/ten",
+      "classId": "numbers",
+      "cardId": "ten",
+      "kanji": "十",
+      "kind": "kanji",
+      "slotId": "flash-ten",
+      "folder": "kanji",
+      "imageKey": "kanji/十",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/needle-radical",
+      "classId": "numbers",
+      "cardId": "needle-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-needle-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/twenty",
+      "classId": "numbers",
+      "cardId": "twenty",
+      "kanji": "廿",
+      "kind": "kanji",
+      "slotId": "flash-twenty",
+      "folder": "kanji",
+      "imageKey": "kanji/廿",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/twenty-radical",
+      "classId": "numbers",
+      "cardId": "twenty-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-twenty-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/hundred",
+      "classId": "numbers",
+      "cardId": "hundred",
+      "kanji": "百",
+      "kind": "kanji",
+      "slotId": "flash-hundred",
+      "folder": "kanji",
+      "imageKey": "kanji/百",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/百.webp",
+          "ext": "webp",
+          "bytes": 12418,
+          "sha256": "d8157724b74be5d791a4adbfb0aef54538f5318a5e7df20e5c5fec1bd868cf03",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "numbers/thousand",
+      "classId": "numbers",
+      "cardId": "thousand",
+      "kanji": "千",
+      "kind": "kanji",
+      "slotId": "flash-thousand",
+      "folder": "kanji",
+      "imageKey": "kanji/千",
+      "status": "unavailable",
+      "reason": "digit-card-renders-numeral",
+      "images": []
+    },
+    {
+      "cardKey": "numbers/ten-thousand",
+      "classId": "numbers",
+      "cardId": "ten-thousand",
+      "kanji": "万",
+      "kind": "kanji",
+      "slotId": "flash-ten-thousand",
+      "folder": "kanji",
+      "imageKey": "kanji/万",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/万.webp",
+          "ext": "webp",
+          "bytes": 5372,
+          "sha256": "52e92576158f13b9b2f76ce81193581f5fc34191e3e90b5c1e8e8424a05bd768",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "numbers/half-num",
+      "classId": "numbers",
+      "cardId": "half-num",
+      "kanji": "半",
+      "kind": "kanji",
+      "slotId": "flash-half-num",
+      "folder": "kanji",
+      "imageKey": "kanji/半",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/半.webp",
+          "ext": "webp",
+          "bytes": 16090,
+          "sha256": "f125ab3713ea252335dc2b9b8960198673bf9c6cacbe5dd30f5841f7e6332590",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/person",
+      "classId": "people",
+      "cardId": "person",
+      "kanji": "人",
+      "kind": "kanji",
+      "slotId": "flash-person",
+      "folder": "kanji",
+      "imageKey": "kanji/人",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/人.webp",
+          "ext": "webp",
+          "bytes": 5016,
+          "sha256": "91c2e27bea7d9a9cca80801249cc16b45e65965ae42e5abbd73e3afcc962edb1",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/person-radical",
+      "classId": "people",
+      "cardId": "person-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-person-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "people/rest",
+      "classId": "people",
+      "cardId": "rest",
+      "kanji": "休",
+      "kind": "kanji",
+      "slotId": "flash-rest",
+      "folder": "kanji",
+      "imageKey": "kanji/休",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/休.webp",
+          "ext": "webp",
+          "bytes": 18272,
+          "sha256": "e315d662c5fcd2722613a3ba4b74eef88f66ac8a273a3576c4ccf471040de796",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/enter",
+      "classId": "people",
+      "cardId": "enter",
+      "kanji": "入",
+      "kind": "kanji",
+      "slotId": "flash-enter",
+      "folder": "kanji",
+      "imageKey": "kanji/入",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/入.webp",
+          "ext": "webp",
+          "bytes": 5240,
+          "sha256": "f28c9e322a63beeebc5af3e1b87972a555b9e7d680899647b6ee9c5df5c12ee2",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/child",
+      "classId": "people",
+      "cardId": "child",
+      "kanji": "子",
+      "kind": "kanji",
+      "slotId": "flash-child",
+      "folder": "kanji",
+      "imageKey": "kanji/子",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/子.webp",
+          "ext": "webp",
+          "bytes": 18266,
+          "sha256": "229b2156621eeb898d7e1fa7ed802ed905ab9de5ed195ef3d9750003aba1a9f2",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/woman",
+      "classId": "people",
+      "cardId": "woman",
+      "kanji": "女",
+      "kind": "kanji",
+      "slotId": "flash-woman",
+      "folder": "kanji",
+      "imageKey": "kanji/女",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/女.webp",
+          "ext": "webp",
+          "bytes": 18480,
+          "sha256": "d0cb37e0817f96319fe6aab71e06e8f904686237e79a193abc401e5628f3b42e",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/like",
+      "classId": "people",
+      "cardId": "like",
+      "kanji": "好",
+      "kind": "kanji",
+      "slotId": "flash-like",
+      "folder": "kanji",
+      "imageKey": "kanji/好",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/好.webp",
+          "ext": "webp",
+          "bytes": 22700,
+          "sha256": "e701e0e9a21f569b5f947f26b2171fdcec3863a0016e51cc7a0c065557144a4c",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/mother",
+      "classId": "people",
+      "cardId": "mother",
+      "kanji": "母",
+      "kind": "kanji",
+      "slotId": "flash-mother",
+      "folder": "kanji",
+      "imageKey": "kanji/母",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/母.webp",
+          "ext": "webp",
+          "bytes": 20684,
+          "sha256": "d8ae9908b4a6a04ff1a0c20f4a9766990ff9358c7650a8132ced04a581f70c90",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/oneesan",
+      "classId": "people",
+      "cardId": "oneesan",
+      "kanji": "姉",
+      "kind": "kanji",
+      "slotId": "flash-oneesan",
+      "folder": "kanji",
+      "imageKey": "kanji/姉",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/姉.webp",
+          "ext": "webp",
+          "bytes": 22708,
+          "sha256": "d6dd90ac10e6cecaf87ebb90d02be0cf00970bb8c45c771d01c54ac7a8fc8605",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/imouto",
+      "classId": "people",
+      "cardId": "imouto",
+      "kanji": "妹",
+      "kind": "kanji",
+      "slotId": "flash-imouto",
+      "folder": "kanji",
+      "imageKey": "kanji/妹",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/妹.webp",
+          "ext": "webp",
+          "bytes": 23814,
+          "sha256": "5aca5a50eeec49d550a69daeaf45f13f9a96c598bf44453bc3583fefded3f19d",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/shimai",
+      "classId": "people",
+      "cardId": "shimai",
+      "kanji": "姉妹",
+      "kind": "kanji",
+      "slotId": "flash-shimai",
+      "folder": "kanji",
+      "imageKey": "kanji/姉妹",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/姉妹.webp",
+          "ext": "webp",
+          "bytes": 22932,
+          "sha256": "fd69888733c91679e3ca48d3230708f91dd4c718ba951e0c7d8bf00fac56c6a5",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/father",
+      "classId": "people",
+      "cardId": "father",
+      "kanji": "父",
+      "kind": "kanji",
+      "slotId": "flash-father",
+      "folder": "kanji",
+      "imageKey": "kanji/父",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/父.webp",
+          "ext": "webp",
+          "bytes": 14288,
+          "sha256": "f417a3aa376631485cd07a6ecd764e611f22765c7585ec889aa1dce3fe09151b",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/man",
+      "classId": "people",
+      "cardId": "man",
+      "kanji": "男",
+      "kind": "kanji",
+      "slotId": "flash-man",
+      "folder": "kanji",
+      "imageKey": "kanji/男",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/男.webp",
+          "ext": "webp",
+          "bytes": 23266,
+          "sha256": "82d7b17a87e879245d2b7d4c996ffd27d03c419348aae61d93b2ea9ac8f4ebbb",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/oniisan",
+      "classId": "people",
+      "cardId": "oniisan",
+      "kanji": "兄",
+      "kind": "kanji",
+      "slotId": "flash-oniisan",
+      "folder": "kanji",
+      "imageKey": "kanji/兄",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/兄.webp",
+          "ext": "webp",
+          "bytes": 15830,
+          "sha256": "5786d16784be76a76dc5378d2668003824f2ad651b11ee2f08cc489bc9ae1724",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/otouto",
+      "classId": "people",
+      "cardId": "otouto",
+      "kanji": "弟",
+      "kind": "kanji",
+      "slotId": "flash-otouto",
+      "folder": "kanji",
+      "imageKey": "kanji/弟",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/弟.webp",
+          "ext": "webp",
+          "bytes": 22918,
+          "sha256": "eef46400be5068808b538d27fc835331257c96493d47415a6e8d9800828f6f4e",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/kyoudai",
+      "classId": "people",
+      "cardId": "kyoudai",
+      "kanji": "兄弟",
+      "kind": "kanji",
+      "slotId": "flash-kyoudai",
+      "folder": "kanji",
+      "imageKey": "kanji/兄弟",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/兄弟.webp",
+          "ext": "webp",
+          "bytes": 21570,
+          "sha256": "392c1222783a6b9e10c18247d86ddbfa4d48f93346e06eb7c8613a45a1c5f777",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/hands-radical",
+      "classId": "people",
+      "cardId": "hands-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-hands-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "people/friend",
+      "classId": "people",
+      "cardId": "friend",
+      "kanji": "友",
+      "kind": "kanji",
+      "slotId": "flash-friend",
+      "folder": "kanji",
+      "imageKey": "kanji/友",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/友.webp",
+          "ext": "webp",
+          "bytes": 8318,
+          "sha256": "871fd0df733dbe9eade6646a9e3bebc4b6c288ab4821d359fcf6b264e52142e8",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/pair",
+      "classId": "people",
+      "cardId": "pair",
+      "kanji": "双",
+      "kind": "kanji",
+      "slotId": "flash-pair",
+      "folder": "kanji",
+      "imageKey": "kanji/双",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/双.webp",
+          "ext": "webp",
+          "bytes": 9492,
+          "sha256": "05280e76b454cb8466ea9246e7c065a480688dcb262b18d2b05d96c4352bb8b2",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/futago",
+      "classId": "people",
+      "cardId": "futago",
+      "kanji": "双子",
+      "kind": "kanji",
+      "slotId": "flash-futago",
+      "folder": "kanji",
+      "imageKey": "kanji/双子",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/双子.webp",
+          "ext": "webp",
+          "bytes": 23814,
+          "sha256": "d4afcf997037cfc6e22ecd89670b73ed863278a6726d4d7413f7091e5169a901",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/say-classical",
+      "classId": "people",
+      "cardId": "say-classical",
+      "kanji": "云",
+      "kind": "kanji",
+      "slotId": "flash-say-classical",
+      "folder": "kanji",
+      "imageKey": "kanji/云",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/云.webp",
+          "ext": "webp",
+          "bytes": 17306,
+          "sha256": "e20a759019d2eea9a5214fd0e0f87cdd252f4887ffad34c1dac5d879a5b547f7",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "people/mu-radical",
+      "classId": "people",
+      "cardId": "mu-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-mu-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "people/i-private",
+      "classId": "people",
+      "cardId": "i-private",
+      "kanji": "私",
+      "kind": "kanji",
+      "slotId": "flash-i-private",
+      "folder": "kanji",
+      "imageKey": "kanji/私",
+      "status": "missing",
+      "reason": "no file ./images/kanji/私.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "people/public",
+      "classId": "people",
+      "cardId": "public",
+      "kanji": "公",
+      "kind": "kanji",
+      "slotId": "flash-public",
+      "folder": "kanji",
+      "imageKey": "kanji/公",
+      "status": "missing",
+      "reason": "no file ./images/kanji/公.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "people/meet",
+      "classId": "people",
+      "cardId": "meet",
+      "kanji": "会",
+      "kind": "kanji",
+      "slotId": "flash-meet",
+      "folder": "kanji",
+      "imageKey": "kanji/会",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/会.webp",
+          "ext": "webp",
+          "bytes": 17302,
+          "sha256": "61e315931092ab712fbb39be75e0376b6728722c1ef7c45ed73e10bf7b2a9c84",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/woods",
+      "classId": "nature",
+      "cardId": "woods",
+      "kanji": "林",
+      "kind": "kanji",
+      "slotId": "flash-woods",
+      "folder": "kanji",
+      "imageKey": "kanji/林",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/林.webp",
+          "ext": "webp",
+          "bytes": 12406,
+          "sha256": "17ae5c1869c19113c0aefcbc48cfc31cc4fcf83112a054f848a81a396512b7f6",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/forest",
+      "classId": "nature",
+      "cardId": "forest",
+      "kanji": "森",
+      "kind": "kanji",
+      "slotId": "flash-forest",
+      "folder": "kanji",
+      "imageKey": "kanji/森",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/森.webp",
+          "ext": "webp",
+          "bytes": 12708,
+          "sha256": "0c385a9aba9ae9a9508d381518907beae07f5b1a3c9ae85a9a211fbcacb1731c",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/stone",
+      "classId": "nature",
+      "cardId": "stone",
+      "kanji": "石",
+      "kind": "kanji",
+      "slotId": "flash-stone",
+      "folder": "kanji",
+      "imageKey": "kanji/石",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/石.webp",
+          "ext": "webp",
+          "bytes": 22912,
+          "sha256": "72c769f3e01aa8c085dc7601da4404140e01ab223dbb7ff2c031d1e7c9ec835b",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/rock",
+      "classId": "nature",
+      "cardId": "rock",
+      "kanji": "岩",
+      "kind": "kanji",
+      "slotId": "flash-rock",
+      "folder": "kanji",
+      "imageKey": "kanji/岩",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/岩.webp",
+          "ext": "webp",
+          "bytes": 14090,
+          "sha256": "e4cb46a4c6745bda7e46952409838298dfa8e40cdcd373f3a2c94fca87837571",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/rain",
+      "classId": "nature",
+      "cardId": "rain",
+      "kanji": "雨",
+      "kind": "kanji",
+      "slotId": "flash-rain",
+      "folder": "kanji",
+      "imageKey": "kanji/雨",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/雨.webp",
+          "ext": "webp",
+          "bytes": 20262,
+          "sha256": "df7c897cee5501fda992a152f09cafb9591dd195c6d24a1f2dc1243e59e6a427",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/snow",
+      "classId": "nature",
+      "cardId": "snow",
+      "kanji": "雪",
+      "kind": "kanji",
+      "slotId": "flash-snow",
+      "folder": "kanji",
+      "imageKey": "kanji/雪",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/雪.webp",
+          "ext": "webp",
+          "bytes": 17504,
+          "sha256": "1218f9cf75aabec9d499f42684d381ebd7bf8cb2cdf423145907c5b8847878e0",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/bamboo",
+      "classId": "nature",
+      "cardId": "bamboo",
+      "kanji": "竹",
+      "kind": "kanji",
+      "slotId": "flash-bamboo",
+      "folder": "kanji",
+      "imageKey": "kanji/竹",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/竹.webp",
+          "ext": "webp",
+          "bytes": 11786,
+          "sha256": "eb87bb16f6d84890b87e359ad0e6698102f2a3c64fefe0192ff82cbe1577ccf0",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/grass",
+      "classId": "nature",
+      "cardId": "grass",
+      "kanji": "草",
+      "kind": "kanji",
+      "slotId": "flash-grass",
+      "folder": "kanji",
+      "imageKey": "kanji/草",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/草.webp",
+          "ext": "webp",
+          "bytes": 25810,
+          "sha256": "49f0138df517e247d6eb2f438ac5fd242bdb7146c761e2bc44f033e3d1d72134",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/insect",
+      "classId": "nature",
+      "cardId": "insect",
+      "kanji": "虫",
+      "kind": "kanji",
+      "slotId": "flash-insect",
+      "folder": "kanji",
+      "imageKey": "kanji/虫",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/虫.webp",
+          "ext": "webp",
+          "bytes": 18422,
+          "sha256": "e8523e3cd4a316b4cac08ecbb983ee6a3c93e239f6c4fab9bf9870b7f4b2b029",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/wind",
+      "classId": "nature",
+      "cardId": "wind",
+      "kanji": "風",
+      "kind": "kanji",
+      "slotId": "flash-wind",
+      "folder": "kanji",
+      "imageKey": "kanji/風",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/風.webp",
+          "ext": "webp",
+          "bytes": 14358,
+          "sha256": "231000cf026a7471d18c99ee624d5037669aa6d3af53de9981b159e1c5437666",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/origin",
+      "classId": "nature",
+      "cardId": "origin",
+      "kanji": "元",
+      "kind": "kanji",
+      "slotId": "flash-origin",
+      "folder": "kanji",
+      "imageKey": "kanji/元",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/元.webp",
+          "ext": "webp",
+          "bytes": 6600,
+          "sha256": "168e1b62f7f7c33734ec34ad3eb57af7bef69970a8e9f6ddbb37eee0730fde64",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/motomoto",
+      "classId": "nature",
+      "cardId": "motomoto",
+      "kanji": "元々",
+      "kind": "kanji",
+      "slotId": "flash-motomoto",
+      "folder": "kanji",
+      "imageKey": "kanji/元々",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/元々.webp",
+          "ext": "webp",
+          "bytes": 14138,
+          "sha256": "1eb187b520e038e234e3b6a911dec1dd481ddab819afd1cad3d3a26ee982c562",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/noma-mark",
+      "classId": "nature",
+      "cardId": "noma-mark",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-noma-mark",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "nature/spirit",
+      "classId": "nature",
+      "cardId": "spirit",
+      "kanji": "気",
+      "kind": "kanji",
+      "slotId": "flash-spirit",
+      "folder": "kanji",
+      "imageKey": "kanji/気",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/気.webp",
+          "ext": "webp",
+          "bytes": 10216,
+          "sha256": "028eaeeb95ba1158b87a3b7388a6ce30ba353a933fd3564a4eee12554e6fb8f9",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "nature/genki",
+      "classId": "nature",
+      "cardId": "genki",
+      "kanji": "元気",
+      "kind": "kanji",
+      "slotId": "flash-genki",
+      "folder": "kanji",
+      "imageKey": "kanji/元気",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/元気.webp",
+          "ext": "webp",
+          "bytes": 29674,
+          "sha256": "17f5e3dc1b8215bcd77160eb399a9234af65367e45a24be45f1be961f8e346af",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/heaven",
+      "classId": "sky-seasons",
+      "cardId": "heaven",
+      "kanji": "天",
+      "kind": "kanji",
+      "slotId": "flash-heaven",
+      "folder": "kanji",
+      "imageKey": "kanji/天",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/天.webp",
+          "ext": "webp",
+          "bytes": 5786,
+          "sha256": "ad6af98e5e7e24b78941d8291f144745ee8ac56c0428ec4791586bfd06596e48",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/weather",
+      "classId": "sky-seasons",
+      "cardId": "weather",
+      "kanji": "天気",
+      "kind": "kanji",
+      "slotId": "flash-weather",
+      "folder": "kanji",
+      "imageKey": "kanji/天気",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/天気.webp",
+          "ext": "webp",
+          "bytes": 21792,
+          "sha256": "41599023eedbe348e4cdd8cd2a9b6f7eef65606f782fa897c137cfe0421d7a17",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/star",
+      "classId": "sky-seasons",
+      "cardId": "star",
+      "kanji": "星",
+      "kind": "kanji",
+      "slotId": "flash-star",
+      "folder": "kanji",
+      "imageKey": "kanji/星",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/星.webp",
+          "ext": "webp",
+          "bytes": 13380,
+          "sha256": "6ace46507d12e501a31f4b5c3d14d6dd83e846c09f8faa5060e9ae413cce75a4",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/craft",
+      "classId": "sky-seasons",
+      "cardId": "craft",
+      "kanji": "工",
+      "kind": "kanji",
+      "slotId": "flash-craft",
+      "folder": "kanji",
+      "imageKey": "kanji/工",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/工.webp",
+          "ext": "webp",
+          "bytes": 12452,
+          "sha256": "76a224c26749437d57d1ae2360a948ff964ccebe7f6bf43eebdc9c77d3cc9787",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/takumi-radical",
+      "classId": "sky-seasons",
+      "cardId": "takumi-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-takumi-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "sky-seasons/hole",
+      "classId": "sky-seasons",
+      "cardId": "hole",
+      "kanji": "穴",
+      "kind": "kanji",
+      "slotId": "flash-hole",
+      "folder": "kanji",
+      "imageKey": "kanji/穴",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/穴.webp",
+          "ext": "webp",
+          "bytes": 14340,
+          "sha256": "330dca7bff55a9fb3df9cab6bdb3343d796f2acbb2fe32374962de51b6a5a380",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/anakanmuri-radical",
+      "classId": "sky-seasons",
+      "cardId": "anakanmuri-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-anakanmuri-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "sky-seasons/sky",
+      "classId": "sky-seasons",
+      "cardId": "sky",
+      "kanji": "空",
+      "kind": "kanji",
+      "slotId": "flash-sky",
+      "folder": "kanji",
+      "imageKey": "kanji/空",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/空.webp",
+          "ext": "webp",
+          "bytes": 13866,
+          "sha256": "7af4936c09153f9642ba3694aca57c18896b68f5bcb725ba46a4b7bb7be784bd",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/cloud",
+      "classId": "sky-seasons",
+      "cardId": "cloud",
+      "kanji": "雲",
+      "kind": "kanji",
+      "slotId": "flash-cloud",
+      "folder": "kanji",
+      "imageKey": "kanji/雲",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/雲.webp",
+          "ext": "webp",
+          "bytes": 11126,
+          "sha256": "5278c72583df6350c397cb1424c10f6f87ed86b976b91fbbcb9f0fc4a8e9e561",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/flower",
+      "classId": "sky-seasons",
+      "cardId": "flower",
+      "kanji": "花",
+      "kind": "kanji",
+      "slotId": "flash-flower",
+      "folder": "kanji",
+      "imageKey": "kanji/花",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/花.webp",
+          "ext": "webp",
+          "bytes": 15052,
+          "sha256": "e1f881522d017337f4b2918a7bc264f6802705b57eae68917cd96fde47e1cba4",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/generation",
+      "classId": "sky-seasons",
+      "cardId": "generation",
+      "kanji": "世",
+      "kind": "kanji",
+      "slotId": "flash-generation",
+      "folder": "kanji",
+      "imageKey": "kanji/世",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/世.webp",
+          "ext": "webp",
+          "bytes": 12098,
+          "sha256": "285d616c51af90f267da1919b3f8802d86f38d8a14b7bb34d067ffb1cb3e7684",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/boundary",
+      "classId": "sky-seasons",
+      "cardId": "boundary",
+      "kanji": "界",
+      "kind": "kanji",
+      "slotId": "flash-boundary",
+      "folder": "kanji",
+      "imageKey": "kanji/界",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/界.webp",
+          "ext": "webp",
+          "bytes": 26396,
+          "sha256": "76b2a4071bfacc3cdbea623958e925f81a8bdf780ba54e89d8f8a500f18b4c71",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/sekai",
+      "classId": "sky-seasons",
+      "cardId": "sekai",
+      "kanji": "世界",
+      "kind": "kanji",
+      "slotId": "flash-sekai",
+      "folder": "kanji",
+      "imageKey": "kanji/世界",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/世界.webp",
+          "ext": "webp",
+          "bytes": 64190,
+          "sha256": "c4e5f9fa01dfe1de61291a08c9a5e11265155a87a5e5534bc50e1737ac3bd17d",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/seken",
+      "classId": "sky-seasons",
+      "cardId": "seken",
+      "kanji": "世間",
+      "kind": "kanji",
+      "slotId": "flash-seken",
+      "folder": "kanji",
+      "imageKey": "kanji/世間",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/世間.webp",
+          "ext": "webp",
+          "bytes": 39922,
+          "sha256": "cf6b172c6db2d64bd044fdaf4bd1aaea416d009d2c0ef7a71f6da93c7491d730",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/leaf",
+      "classId": "sky-seasons",
+      "cardId": "leaf",
+      "kanji": "葉",
+      "kind": "kanji",
+      "slotId": "flash-leaf",
+      "folder": "kanji",
+      "imageKey": "kanji/葉",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/葉.webp",
+          "ext": "webp",
+          "bytes": 26134,
+          "sha256": "858404702c01412952ee59f75f9cdff2b1bc6ed01913503800f56c6e854b4433",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/town",
+      "classId": "sky-seasons",
+      "cardId": "town",
+      "kanji": "町",
+      "kind": "kanji",
+      "slotId": "flash-town",
+      "folder": "kanji",
+      "imageKey": "kanji/町",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/町.webp",
+          "ext": "webp",
+          "bytes": 28624,
+          "sha256": "a0c5d48b0739d482e20d0eaed8050fe9a8881c8caf56ed5e21f27606e4e65ee4",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/sun",
+      "classId": "sky-seasons",
+      "cardId": "sun",
+      "kanji": "寸",
+      "kind": "kanji",
+      "slotId": "flash-sun",
+      "folder": "kanji",
+      "imageKey": "kanji/寸",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/寸.webp",
+          "ext": "webp",
+          "bytes": 14468,
+          "sha256": "a811c310938b6afbe6f7780fd89f53c04017331d24c07ddcd6a45024a6879bae",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/village",
+      "classId": "sky-seasons",
+      "cardId": "village",
+      "kanji": "村",
+      "kind": "kanji",
+      "slotId": "flash-village",
+      "folder": "kanji",
+      "imageKey": "kanji/村",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/村.webp",
+          "ext": "webp",
+          "bytes": 16154,
+          "sha256": "6c0dc42713671ca7bd84fad4595390c78d7ca02ab2abe2d112412cf02792f412",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/temple",
+      "classId": "sky-seasons",
+      "cardId": "temple",
+      "kanji": "寺",
+      "kind": "kanji",
+      "slotId": "flash-temple",
+      "folder": "kanji",
+      "imageKey": "kanji/寺",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/寺.webp",
+          "ext": "webp",
+          "bytes": 43870,
+          "sha256": "7fa3f3dd14c5c3736e614ee252d03b3a0b8635fe99070b8e75588cc85f157ff3",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "sky-seasons/sun-radical",
+      "classId": "sky-seasons",
+      "cardId": "sun-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-sun-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "sky-seasons/capital",
+      "classId": "sky-seasons",
+      "cardId": "capital",
+      "kanji": "京",
+      "kind": "kanji",
+      "slotId": "flash-capital",
+      "folder": "kanji",
+      "imageKey": "kanji/京",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/京.webp",
+          "ext": "webp",
+          "bytes": 19172,
+          "sha256": "31d50beaf0412c2aade249252d169dbc2bd7570ef80e0f7a8873aeb328b063c2",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/now",
+      "classId": "time",
+      "cardId": "now",
+      "kanji": "今",
+      "kind": "kanji",
+      "slotId": "flash-now",
+      "folder": "kanji",
+      "imageKey": "kanji/今",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/今.webp",
+          "ext": "webp",
+          "bytes": 14246,
+          "sha256": "3ab70afea8d59a23086edd926615d4fd814cc95e509fa9eb7d2671b7f4407772",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/minute",
+      "classId": "time",
+      "cardId": "minute",
+      "kanji": "分",
+      "kind": "kanji",
+      "slotId": "flash-minute",
+      "folder": "kanji",
+      "imageKey": "kanji/分",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/分.webp",
+          "ext": "webp",
+          "bytes": 17526,
+          "sha256": "75e2c078a8cc81ec60f3342d6f843f7bc0427111374624e363824fa2ee676743",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/hour",
+      "classId": "time",
+      "cardId": "hour",
+      "kanji": "時",
+      "kind": "kanji",
+      "slotId": "flash-hour",
+      "folder": "kanji",
+      "imageKey": "kanji/時",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/時.webp",
+          "ext": "webp",
+          "bytes": 18984,
+          "sha256": "e587380a8202de0ad42b6557a594d99ece4da3a225d1ee602af904a3aa19d829",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/half",
+      "classId": "time",
+      "cardId": "half",
+      "kanji": "半",
+      "kind": "kanji",
+      "slotId": "flash-half",
+      "folder": "kanji",
+      "imageKey": "kanji/半",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/半.webp",
+          "ext": "webp",
+          "bytes": 16090,
+          "sha256": "f125ab3713ea252335dc2b9b8960198673bf9c6cacbe5dd30f5841f7e6332590",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/year",
+      "classId": "time",
+      "cardId": "year",
+      "kanji": "年",
+      "kind": "kanji",
+      "slotId": "flash-year",
+      "folder": "kanji",
+      "imageKey": "kanji/年",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/年.webp",
+          "ext": "webp",
+          "bytes": 9002,
+          "sha256": "6229cbd10a49d87724a1b50d8fc0c0fd54ae79f32a1cd51232f60fb077d05f6e",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/nichiyoubi",
+      "classId": "time",
+      "cardId": "nichiyoubi",
+      "kanji": "日曜日",
+      "kind": "kanji",
+      "slotId": "flash-nichiyoubi",
+      "folder": "kanji",
+      "imageKey": "kanji/日曜日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/日曜日.webp",
+          "ext": "webp",
+          "bytes": 17686,
+          "sha256": "af7c708436ae572509849a0d97cbe65ce800849b796841e88b7d236ccbda91bb",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/getsuyoubi",
+      "classId": "time",
+      "cardId": "getsuyoubi",
+      "kanji": "月曜日",
+      "kind": "kanji",
+      "slotId": "flash-getsuyoubi",
+      "folder": "kanji",
+      "imageKey": "kanji/月曜日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/月曜日.webp",
+          "ext": "webp",
+          "bytes": 19262,
+          "sha256": "a0535566b29cb69055d0c2f85d807a7bb3b5b2234c6111151da28aa6a102cad8",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/kayoubi",
+      "classId": "time",
+      "cardId": "kayoubi",
+      "kanji": "火曜日",
+      "kind": "kanji",
+      "slotId": "flash-kayoubi",
+      "folder": "kanji",
+      "imageKey": "kanji/火曜日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/火曜日.webp",
+          "ext": "webp",
+          "bytes": 16512,
+          "sha256": "6bf3c653917183179ea2ca35cc451acf0fb02412cc5a488bae04646b9dcb29c8",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/suiyoubi",
+      "classId": "time",
+      "cardId": "suiyoubi",
+      "kanji": "水曜日",
+      "kind": "kanji",
+      "slotId": "flash-suiyoubi",
+      "folder": "kanji",
+      "imageKey": "kanji/水曜日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/水曜日.webp",
+          "ext": "webp",
+          "bytes": 20574,
+          "sha256": "167ba8a50f7e6b5af89ab17033a15645ecfb752f2e9847dfe7d88445de45cf05",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/mokuyoubi",
+      "classId": "time",
+      "cardId": "mokuyoubi",
+      "kanji": "木曜日",
+      "kind": "kanji",
+      "slotId": "flash-mokuyoubi",
+      "folder": "kanji",
+      "imageKey": "kanji/木曜日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/木曜日.webp",
+          "ext": "webp",
+          "bytes": 14958,
+          "sha256": "2c23c378b02b912129bd8586df2fb4e2c522b9701f283401bd6188540d1b698d",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/kinyoubi",
+      "classId": "time",
+      "cardId": "kinyoubi",
+      "kanji": "金曜日",
+      "kind": "kanji",
+      "slotId": "flash-kinyoubi",
+      "folder": "kanji",
+      "imageKey": "kanji/金曜日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/金曜日.webp",
+          "ext": "webp",
+          "bytes": 17388,
+          "sha256": "f3eacd2200c5a8088383dbf0fd7e1de31a7b3b57bc3cc6d6e0677c0c6297c62a",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/doyoubi",
+      "classId": "time",
+      "cardId": "doyoubi",
+      "kanji": "土曜日",
+      "kind": "kanji",
+      "slotId": "flash-doyoubi",
+      "folder": "kanji",
+      "imageKey": "kanji/土曜日",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/土曜日.webp",
+          "ext": "webp",
+          "bytes": 14510,
+          "sha256": "0bbbb4b5f34ae72b75c0da1e4eb44ee82e0c502dcc1a6d8bd599556291890f2b",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/you",
+      "classId": "time",
+      "cardId": "you",
+      "kanji": "曜",
+      "kind": "kanji",
+      "slotId": "flash-you",
+      "folder": "kanji",
+      "imageKey": "kanji/曜",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/曜.webp",
+          "ext": "webp",
+          "bytes": 13578,
+          "sha256": "6908dd9539d6d207c223e91b54bae2e0a8459aefb72b0c540ad25e5d70e93770",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/you-radical",
+      "classId": "time",
+      "cardId": "you-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-you-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "time/after",
+      "classId": "time",
+      "cardId": "after",
+      "kanji": "後",
+      "kind": "kanji",
+      "slotId": "flash-after",
+      "folder": "kanji",
+      "imageKey": "kanji/後",
+      "status": "missing",
+      "reason": "no file ./images/kanji/後.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/spring",
+      "classId": "time",
+      "cardId": "spring",
+      "kanji": "春",
+      "kind": "kanji",
+      "slotId": "flash-spring",
+      "folder": "kanji",
+      "imageKey": "kanji/春",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/春.webp",
+          "ext": "webp",
+          "bytes": 35524,
+          "sha256": "1794e721f3ca49bc18383f7e204d87770e73ab8587ad7738521fedb968c3337c",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/summer",
+      "classId": "time",
+      "cardId": "summer",
+      "kanji": "夏",
+      "kind": "kanji",
+      "slotId": "flash-summer",
+      "folder": "kanji",
+      "imageKey": "kanji/夏",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/夏.webp",
+          "ext": "webp",
+          "bytes": 20208,
+          "sha256": "ef1561c99700d516a683f10ee4e3a73c6a4474b77132d172556b659f0307f646",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/autumn",
+      "classId": "time",
+      "cardId": "autumn",
+      "kanji": "秋",
+      "kind": "kanji",
+      "slotId": "flash-autumn",
+      "folder": "kanji",
+      "imageKey": "kanji/秋",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/秋.webp",
+          "ext": "webp",
+          "bytes": 21576,
+          "sha256": "be0816daec7dc88e5bbbbfb1078e5eac5ac3d401ed3b33dd285d8dd238ad66b9",
+          "width": 500,
+          "height": 455,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/winter",
+      "classId": "time",
+      "cardId": "winter",
+      "kanji": "冬",
+      "kind": "kanji",
+      "slotId": "flash-winter",
+      "folder": "kanji",
+      "imageKey": "kanji/冬",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/冬.webp",
+          "ext": "webp",
+          "bytes": 17962,
+          "sha256": "1423da369c97641976f76a13c01db1016bb25720a081c96599c5ab06194f5186",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "time/what",
+      "classId": "time",
+      "cardId": "what",
+      "kanji": "何",
+      "kind": "kanji",
+      "slotId": "flash-what",
+      "folder": "kanji",
+      "imageKey": "kanji/何",
+      "status": "missing",
+      "reason": "no file ./images/kanji/何.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/early",
+      "classId": "time",
+      "cardId": "early",
+      "kanji": "早",
+      "kind": "kanji",
+      "slotId": "flash-early",
+      "folder": "kanji",
+      "imageKey": "kanji/早",
+      "status": "missing",
+      "reason": "no file ./images/kanji/早.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/late",
+      "classId": "time",
+      "cardId": "late",
+      "kanji": "遅",
+      "kind": "kanji",
+      "slotId": "flash-late",
+      "folder": "kanji",
+      "imageKey": "kanji/遅",
+      "status": "missing",
+      "reason": "no file ./images/kanji/遅.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/morning",
+      "classId": "time",
+      "cardId": "morning",
+      "kanji": "朝",
+      "kind": "kanji",
+      "slotId": "flash-morning",
+      "folder": "kanji",
+      "imageKey": "kanji/朝",
+      "status": "missing",
+      "reason": "no file ./images/kanji/朝.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/noon",
+      "classId": "time",
+      "cardId": "noon",
+      "kanji": "昼",
+      "kind": "kanji",
+      "slotId": "flash-noon",
+      "folder": "kanji",
+      "imageKey": "kanji/昼",
+      "status": "missing",
+      "reason": "no file ./images/kanji/昼.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/evening",
+      "classId": "time",
+      "cardId": "evening",
+      "kanji": "夕",
+      "kind": "kanji",
+      "slotId": "flash-evening",
+      "folder": "kanji",
+      "imageKey": "kanji/夕",
+      "status": "missing",
+      "reason": "no file ./images/kanji/夕.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/night",
+      "classId": "time",
+      "cardId": "night",
+      "kanji": "夜",
+      "kind": "kanji",
+      "slotId": "flash-night",
+      "folder": "kanji",
+      "imageKey": "kanji/夜",
+      "status": "missing",
+      "reason": "no file ./images/kanji/夜.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/before",
+      "classId": "time",
+      "cardId": "before",
+      "kanji": "前",
+      "kind": "kanji",
+      "slotId": "flash-before",
+      "folder": "kanji",
+      "imageKey": "kanji/前",
+      "status": "missing",
+      "reason": "no file ./images/kanji/前.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "time/ahead",
+      "classId": "time",
+      "cardId": "ahead",
+      "kanji": "先",
+      "kind": "kanji",
+      "slotId": "flash-ahead",
+      "folder": "kanji",
+      "imageKey": "kanji/先",
+      "status": "missing",
+      "reason": "no file ./images/kanji/先.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "school/roof",
+      "classId": "school",
+      "cardId": "roof",
+      "kanji": "宀",
+      "kind": "kanji",
+      "slotId": "flash-roof",
+      "folder": "kanji",
+      "imageKey": "kanji/宀",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/宀.webp",
+          "ext": "webp",
+          "bytes": 6402,
+          "sha256": "01020ab7d4e12670bb17062bf787442ec21a9b153084a5ea67862a277ef4a85f",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "school/ukanmuri-radical",
+      "classId": "school",
+      "cardId": "ukanmuri-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-ukanmuri-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "school/character",
+      "classId": "school",
+      "cardId": "character",
+      "kanji": "字",
+      "kind": "kanji",
+      "slotId": "flash-character",
+      "folder": "kanji",
+      "imageKey": "kanji/字",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/字.webp",
+          "ext": "webp",
+          "bytes": 16078,
+          "sha256": "46e8243e0fd3baf9a351c3bf11fbe286e3d5452b24816ad20850f2439c937985",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "school/learn",
+      "classId": "school",
+      "cardId": "learn",
+      "kanji": "学",
+      "kind": "kanji",
+      "slotId": "flash-learn",
+      "folder": "kanji",
+      "imageKey": "kanji/学",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/学.webp",
+          "ext": "webp",
+          "bytes": 25560,
+          "sha256": "49d41ad2f5ed84f62c21ec3f7c82003c2ff42b1980b3aec706ae0396f217fb3d",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "school/school",
+      "classId": "school",
+      "cardId": "school",
+      "kanji": "校",
+      "kind": "kanji",
+      "slotId": "flash-school",
+      "folder": "kanji",
+      "imageKey": "kanji/校",
+      "status": "missing",
+      "reason": "no file ./images/kanji/校.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "school/writing",
+      "classId": "school",
+      "cardId": "writing",
+      "kanji": "文",
+      "kind": "kanji",
+      "slotId": "flash-writing",
+      "folder": "kanji",
+      "imageKey": "kanji/文",
+      "status": "missing",
+      "reason": "no file ./images/kanji/文.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "school/name",
+      "classId": "school",
+      "cardId": "name",
+      "kanji": "名",
+      "kind": "kanji",
+      "slotId": "flash-name",
+      "folder": "kanji",
+      "imageKey": "kanji/名",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/名.webp",
+          "ext": "webp",
+          "bytes": 10980,
+          "sha256": "468453586e974a3df3878f3204f85fa7ea589e944b290cae0dfd7f27f8c9d5d9",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "school/say",
+      "classId": "school",
+      "cardId": "say",
+      "kanji": "言",
+      "kind": "kanji",
+      "slotId": "flash-say",
+      "folder": "kanji",
+      "imageKey": "kanji/言",
+      "status": "missing",
+      "reason": "no file ./images/kanji/言.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "school/gonben-radical",
+      "classId": "school",
+      "cardId": "gonben-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-gonben-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "school/talk",
+      "classId": "school",
+      "cardId": "talk",
+      "kanji": "話",
+      "kind": "kanji",
+      "slotId": "flash-talk",
+      "folder": "kanji",
+      "imageKey": "kanji/話",
+      "status": "missing",
+      "reason": "no file ./images/kanji/話.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "school/read",
+      "classId": "school",
+      "cardId": "read",
+      "kanji": "読",
+      "kind": "kanji",
+      "slotId": "flash-read",
+      "folder": "kanji",
+      "imageKey": "kanji/読",
+      "status": "missing",
+      "reason": "no file ./images/kanji/読.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "school/write",
+      "classId": "school",
+      "cardId": "write",
+      "kanji": "書",
+      "kind": "kanji",
+      "slotId": "flash-write",
+      "folder": "kanji",
+      "imageKey": "kanji/書",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/書.webp",
+          "ext": "webp",
+          "bytes": 14792,
+          "sha256": "1e3504886b6f42a864030bae8643d33312312de42b5fc6cb07bf01c5104aa9f4",
+          "width": 421,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/color",
+      "classId": "colors",
+      "cardId": "color",
+      "kanji": "色",
+      "kind": "kanji",
+      "slotId": "flash-color",
+      "folder": "kanji",
+      "imageKey": "kanji/色",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/色.webp",
+          "ext": "webp",
+          "bytes": 16278,
+          "sha256": "284621056fe70d5b9a96b702d473a0ac4306c4019ddff3e22b52110df418f077",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/white",
+      "classId": "colors",
+      "cardId": "white",
+      "kanji": "白",
+      "kind": "kanji",
+      "slotId": "flash-white",
+      "folder": "kanji",
+      "imageKey": "kanji/白",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/白.webp",
+          "ext": "webp",
+          "bytes": 9572,
+          "sha256": "91b55007c95e894e764d8c47098477aa967749d82b68073a5569f9b941694a14",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/black",
+      "classId": "colors",
+      "cardId": "black",
+      "kanji": "黒",
+      "kind": "kanji",
+      "slotId": "flash-black",
+      "folder": "kanji",
+      "imageKey": "kanji/黒",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/黒.webp",
+          "ext": "webp",
+          "bytes": 21306,
+          "sha256": "8822c31c9991b55395bbb592278e64e674f76bb06984a977a25e95d596a224c2",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/red",
+      "classId": "colors",
+      "cardId": "red",
+      "kanji": "赤",
+      "kind": "kanji",
+      "slotId": "flash-red",
+      "folder": "kanji",
+      "imageKey": "kanji/赤",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/赤.webp",
+          "ext": "webp",
+          "bytes": 38030,
+          "sha256": "8d4c2b4170f678b3c3ff3a4e2c4b1359c5aa8413376873fd043a92ac8476d6b6",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        },
+        {
+          "variant": 2,
+          "path": "images/kanji/赤 (2).webp",
+          "ext": "webp",
+          "bytes": 23854,
+          "sha256": "78dfbbd8d110155549d04a32a48df54d331aa33e6671a45490a8a9c41f22cda4",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/blue",
+      "classId": "colors",
+      "cardId": "blue",
+      "kanji": "青",
+      "kind": "kanji",
+      "slotId": "flash-blue",
+      "folder": "kanji",
+      "imageKey": "kanji/青",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/青.webp",
+          "ext": "webp",
+          "bytes": 32444,
+          "sha256": "6950d2c99ac67400fb6198e17bc68521f8d755b493d3850c4dd83375657768a9",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/yellow",
+      "classId": "colors",
+      "cardId": "yellow",
+      "kanji": "黄",
+      "kind": "kanji",
+      "slotId": "flash-yellow",
+      "folder": "kanji",
+      "imageKey": "kanji/黄",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/黄.webp",
+          "ext": "webp",
+          "bytes": 34302,
+          "sha256": "503ef7955f40eab6624c1ee73f3e2367d56b6ef53bb7bc18f1635a21093c9d14",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/tea",
+      "classId": "colors",
+      "cardId": "tea",
+      "kanji": "茶",
+      "kind": "kanji",
+      "slotId": "flash-tea",
+      "folder": "kanji",
+      "imageKey": "kanji/茶",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/茶.webp",
+          "ext": "webp",
+          "bytes": 15990,
+          "sha256": "d01d1fa6339fb9a9ef6befee6dfcace93f3860605b6a1a4f9cf4eb7c59c0ff39",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/green",
+      "classId": "colors",
+      "cardId": "green",
+      "kanji": "緑",
+      "kind": "kanji",
+      "slotId": "flash-green",
+      "folder": "kanji",
+      "imageKey": "kanji/緑",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/緑.webp",
+          "ext": "webp",
+          "bytes": 20242,
+          "sha256": "d0d3103b1de32d7de993eb47dfa1b7644fd05402bd2a8cd279f3f363b85cb1f7",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/purple",
+      "classId": "colors",
+      "cardId": "purple",
+      "kanji": "紫",
+      "kind": "kanji",
+      "slotId": "flash-purple",
+      "folder": "kanji",
+      "imageKey": "kanji/紫",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/紫.webp",
+          "ext": "webp",
+          "bytes": 21844,
+          "sha256": "2767d2e48a8aa00e5092a234179a509ac921ed8ed553266e58f10323be5c4c42",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/gray",
+      "classId": "colors",
+      "cardId": "gray",
+      "kanji": "灰色",
+      "kind": "kanji",
+      "slotId": "flash-gray",
+      "folder": "kanji",
+      "imageKey": "kanji/灰色",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/灰色.webp",
+          "ext": "webp",
+          "bytes": 21720,
+          "sha256": "17f4d973c5264999519d1fcbe7328feba628cab2796092511425237cf316f021",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "colors/momoiro",
+      "classId": "colors",
+      "cardId": "momoiro",
+      "kanji": "桃色",
+      "kind": "word",
+      "slotId": "flash-momoiro",
+      "folder": "kanji",
+      "imageKey": "kanji/桃色",
+      "status": "missing",
+      "reason": "no file ./images/kanji/桃色.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "colors/pink",
+      "classId": "colors",
+      "cardId": "pink",
+      "kanji": "ピンク",
+      "kind": "word",
+      "slotId": "flash-pink",
+      "folder": "kanji",
+      "imageKey": "kanji/ピンク",
+      "status": "missing",
+      "reason": "no file ./images/kanji/ピンク.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "colors/orange",
+      "classId": "colors",
+      "cardId": "orange",
+      "kanji": "オレンジ",
+      "kind": "word",
+      "slotId": "flash-orange",
+      "folder": "kanji",
+      "imageKey": "kanji/オレンジ",
+      "status": "missing",
+      "reason": "no file ./images/kanji/オレンジ.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/body",
+      "classId": "body",
+      "cardId": "body",
+      "kanji": "体",
+      "kind": "kanji",
+      "slotId": "flash-body",
+      "folder": "kanji",
+      "imageKey": "kanji/体",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/体.webp",
+          "ext": "webp",
+          "bytes": 14344,
+          "sha256": "a8978050933e2006e13384d6fc91c409590771909c6cf28c48f2c85862e1aa85",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/mouth",
+      "classId": "body",
+      "cardId": "mouth",
+      "kanji": "口",
+      "kind": "kanji",
+      "slotId": "flash-mouth",
+      "folder": "kanji",
+      "imageKey": "kanji/口",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/口.webp",
+          "ext": "webp",
+          "bytes": 12524,
+          "sha256": "38609728d160900e15ab63da933fae12be4e02cfc195760786ea9a1016caf21a",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/eye",
+      "classId": "body",
+      "cardId": "eye",
+      "kanji": "目",
+      "kind": "kanji",
+      "slotId": "flash-eye",
+      "folder": "kanji",
+      "imageKey": "kanji/目",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/目.webp",
+          "ext": "webp",
+          "bytes": 8374,
+          "sha256": "e7b2f49a40269cbb102300c8e704b9fb777abecb1b84ac593dba9f53bbcd4edc",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/look",
+      "classId": "body",
+      "cardId": "look",
+      "kanji": "見",
+      "kind": "kanji",
+      "slotId": "flash-look",
+      "folder": "kanji",
+      "imageKey": "kanji/見",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/見.webp",
+          "ext": "webp",
+          "bytes": 22602,
+          "sha256": "97859cfb0fc2cc34f21a26aebdd967f8f03f8103a549f9ff7425c7ec4820e93f",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/self",
+      "classId": "body",
+      "cardId": "self",
+      "kanji": "自",
+      "kind": "kanji",
+      "slotId": "flash-self",
+      "folder": "kanji",
+      "imageKey": "kanji/自",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/自.webp",
+          "ext": "webp",
+          "bytes": 11500,
+          "sha256": "66efc5aa779e822745dbebdb2b7ff21be8f49b31d6435a988fa2beead3bdb8c7",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/neck",
+      "classId": "body",
+      "cardId": "neck",
+      "kanji": "首",
+      "kind": "kanji",
+      "slotId": "flash-neck",
+      "folder": "kanji",
+      "imageKey": "kanji/首",
+      "status": "missing",
+      "reason": "no file ./images/kanji/首.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/ear",
+      "classId": "body",
+      "cardId": "ear",
+      "kanji": "耳",
+      "kind": "kanji",
+      "slotId": "flash-ear",
+      "folder": "kanji",
+      "imageKey": "kanji/耳",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/耳.webp",
+          "ext": "webp",
+          "bytes": 8086,
+          "sha256": "59334f3d3f6f7ecdfb55d83f340112eb7df071272c835031120194111fb974c0",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/foot",
+      "classId": "body",
+      "cardId": "foot",
+      "kanji": "足",
+      "kind": "kanji",
+      "slotId": "flash-foot",
+      "folder": "kanji",
+      "imageKey": "kanji/足",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/足.webp",
+          "ext": "webp",
+          "bytes": 16244,
+          "sha256": "582ea1151e9fc97cc5b8cb04c549456a9a3090a6da6f30c472a99ff62fd01ff9",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/heart",
+      "classId": "body",
+      "cardId": "heart",
+      "kanji": "心",
+      "kind": "kanji",
+      "slotId": "flash-heart",
+      "folder": "kanji",
+      "imageKey": "kanji/心",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/心.webp",
+          "ext": "webp",
+          "bytes": 20950,
+          "sha256": "8de9ccf43c0f32787bc11dc4005332e217d9b406dd508f2f6f67ccd55397eaff",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/hand",
+      "classId": "body",
+      "cardId": "hand",
+      "kanji": "手",
+      "kind": "kanji",
+      "slotId": "flash-hand",
+      "folder": "kanji",
+      "imageKey": "kanji/手",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/手.webp",
+          "ext": "webp",
+          "bytes": 7502,
+          "sha256": "8d1b57be2b475ca6aac86681cdf99d1fe5afe0424125fdd17b391466763cfb49",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/tehen-radical",
+      "classId": "body",
+      "cardId": "tehen-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-tehen-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "body/hit",
+      "classId": "body",
+      "cardId": "hit",
+      "kanji": "打",
+      "kind": "kanji",
+      "slotId": "flash-hit",
+      "folder": "kanji",
+      "imageKey": "kanji/打",
+      "status": "missing",
+      "reason": "no file ./images/kanji/打.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/hold",
+      "classId": "body",
+      "cardId": "hold",
+      "kanji": "持",
+      "kind": "kanji",
+      "slotId": "flash-hold",
+      "folder": "kanji",
+      "imageKey": "kanji/持",
+      "status": "missing",
+      "reason": "no file ./images/kanji/持.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/niju-ashi-radical",
+      "classId": "body",
+      "cardId": "niju-ashi-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-niju-ashi-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "body/nose",
+      "classId": "body",
+      "cardId": "nose",
+      "kanji": "鼻",
+      "kind": "kanji",
+      "slotId": "flash-nose",
+      "folder": "kanji",
+      "imageKey": "kanji/鼻",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/鼻.webp",
+          "ext": "webp",
+          "bytes": 12684,
+          "sha256": "6a4913ef7d0223cad72880de51317746c2cd51ddb3533dcba9d2fcbe119b2cb5",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "body/head",
+      "classId": "body",
+      "cardId": "head",
+      "kanji": "頭",
+      "kind": "kanji",
+      "slotId": "flash-head",
+      "folder": "kanji",
+      "imageKey": "kanji/頭",
+      "status": "missing",
+      "reason": "no file ./images/kanji/頭.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/face",
+      "classId": "body",
+      "cardId": "face",
+      "kanji": "顔",
+      "kind": "kanji",
+      "slotId": "flash-face",
+      "folder": "kanji",
+      "imageKey": "kanji/顔",
+      "status": "missing",
+      "reason": "no file ./images/kanji/顔.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/hair",
+      "classId": "body",
+      "cardId": "hair",
+      "kanji": "髪",
+      "kind": "kanji",
+      "slotId": "flash-hair",
+      "folder": "kanji",
+      "imageKey": "kanji/髪",
+      "status": "missing",
+      "reason": "no file ./images/kanji/髪.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/tooth",
+      "classId": "body",
+      "cardId": "tooth",
+      "kanji": "歯",
+      "kind": "kanji",
+      "slotId": "flash-tooth",
+      "folder": "kanji",
+      "imageKey": "kanji/歯",
+      "status": "missing",
+      "reason": "no file ./images/kanji/歯.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "body/arm",
+      "classId": "body",
+      "cardId": "arm",
+      "kanji": "腕",
+      "kind": "kanji",
+      "slotId": "flash-arm",
+      "folder": "kanji",
+      "imageKey": "kanji/腕",
+      "status": "missing",
+      "reason": "no file ./images/kanji/腕.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "animals/shellfish",
+      "classId": "animals",
+      "cardId": "shellfish",
+      "kanji": "貝",
+      "kind": "kanji",
+      "slotId": "flash-shellfish",
+      "folder": "kanji",
+      "imageKey": "kanji/貝",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/貝.webp",
+          "ext": "webp",
+          "bytes": 18544,
+          "sha256": "c831d68c5aa6a4ba143554a43ac56d1831e83ac8f3acfdbd93f4625163764a54",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/dog",
+      "classId": "animals",
+      "cardId": "dog",
+      "kanji": "犬",
+      "kind": "kanji",
+      "slotId": "flash-dog",
+      "folder": "kanji",
+      "imageKey": "kanji/犬",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/犬.webp",
+          "ext": "webp",
+          "bytes": 9144,
+          "sha256": "4d22a05bcb8c4f6f78b3fb27c41c762058424fc361047cd583acec671b327321",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/kemonohen-radical",
+      "classId": "animals",
+      "cardId": "kemonohen-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-kemonohen-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "animals/cat",
+      "classId": "animals",
+      "cardId": "cat",
+      "kanji": "猫",
+      "kind": "kanji",
+      "slotId": "flash-cat",
+      "folder": "kanji",
+      "imageKey": "kanji/猫",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/猫.webp",
+          "ext": "webp",
+          "bytes": 17618,
+          "sha256": "9d8692f5726a80db05dd70c86e690ea1db8d029625a5dd6d119535294e4bc827",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/koinu",
+      "classId": "animals",
+      "cardId": "koinu",
+      "kanji": "子犬",
+      "kind": "kanji",
+      "slotId": "flash-koinu",
+      "folder": "kanji",
+      "imageKey": "kanji/子犬",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/子犬.webp",
+          "ext": "webp",
+          "bytes": 10048,
+          "sha256": "49299f7a420d33621764c2f3db76fcef14ec3c53b4a1410ec62c7997ce2d355b",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/koneko",
+      "classId": "animals",
+      "cardId": "koneko",
+      "kanji": "子猫",
+      "kind": "kanji",
+      "slotId": "flash-koneko",
+      "folder": "kanji",
+      "imageKey": "kanji/子猫",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/子猫.webp",
+          "ext": "webp",
+          "bytes": 11504,
+          "sha256": "307843339dce2a8c226e8246428a81046bab13f369fa8f30ad161f8a64c22afc",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/bird",
+      "classId": "animals",
+      "cardId": "bird",
+      "kanji": "鳥",
+      "kind": "kanji",
+      "slotId": "flash-bird",
+      "folder": "kanji",
+      "imageKey": "kanji/鳥",
+      "status": "missing",
+      "reason": "no file ./images/kanji/鳥.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "animals/swan",
+      "classId": "animals",
+      "cardId": "swan",
+      "kanji": "白鳥",
+      "kind": "kanji",
+      "slotId": "flash-swan",
+      "folder": "kanji",
+      "imageKey": "kanji/白鳥",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/白鳥.webp",
+          "ext": "webp",
+          "bytes": 6482,
+          "sha256": "e44c172d9354df07a7633595a973bf1c47150733cc6cc064a51873b60778fe43",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/black-swan",
+      "classId": "animals",
+      "cardId": "black-swan",
+      "kanji": "黒鳥",
+      "kind": "kanji",
+      "slotId": "flash-black-swan",
+      "folder": "kanji",
+      "imageKey": "kanji/黒鳥",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/黒鳥.webp",
+          "ext": "webp",
+          "bytes": 10024,
+          "sha256": "48a20f636d6fe55f764a2e9a2040b1ce91ccd0118518c96ddf1dc7ac263701ed",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/chicken",
+      "classId": "animals",
+      "cardId": "chicken",
+      "kanji": "鶏",
+      "kind": "kanji",
+      "slotId": "flash-chicken",
+      "folder": "kanji",
+      "imageKey": "kanji/鶏",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/鶏.webp",
+          "ext": "webp",
+          "bytes": 25958,
+          "sha256": "bef93c6dd132f46f7e44e336ca142c664d6195f9c14507107e7f63c1569a3ca6",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/fish",
+      "classId": "animals",
+      "cardId": "fish",
+      "kanji": "魚",
+      "kind": "kanji",
+      "slotId": "flash-fish",
+      "folder": "kanji",
+      "imageKey": "kanji/魚",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/魚.webp",
+          "ext": "webp",
+          "bytes": 12800,
+          "sha256": "524907ee5a5509863bbbe73b8e1c2aacc94bddd44f453e691bf6accf4e0f598a",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/horse",
+      "classId": "animals",
+      "cardId": "horse",
+      "kanji": "馬",
+      "kind": "kanji",
+      "slotId": "flash-horse",
+      "folder": "kanji",
+      "imageKey": "kanji/馬",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/馬.webp",
+          "ext": "webp",
+          "bytes": 17218,
+          "sha256": "3a38c5c4a5ceaaa0196dc0475cf1842b7b6f90ab59843243c8fccd4b2af28363",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/cow",
+      "classId": "animals",
+      "cardId": "cow",
+      "kanji": "牛",
+      "kind": "kanji",
+      "slotId": "flash-cow",
+      "folder": "kanji",
+      "imageKey": "kanji/牛",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/牛.webp",
+          "ext": "webp",
+          "bytes": 20852,
+          "sha256": "9175dc901439a32e307db3e8375e5f3f628e9f2e021138233ea6b94f55fb16e7",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/pig",
+      "classId": "animals",
+      "cardId": "pig",
+      "kanji": "豚",
+      "kind": "kanji",
+      "slotId": "flash-pig",
+      "folder": "kanji",
+      "imageKey": "kanji/豚",
+      "status": "missing",
+      "reason": "no file ./images/kanji/豚.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "animals/frog",
+      "classId": "animals",
+      "cardId": "frog",
+      "kanji": "蛙",
+      "kind": "kanji",
+      "slotId": "flash-frog",
+      "folder": "kanji",
+      "imageKey": "kanji/蛙",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/蛙.webp",
+          "ext": "webp",
+          "bytes": 18510,
+          "sha256": "ccacf4a7ebea9ddb140c2ff149d50c709712feead316e86258b652b75c54f23e",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/snake",
+      "classId": "animals",
+      "cardId": "snake",
+      "kanji": "蛇",
+      "kind": "kanji",
+      "slotId": "flash-snake",
+      "folder": "kanji",
+      "imageKey": "kanji/蛇",
+      "status": "missing",
+      "reason": "no file ./images/kanji/蛇.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "animals/octopus",
+      "classId": "animals",
+      "cardId": "octopus",
+      "kanji": "蛸",
+      "kind": "kanji",
+      "slotId": "flash-octopus",
+      "folder": "kanji",
+      "imageKey": "kanji/蛸",
+      "status": "missing",
+      "reason": "no file ./images/kanji/蛸.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "animals/whale",
+      "classId": "animals",
+      "cardId": "whale",
+      "kanji": "鯨",
+      "kind": "kanji",
+      "slotId": "flash-whale",
+      "folder": "kanji",
+      "imageKey": "kanji/鯨",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/鯨.webp",
+          "ext": "webp",
+          "bytes": 35284,
+          "sha256": "de7eec0dfbc87169ba02711e428670678b4bf0387a4cc099f7a5f16926b996ad",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/shark",
+      "classId": "animals",
+      "cardId": "shark",
+      "kanji": "鮫",
+      "kind": "kanji",
+      "slotId": "flash-shark",
+      "folder": "kanji",
+      "imageKey": "kanji/鮫",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/鮫.webp",
+          "ext": "webp",
+          "bytes": 21968,
+          "sha256": "8d2d173009bbc2acf0cc21e3211e48875d456c4017fb7e17059bcec1bc2d6250",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "animals/kou-radical",
+      "classId": "animals",
+      "cardId": "kou-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-kou-radical",
+      "folder": "kanji",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "animals/turtle",
+      "classId": "animals",
+      "cardId": "turtle",
+      "kanji": "亀",
+      "kind": "kanji",
+      "slotId": "flash-turtle",
+      "folder": "kanji",
+      "imageKey": "kanji/亀",
+      "status": "missing",
+      "reason": "no file ./images/kanji/亀.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "rooms/door",
+      "classId": "rooms",
+      "cardId": "door",
+      "kanji": "戸",
+      "kind": "kanji",
+      "slotId": "flash-door",
+      "folder": "kanji",
+      "imageKey": "kanji/戸",
+      "status": "missing",
+      "reason": "no file ./images/kanji/戸.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "rooms/gate",
+      "classId": "rooms",
+      "cardId": "gate",
+      "kanji": "門",
+      "kind": "kanji",
+      "slotId": "flash-gate",
+      "folder": "kanji",
+      "imageKey": "kanji/門",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/門.webp",
+          "ext": "webp",
+          "bytes": 17988,
+          "sha256": "7e7a303fea0a3cc154532b44a712f8d102fe69ed47dd925796aa58ca3a497c7f",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "rooms/open",
+      "classId": "rooms",
+      "cardId": "open",
+      "kanji": "開",
+      "kind": "kanji",
+      "slotId": "flash-open",
+      "folder": "kanji",
+      "imageKey": "kanji/開",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/開.webp",
+          "ext": "webp",
+          "bytes": 19532,
+          "sha256": "92d37c0666c4e327ec04d374663c92f538368a0ef9f621f85b4d26b5a349f943",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        },
+        {
+          "variant": 2,
+          "path": "images/kanji/開 (2).webp",
+          "ext": "webp",
+          "bytes": 18698,
+          "sha256": "3ab2d613795255e164bfbcf83011e9e6422bc65aff9492ab65cff969332f314b",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        },
+        {
+          "variant": 3,
+          "path": "images/kanji/開 (3).webp",
+          "ext": "webp",
+          "bytes": 18886,
+          "sha256": "2459ee7bc4f7d4c5f2887bc610a3ba5af3ebf7342f4b5649a3268037e37ff05b",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "rooms/close",
+      "classId": "rooms",
+      "cardId": "close",
+      "kanji": "閉",
+      "kind": "kanji",
+      "slotId": "flash-close",
+      "folder": "kanji",
+      "imageKey": "kanji/閉",
+      "status": "missing",
+      "reason": "no file ./images/kanji/閉.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "rooms/window",
+      "classId": "rooms",
+      "cardId": "window",
+      "kanji": "窓",
+      "kind": "kanji",
+      "slotId": "flash-window",
+      "folder": "kanji",
+      "imageKey": "kanji/窓",
+      "status": "missing",
+      "reason": "no file ./images/kanji/窓.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "rooms/floor",
+      "classId": "rooms",
+      "cardId": "floor",
+      "kanji": "床",
+      "kind": "kanji",
+      "slotId": "flash-floor",
+      "folder": "kanji",
+      "imageKey": "kanji/床",
+      "status": "missing",
+      "reason": "no file ./images/kanji/床.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "rooms/ceiling",
+      "classId": "rooms",
+      "cardId": "ceiling",
+      "kanji": "天井",
+      "kind": "kanji",
+      "slotId": "flash-ceiling",
+      "folder": "kanji",
+      "imageKey": "kanji/天井",
+      "status": "missing",
+      "reason": "no file ./images/kanji/天井.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "rooms/shelf",
+      "classId": "rooms",
+      "cardId": "shelf",
+      "kanji": "棚",
+      "kind": "kanji",
+      "slotId": "flash-shelf",
+      "folder": "kanji",
+      "imageKey": "kanji/棚",
+      "status": "missing",
+      "reason": "no file ./images/kanji/棚.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "rooms/bookshelf",
+      "classId": "rooms",
+      "cardId": "bookshelf",
+      "kanji": "本棚",
+      "kind": "kanji",
+      "slotId": "flash-bookshelf",
+      "folder": "kanji",
+      "imageKey": "kanji/本棚",
+      "status": "missing",
+      "reason": "no file ./images/kanji/本棚.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/up",
+      "classId": "places",
+      "cardId": "up",
+      "kanji": "上",
+      "kind": "kanji",
+      "slotId": "flash-up",
+      "folder": "kanji",
+      "imageKey": "kanji/上",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/上.webp",
+          "ext": "webp",
+          "bytes": 15812,
+          "sha256": "c07959283a73a41b1fc2ed0587ee5c84a72beeec4547c179279037db5985dc37",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "places/down",
+      "classId": "places",
+      "cardId": "down",
+      "kanji": "下",
+      "kind": "kanji",
+      "slotId": "flash-down",
+      "folder": "kanji",
+      "imageKey": "kanji/下",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/下.webp",
+          "ext": "webp",
+          "bytes": 11000,
+          "sha256": "7486c24e08c67e46e1d5c2de264cf81e0453cf10fe7891ba6f3633f27f5efb70",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "places/left",
+      "classId": "places",
+      "cardId": "left",
+      "kanji": "左",
+      "kind": "kanji",
+      "slotId": "flash-left",
+      "folder": "kanji",
+      "imageKey": "kanji/左",
+      "status": "missing",
+      "reason": "no file ./images/kanji/左.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/right",
+      "classId": "places",
+      "cardId": "right",
+      "kanji": "右",
+      "kind": "kanji",
+      "slotId": "flash-right",
+      "folder": "kanji",
+      "imageKey": "kanji/右",
+      "status": "missing",
+      "reason": "no file ./images/kanji/右.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/middle",
+      "classId": "places",
+      "cardId": "middle",
+      "kanji": "中",
+      "kind": "kanji",
+      "slotId": "flash-middle",
+      "folder": "kanji",
+      "imageKey": "kanji/中",
+      "status": "missing",
+      "reason": "no file ./images/kanji/中.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/east",
+      "classId": "places",
+      "cardId": "east",
+      "kanji": "東",
+      "kind": "kanji",
+      "slotId": "flash-east",
+      "folder": "kanji",
+      "imageKey": "kanji/東",
+      "status": "missing",
+      "reason": "no file ./images/kanji/東.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/west",
+      "classId": "places",
+      "cardId": "west",
+      "kanji": "西",
+      "kind": "kanji",
+      "slotId": "flash-west",
+      "folder": "kanji",
+      "imageKey": "kanji/西",
+      "status": "missing",
+      "reason": "no file ./images/kanji/西.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/south",
+      "classId": "places",
+      "cardId": "south",
+      "kanji": "南",
+      "kind": "kanji",
+      "slotId": "flash-south",
+      "folder": "kanji",
+      "imageKey": "kanji/南",
+      "status": "missing",
+      "reason": "no file ./images/kanji/南.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/north",
+      "classId": "places",
+      "cardId": "north",
+      "kanji": "北",
+      "kind": "kanji",
+      "slotId": "flash-north",
+      "folder": "kanji",
+      "imageKey": "kanji/北",
+      "status": "missing",
+      "reason": "no file ./images/kanji/北.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/house",
+      "classId": "places",
+      "cardId": "house",
+      "kanji": "家",
+      "kind": "kanji",
+      "slotId": "flash-house",
+      "folder": "kanji",
+      "imageKey": "kanji/家",
+      "status": "missing",
+      "reason": "no file ./images/kanji/家.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/shop",
+      "classId": "places",
+      "cardId": "shop",
+      "kanji": "店",
+      "kind": "kanji",
+      "slotId": "flash-shop",
+      "folder": "kanji",
+      "imageKey": "kanji/店",
+      "status": "missing",
+      "reason": "no file ./images/kanji/店.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "places/station",
+      "classId": "places",
+      "cardId": "station",
+      "kanji": "駅",
+      "kind": "kanji",
+      "slotId": "flash-station",
+      "folder": "kanji",
+      "imageKey": "kanji/駅",
+      "status": "missing",
+      "reason": "no file ./images/kanji/駅.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/rice-grain",
+      "classId": "food-drink",
+      "cardId": "rice-grain",
+      "kanji": "米",
+      "kind": "kanji",
+      "slotId": "flash-rice-grain",
+      "folder": "food",
+      "imageKey": "food/米",
+      "status": "missing",
+      "reason": "no file ./images/food/米.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/cooked-rice",
+      "classId": "food-drink",
+      "cardId": "cooked-rice",
+      "kanji": "飯",
+      "kind": "kanji",
+      "slotId": "flash-cooked-rice",
+      "folder": "food",
+      "imageKey": "food/飯",
+      "status": "missing",
+      "reason": "no file ./images/food/飯.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/shoku-radical",
+      "classId": "food-drink",
+      "cardId": "shoku-radical",
+      "kanji": null,
+      "kind": "radical",
+      "slotId": "flash-shoku-radical",
+      "folder": "food",
+      "imageKey": null,
+      "status": "unavailable",
+      "reason": "no-kanji-field",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/eat",
+      "classId": "food-drink",
+      "cardId": "eat",
+      "kanji": "食",
+      "kind": "kanji",
+      "slotId": "flash-eat",
+      "folder": "food",
+      "imageKey": "food/食",
+      "status": "missing",
+      "reason": "no file ./images/food/食.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/drink",
+      "classId": "food-drink",
+      "cardId": "drink",
+      "kanji": "飲",
+      "kind": "kanji",
+      "slotId": "flash-drink",
+      "folder": "food",
+      "imageKey": "food/飲",
+      "status": "missing",
+      "reason": "no file ./images/food/飲.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/tea",
+      "classId": "food-drink",
+      "cardId": "tea",
+      "kanji": "茶",
+      "kind": "kanji",
+      "slotId": "flash-tea",
+      "folder": "food",
+      "imageKey": "food/茶",
+      "status": "missing",
+      "reason": "no file ./images/food/茶.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/alcohol",
+      "classId": "food-drink",
+      "cardId": "alcohol",
+      "kanji": "酒",
+      "kind": "kanji",
+      "slotId": "flash-alcohol",
+      "folder": "food",
+      "imageKey": "food/酒",
+      "status": "missing",
+      "reason": "no file ./images/food/酒.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/meat",
+      "classId": "food-drink",
+      "cardId": "meat",
+      "kanji": "肉",
+      "kind": "kanji",
+      "slotId": "flash-meat",
+      "folder": "food",
+      "imageKey": "food/肉",
+      "status": "missing",
+      "reason": "no file ./images/food/肉.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/egg",
+      "classId": "food-drink",
+      "cardId": "egg",
+      "kanji": "卵",
+      "kind": "kanji",
+      "slotId": "flash-egg",
+      "folder": "food",
+      "imageKey": "food/卵",
+      "status": "missing",
+      "reason": "no file ./images/food/卵.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "food-drink/gohan",
+      "classId": "food-drink",
+      "cardId": "gohan",
+      "kanji": "御飯",
+      "kind": "kanji",
+      "slotId": "flash-gohan",
+      "folder": "food",
+      "imageKey": "food/御飯",
+      "status": "missing",
+      "reason": "no file ./images/food/御飯.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "animals-2/wolf",
+      "classId": "animals-2",
+      "cardId": "wolf",
+      "kanji": "狼",
+      "kind": "kanji",
+      "slotId": "flash-wolf",
+      "folder": "kanji",
+      "imageKey": "kanji/狼",
+      "status": "missing",
+      "reason": "no file ./images/kanji/狼.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "animals-2/fox",
+      "classId": "animals-2",
+      "cardId": "fox",
+      "kanji": "狐",
+      "kind": "kanji",
+      "slotId": "flash-fox",
+      "folder": "kanji",
+      "imageKey": "kanji/狐",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/狐.webp",
+          "ext": "webp",
+          "bytes": 16144,
+          "sha256": "68f9fa11954e82dc80da00f1a699250eebf869f31612dd892666261f58554f87",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "verbs/go",
+      "classId": "verbs",
+      "cardId": "go",
+      "kanji": "行",
+      "kind": "kanji",
+      "slotId": "flash-go",
+      "folder": "kanji",
+      "imageKey": "kanji/行",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/行.webp",
+          "ext": "webp",
+          "bytes": 13566,
+          "sha256": "461af33aa903fcdf5f22b2e927dcbb70d3528dac1967c31a8e47c27494712fe3",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "verbs/stop",
+      "classId": "verbs",
+      "cardId": "stop",
+      "kanji": "止",
+      "kind": "kanji",
+      "slotId": "flash-stop",
+      "folder": "kanji",
+      "imageKey": "kanji/止",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/止.webp",
+          "ext": "webp",
+          "bytes": 17750,
+          "sha256": "4db6da77f6cc83b5ebe9ced3fd0b411c87b18ec0d728a1bb8129f99c19d45fab",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "verbs/come",
+      "classId": "verbs",
+      "cardId": "come",
+      "kanji": "来",
+      "kind": "kanji",
+      "slotId": "flash-come",
+      "folder": "kanji",
+      "imageKey": "kanji/来",
+      "status": "missing",
+      "reason": "no file ./images/kanji/来.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/exit",
+      "classId": "verbs",
+      "cardId": "exit",
+      "kanji": "出",
+      "kind": "kanji",
+      "slotId": "flash-exit",
+      "folder": "kanji",
+      "imageKey": "kanji/出",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/出.webp",
+          "ext": "webp",
+          "bytes": 11480,
+          "sha256": "f3cbe0919dfba3946afb61ed8ca6f7093134b72df299683e0132c356f5fce5e6",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "verbs/stand",
+      "classId": "verbs",
+      "cardId": "stand",
+      "kanji": "立",
+      "kind": "kanji",
+      "slotId": "flash-stand",
+      "folder": "kanji",
+      "imageKey": "kanji/立",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/立.webp",
+          "ext": "webp",
+          "bytes": 8188,
+          "sha256": "4d1c012092b72b189a363fa3fe197b1a94a903e8fcf62a67c8c19751d3dfd6fe",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "verbs/hear",
+      "classId": "verbs",
+      "cardId": "hear",
+      "kanji": "聞",
+      "kind": "kanji",
+      "slotId": "flash-hear",
+      "folder": "kanji",
+      "imageKey": "kanji/聞",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/聞.webp",
+          "ext": "webp",
+          "bytes": 20384,
+          "sha256": "7c91b23fe7ece9025738f3b4a06fafdff7a797b92dca5ababfb542750b4569c6",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "verbs/buy",
+      "classId": "verbs",
+      "cardId": "buy",
+      "kanji": "買",
+      "kind": "kanji",
+      "slotId": "flash-buy",
+      "folder": "kanji",
+      "imageKey": "kanji/買",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/kanji/買.webp",
+          "ext": "webp",
+          "bytes": 18462,
+          "sha256": "134eb949ee770fe576920da1d56de2d682b5925d81f451d5f3947dbabab97cac",
+          "width": 500,
+          "height": 500,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "verbs/sell",
+      "classId": "verbs",
+      "cardId": "sell",
+      "kanji": "売",
+      "kind": "kanji",
+      "slotId": "flash-sell",
+      "folder": "kanji",
+      "imageKey": "kanji/売",
+      "status": "missing",
+      "reason": "no file ./images/kanji/売.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/know",
+      "classId": "verbs",
+      "cardId": "know",
+      "kanji": "知",
+      "kind": "kanji",
+      "slotId": "flash-know",
+      "folder": "kanji",
+      "imageKey": "kanji/知",
+      "status": "missing",
+      "reason": "no file ./images/kanji/知.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/think",
+      "classId": "verbs",
+      "cardId": "think",
+      "kanji": "思",
+      "kind": "kanji",
+      "slotId": "flash-think",
+      "folder": "kanji",
+      "imageKey": "kanji/思",
+      "status": "missing",
+      "reason": "no file ./images/kanji/思.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/wait",
+      "classId": "verbs",
+      "cardId": "wait",
+      "kanji": "待",
+      "kind": "kanji",
+      "slotId": "flash-wait",
+      "folder": "kanji",
+      "imageKey": "kanji/待",
+      "status": "missing",
+      "reason": "no file ./images/kanji/待.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/return",
+      "classId": "verbs",
+      "cardId": "return",
+      "kanji": "帰",
+      "kind": "kanji",
+      "slotId": "flash-return",
+      "folder": "kanji",
+      "imageKey": "kanji/帰",
+      "status": "missing",
+      "reason": "no file ./images/kanji/帰.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/cut",
+      "classId": "verbs",
+      "cardId": "cut",
+      "kanji": "切",
+      "kind": "kanji",
+      "slotId": "flash-cut",
+      "folder": "kanji",
+      "imageKey": "kanji/切",
+      "status": "missing",
+      "reason": "no file ./images/kanji/切.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/run",
+      "classId": "verbs",
+      "cardId": "run",
+      "kanji": "走",
+      "kind": "kanji",
+      "slotId": "flash-run",
+      "folder": "kanji",
+      "imageKey": "kanji/走",
+      "status": "missing",
+      "reason": "no file ./images/kanji/走.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/work",
+      "classId": "verbs",
+      "cardId": "work",
+      "kanji": "働",
+      "kind": "kanji",
+      "slotId": "flash-work",
+      "folder": "kanji",
+      "imageKey": "kanji/働",
+      "status": "missing",
+      "reason": "no file ./images/kanji/働.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "verbs/busy",
+      "classId": "verbs",
+      "cardId": "busy",
+      "kanji": "忙",
+      "kind": "kanji",
+      "slotId": "flash-busy",
+      "folder": "kanji",
+      "imageKey": "kanji/忙",
+      "status": "missing",
+      "reason": "no file ./images/kanji/忙.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/tall",
+      "classId": "adjectives",
+      "cardId": "tall",
+      "kanji": "高",
+      "kind": "kanji",
+      "slotId": "flash-tall",
+      "folder": "kanji",
+      "imageKey": "kanji/高",
+      "status": "missing",
+      "reason": "no file ./images/kanji/高.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/cheap",
+      "classId": "adjectives",
+      "cardId": "cheap",
+      "kanji": "安",
+      "kind": "kanji",
+      "slotId": "flash-cheap",
+      "folder": "kanji",
+      "imageKey": "kanji/安",
+      "status": "missing",
+      "reason": "no file ./images/kanji/安.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/many",
+      "classId": "adjectives",
+      "cardId": "many",
+      "kanji": "多",
+      "kind": "kanji",
+      "slotId": "flash-many",
+      "folder": "kanji",
+      "imageKey": "kanji/多",
+      "status": "missing",
+      "reason": "no file ./images/kanji/多.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/few",
+      "classId": "adjectives",
+      "cardId": "few",
+      "kanji": "少",
+      "kind": "kanji",
+      "slotId": "flash-few",
+      "folder": "kanji",
+      "imageKey": "kanji/少",
+      "status": "missing",
+      "reason": "no file ./images/kanji/少.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/old",
+      "classId": "adjectives",
+      "cardId": "old",
+      "kanji": "古",
+      "kind": "kanji",
+      "slotId": "flash-old",
+      "folder": "kanji",
+      "imageKey": "kanji/古",
+      "status": "missing",
+      "reason": "no file ./images/kanji/古.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/new",
+      "classId": "adjectives",
+      "cardId": "new",
+      "kanji": "新",
+      "kind": "kanji",
+      "slotId": "flash-new",
+      "folder": "kanji",
+      "imageKey": "kanji/新",
+      "status": "missing",
+      "reason": "no file ./images/kanji/新.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/long",
+      "classId": "adjectives",
+      "cardId": "long",
+      "kanji": "長",
+      "kind": "kanji",
+      "slotId": "flash-long",
+      "folder": "kanji",
+      "imageKey": "kanji/長",
+      "status": "missing",
+      "reason": "no file ./images/kanji/長.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/short",
+      "classId": "adjectives",
+      "cardId": "short",
+      "kanji": "短",
+      "kind": "kanji",
+      "slotId": "flash-short",
+      "folder": "kanji",
+      "imageKey": "kanji/短",
+      "status": "missing",
+      "reason": "no file ./images/kanji/短.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/strong",
+      "classId": "adjectives",
+      "cardId": "strong",
+      "kanji": "強",
+      "kind": "kanji",
+      "slotId": "flash-strong",
+      "folder": "kanji",
+      "imageKey": "kanji/強",
+      "status": "missing",
+      "reason": "no file ./images/kanji/強.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "adjectives/weak",
+      "classId": "adjectives",
+      "cardId": "weak",
+      "kanji": "弱",
+      "kind": "kanji",
+      "slotId": "flash-weak",
+      "folder": "kanji",
+      "imageKey": "kanji/弱",
+      "status": "missing",
+      "reason": "no file ./images/kanji/弱.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "onomatopoeia/nikoniko",
+      "classId": "onomatopoeia",
+      "cardId": "nikoniko",
+      "kanji": "にこにこ",
+      "kind": "kanji",
+      "slotId": "flash-nikoniko",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/にこにこ",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/にこにこ.webp",
+          "ext": "webp",
+          "bytes": 7998,
+          "sha256": "bb6a9c59585f397e2cd8b2e1c06c9558cc0c2e22f6687f120cfd44e9a77b5367",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/poyopoyo",
+      "classId": "onomatopoeia",
+      "cardId": "poyopoyo",
+      "kanji": "ぽよぽよ",
+      "kind": "kanji",
+      "slotId": "flash-poyopoyo",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/ぽよぽよ",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/ぽよぽよ.webp",
+          "ext": "webp",
+          "bytes": 11496,
+          "sha256": "6eb83085e79fb22c2fcc08a24a498a1d907a25a49f61cd99c6e5e02d2e7747e1",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/chikuchiku",
+      "classId": "onomatopoeia",
+      "cardId": "chikuchiku",
+      "kanji": "ちくちく",
+      "kind": "kanji",
+      "slotId": "flash-chikuchiku",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/ちくちく",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/ちくちく.webp",
+          "ext": "webp",
+          "bytes": 15816,
+          "sha256": "1c41d5264d33e1997091cfa9930609a083701fad68677a94470af9751890c5c8",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/funyafunya",
+      "classId": "onomatopoeia",
+      "cardId": "funyafunya",
+      "kanji": "ふにゃふにゃ",
+      "kind": "kanji",
+      "slotId": "flash-funyafunya",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/ふにゃふにゃ",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/ふにゃふにゃ.webp",
+          "ext": "webp",
+          "bytes": 12026,
+          "sha256": "1e94c391c8691d7dcfb3998e62f43880b793c686eb3f5df2b57bfecc0a0b9564",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/kusukusu",
+      "classId": "onomatopoeia",
+      "cardId": "kusukusu",
+      "kanji": "くすくす",
+      "kind": "kanji",
+      "slotId": "flash-kusukusu",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/くすくす",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/くすくす.webp",
+          "ext": "webp",
+          "bytes": 9098,
+          "sha256": "18f717eb952a63fd01f13c34d8e9f466eeca377c6b524ebdc96fc46b1443fdd6",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/nyanya",
+      "classId": "onomatopoeia",
+      "cardId": "nyanya",
+      "kanji": "にゃーにゃー",
+      "kind": "kanji",
+      "slotId": "flash-nyanya",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/にゃーにゃー",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/にゃーにゃー.webp",
+          "ext": "webp",
+          "bytes": 19334,
+          "sha256": "6f50eaf4bcceb5ec51f0b868ebbff05fc8e4efdb14088c1f364be2df25409304",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/wanwan",
+      "classId": "onomatopoeia",
+      "cardId": "wanwan",
+      "kanji": "ワンワン",
+      "kind": "kanji",
+      "slotId": "flash-wanwan",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/ワンワン",
+      "status": "missing",
+      "reason": "no file ./images/vocabulary/ワンワン.{webp,png,jpg,jpeg}",
+      "images": []
+    },
+    {
+      "cardKey": "onomatopoeia/pitari",
+      "classId": "onomatopoeia",
+      "cardId": "pitari",
+      "kanji": "ぴたり",
+      "kind": "kanji",
+      "slotId": "flash-pitari",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/ぴたり",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/ぴたり.webp",
+          "ext": "webp",
+          "bytes": 11510,
+          "sha256": "774419cc00bf379aff46bd420998885148b9579648c4e4b91073dfce50b85b98",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/pyonpyon",
+      "classId": "onomatopoeia",
+      "cardId": "pyonpyon",
+      "kanji": "ぴょんぴょん",
+      "kind": "kanji",
+      "slotId": "flash-pyonpyon",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/ぴょんぴょん",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/ぴょんぴょん.webp",
+          "ext": "webp",
+          "bytes": 10916,
+          "sha256": "0d2f4935673a44ae0c961482c644b9e021ba694542c2f648f2ac98ad04040734",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/potapota",
+      "classId": "onomatopoeia",
+      "cardId": "potapota",
+      "kanji": "ぽたぽた",
+      "kind": "kanji",
+      "slotId": "flash-potapota",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/ぽたぽた",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/ぽたぽた.webp",
+          "ext": "webp",
+          "bytes": 10084,
+          "sha256": "cbf33f9716679962285c62caa32a3f2ff2714cb8c1619ba9f08e886a3e786aab",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    },
+    {
+      "cardKey": "onomatopoeia/korokoro",
+      "classId": "onomatopoeia",
+      "cardId": "korokoro",
+      "kanji": "コロコロ",
+      "kind": "kanji",
+      "slotId": "flash-korokoro",
+      "folder": "vocabulary",
+      "imageKey": "vocabulary/コロコロ",
+      "status": "found",
+      "reason": null,
+      "images": [
+        {
+          "variant": 1,
+          "path": "images/vocabulary/コロコロ.webp",
+          "ext": "webp",
+          "bytes": 6828,
+          "sha256": "151523775629e556ac11bff65b16fbb3ba663d0f688e34db5bdfd9282e5d99f5",
+          "width": 600,
+          "height": 600,
+          "format": "webp"
+        }
+      ]
+    }
+  ]
+}

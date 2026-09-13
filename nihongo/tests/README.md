@@ -1,7 +1,8 @@
 # Nihongo characterization harness (Phase 0 safety net)
 
-The app has no automated tests. This harness lets us **prove** that a refactor
-did not change what the user sees, before/after any structural change.
+The app has characterization and interaction tests. This harness checks that
+a refactor preserves the captured content and structure; interaction tests
+cover navigation, keyboard handling, audio cleanup and review scheduling.
 
 ## What's here
 
@@ -73,3 +74,57 @@ corrupts your saved progress.
 not `window.APP` — `APP` is a top-level `const`, which lives in the global
 lexical scope and is *not* a property of `window` (only `var`/function
 declarations attach to `window`).
+
+## Flashcard study interaction
+
+`npm run test:study` exercises the actual app and vendored FSRS scheduler in a
+fresh browser profile. It covers recall/reveal/rating, finite rounds, scheduling,
+undo, save failures, pause/resume, existing history, automatic due updates,
+keyboard cleanup, phone/tablet layouts, and enlarged text. It does not access
+personal study progress.
+
+Set `BROWSER_CHANNEL=msedge` (or another installed Playwright channel) to use a
+system browser. Set `STUDY_SCREENSHOTS=1` to save visual checks to a temporary
+directory printed by the test. The general interaction suite also supports
+`BROWSER_CHANNEL`.
+
+The September 11, 2026 baseline update adds only the intentional **Study cards**
+button to the card/list browse snapshots. All other captured content is preserved.
+
+## Nihongo Reader extension tests (reader-extension/)
+
+The extension has its own harness, run from `nihongo/`:
+
+```bash
+npm run test:reader        # node:test units (incl. image text-filter heuristic, provider parsers, Cloud TTS request + offscreen playback) + DOM extraction + IndexedDB repository + automatic library sync (headless shell)
+npm run build:reader       # esbuild -> reader-extension/dist/ (git-ignored)
+npm run build:library         # data.js + images/ -> reader-library/ (committed, served by the site) + fixtures/sample-library.zip
+npm run test:reader:e2e    # tokenizer + CSP, panel + bar flows, and delayed-response/paste-focus regressions
+```
+
+`tests/bar.e2e.mjs` exercises the content script outside an extension: it serves
+`dist/` plus `fixtures/dom/nintendo-like.html`, installs a `chrome.*` stub whose
+`runtime.sendMessage` answers with an in-page copy of the analysis worker, then
+selects text, checks the FAB position, clicks it and asserts the bar. The
+shadow root is closed, so the test reaches in through `window.__nihongoReaderBar`.
+The real service-worker → offscreen-document chain is a manual owner check.
+
+`tests/async-ui.e2e.mjs` controls reply ordering and save failures to exercise
+selection replacement, closing during analysis, stale kanji lookups, save
+retries, shared settings and paste-box focus. These use a Chrome API stub;
+they do not replace the real-extension check. `tests/unit/offscreen.test.mjs`
+tests the offscreen host's idle release, request timeout and worker recovery
+with a controlled clock. The repository tests include concurrent first use
+before installation and session identities exist.
+
+`test:reader:e2e` is the one place this repo departs from `chromium.launch()`:
+an MV3 extension can only run in a persistent context
+(`chromium.launchPersistentContext(dir, { args: [--load-extension=...] })`)
+and the headless shell cannot load extensions at all. The script first tries
+Playwright full Chromium and system Chrome; Google Chrome 137+ ignores
+`--load-extension`, and on this workstation Chrome for Testing fails to start
+with a Windows side-by-side error, so the script falls back to serving `dist/`
+over 127.0.0.1 with the MV3 CSP header in the headless shell. The fallback
+proves the worker, gzip inflate, tokenizer, offsets and CSP compliance, and
+prints "NOT VERIFIED" for the chrome-extension:// load, which is then a manual
+step: chrome://extensions -> Load unpacked -> reader-extension/dist.

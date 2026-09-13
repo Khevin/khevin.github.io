@@ -1,0 +1,58 @@
+:root { color-scheme: light dark; --ink: #1a140e; --paper: #f6f1e8; --muted: #6b6259; --line: rgba(0,0,0,.14); --accent: #a85f24; }
+@media (prefers-color-scheme: dark) { :root { --ink: #f1eadf; --paper: #1d1813; --muted: #a79d92; --line: rgba(255,255,255,.16); } }
+* { box-sizing: border-box; }
+body { margin: 0; width: 300px; padding: 12px 14px 10px; background: var(--paper); color: var(--ink); font: 13px/1.45 Georgia, serif; }
+header { display: flex; align-items: center; justify-content: space-between; }
+h1 { margin: 0; font: 700 15px 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif; }
+.brand { display: flex; align-items: baseline; gap: 6px; }
+.version { color: var(--muted); font: 11px ui-monospace, monospace; }
+.hint { margin: 6px 0 10px; color: var(--muted); font-size: 12px; }
+.row { display: flex; gap: 8px; }
+.btn { flex: 1; border: 1px solid var(--line); background: transparent; color: inherit; border-radius: 8px; padding: 6px 8px; font: inherit; cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn[disabled] { opacity: .5; cursor: default; }
+.site { display: block; margin: 10px 0 4px; font-size: 12px; color: var(--muted); }
+
+
+/* ── settings: one group per subject, one label per control ─────────────────
+   Sections give the categories an edge (the flat two-column grid gave them
+   none), and every control is named by a real <label for> above it, in the
+   reader's own lowercase idiom rather than the app's Japanese section heads. */
+.sec { border-top: 1px solid var(--line); }
+.sec:first-of-type { margin-top: 8px; }
+.sec[open] { padding-bottom: 6px; }
+.sec-head { cursor: pointer; padding: 7px 0; font: italic 12px/1.2 Georgia, serif; letter-spacing: .03em; color: var(--muted); }
+.sec[open] .sec-head { color: var(--ink); }
+.sec-head::marker { color: var(--line); font-size: 10px; }
+.field { display: grid; gap: 3px; margin-bottom: 8px; }
+.field:last-child { margin-bottom: 2px; }
+.lbl { font-size: 12px; color: var(--ink); }
+.note { margin: 1px 0 0; font-size: 11px; line-height: 1.35; color: var(--muted); }
+.control { width: 100%; font: inherit; font-size: 12px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: inherit; }
+.control:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.toggles { display: flex; gap: 12px; font-size: 12px; }
+.toggles label { display: inline-flex; align-items: center; gap: 4px; }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; width: max-content; }
+.seg button { border: 0; background: transparent; color: inherit; padding: 4px 12px; font: inherit; font-size: 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.kbd { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); }
+.rate { display: flex; align-items: center; gap: 6px; }
+.rate input { flex: 1; accent-color: var(--accent); }
+.rate output { font-variant-numeric: tabular-nums; width: 2.6em; font-size: 12px; }
+.row.tight { display: flex; gap: 6px; margin-top: 4px; }
+/* 24 px minimum pointer target (Universal Design 7c) */
+.btn.mini { flex: none; min-height: 24px; padding: 3px 10px; font-size: 11px; }
+
+.lib { margin: 10px 0 0; font-size: 11px; color: var(--muted); }
+#usage { margin-top: 8px; }
+#usage.over { color: #b4432a; }
+.switch { position: relative; width: 38px; height: 22px; display: inline-block; }
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.switch .track { position: absolute; inset: 0; border-radius: 11px; background: var(--line); transition: background .15s; }
+.switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: transform .15s; }
+.switch input:checked + .track { background: #6f9c5b; }
+.switch input:checked + .track::after { transform: translateX(16px); }
+.switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (prefers-reduced-motion: reduce) { .switch .track, .switch .track::after { transition: none; } }

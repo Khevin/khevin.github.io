@@ -1,0 +1,96 @@
+/* Nihongo Reader — Sentence Structure diagram styles, ported from nihongo/app.css
+   (.ss-page tokens 14279-14307; shapes/row/legend 14832-14990) and scaled by --chev / --blk-h.
+   Shared by the side panel (linked) and the in-page bar (embedded in its shadow root). */
+
+/* ── page-local tokens (verbatim from app.css) ─────────────────────────── */
+:host, .ss-page {
+  --block-noun: #d4884a; --block-noun-dk: #a85f24;
+  --block-verb: #6f9c5b; --block-verb-dk: #4a7138;
+  --block-part: #4f9aa8; --block-part-dk: #2f6e7a;
+  --block-stop: #8d6c9c; --block-stop-dk: #5e4470;
+  --block-other: #8a8177; --block-other-dk: #5e574f;
+  --pc-wa: #8a2538; --pc-ga: #c97a2c; --pc-o: #5a2e8a; --pc-ni: #3a7a4a; --pc-de: #2e7a3f; --pc-e: #2a5b94;
+  --pc-no: #c43a4a; --pc-to: #2a5b94; --pc-mo: #6a3a92; --pc-kara: #a04a8a; --pc-made: #3a7a8a; --pc-ya: #8d6630;
+  --chev: 18px; --blk-h: 36px; --blk-font: 15px;
+}
+.ss-page { padding: 10px 12px 24px; }
+@media (min-width: 480px) { :host, .ss-page { --chev: 24px; --blk-h: 48px; --blk-font: 17px; } }
+
+/* ── built sentence (app.css:14890-14939) ──────────────────────────────── */
+.ss-sentence-build { background: linear-gradient(180deg, #2e261e, #1a140e); border-radius: 12px; padding: 16px 12px; position: relative; overflow: hidden; margin-top: 8px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 8px 30px rgba(58,40,24,0.30); }
+.ss-sentence-build::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 12% 20%, rgba(212,136,74,0.06), transparent 40%), radial-gradient(circle at 88% 80%, rgba(143,108,156,0.05), transparent 40%); pointer-events: none; }
+.ss-sentence-build > * { position: relative; z-index: 1; }
+.ss-sentence-jp-text { font-family: var(--sans-jp); font-weight: 700; font-size: clamp(14px, 4vw, 20px); color: #fff; text-align: center; line-height: 1.25; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+.ss-sentence-jp-text .ss-w-noun { color: var(--block-noun); }
+.ss-sentence-jp-text .ss-w-verb { color: var(--block-verb); }
+.ss-sentence-jp-text .ss-w-part { color: var(--block-part); }
+.ss-sentence-jp-text .ss-w-stop { color: var(--block-stop); }
+.ss-sentence-jp-text .ss-w-other { color: rgba(255,255,255,.7); }
+.ss-sentence-jp-text .ss-w-h-wa { color: #c96a7c; }   /* lightened for the dark ground */
+.ss-sentence-jp-text .ss-w-h-ga { color: var(--pc-ga); }
+.ss-sentence-jp-text .ss-w-h-o { color: #b287d6; }
+.ss-sentence-jp-text .ss-w-h-ni { color: #74b187; }
+.ss-sentence-jp-text .ss-w-h-de { color: #6fb27f; }
+.ss-sentence-jp-text .ss-w-h-e, .ss-sentence-jp-text .ss-w-h-to { color: #6a9bce; }
+.ss-sentence-jp-text .ss-w-h-no { color: #e06a78; }
+.ss-sentence-jp-text .ss-w-h-mo { color: #a87fc4; }
+.ss-sentence-jp-text .ss-w-h-kara { color: #d07fbd; }
+.ss-sentence-jp-text .ss-w-h-made { color: #6fb3c2; }
+.ss-sentence-jp-text .ss-w-h-ya { color: #c9a066; }
+.ss-partial { font-family: var(--serif); font-style: italic; font-size: 12px; color: rgba(255,255,255,.55); text-align: center; margin: 10px 0 0; }
+
+/* ── lego block shapes (app.css:14832-14888), scaled by --chev / --blk-h ── */
+.ss-blk { position: relative; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; gap: 0; height: var(--blk-h); padding: 0 calc(12px + var(--chev)); font-family: var(--sans-jp); font-weight: 700; font-size: var(--blk-font); line-height: 1.1; color: #fff; letter-spacing: 0.02em; text-shadow: 0 1px 0 rgba(0,0,0,0.18); border: 0; cursor: pointer; flex: 0 0 auto; white-space: nowrap; }
+.ss-blk small { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 10px; opacity: 0.85; line-height: 1; }
+.ss-blk:focus-visible { outline: none; filter: drop-shadow(0 3px 0 #fff) !important; }
+.ss-blk.ss-noun { background: var(--block-noun); clip-path: polygon(0 0, 100% 0, calc(100% - var(--chev)) 50%, 100% 100%, 0 100%, var(--chev) 50%); filter: drop-shadow(0 3px 0 var(--block-noun-dk)); }
+.ss-blk.ss-verb { background: var(--block-verb); clip-path: polygon(0 0, calc(100% - var(--chev)) 0, 100% 50%, calc(100% - var(--chev)) 100%, 0 100%, var(--chev) 50%); filter: drop-shadow(0 3px 0 var(--block-verb-dk)); }
+.ss-blk.ss-other { background: var(--block-other); clip-path: polygon(0 0, 100% 0, calc(100% - var(--chev)) 50%, 100% 100%, 0 100%, var(--chev) 50%); filter: drop-shadow(0 3px 0 var(--block-other-dk)); font-weight: 500; }
+.ss-blk.ss-part { background: var(--block-part); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); width: calc(2 * var(--chev)); height: calc(2 * var(--chev)); min-width: calc(2 * var(--chev)); padding: 0; font-size: calc(var(--blk-font) - 1px); filter: drop-shadow(0 3px 0 var(--block-part-dk)); }
+.ss-blk.ss-part.ss-wide { width: auto; padding: 0 calc(var(--chev) + 2px); clip-path: polygon(var(--chev) 0, calc(100% - var(--chev)) 0, 100% 50%, calc(100% - var(--chev)) 100%, var(--chev) 100%, 0 50%); }
+.ss-blk.ss-stop { background: var(--block-stop); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, var(--chev) 50%); padding: 0 10px 0 calc(6px + var(--chev)); min-width: calc(var(--chev) + 26px); filter: drop-shadow(0 3px 0 var(--block-stop-dk)); cursor: default; }
+.ss-blk.ss-part.ss-h-wa { background: var(--pc-wa); filter: drop-shadow(0 3px 0 #5a1923); }
+.ss-blk.ss-part.ss-h-ga { background: var(--pc-ga); filter: drop-shadow(0 3px 0 #8f521b); }
+.ss-blk.ss-part.ss-h-o { background: var(--pc-o); filter: drop-shadow(0 3px 0 #3a1d5c); }
+.ss-blk.ss-part.ss-h-ni { background: var(--pc-ni); filter: drop-shadow(0 3px 0 #245030); }
+.ss-blk.ss-part.ss-h-de { background: var(--pc-de); filter: drop-shadow(0 3px 0 #1f5229); }
+.ss-blk.ss-part.ss-h-e { background: var(--pc-e); filter: drop-shadow(0 3px 0 #1c3e66); }
+.ss-blk.ss-part.ss-h-no { background: var(--pc-no); filter: drop-shadow(0 3px 0 #872732); }
+.ss-blk.ss-part.ss-h-to { background: var(--pc-to); filter: drop-shadow(0 3px 0 #1c3e66); }
+.ss-blk.ss-part.ss-h-mo { background: var(--pc-mo); filter: drop-shadow(0 3px 0 #482664); }
+.ss-blk.ss-part.ss-h-kara { background: var(--pc-kara); filter: drop-shadow(0 3px 0 #6e305f); }
+.ss-blk.ss-part.ss-h-made { background: var(--pc-made); filter: drop-shadow(0 3px 0 #275660); }
+.ss-blk.ss-part.ss-h-ya { background: var(--pc-ya); filter: drop-shadow(0 3px 0 #5d4420); }
+.ss-blk .ss-txt { display: inline-flex; align-items: center; white-space: nowrap; }
+.ss-punct { color: rgba(255,255,255,.72); font: 700 var(--blk-font) var(--sans-jp); padding: 0 6px; margin-left: calc(var(--chev) * -0.25); align-self: center; z-index: 1; position: relative; }
+/* uncertainty survives clip-path: a stripe overlay instead of an outline */
+.ss-blk.ss-uncertain { background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgba(0,0,0,.18) 6px 12px); }
+.ss-blk.ss-anchor { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.ss-pmark { display: inline-flex; align-items: center; justify-content: center; width: 1.5em; height: 1.5em; margin: 0 .08em; font-size: .8em; background: var(--block-part); color: #fff; border-radius: 50%; line-height: 1; vertical-align: middle; }
+.ss-pmark.ss-no { background: var(--pc-no); }
+
+/* ── row (app.css:14941-14960) + unbreakable units ─────────────────────── */
+.ss-blocks-row { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; row-gap: 12px; margin-top: 6px; padding: 0 var(--chev); }
+.ss-unit { display: inline-flex; align-items: center; }
+.ss-blocks-row .ss-blk { margin: 0; }
+.ss-blocks-row .ss-blk + .ss-blk, .ss-blocks-row .ss-unit + .ss-unit { margin-left: calc(-1 * var(--chev)); }
+.ss-blocks-row .ss-blk.ss-part { z-index: 1; }
+.ss-blocks-row > .ss-unit:first-child > .ss-blk.ss-noun:first-child, .ss-blocks-row > .ss-unit:first-child > .ss-blk.ss-other:first-child { clip-path: polygon(0 0, 100% 0, calc(100% - var(--chev)) 50%, 100% 100%, 0 100%); padding-left: 14px; }
+.ss-blocks-row > .ss-unit:first-child > .ss-blk.ss-verb:first-child { clip-path: polygon(0 0, calc(100% - var(--chev)) 0, 100% 50%, calc(100% - var(--chev)) 100%, 0 100%); padding-left: 14px; }
+
+/* ── legend (app.css:14962-14990) ──────────────────────────────────────── */
+.ss-breakdown { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.12); }
+.ss-breakdown .ss-bd { display: flex; flex-direction: column; gap: 2px; font-family: var(--serif); font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.3; }
+.ss-breakdown .ss-bd .ss-jp { font-family: var(--sans-jp); font-weight: 700; font-size: 14px; color: rgba(255,255,255,0.92); letter-spacing: 0.02em; }
+.ss-breakdown .ss-bd .ss-role { font-family: var(--serif); font-style: italic; font-size: 11px; color: rgba(255,255,255,0.5); }
+.ss-breakdown .ss-bd.ss-w-noun .ss-jp { color: var(--block-noun); }
+.ss-breakdown .ss-bd.ss-w-verb .ss-jp { color: var(--block-verb); }
+.ss-breakdown .ss-bd.ss-w-part .ss-jp { color: var(--block-part); }
+.ss-breakdown .ss-bd.ss-w-other .ss-jp { color: rgba(255,255,255,.75); }
+
+
+/* ── furigana (toggle) — same block height; the ruby line borrows from the block's own vertical slack ── */
+.ss-blk ruby { ruby-position: over; ruby-align: center; line-height: 1; }
+.ss-blk rt { font-family: var(--sans-jp); font-weight: 400; font-size: 8px; line-height: 1; opacity: .92; letter-spacing: 0; text-shadow: none; transform: translateY(2px); }
+.ss-blocks-row[data-furigana] .ss-blk .ss-txt { line-height: 1.05; }
+.ss-blocks-row[data-furigana] .ss-blk small { line-height: 1; }

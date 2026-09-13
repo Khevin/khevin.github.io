@@ -1,0 +1,66 @@
+{
+  "source": "https://www.nintendo.com/jp/games/switch2/aa9ja/triforce/index.html",
+  "inspectedAt": "2026-09-08",
+  "method": "Rendered DOM read in a desktop Chromium viewport via the in-app browser (JavaScript introspection, no extension installed).",
+  "findings": {
+    "lang": "ja",
+    "iframes": 5,
+    "openShadowRoots": 0,
+    "contentEditable": 0,
+    "paragraphsWithUserSelectNone": 0,
+    "ruby": {
+      "count": 1,
+      "markup": "<ruby>目論<rt>もくろ</rt></ruby>む",
+      "note": "textContent of the paragraph yields 目論もくろむ — rt must be excluded from base text."
+    },
+    "lineBreaks": {
+      "brTotal": 20,
+      "kinds": {
+        "<br>": "placed between sentences after 。 or 、 (layout, keeps the paragraph as one block)",
+        "<br class=\"sp\">": "mobile-only break placed MID-SENTENCE (e.g. はるか昔にこの世界を創りし<br class=sp>三大神が...). Confirms: never split sentences at br."
+      }
+    },
+    "inlineSpans": {
+      "<span class=\"hyphen\">――</span>": "the dash ―― is wrapped in an inline span inside the sentence; selection across it spans multiple text nodes."
+    },
+    "visibility": {
+      "bodyParagraphs": "visibility:hidden on the <p> itself until a scroll-triggered reveal animation runs; textContent is present, innerText is empty while hidden.",
+      "modalParagraphs": "display:none inside .lzot-modal-frame until the modal opens.",
+      "hiddenDuplicateLeafTexts": 0,
+      "implication": "Hidden-descendant exclusion must be evaluated at capture time against the live selection; the same paragraph is hidden before scroll and visible after."
+    },
+    "headings": {
+      "h1h2h3Count": 7,
+      "allAreImages": true,
+      "imgCount": 94,
+      "imgsWithAlt": 39,
+      "pictureCount": 21,
+      "sourcesPerPicture": 1,
+      "altSamples": [
+        "ゼルダの伝説 時のオカリナ",
+        "CHAPTER:01 トライフォース",
+        "運命に導くトライフォース",
+        "知恵・力・勇気",
+        "勇気に選ばれし者 リンク",
+        "知恵を授かりし者 ゼルダ姫",
+        "力に魅入られし者 ガノンドロフ",
+        "王家に伝わる神秘のメロディ ゼルダの子守歌"
+      ]
+    },
+    "japaneseTextBlocks": 10,
+    "excerpts": [
+      { "cls": "lzot-tf-it-text", "text": "3つの力をつかさどる聖三角――トライフォース。はるか昔にこの世界を創りし三大神がのこした力で、触れた者の願いをかなえるとされる。" },
+      { "cls": "lzot-tf-it-text", "text": "その存在は、ハイラル全土を揺るがす争いの火種となり、運命に選ばれた者たちを巻き込んでいく――。" },
+      { "cls": "lzot-tf-chara-profile-text", "text": "コキリの森で暮らす少年。ある日、森の守り神「デクの樹サマ」から、自身が背負う運命を告げられる。" },
+      { "cls": "lzot-tf-chara-profile-text", "text": "ハイラル王国の姫君。夢のお告げで、迫り来る闇の気配を感じ取る。勇者の出現を信じ、その時を待つ。" },
+      { "cls": "lzot-tf-chara-profile-text", "text": "女性ばかりのゲルド族において、百年に一度だけ生まれる男性。底知れぬ野望を抱き、トライフォースを手に入れようと目論む。", "ruby": [{ "base": "目論", "rt": "もくろ" }] },
+      { "cls": "lzot-modal-oc-text", "text": "冒険の鍵となる「オカリナ」は、特別な力を持つ不思議な楽器。奏でるメロディによって、時間を操り、道を開き、人の心をも動かす。", "hidden": "modal" },
+      { "cls": "lzot-modal-oc-sing-text", "text": "Nintendo Switch 2 本体のマイクに向かって鼻歌を歌えば、その旋律にあわせてリンクがオカリナを奏でてくれる。さらに、本物の楽器で奏でた音にも反応する。", "hidden": "modal" }
+    ]
+  },
+  "notVerified": [
+    "Whether a live selection survives clicking the extension toolbar icon (needs the M1 extension shell).",
+    "Mobile viewport rendering of <br class=sp> (desktop viewport only).",
+    "Contents of the 5 iframes (not inspected; first release targets the top frame)."
+  ]
+}
