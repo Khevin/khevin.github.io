@@ -18,15 +18,23 @@
   /* ── JP accent layer ─────────────────────────────────────────────────
      Supplements styles.css. Warm paper palette mirroring the study app.   */
   :root {
-    --jp-paper:     #f6ecd5;
-    --jp-paper-2:   #fbf5e6;
-    --jp-edge:      #ead9b2;
+    /* Cherry, not beige. The paper family sits at blossom hue while every
+       token keeps the lightness it had, so no contrast ratio moved. The
+       portfolio's own page tokens are overridden here too, scoped to this
+       page: the study space has its own weather, the rest of the site does
+       not follow it. */
+    --paper:        #fdf6f4;
+    --paper-warm:   #f8ecea;
+    --paper-deep:   #f2e2df;
+    --jp-paper:     #f9ebe7;
+    --jp-paper-2:   #fdf6f3;
+    --jp-edge:      #eed8d3;
     --jp-gold:      #b48a4a;
     --jp-gold-dark: #8d6630;
-    --jp-gold-soft: #d9c191;
+    --jp-gold-soft: #dcbfb2;
     --jp-ink:       #3a2818;
     --jp-ink-2:     #6b5740;
-    --jp-ink-3:     #9a8869;
+    --jp-ink-3:     #9c8681;
     --serif-jp:     'Shippori Mincho', 'Noto Serif JP', 'Hiragino Mincho Pro', serif;
     --sans-jp:      'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
   }
@@ -43,8 +51,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(circle at 80% 50%, rgba(180,138,74,0.07), transparent 55%),
-      radial-gradient(circle at 20% 80%, rgba(122,143,110,0.05), transparent 50%);
+      radial-gradient(circle at 80% 50%, rgba(198,128,132,0.09), transparent 55%),
+      radial-gradient(circle at 20% 80%, rgba(176,132,140,0.06), transparent 50%);
     pointer-events: none;
   }
 

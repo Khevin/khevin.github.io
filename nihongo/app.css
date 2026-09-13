@@ -1,19 +1,17 @@
   :root {
-    /* Blush, not beige. The paper family sits at cherry-blossom hue while
-       every token keeps the lightness it had, so no contrast ratio moved. */
-    --paper:        #f9ebe7;
-    --paper-2:      #fdf6f3;
-    --paper-edge:   #eed8d3;
-    --paper-shadow: rgba(120,72,74,0.10);
+    --paper:        #f6ecd5;
+    --paper-2:      #fbf5e6;
+    --paper-edge:   #ead9b2;
+    --paper-shadow: rgba(100,72,30,0.10);
 
     --ink:    #3a2818;
     --ink-2:  #6b5740;
-    --ink-3:  #9c8681;
-    --ink-4:  #c5b0ab;
+    --ink-3:  #9a8869;
+    --ink-4:  #c2b294;
 
     --gold:       #b48a4a;
     --gold-dark:  #8d6630;
-    --gold-soft:  #dcbfb2;
+    --gold-soft:  #d9c191;
     --sage:       #7a8f6e;
     --sage-soft:  #b9c4a6;
     --rose:       #c08a8a;
@@ -16262,12 +16260,12 @@
     --mic-default-hover:   #a0794a;
     --mic-recording:       #c34b30;
     --mic-recording-pulse: #e26544;
-    --mic-disabled:        #cbb9b5;
+    --mic-disabled:        #cbbfa8;
     --waveform-original:   #8c6a3a;
     --waveform-user:       #7a9a5a;
     --score-chip:          #3a2e22;
     --score-dot-filled:    #8c6a3a;
-    --score-dot-empty:     #d6c2bd;
+    --score-dot-empty:     #d3c4ad;
     --pitch-line:          #8f3f2e;
     --pitch-line-user:     #5e7d3e;
     --pitch-pattern-heiban:    #a8843c;
@@ -16796,7 +16794,7 @@
     display: flex; flex-direction: column; gap: 2px;
     padding: 10px 13px;
     text-align: left;
-    background: var(--paper, #f9ebe7);
+    background: var(--paper, #f4ecd8);
     border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
     border-radius: 6px;
     box-shadow: 0 8px 22px rgba(60, 40, 10, 0.18);
@@ -16808,7 +16806,7 @@
     position: absolute; top: 100%; left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
-    border-top-color: var(--paper, #f9ebe7);
+    border-top-color: var(--paper, #f4ecd8);
     filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--ink) 14%, transparent));
   }
   .score-chip:hover .score-chip-tip,
