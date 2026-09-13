@@ -345,6 +345,45 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 .note-entry:hover .where,
 .note-entry:hover .arrow { transition-duration: var(--signal-in); }
 
+/* ---------- footer ----------
+   The page ends by turning to night. A São Paulo skyline is cut out of the
+   dark field so the silhouette IS the divider — the hairline rule that used to
+   sit here is gone, and the buildings rise into the paper instead.
+
+   It is a CSS mask rather than an <img> so the colour stays in the stylesheet.
+   Baking it into the asset is the same trap the hats illustration fell into:
+   an asset that silently depends on one exact page colour. */
+.foot {
+  --foot-ink: #16161b;
+  border-top: 0;
+  background: transparent;
+  padding: 0;
+}
+.foot-skyline {
+  /* The band keeps the drawing's own ratio, so the mask never distorts. A fixed
+     height would stretch it by a different amount at every viewport width. */
+  aspect-ratio: 1600 / 132;
+  min-height: 52px;
+  max-height: 140px;
+  background-color: var(--foot-ink);
+  -webkit-mask: url('/assets/skyline-sp.svg') bottom center / 100% 100% no-repeat;
+  mask: url('/assets/skyline-sp.svg') bottom center / 100% 100% no-repeat;
+}
+.foot-body {
+  background: var(--foot-ink);
+  /* Room to breathe under a city. */
+  padding: clamp(30px, 3.4vw, 52px) 0 clamp(38px, 4vw, 64px);
+}
+.foot .colophon { color: #8a8a93; }
+.foot .colophon a { color: #b6b6be; }
+.foot .colophon a:hover { color: var(--accent); }
+
+@supports not (mask: url('/assets/skyline-sp.svg')) {
+  /* No mask support: fall back to the rule it replaced rather than a bare edge. */
+  .foot-skyline { height: 0; background: none; }
+  .foot-body { border-top: 1px solid var(--rule); }
+}
+
 /* ---------- signature ----------
    The asset is black artwork on transparency. On the Signal paper that is
    already right; the filter hook is here so it survives if this block is ever
