@@ -355,9 +355,24 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    an asset that silently depends on one exact page colour. */
 .foot {
   --foot-ink: #16161b;
+  /* How far the city sinks into the night.
+     The near drawing stands on a ground bar of its own, 22 of its 245 units
+     tall. Left above the field that bar is a second horizontal edge sitting
+     right on top of the first, and the seam is the thing you see. Sunk by its
+     own height it lands dark-on-dark and disappears, and the buildings meet
+     the field directly.
+     Written against the artwork's width because that is what sets its height,
+     and because a percentage in a margin resolves against width anyway. */
+  --sink: calc(min(100%, 940px) * 22 / 711);
   border-top: 0;
-  background: transparent;
+  /* The paper lives here rather than on the skyline, so the band the artwork
+     is sunk into shows THROUGH it instead of being painted over. */
+  background: var(--paper);
   padding: 0;
+  /* The distant layer is allowed to run wider than the page on narrow screens,
+     which is the only way it still stands above the near city there. Clipped
+     here rather than on the skyline itself, so the overhang below is kept. */
+  overflow: hidden;
 }
 /* Khevin's drawing, sitting on the paper with the dark field beginning exactly
    at its ground line — the ground bar in the artwork IS the top edge of the
@@ -370,22 +385,43 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    drawing is that its near-blacks were retuned to this footer's ink, so the
    ground bar meets the field without a seam. */
 .foot-skyline {
+  position: relative;
   line-height: 0;
-  background: var(--paper);
+  /* The overhang. The box stops at the city's ground line and the artwork
+     keeps going, lying over the field below it. */
+  margin-bottom: calc(var(--sink) * -1);
 }
 .foot-skyline img {
   display: block;
+  height: auto;
+}
+.foot-skyline__near {
+  position: relative;
   /* Capped and centred: it is a composition with palms at both ends, not a
      repeating band, and full-bleed at its own 2.9:1 would make the footer
      taller than some of the pages it closes. */
   width: min(100%, 940px);
-  height: auto;
   margin: 0 auto;
+}
+/* The second city, standing behind the first.
+   Wider, plainer and lighter — the three things that read as distance. It is
+   Khevin's other drawing reduced to one silhouette: flat tone, no windows, no
+   shading, because detail at that remove is what makes two skylines look like
+   clutter instead of depth. It stops at the field's edge rather than sinking
+   with the near layer, since a pale grey lying on the night would show. */
+.foot-skyline__far {
+  position: absolute;
+  left: 50%;
+  bottom: var(--sink);
+  transform: translateX(-50%);
+  width: min(126%, 1180px);
 }
 .foot-body {
   background: var(--foot-ink);
-  /* Room to breathe under a city. */
-  padding: clamp(30px, 3.4vw, 52px) 0 clamp(38px, 4vw, 64px);
+  /* A rule of night under the city, not a slab. The skyline is the footer now;
+     this only has to hold one line of type. The top has to clear the overhang
+     before it starts measuring the gap, or the sink eats the breathing space. */
+  padding: calc(var(--sink) + clamp(16px, 1.7vw, 24px)) 0 clamp(15px, 1.5vw, 22px);
 }
 .foot .colophon { color: #8a8a93; }
 .foot .colophon a { color: #b6b6be; }
