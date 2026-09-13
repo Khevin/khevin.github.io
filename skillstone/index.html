@@ -2362,11 +2362,11 @@ li.is-done .qg { color: var(--verdant); }
    than it was, because the point of the screen is the wardrobe underneath and the figure was
    eating it. */
 .iv-body { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s5); align-items: start; }
-.iv-fig { display: grid; grid-template-columns: auto auto; gap: var(--s4); align-items: center; justify-content: center; padding: var(--s2) 0; }
+.iv-fig { display: grid; grid-template-columns: auto auto; gap: var(--s6); align-items: center; justify-content: center; padding: var(--s2) 0; }
 .iv-hold { min-width: 0; border-left: 1px solid var(--mortar); padding-left: var(--s5); }
 .iv-rig { display: grid; grid-template-columns: repeat(3, 58px); grid-template-rows: repeat(5, 58px); gap: var(--s2); }
-.iv-slot[data-k="hat"]   { grid-area: 1 / 1 / 2 / 3; }
-.iv-slot[data-k="neck"]  { grid-area: 1 / 3 / 2 / 4; }
+.iv-slot[data-k="neck"]  { grid-area: 1 / 1 / 2 / 2; }
+.iv-slot[data-k="hat"]   { grid-area: 1 / 2 / 2 / 4; }
 .iv-slot[data-k="outer"] { grid-area: 2 / 1 / 5 / 2; }
 .iv-slot[data-k="top"]   { grid-area: 2 / 2 / 4 / 4; }
 .iv-slot[data-k="legs"]  { grid-area: 4 / 2 / 5 / 4; }
@@ -2400,23 +2400,24 @@ li.is-done .qg { color: var(--verdant); }
 .iv-slot:focus-visible { outline: none; }
 .iv-slot:focus-visible .iv-slot-face { outline: 2px solid var(--focus); outline-offset: 2px; }
 
-/* the two that are too small to paint on a body: they hang in the air beside the figure, each
-   on a hairline that points back at the part of the body it belongs to. A callout, not a smear. */
+/* The ten too small to paint on a body this tall hang in the air beside the figure, clustered
+   by the part they serve: the face on a line each side of the head, the hands lower down where
+   the hands are. Each cluster runs a hairline from its first socket back toward the body, so a
+   ring reads as belonging to a hand rather than floating next to one. */
 .iv-doll-wrap { display: grid; justify-items: center; gap: var(--s3); align-content: center; }
 .iv-stage { position: relative; width: 300px; max-width: 100%; display: grid; justify-items: center; }
-.iv-slot.iv-fly { position: absolute; width: 52px; height: 52px; z-index: 2; }
-.iv-slot.iv-fly[data-k="eyes"]  { top: 3%; right: 0; }
-.iv-slot.iv-fly[data-k="wrist"] { top: 49%; left: 0; }
-.iv-fly::after {
-  content: ""; position: absolute; top: 50%; width: 22px; height: 1px; pointer-events: none;
-  background: linear-gradient(90deg, var(--mortar-2), transparent);
-}
-.iv-fly[data-k="eyes"]::after  { right: 100%; background: linear-gradient(270deg, var(--mortar-2), transparent); }
-.iv-fly[data-k="wrist"]::after { left: 100%; }
-.iv-fly .iv-slot-g { width: 22px; height: 22px; }
+.iv-grp { position: absolute; display: grid; gap: 4px; z-index: 2; }
+.iv-grp[data-g="head-l"] { left: 0; top: 2%; }
+.iv-grp[data-g="head-r"] { right: 0; top: 2%; }
+.iv-grp[data-g="hand-l"] { left: 0; top: 45%; }
+.iv-grp[data-g="hand-r"] { right: 0; top: 45%; }
+.iv-grp::after { content: ""; position: absolute; top: 20px; width: 20px; height: 1px; pointer-events: none; }
+.iv-grp[data-g="head-l"]::after, .iv-grp[data-g="hand-l"]::after { left: 100%; background: linear-gradient(90deg, var(--mortar-2), transparent); }
+.iv-grp[data-g="head-r"]::after, .iv-grp[data-g="hand-r"]::after { right: 100%; background: linear-gradient(270deg, var(--mortar-2), transparent); }
+.iv-slot.iv-fly { position: relative; width: 40px; height: 40px; }
 .iv-fly .iv-slot-nm { font-size: 0.4375rem; padding: 7px 3px 3px; }
 
-.iv-doll { --iv-skin: #4a4034; width: 176px; max-width: 60%; height: auto; display: block; filter: drop-shadow(0 12px 28px rgba(0,0,0,0.55)); }
+.iv-doll { --iv-skin: #4a4034; width: 172px; max-width: 58%; height: auto; display: block; filter: drop-shadow(0 12px 28px rgba(0,0,0,0.55)); }
 .iv-doll-cap {
   display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; justify-content: center;
   font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ash);
@@ -2506,8 +2507,9 @@ li.is-done .qg { color: var(--verdant); }
   .iv-hold { border-left: 0; border-top: 1px solid var(--mortar); padding-left: 0; padding-top: var(--s4); }
   .iv-fig { grid-template-columns: 1fr; justify-items: center; gap: var(--s4); }
   .iv-doll-wrap { order: -1; }
-  .iv-stage { width: 288px; }
-  .iv-doll { width: 158px; }
+  .iv-stage { width: 292px; }
+  .iv-doll { width: 152px; }
+  .iv-grp[data-g="hand-l"], .iv-grp[data-g="hand-r"] { top: 47%; }
   .iv-rig { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, 54px); width: 100%; max-width: 260px; }
   .iv-panel { padding: var(--s4) var(--s3); }
   .iv-tabs { gap: var(--s4); }
@@ -6163,9 +6165,15 @@ function sanitize(s) {
       note: String(x.note || "").slice(0, 80),
       img: (typeof x.img === "string" && x.img.startsWith("data:image")) ? x.img : ""
     }));
+    /* worn is keyed by place, not by family — four fingers, two wrists. The one wrist that
+       existed before the pair did lands on the left. A garment can only be in one place. */
+    const raw = (wr.worn && typeof wr.worn === "object") ? wr.worn : {};
     const worn = {};
-    WEAR.forEach(w => { const id = (wr.worn || {})[w.k];
-      if (typeof id === "string" && items.some(x => x.id === id && x.slot === w.k)) worn[w.k] = id; });
+    SLOTS.forEach(s => {
+      const id = raw[s.k] || (s.k === "wrist-l" ? raw.wrist : "");
+      if (typeof id === "string" && id && items.some(x => x.id === id && x.slot === s.f)
+        && Object.keys(worn).every(k => worn[k] !== id)) worn[s.k] = id;
+    });
     s.wardrobe = { items, worn };
   }
   /* campaigns are the owner's to edit, so only the shape is enforced, never the content */
@@ -7803,22 +7811,53 @@ function setView(v) {
    filled slot takes that garment off; clicking an empty one filters the grid to what fits
    there — the slot asks the question and the grid answers it. */
 const GEAR_CAP = 200;
-/* Every slot holds kinds, because a top is not one shape: a hoodie, a sweater, a dress shirt
-   and a tee hang differently, and the figure is only worth having if it can tell them apart.
-   The first kind in each list is what a garment falls back to. */
+/* ---------- families and slots ----------
+   A garment belongs to a FAMILY, and a family has kinds, because a top is not one shape: a
+   hoodie, a sweater, a dress shirt and a tee hang differently and the figure is only worth
+   having if it can tell them apart. The first kind in each list is what a garment falls back to.
+
+   A family is not a place on the body. There are four fingers that take a ring and two wrists
+   that take a watch, and a ring you own is a ring, not a left-index-finger ring — so the item
+   stores its family and the SLOTS below are the places that family can go. Putting a ring on
+   finds the first free finger; taking it off finds the finger it is on. */
 const WEAR = [
   { k: "hat",   name: "Hat",       kinds: [["cap", "Cap"], ["beanie", "Beanie"], ["brim", "Brimmed hat"], ["bucket", "Bucket hat"]] },
-  /* eyewear and a watch are thumbnail-sized on a figure this tall: painted on the body they
-     are a smear and a dot. They fly beside the figure in a lit box of their own instead. */
-  { k: "eyes",  name: "Eyewear",   fly: 1, kinds: [["sun", "Sunglasses"], ["specs", "Glasses"]] },
+  { k: "eyes",  name: "Eyewear",   kinds: [["sun", "Sunglasses"], ["specs", "Glasses"]] },
+  { k: "ear",   name: "Earring",   kinds: [["stud", "Stud"], ["hoop", "Hoop"], ["drop", "Drop"]] },
+  { k: "nose",  name: "Nose",      kinds: [["ring", "Ring"], ["stud", "Stud"]] },
   { k: "neck",  name: "Neck",      kinds: [["chain", "Chain"], ["scarf", "Scarf"]] },
-  { k: "wrist", name: "Wrist",     fly: 1, kinds: [["watch", "Watch"], ["band", "Band"]] },
+  { k: "wrist", name: "Wrist",     kinds: [["watch", "Watch"], ["band", "Band"], ["cuff", "Cuff"]] },
+  { k: "ring",  name: "Ring",      kinds: [["band", "Band"], ["signet", "Signet"], ["stone", "Stone"]] },
   { k: "outer", name: "Overshirt", kinds: [["shacket", "Overshirt"], ["jacket", "Jacket"], ["hoodie", "Zip hoodie"], ["blazer", "Blazer"], ["coat", "Coat"]] },
   { k: "top",   name: "Top",       kinds: [["tee", "T-shirt"], ["hoodie", "Hoodie"], ["sweater", "Sweater"], ["shirt", "Dress shirt"], ["polo", "Polo"], ["tank", "Tank top"]] },
   { k: "legs",  name: "Trousers",  kinds: [["jeans", "Jeans"], ["chinos", "Chinos"], ["joggers", "Joggers"], ["shorts", "Shorts"]] },
   { k: "feet",  name: "Shoes",     kinds: [["sneakers", "Sneakers"], ["boots", "Boots"], ["loafers", "Loafers"]] }
 ];
+/* The sixteen places something can sit. The six that hang on the body proper stay in the rig;
+   the ten too small to paint on a figure this tall fly beside it, clustered by the part of the
+   body they belong to — the face on one line each side, the hands lower down. */
+const SLOTS = [
+  { k: "hat",     f: "hat" },
+  { k: "neck",    f: "neck" },
+  { k: "eyes",    f: "eyes",  fly: "head-l" },
+  { k: "ear-l",   f: "ear",   fly: "head-l", name: "Left ear" },
+  { k: "nose",    f: "nose",  fly: "head-r" },
+  { k: "ear-r",   f: "ear",   fly: "head-r", name: "Right ear" },
+  { k: "wrist-l", f: "wrist", fly: "hand-l", name: "Left wrist" },
+  { k: "ring-l1", f: "ring",  fly: "hand-l", name: "Left ring" },
+  { k: "ring-l2", f: "ring",  fly: "hand-l", name: "Left ring" },
+  { k: "wrist-r", f: "wrist", fly: "hand-r", name: "Right wrist" },
+  { k: "ring-r1", f: "ring",  fly: "hand-r", name: "Right ring" },
+  { k: "ring-r2", f: "ring",  fly: "hand-r", name: "Right ring" },
+  { k: "outer",   f: "outer" },
+  { k: "top",     f: "top" },
+  { k: "legs",    f: "legs" },
+  { k: "feet",    f: "feet" }
+];
+const FLY_GROUPS = ["head-l", "head-r", "hand-l", "hand-r"];
 const WEAR_BY = Object.fromEntries(WEAR.map(w => [w.k, w]));
+const SLOTS_OF = f => SLOTS.filter(s => s.f === f);
+const slotLabel = s => s.name || WEAR_BY[s.f].name;
 const kindsFor = slot => (WEAR_BY[slot] || WEAR_BY.top).kinds;
 const kindName = (slot, kind) => { const f = kindsFor(slot).find(x => x[0] === kind); return f ? f[1] : kindsFor(slot)[0][1]; };
 const kindOk = (slot, kind) => kindsFor(slot).some(x => x[0] === kind);
@@ -7829,6 +7868,9 @@ const WEAR_GLYPH = {
   eyes:  '<path d="M3 9.5h18"/><path d="M4.5 9.5v2a3 3 0 0 0 6 0v-2"/><path d="M13.5 9.5v2a3 3 0 0 0 6 0v-2"/><path d="M10.5 11h3"/>',
   neck:  '<path d="M6.5 4.5A8 8 0 0 0 12 12a8 8 0 0 0 5.5-7.5"/><path d="m12 13 2.2 3.2L12 19.5 9.8 16.2Z"/>',
   wrist: '<circle cx="12" cy="12" r="4.5"/><path d="M9.6 7.9 9 4.5h6l-.6 3.4"/><path d="M9.6 16.1 9 19.5h6l-.6-3.4"/>',
+  ear:   '<path d="M9 6.5a3 3 0 0 1 6 0v2.8"/><circle cx="12" cy="15.5" r="4.6"/>',
+  nose:  '<circle cx="12" cy="14" r="5.4"/><circle cx="12" cy="7.6" r="1.7"/>',
+  ring:  '<ellipse cx="12" cy="14.6" rx="5.8" ry="6.4"/><path d="m12 5.6 2.6 3.2h-5.2Z"/>',
   outer: '<path d="M9 4 4.5 6.2V20h15V6.2L15 4"/><path d="m9 4 3 4 3-4"/><path d="M12 8.5V20"/>',
   top:   '<path d="M9 4 4 6.6l1.9 3.6L8 9.2V20h8V9.2l2.1 1L20 6.6 15 4"/><path d="M9 4a3 3 0 0 0 6 0"/>',
   legs:  '<path d="M7.5 4h9l.6 16h-3.7L12 11l-1.4 9H6.9Z"/>',
@@ -7894,6 +7936,24 @@ const ivHem = c => '<path ' + IV_LINE(ivShade(c, -0.2), 7) + ' d="M50 182c14 4 4
    Drawn in a 40 unit square with a 4 unit margin baked into the viewBox, so a face can size the
    icon at 100% and never have it touch a border. */
 const ICN = (c, d, extra) => '<path fill="' + c + '" stroke="rgba(8,6,4,0.55)" stroke-width="1.1" stroke-linejoin="round" d="' + d + '"/>' + (extra || "");
+/* ivShade mixes toward white and black; item art mixes toward the app's own parchment, socket
+   and gold instead, so a lit face reads warm and a shadow reads like the panel behind it */
+function ivMix(hex, target, amt) {
+  const a = parseInt(String(hex).slice(1), 16), b = parseInt(String(target).slice(1), 16);
+  if (!isFinite(a) || !isFinite(b)) return hex;
+  const f = (x, y) => Math.round(x + (y - x) * amt);
+  const r = f((a >> 16) & 255, (b >> 16) & 255), g = f((a >> 8) & 255, (b >> 8) & 255), c = f(a & 255, b & 255);
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + c).toString(16).slice(1);
+}
+/* the light model every piece of item art is lit by: one colour in, six out */
+const ivCloth = c => ({
+  base: c,
+  lit:  ivMix(c, "#F0E7D1", 0.30),
+  dark: ivMix(c, "#0F0C09", 0.30),
+  deep: ivMix(c, "#0F0C09", 0.52),
+  edge: ivMix(c, "#0F0C09", 0.72),
+  rim:  ivMix(c, "#F6CB74", 0.45)
+});
 const ICL = (c, d, w) => '<path fill="none" stroke="' + c + '" stroke-width="' + (w || 1.3) + '" stroke-linecap="round" stroke-linejoin="round" d="' + d + '"/>';
 const GEAR_ICON = {
   top: {
@@ -7903,10 +7963,30 @@ const GEAR_ICON = {
         ICL(ivShade(c, -0.26), "M13 25.5c2.5 4 11.5 4 14 0") + ICL(ivShade(c, 0.42), "M17.5 12.5v5M22.5 12.5v5")),
     sweater: c => ICN(c, "M15 5 5 9.5l1.5 11 5-1V35h17V19.5l5 1L35 9.5 25 5a5 5 0 0 1-10 0Z",
       ICL(ivShade(c, -0.24), "M6.8 18.8 11.6 18M33.2 18.8 28.4 18M12 32.2h16")),
-    shirt: c => ICN(c, "M15 5 5 9.5l1.5 11 5-1V35h17V19.5l5 1L35 9.5 25 5l-5 6.5Z",
-      ICN(ivShade(c, -0.14), "M15 5 20 11.5 14.6 13.5 13 6.2Z") + ICN(ivShade(c, -0.14), "M25 5 20 11.5 25.4 13.5 27 6.2Z") +
-      ICL(ivShade(c, -0.3), "M20 12.5V35") +
-      '<g fill="' + ivShade(c, -0.38) + '"><circle cx="20" cy="18" r="1.1"/><circle cx="20" cy="24" r="1.1"/><circle cx="20" cy="30" r="1.1"/></g>'),
+    /* The first piece drawn as an item rather than a symbol: a laced linen shirt lit from the
+       upper left, cloth graded down into shadow, brass at the throat that stays brass whatever
+       colour the cloth is. Everything below the collar is derived from the one colour, so the
+       wardrobe still needs no second asset per garment. */
+    shirt: (c, uid) => { const p = ivCloth(c); const g = "url(#" + uid + ")";
+      return '<defs><linearGradient id="' + uid + '" x1="0.12" y1="0" x2="0.9" y2="1">' +
+        '<stop offset="0" stop-color="' + p.lit + '"/><stop offset="0.52" stop-color="' + p.base + '"/>' +
+        '<stop offset="1" stop-color="' + p.dark + '"/></linearGradient></defs>' +
+        '<g stroke="' + p.edge + '" stroke-width="0.9" stroke-linejoin="round">' +
+          '<path fill="' + g + '" d="M13.6 8.2C9.6 9 6.6 11.2 5 15c-1 2.6-1.4 5.4-1.2 8.6l5.7 1.2c.1-4.4 1.1-9.6 2.9-13.4Z"/>' +
+          '<path fill="' + g + '" d="M26.4 8.2c4 .8 7 3 8.6 6.8 1 2.6 1.4 5.4 1.2 8.6l-5.7 1.2c-.1-4.4-1.1-9.6-2.9-13.4Z"/>' +
+          '<path fill="' + p.deep + '" d="M3.7 23.3 9.6 24.5 9 28.1 3.1 26.9Z"/>' +
+          '<path fill="' + p.deep + '" d="M36.3 23.3 30.4 24.5 31 28.1 36.9 26.9Z"/>' +
+          '<path fill="' + g + '" d="M13.6 8.2c-1.2 3.8-2 9.8-2.4 16.8-.2 4.4-.3 7.6-.3 9.6 6 1.7 12.2 1.7 18.2 0 0-2-.1-5.2-.3-9.6-.4-7-1.2-13-2.4-16.8-2-.8-10.8-.8-12.8 0Z"/>' +
+          '<path fill="' + p.dark + '" d="M10.9 32.2c6 1.7 12.2 1.7 18.2 0v2.4c-6 1.7-12.2 1.7-18.2 0Z"/>' +
+          '<path fill="' + p.deep + '" d="M18.6 8.4h2.8l.5 10c-.9.3-2.9.3-3.8 0Z"/>' +
+          '<path fill="' + p.lit + '" d="M15.4 5.4c1.8-.8 7.4-.8 9.2 0l.3 2.6c-2.1-.9-7.7-.9-9.8 0Z"/></g>' +
+        '<g fill="none" stroke-linecap="round">' +
+          '<path stroke="' + p.deep + '" stroke-width="0.75" opacity="0.8" d="M15.4 20c.5 4.4.3 8.6-.3 11.8M24.6 20c-.5 4.4-.3 8.6.3 11.8M20 21.4c.2 3.8.1 7-.2 9.8"/>' +
+          '<path stroke="' + p.rim + '" stroke-width="0.85" opacity="0.85" d="M13.4 8.4C9.8 9.2 7 11.4 5.4 15M13.8 8.6c-1.1 3.7-1.9 9.5-2.3 16.2"/>' +
+          '<path stroke="#E8D9B4" stroke-width="0.8" opacity="0.9" d="m18.4 10 3.2 2.3m0-2.3-3.2 2.3m0 1.1 3.2 2.3m0-2.3-3.2 2.3"/></g>' +
+        '<g fill="#A67B2E"><circle cx="18.2" cy="9.8" r="0.62"/><circle cx="21.8" cy="9.8" r="0.62"/>' +
+          '<circle cx="18.2" cy="13.2" r="0.62"/><circle cx="21.8" cy="13.2" r="0.62"/>' +
+          '<circle cx="18.3" cy="16.6" r="0.62"/><circle cx="21.7" cy="16.6" r="0.62"/></g>'; },
     polo: c => ICN(c, "M15 5 6 9.5l3 7.5 4-2V35h14V15l4 2 3-7.5L25 5l-5 5.5Z",
       ICN(ivShade(c, -0.14), "M15 5 20 10.5 15.2 12.6 13.4 6.1Z") + ICN(ivShade(c, -0.14), "M25 5 20 10.5 24.8 12.6 26.6 6.1Z") +
       ICL(ivShade(c, -0.3), "M20 11.5v6.5")),
@@ -7979,14 +8059,47 @@ const GEAR_ICON = {
     watch: c => ICN(ivShade(c, -0.34), "M15.4 3.5h9.2v11.2h-9.2ZM15.4 25.3h9.2v11.2h-9.2Z") +
       ICN(c, "M20 12.2a7.8 7.8 0 1 1 0 15.6 7.8 7.8 0 0 1 0-15.6Z") +
       ICL(ivShade(c, 0.5), "M20 16v4h3.2", 1.6),
-    band: c => '<ellipse cx="20" cy="20" rx="11" ry="8.6" fill="none" stroke="' + c + '" stroke-width="4.6"/>'
+    band: c => '<ellipse cx="20" cy="20" rx="11" ry="8.6" fill="none" stroke="' + c + '" stroke-width="4.6"/>',
+    /* a cuff is an open bangle: the gap is the whole difference between it and a band */
+    cuff: c => '<path fill="none" stroke="' + c + '" stroke-width="6.4" stroke-linecap="round" d="M25.5 12.4a10.5 8.6 0 1 1-11 0"/>' +
+      '<g fill="' + ivShade(c, -0.3) + '"><circle cx="25.8" cy="12" r="2.1"/><circle cx="14.2" cy="12" r="2.1"/></g>'
+  },
+  /* the jewellery: small objects drawn large, because the box they sit in is 40 pixels and a
+     stud drawn to scale would be one grey dot four times over */
+  ear: {
+    stud: c => ICN(ivShade(c, -0.3), "M18.4 21h3.2v13h-3.2Z") +
+      ICN(c, "M20 5a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z", ICL(ivShade(c, 0.55), "M15.6 11.4a6 6 0 0 1 4.6-3", 2)),
+    hoop: c => '<circle cx="20" cy="23" r="12" fill="none" stroke="' + c + '" stroke-width="4.4"/>' +
+      '<path fill="none" stroke="' + ivShade(c, -0.2) + '" stroke-width="2.6" stroke-linecap="round" d="M16 11.6V7.5a4 4 0 0 1 8 0"/>',
+    drop: c => '<path fill="none" stroke="' + ivShade(c, -0.2) + '" stroke-width="2.4" stroke-linecap="round" d="M16.6 8.2V6a3.4 3.4 0 0 1 6.8 0v1.6"/>' +
+      ICN(c, "M20 9.5a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4Z") +
+      ICN(c, "M20 17.5c4.6 4.6 6.8 8.4 6.8 11.5A6.8 6.8 0 0 1 13.2 29c0-3.1 2.2-6.9 6.8-11.5Z",
+        ICL(ivShade(c, 0.5), "M17 27.5a3.6 3.6 0 0 1 1.8-4.4", 1.8))
+  },
+  nose: {
+    ring: c => '<circle cx="20" cy="22.5" r="12.5" fill="none" stroke="' + c + '" stroke-width="4.2"/>' +
+      ICN(ivShade(c, 0.28), "M20 5.6a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z"),
+    stud: c => ICN(ivShade(c, -0.3), "M18.6 20h2.8v14h-2.8Z") +
+      ICN(c, "m20 4 7.2 5.4-2.8 8.8h-8.8L12.8 9.4Z", ICL(ivShade(c, 0.55), "m20 8 -2.6 2.6", 1.8))
+  },
+  ring: {
+    band: c => '<ellipse cx="20" cy="21.5" rx="12" ry="13.5" fill="none" stroke="' + c + '" stroke-width="5"/>' +
+      '<ellipse cx="20" cy="21.5" rx="12" ry="13.5" fill="none" stroke="rgba(8,6,4,0.4)" stroke-width="0.9"/>',
+    signet: c => '<ellipse cx="20" cy="23.5" rx="11.5" ry="12" fill="none" stroke="' + c + '" stroke-width="4.6"/>' +
+      ICN(c, "M20 3.4c4.4 0 7.6 2.6 7.6 5.6S24.4 15 20 15s-7.6-2.6-7.6-6 3.2-5.6 7.6-5.6Z",
+        ICL(ivShade(c, -0.34), "M17.4 9.2h5.2M20 6.8v4.8", 1.6)),
+    stone: c => '<ellipse cx="20" cy="24.5" rx="11.5" ry="11.5" fill="none" stroke="' + c + '" stroke-width="4.6"/>' +
+      ICN(ivShade(c, -0.16), "M13.6 12.2h12.8l-2.2 3.4H15.8Z") +
+      ICN(ivShade(c, 0.3), "m20 2.6 6.6 6-6.6 4.4-6.6-4.4Z", ICL(ivShade(c, 0.6), "m20 5.4-3 3.2", 1.6))
   }
 };
 /* the garment lying flat, at whatever size the face it sits in asks for */
+/* the same drawing can be on screen five times at once, so each render gets its own gradient id */
+let ivIcnN = 0;
 function gearIconHTML(it) {
   const set = GEAR_ICON[it.slot] || {};
   const fn = set[it.kind] || set[Object.keys(set)[0]];
-  return '<svg class="iv-icn" viewBox="-4 -4 48 48" aria-hidden="true">' + (fn ? fn(it.color) : "") + "</svg>";
+  return '<svg class="iv-icn" viewBox="-4 -4 48 48" aria-hidden="true">' + (fn ? fn(it.color, "gi" + (++ivIcnN)) : "") + "</svg>";
 }
 /* the slot's own mark, small, for a cell that has to say where a garment goes */
 const slotMarkHTML = k => '<svg class="iv-mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[k] + "</svg>";
@@ -8109,12 +8222,14 @@ function invDollHTML() {
   return '<svg class="iv-doll" viewBox="0 0 160 320" role="img" aria-label="' + esc(invOutfitWords()) + '">' + g + "</svg>";
 }
 function invOutfitWords() {
-  const on = WEAR.map(w => { const g = gearWorn(w.k); return g ? g.name : null; }).filter(Boolean);
+  const on = []; SLOTS.forEach(s => { const g = gearWorn(s.k); if (g && on.indexOf(g.name) < 0) on.push(g.name); });
   return on.length ? "Wearing " + on.join(", ") : "Nothing on yet";
 }
 
 /* ---------- the panel ---------- */
 /* a photograph of the real garment beats any drawing of one; without a photograph, the drawing */
+/* a garment is on if any place its family can go is holding it */
+const gearIsOn = it => SLOTS_OF(it.slot).some(s => wardrobe().worn[s.k] === it.id);
 const gearFace = it => it.img
   ? '<img src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async">'
   : gearIconHTML(it);
@@ -8129,14 +8244,14 @@ function gearCellHTML(it, worn) {
     '<button type="button" class="iv-cell-edit" data-inv="gearedit" data-id="' + esc(it.id) + '"' +
       ' aria-label="Edit ' + esc(it.name) + '">' + IV_PEN + "</button></div>";
 }
-function invSlotHTML(w) {
-  const it = gearWorn(w.k), on = !!it;
+function invSlotHTML(s) {
+  const it = gearWorn(s.k), on = !!it, label = slotLabel(s);
   const face = on ? gearFace(it)
-    : '<svg class="iv-slot-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[w.k] + "</svg>";
-  return '<button type="button" class="iv-slot' + (w.fly ? " iv-fly" : "") + (on ? " is-on" : "") + (gearFilter === w.k ? " is-cur" : "") +
-    '" data-inv="slot" data-k="' + w.k + '" aria-label="' + esc(w.name + ": " + (on ? it.name + ". Take it off." : "empty. Show what fits here.")) + '">' +
+    : '<svg class="iv-slot-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[s.f] + "</svg>";
+  return '<button type="button" class="iv-slot' + (s.fly ? " iv-fly" : "") + (on ? " is-on" : "") + (gearFilter === s.f ? " is-cur" : "") +
+    '" data-inv="slot" data-k="' + s.k + '" data-f="' + s.f + '" aria-label="' + esc(label + ": " + (on ? it.name + ". Take it off." : "empty. Show what fits here.")) + '">' +
     '<span class="iv-slot-face">' + face + "</span>" +
-    '<span class="iv-slot-nm">' + esc(on ? it.name : w.name) + "</span></button>";
+    '<span class="iv-slot-nm">' + esc(on ? it.name : label) + "</span></button>";
 }
 function renderInv() {
   const el = $("#invEquip");
@@ -8145,19 +8260,21 @@ function renderInv() {
   const order = WEAR.map(w => w.k);
   const shown = W.items.filter(x => !gearFilter || x.slot === gearFilter)
     .sort((a, b) => (order.indexOf(a.slot) - order.indexOf(b.slot)) || a.name.localeCompare(b.name));
-  const wornCount = WEAR.filter(w => gearWorn(w.k)).length;
+  const wornCount = SLOTS.filter(s => gearWorn(s.k)).length;
 
-  /* Left: the figure, its rig of slots, and the two garments too small to paint on a body —
-     those hang in boxes beside it, each on a hairline pointing back at the part they belong to.
+  /* Left: the figure, its rig of six worn-on-the-body slots, and the ten too small to paint on
+     a body this tall. Those hang beside it in clusters — the face on a line each side of the
+     head, the hands lower down — each cluster on a hairline pointing back at the part it serves.
      Right: the wardrobe. The reference puts the stash beside the doll rather than under it, and
      it is right to: stacked, the figure ate four hundred pixels of height and left five hundred
      of width empty on either side of itself. Side by side, both are on screen at once. */
+  const grp = g => '<div class="iv-grp" data-g="' + g + '">' +
+    SLOTS.filter(s => s.fly === g).map(invSlotHTML).join("") + "</div>";
   let h = '<div class="iv-body"><div class="iv-fig">' +
-    '<div class="iv-doll-wrap"><div class="iv-stage">' + invDollHTML() +
-      WEAR.filter(w => w.fly).map(invSlotHTML).join("") + "</div>" +
-      '<p class="iv-doll-cap">' + (wornCount ? wornCount + " of " + WEAR.length + " slots filled" : "Nothing on yet") +
+    '<div class="iv-doll-wrap"><div class="iv-stage">' + invDollHTML() + FLY_GROUPS.map(grp).join("") + "</div>" +
+      '<p class="iv-doll-cap">' + (wornCount ? wornCount + " of " + SLOTS.length + " slots filled" : "Nothing on yet") +
       (wornCount ? '<button type="button" class="iv-strip" data-inv="strip">Take it all off</button>' : "") + "</p></div>" +
-    '<div class="iv-rig">' + WEAR.filter(w => !w.fly).map(invSlotHTML).join("") + "</div>" +
+    '<div class="iv-rig">' + SLOTS.filter(s => !s.fly).map(invSlotHTML).join("") + "</div>" +
     "</div>";
 
   h += '<div class="iv-hold"><div class="iv-bar" role="group" aria-label="Show">' +
@@ -8172,7 +8289,7 @@ function renderInv() {
   if (!shown.length) h += '<p class="iv-empty">' + (W.items.length
     ? "Nothing in the wardrobe goes in that slot yet."
     : "The wardrobe is empty. Add a garment and it lands here, ready to put on.") + "</p>";
-  h += '<div class="iv-grid">' + shown.map(it => gearCellHTML(it, W.worn[it.slot] === it.id)).join("") +
+  h += '<div class="iv-grid">' + shown.map(it => gearCellHTML(it, gearIsOn(it))).join("") +
     '<div class="iv-cell iv-cell-add"><button type="button" class="iv-cell-b" data-inv="gearnew" aria-label="Add clothing">' +
       '<span class="iv-cell-face"><svg class="iv-icn" viewBox="0 0 40 40" aria-hidden="true">' +
         '<path d="M20 12v16M12 20h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>' +
@@ -8199,10 +8316,13 @@ function invSetSub(k) {
   invEnter();
   const t = $("#" + INV_TAB[invSub]); if (t) t.focus({ preventScroll: true });
 }
+/* a ring goes on the first free finger and comes off the finger it is on */
 function gearWear(id) {
   const it = gearById(id); if (!it) return;
-  const W = wardrobe();
-  if (W.worn[it.slot] === id) delete W.worn[it.slot]; else W.worn[it.slot] = id;
+  const W = wardrobe(), places = SLOTS_OF(it.slot);
+  const here = places.find(s => W.worn[s.k] === id);
+  if (here) delete W.worn[here.k];
+  else { const free = places.find(s => !W.worn[s.k]) || places[0]; if (free) W.worn[free.k] = id; }
   save(); renderInv();
   const b = document.querySelector('.iv-cell-b[data-id="' + id + '"]'); if (b) b.focus({ preventScroll: true });
 }
@@ -8342,7 +8462,7 @@ function gearDlgSave() {
   it.name = name.slice(0, 60); it.slot = d.slot; it.kind = kindOk(d.slot, d.kind) ? d.kind : kindsFor(d.slot)[0][0]; it.color = d.color;
   it.note = d.note.trim().slice(0, 80); it.img = d.img || "";
   /* a garment that moved to another slot cannot stay worn in the one it left */
-  if (moved) WEAR.forEach(w => { if (W.worn[w.k] === it.id && w.k !== it.slot) delete W.worn[w.k]; });
+  if (moved) SLOTS.forEach(s => { if (W.worn[s.k] === it.id && s.f !== it.slot) delete W.worn[s.k]; });
   save(); gearDlgClose(); renderInv();
   showToast(isNew ? "“" + it.name + "” is in the wardrobe." : "“" + it.name + "” saved.", true);
 }
@@ -8352,7 +8472,7 @@ function gearDelete() {
   takeSnapshot();
   const W = wardrobe();
   W.items = W.items.filter(x => x.id !== d.id);
-  WEAR.forEach(w => { if (W.worn[w.k] === d.id) delete W.worn[w.k]; });
+  SLOTS.forEach(s => { if (W.worn[s.k] === d.id) delete W.worn[s.k]; });
   save(); gearDlgClose(); renderInv();
   showToast("“" + it.name + "” is out of the wardrobe.", true);
 }
@@ -8362,7 +8482,7 @@ function invAct(el) {
     case "sub":        invSetSub(d.shelf); break;
     case "slot":
       if (gearWorn(d.k)) gearTakeOff(d.k);
-      else { gearFilter = gearFilter === d.k ? "" : d.k; renderInv();
+      else { gearFilter = gearFilter === d.f ? "" : d.f; renderInv();
         const b = document.querySelector('.iv-slot[data-k="' + d.k + '"]'); if (b) b.focus({ preventScroll: true }); }
       break;
     case "wear":       gearWear(d.id); break;
