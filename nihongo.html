@@ -241,6 +241,12 @@
     color: var(--jp-ink-3);
   }
 
+  /* the one nav item that leaves the page carries the accent */
+  .nav-open {
+    color: var(--jp-gold-dark) !important;
+  }
+  .nav-open:hover { color: var(--jp-ink) !important; }
+
   /* ── the why ─────────────────────────────────────────────────────── */
   .jp-vision {
     max-width: 68ch;
@@ -256,19 +262,50 @@
   .jp-vision p:last-child { margin-bottom: 0; }
   .jp-vision em { color: var(--jp-ink); font-style: italic; }
 
-  /* ── gallery ─────────────────────────────────────────────────────── */
-  .jp-shots {
-    display: grid;
-    /* four detail tiles read as two pairs, not a row of three and an orphan */
-    grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
-    gap: 18px;
-    margin: 0 0 8px;
+  /* ── a look inside: prose leads, the figure's width is the emphasis ──
+     Single-column long-form with graded breakouts. Four scales, in order of
+     weight: full (breaks the shell), wide (fills it), pair (two at half),
+     aside (a narrow supplement beside the prose). The image inventory is
+     mixed — two cinematic, two landscape, one near-square, one portrait —
+     so the scales are chosen per shape rather than applied uniformly. */
+  .jp-moment {
+    margin: 0 0 64px;
   }
-  .jp-shot { margin: 0; }
-  .jp-shot.is-wide { grid-column: 1 / -1; }
-  /* a card is taller than it is wide: cap it so it sits level with its neighbour */
-  .jp-shot.is-tall img { max-height: 430px; width: auto; margin: 0 auto; }
-  .jp-shot img {
+  .jp-moment:last-of-type { margin-bottom: 8px; }
+  .jp-moment-head {
+    max-width: 64ch;
+    margin: 0 0 18px;
+  }
+  .jp-moment h3 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 23px;
+    line-height: 1.25;
+    color: var(--jp-ink);
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .jp-moment h3 .ja {
+    font-family: var(--serif-jp);
+    font-weight: 400;
+    font-size: 17px;
+    color: var(--jp-ink-3);
+    margin-left: 10px;
+    letter-spacing: 0.04em;
+  }
+  .jp-moment p {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--jp-ink-2);
+    margin: 0 0 10px;
+  }
+  .jp-moment p:last-child { margin-bottom: 0; }
+  .jp-moment b { font-weight: 600; color: var(--jp-ink); }
+
+  /* the scales */
+  .jp-fig { margin: 0; }
+  .jp-fig img {
     display: block;
     width: 100%;
     height: auto;
@@ -277,18 +314,45 @@
     background: var(--jp-paper-2);
     box-shadow: 0 2px 10px rgba(100,72,30,0.09);
   }
-  .jp-shot figcaption {
+  .jp-fig figcaption {
     margin-top: 8px;
     font-family: 'Source Serif 4', serif;
+    font-style: italic;
     font-size: 13px;
     line-height: 1.5;
-    color: var(--jp-ink-2);
+    color: var(--jp-ink-3);
+    max-width: 78ch;
   }
-  .jp-shot figcaption b {
-    font-weight: 600;
-    font-style: normal;
-    color: var(--jp-ink);
+  /* full: steps outside the shell, up to the viewport, for the one shot that
+     earns the whole width */
+  .jp-fig.is-full {
+    width: min(100vw - 32px, 1560px);
+    margin-left: 50%;
+    transform: translateX(-50%);
   }
+  /* medium: a closing note does not need the full width */
+  .jp-fig.is-medium { max-width: 760px; }
+  .jp-fig.is-pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 18px;
+  }
+  .jp-fig.is-pair figcaption { grid-column: auto; }
+  .jp-pair-item { margin: 0; }
+  .jp-pair-item img { width: 100%; }
+  /* aside: the card sits beside the prose only when the prose still has a
+     comfortable measure; below that it stacks rather than squeeze to 45ch */
+  .jp-aside { display: grid; gap: 20px; }
+  .jp-aside .jp-fig img { max-height: 420px; width: auto; margin: 0 auto; }
+  @media (min-width: 900px) {
+    .jp-aside { grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; align-items: start; }
+    .jp-aside .jp-fig img { margin: 0 0 0 auto; }
+  }
+  @media (max-width: 760px) {
+    .jp-moment h3 { font-size: 20px; }
+    .jp-fig.is-full { width: 100%; margin-left: 0; transform: none; }
+  }
+
   @media (max-width: 640px) {
     .jp-vision p { font-size: 16px; }
   }
@@ -341,12 +405,11 @@
     </button>
 
     <ul class="primary" id="nav-primary">
-      <li><a href="./index.html#top">home</a></li>
-      <li><a href="./index.html#clients">work</a></li>
-      <li><a href="./process.html">process</a></li>
-      <li><a href="./blog.html">blog</a></li>
-      <li><a href="./books.html">library</a></li>
-      <li><a href="./about-me.html">about</a></li>
+      <li><a href="#top">about</a></li>
+      <li><a href="#inside">inside</a></li>
+      <li><a href="#reader">the reader</a></li>
+      <li><a href="#gallery">a look inside</a></li>
+      <li><a href="./nihongo/app.html" class="nav-open">勉強 &middot; open the app</a></li>
     </ul>
   </div>
 </nav>
@@ -357,9 +420,9 @@
 <section class="page-hero jp-hero">
   <div class="shell">
     <div class="crumbs">
-      <a href="./index.html">Home</a>
+      <span class="ns" lang="ja">日本語</span>
       <span class="sep">/</span>
-      <span lang="ja" aria-current="page">日本語</span>
+      <span aria-current="page">the study space</span>
     </div>
 
     <div class="page-hero-grid">
@@ -408,7 +471,7 @@
       <p>It is not a product and there is no roadmap. It grows in the direction I happen to be studying, which is why there is a whole world for eating out, and why the dictionary knows the word for Pokédex.</p>
     </div>
 
-    <p class="jp-section-label">what&rsquo;s inside</p>
+    <p class="jp-section-label" id="inside">what&rsquo;s inside</p>
 
     <div class="jp-sections">
       <div class="jp-sec">
@@ -450,30 +513,70 @@
 
     <p class="jp-section-label" id="gallery">a look inside</p>
 
-    <div class="jp-shots">
-      <figure class="jp-shot is-wide">
-        <img src="./nihongo/images/showcase/reader-on-zelda.webp" alt="The Nihongo Reader extension open on a Japanese Zelda page: a selected sentence with the 札 button beside it, a floating bar showing the sentence as coloured blocks, and a side panel listing the words and their kanji." loading="lazy" width="1600" height="764" />
-        <figcaption><b>The reader, out in the wild.</b> A chapter page from 時のオカリナ. Select a line, tap 札, and the bar takes the sentence apart while the panel lists the words, their readings and every kanji inside them.</figcaption>
+    <div class="jp-moment">
+      <div class="jp-moment-head" id="reader">
+        <h3>Reading a page nobody wrote for a learner<span class="ja" lang="ja">読む</span></h3>
+        <p>Textbook Japanese is graded. The internet is not. The reader is my answer to that: it takes the page as it is and does the work of a patient teacher beside you. Select a line and a 札 button appears; tap it and the sentence drops into a bar at the foot of the page, already taken apart.</p>
+        <p>The panel on the right is the part that matters. It lists every word in the selection with its reading, then every kanji inside those words, marked with a dot when it is one I have a card for. <b>Each kanji I look at is counted as a studied encounter</b>, so the app slowly learns what the web has already taught me. Nothing is sent anywhere unless I ask for it.</p>
+      </div>
+      <figure class="jp-fig is-full">
+        <img src="./nihongo/images/showcase/reader-on-zelda.webp" alt="The Nihongo Reader extension open on a Japanese Zelda page: a selected sentence with the 札 button beside it, a floating bar showing the sentence as coloured blocks, and a side panel listing the words ハイラル, 王国, 辺境 and the kanji 王 国 辺 境." loading="lazy" width="1600" height="764" />
+        <figcaption>Chapter 2 of 時のオカリナ on Nintendo&rsquo;s own site. The panel has already recorded six kanji encounters from one sentence.</figcaption>
       </figure>
-      <figure class="jp-shot is-wide">
-        <img src="./nihongo/images/showcase/sentence-blocks.webp" alt="A sentence diagram for 私は私の可愛い猫とアニメを見る: each word is a coloured chevron, each particle a diamond, with a legend naming the role of each piece." loading="lazy" width="1400" height="460" />
-        <figcaption><b>One sentence, taken apart.</b> &ldquo;I watch anime with my cute cat.&rdquo; Words are chevrons, particles are diamonds, and the verb closes the line. The reader draws the pages you visit in this same alphabet.</figcaption>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-moment-head">
+        <h3>One alphabet for every sentence<span class="ja" lang="ja">文型</span></h3>
+        <p>Japanese marks the job of each word with a particle rather than with word order, which is exactly what an English speaker keeps losing track of. So every sentence in this project &mdash; in the grammar lessons and in the reader alike &mdash; is drawn in the same shapes: <b>words are chevrons, particles are diamonds, and the verb closes the line</b>. Colour carries the role, not decoration.</p>
+        <p>Once you have read twenty sentences this way, the shape arrives before the meaning does. You see a red diamond and know something has just been made the topic, before you have finished reading the word in front of it.</p>
+      </div>
+      <figure class="jp-fig">
+        <img src="./nihongo/images/showcase/sentence-blocks.webp" alt="A sentence diagram for 私は私の可愛い猫とアニメを見る, with each word a coloured chevron, each particle a diamond, and a legend naming the role of each piece." loading="lazy" width="1400" height="460" />
+        <figcaption>&ldquo;I watch anime with my cute cat.&rdquo; 私の可愛い猫 is one noun phrase, so it takes one block; と marks the cat as the co-participant; を marks what is being watched.</figcaption>
       </figure>
-      <figure class="jp-shot">
-        <img src="./nihongo/images/showcase/vocabulary-fruits.webp" alt="The vocabulary section showing a grid of illustrated fruit cards with Japanese names and taste tags." loading="lazy" width="1600" height="800" />
-        <figcaption><b>Vocabulary books.</b> Every word gets a picture, a reading and the tags that matter &mdash; here, which fruits are sweet and which are sour.</figcaption>
-      </figure>
-      <figure class="jp-shot">
-        <img src="./nihongo/images/showcase/textures.webp" alt="The textures world: a row of texture words above an illustrated card for さくさく with a sawtooth line drawing." loading="lazy" width="1147" height="869" />
-        <figcaption><b>Textures.</b> Each texture word is drawn as the line it feels like: a soft wave for もちもち, a sawtooth for さくさく.</figcaption>
-      </figure>
-      <figure class="jp-shot is-tall">
-        <img src="./nihongo/images/showcase/kanji-tree.webp" alt="A flashcard for the kanji 木: an illustration of a tree whose trunk and branches are the character itself, with the readings き and ボク and the meaning tree / wood." loading="lazy" width="539" height="745" />
-        <figcaption><b>A card, front to back.</b> The picture is the mnemonic: 木 is a tree, drawn as the character it is, with its readings and meaning underneath.</figcaption>
-      </figure>
-      <figure class="jp-shot">
-        <img src="./nihongo/images/showcase/kanji-card.webp" alt="A kanji detail card for 色 showing large stroke-order artwork and its readings." loading="lazy" width="1144" height="667" />
-        <figcaption><b>One kanji, up close.</b> Stroke order, readings, and the story I wrote to keep it in my head.</figcaption>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-moment-head">
+        <h3>Words worth looking at<span class="ja" lang="ja">語彙</span></h3>
+        <p>The vocabulary books are themed the way a life is, not the way a syllabus is: home, food, stays, the internet. Every entry is drawn rather than photographed, because a drawing can carry the one feature that makes the word stick and leave everything else out.</p>
+        <p>The stranger sections are the useful ones. <b>Texture words</b> get a line beside them that behaves the way the word feels &mdash; a soft wave for もちもち, a sawtooth for さくさく &mdash; which is the only way I have found to remember a set of words English simply does not have.</p>
+      </div>
+      <div class="jp-fig is-pair">
+        <figure class="jp-pair-item">
+          <img src="./nihongo/images/showcase/vocabulary-fruits.webp" alt="The vocabulary section showing a grid of illustrated fruit cards with Japanese names and taste tags." loading="lazy" width="1600" height="800" />
+          <figcaption>果物, twenty entries. The tags say which are あまい and which are すっぱい.</figcaption>
+        </figure>
+        <figure class="jp-pair-item">
+          <img src="./nihongo/images/showcase/textures.webp" alt="The textures world: a row of texture words from soft to hard, above an illustrated card for さくさく with a sawtooth line drawing." loading="lazy" width="1147" height="869" />
+          <figcaption>食感, run from やわらかい to かたい. The line under each word is its texture.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-aside">
+        <div class="jp-moment-head">
+          <h3>A card is a picture first<span class="ja" lang="ja">単語札</span></h3>
+          <p>Most kanji decks show you a character and ask you to recall a word. These start from the other end. <b>The picture is the mnemonic</b>, drawn so the character is inside the thing it means: 木 is a tree whose trunk and branches are the strokes themselves. The readings sit underneath, kun first, then on.</p>
+          <p>Behind the card sit the parts that make it work: animated stroke order, the story I wrote when I made it, and a review queue that asks again at widening intervals. The reader links straight back here, so a kanji met in the wild opens the card I already drew for it.</p>
+        </div>
+        <figure class="jp-fig">
+          <img src="./nihongo/images/showcase/kanji-tree.webp" alt="A flashcard for the kanji 木: an illustration of a tree whose trunk and branches are the character itself, with the readings き and ボク and the meaning tree / wood." loading="lazy" width="539" height="745" />
+          <figcaption>木 &mdash; tree / wood.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-moment-head">
+        <h3>And the dictionary underneath<span class="ja" lang="ja">辞書</span></h3>
+        <p>Under all of it is a small dictionary the reader carries with it: <b>every one of the 2,136 kanji taught in Japanese schools</b>, with their readings and meanings, plus the game vocabulary I keep running into. A character with no card of its own still answers when you tap it, which means a translation service is never the first thing reached for.</p>
+      </div>
+      <figure class="jp-fig is-medium">
+        <img src="./nihongo/images/showcase/kanji-card.webp" alt="A kanji detail page for 色 showing large stroke-order artwork and its readings." loading="lazy" width="1144" height="667" />
+        <figcaption>色 in the dictionary, with the stroke order drawn out.</figcaption>
       </figure>
     </div>
 
