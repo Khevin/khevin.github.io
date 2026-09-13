@@ -357,15 +357,28 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   background: transparent;
   padding: 0;
 }
+/* Khevin's drawing, sitting on the paper with the dark field beginning exactly
+   at its ground line — the ground bar in the artwork IS the top edge of the
+   footer, so the two read as one thing and the hairline rule is not missed.
+
+   It is PLACED rather than masked. The piece is drawn for a light sky: its
+   silhouette is the dark and its windows are the light, so recolouring it to
+   sit on the dark field turned it into a photographic negative — only the
+   highlights survived and the buildings vanished. The one change made to the
+   drawing is that its near-blacks were retuned to this footer's ink, so the
+   ground bar meets the field without a seam. */
 .foot-skyline {
-  /* The band keeps the drawing's own ratio, so the mask never distorts. A fixed
-     height would stretch it by a different amount at every viewport width. */
-  aspect-ratio: 1600 / 132;
-  min-height: 52px;
-  max-height: 140px;
-  background-color: var(--foot-ink);
-  -webkit-mask: url('/assets/skyline-sp.svg') bottom center / 100% 100% no-repeat;
-  mask: url('/assets/skyline-sp.svg') bottom center / 100% 100% no-repeat;
+  line-height: 0;
+  background: var(--paper);
+}
+.foot-skyline img {
+  display: block;
+  /* Capped and centred: it is a composition with palms at both ends, not a
+     repeating band, and full-bleed at its own 2.9:1 would make the footer
+     taller than some of the pages it closes. */
+  width: min(100%, 940px);
+  height: auto;
+  margin: 0 auto;
 }
 .foot-body {
   background: var(--foot-ink);
@@ -376,11 +389,6 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 .foot .colophon a { color: #b6b6be; }
 .foot .colophon a:hover { color: var(--accent); }
 
-@supports not (mask: url('/assets/skyline-sp.svg')) {
-  /* No mask support: fall back to the rule it replaced rather than a bare edge. */
-  .foot-skyline { height: 0; background: none; }
-  .foot-body { border-top: 1px solid var(--rule); }
-}
 
 /* ---------- signature ----------
    The asset is black artwork on transparency. On the Signal paper that is
