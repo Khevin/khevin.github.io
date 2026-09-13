@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Amway — Khevin Mituti</title>
 <meta name="description" content="From a single Product Recommender to a suite of six tools — leading design at Amway through a custom recommendation engine, four internal applications, and the design system that scaled them all. 24% of all items sold came through recommendations." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../fonts.css" />
+<link rel="stylesheet" href="../display-fonts.css" />
 <link rel="stylesheet" href="../styles.css" />
+<link rel="stylesheet" href="../identity.css" />
+<script src="../nav-current.js" defer></script>
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16x16.png" />
 <link rel="shortcut icon" href="../assets/favicon/favicon.ico" />
@@ -20,11 +21,18 @@
 <nav class="top">
   <div class="inner">
     <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
-      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="ns">khevin mituti</span><span class="ns-sr"> / portfolio</span>
       <span class="chev" aria-hidden="true">▾</span>
     </button>
 
     <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="true" data-href="../index.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">✓</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work — what khevin ships for clients</span>
+      </li>
       <li role="option" aria-selected="false" data-href="../design-expert.html" tabindex="-1">
         <span class="ns-row">
           <span class="mark" aria-hidden="true"></span>
@@ -32,12 +40,19 @@
         </span>
         <span class="ns-desc">the plugin — what khevin makes for designers</span>
       </li>
-      <li role="option" aria-selected="true" data-href="../index.html" class="current" tabindex="0">
+      <li role="option" aria-selected="false" data-href="../skillstone/" tabindex="-1">
         <span class="ns-row">
-          <span class="mark" aria-hidden="true">✓</span>
-          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+          <span class="mark" aria-hidden="true"></span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">skillstone</span></span>
         </span>
-        <span class="ns-desc">the work — what khevin ships for clients</span>
+        <span class="ns-desc">the character sheet — what khevin keeps for himself</span>
+      </li>
+      <li role="option" aria-selected="false" data-href="../nihongo.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">nihongo</span></span>
+        </span>
+        <span class="ns-desc">the study space — what khevin is learning</span>
       </li>
     </ul>
 
@@ -52,7 +67,6 @@
       <li><a href="../process.html">process</a></li>
       <li><a href="../blog.html">blog</a></li>
       <li><a href="../books.html">library</a></li>
-      <li><a href="../nihongo.html" lang="ja">日本語</a></li>
       <li><a href="../about-me.html">about</a></li>
     </ul>
   </div>

@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GTD · khevin/mituti</title>
 <meta name="description" content="A weekly notebook spread for getting things done — notes, reminders, a bucket list, habits, and the days of the week. Hand-drawn." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&family=Shadows+Into+Light&family=Architects+Daughter&family=Patrick+Hand&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@400;500;600&family=Newsreader:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./fonts.css" />
+<link rel="stylesheet" href="./display-fonts.css" />
 <link rel="stylesheet" href="./styles.css" />
+<link rel="stylesheet" href="./identity.css" />
+<script src="./nav-current.js" defer></script>
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png" />
 <link rel="shortcut icon" href="./assets/favicon/favicon.ico" />
@@ -846,38 +847,38 @@ body[data-page="gtd"] .foot { display: none; }
 <nav class="top">
   <div class="inner">
     <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
-      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">portfolio</span>
+      <span class="ns">khevin mituti</span><span class="ns-sr"> / portfolio</span>
       <span class="chev" aria-hidden="true">&#9662;</span>
     </button>
 
     <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="true" data-href="./index.html" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">✓</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work — what khevin ships for clients</span>
+      </li>
       <li role="option" aria-selected="false" data-href="./design-expert.html" tabindex="-1">
         <span class="ns-row">
           <span class="mark" aria-hidden="true"></span>
           <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
         </span>
-        <span class="ns-desc">the plugin &mdash; what khevin makes for designers</span>
-      </li>
-      <li role="option" aria-selected="true" data-href="./index.html" class="current" tabindex="0">
-        <span class="ns-row">
-          <span class="mark" aria-hidden="true">&#10003;</span>
-          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
-        </span>
-        <span class="ns-desc">the work &mdash; what khevin ships for clients</span>
+        <span class="ns-desc">the plugin — what khevin makes for designers</span>
       </li>
       <li role="option" aria-selected="false" data-href="./skillstone/" tabindex="-1">
         <span class="ns-row">
           <span class="mark" aria-hidden="true"></span>
           <span>khevin-mituti<span class="slash">/</span><span class="child">skillstone</span></span>
         </span>
-        <span class="ns-desc">the character sheet &mdash; what khevin keeps for himself</span>
+        <span class="ns-desc">the character sheet — what khevin keeps for himself</span>
       </li>
       <li role="option" aria-selected="false" data-href="./nihongo.html" tabindex="-1">
         <span class="ns-row">
           <span class="mark" aria-hidden="true"></span>
           <span>khevin-mituti<span class="slash">/</span><span class="child">nihongo</span></span>
         </span>
-        <span class="ns-desc">the study space &mdash; what khevin is learning</span>
+        <span class="ns-desc">the study space — what khevin is learning</span>
       </li>
     </ul>
 

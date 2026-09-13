@@ -43,7 +43,16 @@
 .shelf-title,
 .notes-year .year,
 .page-hero-grid .l h1,
-.library-h1 {
+.library-h1,
+/* The case studies and the about page were outside the identity until the
+   publisher learned to find them; their headings belong to the same voice.
+   The case hero is reached at .case-hero.case-hero--wide .case-title in
+   styles.css, so a bare class here loses to it — matched rather than assumed. */
+.case-hero.case-hero--wide .case-title,
+.case-grid .body-block h2,
+.case-prose h2,
+.takeaways__head,
+.about-page-grid .bio .lead {
   /* Fraunces 900 is the title face. The --display-* hooks stay so another can
      still be tried from devtools without editing this file; the nav picker that
      used to drive them is gone. Candidates still live in display-fonts.css and
@@ -66,7 +75,11 @@
 .principle h2 em,
 .notes-year .year em,
 .page-hero-grid .l h1 em,
-.library-h1 em {
+.library-h1 em,
+.case-hero.case-hero--wide .case-title em,
+.case-grid .body-block h2 em,
+.case-prose h2 em,
+.about-page-grid .bio .lead em {
   font-style: normal;
 }
 
@@ -335,6 +348,12 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    already right; the filter hook is here so it survives if this block is ever
    set on ink, since a PNG cannot take currentColor. */
 .signature { opacity: .92; }
+/* In the bio it signs off the paragraphs rather than heading a link list, so it
+   wants air above it and none of the -4px pull that lines it up with a column
+   of labels on the home page. */
+.signature--bio {
+  margin: 26px 0 30px;
+}
 .contact-block.is-ink .signature { filter: invert(1); opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
