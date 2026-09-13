@@ -34,6 +34,35 @@ const [input, output, farTone] = process.argv.slice(2);
 if (!input || !output) throw new Error('usage: clean-skyline.mjs <in.svg> <out.svg> [farTone]');
 
 const INK = '#16161b';
+
+/* The page colour, read out of the identity rather than written down here, so
+   the asset and the stylesheet cannot drift apart. The drawing needs it because
+   its sky is PAINTED, not empty: the buildings are one dark mass and the sky is
+   pale shapes laid over the top. Wherever such a shape touches the real page —
+   the bridge's cable fan most of all — a tone that is merely close reads as a
+   panel sitting on the paper. White is 2.4% brighter than this paper, which over
+   an area that size is exactly the smudge you see. */
+const IDENTITY = new URL('./parked/signal.css', import.meta.url);
+const PAPER = (await readFile(IDENTITY, 'utf8')).match(/--paper:\s*(#[0-9a-fA-F]{3,8})/)?.[1];
+if (!PAPER) throw new Error('could not read --paper from signal.css');
+
+/* The bridge, in the drawing's own coordinates. Inside it the mid greys are
+   more sky — the fan is carved in three tones that disagree, which is what webs
+   the cables together instead of separating them. Outside it those same greys
+   are real building shading and lit windows, so this is deliberately a region
+   and not a global swap. Paths are placed by their first move-to, which for
+   shapes this small sits inside the shape; checked against real bounding boxes
+   in the browser, the two agree exactly on every grey path here. */
+const BRIDGE = { x0: 248, x1: 432, y0: 95, y1: 215 };
+const FAN = new Set(['#E2E2E3', '#CDCECF', '#B6B7B8']);
+
+/* The cables have the same problem from the other end: one object drawn in five
+   tones. Most are ink, but a handful came out of the trace two or three steps
+   lighter, and a lighter cable does not read as a cable further away — it reads
+   as a smear across the ones around it. They go to one ink, so the fan is a fan.
+   Stops short of the Luz tower at 425, whose body is drawn in #232223 too. */
+const CABLE = { x0: 248, x1: 425, y0: 95, y1: 215 };
+const STRAND = new Set(['#232223', '#363738', '#555556', '#737272']);
 /* Everything at or below this luminance is silhouette rather than detail.
    #232223 sits just above the footer ink and reads as the nearest layer of
    depth, so it is deliberately left alone. */
@@ -61,7 +90,7 @@ const SILHOUETTE = ['#030303', '#171718', '#1A1A1A', '#000000'];
 const RED = '#c93123';
 const martinelli = () => {
   const shaft = '#232223';  // the tone the tower itself is drawn in
-  const slot = (x) => `<rect x="${x}" y="36" width="2.7" height="6.4" fill="white"/>`;
+  const slot = (x) => `<rect x="${x}" y="36" width="2.7" height="6.4" fill="${PAPER}"/>`;
   const band = (y) => `<rect x="579.75" y="${y}" width="16.9" height="1.56" fill="${INK}"/>`;
   return [
     // setbacks, stepping in twice the way the real tower does
@@ -94,6 +123,9 @@ svg = svg.replace(/<rect[^>]*fill="#F5F5F5"[^>]*\/>\s*/i, '');
 let recoloured = 0;
 let dropped = 0;
 let sky_n = 0;
+let skyed = 0;
+let fanned = 0;
+let stranded = 0;
 
 if (farTone) {
   const paths = [...svg.matchAll(/<path[^>]*\sd="([^"]*)"[^>]*>/g)];
@@ -131,7 +163,32 @@ if (farTone) {
     svg = svg.replace(re, `fill="${INK}"`);
   }
 
-  // 3. Martinelli
+  /* 3. the sky becomes the page.
+     Every pure white in the drawing, wherever it is. Against a dark building a
+     window painted white and one painted paper are the same to the eye, so
+     nothing that reads as a lit window changes; against the page, a cut-out
+     stops being a slightly brighter panel and simply becomes the page. */
+  skyed = (svg.match(/fill="white"/g) || []).length;
+  svg = svg.replace(/fill="white"/g, `fill="${PAPER}"`);
+
+  /* and the bridge's disagreeing tones: its three pale greys are sky, its four
+     darks are all the same cable. Placed by first move-to — for shapes this
+     small that point is inside the shape, and checked against real bounding
+     boxes in the browser the two agree on every path here. */
+  svg = svg.replace(/<path[^>]*>/g, (tag) => {
+    const f = (tag.match(/fill="([^"]+)"/) || [, ''])[1].toUpperCase();
+    const sky = FAN.has(f), strand = STRAND.has(f);
+    if (!sky && !strand) return tag;
+    const m = tag.match(/\sd="M(-?[\d.]+)[\s,]+(-?[\d.]+)/);
+    if (!m) return tag;
+    const x = +m[1], y = +m[2];
+    const box = sky ? BRIDGE : CABLE;
+    if (x < box.x0 || x > box.x1 || y < box.y0 || y > box.y1) return tag;
+    if (sky) fanned += 1; else stranded += 1;
+    return tag.replace(/fill="[^"]+"/, `fill="${sky ? PAPER : INK}"`);
+  });
+
+  // 4. Martinelli
   svg = svg.replace('</svg>', martinelli() + '</svg>');
 }
 
@@ -160,5 +217,7 @@ console.log(`${output}   (${farTone ? 'far' : 'near'}, viewBox ${vb})`);
 console.log(`  plate removed:   ${plate ? 'yes' : 'none in this export'}`);
 if (farTone) console.log(`  plate minus sky: ${sky_n} sky paths punched out, ${dropped} detail paths dropped`);
 else console.log(`  recoloured:      ${recoloured} paths → ${INK}`);
+if (!farTone) console.log(`  sky → page:      ${skyed} white + ${fanned} bridge greys → ${PAPER}`);
+if (!farTone) console.log(`  cables unified:  ${stranded} paths → ${INK}`);
 console.log(`  tones remaining: ${tones}`);
 console.log(`  size:            ${Math.round(before / 1024)}KB → ${Math.round(svg.length / 1024)}KB`);

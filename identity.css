@@ -46,6 +46,10 @@
 .notes-year .year,
 .page-hero-grid .l h1,
 .library-h1,
+/* The bio lead is two voices now: the name in the title face, what he does in
+   the sans below it. So the display rule takes the name rather than the whole
+   paragraph. */
+.about-page-grid .bio .lead-name,
 /* The case studies and the about page were outside the identity until the
    publisher learned to find them; their headings belong to the same voice.
    The case hero is reached at .case-hero.case-hero--wide .case-title in
@@ -53,8 +57,7 @@
 .case-hero.case-hero--wide .case-title,
 .case-grid .body-block h2,
 .case-prose h2,
-.takeaways__head,
-.about-page-grid .bio .lead {
+.takeaways__head {
   /* Fraunces 900 is the title face. The --display-* hooks stay so another can
      still be tried from devtools without editing this file; the nav picker that
      used to drive them is gone. Candidates still live in display-fonts.css and
@@ -81,8 +84,32 @@
 .case-hero.case-hero--wide .case-title em,
 .case-grid .body-block h2 em,
 .case-prose h2 em,
-.about-page-grid .bio .lead em {
+.about-page-grid .bio .lead-name em {
   font-style: normal;
+}
+
+/* ---------- the bio lead ----------
+   His name, then what he does — set as two things rather than one sentence in
+   one face. The paragraph itself stops carrying the title styling; each half
+   asks for its own. */
+.about-page-grid .bio .lead-name {
+  display: block;
+  font-size: clamp(26px, 2.9vw, 38px);
+  line-height: 1.1;
+}
+.about-page-grid .bio .lead-role {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 400;
+  /* Roughly half the name's size — far enough apart that the two read as a
+     hierarchy rather than as one setting that changed its mind. */
+  font-size: clamp(15px, 1.45vw, 18px);
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--ink-2);
+  margin-top: 12px;
+  /* Its own measure: 38ch of the paragraph's size is a long way at this one. */
+  max-width: 30ch;
 }
 
 .hero.v5 .dispatches h4,
