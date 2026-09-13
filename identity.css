@@ -167,7 +167,9 @@ nav.top ul.primary a {
   color: var(--ink-2);
   transition: color var(--m-fast);
 }
-nav.top ul.primary a:hover { color: var(--ink); }
+/* Ink to a darker ink was a hover you had to look for. Red is the one colour
+   the page already spends on the thing you are pointing at. */
+nav.top ul.primary a:hover { color: var(--accent); }
 nav.top ul.primary a[aria-current='page'] {
   font-family: 'Fraunces', Georgia, serif;
   font-weight: 900;
