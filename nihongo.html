@@ -253,10 +253,10 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    /* the asset is cut out of its paper and feathered, so it needs no mask:
-       it simply ends where the branch ends */
-    background: url("./nihongo/images/bg/global/nav-sakura.webp") 47% 17% / auto 215% no-repeat;
-    opacity: .85;
+    /* the asset is a band cut out of its paper, shaped for this bar: its own
+       height is the bar’s height, so the flowers are never sliced by the edge */
+    background: url("./nihongo/images/bg/global/nav-sakura.webp") 47% 50% / auto 100% no-repeat;
+    opacity: .95;
   }
   @media (max-width: 700px) {
     /* the bar is nearly all control at this width; the branch would crowd it */
