@@ -1004,7 +1004,7 @@ function repositionParticleBrushes() {
 const BRUSH_BG_SPILL_RATIO = 0.10;
 const BRUSH_BG_FALLBACK_ASPECT = 2.0;
 const SUB_SIDEBAR_SELECTOR =
-  '.particles-sidebar, .flash-sidebar, .writing-sidebar, ' +
+  '.particles-sidebar, .flash-sidebar, .flash-cats-sidebar, .writing-sidebar, ' +
   '.vocab-sidebar, .vocab-books-sidebar, .library-sidebar';
 function repositionBgBrushes() {
   document.querySelectorAll('.active-brush-bg').forEach(brush => {
@@ -12550,15 +12550,18 @@ function renderFlashCatsSidebar() {
     ${classes.length ? `<ul class="cat-list">
       ${classes.map(c => {
         const isActive = !inReview && c.id === APP.flashClassId;
+        const bb = isActive ? bgBrushBits() : null;
         return `
         <li>
-          <button class="cat-item ${isActive ? 'active' : ''}" data-flash-cat="${c.id}">
+          <button class="cat-item ${isActive ? 'active ' + bb.cls : ''}"
+                  ${bb ? `style="${bb.style}"` : ''}
+                  data-flash-cat="${c.id}">
             <span class="cat-glyph">${c.glyph}</span>
             <span class="cat-label">
               <span class="cat-ja">${escHTML(c.titleJa)}</span>
               <span class="cat-en">${escHTML(c.titleEn)}</span>
             </span>
-            ${isActive ? activeBrushHTML(3) : ''}
+            ${bb ? bb.html : ''}
           </button>
         </li>
       `;
