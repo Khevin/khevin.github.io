@@ -323,7 +323,10 @@ nav.top ul.primary a:hover { color: var(--ink); }
   pointer-events: none;
 }
 .hero.v5 .h-block .left {
-  padding: clamp(48px, 6vw, 80px) clamp(28px, 3vw, 56px) clamp(48px, 6vw, 80px) clamp(20px, 4vw, 80px);
+  /* Horizontal padding capped where .h-block's max-width caps (4vw and 3vw of
+     1400). Left as vw it kept eating this column after the column had stopped
+     growing, which is what squeezed the headline's second line onto a third. */
+  padding: clamp(48px, 6vw, 80px) clamp(28px, 3vw, 36px) clamp(48px, 6vw, 80px) clamp(20px, 4vw, 48px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -340,13 +343,24 @@ nav.top ul.primary a:hover { color: var(--ink); }
 .hero.v5 .h-block h1 .a { display: block; }
 .hero.v5 .h-block h1 .b {
   display: block;
-  padding-left: 6vw;
+  /* Capped where .h-block's max-width caps. As vw this went on growing after
+     the container had stopped, so the wider the window the less room this line
+     had — it wrapped at about 1500px and never recovered. */
+  padding-left: clamp(24px, 6vw, 72px);
+  /* The h1 sets text-wrap: balance, which this line inherits. Once it fits with
+     only a little room to spare, balance would rather have two even lines than
+     one nearly-full one — so it kept breaking a line that fit. It is two blocks
+     by construction; there is nothing here left to balance. */
+  text-wrap: wrap;
   font-style: italic;
   color: var(--accent);
 }
 .hero.v5 .h-block .right {
   border-left: 1px solid var(--v5-rule);
-  padding: clamp(48px, 6vw, 80px) clamp(20px, 4vw, 80px) clamp(48px, 6vw, 80px) clamp(28px, 3vw, 36px);
+  /* Likewise capped: this column is 0.6fr, and fr shares out space after each
+     track's own padding is accounted for — so a padding that kept growing on vw
+     was quietly taking width off the headline in the 1fr beside it. */
+  padding: clamp(48px, 6vw, 80px) clamp(20px, 4vw, 56px) clamp(48px, 6vw, 80px) clamp(28px, 3vw, 36px);
   font-family: var(--serif);
   font-size: 18px;
   line-height: 1.55;
