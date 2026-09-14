@@ -455,7 +455,7 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    to carry that weight itself, so it sits taller. */
 .foot-body {
   background: var(--foot-ink);
-  padding: clamp(34px, 3.6vw, 54px) 0 clamp(30px, 3.2vw, 46px);
+  padding: clamp(14px, 1.5vw, 22px) 0 clamp(12px, 1.3vw, 19px);
 }
 /* Under the city it is a rule of night, not a slab: the skyline is doing the
    closing, and this only has to hold one line of type. The top clears the

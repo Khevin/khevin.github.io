@@ -163,6 +163,12 @@
      anywhere; it had been running and doing nothing.) */
   (() => {
     if (reduced) return;
+    /* A page can sit this out. The process page is six principles in a bordered
+       grid: each card lifting on its own turned a fixed frame into something
+       that assembled itself, and the borders arriving a beat after the cell
+       read as a fault. Its hover states are untouched — they are the motion
+       that page already had, and the motion it wants. */
+    if (document.body.dataset.reveal === 'off') return;
 
     const RISE = [
       '.section-title',             // the section announces itself
@@ -183,9 +189,14 @@
       '.takeaways__head',
     ];
 
+    /* Marked, never hidden. These carry their motion on a pseudo-element or a
+       child, so holding the element itself back would take its contents with
+       it: the timeline's rule and arrowhead, the bar's illustration layer. */
+    const TRACKS = ['.process', '#clients .s-head'];
+
     const nodes = $$(RISE.join(','));
-    const track = document.querySelector('.process');
-    if (!nodes.length && !track) return;
+    const tracks = $$(TRACKS.join(','));
+    if (!nodes.length && !tracks.length) return;
 
     document.documentElement.classList.add('js-motion');
 
@@ -220,9 +231,7 @@
 
     nodes.forEach((n) => io.observe(n));
 
-    /* The timeline container is marked, never hidden: it carries the rule and
-       the arrowhead, and hiding it would take its steps with it. */
-    if (track) {
+    if (tracks.length) {
       const tio = new IntersectionObserver((entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
@@ -230,7 +239,7 @@
           tio.unobserve(e.target);
         }
       }, { rootMargin: '0px 0px -15% 0px' });
-      tio.observe(track);
+      tracks.forEach((t) => tio.observe(t));
     }
   })();
 

@@ -28,13 +28,40 @@
   margin-right: calc(50% - 50vw);
   min-height: 600px;
   aspect-ratio: 2 / 1;
-  background: #c93123 url('../assets/bar-signal.png') center bottom / cover no-repeat;
+  /* Only the red lives on the element now. The illustration moved to its own
+     layer below, so it can drift without taking the field with it. */
+  background: #c93123;
+  position: relative;
+  overflow: hidden;
   /* styles.css puts 56px under every .s-head. Here that stacks on top of the
      illustration's own counter tail, which is the same black — so it reads as
      one oversized gap rather than as two separate margins. */
   margin-bottom: 0;
 }
+/* The bar itself. It arrives from the right as you reach the section — a drift
+   of a few tens of pixels over a second and a half, which is enough to make the
+   room feel entered rather than switched on, and little enough that you would
+   not catch it looking for it.
+   The image is exactly 2:1 inside a 2:1 box, so `cover` leaves no slack and
+   background-position has nothing to move; it has to be a transformed layer.
+   The left edge it uncovers is the same red as the field behind it, and the
+   right edge is clipped, so nothing shows a seam. */
+#clients .s-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('../assets/bar-signal.png') center bottom / cover no-repeat;
+}
+.js-motion #clients .s-head::before { transform: translateX(2.6%); }
+.js-motion #clients .s-head.is-in::before {
+  transform: none;
+  transition: transform 1500ms var(--rise);
+}
 #clients .s-head > div {
+  /* above the illustration layer */
+  position: relative;
+  z-index: 1;
   max-width: var(--max);
   margin: 0 auto;
   padding: clamp(64px, 6vw, 104px) var(--gutter) 100px;
