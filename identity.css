@@ -513,6 +513,110 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   .process-more:hover .lead { color: var(--ink); }
 }
 
+/* ---------- 06 process, on ink ----------
+   The section turns over to the dark ground. Everything inside it was drawn for
+   paper, so every value has to be answered rather than left to inherit — the
+   greys in particular, which were picked for their drop BELOW paper and, left
+   alone, either vanish into the field or shout off it. --ink-faintest is the
+   loudest of those: a #c2c2c5 hairline is quiet on paper and a bright wire on
+   ink.
+
+   The ramp below mirrors the light one by luminance rather than by name, so the
+   relationships hold: body copy sits about 7.6:1 on this field, which is where
+   --ink-soft sits on paper, and the small labels land at 5.3:1, where
+   --ink-faint does. The red is the page's own red, unlifted — a brightened one
+   reads as a fourth colour, which is the mistake the roster headings already
+   made once.
+
+   #clients is dark too but on #1a1815, the warm near-black the bar illustration
+   bakes into its counter. That one cannot move without breaking the merge, so
+   the two darks differ by a hair. This follows the footer and the rest of the
+   identity. */
+#process {
+  --dk-field: #16161b;
+  --dk-ink: var(--paper);
+  --dk-ink-2: #d2d2d8;   /* the lead under the headline */
+  --dk-soft: #a8a8b0;    /* step body copy */
+  --dk-faint: #8a8a93;   /* the uppercase step labels */
+  --dk-rule: #34343c;    /* the hairline between steps */
+  /* Same value as --dk-faint today, kept separate because it is a different
+     job: one is text, one is structure, and either should be able to move
+     without dragging the other with it. */
+  --dk-line: #8a8a93;    /* the 2px structure: timeline, step edges, CTA */
+
+  background: var(--dk-field);
+  color: var(--dk-ink);
+  /* The change of ground is the divider. A near-black hairline on a near-black
+     field is not one. */
+  border-bottom: 0;
+}
+#process .section-title { color: var(--dk-ink); }
+#process .section-title em { color: var(--accent); }
+#process .body-lg { color: var(--dk-ink-2); }
+
+/* Red stops doing structural work here. On paper the timeline and the step
+   edges are red and stay quiet, because red on paper is 4.6:1 and reads as a
+   drawn line. On ink the same red sits at 3.4:1 but glows — hue carries
+   attention that luminance alone does not — and six red strokes across the top
+   became the loudest thing in the section, louder than the headline. So the
+   structure goes neutral, at the same value as the step labels, and red is left
+   to the things that actually signal: the numerals, the ems, and the hover.
+   Swap --dk-line for var(--paper) to try it as white instead. */
+#process .process::before { background: var(--dk-line); }
+#process .process::after { border-left-color: var(--dk-line); }
+#process .process .step {
+  border-right-color: var(--dk-rule);
+  border-left-color: var(--dk-line);
+}
+#process .process .step .top { color: var(--dk-faint); }
+#process .process .step .top .big { color: var(--accent); }
+#process .process .step h4 { color: var(--dk-ink); }
+#process .process .step p { color: var(--dk-soft); }
+
+/* The CTA keeps the identity's one interaction, mirrored. On paper the band
+   rests on the page and inverts to ink under the pointer; here it rests on the
+   ink and inverts to paper. Same move, same curve, same durations — the only
+   thing that changes is which side it starts on. Leaving the light version in
+   place would have given it nothing to invert TO.
+
+   Its borders rest on the same neutral as the steps above it, so the shared
+   border vocabulary styles.css built survives, and the red arrives on hover
+   instead of sitting there — the band reaches back when you reach for it. */
+#process .process-more {
+  background: var(--dk-field);
+  border-top-color: var(--dk-line);
+  border-left-color: var(--dk-line);
+  color: var(--dk-ink);
+  transition:
+    background-color var(--signal-out) var(--signal-curve),
+    border-color var(--signal-out) var(--signal-curve);
+}
+#process .process-more .lead { color: var(--dk-ink); }
+#process .process-more .lead em { color: var(--accent); }
+#process .process-more .arrow { color: var(--dk-faint); }
+
+#process .process-more:hover {
+  background-color: var(--paper);
+  border-top-color: var(--accent);
+  border-left-color: var(--accent);
+  transition-duration: var(--signal-in);
+}
+#process .process-more:hover .lead { color: var(--ink); }
+#process .process-more:hover .lead em { color: var(--accent); }
+#process .process-more:hover .arrow { color: var(--accent); }
+#process .process-more:hover .lead,
+#process .process-more:hover .lead em,
+#process .process-more:hover .arrow { transition-duration: var(--signal-in); }
+
+@media (hover: none) {
+  /* No pointer to hover out of, so the band stays on its own ground rather than
+     being stranded in paper after a tap. Mirrors the rule that does this for
+     the light version. */
+  #process .process-more:hover { background-color: var(--dk-field); }
+  #process .process-more:hover .lead { color: var(--dk-ink); }
+  #process .process-more:hover .arrow { color: var(--dk-faint); }
+}
+
 
 /* Clients: a red bar interior above a continuous near-black counter. */
 #clients {

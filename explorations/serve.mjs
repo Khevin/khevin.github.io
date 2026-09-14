@@ -19,4 +19,8 @@ http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': types[path.extname(target)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
     res.end(data);
   } catch { res.writeHead(404).end('Not found'); }
-}).listen(4173, '127.0.0.1', () => console.log('Portfolio exploration: http://127.0.0.1:4173/explorations/'));
+/* PORT lets a second copy run alongside one that is already up — two sessions
+   working the same tree otherwise fight over 4173. Default is unchanged. */
+}).listen(Number(process.env.PORT) || 4173, '127.0.0.1', function () {
+  console.log('Portfolio exploration: http://127.0.0.1:' + this.address().port + '/explorations/');
+});
