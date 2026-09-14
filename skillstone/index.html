@@ -2611,7 +2611,9 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-tuck.is-on .iv-slot-face { padding:5px 7px 16px; color:#d2b578; }
 .iv-armory .iv-tuck .iv-tuck-art { width:100%; height:100%; display:block; opacity:.55; }
 .iv-armory .iv-tuck.is-on .iv-tuck-art { opacity:1; }
-.iv-armory .iv-tuck .iv-slot-nm { display:block; }
+/* a filled socket hides its name because the garment is the name; the toggle's name is the
+   control, so it stays on in both states */
+.iv-armory .iv-tuck .iv-slot-nm, .iv-armory .iv-slot.iv-tuck.is-on .iv-slot-nm { display:block; }
 .iv-armory .iv-tuck:disabled { cursor:default; }
 .iv-armory .iv-tuck:disabled .iv-slot-face { opacity:.35; }
 @media (hover: hover) { .iv-armory .iv-tuck:not(:disabled):hover .iv-tuck-art { opacity:.9; } }
