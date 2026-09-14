@@ -8276,22 +8276,92 @@ const ivStud = (cx, cy, r) => '<circle cx="' + cx + '" cy="' + cy + '" r="' + r 
   '<circle cx="' + (cx - r * 0.3) + '" cy="' + (cy - r * 0.3) + '" r="' + (r * 0.32) + '" fill="' + IV_BRASS_HI + '" opacity="0.9"/>';
 const ivStrap = d => '<path fill="' + IV_LEATHER + '" stroke="#2B1B0C" stroke-width="0.5" stroke-linejoin="round" d="' + d + '"/>';
 
-/* the tops are one torso and a choice of sleeve, neck and hem — which is how the real ones differ */
-const IV_BODY = "M13.6 8.2c-1.2 3.8-2 9.8-2.4 16.8-.2 4.4-.3 7.6-.3 9.6 6 1.7 12.2 1.7 18.2 0 0-2-.1-5.2-.3-9.6-.4-7-1.2-13-2.4-16.8-2-.8-10.8-.8-12.8 0Z";
-const IV_HEM = "M10.9 32.2c6 1.7 12.2 1.7 18.2 0v2.4c-6 1.7-12.2 1.7-18.2 0Z";
+/* the sleeve and cuff an outer layer is built from; the tops are cut in one piece now */
 const IV_SLV_L = "M13.6 8.2C9.6 9 6.6 11.2 5 15c-1 2.6-1.4 5.4-1.2 8.6l5.7 1.2c.1-4.4 1.1-9.6 2.9-13.4Z";
 const IV_SLV_R = "M26.4 8.2c4 .8 7 3 8.6 6.8 1 2.6 1.4 5.4 1.2 8.6l-5.7 1.2c-.1-4.4-1.1-9.6-2.9-13.4Z";
-const IV_SLVS_L = "M13.6 8.2C10 9 7.4 10.8 6 13.8c-.7 1.6-1.1 3.2-1.2 4.8l5.7 1.2c.3-3.6 1.3-7.2 3.1-11.6Z";
-const IV_SLVS_R = "M26.4 8.2c3.6.8 6.2 2.6 7.6 5.6.7 1.6 1.1 3.2 1.2 4.8l-5.7 1.2c-.3-3.6-1.3-7.2-3.1-11.6Z";
 const IV_CUFF_L = "M3.7 23.3 9.6 24.5 9 28.1 3.1 26.9Z";
 const IV_CUFF_R = "M36.3 23.3 30.4 24.5 31 28.1 36.9 26.9Z";
-const IV_CUFFS_L = "M4.4 18.2 10.5 19.4 10 22.4 3.9 21.2Z";
-const IV_CUFFS_R = "M35.6 18.2 29.5 19.4 30 22.4 36.1 21.2Z";
-const IV_FOLDS = "M15.4 20c.5 4.4.3 8.6-.3 11.8M24.6 20c-.5 4.4-.3 8.6.3 11.8M20 21.4c.2 3.8.1 7-.2 9.8";
 const IV_RIM_LONG = "M13.4 8.4C9.8 9.2 7 11.4 5.4 15M13.8 8.6c-1.1 3.7-1.9 9.5-2.3 16.2";
-const IV_RIM_SHORT = "M13.5 8.4C10.2 9.2 7.8 11 6.4 13.8M13.8 8.6c-1.1 3.7-1.9 9.5-2.3 16.2";
-const ivTop = (p, g, sleeves, neck, extra) => sleeves + ivPart(p, g, IV_BODY) + ivPart(p, p.dark, IV_HEM) +
-  (neck || "") + ivFold(p, IV_FOLDS) + (extra || "");
+
+/* ---------- cloth, lit rather than drawn ----------
+   The tops used to be outlined in p.edge — the garment's own colour mixed 72% into black — and
+   seamed at every joint: a stroked sleeve butted against a stroked body, a filled band across
+   each cuff, three hard creases down the front. At 46px that is a diagram of a shirt rather than
+   a shirt, and the seam where the sleeve met the body was the loudest mark on the drawing.
+
+   These are cut in one piece and lit instead. Nothing is outlined but the silhouette, and that
+   only enough to hold against a black board; every shadow is a gradient that fades to nothing
+   rather than a line that stops somewhere. It is the same language the figure wears. */
+const ivSoftC = c => ivMix(c, "#0F0C09", 0.16);
+const ivHushC = c => ivMix(c, "#0F0C09", 0.08);
+/* gentler than the fittings' ramp, because cloth is not metal */
+const ivClothDefs = (uid, c, p) =>
+  '<linearGradient id="' + uid + '" gradientUnits="userSpaceOnUse" x1="8" y1="4" x2="32" y2="37">' +
+    '<stop offset="0" stop-color="' + p.lit + '"/><stop offset="0.42" stop-color="' + p.base + '"/>' +
+    '<stop offset="1" stop-color="' + ivSoftC(c) + '"/></linearGradient>';
+const ivFade = (id, c, o, x1, y1, x2, y2) =>
+  '<linearGradient id="' + id + '" gradientUnits="userSpaceOnUse" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '">' +
+    '<stop offset="0" stop-color="' + c + '" stop-opacity="' + o + '"/>' +
+    '<stop offset="1" stop-color="' + c + '" stop-opacity="0"/></linearGradient>';
+const ivPool = (id, c, o, cx, cy, r) =>
+  '<radialGradient id="' + id + '" gradientUnits="userSpaceOnUse" cx="' + cx + '" cy="' + cy + '" r="' + r + '">' +
+    '<stop offset="0" stop-color="' + c + '" stop-opacity="' + o + '"/>' +
+    '<stop offset="1" stop-color="' + c + '" stop-opacity="0"/></radialGradient>';
+/* Four shadows and the body ramp are the whole lighting model: the opening casts down the chest,
+   each armhole pools where the sleeve sits against the body, the hem falls away, and a knitted
+   garment takes two more at the cuffs. The key is upper left, which the ramp already does. */
+const ivShadeDefs = (uid, p, neck, arm) =>
+  ivFade(uid + "n", p.deep, 0.26, 20, (neck || 8), 20, (neck || 8) + 10) +
+  ivPool(uid + "a", p.dark, 0.26, 11.4, (arm || 17), 7.5) +
+  ivPool(uid + "b", p.dark, 0.26, 28.6, (arm || 17), 7.5) +
+  ivFade(uid + "h", p.deep, 0.22, 20, 36, 20, 25) +
+  ivFade(uid + "w", p.deep, 0.26, 20, 38, 20, 30) +
+  ivFade(uid + "c", p.deep, 0.22, 6, 27, 6, 21) + ivFade(uid + "d", p.deep, 0.22, 34, 27, 34, 21);
+const ivWash = (uid, keys) => '<g clip-path="url(#' + uid + 'k)">' +
+  keys.map(k => '<rect x="2" y="2" width="36" height="36" fill="url(#' + uid + k + ')"/>').join("") + "</g>";
+const ivShadeG = uid => ivWash(uid, ["n", "a", "b", "h"]);
+/* the silhouette: filled, and edged only enough to hold its shape against the board */
+const ivSkin = (c, uid, d) => '<clipPath id="' + uid + 'k"><path d="' + d + '"/></clipPath>' +
+  '<path fill="url(#' + uid + ')" stroke="' + ivSoftC(c) + '" stroke-width="0.6" stroke-linejoin="round" d="' + d + '"/>';
+/* a crease is wide, faint and round-ended; the old ones were 0.75 wide at 80% of p.deep */
+const ivCrease = (p, d, w, o) => '<path fill="none" stroke="' + p.deep + '" stroke-width="' + (w || 1.8) +
+  '" stroke-opacity="' + (o || 0.16) + '" stroke-linecap="round" d="' + d + '"/>';
+const ivRibb = (p, d, w) => '<path fill="none" stroke="' + p.lit + '" stroke-width="' + (w || 1.5) +
+  '" stroke-opacity="0.85" stroke-linecap="round" d="' + d + '"/>';
+const ivFlap = (c, l, d) => '<path fill="' + ivMix(c, "#F0E7D1", l) + '" stroke="' + ivSoftC(c) +
+  '" stroke-width="0.4" stroke-linejoin="round" d="' + d + '"/>';
+const ivButton = (p, y, r) => '<circle cx="20" cy="' + y + '" r="' + (r || 0.9) + '" fill="' + p.deep + '" fill-opacity="0.45"/>';
+
+/* ---------- the silhouettes every top is cut from ----------
+   One path each, sleeves included. A tee has no seam anyone can see at this size, and the one
+   the old drawings had was not a seam but two outlines meeting. */
+const IVT_NECK = "M16.2 6.6C17.4 9.7 22.6 9.7 23.8 6.6";
+const IVT_HEM = "C23.3 36.2 16.7 36.2 10.3 34.7";
+const IVT_CUFF = "C10 28.9 10.2 23.1 10.8 17.3";
+const IVT_SHORT = IVT_NECK +
+  "C25.8 6.8 27.5 7.2 29 7.8C32 9 34.3 11.2 35.7 14.1L37 17" +
+  "C37.3 17.7 37 18.5 36.3 18.7L31.5 20.4C30.8 20.6 30.1 20.3 29.9 19.6L29.2 17.3" +
+  "C29.8 23.1 30 28.9 29.7 34.7" + IVT_HEM + IVT_CUFF +
+  "L10.1 19.6C9.9 20.3 9.2 20.6 8.5 20.4L3.7 18.7" +
+  "C3 18.5 2.7 17.7 3 17L4.3 14.1C5.7 11.2 8 9 11 7.8C12.5 7.2 14.2 6.8 16.2 6.6Z";
+const IVT_LONG = IVT_NECK +
+  "C25.9 6.8 27.7 7.2 29.3 7.9C32.6 9.4 35 12 36.1 15.2L37.5 23.6" +
+  "C37.7 24.5 37.1 25.3 36.2 25.4L32.6 26C31.7 26.1 30.9 25.5 30.8 24.6L29.2 17.3" +
+  "C29.8 23.1 30 28.9 29.7 34.7" + IVT_HEM + IVT_CUFF +
+  "L9.2 24.6C9.1 25.5 8.3 26.1 7.4 26L3.8 25.4" +
+  "C2.9 25.3 2.3 24.5 2.5 23.6L3.9 15.2C5 12 7.4 9.4 10.7 7.9C12.3 7.2 14.1 6.8 16.2 6.6Z";
+/* a button-up hangs straighter and drops at the sides */
+const IVT_SHIRT = IVT_NECK +
+  "C25.8 6.8 27.5 7.2 29 7.8C32 9 34.3 11.2 35.7 14.1L37 17" +
+  "C37.3 17.7 37 18.5 36.3 18.7L31.5 20.4C30.8 20.6 30.1 20.3 29.9 19.6L29.2 17.3" +
+  "C29.9 23.6 30.1 29.4 29.8 35.8C23.3 37.4 16.7 37.4 10.2 35.8" +
+  "C9.9 29.4 10.1 23.6 10.8 17.3L10.1 19.6C9.9 20.3 9.2 20.6 8.5 20.4L3.7 18.7" +
+  "C3 18.5 2.7 17.7 3 17L4.3 14.1C5.7 11.2 8 9 11 7.8C12.5 7.2 14.2 6.8 16.2 6.6Z";
+/* a tank is two straps, a scooped neck and a concave armhole down to the underarm — without the
+   armhole cut it is a sleeveless shirt, which is what the old one was */
+const IVT_TANK = "M15.6 6.2C15.9 10.7 17.7 13.5 20 13.5C22.3 13.5 24.1 10.7 24.4 6.2L27.5 6.5" +
+  "C27.3 10.2 28.4 14.2 29.6 17.5C30.1 23 30.1 29 29.7 34.7" + IVT_HEM +
+  "C9.9 29 9.9 23 10.4 17.5C11.6 14.2 12.7 10.2 12.5 6.5Z";
 /* An outer layer hangs open. Two panels with real air between them and the shadow of whatever
    is under it showing through — without the gap it is just a top with a seam drawn on. */
 const ivOuter = (p, g) => ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) +
@@ -8303,62 +8373,65 @@ const ivOuter = (p, g) => ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) +
 
 const GEAR_ICON = {
   top: {
-    /* Drawn from the real one: a plain crew tee, flat on its front. One outline for body and
-       sleeves together — a tee has no seam you would notice at this size — a rib at the throat,
-       a hem line at each cuff, and enough drape to say jersey. Nothing else is on the garment. */
-    tee: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
-      return ivDefs(uid, p) +
-        ivPart(p, g, "M16.4 6.2C17.6 8.8 22.4 8.8 23.6 6.2L26.8 7c3.2.9 5.8 2.8 7.8 5.4l2.2 4.2-6.4 2.8-1.6-3.2c.6 6.4.8 12.8.6 19.2-6.2 1.4-12.6 1.4-18.8 0-.2-6.4 0-12.8.6-19.2l-1.6 3.2-6.4-2.8 2.2-4.2c2-2.6 4.6-4.5 7.8-5.4Z") +
-        ivFold(p, "M35.6 14.4 29.6 17M4.4 14.4 10.4 17", 0.85) +
-        '<path fill="none" stroke="' + p.lit + '" stroke-width="1.7" stroke-linecap="round" d="M16.4 6.2C17.6 8.8 22.4 8.8 23.6 6.2"/>' +
-        ivFold(p, "M15.8 20.4c.4 5 .3 9.8-.2 14.2M24.2 20.4c-.4 5-.3 9.8.2 14.2", 0.75) +
-        ivRim(p, "M13.2 7C10 7.9 7.4 9.8 5.4 12.4M11.2 16.4c-.4 4.6-.6 9.4-.6 13.8", 1); },
-    /* a hooded tunic: the hood behind the shoulders, a pouch across the belly, two cord ends */
-    hoodie: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
-      return ivDefs(uid, p) +
-        ivPart(p, p.dark, "M20 1.6c-5.2 0-9.4 2.9-9.4 6.8 0 3.4 3.4 5.8 9.4 5.8s9.4-2.4 9.4-5.8c0-3.9-4.2-6.8-9.4-6.8Z") +
-        ivTop(p, g,
-          ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) + ivPart(p, p.deep, IV_CUFF_L) + ivPart(p, p.deep, IV_CUFF_R),
-          ivPart(p, p.deep, "M14.8 8.4c1.4 3.6 8 3.6 10.4 0l1 .7c-2.6 4.6-9.9 4.6-12.4 0Z"),
-          ivPart(p, p.dark, "M13.4 21.6c1.4 3.6 11.8 3.6 13.2 0l.7 6.4c-2.2 2.6-12.4 2.6-14.6 0Z") +
-          ivRim(p, IV_RIM_LONG) +
-          '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.9" stroke-linecap="round" opacity="0.9" d="M17.5 13v5.4M22.5 13v5.4"/>' +
-          ivStud(17.5, 12.6, 0.6) + ivStud(22.5, 12.6, 0.6)); },
-    /* wool: heavy cuffs, a ribbed hem and one cable up the chest */
-    sweater: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
-      return ivDefs(uid, p) + ivTop(p, g,
-        ivPart(p, g, IV_SLV_L) + ivPart(p, g, IV_SLV_R) + ivPart(p, p.deep, IV_CUFF_L) + ivPart(p, p.deep, IV_CUFF_R),
-        ivPart(p, p.deep, "M15.2 7.4c1.6 2.8 7.9 2.8 9.6 0l1.2.8c-2 3.6-10 3.6-12 0Z"),
-        ivFold(p, "M18.4 12.6c1.4 1.4 1.8 3.4 1.6 5.4M21.6 12.6c-1.4 1.4-1.8 3.4-1.6 5.4M18.4 19c1.4 1.4 1.8 3.4 1.6 5.4M21.6 19c-1.4 1.4-1.8 3.4-1.6 5.4", 0.7) +
-        ivFold(p, "M12.2 31.6c5 1.4 10.6 1.4 15.6 0", 0.9) + ivRim(p, IV_RIM_LONG)); },
-    /* Drawn from the real one too: the short-sleeved button-up. What separates it from the tee
-       is all at the front — a pointed collar, a placket down the middle with six buttons on it,
-       and a hem that drops at the sides instead of running straight. */
-    shirt: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
-      const button = y => '<circle cx="20" cy="' + y + '" r="0.95" fill="' + p.deep + '" opacity="0.6"/>';
-      return ivDefs(uid, p) +
-        ivPart(p, g, "M15.4 6.4 20 10.2 24.6 6.4l2.6.8c3.2.9 5.8 2.8 7.8 5.4l2.2 4.2-6.4 2.8-1.6-3.2c.6 6.4.8 12.8.6 18.2-6.4 2.6-13.2 2.6-19.6 0-.2-5.4 0-11.8.6-18.2l-1.6 3.2-6.4-2.8 2.2-4.2c2-2.6 4.6-4.5 7.8-5.4Z") +
-        ivFold(p, "M35.6 14.4 29.6 17M4.4 14.4 10.4 17", 0.85) +
-        ivPart(p, p.lit, "M18.3 10.4h3.4l.5 24.4c-1.5.3-2.9.3-4.4 0Z") +
-        ivFold(p, "M18.3 11.6l.4 23M21.7 11.6l-.4 23", 0.7) +
-        ivPart(p, p.lit, "M15.4 6.4 20 10.2 14.4 12.2 12.4 6.9Z") +
-        ivPart(p, p.lit, "M24.6 6.4 20 10.2 25.6 12.2 27.6 6.9Z") +
-        ivPart(p, p.lit, "M15.1 5c2.7-.9 7.1-.9 9.8 0l.3 1.8c-2.7-.9-7.7-.9-10.4 0Z") +
-        button(14.6) + button(18.4) + button(22.2) + button(26) + button(29.8) + button(33.4) +
-        ivRim(p, "M12.8 7.2C9.6 8.1 7 10 5 12.6M10.8 16.4c-.4 4.6-.6 9.4-.6 13.8", 1); },
-    /* short sleeves, a soft collar and two buttons: the shirt's lighter cousin */
-    polo: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
-      return ivDefs(uid, p) + ivTop(p, g,
-        ivPart(p, g, IV_SLVS_L) + ivPart(p, g, IV_SLVS_R) + ivPart(p, p.deep, IV_CUFFS_L) + ivPart(p, p.deep, IV_CUFFS_R),
-        ivPart(p, p.deep, "M18.7 8.2h2.6l.3 6.4c-.8.3-2.6.3-3.3 0Z") +
-        ivPart(p, p.lit, "M14.8 7.4 20 12.2l-4.8 2-1.6-6.4Z") + ivPart(p, p.lit, "M25.2 7.4 20 12.2l4.8 2 1.6-6.4Z"),
-        ivRim(p, IV_RIM_SHORT) + ivStud(20, 10, 0.62) + ivStud(20, 13.2, 0.62)); },
-    /* a sleeveless jerkin: two straps and a body, nothing else to say */
-    tank: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
-      return ivDefs(uid, p) +
-        ivPart(p, g, "M15 5.2c0 3.8 2.4 6.6 5 6.6s5-2.8 5-6.6l4.6 2.8c.4 8 .6 18.6.4 26.8-6 1.7-14 1.7-20 0-.2-8.2 0-18.8.4-26.8Z") +
-        ivPart(p, p.dark, "M10.4 32.2c6 1.7 13.2 1.7 19.2 0v2.6c-6 1.7-13.2 1.7-19.2 0Z") +
-        ivFold(p, IV_FOLDS) + ivRim(p, "M15.1 5.4c-.3 3.6-.5 8.6-.6 13.6M15 5.4 10.6 8c-.3 5-.5 11.2-.5 16.6") }
+    /* Drawn from the photograph he sent: a plain crew tee, lit from the upper left, with nothing
+       on it but the rib at the throat and the shadow the opening casts down the chest. */
+    tee: (c, uid) => { const p = ivCloth(c);
+      return "<defs>" + ivClothDefs(uid, c, p) + ivShadeDefs(uid, p) + "</defs>" +
+        ivSkin(c, uid, IVT_SHORT) + ivShadeG(uid) +
+        ivRibb(p, "M16.6 7.1C17.7 9.9 22.3 9.9 23.4 7.1", 1.6) +
+        ivCrease(p, "M14.6 24c.3 4 .2 7.4-.1 10.4M25.4 24c-.3 4-.2 7.4.1 10.4", 1.8, 0.12); },
+
+    /* a hood lying back behind the shoulders, a pouch across the belly, two cords */
+    hoodie: (c, uid) => { const p = ivCloth(c);
+      return "<defs>" + ivClothDefs(uid, c, p) + ivShadeDefs(uid, p, 9, 18) + "</defs>" +
+        '<path fill="' + ivMix(c, "#0F0C09", 0.34) + '" d="M20 2.4c-4.3 0-7.8 2.4-7.8 5.6 0 2.9 2.6 5.2 7.8 5.2s7.8-2.3 7.8-5.2c0-3.2-3.5-5.6-7.8-5.6Z"/>' +
+        '<path fill="' + ivMix(c, "#0F0C09", 0.5) + '" d="M13.6 9.7c1.6 2.6 11.2 2.6 12.8 0l.5 1.5c-2.4 3.2-11.4 3.2-13.8 0Z"/>' +
+        ivSkin(c, uid, IVT_LONG) + ivShadeG(uid) +
+        '<path fill="' + ivMix(c, "#0F0C09", 0.26) + '" fill-opacity="0.7" d="M13.4 21.8c1.6 3.4 11.6 3.4 13.2 0l.8 6.4c-2.3 2.5-12.5 2.5-14.8 0Z"/>' +
+        ivCrease(p, "M13.5 22.2c1.7 3.3 11.3 3.3 13 0", 1.4, 0.3) +
+        /* cords end in a tip, which is what stops two of them reading as a pair of bars */
+        '<path fill="none" stroke="' + ivMix(c, "#F0E7D1", 0.78) + '" stroke-width="0.85" stroke-linecap="round" stroke-opacity="0.9" d="M17.7 13.4c-.2 2.4-.2 4.2 0 5.6M22.3 13.4c.2 2.4.2 4.2 0 5.6"/>' +
+        '<circle cx="17.7" cy="19.6" r="0.7" fill="' + ivMix(c, "#F0E7D1", 0.62) + '"/>' +
+        '<circle cx="22.3" cy="19.6" r="0.7" fill="' + ivMix(c, "#F0E7D1", 0.62) + '"/>'; },
+
+    /* Wool, and weight is what says so. The hem and the cuffs go heavier, but as gradients: a
+       band with an edge on it is the divider across the arm all over again. The hem seam is one
+       soft curve, which is the only line a knitted rib actually shows. */
+    sweater: (c, uid) => { const p = ivCloth(c);
+      return "<defs>" + ivClothDefs(uid, c, p) + ivShadeDefs(uid, p, 8, 18) + "</defs>" +
+        ivSkin(c, uid, IVT_LONG) + ivShadeG(uid) +
+        ivRibb(p, "M16.6 7.1C17.7 9.9 22.3 9.9 23.4 7.1", 1.7) +
+        ivWash(uid, ["w", "c", "d"]) +
+        ivCrease(p, "M11 31.6c6 1.4 12 1.4 18 0", 1.2, 0.26); },
+
+    /* Drawn from his other photograph: the short-sleeved button-up. What separates it from the
+       tee is all at the front — a pointed collar, a placket of six, and a hem that drops. */
+    shirt: (c, uid) => { const p = ivCloth(c);
+      return "<defs>" + ivClothDefs(uid, c, p) + ivShadeDefs(uid, p, 10) + "</defs>" +
+        ivSkin(c, uid, IVT_SHIRT) + ivShadeG(uid) +
+        '<path fill="' + ivMix(c, "#F0E7D1", 0.16) + '" d="M18.3 9.8h3.4l.4 25.9c-1.4.3-2.8.3-4.2 0Z"/>' +
+        ivCrease(p, "M18.5 11.4l.3 23.6M21.5 11.4l-.3 23.6", 0.8, 0.22) +
+        ivFlap(c, 0.2, "M15.4 6.4 20 10.4 14.1 12.7 12.1 6.9Z") +
+        ivFlap(c, 0.12, "M24.6 6.4 20 10.4l5.9 2.3 2-5.8Z") +
+        ivButton(p, 14.2) + ivButton(p, 18.2) + ivButton(p, 22.2) +
+        ivButton(p, 26.2) + ivButton(p, 30.2) + ivButton(p, 34); },
+
+    /* the shirt's lighter cousin: a soft collar, a short placket, two buttons */
+    polo: (c, uid) => { const p = ivCloth(c);
+      return "<defs>" + ivClothDefs(uid, c, p) + ivShadeDefs(uid, p, 10) + "</defs>" +
+        ivSkin(c, uid, IVT_SHORT) + ivShadeG(uid) +
+        '<path fill="' + ivHushC(c) + '" fill-opacity="0.6" d="M18.7 8.6h2.6l.3 6.2c-.8.3-2.4.3-3.2 0Z"/>' +
+        ivFlap(c, 0.2, "M14.8 7.3 20 12.4l-5 2-1.6-6.6Z") +
+        ivFlap(c, 0.12, "M25.2 7.3 20 12.4l5 2 1.6-6.6Z") +
+        ivButton(p, 10.2, 0.75) + ivButton(p, 13.4, 0.75) +
+        ivCrease(p, "M14.6 24c.3 4 .2 7.4-.1 10.4M25.4 24c-.3 4-.2 7.4.1 10.4", 1.8, 0.12); },
+
+    /* sleeveless: two straps and a body, and the armholes are the only shape it has */
+    tank: (c, uid) => { const p = ivCloth(c);
+      return "<defs>" + ivClothDefs(uid, c, p) + ivShadeDefs(uid, p, 11, 15) + "</defs>" +
+        ivSkin(c, uid, IVT_TANK) + ivShadeG(uid) +
+        '<path fill="none" stroke="' + p.lit + '" stroke-width="0.9" stroke-opacity="0.5" stroke-linecap="round" d="M16.1 6.6C16.4 10.4 18 12.9 20 12.9C22 12.9 23.6 10.4 23.9 6.6"/>' +
+        ivCrease(p, "M15 22c.3 4.2.2 8-.1 11.2M25 22c-.3 4.2-.2 8 .1 11.2", 1.8, 0.12); }
   },
   outer: {
     /* an overtunic worn open, with two patch pouches */
@@ -8769,7 +8842,23 @@ function invDollHTML() {
     return 'url(#av-'+id+')';
   };
   const skin=material('skin','#ad8062'), hair=material('hair','#302720');
-  const fabric=material('top',color(top,'#777267')), shell=material('outer',color(outer,'#303d43'));
+  /* The shared ramp runs x=58 to x=164, and a sleeve reaches x=47. Everything outside the ramp
+     clamps to its end stop, so both sleeves took the darkest value in the gradient and read as a
+     different garment from the body they are sewn to — the tonal step at the armhole that the
+     seam was getting the blame for. The top gets its own ramp, wide enough to cover the sleeves,
+     and lit from the left like everything else on the figure rather than against it. */
+  const topc = color(top, '#777267');
+  const clothLight = (id, c, flip) => { defs += '<linearGradient id="av-' + id + '" gradientUnits="userSpaceOnUse" x1="' + (flip ? 176 : 44) + '" y1="0" x2="' + (flip ? 44 : 176) + '" y2="0"><stop stop-color="' + ivShade(c, .17) + '"/><stop offset=".36" stop-color="' + ivShade(c, .1) + '"/><stop offset=".7" stop-color="' + c + '"/><stop offset="1" stop-color="' + ivShade(c, -.28) + '"/></linearGradient>'; return 'url(#av-' + id + ')'; };
+  /* and its edge comes off its own colour. A garment outlined in #171813 is fine while it is a
+     charcoal jacket and a drawn diagram the moment it is a white tee. */
+  const tEdge = ivShade(topc, -0.3);
+  /* both() draws a part, then the same markup again inside translate(220) scale(-1 1). A user-
+     space gradient inside that group is mirrored along with the geometry, so the right sleeve
+     was lit from the right while the body it joins was lit from the left — a tonal step at the
+     armhole with no line in it, which is the seam coming back by another route. The mirrored
+     copy gets a gradient mirrored to match, and the two halves land in the same light. */
+  const fabric=clothLight('top',topc), fabricM=clothLight('topm',topc,true);
+  const shell=material('outer',color(outer,'#303d43'));
   const trouser=material('legs',color(legs,'#494641')), shoe=material('feet',color(feet,'#38342d'));
   const path=(d,fill,stroke='#171813',sw=1.2)=>'<path d="'+d+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linejoin="round" stroke-linecap="round"/>';
   const line=(d,stroke='#ffffff24',sw=1)=>path(d,'none',stroke,sw);
@@ -8804,8 +8893,19 @@ function invDollHTML() {
   const body='M97 109Q110 120 123 109Q136 106 146 123L139 201 141 243Q110 253 79 243L81 202 74 123Q84 106 97 109Z';
   /* The sleeve's inner edge is the armhole: it starts on the shoulder line, a little out from
      the neck, and curves down to the underarm — which is where a set-in sleeve is joined. */
-  const sleeve=(fill,long)=>both(path(long?'M82 113Q59 115 54 138L47 230 64 237 75 177Q86 146 82 113Z':'M82 113Q60 115 55 137L54 158 75 166Q86 144 82 113Z',fill));
-  const folds=()=>both(line('M82 179l7 13-7 5m3 19 12 9m-16 12 12-3','#0003',1.4));
+  const SLV=long=>long?'M82 113Q59 115 54 138L47 230 64 237 75 177Q86 146 82 113Z':'M82 113Q60 115 55 137L54 158 75 166Q86 144 82 113Z';
+  /* the same shape with the inner edge left off: shoulder, down the outside, across the cuff */
+  const SLV_RIM=long=>long?'M82 113Q59 115 54 138L47 230 64 237':'M82 113Q60 115 55 137L54 158 75 166';
+  const sleeve=(fill,long,st,sw)=>both(path(SLV(long),fill,st||'#171813',sw||1.2));
+  /* A sleeve outlined all the way round has a line down the inside of it, and that line is the
+     divider in the arm — it is the sleeve's own contour drawn on top of the body it is sewn to.
+     Filled with no edge and rimmed along its outer contour only, the sleeve joins the body with
+     nothing between them and still has an edge where it meets skin or board. */
+  const sleeveJoined=(fill,fillM,long,st,sw)=>
+    path(SLV(long),fill,'none',0)+path(SLV_RIM(long),'none',st,sw) +
+    '<g transform="translate(220 0) scale(-1 1)">'+path(SLV(long),fillM,'none',0)+path(SLV_RIM(long),'none',st,sw)+'</g>';
+  /* chevrons read as wear on a coat and as damage on a jumper. One soft line down the sleeve. */
+  const folds=()=>both(line('M78 186q4 22 1 40','#00000012',1.6));
   /* a heavy garment creases; a jersey tee drapes. The chevrons that read as wear on a coat read
      as damage on a t-shirt, so the short-sleeved kinds get two long soft lines instead. */
   const drape=()=>both(line('M92 168q5 24 2 44','#00000014',1.4));
@@ -8814,21 +8914,22 @@ function invDollHTML() {
     const k=top.kind,long=['hoodie','sweater','shirt'].includes(k);
     g+='<g data-avatar-layer="top" data-kind="'+esc(k)+'">';
     const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
-    g+=path(shape,fabric);
+    g+=path(shape,fabric,tEdge,0.9);
     /* The sleeve goes on OVER the body. Underneath, the body's own outline runs diagonally from
        the neck down to the armpit, and stroked dark that reads as a raglan seam on a garment
        that has none. Covered by the sleeve, the only seam left is the sleeve's inner edge —
-       which is where a set-in sleeve is actually joined. */
-    if(k!=='tank')g+=sleeve(fabric,long);
+       which is where a set-in sleeve is actually joined, and which is now the garment's own
+       colour taken down a third rather than the near-black every other part of the figure uses. */
+    if(k!=='tank')g+=sleeveJoined(fabric,fabricM,long,tEdge,0.9);
     g+=(long?folds():drape());
     if(k==='hoodie') {
-      g+=path('M91 108Q79 103 81 118L92 136Q110 144 129 134L140 117Q140 103 129 108L124 119Q110 128 96 119Z',fabric);
-      g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,'#0004');
+      g+=path('M91 108Q79 103 81 118L92 136Q110 144 129 134L140 117Q140 103 129 108L124 119Q110 128 96 119Z',fabric,tEdge,0.9);
+      g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,ivShade(topc,-0.24),1);
       g+=line('M97 129l-2 37m29-37 2 37','#e8dfc1',1.8)+line('M95 164v5m31-5v5','#554f40',2);
-      g+=line('M80 239q30 8 60 0','#0005',4);
+      g+=line('M80 239q30 8 60 0','#00000026',3.5);
     } else if(k==='shirt'||k==='polo') {
-      g+=path('M97 108l13 12-9 14-9-15Z',fabric)+path('M123 108l-13 12 9 14 9-15Z',fabric);
-      g+=line('M110 123v'+(k==='polo'?35:120),'#0004',2);
+      g+=path('M97 108l13 12-9 14-9-15Z',fabric,tEdge,0.8)+path('M123 108l-13 12 9 14 9-15Z',fabric,tEdge,0.8);
+      g+=line('M110 123v'+(k==='polo'?35:120),'#00000026',1.8);
       for(let y=137;y<(k==='polo'?160:239);y+=20)g+='<circle cx="110" cy="'+y+'" r="1.3" fill="#cfbf9d"/>';
     } else {
       /* a crew neck is a rib, not a line: the dark of the opening with the band's lit edge above
@@ -8837,7 +8938,8 @@ function invDollHTML() {
       g+=line(k==='tank'?'M92 115Q110 145 128 115':'M97 109Q110 120 123 109','#ffffff26',2.4);
     }
     g+=line('M82 240q28 6 56 0','#ffffff20');
-    if(long)g+=both(line('M49 228l17 5','#0006',4));
+    /* the cuff was a four-unit bar of #0006 laid across each forearm. A sleeve ends where its
+       own path ends; it does not need a line drawn across it to say so. */
     g+='</g>';
   }
   // Open outerwear: the centre stays transparent, revealing the actual equipped base top.
