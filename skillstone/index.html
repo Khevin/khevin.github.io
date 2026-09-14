@@ -8228,7 +8228,7 @@ const WEAR = [
   { k: "top",   name: "Top",       kinds: [["tee", "T-shirt"], ["shirt", "Dress shirt"], ["polo", "Polo"], ["printed", "Patterned short-sleeve shirt"], ["tank", "Tank top"]] },
   { k: "belt",  name: "Belt",      kinds: [["leather", "Leather"], ["woven", "Woven"], ["chain", "Chain"]] },
   { k: "legs",  name: "Trousers",  kinds: [["jeans", "Jeans"], ["chinos", "Chinos"], ["joggers", "Joggers"], ["cargo", "Tactical trousers"], ["shorts", "Shorts"]] },
-  { k: "feet",  name: "Shoes",     kinds: [["sneakers", "Sneakers"], ["boots", "Boots"], ["loafers", "Loafers"]] },
+  { k: "feet",  name: "Shoes",     kinds: [["sneakers", "Sneakers"], ["lowtop", "Low-top All Stars"], ["hightop", "High-top All Stars"], ["flipflops", "Flip-flops"], ["boots", "Boots"], ["loafers", "Loafers"]] },
   /* not worn, but kept with what you put on in the morning, which is where you reach for it */
   { k: "scent", name: "Perfume",   kinds: [["bottle", "Bottle"], ["flask", "Flask"], ["vial", "Vial"]] }
 ];
@@ -8706,10 +8706,33 @@ const GEAR_ICON = {
     sneakers: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
       return ivDefs(uid, p) +
         ivPart(p, g, "M4 27h10l7-5.4 5.2 3.2c3.1 1.6 9.2 2 9.8 5.2v3H4Z") +
-        ivStrap("M25.4 24.4c3.4 1.6 9.6 2 10.6 5.6H26.6Z") +
+        ivPart(p, p.dark, "M25.4 24.4c3.4 1.6 9.6 2 10.6 5.6H26.6Z") +
         ivPart(p, p.deep, "M3.4 30.2h33.2v3.2H3.4Z") +
         '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.8" stroke-linecap="round" opacity="0.9" d="m14.6 24.2 3.6 2.6m0-2.6-3.6 2.6m4.6-5 3.6 2.6m0-2.6-3.6 2.6"/>' +
         ivRim(p, "M4.4 26.9h9.4l6.8-5.2") + ivStud(4.6, 31.8, 0.55) + ivStud(35.4, 31.8, 0.55); },
+    /* All Stars: canvas on a white rubber midsole, a white toe cap, white laces; the high one
+       has a shaft and the ankle patch */
+    lowtop: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M4 27h10l7-5.4 5.2 3.2c3.1 1.6 9.2 2 9.8 5.2v3H4Z") +
+        '<path fill="#e9e4d8" stroke="#6d665c" stroke-width="0.6" stroke-linejoin="round" d="M26.4 24.6c3.2 1.4 8.8 2 9.6 5.4H25.2Z"/>' +
+        '<path fill="#e9e4d8" stroke="#6d665c" stroke-width="0.6" d="M3.4 30.2h33.2v3.2H3.4Z"/><path fill="none" stroke="#2a2826" stroke-width="0.6" d="M3.8 32.2h32.4"/>' +
+        '<path fill="none" stroke="#f4f0e6" stroke-width="0.8" stroke-linecap="round" d="m14.6 24.2 3.6 2.6m0-2.6-3.6 2.6m4.6-5 3.6 2.6m0-2.6-3.6 2.6"/>' +
+        ivRim(p, "M4.4 26.9h9.4l6.8-5.2"); },
+    hightop: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M4 12h10v10l7-.4 5.2 3.2c3.1 1.6 9.2 2 9.8 5.2v3H4Z") +
+        '<path fill="#e9e4d8" stroke="#6d665c" stroke-width="0.6" stroke-linejoin="round" d="M26.4 24.6c3.2 1.4 8.8 2 9.6 5.4H25.2Z"/>' +
+        '<path fill="#e9e4d8" stroke="#6d665c" stroke-width="0.6" d="M3.4 30.2h33.2v3.2H3.4Z"/><path fill="none" stroke="#2a2826" stroke-width="0.6" d="M3.8 32.2h32.4"/>' +
+        '<circle cx="7.6" cy="18.4" r="1.9" fill="#e9e4d8" stroke="#6d665c" stroke-width="0.5"/>' +
+        '<path fill="none" stroke="#f4f0e6" stroke-width="0.8" stroke-linecap="round" d="m10.6 14 3.2 2m0-2-3.2 2m0 2.6 3.2 2m0-2-3.2 2m0 2.6 3.2 2m0-2-3.2 2"/>' +
+        ivRim(p, "M4.4 12.4v14.5"); },
+    /* a flat sole and the Y of a strap */
+    flipflops: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M4.6 29.4h30.8c1.4 0 2.4 1 2.4 2.4v1.6H4.6c-1.4 0-2.4-1-2.4-2.4v.2c0-1 .8-1.8 2.4-1.8Z") +
+        '<path fill="none" stroke="' + p.deep + '" stroke-width="1.5" stroke-linecap="round" d="M22 29.4l-4.6-7.6M22 29.4l7-4.4M22 29.4l-9-3"/>' +
+        ivRim(p, "M5 29.8h30"); },
     /* a riding boot: a tall shaft, a strap and buckle, a heavy heel */
     boots: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
       return ivDefs(uid, p) +
@@ -9128,13 +9151,23 @@ function invDollHTML() {
   const footwear=()=>{
     /* under the trousers, the shaft must sit inside BOTH legs once mirrored about 112.5: the
        right leg runs 118-139 at the ankle, so the hidden shaft is 86-102 (123-139 mirrored) */
-    const k=feet.kind, boot=k==='boots', sx=wearOver?[78,108]:[86,102];
+    /* Six kinds. The sneaker is one colour all through, sole included. The All Stars are canvas
+       on a white rubber midsole with a white toe cap, low or high — the high one has the boot's
+       shaft and a patch on the ankle. Flip-flops are a flat sole under a BARE foot and a strap;
+       they never tuck. Boots and loafers as before. */
+    const k=feet.kind, hi=k==='hightop', boot=k==='boots'||hi, star=k==='lowtop'||hi, flip=k==='flipflops', sx=wearOver?[78,108]:[86,102];
     /* The bare feet are not a mirrored pair: the right one stands five units further out than
        the left's reflection. A shoe mirrored about the body's centre therefore sat five units
        inboard of the foot it was on. The right shoe is mirrored about x=112.5 instead. */
     const both=s=>s+'<g transform="translate(225 0) scale(-1 1)">'+s+'</g>';
-    const soleC=k==='sneakers'?'#d9d2bf':ivShade(shoec,-.45);
+    const white='#e9e4d8', soleC=star?white:ivShade(shoec,k==='sneakers'?-.3:-.45);
     let s='<g data-avatar-layer="feet" data-kind="'+esc(k)+'" data-over="'+wearOver+'">';
+    if(flip){
+      // the sole under the foot, a toe post and the Y of the strap over it
+      s+=both(path('M70 463H104Q108 463 107 467L106 469H72Q68 469 69 466Z',shoe,ivShade(shoec,-.35),.8));
+      s+=both(line('M80 462L86 452M80 462L74 457M80 462L97 455',ivShade(shoec,-.2),1.7));
+      return s+'</g>';
+    }
     // the upper: ankle at the top, heel inboard, toe out
     const upper=boot
       ? 'M'+sx[0]+' 421H'+sx[1]+'L105 455Q106 460 104 461H72Q68 460 70 456Q74 449 82 447L'+sx[0]+' 447Z'
@@ -9142,13 +9175,23 @@ function invDollHTML() {
     s+=both(path(upper,shoe,ivShade(shoec,-.35),1));
     // the sole: a band with a welt line, and a heel block under a boot
     s+=both(path('M70 461H104Q108 461 107 466L106 468H73Q68 468 69 464Z',soleC,ivShade(soleC,-.3),.8));
-    if(boot)s+=both(path('M96 461h10l1 7h-11z',ivShade(soleC,-.25),'none',0));
+    if(k==='boots')s+=both(path('M96 461h10l1 7h-11z',ivShade(soleC,-.25),'none',0));
+    if(star){
+      // the rubber toe cap, the stripe along the midsole, white laces, and on the high one the ankle patch
+      s+=both(path('M70 456Q74 449 82 447L84 461H70Z',white,ivShade(white,-.3),.7));
+      s+=both(line('M71 464H105','#2a2826',1));
+      s+=both(line('M85 447l11 1m-12 4 12 1',white,1.2));
+      if(hi&&wearOver)s+='<circle cx="'+(sx[1]-5)+'" cy="433" r="3" fill="'+white+'" stroke="'+ivShade(shoec,-.35)+'" stroke-width=".6"/>'+'<circle cx="'+(225-sx[1]+5)+'" cy="433" r="3" fill="'+white+'" stroke="'+ivShade(shoec,-.35)+'" stroke-width=".6"/>';
+      if(hi)s+=both(line('M88 428l9 1m-9 5 9 1m-9 5 9 1',white,1));
+    }
     if(k==='sneakers'){s+=both(line('M72 461H104','#00000030',1));s+=both(line('M84 447l12 1m-13 4 13 1',ivShade(shoec,.55),1.2));}
     if(k==='loafers')s+=both(path('M84 452Q92 450 100 452L100 455Q92 453 84 455Z',ivShade(shoec,-.3),'none',0));
-    if(boot){s+=both(line('M'+(sx[0]+2)+' 421H'+(sx[1]-2),ivShade(shoec,.22),1));s+=both(line('M88 428l9 1m-9 5 9 1m-9 5 9 1',ivShade(shoec,.4),1));}
+    if(k==='boots'){s+=both(line('M'+(sx[0]+2)+' 421H'+(sx[1]-2),ivShade(shoec,.22),1));s+=both(line('M88 428l9 1m-9 5 9 1m-9 5 9 1',ivShade(shoec,.4),1));}
     return s+'</g>';
   };
-  if(!feet) g += bare; else if(!wearOver) g += footwear();
+  // flip-flops go on a bare foot, and never tuck
+  if(!feet||feet.kind==='flipflops') g += bare;
+  if(feet&&(!wearOver||feet.kind==='flipflops')) g += footwear();
   // Trousers sit behind tops; shorts expose the lower legs.
   if(legs) {
     const short=legs.kind==='shorts', cargo=legs.kind==='cargo', jog=legs.kind==='joggers'||cargo, end=short?336:447, legc=color(legs,'#494641');
@@ -9400,7 +9443,7 @@ function invDollHTML() {
   const nose=worn('nose');if(nose)g+='<circle data-avatar-layer="nose" cx="114" cy="76" r="2" fill="none" stroke="'+color(nose,'#c7ad65')+'" stroke-width="1.3"/>';
   for(const [side,x] of [['l',55],['r',165]]){const it=worn('wrist-'+side);if(it)g+='<g data-avatar-layer="wrist-'+side+'"><rect x="'+(x-7)+'" y="241" width="14" height="6" rx="2" fill="'+color(it,'#7d6943')+'"/>'+(it.kind==='watch'?'<circle cx="'+x+'" cy="244" r="5" fill="#222b29" stroke="'+color(it,'#c1a15b')+'" stroke-width="2"/>':'')+'</g>';for(let n=1;n<=2;n++){const ring=worn('ring-'+side+n);if(ring)g+='<path data-avatar-layer="ring-'+side+n+'" d="M'+(x-3+n*3)+' 264h3" stroke="'+color(ring,'#c5a559')+'" stroke-width="2"/>';}}
   // Shoes worn over the trousers go on last; the rest went on back with the legs, under the hem.
-  if(wearOver) g += footwear();
+  if(wearOver&&feet.kind!=='flipflops') g += footwear();
   return '<svg class="iv-doll iv-avatar" viewBox="0 0 220 490" role="img" aria-label="'+esc(invOutfitWords())+'"><defs>'+defs+'</defs>'+g+'</svg>';
 }
 
