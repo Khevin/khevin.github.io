@@ -199,10 +199,9 @@
       '.takeaways__head',
     ];
 
-    /* Marked, never hidden. These carry their motion on a pseudo-element or a
-       child, so holding the element itself back would take its contents with
-       it: the timeline's rule and arrowhead, the bar's illustration layer. */
-    const TRACKS = ['.process', '#clients .s-head'];
+    /* Marked, never hidden. The timeline carries its rule and arrowhead on
+       pseudo-elements, so holding the element back would take them with it. */
+    const TRACKS = ['.process'];
 
     const nodes = $$(RISE.join(','));
     const tracks = $$(TRACKS.join(','));
@@ -251,6 +250,32 @@
       }, { rootMargin: '0px 0px -15% 0px' });
       tracks.forEach((t) => tio.observe(t));
     }
+  })();
+
+  /* ——— The bar turns ———
+     Three planes cut from one illustration, swept at three rates as the
+     section crosses the viewport: the counter furthest, the wall the other
+     way. The value handed to CSS is just where the section sits in its pass,
+     -1 above to 1 below; the distances live in the stylesheet next to the
+     layers they belong to, so the depth can be tuned without touching this.
+
+     Clamped, so a section taller than the window still reaches both ends. */
+  (() => {
+    const art = document.querySelector('.bar-art');
+    if (!art || reduced) return;
+    const host = art.parentElement;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const b = host.getBoundingClientRect();
+      const vh = innerHeight || document.documentElement.clientHeight;
+      // 0 when the section's middle is at the bottom of the screen, 1 at the top
+      const t = (vh - (b.top + b.height / 2)) / (vh + b.height);
+      art.style.setProperty('--bar-turn', (Math.max(0, Math.min(1, t)) * 2 - 1).toFixed(4));
+    };
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    addEventListener('resize', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    update();
   })();
 
   /* ——— Scroll-progress hairline ——— */

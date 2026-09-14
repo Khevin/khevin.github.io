@@ -768,27 +768,47 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
      one oversized gap rather than as two separate margins. */
   margin-bottom: 0;
 }
-/* The bar itself. It arrives from the right as you reach the section — a drift
-   of a few tens of pixels over a second and a half, which is enough to make the
-   room feel entered rather than switched on, and little enough that you would
-   not catch it looking for it.
-   The image is exactly 2:1 inside a 2:1 box, so `cover` leaves no slack and
-   background-position has nothing to move; it has to be a transformed layer.
-   The left edge it uncovers is the same red as the field behind it, and the
-   right edge is clipped, so nothing shows a seam. */
-#clients .s-head::before {
-  content: "";
+/* ---------- the bar, in three planes ----------
+   The room turns as you pass it. Nearer things sweep further, and the wall
+   drifts the other way, which is what a rotation does and what a single flat
+   picture cannot: it was one image, so the glass and the wall behind it could
+   only ever move together. The planes were cut out of bar-signal.png and what
+   stood behind each one was rebuilt — the wall behind the glass, the beam
+   behind its rim. See explorations/bar-layers.
+
+   All three share one box and one `cover`, so they scale identically and stay
+   registered. The box is wider than the section at both ends, which is the
+   slack the sweep moves into: no layer edge ever reaches the frame.
+
+   --bar-turn is set by script.js, -1 to 1 across the section's pass through
+   the viewport. At rest it is 0 and the picture is exactly the original. */
+.bar-art {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: url('/assets/bar-signal.png') center bottom / cover no-repeat;
+  overflow: hidden;
 }
-.js-motion #clients .s-head::before { transform: translateX(2.6%); }
-.js-motion #clients .s-head.is-in::before {
-  transform: none;
-  transition: transform 1500ms var(--rise);
+.bar-art span {
+  position: absolute;
+  inset: 0 -40px;
+  background-position: center bottom;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: translate3d(calc(var(--bar-turn, 0) * var(--sweep, 0px)), 0, 0);
 }
-#clients .s-head > div {
+/* Back to front: the wall against the sweep, the counter with it and furthest.
+   The spread between them is the depth; the direction change is the turn. */
+.bar-art__bg { --sweep: -7px; background-image: url('/assets/bar/bar-bg.png'); }
+.bar-art__mg { --sweep: 9px;  background-image: url('/assets/bar/bar-mg.png'); }
+.bar-art__fg { --sweep: 26px; background-image: url('/assets/bar/bar-fg.png'); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-art span { transform: none; }
+}
+/* :not(.bar-art) — the art is a child div too, and without this it inherited
+   the copy block's max-width, padding and relative positioning and collapsed
+   into a band at the top of the section. */
+#clients .s-head > div:not(.bar-art) {
   /* above the illustration layer */
   position: relative;
   z-index: 1;
