@@ -2514,6 +2514,12 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-slot:not(.is-on) .iv-slot-nm { color:#8c806b; }
 /* an empty socket needs telling what goes in it; a filled one is holding the answer */
 .iv-armory .iv-slot.is-on .iv-slot-nm { display:none; }
+/* And once the name is not drawn, the strip of padding held back for it is dead space. On a
+   two-by-three torso that costs a little; on a one-square socket it is half the socket, which
+   is why the perfume was a fifteen-pixel drawing inside a forty-nine pixel frame and the
+   earrings were sitting in the top two thirds of theirs. A filled socket pads evenly. */
+.iv-armory .iv-slot.is-on .iv-slot-face { padding:6px; }
+.iv-armory .iv-loadout .iv-fly.is-on .iv-slot-face { padding:4px; }
 .iv-armory .iv-slot .iv-icn { max-height:100%; filter:drop-shadow(0 4px 3px #0009); }
 .iv-armory .iv-slot-face img { object-fit:contain; }
 .iv-accessories { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; padding:12px; background:#0e0f0de0; border:1px solid #403728; margin-top:12px; }
@@ -2562,6 +2568,8 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-loadout .iv-slot { width:auto; height:auto; min-width:0; }
 .iv-armory .iv-loadout .iv-fly .iv-slot-face { padding:5px 7px 16px; }
 .iv-armory .iv-loadout .iv-fly .iv-slot-nm { font-size:9px; padding:4px 3px; }
+/* a fifty-pixel socket cannot hold the word EYEWEAR, and "EYEW…" names nothing */
+.iv-armory .iv-loadout .iv-slot .iv-slot-nm { white-space:nowrap; overflow:hidden; text-overflow:clip; }
 .iv-armory .iv-rig.iv-loadout [data-k="hat"] { grid-area:1/3/3/5; }
 .iv-armory .iv-rig.iv-loadout [data-k="eyes"] { grid-area:1/2/2/3; }
 .iv-armory .iv-rig.iv-loadout [data-k="ear-l"] { grid-area:2/2/3/3; }
@@ -8130,25 +8138,28 @@ const WEAR = [
 /* The sixteen places something can sit. The six that hang on the body proper stay in the rig;
    the ten too small to paint on a figure this tall fly beside it, clustered by the part of the
    body they belong to — the face on one line each side, the hands lower down. */
+/* `short` is what a one-column socket can actually hold. Nine of the eighteen are 50px wide and
+   the full name runs past that — EYEWEAR came out as "EYEW…", which names nothing. The long
+   name stays on the button's aria-label, where there is no width to run out of. */
 const SLOTS = [
   { k: "hat",     f: "hat" },
   { k: "neck",    f: "neck" },
-  { k: "eyes",    f: "eyes",  fly: "head-l" },
-  { k: "ear-l",   f: "ear",   fly: "head-l", name: "Left ear" },
+  { k: "eyes",    f: "eyes",  fly: "head-l", short: "Eyes" },
+  { k: "ear-l",   f: "ear",   fly: "head-l", name: "Left ear",    short: "L ear" },
   { k: "nose",    f: "nose",  fly: "head-r" },
-  { k: "ear-r",   f: "ear",   fly: "head-r", name: "Right ear" },
+  { k: "ear-r",   f: "ear",   fly: "head-r", name: "Right ear",   short: "R ear" },
   { k: "wrist-l", f: "wrist", fly: "hand-l", name: "Left wrist" },
-  { k: "ring-l1", f: "ring",  fly: "hand-l", name: "Left ring" },
-  { k: "ring-l2", f: "ring",  fly: "hand-l", name: "Left ring" },
+  { k: "ring-l1", f: "ring",  fly: "hand-l", name: "Left ring",   short: "L ring" },
+  { k: "ring-l2", f: "ring",  fly: "hand-l", name: "Left ring",   short: "L ring" },
   { k: "wrist-r", f: "wrist", fly: "hand-r", name: "Right wrist" },
-  { k: "ring-r1", f: "ring",  fly: "hand-r", name: "Right ring" },
-  { k: "ring-r2", f: "ring",  fly: "hand-r", name: "Right ring" },
+  { k: "ring-r1", f: "ring",  fly: "hand-r", name: "Right ring",  short: "R ring" },
+  { k: "ring-r2", f: "ring",  fly: "hand-r", name: "Right ring",  short: "R ring" },
   { k: "outer",   f: "outer" },
   { k: "top",     f: "top" },
   { k: "belt",    f: "belt" },
   { k: "legs",    f: "legs" },
   { k: "feet",    f: "feet" },
-  { k: "scent",   f: "scent" }
+  { k: "scent",   f: "scent", short: "Scent" }
 ];
 const FLY_GROUPS = ["head-l", "head-r", "hand-l", "hand-r"];
 const WEAR_BY = Object.fromEntries(WEAR.map(w => [w.k, w]));
@@ -9048,7 +9059,7 @@ function invSlotHTML(s) {
     '" aria-pressed="' + (gearPick === s.k) +
     '" data-inv="slot" data-k="' + s.k + '" data-f="' + s.f + '" aria-label="' + esc(label + ": " + (on ? it.name + ". Take it off." : "empty. Show what fits here.")) + '">' +
     '<span class="iv-slot-face">' + face + "</span>" +
-    '<span class="iv-slot-nm">' + esc(on ? it.name : label) + "</span></button>";
+    '<span class="iv-slot-nm">' + esc(on ? it.name : (s.short || label)) + "</span></button>";
 }
 function renderInv() {
   const el = $("#invEquip");
