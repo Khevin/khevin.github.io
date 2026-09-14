@@ -2605,6 +2605,16 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-rig.iv-loadout [data-k="ring-l2"] { grid-area:7/2/8/3; }
 .iv-armory .iv-rig.iv-loadout [data-k="ring-r1"] { grid-area:7/5/8/6; }
 .iv-armory .iv-rig.iv-loadout [data-k="ring-r2"] { grid-area:7/6/8/7; }
+/* the tuck toggle mirrors the scent socket, under the right hand */
+.iv-armory .iv-rig.iv-loadout .iv-tuck { grid-area:8/6/9/7; }
+.iv-armory .iv-tuck .iv-slot-face { padding:5px 7px 16px; color:#8c806b; }
+.iv-armory .iv-tuck.is-on .iv-slot-face { padding:5px 7px 16px; color:#d2b578; }
+.iv-armory .iv-tuck .iv-tuck-art { width:100%; height:100%; display:block; opacity:.55; }
+.iv-armory .iv-tuck.is-on .iv-tuck-art { opacity:1; }
+.iv-armory .iv-tuck .iv-slot-nm { display:block; }
+.iv-armory .iv-tuck:disabled { cursor:default; }
+.iv-armory .iv-tuck:disabled .iv-slot-face { opacity:.35; }
+@media (hover: hover) { .iv-armory .iv-tuck:not(:disabled):hover .iv-tuck-art { opacity:.9; } }
 @media(max-width:480px) { .iv-armory .iv-rig.iv-loadout { padding:10px; gap:5px; grid-template-rows:repeat(8,44px); } }
 /* One size means one size at every width, so the 8px phone override is gone. What it was there
    to solve is real though: below about 800px a one-column socket is thirty pixels across and no
@@ -2616,7 +2626,8 @@ li.is-done .qg { color: var(--verdant); }
    to 32px; the labels stop fitting on exactly that line, so they leave on it. */
 @media(max-width:820px) {
   .iv-armory .iv-loadout .iv-fly:not([data-k^="wrist"]) .iv-slot-nm,
-  .iv-armory .iv-loadout [data-k="scent"] .iv-slot-nm { display:none; }
+  .iv-armory .iv-loadout [data-k="scent"] .iv-slot-nm, .iv-armory .iv-loadout .iv-tuck .iv-slot-nm { display:none; }
+  .iv-armory .iv-tuck .iv-slot-face, .iv-armory .iv-tuck.is-on .iv-slot-face { padding:4px; }
   .iv-armory .iv-loadout .iv-fly:not([data-k^="wrist"]):not(.is-on) .iv-slot-face,
   .iv-armory .iv-loadout [data-k="scent"]:not(.is-on) .iv-slot-face { padding:4px; }
 }
@@ -2735,7 +2746,7 @@ li.is-done .qg { color: var(--verdant); }
 .gear-top-f { display: grid; grid-template-columns: minmax(0, 1fr) 152px; gap: var(--s3); align-content: start; }
 /* Kind belongs with what the garment is, not adrift under the block that names it */
 .gear-top-f .gear-kind { grid-column: 1 / -1; }
-.gear-top-f .gear-over { grid-column: 1 / -1; min-height: 0; padding: 2px 0; }
+.gear-top-f .gear-flag { grid-column: 1 / -1; min-height: 0; padding: 2px 0; }
 /* Three groups, told apart by a rule and a breath rather than by three more headings: what it
    is, what it looks like, and everything else. */
 .gear-sep { height: 0; margin: var(--s2) 0 0; border: 0; border-top: 1px solid var(--mortar); }
@@ -6532,7 +6543,7 @@ function sanitize(s) {
       color: /^#[0-9a-fA-F]{6}$/.test(x.color) ? String(x.color) : "#6b6257",
       pattern: ['sticks','spots','abstract','flowers','sprigs'].includes(x.pattern)?x.pattern:'sticks',
       printColor: shirtInk(x.printColor,'#202326'), printColor2: shirtInk(x.printColor2,'#779b83'), printSecond: x.printSecond===true,
-      over: x.over === true,
+      holes: x.holes === true,
       note: String(x.note || "").slice(0, 80),
       img: (typeof x.img === "string" && x.img.startsWith("data:image")) ? x.img : ""
     }));
@@ -6545,7 +6556,9 @@ function sanitize(s) {
       if (typeof id === "string" && id && items.some(x => x.id === id && x.slot === s.f)
         && Object.keys(worn).every(k => worn[k] !== id)) worn[s.k] = id;
     });
-    s.wardrobe = { items, worn };
+    /* whether the trousers tuck into the shoes is a choice about the look, not about a shoe, so
+       it lives with what is worn rather than on an item */
+    s.wardrobe = { items, worn, tuck: wr.tuck === true };
   }
   /* campaigns are the owner's to edit, so only the shape is enforced, never the content */
   s.campaigns = (Array.isArray(s.campaigns) ? s.campaigns : []).filter(c => c && c.id).map(c => ({
@@ -8212,7 +8225,7 @@ const WEAR = [
   { k: "outer", name: "Overshirt", kinds: [["shacket", "Overshirt"], ["jacket", "Jacket"], ["hoodie", "Zip hoodie"], ["blazer", "Blazer"], ["coat", "Coat"], ["sherpa", "Lined denim jacket (jaqueta forrada)"], ["pullover", "Pullover hoodie"], ["sweater", "Sweater"]] },
   { k: "top",   name: "Top",       kinds: [["tee", "T-shirt"], ["shirt", "Dress shirt"], ["polo", "Polo"], ["printed", "Patterned short-sleeve shirt"], ["tank", "Tank top"]] },
   { k: "belt",  name: "Belt",      kinds: [["leather", "Leather"], ["woven", "Woven"], ["chain", "Chain"]] },
-  { k: "legs",  name: "Trousers",  kinds: [["jeans", "Jeans"], ["chinos", "Chinos"], ["joggers", "Joggers"], ["shorts", "Shorts"]] },
+  { k: "legs",  name: "Trousers",  kinds: [["jeans", "Jeans"], ["chinos", "Chinos"], ["joggers", "Joggers"], ["cargo", "Tactical trousers"], ["shorts", "Shorts"]] },
   { k: "feet",  name: "Shoes",     kinds: [["sneakers", "Sneakers"], ["boots", "Boots"], ["loafers", "Loafers"]] },
   /* not worn, but kept with what you put on in the morning, which is where you reach for it */
   { k: "scent", name: "Perfume",   kinds: [["bottle", "Bottle"], ["flask", "Flask"], ["vial", "Vial"]] }
@@ -8640,6 +8653,16 @@ const GEAR_ICON = {
         ivFold(p, "M14.6 15c-.3 4.4-.4 8.8-.4 12.8M25.4 15c.3 4.4.4 8.8.4 12.8") +
         '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.85" stroke-linecap="round" opacity="0.9" d="M18.4 8.2h3.2"/>' +
         ivRim(p, "M10.2 12.4c-.2 3-.2 6-.1 8.6"); },
+    /* tactical: the joggers' gathered leg, a flapped pocket with a snap on each thigh */
+    cargo: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) + ivPart(p, g, "M10 5h20l1 7-1.4 19.4c-.1 2-1.1 3.1-3.1 3.1h-1.8c-2 0-3-1.1-3.1-3.1L20 19l-1.6 12.4c-.1 2-1.1 3.1-3.1 3.1h-1.8c-2 0-3-1.1-3.1-3.1L9 12Z") +
+        ivPart(p, p.deep, "M10 6.4h20v3.4H10Z") +
+        ivPart(p, p.deep, "M11 30.4h5.9l-.1 3.4h-5.6ZM23.1 30.4H29l-.2 3.4h-5.6Z") +
+        ivPart(p, p.dark, "M11.6 16.4h5v6h-5ZM23.4 16.4h5v6h-5Z") +
+        ivPart(p, p.deep, "M11.4 16h5.4v2h-5.4ZM23.2 16h5.4v2h-5.4Z") +
+        ivStud(14.1, 19.6, 0.5) + ivStud(25.9, 19.6, 0.5) +
+        '<path fill="none" stroke="' + IV_CORD + '" stroke-width="0.85" stroke-linecap="round" opacity="0.9" d="M18.4 8.2h3.2"/>' +
+        ivRim(p, "M10.2 12.4c-.2 3-.2 6-.1 8.6"); },
     shorts: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
       return ivDefs(uid, p) + ivPart(p, g, "M10 6h20l1 6-1 14h-7l-3-9-3 9h-7l-1-14Z") +
         ivPart(p, p.dark, "M9.6 7.4h20.8v3.2H9.6Z") +
@@ -9050,10 +9073,11 @@ function invDollHTML() {
   /* Footwear. A shoe is an upper on a sole, and a boot is that with a shaft; the old blob had no
      sole, so nothing put the foot on the ground, and its shaft was narrower than the trouser leg
      it was meant to swallow, which left a sliver of hem standing outside the boot. Drawn once and
-     mirrored. Whether the trousers tuck in or fall over is the garment's own choice (`over`):
-     over, the shoe goes on after the trousers and its shaft is cut wider than the leg; under,
-     it goes on before them, inside the leg, and the hem comes down over it. */
-  const shoec=color(feet,'#38342d'), wearOver=!!feet&&feet.over===true;
+     mirrored. Whether the trousers tuck in or fall over is the outfit's choice (`tuck` on the
+     wardrobe, a toggle on the rig): tucked, the shoe goes on after the trousers and its shaft is
+     cut wider than the leg; not, it goes on before them, inside the leg, and the hem comes down
+     over it. */
+  const shoec=color(feet,'#38342d'), wearOver=!!feet&&wardrobe().tuck===true;
   const footwear=()=>{
     const k=feet.kind, boot=k==='boots', sx=wearOver?[78,106]:[83,102];
     const soleC=k==='sneakers'?'#d9d2bf':ivShade(shoec,-.45);
@@ -9074,12 +9098,28 @@ function invDollHTML() {
   if(!feet) g += bare; else if(!wearOver) g += footwear();
   // Trousers sit behind tops; shorts expose the lower legs.
   if(legs) {
-    const short=legs.kind==='shorts', jog=legs.kind==='joggers', end=short?336:447;
-    g+='<g data-avatar-layer="legs" data-kind="'+esc(legs.kind)+'">'+path('M81 238Q110 246 139 238L144 283 139 '+end+'Q129 '+(end+4)+' 117 '+end+'L110 288 103 '+end+'Q90 '+(end+4)+' 80 '+end+'L76 285Z',trouser);
+    const short=legs.kind==='shorts', cargo=legs.kind==='cargo', jog=legs.kind==='joggers'||cargo, end=short?336:447, legc=color(legs,'#494641');
+    /* the tactical trouser is cut fuller: the leg bellies out below the knee and gathers at the cuff */
+    const cut=cargo
+      ? 'M81 238Q110 246 139 238L146 283 147 380 142 '+end+'Q129 '+(end+4)+' 116 '+end+'L110 288 104 '+end+'Q90 '+(end+4)+' 78 '+end+'L73 380 74 283Z'
+      : 'M81 238Q110 246 139 238L144 283 139 '+end+'Q129 '+(end+4)+' 117 '+end+'L110 288 103 '+end+'Q90 '+(end+4)+' 80 '+end+'L76 285Z';
+    g+='<g data-avatar-layer="legs" data-kind="'+esc(legs.kind)+'">'+path(cut,trouser);
     g+=line('M82 251q27 5 56 0M110 253v30M87 258q0 18-10 21m56-21q0 18 10 21','#0005',1.5);
-    g+=both(line('M85 298l10 12-10 5m0 48 11 9-10 7','#ffffff18',1.4));
-    if(jog)g+=both(path('M80 435h24v14H81Z',color(legs,'#494641')));
+    if(!cargo)g+=both(line('M85 298l10 12-10 5m0 48 11 9-10 7','#ffffff18',1.4));
+    if(cargo) {
+      // a thigh pocket with its flap and a snap on each leg, a drawstring at the waist, and the creases a full leg gathers
+      g+=both(path('M76 318L100 322 99 352 76 350Z',ivShade(legc,-.1),ivShade(legc,-.32),.9)+path('M75 316L101 320 100 329 75 326Z',ivShade(legc,-.04),ivShade(legc,-.32),.9));
+      g+=both('<circle cx="88" cy="324" r="1.3" fill="'+ivShade(legc,.35)+'"/>');
+      g+=line('M104 250q6 8 0 16m12-16q-6 8 0 16','#ffffff22',1.2);
+      g+=both(line('M84 395q6 12-2 30m14-34q4 14 0 28','#ffffff14',1.3));
+    }
+    if(jog)g+=both(path(cargo?'M78 435h26v14H79Z':'M80 435h24v14H81Z',legc));
     if(legs.kind==='jeans')g+=both(line('M82 286l2 146','#e5c58d50',.8));
+    /* holes at the knees: the skin through a torn opening, and the frayed threads across it */
+    if(legs.holes===true&&!short) {
+      g+=both(path('M85 333Q92 328 101 332Q100 342 93 345Q86 343 85 333Z',skin,ivShade(legc,-.3),.8));
+      g+=both(line('M87 334q6-1 12 1M88 340q5 1 10-1',legs.kind==='jeans'?'#e8e0cccc':ivShade(legc,.45),.9));
+    }
     g+='</g>';
   } else g+=path('M81 241q29 7 58 0l3 47-29 2-3-18-3 18-29-2Z','#383a37');
   /* The neck opening ran from x=89 to x=131, which left thirteen units of shoulder between the
@@ -9149,7 +9189,9 @@ function invDollHTML() {
     } else if(shirt||k==='polo') {
       const polo=k==='polo';
       // A real collar stand with two compact fall points; a short placket for knit polos.
-      g+=path('M96 109Q110 116 124 109L122 117Q110 122 98 117Z',fabric,tEdge,.6);
+      /* the collar stand shows between the points on a buttoned collar; on an open one the
+         points lie flat and the band behind the neck is hidden, so it is not drawn */
+      if(!print)g+=path('M96 109Q110 116 124 109L122 117Q110 122 98 117Z',fabric,tEdge,.6);
       if(print) {
         // open at the top: the facing along the V, the points lying out, the placket from the first closed button
         g+=path('M104 121L110 152 116 121 114 121 110 146 106 121Z','#e8e1cf7a','none',0);
@@ -9309,6 +9351,20 @@ function invSlotHTML(s) {
     '<span class="iv-slot-face">' + face + "</span>" +
     '<span class="iv-slot-nm">' + esc(on ? it.name : (s.short || label)) + "</span></button>";
 }
+/* Trousers tucked into the shoes or falling over them is decided here, on the rig, where the two
+   looks can be compared on the figure — not in the garment's dialog, where there is no figure to
+   compare against. A socket-shaped toggle, pressed when tucked; it only means something with
+   both shoes and trousers on, and is inert otherwise. */
+function invTuckHTML() {
+  const W = wardrobe(), on = W.tuck === true, can = !!(gearWorn("feet") && gearWorn("legs"));
+  const art = on
+    ? '<path d="M15 5h10l1 15H14z" fill="currentColor" opacity=".45"/><path d="M11 18h18l1 12q4 2 3 5H9q-1-3 3-5z" fill="currentColor"/><path d="M13 18h14" stroke="currentColor" stroke-width="1.2" opacity=".6"/>'
+    : '<path d="M13 22h14v8q4 2 3 5H10q-1-3 3-5z" fill="currentColor"/><path d="M14 5h12l2 20H12z" fill="currentColor" opacity=".45"/>';
+  return '<button type="button" class="iv-slot iv-tuck' + (on ? " is-on" : "") + '" data-inv="tuck" aria-pressed="' + on + '"' + (can ? "" : " disabled") +
+    ' aria-label="Trousers tucked into the shoes' + (can ? "" : " — needs shoes and trousers on") + '">' +
+    '<span class="iv-slot-face"><svg class="iv-tuck-art" viewBox="0 0 40 40" aria-hidden="true">' + art + "</svg></span>" +
+    '<span class="iv-slot-nm">Tuck</span></button>';
+}
 function renderInv() {
   const el = $("#invEquip");
   if (!el) return;
@@ -9367,7 +9423,7 @@ function renderInv() {
      filled place shows what else fits it and offers the removal, rather than performing it. */
   const equipped = '<section class="iv-fig" aria-label="Equipped clothing">' +
     '<header class="iv-section-head"><h3>Equipped</h3></header>' +
-    '<div class="iv-rig iv-loadout">' + SLOTS.map(invSlotHTML).join("") + "</div>" +
+    '<div class="iv-rig iv-loadout">' + SLOTS.map(invSlotHTML).join("") + invTuckHTML() + "</div>" +
     (picked
       ? '<div class="iv-pick"><span class="iv-pick-n">' + esc(picked.name) + " · " + esc(slotLabel(pick)) + "</span>" +
         '<button type="button" class="iv-pick-b" data-inv="unequip" data-k="' + esc(pick.k) + '">Unequip</button></div>'
@@ -9464,8 +9520,8 @@ function gearDlgRender(focusSel) {
         '<label class="bk-l gear-kind">Kind<select name="kind">' + kindsFor(d.slot).map(x =>
           '<option value="' + x[0] + '"' + (d.kind === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>").join("") +
           "</select></label>" +
-        /* shoes have one more thing to say about how they sit on the figure */
-        (d.slot === "feet" ? '<label class="gear-2nd gear-over"><input type="checkbox" name="over"' + (d.over ? " checked" : "") + ">Worn over the trousers</label>" : "") +
+        /* a trouser has one more thing to say about itself */
+        (d.slot === "legs" && d.kind !== "shorts" ? '<label class="gear-2nd gear-flag"><input type="checkbox" name="holes"' + (d.holes ? " checked" : "") + ">Holes at the knees</label>" : "") +
       "</div></div>" +
     '<hr class="gear-sep">' +
     /* What it looks like. */
@@ -9499,10 +9555,10 @@ document.addEventListener("input", e => {
   if (t.name === "name") gearEdit.name = t.value;
   else if (t.name === "note") gearEdit.note = t.value;
   else if (t.name === "kind") { gearEdit.kind = t.value; gearDlgRender('[name="kind"]'); }
+  else if (t.name === "holes") gearEdit.holes = t.checked;
   else if(t.name==='pattern') {gearEdit.pattern=t.value;gearDlgPreview();}
   else if(t.name==='printColor'||t.name==='printColor2') {gearEdit[t.name]=t.value;gearDlgPreview();}
   else if(t.name==='printSecond') {gearEdit.printSecond=t.checked;gearDlgRender('[name="printSecond"]');}
-  else if (t.name === "over") gearEdit.over = t.checked;
   else if (t.name === "slot") {
     /* a new slot brings its own kinds; keep the one named if the new slot also has it */
     gearEdit.slot = t.value;
@@ -9675,7 +9731,7 @@ function gearDlgSave() {
   it.name = name.slice(0, 60); it.slot = d.slot; it.kind = kindOk(d.slot, d.kind) ? d.kind : kindsFor(d.slot)[0][0]; it.color = d.color;
   it.pattern=['sticks','spots','abstract','flowers','sprigs'].includes(d.pattern)?d.pattern:'sticks';
   it.printColor=shirtInk(d.printColor,'#202326');it.printColor2=shirtInk(d.printColor2,'#779b83');it.printSecond=!!d.printSecond;
-  it.over = !!d.over;
+  it.holes = !!d.holes;
   it.note = d.note.trim().slice(0, 80); it.img = d.img || "";
   /* a garment that moved to another slot cannot stay worn in the one it left */
   if (moved) SLOTS.forEach(s => { if (W.worn[s.k] === it.id && s.f !== it.slot) delete W.worn[s.k]; });
@@ -9705,6 +9761,11 @@ function invAct(el) {
       { const b = document.querySelector('.iv-slot[data-k="' + d.k + '"]'); if (b) b.focus({ preventScroll: true }); }
       break;
     case "unequip":    gearPick = ""; gearTakeOff(d.k); break;
+    case "tuck": {
+      const W = wardrobe(); W.tuck = W.tuck !== true; save(); renderInv();
+      const b = document.querySelector(".iv-tuck"); if (b) b.focus({ preventScroll: true });
+      break;
+    }
     case "wear":       gearWear(d.id); break;
     case "strip":      gearStrip(); break;
     case "filter": {
