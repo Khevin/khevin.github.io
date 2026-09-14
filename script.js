@@ -134,6 +134,16 @@
     a.addEventListener('click', (e) => {
       const id = a.getAttribute('href').slice(1);
       if (!id) return;
+      /* "#top" is the top of the document, not an element. Nothing is named
+         that any more — naming one was what made arriving from another page
+         land a nav's height down the page — so it is answered here, before the
+         lookup that would now come back empty and hand this to the browser as
+         a jump. */
+      if (id.toLowerCase() === 'top') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+        return;
+      }
       const t = document.getElementById(id);
       if (!t) return;
       e.preventDefault();

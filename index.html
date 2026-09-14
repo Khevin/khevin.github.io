@@ -74,7 +74,12 @@
   </div>
 </nav>
 
-<main id="top">
+<!-- No id="top" here. "#top" is a reserved fragment: with no element of
+     that name the browser scrolls to the top of the DOCUMENT, which is what the
+     Home link means. Naming <main> "top" overrode that and sent every arrival
+     from another page to main's own offset instead, which is the height of the
+     nav -- the page opened already scrolled past its own first line. -->
+<main>
 
 <!-- ============= HERO · V5 EDITORIAL DISPATCHES ============= -->
 <section class="hero v5">
