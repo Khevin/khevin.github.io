@@ -9110,19 +9110,66 @@ function gearDraftColor(c) {
 }
 /* a photograph shrinks on the way in: 160px on its long side, then JPEG. A wardrobe of
    full-size photographs would not fit through one Supabase row, and nothing here needs one. */
+/* A photograph shot on a seamless background arrives as a rectangle, and a rectangle on a dark
+   board is a sticker whatever colour the ground is. This takes the ground away.
+
+   It floods in from the edges rather than matching the background colour everywhere, because a
+   white shirt on white shares its colour with the ground it stands on and a global match would
+   punch holes straight through the garment. Only the region connected to the outside goes. */
+function gearKnockout(cv) {
+  const w = cv.width, h = cv.height, ctx = cv.getContext("2d");
+  if (w < 8 || h < 8) return false;
+  let im; try { im = ctx.getImageData(0, 0, w, h); } catch (e) { return false; }
+  const d = im.data, at = (x, y) => (y * w + x) * 4;
+  /* the four corners have to agree before any of it is called a background */
+  const cs = [at(0, 0), at(w - 1, 0), at(0, h - 1), at(w - 1, h - 1)];
+  const near = (a, b, t) => Math.abs(d[a] - d[b]) <= t && Math.abs(d[a + 1] - d[b + 1]) <= t && Math.abs(d[a + 2] - d[b + 2]) <= t;
+  for (let i = 1; i < 4; i++) if (!near(cs[0], cs[i], 18)) return false;
+  const br = d[cs[0]], bg = d[cs[0] + 1], bb = d[cs[0] + 2], TOL = 34;
+  const bgish = c => Math.abs(d[c] - br) <= TOL && Math.abs(d[c + 1] - bg) <= TOL && Math.abs(d[c + 2] - bb) <= TOL;
+
+  const seen = new Uint8Array(w * h), stack = [];
+  const push = (x, y) => { const i = y * w + x; if (!seen[i]) { seen[i] = 1; stack.push(i); } };
+  for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
+  for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
+  let cut = 0;
+  while (stack.length) {
+    const i = stack.pop(), c = i * 4;
+    if (!bgish(c)) continue;
+    d[c + 3] = 0; cut++;
+    const x = i % w, y = (i - x) / w;
+    if (x > 0) push(x - 1, y);
+    if (x < w - 1) push(x + 1, y);
+    if (y > 0) push(x, y - 1);
+    if (y < h - 1) push(x, y + 1);
+  }
+  /* nothing worth removing, or it ate the subject and the photograph has no ground to speak of */
+  const frac = cut / (w * h);
+  if (frac < 0.02 || frac > 0.94) return false;
+  /* one pass of feather, so the cut is an edge rather than a staircase */
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const c = at(x, y); if (d[c + 3] === 0) continue;
+    if (!d[at(x - 1, y) + 3] || !d[at(x + 1, y) + 3] || !d[at(x, y - 1) + 3] || !d[at(x, y + 1) + 3]) d[c + 3] = 150;
+  }
+  ctx.putImageData(im, 0, 0);
+  return true;
+}
 function gearShrink(file, cb) {
   const url = URL.createObjectURL(file), img = new Image();
   img.onload = () => {
-    const max = 160, r = Math.min(1, max / Math.max(img.width, img.height));
+    const max = 200, r = Math.min(1, max / Math.max(img.width, img.height));
     const cv = document.createElement("canvas");
     cv.width = Math.max(1, Math.round(img.width * r));
     cv.height = Math.max(1, Math.round(img.height * r));
     cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
     URL.revokeObjectURL(url);
-    let out = null; try { out = cv.toDataURL("image/jpeg", 0.72); } catch (err) { out = null; }
-    cb(out);
+    /* PNG only when there is alpha to keep — a JPEG would fill the hole back in with black */
+    const cut = gearKnockout(cv);
+    let out = null;
+    try { out = cut ? cv.toDataURL("image/png") : cv.toDataURL("image/jpeg", 0.72); } catch (err) { out = null; }
+    cb(out, cut);
   };
-  img.onerror = () => { URL.revokeObjectURL(url); cb(null); };
+  img.onerror = () => { URL.revokeObjectURL(url); cb(null, false); };
   img.src = url;
 }
 function gearPhotoPick() {
@@ -9130,10 +9177,11 @@ function gearPhotoPick() {
   inp.value = "";
   inp.onchange = () => {
     const f = inp.files && inp.files[0]; if (!f || !gearEdit) return;
-    gearShrink(f, out => {
+    gearShrink(f, (out, cut) => {
       if (!out) { showToast("That image could not be read.", false, true); return; }
       if (!gearEdit) return;
       gearEdit.img = out; gearDlgRender('[data-inv="gearphoto"]');
+      showToast(cut ? "Photo added, and its background taken out." : "Photo added.", true);
     });
   };
   inp.click();
