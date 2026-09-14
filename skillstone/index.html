@@ -8138,7 +8138,7 @@ const WEAR = [
   { k: "neck",  name: "Neck",      kinds: [["chain", "Chain"], ["scarf", "Scarf"]] },
   { k: "wrist", name: "Wrist",     kinds: [["watch", "Watch"], ["band", "Band"], ["cuff", "Cuff"]] },
   { k: "ring",  name: "Ring",      kinds: [["band", "Band"], ["signet", "Signet"], ["stone", "Stone"]] },
-  { k: "outer", name: "Overshirt", kinds: [["shacket", "Overshirt"], ["jacket", "Jacket"], ["hoodie", "Zip hoodie"], ["blazer", "Blazer"], ["coat", "Coat"]] },
+  { k: "outer", name: "Overshirt", kinds: [["shacket", "Overshirt"], ["jacket", "Jacket"], ["hoodie", "Zip hoodie"], ["blazer", "Blazer"], ["coat", "Coat"], ["sherpa", "Lined denim jacket (jaqueta forrada)"]] },
   { k: "top",   name: "Top",       kinds: [["tee", "T-shirt"], ["hoodie", "Hoodie"], ["sweater", "Sweater"], ["shirt", "Dress shirt"], ["polo", "Polo"], ["tank", "Tank top"]] },
   { k: "belt",  name: "Belt",      kinds: [["leather", "Leather"], ["woven", "Woven"], ["chain", "Chain"]] },
   { k: "legs",  name: "Trousers",  kinds: [["jeans", "Jeans"], ["chinos", "Chinos"], ["joggers", "Joggers"], ["shorts", "Shorts"]] },
@@ -8173,6 +8173,8 @@ const SLOTS = [
   { k: "scent",   f: "scent", short: "Scent" }
 ];
 const FLY_GROUPS = ["head-l", "head-r", "hand-l", "hand-r"];
+const wardrobeFamily = k => k === 'ring' ? 'neck' : k;
+const wardrobeMatches = (slot, filter) => !filter || wardrobeFamily(slot) === wardrobeFamily(filter);
 const WEAR_BY = Object.fromEntries(WEAR.map(w => [w.k, w]));
 const SLOTS_OF = f => SLOTS.filter(s => s.f === f);
 const slotLabel = s => s.name || WEAR_BY[s.f].name;
@@ -8456,6 +8458,11 @@ const GEAR_ICON = {
         ivCrease(p, "M15 22c.3 4.2.2 8-.1 11.2M25 22c-.3 4.2-.2 8 .1 11.2", 1.8, 0.12); }
   },
   outer: {
+    sherpa: (c, uid) => { const p=ivCloth(c), g='url(#'+uid+')';
+      return ivDefs(uid,p)+ivOuter(p,g,34)+
+        ivPart(p,'#e4decb','M14 6 19 10 15 16 11 9ZM26 6 21 10 25 16 29 9Z')+
+        '<path d="M18.5 13v20M21.5 13v20" fill="none" stroke="#e4decb" stroke-width="1.7"/>'+
+        ivPart(p,g,'M12 17h5v6h-5ZM23 17h5v6h-5Z')+ivFold(p,'M12 19h5M23 19h5M11 30h6M23 30h6',.7)+ivRim(p,IV_RIM_LONG); },
     /* an overtunic worn open, with two patch pouches */
     shacket: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
       return ivDefs(uid, p) + ivOuter(p, g, 35) +
@@ -8892,7 +8899,8 @@ function invDollHTML() {
      armhole with no line in it, which is the seam coming back by another route. The mirrored
      copy gets a gradient mirrored to match, and the two halves land in the same light. */
   const fabric=clothLight('top',topc), fabricM=clothLight('topm',topc,true);
-  const shell=material('outer',color(outer,'#303d43'));
+  const outerc=color(outer,'#303d43'), oEdge=ivShade(outerc,-.28);
+  const shell=clothLight('outer',outerc), shellM=clothLight('outerm',outerc,true);
   const trouser=material('legs',color(legs,'#494641')), shoe=material('feet',color(feet,'#38342d'));
   const path=(d,fill,stroke='#171813',sw=1.2)=>'<path d="'+d+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linejoin="round" stroke-linecap="round"/>';
   const line=(d,stroke='#ffffff24',sw=1)=>path(d,'none',stroke,sw);
@@ -8987,23 +8995,53 @@ function invDollHTML() {
        own path ends; it does not need a line drawn across it to say so. */
     g+='</g>';
   }
-  // Open outerwear: the centre stays transparent, revealing the actual equipped base top.
+  // Each outer layer has its own cut; a continuous light joins sleeves and shoulders.
   if(outer) {
-    const k=outer.kind,coat=k==='coat',hem=coat?305:248;
-    g+='<g data-avatar-layer="outer" data-kind="'+esc(k)+'">'+sleeve(shell,true);
-    g+=both(path('M89 111L99 120 94 159 98 '+hem+'Q86 '+(hem+5)+' 72 '+hem+'L78 184 73 136Z',shell));
-    g+=both(line('M79 163l5 14-6 4m-22 20 10 7m-16 20 16 5','#ffffff20',1.2));
+    const k=outer.kind, coat=k==='coat', tailored=coat||k==='blazer', sherpa=k==='sherpa';
+    const hem=coat?303:k==='blazer'?257:k==='shacket'?250:239;
+    const panel='M95 109Q83 109 75 119Q70 131 74 157L78 194 74 '+(hem-3)+'Q84 '+(hem+3)+' 99 '+hem+'L97 185Q96 144 102 120Z';
+    const pair=(d,fill=shell,stroke=oEdge,sw=.8)=>path(d,fill,stroke,sw)+'<g transform="translate(220 0) scale(-1 1)">'+path(d,fill===shell?shellM:fill,stroke,sw)+'</g>';
+    g+='<g data-avatar-layer="outer" data-kind="'+esc(k)+'">';
+    g+=pair(panel)+sleeveJoined(shell,shellM,true,oEdge,.8);
+    g+=both(line('M61 180q-3 12-4 24',ivShade(outerc,-.14),1.1));
+    // Fine inner facings, instead of heavy black outlines down the opening.
+    g+=pair('M100 125Q95 158 99 '+(hem-2),'none',ivShade(outerc,-.2),1.2);
     if(k==='hoodie') {
-      g+=both(path('M94 105Q78 101 77 116L85 136 99 121Z',shell));
-      g+=both(line('M90 131l-3 38','#e8dfc1',1.5));
+      g+=pair('M97 106C86 99 77 105 79 117Q81 128 91 136L101 120Q94 117 97 106Z',shell,oEdge,.7);
+      g+=both(line('M92 130q-2 17-1 31','#d7ceba',1.3));
+      g+=pair('M78 207Q85 204 94 196L96 228Q86 231 78 228Z',shell,ivShade(outerc,-.18),.8);
+      g+=pair('M75 231Q86 235 99 232L99 239Q86 242 75 236Z',shell,oEdge,.6);
+    } else if(tailored) {
+      // Rolled notch lapels: short collar above a broad, softly curved lapel.
+      g+=pair('M95 108L103 119 96 133 89 128 91 120 86 118Z',shell,oEdge,.7);
+      g+=pair('M90 124L97 133Q93 152 97 170L82 145 87 139 83 135Z',shell,oEdge,.7);
+      g+=both(line('M79 '+(hem-40)+'q7 1 14-1',ivShade(outerc,-.3),2));
+      g+=line('M84 164l8-1',ivShade(outerc,-.28),1.2);
+      for(let y=199;y<hem-13;y+=28)g+='<circle cx="96" cy="'+y+'" r="1.35" fill="'+ivShade(outerc,-.4)+'"/>';
+    } else if(k==='jacket') {
+      // Compact zip jacket: stand collar, welt pockets and a ribbed waistband.
+      g+=pair('M95 108L102 116 98 128 90 120 90 111Z',shell,oEdge,.7);
+      g+=both(line('M83 197l-4 20',ivShade(outerc,-.35),2));
+      g+=pair('M75 231Q86 235 99 232L99 239Q86 242 75 236Z',shell,oEdge,.6);
+      g+=both(line('M98 135v88',ivShade(outerc,.32),.7));
+      g+=path('M96 181h2v6h-2Z','#a99879','none');
     } else {
-      g+=both(path('M91 110L101 121 90 157 80 139 85 126 80 122Z',shell));
-      if(k==='blazer'||coat)g+=both(line('M93 161l-4 40','#e5d7b140',1.2));
-      else g+=both(path('M79 157h12v18l-6 4-7-4Z',shell,'#0005'));
+      // Shirt collars and flap pockets belong to overshirts and denim, not to blazers.
+      const lining=sherpa?'#e4decb':shell;
+      g+=pair('M94 108L102 118 93 134Q86 126 84 116Z',lining,sherpa?'#bdb6a2':oEdge,.7);
+      g+=pair('M79 151h14v22q-7 6-14 0Z',shell,ivShade(outerc,-.22),.8);
+      g+=pair('M79 151h14v6l-7 4-7-4Z',shell,oEdge,.7);
+      g+=both(line('M77 146h18M80 180l-2 '+(hem-192),sherpa?'#c6c7b184':ivShade(outerc,.16),.7));
+      if(sherpa) {
+        g+=pair('M102 124Q96 157 100 235','none','#e4decb',4);
+        g+=pair('M76 231Q85 235 97 232','none',ivShade(outerc,.35),1.1);
+        g+=both(line('M82 181l-2 43','#c6c7b184',.6));
+      }
+      for(let y=170;y<hem-8;y+=23)g+='<circle cx="97" cy="'+y+'" r="1.2" fill="#b9ab8a"/>';
+      g+=both('<circle cx="86" cy="156" r="1" fill="#b9ab8a"/>');
     }
-    g+=both(line('M76 '+(hem-30)+'l16-4M96 164l1 '+(hem-165),'#0008',1.5));
-    if(k==='shacket'||coat)for(let y=176;y<hem-10;y+=24)g+='<circle cx="94" cy="'+y+'" r="1.6" fill="#b9a580"/>';
-    g+=both(line('M49 229l17 5','#0008',5))+'</g>';
+    g+=both(line('M49 229l15 5',ivShade(outerc,-.23),2));
+    g+='</g>';
   }
   // A belt cinches whatever is on the torso, so it goes over the top and under the outer layer.
   const belt=worn('belt');
@@ -9091,7 +9129,7 @@ function renderInv() {
   const order = WEAR.map(w => w.k);
   /* biggest first, then head to foot, then by name. Big pieces set the columns and the small
      ones fall into the holes they leave, which is what makes the board pack instead of stripe. */
-  const shown = W.items.filter(x => !gearFilter || x.slot === gearFilter)
+  const shown = W.items.filter(x => wardrobeMatches(x.slot, gearFilter))
     .sort((a, b) => (gearArea(b) - gearArea(a)) ||
       (order.indexOf(a.slot) - order.indexOf(b.slot)) || a.name.localeCompare(b.name));
   const wornCount = SLOTS.filter(s => gearWorn(s.k)).length;
@@ -9102,9 +9140,10 @@ function renderInv() {
   const picked = pick ? gearWorn(pick.k) : null;
 
   /* the marks are unlabelled, so the one on show is named once, here, where it costs no line */
-  const fam = gearFilter ? WEAR_BY[gearFilter] : null;
+  const filterFamily = wardrobeFamily(gearFilter);
+  const fam = filterFamily ? {...WEAR_BY[filterFamily], name:filterFamily === 'neck' ? 'Rings & necklaces' : WEAR_BY[filterFamily].name} : null;
   const wardrobe_ = '<div class="iv-hold"><header class="iv-section-head">' +
-      (fam ? '<span class="iv-hold-cur">' + esc(fam.name) + " · " + W.items.filter(x => x.slot === fam.k).length + "</span>" : "") +
+      (fam ? '<span class="iv-hold-cur">' + esc(fam.name) + " · " + W.items.filter(x => wardrobeMatches(x.slot, fam.k)).length + "</span>" : "") +
       '<h3>Wardrobe</h3>' +
       '<button type="button" class="iv-add-b" data-inv="gearnew">+ Add clothing</button></header>' +
     /* Thirteen names set across three lines spent a third of the column saying what the marks
@@ -9115,10 +9154,11 @@ function renderInv() {
        family on show sits in the header, opposite the Add button, where there is already room. */
     '<div class="iv-bar" role="group" aria-label="Show">' +
       '<button type="button" class="iv-f is-word' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
-      WEAR.map(w => {
-        const n = W.items.filter(x => x.slot === w.k).length;
-        return '<button type="button" class="iv-f' + (gearFilter === w.k ? " is-cur" : "") + (n ? "" : " is-bare") +
-          '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (gearFilter === w.k) +
+      WEAR.filter(w => w.k !== 'ring').map(entry => {
+        const w = entry.k === 'neck' ? {...entry,name:'Rings & necklaces'} : entry;
+        const n = W.items.filter(x => wardrobeMatches(x.slot,w.k)).length;
+        return '<button type="button" class="iv-f' + (filterFamily === w.k ? " is-cur" : "") + (n ? "" : " is-bare") +
+          '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (filterFamily === w.k) +
           '" title="' + esc(w.name + " · " + n) + '" aria-label="' + esc(w.name + ", " + n + (n === 1 ? " item" : " items")) + '">' +
           inventoryCategoryArt(w.k) + "</button>";
       }).join("") +
