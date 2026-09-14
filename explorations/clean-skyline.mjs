@@ -15,15 +15,21 @@
  *     silhouette.
  *
  * FAR (pass a tone) — the wider, plainer 878x222 city that stands behind it.
- * That file is drawn as a NEGATIVE: a full-canvas dark plate with a white sky
- * path cut around the rooftops laid over the top, so the buildings are the
- * plate showing through. Treating its fills the way the near file's are treated
- * fills the sky solid, because the tones do not mean the same thing. So the sky
- * is turned into a mask instead. The silhouette keeps its exact outline, the
- * sky becomes genuinely transparent rather than a baked-in paper colour, and
- * the window and shading detail is dropped — at the size a layer set this far
- * back is drawn that detail is only noise, and losing it is most of what makes
- * it read as distance.
+ * That file is built in two storeys and both are needed:
+ *
+ *   - a full-canvas dark plate with the sky, in two big halves, laid over the
+ *     top of it. Cutting that sky out of the plate reveals the low, dense part
+ *     of the city.
+ *   - every TOWER drawn again, dark, ON TOP of that sky. So cutting the sky
+ *     alone deletes them — which is what once flattened this layer into half a
+ *     skyline with a single spire floating above it.
+ *
+ * So the silhouette is the plate minus the sky, with the towers laid back on.
+ * Only the two big halves count as sky; the other #FEFEFE shapes are small
+ * highlights drawn on the buildings, and punching those out scratched white
+ * lines through the towers. Everything else — the outlines and the shading —
+ * is dropped. At the size a layer set this far back is drawn that detail is
+ * only noise, and losing it is most of what makes it read as distance.
  *
  *   node explorations/clean-skyline.mjs explorations/skyline-src/figma-export.svg assets/skyline-sp.svg
  *   node explorations/clean-skyline.mjs explorations/skyline-src/figma-export-back.svg assets/skyline-sp-back.svg '#c8c8d2'
@@ -126,6 +132,7 @@ let sky_n = 0;
 let skyed = 0;
 let fanned = 0;
 let stranded = 0;
+let towersN = 0;
 
 if (farTone) {
   const paths = [...svg.matchAll(/<path[^>]*\sd="([^"]*)"[^>]*>/g)];
@@ -141,19 +148,50 @@ if (farTone) {
   const plateIdx = paths.findIndex(isPlate);
   if (plateIdx < 0) throw new Error('no full-canvas plate path — check the export');
 
-  /* In this drawing #FEFEFE is the sky, everywhere it appears: the two halves
-     it was split into, and the slivers of daylight between towers. Every other
-     tone is shading ON a building. So the silhouette is the plate with the sky
-     punched out of it, which one even-odd path says exactly — no mask element,
-     and no page colour baked into the asset. */
+  /* The drawing is in two storeys and both are needed.
+     The plate carries the low, dense part of the city, revealed by cutting the
+     sky out of it. But every TOWER is drawn again, dark, ON TOP of that sky —
+     so cutting the sky alone deletes them, which is what flattened this layer
+     into half a skyline with one spire floating over it.
+     So: plate minus sky, and then the towers laid back on. */
   const SKY = '#FEFEFE';
-  const sky = paths.filter((p) => fillOf(p).toUpperCase() === SKY);
-  sky_n = sky.length;
-  if (!sky.length) throw new Error(`no ${SKY} sky paths — check the export`);
+  const white = paths.filter((p) => fillOf(p).toUpperCase() === SKY)
+    .sort((a, b) => b[1].length - a[1].length);
+  if (white.length < 2) throw new Error(`expected at least two ${SKY} paths — check the export`);
 
-  dropped = paths.length - 1 - sky.length;
-  const d = [paths[plateIdx][1], ...sky.map((p) => p[1])].join(' ');
-  const body = `<path fill-rule="evenodd" clip-rule="evenodd" d="${d}" fill="${farTone}"/>`;
+  /* Only the two big halves of sky are sky. The other #FEFEFE shapes are small
+     highlights drawn ON the buildings, and punching those out scratched white
+     lines through the towers. The split is not close — the halves are six times
+     the next one — so it is taken as a ratio rather than a magic number. */
+  const sky = white.filter((p) => p[1].length > white[0][1].length / 2);
+  if (sky.length !== 2) throw new Error(`expected two sky halves, found ${sky.length}`);
+  sky_n = sky.length;
+
+  const towers = paths.filter((p, i) => i !== plateIdx && fillOf(p) === '#141313');
+  towersN = towers.length;
+  dropped = paths.length - 1 - sky.length - towers.length;
+
+  const ground = [paths[plateIdx][1], ...sky.map((p) => p[1])].join(' ');
+
+  /* Haze. The drawing is a rectangle, so left to itself it ends in two vertical
+     cuts and a ground line that stops in mid-air over the paper — which reads
+     as a crop, not as a city carrying on past the edge of the page. Fading both
+     ends is also just what distance does to a skyline. Baked into the asset
+     rather than set in CSS so the file is self-contained. */
+  const body =
+    '<defs>' +
+    `<linearGradient id="haze" x1="0" y1="0" x2="1" y2="0">` +
+    `<stop offset="0" stop-color="#fff" stop-opacity="0"/>` +
+    `<stop offset="0.14" stop-color="#fff" stop-opacity="1"/>` +
+    `<stop offset="0.86" stop-color="#fff" stop-opacity="1"/>` +
+    `<stop offset="1" stop-color="#fff" stop-opacity="0"/>` +
+    `</linearGradient>` +
+    `<mask id="ends"><rect width="${W}" height="${H}" fill="url(#haze)"/></mask>` +
+    '</defs>' +
+    `<g mask="url(#ends)">` +
+    `<path fill-rule="evenodd" clip-rule="evenodd" d="${ground}" fill="${farTone}"/>` +
+    towers.map((p) => `<path d="${p[1]}" fill="${farTone}"/>`).join('') +
+    '</g>';
   svg = svg.replace(/(<svg[^>]*>)[\s\S]*(<\/svg>)/, `$1${body}$2`);
 } else {
   // 2. silhouette tones to the footer ink
@@ -201,7 +239,7 @@ svg = svg.replace(
 );
 
 // Figma ships every path with an id; none of them are referenced.
-svg = svg.replace(/\s+id="(?!sky)[^"]*"/g, '');
+svg = svg.replace(/\s+id="(?!haze|ends)[^"]*"/g, '');
 
 /* Figma writes six decimal places. At the size this is ever drawn, one decimal
    is finer than a pixel, and the difference is most of the file — which loads
@@ -215,7 +253,7 @@ await writeFile(output, svg, 'utf8');
 const tones = [...new Set((svg.match(/fill="#[0-9A-Fa-f]{6}"/g) || []))].length;
 console.log(`${output}   (${farTone ? 'far' : 'near'}, viewBox ${vb})`);
 console.log(`  plate removed:   ${plate ? 'yes' : 'none in this export'}`);
-if (farTone) console.log(`  plate minus sky: ${sky_n} sky paths punched out, ${dropped} detail paths dropped`);
+if (farTone) console.log(`  rebuilt:         plate minus ${sky_n} sky halves + ${towersN} towers, ${dropped} detail paths dropped`);
 else console.log(`  recoloured:      ${recoloured} paths → ${INK}`);
 if (!farTone) console.log(`  sky → page:      ${skyed} white + ${fanned} bridge greys → ${PAPER}`);
 if (!farTone) console.log(`  cables unified:  ${stranded} paths → ${INK}`);

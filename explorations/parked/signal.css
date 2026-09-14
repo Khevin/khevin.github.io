@@ -437,9 +437,16 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 .foot-skyline__far {
   position: absolute;
   left: 50%;
-  bottom: var(--sink);
   transform: translateX(-50%);
   width: min(126%, 1180px);
+  /* It has to stop exactly where the night starts, or its pale ground bar lies
+     on the dark field and reads as a smear across it.
+     The offset is --sink, but it CANNOT be spent on `bottom`: a percentage
+     there resolves against the container's height, and --sink is written in
+     percentages of its width. That put it 19px too low. A margin resolves
+     against width whichever edge it is on, so the same value lands right. */
+  bottom: 0;
+  margin-bottom: var(--sink);
 }
 .foot-body {
   background: var(--foot-ink);
