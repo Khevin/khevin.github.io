@@ -2484,7 +2484,9 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory { display:grid; grid-template-columns:minmax(300px, .85fr) minmax(0,1.15fr); gap:32px; }
 .iv-armory .iv-fig { display:block; min-width:0; padding:0; }
 .iv-armory .iv-hold { padding-left:0; border-left:0; }
-.iv-section-head { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #51432f; }
+/* the title is centred over its column and anything else in the header hangs off the end, so
+   three columns read as three headings rather than three differently-weighted rows */
+.iv-section-head { position:relative; display:flex; justify-content:center; align-items:baseline; gap:12px; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #51432f; }
 .iv-section-head h3 { font:600 17px var(--f-display); color:var(--parchment); margin:0; }
 .iv-section-head span { font:10px var(--f-mono); color:var(--ash); }
 .iv-armory .iv-rig { position:relative; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-template-rows:repeat(5,62px); gap:10px; padding:16px 24px; background:radial-gradient(ellipse at center,#73604722,transparent 70%),url("assets/textures/panel.webp") center/512px; border:1px solid #3f372b; box-shadow:inset 0 0 48px #000b; }
@@ -2507,7 +2509,7 @@ li.is-done .qg { color: var(--verdant); }
 .iv-accessories { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; padding:12px; background:#0e0f0de0; border:1px solid #403728; margin-top:12px; }
 .iv-armory .iv-accessories .iv-slot { width:auto; height:64px; grid-area:auto; }
 .iv-armory .iv-accessories .iv-slot-face { padding:6px 10px 20px; }
-.iv-armory .iv-doll-cap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin:12px 0 0; font-size:10px; }
+.iv-armory .iv-doll-cap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin:12px 0 0; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ash); }
 .iv-armory .iv-strip { margin:0; }
 .iv-armory .iv-bar { gap:4px 10px; min-height:72px; align-content:start; margin-bottom:16px; }
 .iv-armory .iv-f { padding:5px 3px; border-radius:0; border:0; border-bottom:1px solid transparent; font-size:10px; }
@@ -2567,36 +2569,46 @@ li.is-done .qg { color: var(--verdant); }
 @media(max-width:600px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(0,1fr); } .iv-character-stage { min-height:260px; } .iv-character-stage .iv-doll { width:125px; } .iv-with-preview .iv-character { width:100%; } }
 
 /* Centre stage is the main reward for changing equipment. */
-.iv-armory.iv-with-preview { grid-template-columns:minmax(280px,1fr) minmax(240px,.9fr) minmax(0,1.15fr); gap:24px; }
+/* wardrobe, figure, equipment — his own order, and the reason the board on the right reads as
+   the result of the two columns to its left rather than the start of them */
+.iv-armory.iv-with-preview { grid-template-columns:minmax(0,1.15fr) minmax(240px,.9fr) minmax(280px,1fr); gap:24px; }
 .iv-character-stage { min-height:520px; background:radial-gradient(ellipse at 50% 42%,#b49b6330,transparent 65%); border-bottom:1px solid #58492e; }
 .iv-character-stage .iv-avatar { width:244px; max-width:100%; height:auto; filter:drop-shadow(0 12px 10px #0007); }
 .iv-outfit-caption { font-size:12px; color:var(--ash); line-height:1.6; text-align:center; margin:12px auto 0; max-width:30ch; }
 .iv-with-preview .iv-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
-@media(max-width:1100px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(280px,1fr) minmax(220px,.9fr); } .iv-with-preview .iv-hold { grid-column:1/-1; } .iv-with-preview .iv-grid { grid-template-columns:repeat(5,minmax(0,1fr)); } }
-@media(max-width:650px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(0,1fr); } .iv-with-preview .iv-character { grid-row:1; } .iv-character-stage { min-height:400px; } .iv-character-stage .iv-avatar { width:190px; } .iv-with-preview .iv-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+/* narrow: the figure and what is on him keep their pair and the wardrobe takes the row below */
+@media(max-width:1100px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(220px,.9fr) minmax(280px,1fr); } .iv-with-preview .iv-character { order:1; } .iv-with-preview .iv-fig { order:2; } .iv-with-preview .iv-hold { order:3; grid-column:1/-1; } }
+@media(max-width:650px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(0,1fr); } .iv-character-stage { min-height:400px; } .iv-character-stage .iv-avatar { width:190px; } }
 /* ---------- the stash board ----------
    Squares, and an item takes as many as its shape deserves. The board keeps its own size whether
    it holds two things or forty, because the floor is painted by the container rather than by
    filler tiles — nothing to count, nothing to go stale. Dense flow backfills the holes the big
    pieces leave, and the sort hands it the big pieces first so there are holes worth filling. */
-.iv-section-head h3 { margin-right: auto; }
+/* the heading no longer pushes its neighbours to the right; the Add button is absolute now */
 .iv-add-b {
-  appearance: none; background: none; border: 1px solid #56472f; border-radius: 0;
+  appearance: none; position: absolute; right: 0; bottom: 10px;
+  background: none; border: 1px solid #56472f; border-radius: 0;
   padding: 4px 10px; cursor: pointer; color: #c5a56c;
   font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
 }
 @media (hover: hover) { .iv-add-b:hover { border-color: #b59a67; color: var(--parchment); background: #2b2517; } }
 .iv-add-b:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 
+/* The squares stay visible under an empty board: two repeating gradients drawn at the column
+   and row pitch, so the gaps between cells and the bare floor are the same lattice. The column
+   pitch is elastic and comes back from invFloor() as --iv-colw after each render. */
 .iv-armory.iv-with-preview .iv-grid {
-  --iv-cell: 52px;
+  --iv-cell: 52px; --iv-colw: 52px;
   grid-template-columns: repeat(auto-fill, minmax(var(--iv-cell), 1fr));
   grid-auto-rows: var(--iv-cell);
   grid-auto-flow: row dense;
   align-content: start;
-  gap: 2px; padding: 6px;
-  background: #090b09;
-  min-height: calc(8 * var(--iv-cell) + 7 * 2px + 12px);
+  gap: 2px; padding: 0;
+  background-color: #090b09;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 var(--iv-colw), #2b2519 var(--iv-colw) calc(var(--iv-colw) + 2px)),
+    repeating-linear-gradient(180deg, transparent 0 var(--iv-cell), #2b2519 var(--iv-cell) calc(var(--iv-cell) + 2px));
+  min-height: calc(8 * var(--iv-cell) + 7 * 2px);
 }
 .iv-armory .iv-cell { background: none; }
 .iv-armory .iv-cell-b {
@@ -2614,6 +2626,22 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-cell:not(.is-wide) .iv-cell-nm,
 .iv-armory .iv-cell:not(.is-wide) .iv-cell-mk { display: none; }
 .iv-armory .iv-cell.is-worn::after { bottom: 3px; right: 4px; }
+
+/* the place under consideration, and the one decision it offers */
+.iv-armory .iv-slot.is-pick .iv-slot-face { border-color: #d2b578; box-shadow: inset 0 0 0 2px #10100c, inset 0 0 0 3px #6b5730, 0 0 12px #d2b57826; }
+.iv-pick {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin: 10px 0 0; padding: 8px 10px;
+  background: #0e0f0d; border: 1px solid #56472f;
+}
+.iv-pick-n { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--dust); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iv-pick-b {
+  appearance: none; flex: none; background: none; border: 1px solid #6b5024; border-radius: 0;
+  padding: 4px 10px; cursor: pointer; color: #d2b578;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+@media (hover: hover) { .iv-pick-b:hover { background: #2b2517; border-color: #b59a67; color: var(--parchment); } }
+.iv-pick-b:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 @media (max-width: 1100px) { .iv-armory.iv-with-preview .iv-grid { --iv-cell: 50px; } }
 @media (max-width: 650px)  { .iv-armory.iv-with-preview .iv-grid { --iv-cell: 46px; min-height: calc(6 * var(--iv-cell) + 5 * 2px + 12px); } }
 
@@ -8133,7 +8161,8 @@ const INV_PANE = { gear: "invEquip", tomes: "viewTomes", games: "invGames" };
 const INV_TAB = { gear: "ivTabGear", tomes: "ivTabTomes", games: "ivTabGames" };
 let invSub = (() => { try { const v = localStorage.getItem("skillstone-inv-sub");
   return INV_SUBS.indexOf(v) > -1 ? v : "gear"; } catch (e) { return "gear"; } })();
-let gearFilter = "";      /* which slot the grid is showing, "" for everything */
+let gearFilter = "";      /* which family the board is showing, "" for everything */
+let gearPick = "";        /* the equipped place under consideration, "" for none */
 let gearEdit = null;      /* the garment being written, until Save */
 
 /* ---------- the figure ----------
@@ -8711,6 +8740,9 @@ function invDollHTML() {
   g+=path('M82 234Q77 263 82 319L84 440Q86 455 97 453L107 330 111 283 115 331 126 453Q137 455 140 441L141 318Q145 264 136 234Z',skin);
   g+=path('M96 88C97 100 98 104 93 108C84 113 74 115 69 124C66 132 68 144 73 155C80 173 80 189 78 210C77 225 80 237 84 249Q110 255 136 249C141 235 143 222 141 208C138 184 141 168 147 154C152 143 154 132 150 124C145 115 136 113 127 108C122 104 123 99 124 88Z',skin,'none');
   g+=line('M88 122q9-4 16 0m12 0q7-4 16 0','#674b3a30',.8);
+  // Bare feet go on before the trousers, or a trouser cuff ends up behind the ankle it covers.
+  const bare = path('M85 432L99 432Q98 446 101 455Q105 462 100 465Q87 470 75 464Q70 462 75 456L82 448Q85 442 85 432Z',skin,'none') + path('M140 432L124 432Q125 446 123 455Q120 462 125 465Q138 470 150 464Q155 462 150 456L143 448Q140 442 140 432Z',skin,'none');
+  if(!feet) g += bare;
   // Trousers sit behind tops; shorts expose the lower legs.
   if(legs) {
     const short=legs.kind==='shorts', jog=legs.kind==='joggers', end=short?336:447;
@@ -8722,7 +8754,9 @@ function invDollHTML() {
     g+='</g>';
   } else g+=path('M81 241q29 7 58 0l3 47-29 2-3-18-3 18-29-2Z','#383a37');
   const body='M89 113Q110 124 131 113L144 128 139 201 141 243Q110 253 79 243L81 202 76 128Z';
-  const sleeve=(fill,long)=>both(path(long?'M83 117Q66 119 60 138L48 230 65 237 76 177 88 144Z':'M84 118Q66 121 61 139L58 160 77 168 89 141Z',fill));
+  /* The sleeve starts on the body's own shoulder point and rides over the deltoid. Started an
+     inch inside it, as it was, and a wedge of bare shoulder shows between the two. */
+  const sleeve=(fill,long)=>both(path(long?'M89 112Q66 113 59 136L48 230 65 237 76 177 88 144Z':'M89 112Q68 113 62 134L58 160 77 168 89 141Z',fill));
   const folds=()=>both(line('M82 179l7 13-7 5m3 19 12 9m-16 12 12-3','#0003',1.4));
   // Base garments retain their own silhouette even underneath an open outer layer.
   if(top) {
@@ -8791,9 +8825,7 @@ function invDollHTML() {
   const nose=worn('nose');if(nose)g+='<circle data-avatar-layer="nose" cx="114" cy="76" r="2" fill="none" stroke="'+color(nose,'#c7ad65')+'" stroke-width="1.3"/>';
   for(const [side,x] of [['l',55],['r',165]]){const it=worn('wrist-'+side);if(it)g+='<g data-avatar-layer="wrist-'+side+'"><rect x="'+(x-7)+'" y="241" width="14" height="6" rx="2" fill="'+color(it,'#7d6943')+'"/>'+(it.kind==='watch'?'<circle cx="'+x+'" cy="244" r="5" fill="#222b29" stroke="'+color(it,'#c1a15b')+'" stroke-width="2"/>':'')+'</g>';for(let n=1;n<=2;n++){const ring=worn('ring-'+side+n);if(ring)g+='<path data-avatar-layer="ring-'+side+n+'" d="M'+(x-3+n*3)+' 264h3" stroke="'+color(ring,'#c5a559')+'" stroke-width="2"/>';}}
   if(feet){const boot=feet.kind==='boots';g+='<g data-avatar-layer="feet">'+both(path('M83 '+(boot?422:442)+'L103 '+(boot?422:442)+'Q102 452 104 457Q109 464 102 467Q84 473 72 465Q69 461 75 456L82 451Z',shoe));g+=both(line('M74 464q14 5 29-1','#c7baa2',3));if(feet.kind!=='loafers')g+=both(line('M85 450l12 1m-13 4 13 1','#e2d5bb',1.3));g+='</g>';}
-  // Feet follow the asymmetric leg endpoints in the same lighting coordinates.
-  else g+=path('M85 432L99 432Q98 446 101 455Q105 462 100 465Q87 470 75 464Q70 462 75 456L82 448Q85 442 85 432Z',skin,'none') +
-    path('M140 432L124 432Q125 446 123 455Q120 462 125 465Q138 470 150 464Q155 462 150 456L143 448Q140 442 140 432Z',skin,'none');
+  // The bare pair was drawn back with the legs, under whatever the trousers cover.
   return '<svg class="iv-doll iv-avatar" viewBox="0 0 220 490" role="img" aria-label="'+esc(invOutfitWords())+'"><defs>'+defs+'</defs>'+g+'</svg>';
 }
 
@@ -8834,7 +8866,9 @@ function invSlotHTML(s) {
   const it = gearWorn(s.k), on = !!it, label = slotLabel(s);
   const face = on ? gearFace(it)
     : '<svg class="iv-slot-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[s.f] + "</svg>";
-  return '<button type="button" class="iv-slot' + (s.fly ? " iv-fly" : "") + (on ? " is-on" : "") + (gearFilter === s.f ? " is-cur" : "") +
+  return '<button type="button" class="iv-slot' + (s.fly ? " iv-fly" : "") + (on ? " is-on" : "") +
+    (gearFilter === s.f ? " is-cur" : "") + (gearPick === s.k ? " is-pick" : "") +
+    '" aria-pressed="' + (gearPick === s.k) +
     '" data-inv="slot" data-k="' + s.k + '" data-f="' + s.f + '" aria-label="' + esc(label + ": " + (on ? it.name + ". Take it off." : "empty. Show what fits here.")) + '">' +
     '<span class="iv-slot-face">' + face + "</span>" +
     '<span class="iv-slot-nm">' + esc(on ? it.name : label) + "</span></button>";
@@ -8851,31 +8885,53 @@ function renderInv() {
       (order.indexOf(a.slot) - order.indexOf(b.slot)) || a.name.localeCompare(b.name));
   const wornCount = SLOTS.filter(s => gearWorn(s.k)).length;
 
-  let h = '<div class="iv-body iv-armory iv-with-preview"><section class="iv-fig" aria-label="Equipped clothing">' +
-    '<header class="iv-section-head"><h3>Equipped</h3><span>'+wornCount+' / '+SLOTS.length+' slots</span></header>' +
-    '<div class="iv-rig iv-loadout">'+SLOTS.map(invSlotHTML).join("")+'</div>' +
-    '<p class="iv-doll-cap"><span>Your everyday loadout</span>'+(wornCount?'<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>':'')+'</p></section>' +
-    '<section class="iv-character" aria-label="Character preview"><header class="iv-section-head"><h3>Character</h3><span>Live outfit</span></header>' +
-    '<div class="iv-character-stage">'+invDollHTML()+'</div><p class="iv-outfit-caption">'+esc(invOutfitWords())+'</p></section>';
+  /* Wardrobe on the left, the figure in the middle, what is on him on the right. Written in that
+     order rather than reordered in CSS, so what a reader hears is what a viewer sees. */
+  const pick = gearPick && gearWorn(gearPick) ? SLOTS.find(s => s.k === gearPick) : null;
+  const picked = pick ? gearWorn(pick.k) : null;
 
-  h += '<div class="iv-hold"><header class="iv-section-head"><h3>Wardrobe</h3><span>' + W.items.length + (W.items.length === 1 ? ' item' : ' items') + '</span>' +
-      '<button type="button" class="iv-add-b" data-inv="gearnew">+ Add clothing</button></header><div class="iv-bar" role="group" aria-label="Show">' +
+  const wardrobe_ = '<div class="iv-hold"><header class="iv-section-head"><h3>Wardrobe</h3>' +
+      '<button type="button" class="iv-add-b" data-inv="gearnew">+ Add clothing</button></header>' +
+    '<div class="iv-bar" role="group" aria-label="Show">' +
       '<button type="button" class="iv-f' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
       WEAR.map(w => '<button type="button" class="iv-f' + (gearFilter === w.k ? " is-cur" : "") + '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (gearFilter === w.k) + '">' +
         esc(w.name) + '<span class="n">' + W.items.filter(x => x.slot === w.k).length + "</span></button>").join("") +
-    "</div>";
+    "</div>" +
+    (shown.length ? "" : '<p class="iv-empty">' + (W.items.length
+      ? "Nothing in the wardrobe goes in that slot yet."
+      : "The wardrobe is empty. Add a garment and it lands here, ready to put on.") + "</p>") +
+    /* No filler tiles: the board draws its own squares, so it stays the same size whatever is on
+       it and nothing has to be counted to keep it looking full. */
+    '<div class="iv-grid">' + shown.map(it => gearCellHTML(it, gearIsOn(it))).join("") + "</div>" +
+    '<p class="iv-stash-note">Select an item to equip it. Select an equipped one to see what else fits.</p></div>';
 
-  /* the way to add one is a tile at the end of the wardrobe rather than a button off to the
-     side: it is where the eye already is when it runs out of garments, and it survives a
-     filter that matches nothing, which is exactly when you want it. */
-  if (!shown.length) h += '<p class="iv-empty">' + (W.items.length
-    ? "Nothing in the wardrobe goes in that slot yet."
-    : "The wardrobe is empty. Add a garment and it lands here, ready to put on.") + "</p>";
-  /* No filler tiles: the board draws its own empty floor, so it stays the same size whatever is
-     on it and nothing has to be counted to keep it looking full. */
-  h += '<div class="iv-grid">' + shown.map(it => gearCellHTML(it, gearIsOn(it))).join("") +
-    '</div><p class="iv-stash-note">Select an item to equip or remove it. Select an empty equipment slot to find what fits.</p></div></div>';
-  el.innerHTML = h;
+  const character = '<section class="iv-character" aria-label="Character preview">' +
+    '<header class="iv-section-head"><h3>Character</h3></header>' +
+    '<div class="iv-character-stage">' + invDollHTML() + '</div>' +
+    '<p class="iv-outfit-caption">' + esc(invOutfitWords()) + "</p></section>";
+
+  /* Taking a thing off is a second decision, not a side effect of looking at it: selecting a
+     filled place shows what else fits it and offers the removal, rather than performing it. */
+  const equipped = '<section class="iv-fig" aria-label="Equipped clothing">' +
+    '<header class="iv-section-head"><h3>Equipped</h3></header>' +
+    '<div class="iv-rig iv-loadout">' + SLOTS.map(invSlotHTML).join("") + "</div>" +
+    (picked
+      ? '<div class="iv-pick"><span class="iv-pick-n">' + esc(picked.name) + " · " + esc(slotLabel(pick)) + "</span>" +
+        '<button type="button" class="iv-pick-b" data-inv="unequip" data-k="' + esc(pick.k) + '">Unequip</button></div>'
+      : "") +
+    '<p class="iv-doll-cap"><span>' + wornCount + " / " + SLOTS.length + " slots</span>" +
+    (wornCount ? '<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>' : "") + "</p></section>";
+
+  el.innerHTML = '<div class="iv-body iv-armory iv-with-preview">' + wardrobe_ + character + equipped + "</div>";
+  invFloor();
+}
+/* The empty board keeps its squares. The columns are elastic, so the lattice cannot be a constant
+   in the stylesheet: it is measured off the laid-out grid once per render and handed back as a
+   custom property. Cheaper than a filler tile per square, and it cannot go stale. */
+function invFloor() {
+  const g = $(".iv-grid"); if (!g) return;
+  const w = parseFloat(getComputedStyle(g).gridTemplateColumns.split(" ")[0]);
+  if (isFinite(w) && w > 0) g.style.setProperty("--iv-colw", w + "px");
 }
 /* three shelves in one panel; only the one on show is rendered, and the library renders itself */
 function invSyncSubs() {
@@ -8902,7 +8958,11 @@ function gearWear(id) {
   const W = wardrobe(), places = SLOTS_OF(it.slot);
   const here = places.find(s => W.worn[s.k] === id);
   if (here) delete W.worn[here.k];
-  else { const free = places.find(s => !W.worn[s.k]) || places[0]; if (free) W.worn[free.k] = id; }
+  else {
+    /* a selected place is the one being swapped, so it takes the garment before a free one does */
+    const free = places.find(s => s.k === gearPick) || places.find(s => !W.worn[s.k]) || places[0];
+    if (free) W.worn[free.k] = id;
+  }
   save(); renderInv();
   const b = document.querySelector('.iv-cell-b[data-id="' + id + '"]'); if (b) b.focus({ preventScroll: true });
 }
@@ -8913,7 +8973,7 @@ function gearTakeOff(k) {
 }
 function gearStrip() {
   const W = wardrobe(); if (!Object.keys(W.worn).length) return;
-  takeSnapshot(); W.worn = {}; save(); renderInv();
+  takeSnapshot(); W.worn = {}; gearPick = ""; save(); renderInv();
   showToast("Everything off.", true);
 }
 
@@ -9061,14 +9121,18 @@ function invAct(el) {
   switch (d.inv) {
     case "sub":        invSetSub(d.shelf); break;
     case "slot":
-      if (gearWorn(d.k)) gearTakeOff(d.k);
-      else { gearFilter = gearFilter === d.f ? "" : d.f; renderInv();
-        const b = document.querySelector('.iv-slot[data-k="' + d.k + '"]'); if (b) b.focus({ preventScroll: true }); }
+      /* a filled place is selected, not emptied: the board filters to what else fits it and the
+         removal moves to a button you have to mean. An empty one just filters, as it always did. */
+      if (gearWorn(d.k)) { gearPick = gearPick === d.k ? "" : d.k; gearFilter = gearPick ? d.f : ""; }
+      else { gearPick = ""; gearFilter = gearFilter === d.f ? "" : d.f; }
+      renderInv();
+      { const b = document.querySelector('.iv-slot[data-k="' + d.k + '"]'); if (b) b.focus({ preventScroll: true }); }
       break;
+    case "unequip":    gearPick = ""; gearTakeOff(d.k); break;
     case "wear":       gearWear(d.id); break;
     case "strip":      gearStrip(); break;
     case "filter": {
-      gearFilter = d.k || ""; renderInv();
+      gearFilter = d.k || ""; gearPick = ""; renderInv();
       const b = document.querySelector('.iv-f[data-k="' + (d.k || "") + '"]'); if (b) b.focus({ preventScroll: true });
       break;
     }
