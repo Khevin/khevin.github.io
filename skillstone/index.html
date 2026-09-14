@@ -9073,7 +9073,13 @@ function invDollHTML() {
      body was too wide for it. The sides now taper from the chest and finish about three units
      inboard of the garment's own edge the whole way down, so cloth covers body everywhere the
      cloth goes. Above y=165 it does not matter: the sleeve is over it. */
-  g+=path('M96 88C97 100 98 104 93 108C84 113 74 115 69 124C67 133 70 146 76 158C82 171 84 188 84 206C84 224 84 236 84 249Q110 255 136 249C136 236 136 224 136 206C136 188 138 171 144 158C150 146 153 133 150 124C145 115 136 113 127 108C122 104 123 99 124 88Z',skin,'none');
+  /* The torso's shoulder is cut square to sit under a sleeve. Bare, in a tank, that square corner
+     stood outside the strap as a hump. With a tank on, the shoulder slopes from the neck down to
+     the arm the way a shoulder does; under anything with a sleeve, the square stays. */
+  const bareShoulder=!!top&&top.kind==='tank'&&!closedOuter;
+  g+=path(bareShoulder
+    ? 'M96 88C97 100 98 104 93 108C87 113 78 119 72 129C68 137 70 146 76 158C82 171 84 188 84 206C84 224 84 236 84 249Q110 255 136 249C136 236 136 224 136 206C136 188 138 171 144 158C150 146 152 137 148 129C142 119 133 113 127 108C122 104 123 99 124 88Z'
+    : 'M96 88C97 100 98 104 93 108C84 113 74 115 69 124C67 133 70 146 76 158C82 171 84 188 84 206C84 224 84 236 84 249Q110 255 136 249C136 236 136 224 136 206C136 188 138 171 144 158C150 146 153 133 150 124C145 115 136 113 127 108C122 104 123 99 124 88Z',skin,'none');
   g+=line('M88 122q9-4 16 0m12 0q7-4 16 0','#674b3a30',.8);
   // Bare feet go on before the trousers, or a trouser cuff ends up behind the ankle it covers.
   const bare = path('M85 432L99 432Q98 446 101 455Q105 462 100 465Q87 470 75 464Q70 462 75 456L82 448Q85 442 85 432Z',skin,'none') + path('M140 432L124 432Q125 446 123 455Q120 462 125 465Q138 470 150 464Q155 462 150 456L143 448Q140 442 140 432Z',skin,'none');
@@ -9191,7 +9197,9 @@ function invDollHTML() {
       : tied
       ? 'M96 109L104 119 110 128 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z'
       : 'M96 109L104 119 110 136 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z';
-    const cut=shirt?shirtBody:shape;
+    /* the polo wore the crew body, whose own neck outline drew a line across the throat above
+       the open collar; it takes the open shirt's cut, whose opening IS the V */
+    const cut=shirt||polo?shirtBody:shape;
     g+=path(cut,fabric,tEdge,0.9);
     /* The sleeve goes on OVER the body. Underneath, the body's own outline runs diagonally from
        the neck down to the armpit, and stroked dark that reads as a raglan seam on a garment
@@ -9229,12 +9237,11 @@ function invDollHTML() {
         g+=path('M108 123h4v122h-4Z',fabric,ivShade(topc,-.18),.5);
         for(let y=140;y<243;y+=23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
       } else if(polo) {
-        // one open on a knit collar: a short V of skin, the points a little apart, the placket from the first button
-        g+=path('M103 116L110 131 117 116Z',skin,'none',0);
-        g+=path('M97 111L91 123 101 131 104 117Z',fabric,tEdge,.7);
-        g+=path('M123 111L129 123 119 131 116 117Z',fabric,tEdge,.7);
-        g+=path('M108 130h4v24h-4Z',fabric,ivShade(topc,-.18),.5);
-        for(let y=139;y<154;y+=12)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+        // one open on a knit collar: the points a little apart, a short placket from the first button
+        g+=path('M96 109L89 124 99 134 104 119Z',fabric,tEdge,.7);
+        g+=path('M124 109L131 124 121 134 116 119Z',fabric,tEdge,.7);
+        g+=path('M108 134h4v26h-4Z',fabric,ivShade(topc,-.18),.5);
+        for(let y=143;y<160;y+=12)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
       } else {
         // the dress shirt with one open: the facing along the V, the points standing a little apart
         g+=path('M104 119L110 136 116 119 114 119 110 131 106 119Z','#e8e1cf7a','none',0);
