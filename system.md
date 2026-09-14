@@ -94,10 +94,10 @@ The hero headline reads "The design-expert, / at your service." and the first li
 **Rules.**
 
 - The phrase lives in its own `.council-hero__line` span with `white-space: nowrap`, so it can never break mid-word.
-- The size is capped three ways: `clamp(56px, 6.7vw, 94px)` sets the ceiling, `14.5cqw` keeps the line inside its own column at every width, and `--title-scale` adjusts for the chosen typeface. The middle cap needs `container-type: inline-size` on `.council-hero__intro`; sizing a headline off the viewport when its column is a fraction of that viewport is what let it break in the first place.
-- **The scale exists because the faces are not the same width.** Set at 100px with the hero's letter-spacing, the phrase measures 5.8px per font-px in Instrument Serif and 8.1px in Libre Caslon Text. Each option in the nav explorer carries a `data-scale` that normalises it to Source Serif, so the line holds whatever the reader picks.
-- A face added to the explorer needs its own measurement and scale. Measure the phrase at 100px with `letter-spacing: -0.045em` and the italic on the product name, then divide Source Serif's number by it. Load the face with `document.fonts.load` first and check the result differs from the fallback, or you will measure Source Serif twice and think the faces match.
-- The intro column is now the wider of the two (`1.12fr 1fr`). The council drawing gave up about ten per cent for this and can afford it.
+- The size is capped twice: `clamp(56px, 6.7vw, 94px)` sets the ceiling, and `15.5cqw` keeps the line inside its own column at every width. The second cap needs `container-type: inline-size` on `.council-hero__intro`. Sizing a headline off the viewport when its column is a fraction of that viewport is what let it break in the first place, and no amount of tuning the clamp fixes that.
+- **The hero pins Fraunces to its display cut with `font-variation-settings: "opsz" 144`.** Left on automatic optical sizing, the same phrase runs 7.19px per font-px at 56px and 6.09px at 94px, a twenty per cent spread, so no single `cqw` coefficient can hold the line at both ends. Pinning the axis makes the width predictable, and the display cut is the right drawing for a hero anyway. Smaller headings keep automatic sizing, which is what the axis is for.
+- A different title face needs the coefficient measured again: set the phrase at 100px with `letter-spacing: -0.045em` and the italic on the product name, check the result differs from the fallback, then divide.
+- The intro column is the wider of the two (`1.12fr 1fr`). The council drawing gave up about ten per cent for this and can afford it.
 
 ---
 
@@ -130,19 +130,15 @@ Used by the install section, where Claude Code and ChatGPT / Codex are alternati
 
 ---
 
-## Pattern: title typeface token and the nav explorer
+## Pattern: the title typeface token
 
-Every heading on the design-expert landing reads `--title`, which defaults to `var(--serif)`. A single control in the nav rewrites that one custom property on `documentElement`, so the whole page changes voice at once and nothing else moves.
+Every heading on this surface reads `--title`; body prose, ledes that are really body, credos, popover text, mono and the interface chrome read `--serif` or `--sans`. The token is currently Fraunces, a soft old-style with a deliberate wobble, backed by Source Serif 4.
 
 **Rules.**
 
-- **`--title` is for headings only.** Body prose, ledes that are really body, credos, popover text, mono, and every piece of interface chrome stay on `--serif` or `--sans`. The hero's dek is the one non-heading on the token, because it is the second line of the title block and would otherwise sit in a different serif two lines below the first.
-- A new heading rule reads `var(--title)`; a new body rule reads `var(--serif)`. Adding a heading that reads `--serif` is the drift this token exists to prevent.
-- **The five non-default faces are fetched the first time the panel opens**, never on load, so a reader who never opens it pays nothing. A face restored from `localStorage` fetches immediately, because it is already applied.
-- The panel is the namespace switcher's shape exactly: `role="listbox"`, `role="option"` rows, arrow keys, Home, End, Enter, Space, Escape, outside click, focus returned to the trigger. A second dropdown that behaved differently would be a second thing to learn.
-- Each row renders its own name in its own face, and the description says what that face does to the page rather than naming its classification. The style attribute must be **single-quoted**, because font stacks carry double quotes.
-- Below 760px the control keeps `Aa` and drops the face name, `.font-switch` goes `position: static` so the panel anchors to the bar's gutters rather than to a 49px button, and `nav.top .inner` drops its gap to 10px so three controls fit at 375px without pushing the hamburger off the edge.
-- The choice is a reading preference, not a theme. It is stored per reader under `design-expert:title-font` and never affects what anyone else sees.
+- A new heading rule reads `var(--title)`. A new body rule reads `var(--serif)`. A heading that reads `--serif` is the drift this token exists to prevent.
+- The hero's dek is the one non-heading on the token, because it is the second line of the title block and would otherwise sit in a different face two lines below the first.
+- Changing the token changes every heading at once, which is the point. It also changes the headline's width, so re-check the rule above before shipping a new face.
 
 ---
 

@@ -6,7 +6,7 @@
 <title>khev-tools / design-expert — design fluency for Claude Code and ChatGPT / Codex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="design-expert.css" />
 <link rel="stylesheet" href="design-expert-hero.css" />
 <script src="design-expert-hero.js" defer></script>
@@ -64,47 +64,6 @@
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#changelog">Changelog</a></li>
     </ul>
-
-    <div class="font-switch">
-      <button class="font-switch__trigger" id="font-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="font-panel">
-        <span class="font-switch__aa" aria-hidden="true">Aa</span>
-        <span class="font-switch__name" id="font-current">Source Serif</span>
-        <span class="chev" aria-hidden="true">▾</span>
-      </button>
-
-    <ul class="font-panel" id="font-panel" role="listbox" aria-label="Typeface for every title on this page" hidden>
-      <li role="option" data-font="source" data-scale="1" data-label="Source Serif" data-stack='"Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
-          aria-selected="true" tabindex="0" class="current">
-        <span class="font-row"><span class="mark" aria-hidden="true">✓</span><span class="font-row__name" style='font-family: "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Source Serif 4</span></span>
-        <span class="font-desc">The face the page was drawn in. Optical sizes hold it even from 11px to 130px.</span>
-      </li>
-      <li role="option" data-font="instrument" data-scale="1" data-label="Instrument" data-stack='"Instrument Serif", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
-          aria-selected="false" tabindex="-1">
-        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Instrument Serif", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Instrument Serif</span></span>
-        <span class="font-desc">Hairline thin strokes, narrow and tall. The headings read as a masthead.</span>
-      </li>
-      <li role="option" data-font="fraunces" data-scale="1" data-label="Fraunces" data-stack='"Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
-          aria-selected="false" tabindex="-1">
-        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Fraunces</span></span>
-        <span class="font-desc">Soft old-style with a deliberate wobble. Warms the page and sounds handmade.</span>
-      </li>
-      <li role="option" data-font="newsreader" data-scale="0.94" data-label="Newsreader" data-stack='"Newsreader", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
-          aria-selected="false" tabindex="-1">
-        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Newsreader", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Newsreader</span></span>
-        <span class="font-desc">Drawn for newsprint, so the titles report rather than announce.</span>
-      </li>
-      <li role="option" data-font="caslon" data-scale="0.8" data-label="Caslon" data-stack='"Libre Caslon Text", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
-          aria-selected="false" tabindex="-1">
-        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Libre Caslon Text", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Libre Caslon Text</span></span>
-        <span class="font-desc">Caslon, settled and bookish. The voice of a printed manual.</span>
-      </li>
-      <li role="option" data-font="inter" data-scale="0.87" data-label="Inter Tight" data-stack='"Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif'
-          aria-selected="false" tabindex="-1">
-        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif'>Inter Tight</span></span>
-        <span class="font-desc">The page’s own sans. Titles stop being editorial and become interface.</span>
-      </li>
-    </ul>
-    </div>
   </div>
 </nav>
 
@@ -642,7 +601,7 @@
     <div class="changelog">
       <div class="entry">
         <div class="meta">
-          <span class="ver" style="color: var(--accent);">v1.3.0</span>
+          <span class="ver">v1.3.0</span>
           September 14, 2026
         </div>
         <ul>
@@ -653,7 +612,7 @@
       </div>
       <div class="entry">
         <div class="meta">
-          <span class="ver" style="color: var(--accent);">v1.2.1</span>
+          <span class="ver">v1.2.1</span>
           September 7, 2026
         </div>
         <ul>
@@ -1315,77 +1274,6 @@ if ('IntersectionObserver' in window && libRows.length) {
   if (initial) select(initial, false);
 })();
 
-// Title typeface explorer — swaps --title, which every heading rule reads, and
-// nothing else. The five extra faces are fetched the first time the panel is
-// opened, so a reader who never opens it never pays for them.
-(() => {
-  const trigger = document.getElementById('font-trigger');
-  const panel = document.getElementById('font-panel');
-  if (!trigger || !panel) return;
-  const label = document.getElementById('font-current');
-  const options = Array.from(panel.querySelectorAll('[role="option"]'));
-  const KEY = 'design-expert:title-font';
-  let fetched = false;
-  const fetchFaces = () => {
-    if (fetched) return;
-    fetched = true;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter+Tight:ital,wght@0,400;0,500;0,600;1,400&display=swap';
-    document.head.appendChild(link);
-  };
-  const apply = (opt, remember) => {
-    document.documentElement.style.setProperty('--title', opt.dataset.stack);
-    document.documentElement.style.setProperty('--title-scale', opt.dataset.scale || '1');
-    label.textContent = opt.dataset.label;
-    options.forEach((o) => {
-      const on = o === opt;
-      o.setAttribute('aria-selected', String(on));
-      o.classList.toggle('current', on);
-      o.tabIndex = on ? 0 : -1;
-      const mark = o.querySelector('.mark');
-      if (mark) mark.textContent = on ? '✓' : '';
-    });
-    if (remember) { try { localStorage.setItem(KEY, opt.dataset.font); } catch (err) { /* private window */ } }
-  };
-  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
-  const setOpen = (state) => {
-    if (state) fetchFaces();
-    trigger.setAttribute('aria-expanded', String(state));
-    panel.hidden = !state;
-    if (state) (panel.querySelector('.current') || options[0]).focus();
-  };
-  const choose = (opt) => { apply(opt, true); setOpen(false); trigger.focus(); };
-  trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()); });
-  trigger.addEventListener('keydown', (e) => {
-    if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
-  });
-  options.forEach((opt) => {
-    opt.addEventListener('click', () => choose(opt));
-    opt.addEventListener('keydown', (e) => {
-      const i = options.indexOf(opt);
-      if (e.key === 'ArrowDown') { e.preventDefault(); options[(i + 1) % options.length].focus(); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); options[(i - 1 + options.length) % options.length].focus(); }
-      else if (e.key === 'Home') { e.preventDefault(); options[0].focus(); }
-      else if (e.key === 'End') { e.preventDefault(); options[options.length - 1].focus(); }
-      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(opt); }
-      else if (e.key === 'Escape') { e.preventDefault(); setOpen(false); trigger.focus(); }
-      else if (e.key === 'Tab') { setOpen(false); }
-    });
-  });
-  document.addEventListener('click', (e) => {
-    if (isOpen() && !e.target.closest('.font-switch')) setOpen(false);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
-  });
-  let saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (err) { /* private window */ }
-  if (saved) {
-    const opt = options.find((o) => o.dataset.font === saved);
-    if (opt && saved !== 'source') { fetchFaces(); apply(opt, false); }
-  }
-})();
 </script>
 
 </body>
