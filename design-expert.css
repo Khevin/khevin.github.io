@@ -1855,6 +1855,12 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 
 @media (prefers-reduced-motion: reduce) {
   .lib-pop__icon svg .pulse { animation: none; opacity: 1; }
+  /* Both nav chevrons rotate on open, which is the only real motion in the
+     bar. Colour transitions stay: the rule is about movement. */
+  .brand-switch .chev,
+  .font-switch__trigger .chev { transition: color 150ms; }
+  .brand-switch[aria-expanded="true"] .chev,
+  .font-switch__trigger[aria-expanded="true"] .chev { transform: none; }
 }
 
 /* ——— Pantheon popover (extends .lib-pop) ———
