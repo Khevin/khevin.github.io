@@ -5,17 +5,25 @@
 }
 .council-hero__layout {
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
+  grid-template-columns: 1.12fr 1fr;
   align-items: center;
   gap: clamp(20px, 3vw, 44px);
   padding: 20px 0 36px;
 }
-.council-hero__intro { min-width: 0; }
+.council-hero__intro { min-width: 0; container-type: inline-size; }
 .council-hero h1 {
-  font: 400 clamp(56px, 6.7vw, 94px)/.99 var(--title);
+  /* Two caps. The viewport clamp sets the ceiling; 14.5cqw keeps the first
+     line inside its column at every width. --title-scale is the third term,
+     set per typeface by the nav explorer, because Libre Caslon sets the same
+     words 25 per cent wider than Source Serif and the line still has to hold. */
+  font-family: var(--title);
+  font-weight: 400;
+  font-size: calc(min(clamp(56px, 6.7vw, 94px), 14.5cqw) * var(--title-scale, 1));
+  line-height: .99;
   letter-spacing: -.045em;
   margin: 0 0 28px;
 }
+.council-hero__line { white-space: nowrap; }
 .council-hero h1 em {
   color: var(--accent);
   font-weight: 400;
@@ -192,16 +200,11 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   color: var(--ink-soft);
   font: italic 16px/1.4 var(--serif);
   min-height: 2.8em;
-  max-width: 40ch;
+  max-width: 58ch;
   margin: 0 auto 7px;
+  text-wrap: balance;
 }
 .council-study__note > span { color: var(--ink-mute); font: 9px/1.5 var(--mono); }
-.council-study__disclaimer {
-  margin: 8px 0 0;
-  text-align: center;
-  color: var(--ink-mute);
-  font-size: 10px;
-}
 .council-hero__footer {
   display: grid;
   grid-template-columns: 1fr 1.1fr auto;
@@ -221,7 +224,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
 @media (max-width: 760px) {
   .council-hero { padding-top: 22px; }
   .council-hero__layout { grid-template-columns: 1fr; gap: 46px; padding: 14px 0 32px; }
-  .council-hero h1 { font-size: clamp(53px, 11.6vw, 84px); margin-bottom: 22px; }
+  .council-hero h1 { font-size: calc(min(clamp(53px, 11.6vw, 84px), 14.5cqw) * var(--title-scale, 1)); margin-bottom: 22px; }
   .council-hero h1 em br { display: none; }
   .council-hero__dek { font-size: 21px; }
   .council-hero__copy { max-width: 43ch; font-size: 14px; }
@@ -239,7 +242,6 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   .council-decision__verdict { font-size: 7px; margin-top: 10px; gap: 4px; }
   .council-study__note p { font-size: 15px; }
   .council-study__note > span { font-size: 8px; }
-  .council-study__disclaimer { font-size: 9px; }
   .council-hero__footer { grid-template-columns: 1fr auto; gap: 18px; padding: 20px 0; }
   .council-hero__footer > p:nth-child(2) { display: none; }
   .council-hero__footer a { font-size: 9px; gap: 8px; }

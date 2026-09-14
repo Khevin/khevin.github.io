@@ -73,32 +73,32 @@
       </button>
 
     <ul class="font-panel" id="font-panel" role="listbox" aria-label="Typeface for every title on this page" hidden>
-      <li role="option" data-font="source" data-label="Source Serif" data-stack='"Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+      <li role="option" data-font="source" data-scale="1" data-label="Source Serif" data-stack='"Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
           aria-selected="true" tabindex="0" class="current">
         <span class="font-row"><span class="mark" aria-hidden="true">✓</span><span class="font-row__name" style='font-family: "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Source Serif 4</span></span>
         <span class="font-desc">The face the page was drawn in. Optical sizes hold it even from 11px to 130px.</span>
       </li>
-      <li role="option" data-font="instrument" data-label="Instrument" data-stack='"Instrument Serif", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+      <li role="option" data-font="instrument" data-scale="1" data-label="Instrument" data-stack='"Instrument Serif", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
           aria-selected="false" tabindex="-1">
         <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Instrument Serif", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Instrument Serif</span></span>
         <span class="font-desc">Hairline thin strokes, narrow and tall. The headings read as a masthead.</span>
       </li>
-      <li role="option" data-font="fraunces" data-label="Fraunces" data-stack='"Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+      <li role="option" data-font="fraunces" data-scale="1" data-label="Fraunces" data-stack='"Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
           aria-selected="false" tabindex="-1">
         <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Fraunces</span></span>
         <span class="font-desc">Soft old-style with a deliberate wobble. Warms the page and sounds handmade.</span>
       </li>
-      <li role="option" data-font="newsreader" data-label="Newsreader" data-stack='"Newsreader", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+      <li role="option" data-font="newsreader" data-scale="0.94" data-label="Newsreader" data-stack='"Newsreader", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
           aria-selected="false" tabindex="-1">
         <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Newsreader", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Newsreader</span></span>
         <span class="font-desc">Drawn for newsprint, so the titles report rather than announce.</span>
       </li>
-      <li role="option" data-font="caslon" data-label="Caslon" data-stack='"Libre Caslon Text", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+      <li role="option" data-font="caslon" data-scale="0.8" data-label="Caslon" data-stack='"Libre Caslon Text", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
           aria-selected="false" tabindex="-1">
         <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Libre Caslon Text", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Libre Caslon Text</span></span>
         <span class="font-desc">Caslon, settled and bookish. The voice of a printed manual.</span>
       </li>
-      <li role="option" data-font="inter" data-label="Inter Tight" data-stack='"Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif'
+      <li role="option" data-font="inter" data-scale="0.87" data-label="Inter Tight" data-stack='"Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif'
           aria-selected="false" tabindex="-1">
         <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif'>Inter Tight</span></span>
         <span class="font-desc">The page’s own sans. Titles stop being editorial and become interface.</span>
@@ -115,7 +115,7 @@
   <div class="shell">
     <div class="council-hero__layout">
       <div class="council-hero__intro">
-        <h1 id="hero-heading">The <em>design-expert</em>,<br />at your <span class="under">service</span>.</h1>
+        <h1 id="hero-heading"><span class="council-hero__line">The <em>design-expert</em>,</span><br />at your <span class="under">service</span>.</h1>
         <p class="council-hero__dek">Give your AI a council worth listening to.</p>
         <p class="council-hero__copy">Eighteen designers’ principles help plan, build, and review your work. From the first grid to the final detail, every decision has a reason.</p>
         <div class="compat">
@@ -179,7 +179,6 @@
           <p id="council-note">Remove the extra card. Let the essential action lead.</p>
           <span>Select a designer to see their principle at work.</span>
         </div>
-        <p class="council-study__disclaimer">An illustration of the skill’s method, drawn from their published work.</p>
       </div>
     </div>
 
@@ -650,7 +649,6 @@
           <li><strong>ChatGPT / Codex is first-class.</strong> Install from the GitHub skill folder with <span class="mono">$skill-installer</span>, invoke with <span class="mono">$design-expert</span>, or let design work trigger it automatically.</li>
           <li><strong>One doctrine, two harnesses.</strong> A compact adapter resolves paths, question UI, optional memory, visual workspaces, and council seats without forking the design method.</li>
           <li><strong>Project rules travel.</strong> Discovery reads both <span class="mono">AGENTS.md</span> and <span class="mono">CLAUDE.md</span>; Figma, repository previews, conversation visuals, and prose fallbacks are selected from the capabilities actually present.</li>
-          <li><strong>The page asks you to choose once.</strong> Install is a tab group, so you read the steps for your own harness and never scroll past the ones you cannot use. A typeface control in the nav tries six voices on every title, and the hero dropped the parts that repeated themselves.</li>
         </ul>
       </div>
       <div class="entry">
@@ -1338,6 +1336,7 @@ if ('IntersectionObserver' in window && libRows.length) {
   };
   const apply = (opt, remember) => {
     document.documentElement.style.setProperty('--title', opt.dataset.stack);
+    document.documentElement.style.setProperty('--title-scale', opt.dataset.scale || '1');
     label.textContent = opt.dataset.label;
     options.forEach((o) => {
       const on = o === opt;

@@ -87,6 +87,20 @@ Two list/grid surfaces — the library row-items and the pantheon figures — sw
 
 ---
 
+## Pattern: a headline phrase that never breaks
+
+The hero headline reads "The design-expert, / at your service." and the first line is one phrase. Breaking it, and especially breaking it at the hyphen inside the product name, reads as a bug rather than as typesetting.
+
+**Rules.**
+
+- The phrase lives in its own `.council-hero__line` span with `white-space: nowrap`, so it can never break mid-word.
+- The size is capped three ways: `clamp(56px, 6.7vw, 94px)` sets the ceiling, `14.5cqw` keeps the line inside its own column at every width, and `--title-scale` adjusts for the chosen typeface. The middle cap needs `container-type: inline-size` on `.council-hero__intro`; sizing a headline off the viewport when its column is a fraction of that viewport is what let it break in the first place.
+- **The scale exists because the faces are not the same width.** Set at 100px with the hero's letter-spacing, the phrase measures 5.8px per font-px in Instrument Serif and 8.1px in Libre Caslon Text. Each option in the nav explorer carries a `data-scale` that normalises it to Source Serif, so the line holds whatever the reader picks.
+- A face added to the explorer needs its own measurement and scale. Measure the phrase at 100px with `letter-spacing: -0.045em` and the italic on the product name, then divide Source Serif's number by it. Load the face with `document.fonts.load` first and check the result differs from the fallback, or you will measure Source Serif twice and think the faces match.
+- The intro column is now the wider of the two (`1.12fr 1fr`). The council drawing gave up about ten per cent for this and can afford it.
+
+---
+
 ## Pattern: tab group
 
 Used by the install section, where Claude Code and ChatGPT / Codex are alternatives rather than steps. The model for any future place on this site where two or more paths exist and a reader only needs one of them.
