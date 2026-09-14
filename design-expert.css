@@ -427,6 +427,17 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
 }
+.compat .chip.primary .glyph.chatgpt {
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-radius: 0;
+}
+.compat .chip.primary .glyph.chatgpt img {
+  width: 19px;
+  height: 19px;
+  display: block;
+}
 
 /* ——— Section header ——— */
 .s-head {
@@ -912,6 +923,7 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
 .install-card:last-child {
   border-bottom: none;
 }
+.install-card[id] { scroll-margin-top: 92px; }
 .install-card__head {
   /* Left rail — step label + h4 + description */
   position: relative;
@@ -957,7 +969,7 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
    following argument or URL (.accent-c) reads in plain terminal-white
    so the variable part feels neutral against the named command. */
 .terminal .cmd-text { color: oklch(80% 0.17 55); }
-.terminal .accent-c { color: #f1ede4; }
+.terminal .accent-c { color: #f1ede4; overflow-wrap: anywhere; }
 .terminal .comment { color: #8a8275; font-style: italic; }
 .terminal .ok { color: oklch(75% 0.14 145); }
 .terminal .head-bar {
@@ -1811,7 +1823,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
   color: var(--ink-soft);
 }
 
-/* ——— Install chip (Claude Code) as a real link ———
+/* ——— Install chips as real links ———
    Editorial register: typography stays, plus a small ↗ glyph hinting
    the chip navigates rather than just labels. */
 .compat a.chip.primary {

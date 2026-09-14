@@ -110,6 +110,8 @@ A chip that navigates somewhere needs to read as navigable, not as a label. The 
 </a>
 ```
 
+The compatibility strip now carries two equal first-class install links: Claude Code and ChatGPT / Codex. Both use this treatment with their own glyph; future or unsupported harnesses do not appear as muted "soon" labels.
+
 **CSS.**
 
 - `text-decoration: none`, `cursor: pointer`, hover background `color-mix(in oklch, var(--paper-warm) 70%, var(--accent) 12%)`.
