@@ -8772,36 +8772,47 @@ function invDollHTML() {
     if(legs.kind==='jeans')g+=both(line('M82 286l2 146','#e5c58d50',.8));
     g+='</g>';
   } else g+=path('M81 241q29 7 58 0l3 47-29 2-3-18-3 18-29-2Z','#383a37');
-  const body='M89 113Q110 124 131 113L144 128 139 201 141 243Q110 253 79 243L81 202 76 128Z';
-  /* The sleeve starts on the body's own shoulder point and rides over the deltoid. Started an
-     inch inside it, as it was, and a wedge of bare shoulder shows between the two. */
-  const sleeve=(fill,long)=>both(path(long?'M89 112Q66 113 59 136L48 230 65 237 76 177 88 144Z':'M89 112Q68 113 62 134L58 160 77 168 89 141Z',fill));
+  /* The neck opening ran from x=89 to x=131, which left thirteen units of shoulder between the
+     throat and the arm — so every sleeve seam started at the collar and ran down to the armpit,
+     and the eye read a raglan on garments that have none. A crew neck is narrower than that. */
+  /* The shoulder is a curve because the body under it is. A straight line from the neck to the
+     arm cuts inside the deltoid and leaves a wedge of skin showing above the garment — which is
+     what the last two passes at this kept producing. These control points were solved against
+     the skin path rather than guessed: the garment sits one unit above it the whole way. */
+  const body='M97 109Q110 120 123 109Q136 106 146 123L139 201 141 243Q110 253 79 243L81 202 74 123Q84 106 97 109Z';
+  /* The sleeve's inner edge is the armhole: it starts on the shoulder line, a little out from
+     the neck, and curves down to the underarm — which is where a set-in sleeve is joined. */
+  const sleeve=(fill,long)=>both(path(long?'M82 113Q59 115 54 138L47 230 64 237 75 177Q86 146 82 113Z':'M82 113Q60 115 55 137L54 158 75 166Q86 144 82 113Z',fill));
   const folds=()=>both(line('M82 179l7 13-7 5m3 19 12 9m-16 12 12-3','#0003',1.4));
   /* a heavy garment creases; a jersey tee drapes. The chevrons that read as wear on a coat read
      as damage on a t-shirt, so the short-sleeved kinds get two long soft lines instead. */
-  const drape=()=>both(line('M88 150q6 26 2 48M97 196q3 16 2 30','#00000016',1.4));
+  const drape=()=>both(line('M92 168q5 24 2 44','#00000014',1.4));
   // Base garments retain their own silhouette even underneath an open outer layer.
   if(top) {
     const k=top.kind,long=['hoodie','sweater','shirt'].includes(k);
     g+='<g data-avatar-layer="top" data-kind="'+esc(k)+'">';
-    if(k!=='tank')g+=sleeve(fabric,long);
     const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
-    g+=path(shape,fabric)+(long?folds():drape());
+    g+=path(shape,fabric);
+    /* The sleeve goes on OVER the body. Underneath, the body's own outline runs diagonally from
+       the neck down to the armpit, and stroked dark that reads as a raglan seam on a garment
+       that has none. Covered by the sleeve, the only seam left is the sleeve's inner edge —
+       which is where a set-in sleeve is actually joined. */
+    if(k!=='tank')g+=sleeve(fabric,long);
+    g+=(long?folds():drape());
     if(k==='hoodie') {
       g+=path('M91 108Q79 103 81 118L92 136Q110 144 129 134L140 117Q140 103 129 108L124 119Q110 128 96 119Z',fabric);
       g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,'#0004');
       g+=line('M97 129l-2 37m29-37 2 37','#e8dfc1',1.8)+line('M95 164v5m31-5v5','#554f40',2);
       g+=line('M80 239q30 8 60 0','#0005',4);
     } else if(k==='shirt'||k==='polo') {
-      g+=path('M91 110l19 12-12 15-12-17Z',fabric)+path('M129 110l-19 12 12 15 12-17Z',fabric);
+      g+=path('M97 108l13 12-9 14-9-15Z',fabric)+path('M123 108l-13 12 9 14 9-15Z',fabric);
       g+=line('M110 123v'+(k==='polo'?35:120),'#0004',2);
       for(let y=137;y<(k==='polo'?160:239);y+=20)g+='<circle cx="110" cy="'+y+'" r="1.3" fill="#cfbf9d"/>';
     } else {
       /* a crew neck is a rib, not a line: the dark of the opening with the band's lit edge above
          it, and the seam where a set-in sleeve is stitched to the body */
-      g+=line(k==='tank'?'M92 115Q110 145 128 115':'M93 116Q110 134 127 116','#0006',3);
-      g+=line(k==='tank'?'M90 112Q110 143 130 112':'M91 113Q110 132 129 113','#ffffff1e',1.6);
-      if(k!=='tank')g+=both(line('M88 121q3 11 2 24','#00000024',1.5));
+      /* the body's own outline already draws the opening; this is the rib sitting on it */
+      g+=line(k==='tank'?'M92 115Q110 145 128 115':'M97 109Q110 120 123 109','#ffffff26',2.4);
     }
     g+=line('M82 240q28 6 56 0','#ffffff20');
     if(long)g+=both(line('M49 228l17 5','#0006',4));
