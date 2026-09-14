@@ -88,8 +88,10 @@ h3.section-title-sm {
   max-width: 22ch;
 }
 h3.section-title-sm em { font-style: italic; color: var(--accent); }
+/* The accent on a section title was written inline on each heading, so the
+   one heading that forgot it just lost the emphasis. It is a rule now. */
+h2.section-title em { font-style: italic; color: var(--accent); }
 .s-head.sm { padding: 24px 0 32px; border-bottom: 1px solid var(--rule); margin-bottom: 32px; }
-.s-head.sm .num { padding-top: 6px; }
 .s-head.sm .body { color: var(--ink-mute); font-size: 15px; max-width: 56ch; }
 
 h2.section-title {
@@ -448,18 +450,10 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
 /* ——— Section header ——— */
 .s-head {
   display: grid;
-  grid-template-columns: 80px 1fr;
+  grid-template-columns: 1fr;
   gap: 24px;
   margin-bottom: clamp(40px, 6vh, 80px);
   align-items: start;
-}
-.s-head .num {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-faint);
-  letter-spacing: 0.06em;
-  padding-top: 14px;
-  border-top: 1px solid var(--rule);
 }
 
 /* ——— Foundation tablets ——— */
@@ -986,14 +980,14 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
 .install-tab[aria-selected="false"] .glyph { opacity: 0.5; }
 .install-tab[aria-selected="true"] .glyph { opacity: 1; }
 
-/* The group is bounded by its tab rule, so the panel drops the card divider
-   and the card that follows picks one up instead. */
-.install-panel { border-bottom: 0; }
-/* .install-card sets display:grid, and an author display beats the UA rule
-   the hidden attribute relies on, so the closed panel needs saying twice. */
+/* Each panel holds the install steps and the usage card for one harness, so
+   whichever you pick reads end to end without the other one interleaved. */
+.install-panel { display: block; }
+/* An author display beats the UA rule the hidden attribute relies on, so the
+   closed panel needs saying twice. */
 .install-panel[hidden] { display: none; }
 .install-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
-.install-tabs + .install-card { border-top: 1px solid var(--rule); }
+.install-panel > .install-card:last-child { border-bottom: 0; }
 .install-card__head {
   /* Left rail — step label + h4 + description */
   position: relative;
@@ -1186,19 +1180,12 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
 }
 .faq-entry {
   display: grid;
-  grid-template-columns: 80px 1fr;
+  grid-template-columns: 1fr;
   gap: 24px;
   padding: 36px 0 36px;
   border-bottom: 1px solid var(--rule);
 }
 .faq-entry:last-child { border-bottom: 0; }
-.faq-entry__num {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  color: var(--ink-faint);
-  padding-top: 8px;
-}
 .faq-entry__cat {
   font-family: var(--mono);
   font-size: 11px;
@@ -1237,11 +1224,6 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
     grid-template-columns: 1fr;
     gap: 6px;
     padding: 28px 0;
-  }
-  .faq-entry__num {
-    padding-top: 0;
-    font-size: 11px;
-    color: var(--ink-mute);
   }
   .faq-entry__q { font-size: 22px; margin: 4px 0 10px; }
   .faq-entry__a { font-size: 15.5px; }

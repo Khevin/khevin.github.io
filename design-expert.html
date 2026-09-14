@@ -153,9 +153,8 @@
 <section class="section" id="library">
   <div class="shell">
     <div class="s-head">
-      <div class="num">01 — The Library</div>
       <div>
-        <h2 class="section-title">A small library<br />of <em style="font-style:italic; color:var(--accent);">skills.</em></h2>
+        <h2 class="section-title">A small library<br />of <em>skills.</em></h2>
         <p class="body-lg">design-expert is markdown all the way down. Every file is a discipline. Every discipline is editable. You can read it, fork it, override a section in <span class="mono">PROJECT.md</span>, or hand the whole library to a junior on day one.</p>
       </div>
     </div>
@@ -272,9 +271,8 @@
 <section class="section" id="pantheon">
   <div class="shell">
     <div class="s-head">
-      <div class="num">02 — The Pantheon</div>
       <div>
-        <h2 class="section-title">The <em style="font-style:italic; color:var(--accent);">designers</em><br />the skill listens to.</h2>
+        <h2 class="section-title">The <em>designers</em><br />the skill listens to.</h2>
         <p class="body-lg">A small canon, deliberately curated. Each name has a file in <span class="mono">design-gods/</span> with their work, their rules, and the moments when their judgment overrides the skill's defaults. This is the bar.</p>
       </div>
     </div>
@@ -413,9 +411,8 @@
 <section class="section" id="install">
   <div class="shell">
     <div class="s-head">
-      <div class="num">03 — Install</div>
       <div>
-        <h2 class="section-title"><em style="font-style:italic; color:var(--accent);">2 minute</em> install</h2>
+        <h2 class="section-title"><em>2 minute</em> install</h2>
         <p class="body-lg">One design discipline, two native installs. Use the khev-tools marketplace in Claude Code, or hand the GitHub skill folder to ChatGPT / Codex's built-in installer.</p>
       </div>
     </div>
@@ -431,7 +428,9 @@
             <span class="glyph chatgpt"><img src="./assets/chatgpt.svg" alt="" width="20" height="20" /></span>ChatGPT / Codex
           </button>
         </div>
-      <div class="install-card install-panel" id="install-panel-claude" role="tabpanel" aria-labelledby="install-claude" tabindex="0">
+
+      <div class="install-panel" id="install-panel-claude" role="tabpanel" aria-labelledby="install-claude" tabindex="0">
+      <div class="install-card">
         <div class="install-card__head">
           <h4>Add the marketplace, install the plugin.</h4>
           <p>Two slash commands, run in sequence. The first registers the khev‑tools marketplace. The second installs design‑expert. Restart the session so <span class="mono">/design-expert</span> registers.</p>
@@ -459,8 +458,32 @@
         </div>
         </div>
       </div>
+      <div class="install-card">
+        <div class="install-card__head">
+          <h4>Describe the work. It picks the mode.</h4>
+          <p>One skill, five modes: plan, build, iterate, review, write. Triage reads who you are, where the work lands, how your design system is implemented, and how big the change is, then prints one trace line before it works so you can correct any decision. Force a mode by naming it first: <span class="mono">/design-expert review …</span>.</p>
+        </div>
+        <div class="install-card__body">
+        <div class="terminal">
+          <div class="head-bar"><span></span><span></span><span></span></div>
+          <span class="prompt">$</span> <span class="cmd-text">/design-expert</span> <span class="accent-c">a billing-settings page for a subscription SaaS</span><br/>
+          <span class="comment"># new project → plan · discovery interview, the council, PRODUCT.md + DESIGN.md + DECISIONS.md</span><br/>
+          <br/>
+          <span class="prompt">$</span> <span class="cmd-text">/design-expert</span> <span class="accent-c">make it better</span><br/>
+          <span class="comment"># one section on the table → iterate · three to five proposals, then the change</span><br/>
+          <br/>
+          <span class="prompt">$</span> <span class="cmd-text">/design-expert</span> <span class="accent-c">critique src/billing/, notes only</span><br/>
+          <span class="comment"># notes wanted → review · patterns your system mandates are never filed as slop</span>
+        </div>
+        <div class="terminal-output">
+          <span class="ok">✓</span> <span class="output-line">Triage: role designer · DS system.md · register product · size iteration · mode iterate · tier capsule</span>
+        </div>
+        </div>
+      </div>
+      </div>
 
-      <div class="install-card install-panel" id="install-panel-codex" role="tabpanel" aria-labelledby="install-codex" tabindex="0" hidden>
+      <div class="install-panel" id="install-panel-codex" role="tabpanel" aria-labelledby="install-codex" tabindex="0" hidden>
+      <div class="install-card">
         <div class="install-card__head">
           <h4>Ask the skill installer.</h4>
           <p>One prompt installs the same skill folder with its references and Codex metadata. Start a new task after installation, then invoke it explicitly with <span class="mono">$design-expert</span> or simply describe design work.</p>
@@ -485,18 +508,15 @@
         </div>
         </div>
       </div>
-      </div>
-
       <div class="install-card">
         <div class="install-card__head">
-          <span class="step">Both</span>
           <h4>Describe the work. It picks the mode.</h4>
-          <p>One skill, five modes: plan, build, iterate, review, write. Triage reads who you are, where the work lands, how your design system is implemented, and how big the change is, then prints one trace line before it works so you can correct any decision. Force a mode by naming it first: <span class="mono">/design-expert review …</span> or <span class="mono">$design-expert review …</span>.</p>
+          <p>One skill, five modes: plan, build, iterate, review, write. Triage reads who you are, where the work lands, how your design system is implemented, and how big the change is, then prints one trace line before it works so you can correct any decision. Force a mode by naming it first: <span class="mono">$design-expert review …</span>.</p>
         </div>
         <div class="install-card__body">
         <div class="terminal">
           <div class="head-bar"><span></span><span></span><span></span></div>
-          <span class="prompt">$</span> <span class="cmd-text">/design-expert</span> <span class="accent-c">a billing-settings page for a subscription SaaS</span><br/>
+          <span class="prompt">›</span> <span class="cmd-text">$design-expert</span> <span class="accent-c">a billing-settings page for a subscription SaaS</span><br/>
           <span class="comment"># new project → plan · discovery interview, the council, PRODUCT.md + DESIGN.md + DECISIONS.md</span><br/>
           <br/>
           <span class="prompt">›</span> <span class="cmd-text">$design-expert</span> <span class="accent-c">make it better</span><br/>
@@ -510,6 +530,8 @@
         </div>
         </div>
       </div>
+      </div>
+      </div>
 
     </div>
   </div>
@@ -519,7 +541,6 @@
 <section class="section" id="faq">
   <div class="shell">
     <div class="s-head">
-      <div class="num">04 — FAQ</div>
       <div>
         <h2 class="section-title">Seven things you might be <em>wondering.</em></h2>
         <p class="body-lg">Most of what a designer or engineer asks before installing. Short answers here — the long ones are in the markdown.</p>
@@ -528,7 +549,6 @@
 
     <ol class="faq-list">
       <li class="faq-entry">
-        <div class="faq-entry__num">Q · 01</div>
         <div class="faq-entry__body">
           <div class="faq-entry__cat">What it is</div>
           <h4 class="faq-entry__q">Is design-expert just a system prompt?</h4>
@@ -536,7 +556,6 @@
         </div>
       </li>
       <li class="faq-entry">
-        <div class="faq-entry__num">Q · 02</div>
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Cost</div>
           <h4 class="faq-entry__q">What does it cost?</h4>
@@ -544,7 +563,6 @@
         </div>
       </li>
       <li class="faq-entry">
-        <div class="faq-entry__num">Q · 03</div>
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Compatibility</div>
           <h4 class="faq-entry__q">Does it work with my design system?</h4>
@@ -552,7 +570,6 @@
         </div>
       </li>
       <li class="faq-entry">
-        <div class="faq-entry__num">Q · 04</div>
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Compatibility</div>
           <h4 class="faq-entry__q">Claude Code? ChatGPT / Codex? Other harnesses?</h4>
@@ -560,23 +577,20 @@
         </div>
       </li>
       <li class="faq-entry">
-        <div class="faq-entry__num">Q · 05</div>
         <div class="faq-entry__body">
-          <div class="faq-entry__cat">Future</div>
-          <h4 class="faq-entry__q">Will there be other khev-tools plugins?</h4>
-          <p class="faq-entry__a">Yes. design-expert is the first; the marketplace is built to host more. Until then, this is the entire shelf.</p>
+          <div class="faq-entry__cat">Control</div>
+          <h4 class="faq-entry__q">What if I disagree with it?</h4>
+          <p class="faq-entry__a">Then you win, and the skill is built to let you. Every rule is markdown you can fork or override, and a pattern your own design system mandates outranks anything the skill would otherwise call slop. When the council splits, the contested points come to you as a question rather than a decision, and the losing view is printed rather than dropped. Naming a mode first forces it.</p>
         </div>
       </li>
       <li class="faq-entry">
-        <div class="faq-entry__num">Q · 06</div>
         <div class="faq-entry__body">
-          <div class="faq-entry__cat">Naming</div>
-          <h4 class="faq-entry__q">Why "design-expert" and not something fancier?</h4>
-          <p class="faq-entry__a">Because it does what it says. The plugin is what you reach for when you want a designer in the loop and there isn't one in the room. The name is the contract.</p>
+          <div class="faq-entry__cat">Safety</div>
+          <h4 class="faq-entry__q">Will it change my files?</h4>
+          <p class="faq-entry__a">Only when you asked for a change. Review reads and writes notes, and nothing else. Build and iterate propose first, then make the change you picked. <span class="mono">PRODUCT.md</span>, <span class="mono">DESIGN.md</span>, and <span class="mono">DECISIONS.md</span> are never silently overwritten; the loader checks them and asks. Every run prints one trace line before it works, so a wrong assumption is visible while it is still cheap.</p>
         </div>
       </li>
       <li class="faq-entry">
-        <div class="faq-entry__num">Q · 07</div>
         <div class="faq-entry__body">
           <div class="faq-entry__cat">Council</div>
           <h4 class="faq-entry__q">What does the council cost?</h4>
@@ -591,7 +605,6 @@
 <section class="section" id="changelog">
   <div class="shell">
     <div class="s-head sm">
-      <div class="num">05 — What's New</div>
       <div>
         <h3 class="section-title-sm">Recent updates.</h3>
         <p class="body">design-expert is the first plugin in the khev-tools marketplace. The skill itself is the product, and it ships small.</p>
