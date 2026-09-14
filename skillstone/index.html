@@ -2553,6 +2553,15 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-cell { min-width:0; background:#090b09; }
 .iv-armory .iv-cell-b { height:100px; min-width:0; border:1px solid transparent; border-radius:0; background:radial-gradient(ellipse,#2b2b212e,transparent); padding:12px 5px 8px; align-content:center; gap:6px; }
 .iv-armory .iv-cell-face { width:60px; max-width:100%; height:60px; border-radius:0; }
+/* What is not on him sits back a step: the picture, not the name, which stays legible. Hover
+   brings the picture forward, so what a press would put on is seen whole before it is pressed. */
+.iv-armory .iv-cell:not(.is-worn) .iv-cell-face { opacity:.5; transition:opacity var(--t-fast) var(--e-out); }
+@media (hover: hover) { .iv-armory .iv-cell:not(.is-worn):not(.is-unfit) .iv-cell-b:hover .iv-cell-face { opacity:1; } }
+/* on the board but not for the selected place: seen, grey, and deaf to a press */
+.iv-armory .iv-cell.is-unfit .iv-cell-face { opacity:.2; filter:grayscale(1); }
+.iv-armory .iv-cell.is-unfit .iv-cell-nm, .iv-armory .iv-cell.is-unfit .iv-cell-mk { opacity:.4; }
+.iv-armory .iv-cell.is-unfit .iv-cell-b { cursor:default; }
+@media (hover: hover) { .iv-armory .iv-cell.is-unfit .iv-cell-b:hover { border-color:transparent; } }
 .iv-armory .iv-cell-face img { object-fit:contain; }
 .iv-armory .iv-cell-nm { font-size:11px; }
 /* A hairline one shade warmer than its neighbours was not an answer to "which of these am I
@@ -2639,14 +2648,9 @@ li.is-done .qg { color: var(--verdant); }
    filler tiles — nothing to count, nothing to go stale. Dense flow backfills the holes the big
    pieces leave, and the sort hands it the big pieces first so there are holes worth filling. */
 /* the heading no longer pushes its neighbours to the right; the Add button is absolute now */
-.iv-add-b {
-  appearance: none; position: absolute; right: 0; bottom: 10px;
-  background: none; border: 1px solid #56472f; border-radius: 0;
-  padding: 4px 10px; cursor: pointer; color: #c5a56c;
-  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
-}
-@media (hover: hover) { .iv-add-b:hover { border-color: #b59a67; color: var(--parchment); background: #2b2517; } }
-.iv-add-b:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+/* It is the library's "+ Add book" plate, the same stone every other add in the app is cut
+   from. Set in the filter chips' mono it read as one more filter. */
+.iv-add-b { position: absolute; right: 0; bottom: 8px; }
 
 /* The squares stay visible under an empty board: two repeating gradients drawn at the column
    and row pitch, so the gaps between cells and the bare floor are the same lattice. The column
@@ -2729,6 +2733,7 @@ li.is-done .qg { color: var(--verdant); }
 .gear-top-f { display: grid; grid-template-columns: minmax(0, 1fr) 152px; gap: var(--s3); align-content: start; }
 /* Kind belongs with what the garment is, not adrift under the block that names it */
 .gear-top-f .gear-kind { grid-column: 1 / -1; }
+.gear-top-f .gear-over { grid-column: 1 / -1; min-height: 0; padding: 2px 0; }
 /* Three groups, told apart by a rule and a breath rather than by three more headings: what it
    is, what it looks like, and everything else. */
 .gear-sep { height: 0; margin: var(--s2) 0 0; border: 0; border-top: 1px solid var(--mortar); }
@@ -6525,6 +6530,7 @@ function sanitize(s) {
       color: /^#[0-9a-fA-F]{6}$/.test(x.color) ? String(x.color) : "#6b6257",
       pattern: ['sticks','spots','abstract','flowers','sprigs'].includes(x.pattern)?x.pattern:'sticks',
       printColor: shirtInk(x.printColor,'#202326'), printColor2: shirtInk(x.printColor2,'#779b83'), printSecond: x.printSecond===true,
+      over: x.over === true,
       note: String(x.note || "").slice(0, 80),
       img: (typeof x.img === "string" && x.img.startsWith("data:image")) ? x.img : ""
     }));
@@ -8236,8 +8242,12 @@ const SLOTS = [
   { k: "scent",   f: "scent", short: "Scent" }
 ];
 const FLY_GROUPS = ["head-l", "head-r", "hand-l", "hand-r"];
-const wardrobeFamily = k => ['ring','neck','ear','nose'].includes(k) ? 'ear' : k;
+/* The board shows a FAMILY of things; a socket takes one PLACE. The four jewelry families share
+   a board, so `jewelry` is what the chip asks for and `ear`/`ring`/`neck`/`nose` are what a
+   socket asks for — same board either way, but only a socket's own family fits it. */
+const wardrobeFamily = k => ['ring','neck','ear','nose','jewelry'].includes(k) ? 'ear' : k;
 const wardrobeMatches = (slot, filter) => !filter || wardrobeFamily(slot) === wardrobeFamily(filter);
+const gearFits = it => !gearFilter || !WEAR_BY[gearFilter] || it.slot === gearFilter;
 const WEAR_BY = Object.fromEntries(WEAR.map(w => [w.k, w]));
 const SLOTS_OF = f => SLOTS.filter(s => s.f === f);
 const slotLabel = s => s.name || WEAR_BY[s.f].name;
@@ -9035,7 +9045,31 @@ function invDollHTML() {
   g+=line('M88 122q9-4 16 0m12 0q7-4 16 0','#674b3a30',.8);
   // Bare feet go on before the trousers, or a trouser cuff ends up behind the ankle it covers.
   const bare = path('M85 432L99 432Q98 446 101 455Q105 462 100 465Q87 470 75 464Q70 462 75 456L82 448Q85 442 85 432Z',skin,'none') + path('M140 432L124 432Q125 446 123 455Q120 462 125 465Q138 470 150 464Q155 462 150 456L143 448Q140 442 140 432Z',skin,'none');
-  if(!feet) g += bare;
+  /* Footwear. A shoe is an upper on a sole, and a boot is that with a shaft; the old blob had no
+     sole, so nothing put the foot on the ground, and its shaft was narrower than the trouser leg
+     it was meant to swallow, which left a sliver of hem standing outside the boot. Drawn once and
+     mirrored. Whether the trousers tuck in or fall over is the garment's own choice (`over`):
+     over, the shoe goes on after the trousers and its shaft is cut wider than the leg; under,
+     it goes on before them, inside the leg, and the hem comes down over it. */
+  const shoec=color(feet,'#38342d'), wearOver=!!feet&&feet.over===true;
+  const footwear=()=>{
+    const k=feet.kind, boot=k==='boots', sx=wearOver?[78,106]:[83,102];
+    const soleC=k==='sneakers'?'#d9d2bf':ivShade(shoec,-.45);
+    let s='<g data-avatar-layer="feet" data-kind="'+esc(k)+'" data-over="'+wearOver+'">';
+    // the upper: ankle at the top, heel inboard, toe out
+    const upper=boot
+      ? 'M'+sx[0]+' 421H'+sx[1]+'L105 455Q106 460 104 461H72Q68 460 70 456Q74 449 82 447L'+sx[0]+' 447Z'
+      : 'M83 442H103L105 455Q106 460 104 461H72Q68 460 70 456Q74 449 82 447Z';
+    s+=both(path(upper,shoe,ivShade(shoec,-.35),1));
+    // the sole: a band with a welt line, and a heel block under a boot
+    s+=both(path('M70 461H104Q108 461 107 466L106 468H73Q68 468 69 464Z',soleC,ivShade(soleC,-.3),.8));
+    if(boot)s+=both(path('M96 461h10l1 7h-11z',ivShade(soleC,-.25),'none',0));
+    if(k==='sneakers'){s+=both(line('M72 461H104','#00000030',1));s+=both(line('M84 447l12 1m-13 4 13 1',ivShade(shoec,.55),1.2));}
+    if(k==='loafers')s+=both(path('M84 452Q92 450 100 452L100 455Q92 453 84 455Z',ivShade(shoec,-.3),'none',0));
+    if(boot){s+=both(line('M'+(sx[0]+2)+' 421H'+(sx[1]-2),ivShade(shoec,.22),1));s+=both(line('M84 428l10 1m-10 5 10 1m-10 5 10 1',ivShade(shoec,.4),1));}
+    return s+'</g>';
+  };
+  if(!feet) g += bare; else if(!wearOver) g += footwear();
   // Trousers sit behind tops; shorts expose the lower legs.
   if(legs) {
     const short=legs.kind==='shorts', jog=legs.kind==='joggers', end=short?336:447;
@@ -9082,7 +9116,13 @@ function invDollHTML() {
     g+='<g data-avatar-layer="'+(closedOuter?'outer':'top')+'" data-kind="'+esc(closedOuter?outer.kind:k)+'">';
     const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
     const shirt= ['shirt','printed'].includes(k), print=k==='printed';
-    const shirtBody='M96 109L104 119 110 128 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z';
+    /* The short-sleeved shirt is worn with the top two buttons open, which is how he wears it:
+       the V runs down to the sternum, the collar points lie out on the chest instead of standing
+       at the throat, and the pale facing shows along the edge of the opening. The dress shirt
+       stays buttoned to the collar. */
+    const shirtBody=print
+      ? 'M96 109L104 121 110 152 116 121 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z'
+      : 'M96 109L104 119 110 128 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z';
     const cut=shirt?shirtBody:shape;
     g+=path(cut,fabric,tEdge,0.9);
     /* The sleeve goes on OVER the body. Underneath, the body's own outline runs diagonally from
@@ -9108,10 +9148,19 @@ function invDollHTML() {
       const polo=k==='polo';
       // A real collar stand with two compact fall points; a short placket for knit polos.
       g+=path('M96 109Q110 116 124 109L122 117Q110 122 98 117Z',fabric,tEdge,.6);
-      g+=path(polo?'M97 111L109 120 101 130 94 119Z':'M96 109L108 120 99 135 91 120Z',fabric,tEdge,.7);
-      g+=path(polo?'M123 111L111 120 119 130 126 119Z':'M124 109L112 120 121 135 129 120Z',fabric,tEdge,.7);
-      g+=path('M108 123h4v'+(polo?31:122)+'h-4Z',fabric,ivShade(topc,-.18),.5);
-      for(let y=polo?134:140;y<(polo?154:243);y+=polo?12:23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+      if(print) {
+        // open at the top: the facing along the V, the points lying out, the placket from the first closed button
+        g+=path('M104 121L110 152 116 121 114 121 110 146 106 121Z','#e8e1cf7a','none',0);
+        g+=path('M96 109L86 122 94 134 104 121Z',fabric,tEdge,.7);
+        g+=path('M124 109L134 122 126 134 116 121Z',fabric,tEdge,.7);
+        g+=path('M108 150h4v95h-4Z',fabric,ivShade(topc,-.18),.5);
+        for(let y=160;y<243;y+=23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+      } else {
+        g+=path(polo?'M97 111L109 120 101 130 94 119Z':'M96 109L108 120 99 135 91 120Z',fabric,tEdge,.7);
+        g+=path(polo?'M123 111L111 120 119 130 126 119Z':'M124 109L112 120 121 135 129 120Z',fabric,tEdge,.7);
+        g+=path('M108 123h4v'+(polo?31:122)+'h-4Z',fabric,ivShade(topc,-.18),.5);
+        for(let y=polo?134:140;y<(polo?154:243);y+=polo?12:23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+      }
       if(polo)g+=both(line('M55 155l21 8',ivShade(topc,-.2),2.2));
       if(k==='shirt') {
         g+=both(line('M49 226l16 5',ivShade(topc,-.2),1.6));
@@ -9204,8 +9253,8 @@ function invDollHTML() {
   for(const [slot,x] of [['ear-l',86],['ear-r',134]]){const it=worn(slot);if(it)g+='<g data-avatar-layer="'+slot+'">'+(it.kind==='stud'?'<circle cx="'+x+'" cy="73" r="2" fill="'+color(it,'#c5a559')+'"/>':'<ellipse cx="'+x+'" cy="'+(it.kind==='drop'?80:76)+'" rx="3" ry="'+(it.kind==='drop'?7:4)+'" fill="none" stroke="'+color(it,'#c5a559')+'" stroke-width="1.8"/>')+'</g>';}
   const nose=worn('nose');if(nose)g+='<circle data-avatar-layer="nose" cx="114" cy="76" r="2" fill="none" stroke="'+color(nose,'#c7ad65')+'" stroke-width="1.3"/>';
   for(const [side,x] of [['l',55],['r',165]]){const it=worn('wrist-'+side);if(it)g+='<g data-avatar-layer="wrist-'+side+'"><rect x="'+(x-7)+'" y="241" width="14" height="6" rx="2" fill="'+color(it,'#7d6943')+'"/>'+(it.kind==='watch'?'<circle cx="'+x+'" cy="244" r="5" fill="#222b29" stroke="'+color(it,'#c1a15b')+'" stroke-width="2"/>':'')+'</g>';for(let n=1;n<=2;n++){const ring=worn('ring-'+side+n);if(ring)g+='<path data-avatar-layer="ring-'+side+n+'" d="M'+(x-3+n*3)+' 264h3" stroke="'+color(ring,'#c5a559')+'" stroke-width="2"/>';}}
-  if(feet){const boot=feet.kind==='boots';g+='<g data-avatar-layer="feet">'+both(path('M83 '+(boot?422:442)+'L103 '+(boot?422:442)+'Q102 452 104 457Q109 464 102 467Q84 473 72 465Q69 461 75 456L82 451Z',shoe));g+=both(line('M74 464q14 5 29-1','#c7baa2',3));if(feet.kind!=='loafers')g+=both(line('M85 450l12 1m-13 4 13 1','#e2d5bb',1.3));g+='</g>';}
-  // The bare pair was drawn back with the legs, under whatever the trousers cover.
+  // Shoes worn over the trousers go on last; the rest went on back with the legs, under the hem.
+  if(wearOver) g += footwear();
   return '<svg class="iv-doll iv-avatar" viewBox="0 0 220 490" role="img" aria-label="'+esc(invOutfitWords())+'"><defs>'+defs+'</defs>'+g+'</svg>';
 }
 
@@ -9233,12 +9282,14 @@ const gearFace = it => it.img
   ? '<img class="iv-shot" src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async">'
   : gearIconHTML(it);
 function gearCellHTML(it, worn) {
-  const sp = gearSpan(it.slot), wide = sp[0] > 1;
-  return '<div class="iv-cell' + (worn ? " is-worn" : "") + (wide ? " is-wide" : "") +
+  const sp = gearSpan(it.slot), wide = sp[0] > 1, fit = gearFits(it);
+  /* a ring is on the jewelry board when an ear is selected, so you can see you own it, but it
+     is greyed and will not take a press: it does not go there */
+  return '<div class="iv-cell' + (worn ? " is-worn" : "") + (wide ? " is-wide" : "") + (fit ? "" : " is-unfit") +
     '" style="grid-column:span ' + sp[0] + ';grid-row:span ' + sp[1] + '">' +
-    '<button type="button" class="iv-cell-b" data-inv="wear" data-id="' + esc(it.id) + '" aria-pressed="' + !!worn + '"' +
+    '<button type="button" class="iv-cell-b" data-inv="wear" data-id="' + esc(it.id) + '" aria-pressed="' + !!worn + '"' + (fit ? "" : " disabled") +
       ' title="' + esc(it.name + " · " + kindName(it.slot, it.kind) + (it.note ? " — " + it.note : "")) + '"' +
-      ' aria-label="' + esc(it.name + ", " + WEAR_BY[it.slot].name + (worn ? ", worn. Take it off." : ". Put it on.")) + '">' +
+      ' aria-label="' + esc(it.name + ", " + WEAR_BY[it.slot].name + (!fit ? ". Not for this place." : worn ? ", worn. Take it off." : ". Put it on.")) + '">' +
       '<span class="iv-cell-face">' + gearFace(it) + "</span>" +
       '<span class="iv-cell-nm">' + esc(it.name) + "</span></button>" +
     '<span class="iv-cell-mk" aria-hidden="true">' + slotMarkHTML(it.slot) + "</span>" +
@@ -9279,7 +9330,7 @@ function renderInv() {
   const wardrobe_ = '<div class="iv-hold"><header class="iv-section-head">' +
       (fam ? '<span class="iv-hold-cur">' + esc(fam.name) + " · " + W.items.filter(x => wardrobeMatches(x.slot, fam.k)).length + "</span>" : "") +
       '<h3>Wardrobe</h3>' +
-      '<button type="button" class="iv-add-b" data-inv="gearnew">+ Add clothing</button></header>' +
+      '<button type="button" class="j3-btn iv-add-b" data-inv="gearnew">+ Add clothing</button></header>' +
     /* Thirteen names set across three lines spent a third of the column saying what the marks
        beside every empty socket already say. One line of marks instead: a family is a 26px
        socket rather than a 65px word, which is the whole answer to fitting more of them.
@@ -9292,12 +9343,12 @@ function renderInv() {
         const w = entry.k === 'ear' ? {...entry,name:'Jewelry'} : entry;
         const n = W.items.filter(x => wardrobeMatches(x.slot,w.k)).length;
         return '<button type="button" class="iv-f' + (filterFamily === w.k ? " is-cur" : "") + (n ? "" : " is-bare") +
-          '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (filterFamily === w.k) +
+          '" data-inv="filter" data-k="' + (entry.k === 'ear' ? 'jewelry' : w.k) + '" aria-pressed="' + (filterFamily === w.k) +
           '" title="' + esc(w.name + " · " + n) + '" aria-label="' + esc(w.name + ", " + n + (n === 1 ? " item" : " items")) + '">' +
           inventoryCategoryArt(w.k) + "</button>";
       }).join("") +
     "</div>" +
-    (shown.length ? "" : '<p class="iv-empty">' + (W.items.length
+    (shown.some(gearFits) ? "" : '<p class="iv-empty">' + (W.items.length
       ? "Nothing in the wardrobe goes in that slot yet."
       : "The wardrobe is empty. Add a garment and it lands here, ready to put on.") + "</p>") +
     /* No filler tiles: the board draws its own squares, so it stays the same size whatever is on
@@ -9386,7 +9437,7 @@ function gearDlgOpen(id) {
   const dlg = $("#gearDlg"); if (!dlg || !dlg.showModal) return;
   const it = id ? gearById(id) : null;
   if (id && !it) return;
-  const slot0 = gearFilter || "top";
+  const slot0 = WEAR_BY[gearFilter] ? gearFilter : gearFilter === "jewelry" ? "ear" : "top";
   gearEdit = it ? Object.assign({}, it) : { id: null, name: "", slot: slot0, kind: kindsFor(slot0)[0][0], color: "#6b6257", note: "", img: "" };
   gearDlgRender();
   if (!dlg.open) dlg.showModal();
@@ -9411,6 +9462,8 @@ function gearDlgRender(focusSel) {
         '<label class="bk-l gear-kind">Kind<select name="kind">' + kindsFor(d.slot).map(x =>
           '<option value="' + x[0] + '"' + (d.kind === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>").join("") +
           "</select></label>" +
+        /* shoes have one more thing to say about how they sit on the figure */
+        (d.slot === "feet" ? '<label class="gear-2nd gear-over"><input type="checkbox" name="over"' + (d.over ? " checked" : "") + ">Worn over the trousers</label>" : "") +
       "</div></div>" +
     '<hr class="gear-sep">' +
     /* What it looks like. */
@@ -9447,6 +9500,7 @@ document.addEventListener("input", e => {
   else if(t.name==='pattern') {gearEdit.pattern=t.value;gearDlgPreview();}
   else if(t.name==='printColor'||t.name==='printColor2') {gearEdit[t.name]=t.value;gearDlgPreview();}
   else if(t.name==='printSecond') {gearEdit.printSecond=t.checked;gearDlgRender('[name="printSecond"]');}
+  else if (t.name === "over") gearEdit.over = t.checked;
   else if (t.name === "slot") {
     /* a new slot brings its own kinds; keep the one named if the new slot also has it */
     gearEdit.slot = t.value;
@@ -9619,6 +9673,7 @@ function gearDlgSave() {
   it.name = name.slice(0, 60); it.slot = d.slot; it.kind = kindOk(d.slot, d.kind) ? d.kind : kindsFor(d.slot)[0][0]; it.color = d.color;
   it.pattern=['sticks','spots','abstract','flowers','sprigs'].includes(d.pattern)?d.pattern:'sticks';
   it.printColor=shirtInk(d.printColor,'#202326');it.printColor2=shirtInk(d.printColor2,'#779b83');it.printSecond=!!d.printSecond;
+  it.over = !!d.over;
   it.note = d.note.trim().slice(0, 80); it.img = d.img || "";
   /* a garment that moved to another slot cannot stay worn in the one it left */
   if (moved) SLOTS.forEach(s => { if (W.worn[s.k] === it.id && s.f !== it.slot) delete W.worn[s.k]; });
