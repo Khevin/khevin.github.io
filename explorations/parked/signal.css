@@ -448,11 +448,19 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   bottom: 0;
   margin-bottom: var(--sink);
 }
+/* Only the home page ends with the city — it is the last thing after the
+   invitation to work together, and it earns that place by being the end of the
+   argument rather than a band that repeats on ten pages. Everywhere else the
+   footer is the dark field alone, and with no skyline to close the page it has
+   to carry that weight itself, so it sits taller. */
 .foot-body {
   background: var(--foot-ink);
-  /* A rule of night under the city, not a slab. The skyline is the footer now;
-     this only has to hold one line of type. The top has to clear the overhang
-     before it starts measuring the gap, or the sink eats the breathing space. */
+  padding: clamp(34px, 3.6vw, 54px) 0 clamp(30px, 3.2vw, 46px);
+}
+/* Under the city it is a rule of night, not a slab: the skyline is doing the
+   closing, and this only has to hold one line of type. The top clears the
+   overhang BEFORE it starts measuring the gap, or the sink eats it. */
+.foot-skyline + .foot-body {
   padding: calc(var(--sink) + clamp(16px, 1.7vw, 24px)) 0 clamp(15px, 1.5vw, 22px);
 }
 .foot .colophon { color: #8a8a93; }
