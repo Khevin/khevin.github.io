@@ -2656,6 +2656,13 @@ li.is-done .qg { color: var(--verdant); }
 }
 /* a cut-out is shown whole on the socket's own dark ground, never cropped to fill it */
 .gear-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* and one that was shot on a background gets a plate, so it reads as a product card rather
+   than a white rectangle someone forgot to knock out */
+.iv-shot.on-plate { background: linear-gradient(160deg, #f6f3ec, #e4dfd2); border-radius: 2px; transform: scale(1.22); }
+/* a studio shot arrives with margin around the product, and a fifty-pixel square has none to
+   spare — so the plated ones are pushed out until the object fills the cell the way a cut-out
+   already does. The face clips, so the margin is what goes. */
+.iv-armory .iv-cell-face, .iv-armory .iv-slot-face { overflow: hidden; }
 .gear-top-f { display: grid; grid-template-columns: minmax(0, 1fr) 152px; gap: var(--s3); }
 .gear-colors { border: 0; padding: 0; margin: 0; min-width: 0; }
 .gear-colors legend { padding: 0; margin-bottom: 4px; }
@@ -8868,16 +8875,23 @@ const gearArea = it => { const s = gearSpan(it.slot); return s[0] * s[1]; };
    A browser cannot list a folder off static hosting, so the folder is listed here instead, by
    sync-clothing.js. Editing this array by hand is a claim about the folder that goes stale. */
 /* clothing-manifest:start — written by sync-clothing.js, not by hand */
-const CLOTHING_ART = [];
+const CLOTHING_ART = ["bracelet-gold.webp", "earring-doublehoops.webp", "earring-singlehoop.webp", "glasses-rayban-aviatorclassic.avif", "nosering.jpg", "perfume-cartier-pasha.webp", "perfume-jpg-lemaleparfum.png", "perfume-mancera-redtobacco.webp", "tshirt-white.webp", "watch-stgermain-black.jpg"];
+/* shot on a background rather than cut out: the wardrobe puts these on a plate */
+const CLOTHING_PLATE = ["bracelet-gold.webp", "earring-doublehoops.webp", "earring-singlehoop.webp", "glasses-rayban-aviatorclassic.avif", "nosering.jpg", "perfume-cartier-pasha.webp", "perfume-mancera-redtobacco.webp", "watch-stgermain-black.jpg"];
 /* clothing-manifest:end */
-const CLOTHING_DIR = "assets/clothing/";
+const CLOTHING_DIR = "assets/clothes/";
 const gearArtSrc = it => it.art && CLOTHING_ART.indexOf(it.art) > -1 ? CLOTHING_DIR + it.art : "";
+/* a photograph shot on a background needs one under it here, or the white reads as a sticker
+   on a dark board. Which files those are is measured by sync-clothing.js, not guessed at. */
+const gearArtPlate = it => it.art && CLOTHING_PLATE.indexOf(it.art) > -1;
 /* a garment is on if any place its family can go is holding it */
 const gearIsOn = it => SLOTS_OF(it.slot).some(s => wardrobe().worn[s.k] === it.id);
 /* the catalogue photograph first, then one shot into the dialog, then the drawing */
 const gearFace = it => {
   const src = gearArtSrc(it) || it.img;
-  return src ? '<img src="' + esc(src) + '" alt="" loading="lazy" decoding="async">' : gearIconHTML(it);
+  return src
+    ? '<img class="iv-shot' + (gearArtPlate(it) ? " on-plate" : "") + '" src="' + esc(src) + '" alt="" loading="lazy" decoding="async">'
+    : gearIconHTML(it);
 };
 function gearCellHTML(it, worn) {
   const sp = gearSpan(it.slot), wide = sp[0] > 1;
