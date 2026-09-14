@@ -37,6 +37,13 @@ const IDENTITY = new URL('./parked/signal.css', import.meta.url);
 const PAPER = (await readFile(IDENTITY, 'utf8')).match(/--paper:\s*(#[0-9a-fA-F]{3,8})/)?.[1];
 if (!PAPER) throw new Error('could not read --paper from signal.css');
 
+/* Lit windows, matched to the drawing they stand next to. `w` and `h` come from
+   measuring São Paulo's own: a median 3.7 x 4.8 in its own 711-unit canvas,
+   which at the quarter scale it sits at in this band is 1.87 x 2.43. `col` and
+   `row` are the grid they sit on, close enough to give the same density of
+   light rather than a sparser, larger one. */
+const WIN = { w: 1.9, h: 2.4, col: 4.6, row: 6, pad: 3, top: 5, lit: 0.6 };
+
 /* Seeded, so the skyline is the same every build. A city that reshuffled itself
    on each run would make every regeneration a visual diff. */
 const rng = (seed) => () => {
@@ -88,18 +95,21 @@ function run({ x0, x1, seed, minH, maxH, tone, tone2, windows, detail, base = BA
       }
     }
 
-    if (windows && h > 26 && right - left > 18) {
-      /* Sparse and gridded. At this size a full grid turns to grey mush, so a
-         handful of lit floors reads better than every floor drawn. */
-      const cols = Math.max(2, Math.floor((right - left - 8) / 8));
-      const rows = Math.max(2, Math.floor((h - 16) / 11));
+    if (windows && h > 20 && right - left > 12) {
+      /* Sized off the drawing rather than guessed. São Paulo's own windows
+         measure a median 3.7 x 4.8 in its 711-unit canvas, which at the quarter
+         scale it sits at here is 1.87 x 2.43 — so these are 1.9 x 2.4 on a grid
+         tight enough to give the same density of light. At 3 x 5 on an 8 x 11
+         grid they read as portholes next to it. */
+      const cols = Math.max(2, Math.floor((right - left - WIN.pad * 2) / WIN.col));
+      const rows = Math.max(2, Math.floor((h - WIN.top - 6) / WIN.row));
       for (let c = 0; c < cols; c++) {
         for (let rw = 0; rw < rows; rw++) {
-          if (rand() > 0.42) continue;
-          const wx = left + 5 + c * 8;
-          const wy = top + 8 + rw * 11;
-          if (wx + 3 > right - 3 || wy + 5 > base - GROUND - 2) continue;
-          out.push(`<rect x="${wx}" y="${wy}" width="3" height="5" fill="${PAPER}"/>`);
+          if (rand() > WIN.lit) continue;
+          const wx = left + WIN.pad + c * WIN.col;
+          const wy = top + WIN.top + rw * WIN.row;
+          if (wx + WIN.w > right - WIN.pad || wy + WIN.h > base - GROUND - 2) continue;
+          out.push(`<rect x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="${WIN.w}" height="${WIN.h}" fill="${PAPER}"/>`);
         }
       }
     }
