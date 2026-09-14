@@ -8868,7 +8868,14 @@ function invDollHTML() {
   g+=both(path('M79 123Q62 130 59 154L48 222Q45 237 48 255L53 273Q58 278 63 273L65 261 61 249 64 223 78 173Z',skin));
   g+=both(line('M52 256l4 15m0-19 4 17','#6d4b39',.8));
   g+=path('M82 234Q77 263 82 319L84 440Q86 455 97 453L107 330 111 283 115 331 126 453Q137 455 140 441L141 318Q145 264 136 234Z',skin);
-  g+=path('M96 88C97 100 98 104 93 108C84 113 74 115 69 124C66 132 68 144 73 155C80 173 80 189 78 210C77 225 80 237 84 249Q110 255 136 249C141 235 143 222 141 208C138 184 141 168 147 154C152 143 154 132 150 124C145 115 136 113 127 108C122 104 123 99 124 88Z',skin,'none');
+  /* The waist sat OUTSIDE the shirt. Rasterising the figure and classifying each pixel as board,
+     skin or cloth showed a two-to-three unit strip of skin running down the outside of the hem
+     from y=190 to y=228, with a gap of board between it and the arm — a bulge of flesh attached
+     to nothing, which is exactly what reads as a love handle. The shirt was not too narrow; the
+     body was too wide for it. The sides now taper from the chest and finish about three units
+     inboard of the garment's own edge the whole way down, so cloth covers body everywhere the
+     cloth goes. Above y=165 it does not matter: the sleeve is over it. */
+  g+=path('M96 88C97 100 98 104 93 108C84 113 74 115 69 124C67 133 70 146 76 158C82 171 84 188 84 206C84 224 84 236 84 249Q110 255 136 249C136 236 136 224 136 206C136 188 138 171 144 158C150 146 153 133 150 124C145 115 136 113 127 108C122 104 123 99 124 88Z',skin,'none');
   g+=line('M88 122q9-4 16 0m12 0q7-4 16 0','#674b3a30',.8);
   // Bare feet go on before the trousers, or a trouser cuff ends up behind the ankle it covers.
   const bare = path('M85 432L99 432Q98 446 101 455Q105 462 100 465Q87 470 75 464Q70 462 75 456L82 448Q85 442 85 432Z',skin,'none') + path('M140 432L124 432Q125 446 123 455Q120 462 125 465Q138 470 150 464Q155 462 150 456L143 448Q140 442 140 432Z',skin,'none');
@@ -8893,7 +8900,11 @@ function invDollHTML() {
   const body='M97 109Q110 120 123 109Q136 106 146 123L139 201 141 243Q110 253 79 243L81 202 74 123Q84 106 97 109Z';
   /* The sleeve's inner edge is the armhole: it starts on the shoulder line, a little out from
      the neck, and curves down to the underarm — which is where a set-in sleeve is joined. */
-  const SLV=long=>long?'M82 113Q59 115 54 138L47 230 64 237 75 177Q86 146 82 113Z':'M82 113Q60 115 55 137L54 158 75 166Q86 144 82 113Z';
+  /* The sleeve's inner corner stopped at x=75 and the body panel starts at 78, so three units of
+     armpit showed between them with the arm down. The FILL reaches the body now; the rim below
+     does not, because the rim is the cuff you can see and a cuff drawn four units into the chest
+     is a line across the armpit — the thing being fixed, moved. */
+  const SLV=long=>long?'M82 113Q59 115 54 138L47 230 64 237 79 178Q86 146 82 113Z':'M82 113Q60 115 55 137L54 158 79 168Q86 144 82 113Z';
   /* the same shape with the inner edge left off: shoulder, down the outside, across the cuff */
   const SLV_RIM=long=>long?'M82 113Q59 115 54 138L47 230 64 237':'M82 113Q60 115 55 137L54 158 75 166';
   const sleeve=(fill,long,st,sw)=>both(path(SLV(long),fill,st||'#171813',sw||1.2));
