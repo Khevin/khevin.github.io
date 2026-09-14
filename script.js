@@ -184,6 +184,9 @@
       '.section-title',             // the section announces itself
       '.body-lg',                   // and its lead follows
       '.process .step',             // 01–04, in the order they happen
+      '.about-grid .lead',          // the about section: its lead,
+      '.hats-art',                  // the hats it is illustrated with,
+      '.disciplines .d',            // and the four disciplines under their rule
       '.principle',
       '.note-entry',
       '.work-list .item',
@@ -202,7 +205,7 @@
     /* Marked, never hidden. These carry their motion on a pseudo-element or a
        child, so holding the element itself back would take its contents with
        it: the timeline's rule and arrowhead, the bar's illustration layer. */
-    const TRACKS = ['.process', '#clients .s-head'];
+    const TRACKS = ['.process', '.disciplines', '#clients .s-head'];
 
     const nodes = $$(RISE.join(','));
     const tracks = $$(TRACKS.join(','));

@@ -867,6 +867,70 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   transition: transform 760ms var(--draw) var(--rise-delay, 0ms);
 }
 
+/* ---- the disciplines, on the same grammar ----
+   Four columns under a rule, which is the timeline's shape exactly, so it gets
+   the timeline's motion: the rule runs across and each upright drops behind it
+   as it passes. Both are borders here too — the red one on top of the grid and
+   the two on every card — so each hands over to a pseudo-element in its own
+   place, full size by default so nothing is erased when motion is off.
+   The right-hand rule changes at 900px, where the grid stacks and every card
+   is ruled in red on both sides instead of hairlined on one. */
+.js-motion .disciplines {
+  position: relative;
+  border-top-color: transparent;
+}
+.js-motion .disciplines .d {
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.js-motion .disciplines::before,
+.js-motion .disciplines .d::before,
+.js-motion .disciplines .d::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.js-motion .disciplines::before {
+  top: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.js-motion .disciplines .d::before,
+.js-motion .disciplines .d::after {
+  top: 0;
+  bottom: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+.js-motion .disciplines .d::before { left: -2px; width: 2px; background: var(--accent); }
+.js-motion .disciplines .d::after { right: -1px; width: 1px; background: var(--ink-faintest); }
+.js-motion .disciplines .d:last-child::after { display: none; }
+
+.js-motion .disciplines.is-in::before {
+  transform: scaleX(1);
+  transition: transform 1100ms var(--draw);
+}
+.js-motion .disciplines.is-in .d::before,
+.js-motion .disciplines.is-in .d::after {
+  transform: scaleY(1);
+  transition: transform 780ms var(--draw) var(--rise-delay, 0ms);
+}
+.disciplines .d:nth-child(1) { --rise-delay: 160ms; }
+.disciplines .d:nth-child(2) { --rise-delay: 380ms; }
+.disciplines .d:nth-child(3) { --rise-delay: 600ms; }
+.disciplines .d:nth-child(4) { --rise-delay: 820ms; }
+
+@media (max-width: 900px) {
+  /* stacked: every card is ruled red on both sides, and the last one keeps its
+     right-hand rule instead of losing it */
+  .js-motion .disciplines .d::after { width: 2px; right: -2px; background: var(--accent); }
+  .js-motion .disciplines .d:last-child::after { display: block; }
+}
+
 /* Each step lights as the rule reaches it — the four delays are spaced to sit
    just behind the sweep rather than to a rhythm of their own. */
 .process .step:nth-child(1) { --rise-delay: 180ms; }
