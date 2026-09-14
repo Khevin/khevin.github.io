@@ -87,6 +87,26 @@ Two list/grid surfaces — the library row-items and the pantheon figures — sw
 
 ---
 
+## Pattern: a theme declared on body needs lifting to the root
+
+The design-expert page sets its ink palette on `body[data-theme="ink"]`, which is the natural place for it and is wrong for two things that read their colours from the root element instead.
+
+- **The html background paints the canvas.** `html, body { background: var(--paper) }` resolves `--paper` on the root, so html took the light value and painted a pale ground behind a dark page. Body covered it, which is why nobody noticed, but it shows in the scrollbar gutter and on an overscroll bounce.
+- **The document scrollbar resolves its custom properties on the root.** A scrollbar styled with `var(--rule)` would have drawn the light theme's hairline against the dark page.
+
+**The fix is one selector, not a second copy of the values:**
+
+```css
+:root:has(body[data-theme="ink"]),
+body[data-theme="ink"] { --paper: #1a1815; /* … */ }
+```
+
+Body's own declaration still wins for body and everything under it, so the page does not change. Only the root element sees the new values, which is exactly who needed them. `:has` keeps it following the body attribute rather than hard-coding a second palette that can drift.
+
+**Rule.** Any surface here that declares its palette on `body` and then styles the scrollbar, the html background, or anything else that resolves at the root, lifts the palette with this selector. Check it by reading `getComputedStyle(document.documentElement)` rather than the body's.
+
+---
+
 ## Pattern: a headline phrase that never breaks
 
 The hero headline reads "The design-expert, / at your service." and the first line is one phrase. Breaking it, and especially breaking it at the hyphen inside the product name, reads as a bug rather than as typesetting.

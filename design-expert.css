@@ -1246,6 +1246,13 @@ body[data-density="generous"] .section { padding: clamp(120px, 18vh, 240px) 0; }
 body[data-density="tight"] .section { padding: clamp(56px, 8vh, 100px) 0; }
 
 /* ——— Theme: ink ——— */
+/* The ink palette is lifted to the root as well as the body. Two things read
+   their colours from the root element and would otherwise get the light set:
+   the html background, which paints the canvas behind the page and shows in
+   the scrollbar gutter and on an overscroll bounce, and the document
+   scrollbar itself, whose custom properties resolve on the root. :has keeps
+   both following the body theme instead of duplicating the values. */
+:root:has(body[data-theme="ink"]),
 body[data-theme="ink"] {
   --paper: #1a1815;
   --paper-warm: #211e1a;
@@ -2005,4 +2012,78 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
     height: 80%;
     right: -10px;
   }
+}
+
+
+/* ——— The scrollbar ———
+   This page is hairlines with things sitting on them: a rule under every
+   section, a rule under the tab you picked, a rule closing each card. The
+   scrollbar is one more of them. The gutter is transparent, so it is whatever
+   the page behind it is, with a one pixel rule down the middle in the same ink
+   as every other rule here, and a marker riding that rule to say where you are.
+   The default is a grey slab in a grey channel, which belongs to the browser
+   rather than to the page.
+
+   The marker is narrower than the gutter it rides. A transparent border with
+   the paint clipped to the content box keeps the full 13px as the grab target
+   while only 5px of it is inked: easy to catch, quiet to look at. Hover spends
+   one pixel of that border, so it thickens without the gutter changing width
+   and nothing reflows. Dragging turns it terracotta, because on this page the
+   accent marks the thing that is live.
+
+   Two pixels of corner, not a pill. The portfolio's marker is a pill because
+   that page is built on pills; this one is built on squared cards, terminals
+   and rules, so its marker is squared too.
+
+   Pointer only. On touch the browser's own overlay is the right control and
+   costs nothing, whereas this one would take 13px out of a 375px screen.
+
+   The two halves are split by engine deliberately. Chrome ignores every
+   ::-webkit-scrollbar rule on any element that also sets scrollbar-width or
+   scrollbar-color, so declaring both unguarded throws the hairline away and
+   leaves a plain thin thumb. The feature query is true in Chrome and false in
+   Firefox, so each engine reads only its own half. */
+@media (hover: hover) and (pointer: fine) {
+  @supports not selector(::-webkit-scrollbar) {
+    :root {
+      scrollbar-width: thin;
+      scrollbar-color: var(--ink-faint) transparent;
+    }
+  }
+
+  ::-webkit-scrollbar { width: 13px; height: 13px; }
+
+  ::-webkit-scrollbar-track {
+    background: linear-gradient(
+      to right,
+      transparent calc(50% - 0.5px),
+      var(--rule) calc(50% - 0.5px),
+      var(--rule) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
+  }
+  ::-webkit-scrollbar-track:horizontal {
+    background: linear-gradient(
+      to bottom,
+      transparent calc(50% - 0.5px),
+      var(--rule) calc(50% - 0.5px),
+      var(--rule) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--ink-faint);
+    background-clip: content-box;
+    border: 4px solid transparent;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover { border-width: 3px; }
+  ::-webkit-scrollbar-thumb:active {
+    background: var(--accent);
+    background-clip: content-box;
+  }
+
+  /* Nothing lives where the two bars meet; left alone it paints a grey square. */
+  ::-webkit-scrollbar-corner { background: transparent; }
 }
