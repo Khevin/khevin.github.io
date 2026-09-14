@@ -204,9 +204,17 @@
       '.takeaways__head',
     ];
 
-    /* This one runs on load instead — it sits just under the fold, so being
-       marked seen on the first look meant it never moved at all. */
-    const NOT_HERE = '#about .section-title';
+    /* These run on load instead. A page header is at the top of its page, so
+       the scroll layer always finds it already on screen and marks it seen —
+       correct, and the reason none of them ever moved. The about headline is
+       here for the same reason: it sits just under the fold. */
+    const NOT_HERE = [
+      '#about .section-title',
+      '.page-hero-grid .l h1',
+      '.library-h1',
+      '.about-page-grid .bio .lead',
+      '.about-page-grid .about-portrait',
+    ].join(',');
 
     /* Marked, never hidden. These carry their motion on a pseudo-element or a
        child, so holding the element itself back would take its contents with

@@ -390,7 +390,16 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
      the field directly.
      Written against the artwork's width because that is what sets its height,
      and because a percentage in a margin resolves against width anyway. */
-  --sink: calc(min(100%, 940px) * 22 / 711);
+  /* The band the city is drawn in. Full width, and about a third of its own
+     natural aspect tall — half the height it used to be. Floored, because on a
+     phone the viewport is already narrow and a share of it is a sliver: at
+     390px the pure ratio gave 45px of city.
+     --sink is derived from it rather than from a percentage of the width, so
+     it is an absolute length wherever it is spent and the old trap — a
+     percentage resolving against height on one property and width on another —
+     cannot come back. */
+  --band: clamp(104px, 11.5vw, 230px);
+  --sink: calc(var(--band) * 22 / 245);
   border-top: 0;
   /* The paper lives here rather than on the skyline, so the band the artwork
      is sunk into shows THROUGH it instead of being painted over. */
@@ -418,17 +427,22 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
      keeps going, lying over the field below it. */
   margin-bottom: calc(var(--sink) * -1);
 }
-.foot-skyline img {
-  display: block;
-  height: auto;
-}
+/* No shared height here: it would out-specify the per-layer heights below,
+   which are what set the band. */
+.foot-skyline img { display: block; }
+/* Full bleed, and drawn at twice its natural aspect: half as tall, twice as
+   wide — three times its natural aspect, which lands it at half the height it
+   was. At its own 2.9:1 this was a picture of a skyline taking up a third of
+   the screen; at 5.8:1 it is a band the page ends on, which is the job.
+   Both drawings carry preserveAspectRatio="none" so they fill whatever box is
+   set here rather than letterboxing inside it. The buildings are squatter for
+   it, and on flat graphic shapes at this size that reads as a wide skyline
+   rather than as a distortion. The alternative — sinking it far enough to lose
+   the height — took the cathedral spires and Martinelli's flag with it. */
 .foot-skyline__near {
   position: relative;
-  /* Capped and centred: it is a composition with palms at both ends, not a
-     repeating band, and full-bleed at its own 2.9:1 would make the footer
-     taller than some of the pages it closes. */
-  width: min(100%, 940px);
-  margin: 0 auto;
+  width: 100%;
+  height: var(--band);
 }
 /* The second city, standing behind the first.
    Wider, plainer and lighter — the three things that read as distance. It is
@@ -440,7 +454,10 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: min(126%, 1180px);
+  width: 126%;
+  /* The far drawing is wider than the near one to begin with, so at the same
+     compression it lands a little shorter — which is what sets it back. */
+  height: calc(var(--band) * 0.92);
   /* It has to stop exactly where the night starts, or its pale ground bar lies
      on the dark field and reads as a smear across it.
      The offset is --sink, but it CANNOT be spent on `bottom`: a percentage
@@ -1038,6 +1055,83 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   #about .section-title { animation: none; }
   .client-strip-img,
   .client-strip-img.is-held { transform: none; transition: none; }
+}
+
+
+/* ---------- the other pages open the same way ----------
+   The home page's hero arrives in reading order on load. Every other page's
+   header sat there finished, because the scroll layer's one rule is that
+   anything already on screen is marked seen and never hidden — which is right,
+   and which means a header at the top of a page can never be its business. So
+   these run on load too, in the same order and on the same curve.
+
+   The rules that frame them draw rather than fade, as they do in the hero: the
+   crumb line above the title on the library, and the one that closes the page
+   hero on the blog. Process has no closing rule (it is --flush) and the about
+   page has none at all.
+
+   Kept a touch quicker than the home page's, which has three dispatch cards to
+   get through; these have a title, a line under it, and a mark. */
+.crumbs,
+.page-hero-grid .l h1,
+.page-hero-grid .l .sub,
+.page-hero-aside,
+.library-crumbs,
+.library-h1,
+.library-blurb,
+.about-page-grid .about-portrait,
+.about-page-grid .bio .lead-name,
+.about-page-grid .bio .lead-role,
+.about-page-grid .bio .signature--bio,
+.about-page-grid .bio .contact-links {
+  animation: rise var(--rise-dur) var(--rise) var(--rise-delay, 0ms) both;
+}
+.crumbs,
+.library-crumbs                                 { --rise-delay: 60ms; }
+.page-hero-grid .l h1,
+.library-h1,
+.about-page-grid .bio .lead-name                { --rise-delay: 180ms; --rise-from: 20px; }
+.page-hero-grid .l .sub,
+.library-blurb,
+.about-page-grid .bio .lead-role                { --rise-delay: 340ms; }
+/* the mark and the portrait come last, after the words they belong to */
+.page-hero-aside                                { --rise-delay: 480ms; }
+.about-page-grid .about-portrait                { --rise-delay: 300ms; }
+.about-page-grid .bio .signature--bio           { --rise-delay: 470ms; }
+.about-page-grid .bio .contact-links            { --rise-delay: 580ms; }
+
+/* the rule closing the blog's page hero, drawn from the left like the hero's */
+.page-hero:not(.page-hero--flush) {
+  position: relative;
+  border-bottom-color: transparent;
+}
+.page-hero:not(.page-hero--flush)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--rule);
+  transform-origin: left center;
+  animation: draw-x 1000ms var(--draw) 520ms both;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crumbs,
+  .page-hero-grid .l h1,
+  .page-hero-grid .l .sub,
+  .page-hero-aside,
+  .library-crumbs,
+  .library-h1,
+  .library-blurb,
+  .about-page-grid .about-portrait,
+  .about-page-grid .bio .lead-name,
+  .about-page-grid .bio .lead-role,
+  .about-page-grid .bio .signature--bio,
+  .about-page-grid .bio .contact-links,
+  .page-hero:not(.page-hero--flush)::after { animation: none; }
 }
 
 
