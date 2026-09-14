@@ -11,17 +11,17 @@
     rams: {
       title: ['Keep what', 'earns its place.'], verdict: 'Less, but better',
       note: 'Remove the extra card. Let the essential action lead.',
-      art: '<g class="study-muted"><rect x="12" y="13" width="30" height="38"/><rect x="48" y="13" width="30" height="38"/></g><path class="study-cut" d="m10 53 70-42"/><path class="study-arrow" d="M94 32h24m-5-5 5 5-5 5"/><g class="study-ink"><rect x="135" y="10" width="50" height="44"/><path d="M145 22h30m-30 7h20"/></g><path class="study-arrow" d="M145 43h30"/>'
+      art: '<g class="study-muted"><rect x="6" y="7" width="76" height="50"/><path d="M15 20h58M15 29h40M15 38h58M15 47h30"/></g><path class="study-arrow" d="M96 32h22m-7-5 7 5-7 5"/><g class="study-ink"><rect x="126" y="7" width="68" height="50"/><path d="M135 22h50M135 32h32"/></g><path class="study-arrow" d="M135 45h28"/>'
     },
     vignelli: {
       title: ['One system.', 'Everywhere.'], verdict: 'Consistency, by design',
       note: 'Use the same type scale and spacing, from the first screen to the last.',
-      art: '<g class="study-muted"><rect x="14" y="8" width="48" height="48"/><rect x="76" y="8" width="48" height="48"/><rect x="138" y="8" width="48" height="48"/></g><path class="study-ink" d="M22 20h32m-32 9h23m-23 5h32M84 20h32m-32 9h23m-23 5h32M146 20h32m-32 9h23m-23 5h32"/><path class="study-arrow" d="M22 46h18m44 0h18m44 0h18"/>'
+      art: '<g class="study-muted"><rect x="6" y="6" width="72" height="52"/><rect x="86" y="6" width="44" height="52"/><rect x="138" y="6" width="56" height="48"/></g><path class="study-ink" d="M15 19h44m-44 9h30M95 19h26m-26 9h18M147 19h38m-38 9h24"/><path class="study-arrow" d="M15 48h26M95 48h26M147 44h26"/>'
     },
     kare: {
       title: ['A symbol worth', 'recognizing.'], verdict: 'Meaning at a glance',
       note: 'Pair an unfamiliar icon with a clear label. Recognition comes before decoration.',
-      art: '<path class="study-muted" d="M38 12h30v36H38zM44 20h18m-18 8h18m-18 8h10"/><path class="study-arrow" d="M84 32h24m-5-5 5 5-5 5"/><g class="study-ink"><path d="M127 17h8v-5h18v5h8v29h-34z"/><circle cx="144" cy="31" r="9"/><path d="M127 54h34"/></g>'
+      art: '<g class="study-muted"><rect x="25" y="10" width="42" height="42" rx="4"/><path d="m46 21 11 10-11 10-11-10z"/></g><text x="75" y="36" fill="var(--ink-faint)" stroke="none" font-family="monospace" font-size="13">?</text><path class="study-arrow" d="M95 31h22m-7-5 7 5-7 5"/><g class="study-ink"><rect x="133" y="4" width="42" height="42" rx="4"/><path d="m154 15 11 10-11 10-11-10z"/><path d="M135 55h38"/></g>'
     },
     itten: {
       title: ['Let color', 'direct attention.'], verdict: 'Contrast with purpose',
@@ -36,7 +36,7 @@
     'muller-brockmann': {
       title: ['A place for', 'every element.'], verdict: 'Structure before styling',
       note: 'Align the heading, content, and action to the same underlying grid.',
-      art: '<path class="study-muted" stroke-dasharray="2 3" d="M26 5v54M74 5v54M126 5v54M174 5v54M16 15h168M16 45h168"/><g class="study-ink"><rect x="26" y="15" width="48" height="30"/><path d="M84 15h90m-90 8h64m-64 8h90"/></g><path class="study-arrow" d="M126 45h48"/>'
+      art: '<path class="study-muted" stroke-dasharray="2 3" d="M8 3v58M54 3v58M100 3v58M146 3v58M192 3v58"/><path class="study-muted" stroke-dasharray="2 3" d="M8 19h184"/><g class="study-ink"><path d="M8 11h138" style="stroke-width:2"/><rect x="8" y="25" width="84" height="26"/><path d="M100 29h92m-92 9h64m-64 9h92"/></g><path class="study-arrow" d="M146 57h46" style="stroke-width:2"/>'
     }
   };
   function select(seat) {
