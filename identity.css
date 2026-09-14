@@ -18,6 +18,11 @@
   --paper-deep: #eaeaec;
   --ink-faintest: #c2c2c5;      /* the luminance the original #C9C2B2 had */
   --ink-faint: #959597;         /* likewise #9A958A, whose warmth showed on small labels */
+  /* Eigengrau — the dark this identity uses wherever the page turns to night.
+     It was written out three times before it had a name: the footer's field,
+     the process section's, and the scrollbar's marker are one colour, and
+     saying so here is what keeps them one colour. */
+  --eigengrau: #16161b;
 
   --accent: #c93123;
   --accent-deep: #ac271c;
@@ -381,7 +386,7 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    Baking it into the asset is the same trap the hats illustration fell into:
    an asset that silently depends on one exact page colour. */
 .foot {
-  --foot-ink: #16161b;
+  --foot-ink: var(--eigengrau);
   /* How far the city sinks into the night.
      The near drawing stands on a ground bar of its own, 22 of its 245 units
      tall. Left above the field that bar is a second horizontal edge sitting
@@ -561,7 +566,7 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    the two darks differ by a hair. This follows the footer and the rest of the
    identity. */
 #process {
-  --dk-field: #16161b;
+  --dk-field: var(--eigengrau);
   --dk-ink: var(--paper);
   --dk-ink-2: #d2d2d8;   /* the lead under the headline */
   --dk-soft: #a8a8b0;    /* step body copy */
@@ -1143,6 +1148,79 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   .about-page-grid .bio .signature--bio,
   .about-page-grid .bio .contact-links,
   .page-hero:not(.page-hero--flush)::after { animation: none; }
+}
+
+
+/* ---------- the scrollbar ----------
+   The page is ruled lines with things sitting on them, so its scrollbar is one
+   too: a hairline down the gutter in the same faint ink as every rule on the
+   page, with an eigengrau marker riding it. The default is a grey slab in a
+   grey channel — this reads as a position along a measure instead.
+
+   The marker is narrower than the gutter it rides. That comes from a
+   transparent border with the paint clipped to the content box, which keeps the
+   full 13px as the grab target while only 5px of it is inked: easy to catch,
+   quiet to look at. Hover spends a pixel of that border on the marker, so it
+   thickens without the gutter's width changing and nothing reflows. Dragging
+   turns it red — the same thing every other element under your pointer does.
+
+   Only where there is a pointer to do any of that. A classic scrollbar is a
+   mouse affordance; on touch the browser's own overlay is the right control and
+   costs no layout, whereas this one would take 13px out of a 375px screen and
+   13 more off the height of the one table that scrolls sideways there.
+
+   The two properties are split by engine on purpose. Chrome ignores every
+   ::-webkit-scrollbar rule on any element that sets scrollbar-width or
+   scrollbar-color, so declaring both unguarded silently threw the hairline away
+   and left a plain thin thumb (measured: a 10px gutter, not the 13 asked for).
+   The feature query is true in Chrome and false in Firefox, so each engine
+   reads only its own half. Firefox gets the marker and a clear track; the
+   hairline is a WebKit detail and its absence there costs nothing. */
+@media (hover: hover) and (pointer: fine) {
+  @supports not selector(::-webkit-scrollbar) {
+    :root {
+      scrollbar-width: thin;
+      scrollbar-color: var(--eigengrau) transparent;
+    }
+  }
+
+  ::-webkit-scrollbar { width: 13px; height: 13px; }
+
+  /* Transparent, so the gutter is whatever the page behind it is and the rule
+     is drawn on that, rather than on a channel of its own. */
+  ::-webkit-scrollbar-track {
+    background: linear-gradient(
+      to right,
+      transparent calc(50% - 0.5px),
+      var(--ink-faintest) calc(50% - 0.5px),
+      var(--ink-faintest) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
+  }
+  ::-webkit-scrollbar-track:horizontal {
+    background: linear-gradient(
+      to bottom,
+      transparent calc(50% - 0.5px),
+      var(--ink-faintest) calc(50% - 0.5px),
+      var(--ink-faintest) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--eigengrau);
+    background-clip: content-box;
+    border: 4px solid transparent;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { border-width: 3px; }
+  ::-webkit-scrollbar-thumb:active {
+    background: var(--accent);
+    background-clip: content-box;
+  }
+
+  /* Nothing lives where the two bars meet; left alone it paints a grey square. */
+  ::-webkit-scrollbar-corner { background: transparent; }
 }
 
 
