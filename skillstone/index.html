@@ -2554,6 +2554,24 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-rig.iv-loadout [data-k="ring-r2"] { grid-area:7/6/8/7; }
 @media(max-width:480px) { .iv-armory .iv-rig.iv-loadout { padding:10px; gap:5px; grid-template-rows:repeat(8,44px); } .iv-armory .iv-loadout .iv-fly .iv-slot-nm { font-size:8px; } }
 
+
+/* The live outfit, equipment sockets, and wardrobe share one desktop view. */
+.iv-panel:has(.iv-with-preview) { width:min(1320px,100%); }
+.iv-armory.iv-with-preview { grid-template-columns:minmax(150px,.52fr) minmax(310px,1fr) minmax(0,1.25fr); gap:24px; }
+.iv-character { min-width:0; }
+.iv-character-stage { min-height:465px; display:grid; place-items:center; background:radial-gradient(ellipse at center,#79633e18,transparent 70%); }
+.iv-character-stage .iv-doll { width:180px; max-width:100%; }
+@media(max-width:1100px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(140px,.6fr) minmax(0,1fr); } .iv-with-preview .iv-hold { grid-column:1/-1; } }
+@media(max-width:600px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(0,1fr); } .iv-character-stage { min-height:260px; } .iv-character-stage .iv-doll { width:125px; } .iv-with-preview .iv-character { width:100%; } }
+
+/* Centre stage is the main reward for changing equipment. */
+.iv-armory.iv-with-preview { grid-template-columns:minmax(280px,1fr) minmax(240px,.9fr) minmax(0,1.15fr); gap:24px; }
+.iv-character-stage { min-height:520px; background:radial-gradient(ellipse at 50% 42%,#b49b6330,transparent 65%); border-bottom:1px solid #58492e; }
+.iv-character-stage .iv-avatar { width:244px; max-width:100%; height:auto; filter:drop-shadow(0 12px 10px #0007); }
+.iv-outfit-caption { font-size:12px; color:var(--ash); line-height:1.6; text-align:center; margin:12px auto 0; max-width:30ch; }
+.iv-with-preview .iv-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+@media(max-width:1100px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(280px,1fr) minmax(220px,.9fr); } .iv-with-preview .iv-hold { grid-column:1/-1; } .iv-with-preview .iv-grid { grid-template-columns:repeat(5,minmax(0,1fr)); } }
+@media(max-width:650px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(0,1fr); } .iv-with-preview .iv-character { grid-row:1; } .iv-character-stage { min-height:400px; } .iv-character-stage .iv-avatar { width:190px; } .iv-with-preview .iv-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 /* writing a garment */
 .gear-dlg { width: min(560px, 94vw); }
 .gear-top { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s4); align-items: start; }
@@ -8557,32 +8575,101 @@ function ivTrousers(c, leg, w) {
     IV_MIRROR('<path ' + IV_LINE(c, w) + ' d="' + leg + '"/>');
 }
 function invDollHTML() {
-  const it = k => gearWorn(k);
-  const art = (k, fallbackKind) => {
-    const g = it(k); if (!g) return "";
-    const set = GEAR_ART[k] || {};
-    const fn = set[g.kind] || set[fallbackKind] || set[Object.keys(set)[0]];
-    return fn ? fn(g.color) : "";
+  const worn = k => gearWorn(k), top = worn("top"), outer = worn("outer"), legs = worn("legs"), feet = worn("feet");
+  const color = (it, fallback) => it && /^#[0-9a-f]{6}$/i.test(it.color) ? it.color : fallback;
+  let defs = '';
+  const material = (id,c) => {
+    defs += '<linearGradient id="av-'+id+'" x1="0" y1="0" x2="1" y2=".25"><stop stop-color="'+ivShade(c,-.30)+'"/><stop offset=".3" stop-color="'+ivShade(c,.18)+'"/><stop offset=".65" stop-color="'+c+'"/><stop offset="1" stop-color="'+ivShade(c,-.38)+'"/></linearGradient>';
+    return 'url(#av-'+id+')';
   };
-  const skin = "var(--iv-skin)";
-  /* the body: a torso path, then limbs as round-capped strokes so nothing ends in a corner */
-  let g = '<g stroke-linejoin="round">' +
-    IV_MIRROR('<path ' + IV_LINE(skin, 19) + ' d="' + IV_ARM + '"/>') +
-    IV_MIRROR('<circle cx="41" cy="181" r="9.5" fill="' + skin + '"/>') +
-    IV_MIRROR('<path ' + IV_LINE(skin, 26) + ' d="' + IV_LEG + '"/>') +
-    IV_MIRROR('<ellipse cx="64" cy="300" rx="13" ry="9" fill="' + skin + '"/>') +
-    '<path ' + IV_LINE(skin, 22) + ' d="M80 60v22"/>' +
-    '<path fill="' + skin + '" d="M49 99c0-10 12-19 31-19s31 9 31 19c2 19 2 39 1 54-1 13-3 22-5 30-13 4-41 4-54 0-2-8-4-17-5-30-1-15-1-35 1-54Z"/>' +
-    '<ellipse cx="80" cy="43" rx="21" ry="24" fill="' + skin + '"/></g>';
-  g += art("legs", "jeans");
-  g += art("top", "tee");
-  g += art("outer", "shacket");
-  g += art("feet", "sneakers");
-  g += art("neck", "chain");
-  g += art("hat", "cap");
-  /* the flyers are not painted on — see the boxes that hang beside the figure */
-  return '<svg class="iv-doll" viewBox="0 0 160 320" role="img" aria-label="' + esc(invOutfitWords()) + '">' + g + "</svg>";
+  const skin=material('skin','#ad8062'), hair=material('hair','#302720');
+  const fabric=material('top',color(top,'#777267')), shell=material('outer',color(outer,'#303d43'));
+  const trouser=material('legs',color(legs,'#494641')), shoe=material('feet',color(feet,'#38342d'));
+  const path=(d,fill,stroke='#171813',sw=1.2)=>'<path d="'+d+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linejoin="round" stroke-linecap="round"/>';
+  const line=(d,stroke='#ffffff24',sw=1)=>path(d,'none',stroke,sw);
+  const both=s=>s+'<g transform="translate(220 0) scale(-1 1)">'+s+'</g>';
+  let g='<ellipse cx="110" cy="471" rx="57" ry="9" fill="#000" opacity=".3"/>';
+  // Anatomical base: curved shoulders, relaxed hands and a slightly asymmetric stance.
+  g+=both(path('M79 123Q62 130 59 154L48 222Q45 237 48 255L53 273Q58 278 63 273L65 261 61 249 64 223 78 173Z',skin));
+  g+=both(line('M52 256l4 15m0-19 4 17','#6d4b39',.8));
+  g+=path('M82 234Q77 263 82 319L84 440Q86 455 97 453L107 330 111 283 115 331 126 453Q137 455 140 441L141 318Q145 264 136 234Z',skin);
+  g+=path('M96 86L95 106Q84 112 76 123L79 222 85 249Q110 258 136 247L143 222 144 124Q134 113 125 106L124 86Z',skin);
+  g+=line('M95 111q15 11 30 0M99 125l-13 7m35-7 13 7','#674b3a',1);
+  // Trousers sit behind tops; shorts expose the lower legs.
+  if(legs) {
+    const short=legs.kind==='shorts', jog=legs.kind==='joggers', end=short?336:447;
+    g+='<g data-avatar-layer="legs" data-kind="'+esc(legs.kind)+'">'+path('M81 238Q110 246 139 238L144 283 139 '+end+'Q129 '+(end+4)+' 117 '+end+'L110 288 103 '+end+'Q90 '+(end+4)+' 80 '+end+'L76 285Z',trouser);
+    g+=line('M82 251q27 5 56 0M110 253v30M87 258q0 18-10 21m56-21q0 18 10 21','#0005',1.5);
+    g+=both(line('M85 298l10 12-10 5m0 48 11 9-10 7','#ffffff18',1.4));
+    if(jog)g+=both(path('M80 435h24v14H81Z',color(legs,'#494641')));
+    if(legs.kind==='jeans')g+=both(line('M82 286l2 146','#e5c58d50',.8));
+    g+='</g>';
+  } else g+=path('M81 241q29 7 58 0l3 47-29 2-3-18-3 18-29-2Z','#383a37');
+  const body='M89 113Q110 124 131 113L144 128 139 201 141 243Q110 253 79 243L81 202 76 128Z';
+  const sleeve=(fill,long)=>both(path(long?'M83 117Q66 119 60 138L48 230 65 237 76 177 88 144Z':'M84 118Q66 121 61 139L58 160 77 168 89 141Z',fill));
+  const folds=()=>both(line('M82 179l7 13-7 5m3 19 12 9m-16 12 12-3','#0003',1.4));
+  // Base garments retain their own silhouette even underneath an open outer layer.
+  if(top) {
+    const k=top.kind,long=['hoodie','sweater','shirt'].includes(k);
+    g+='<g data-avatar-layer="top" data-kind="'+esc(k)+'">';
+    if(k!=='tank')g+=sleeve(fabric,long);
+    const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
+    g+=path(shape,fabric)+folds();
+    if(k==='hoodie') {
+      g+=path('M91 108Q79 103 81 118L92 136Q110 144 129 134L140 117Q140 103 129 108L124 119Q110 128 96 119Z',fabric);
+      g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,'#0004');
+      g+=line('M97 129l-2 37m29-37 2 37','#e8dfc1',1.8)+line('M95 164v5m31-5v5','#554f40',2);
+      g+=line('M80 239q30 8 60 0','#0005',4);
+    } else if(k==='shirt'||k==='polo') {
+      g+=path('M91 110l19 12-12 15-12-17Z',fabric)+path('M129 110l-19 12 12 15 12-17Z',fabric);
+      g+=line('M110 123v'+(k==='polo'?35:120),'#0004',2);
+      for(let y=137;y<(k==='polo'?160:239);y+=20)g+='<circle cx="110" cy="'+y+'" r="1.3" fill="#cfbf9d"/>';
+    } else g+=line(k==='tank'?'M92 115Q110 145 128 115':'M93 116Q110 134 127 116','#0006',3);
+    g+=line('M82 240q28 6 56 0','#ffffff20');
+    if(long)g+=both(line('M49 228l17 5','#0006',4));
+    g+='</g>';
+  }
+  // Open outerwear: the centre stays transparent, revealing the actual equipped base top.
+  if(outer) {
+    const k=outer.kind,coat=k==='coat',hem=coat?305:248;
+    g+='<g data-avatar-layer="outer" data-kind="'+esc(k)+'">'+sleeve(shell,true);
+    g+=both(path('M89 111L99 120 94 159 98 '+hem+'Q86 '+(hem+5)+' 72 '+hem+'L78 184 73 136Z',shell));
+    g+=both(line('M79 163l5 14-6 4m-22 20 10 7m-16 20 16 5','#ffffff20',1.2));
+    if(k==='hoodie') {
+      g+=both(path('M94 105Q78 101 77 116L85 136 99 121Z',shell));
+      g+=both(line('M90 131l-3 38','#e8dfc1',1.5));
+    } else {
+      g+=both(path('M91 110L101 121 90 157 80 139 85 126 80 122Z',shell));
+      if(k==='blazer'||coat)g+=both(line('M93 161l-4 40','#e5d7b140',1.2));
+      else g+=both(path('M79 157h12v18l-6 4-7-4Z',shell,'#0005'));
+    }
+    g+=both(line('M76 '+(hem-30)+'l16-4M96 164l1 '+(hem-165),'#0008',1.5));
+    if(k==='shacket'||coat)for(let y=176;y<hem-10;y+=24)g+='<circle cx="94" cy="'+y+'" r="1.6" fill="#b9a580"/>';
+    g+=both(line('M49 229l17 5','#0008',5))+'</g>';
+  }
+  // Face and hair add character without competing with garment detail.
+  g+=both('<ellipse cx="85" cy="66" rx="4" ry="7" fill="'+skin+'"/>');
+  g+=path('M88 40Q110 24 132 42L132 70Q130 90 111 99Q91 92 88 72Z',skin);
+  g+=path('M87 61Q81 37 93 28Q106 19 121 26Q138 24 136 49L132 63 127 45Q108 50 96 40L91 62Z',hair);
+  g+=path('M93 77Q99 88 110 86Q121 88 128 76L125 89 111 97 98 91Z','#48362b','#48362b',.6);
+  g+=both(line('M96 59q5-3 10-1','#46362b',1.8));
+  g+=both('<ellipse cx="102" cy="65" rx="2" ry="1.6" fill="#292a25"/>');
+  g+=line('M110 65l-2 11 5 1','#79513c',1)+line('M105 84q6 2 11-1','#c59b7a',1.2);
+  const hat=worn('hat');
+  if(hat){const f=material('hat',color(hat,'#b9ae91')),k=hat.kind;g+='<g data-avatar-layer="hat">';
+    g+=path(k==='beanie'?'M84 48Q82 19 107 17Q136 17 137 48Z':k==='bucket'?'M89 26q20-8 42 0l8 30H80Z':k==='brim'?'M91 23q18-9 38 0l4 29H86Z':'M86 47Q88 21 112 22Q134 23 136 48Z',f);
+    g+=path(hat.kind==='beanie'?'M84 44q25-5 53 0v10q-28-5-53 0Z':hat.kind==='cap'?'M88 46q24-3 44 1l17 9q-32 7-62-1Z':'M80 47q30 8 59 0l11 11q-39 13-80 0Z',f);g+='</g>';}
+  // Every small accessory is represented on the character, not only in a socket.
+  const eyes=worn('eyes');if(eyes){const c=color(eyes,'#41392e');g+='<g data-avatar-layer="eyes">'+both('<rect x="92" y="60" width="16" height="11" rx="4" fill="'+(eyes.kind==='sun'?'#202b2e':'#d5e1d124')+'" stroke="'+c+'" stroke-width="2"/>')+line('M108 64h4',c,2)+'</g>';}
+  const neck=worn('neck');if(neck){const c=color(neck,'#bc9644');g+='<g data-avatar-layer="neck">'+(neck.kind==='scarf'?path('M93 103q17 10 34 0l4 20-18 6 5 55-15 2-3-60-11-7Z',material('scarf',c)):line('M92 113Q110 173 128 113',c,2)+'<path d="m110 149 4 6-4 6-4-6Z" fill="'+c+'"/>')+'</g>';}
+  for(const [slot,x] of [['ear-l',86],['ear-r',134]]){const it=worn(slot);if(it)g+='<g data-avatar-layer="'+slot+'">'+(it.kind==='stud'?'<circle cx="'+x+'" cy="73" r="2" fill="'+color(it,'#c5a559')+'"/>':'<ellipse cx="'+x+'" cy="'+(it.kind==='drop'?80:76)+'" rx="3" ry="'+(it.kind==='drop'?7:4)+'" fill="none" stroke="'+color(it,'#c5a559')+'" stroke-width="1.8"/>')+'</g>';}
+  const nose=worn('nose');if(nose)g+='<circle data-avatar-layer="nose" cx="114" cy="76" r="2" fill="none" stroke="'+color(nose,'#c7ad65')+'" stroke-width="1.3"/>';
+  for(const [side,x] of [['l',55],['r',165]]){const it=worn('wrist-'+side);if(it)g+='<g data-avatar-layer="wrist-'+side+'"><rect x="'+(x-7)+'" y="241" width="14" height="6" rx="2" fill="'+color(it,'#7d6943')+'"/>'+(it.kind==='watch'?'<circle cx="'+x+'" cy="244" r="5" fill="#222b29" stroke="'+color(it,'#c1a15b')+'" stroke-width="2"/>':'')+'</g>';for(let n=1;n<=2;n++){const ring=worn('ring-'+side+n);if(ring)g+='<path data-avatar-layer="ring-'+side+n+'" d="M'+(x-3+n*3)+' 264h3" stroke="'+color(ring,'#c5a559')+'" stroke-width="2"/>';}}
+  if(feet){const boot=feet.kind==='boots';g+='<g data-avatar-layer="feet">'+both(path('M83 '+(boot?422:442)+'L103 '+(boot?422:442)+' 103 456 105 465Q85 472 72 464L73 457 83 452Z',shoe));g+=both(line('M74 464q14 5 29-1','#c7baa2',3));if(feet.kind!=='loafers')g+=both(line('M85 450l12 1m-13 4 13 1','#e2d5bb',1.3));g+='</g>';}
+  else g+=both(path('M85 442h15l1 17q-11 8-24 2l3-8Z',skin));
+  return '<svg class="iv-doll iv-avatar" viewBox="0 0 220 490" role="img" aria-label="'+esc(invOutfitWords())+'"><defs>'+defs+'</defs>'+g+'</svg>';
 }
+
 function invOutfitWords() {
   const on = []; SLOTS.forEach(s => { const g = gearWorn(s.k); if (g && on.indexOf(g.name) < 0) on.push(g.name); });
   return on.length ? "Wearing " + on.join(", ") : "Nothing on yet";
@@ -8624,10 +8711,12 @@ function renderInv() {
     .sort((a, b) => (order.indexOf(a.slot) - order.indexOf(b.slot)) || a.name.localeCompare(b.name));
   const wornCount = SLOTS.filter(s => gearWorn(s.k)).length;
 
-  let h = '<div class="iv-body iv-armory"><section class="iv-fig" aria-label="Equipped clothing">' +
+  let h = '<div class="iv-body iv-armory iv-with-preview"><section class="iv-fig" aria-label="Equipped clothing">' +
     '<header class="iv-section-head"><h3>Equipped</h3><span>'+wornCount+' / '+SLOTS.length+' slots</span></header>' +
     '<div class="iv-rig iv-loadout">'+SLOTS.map(invSlotHTML).join("")+'</div>' +
-    '<p class="iv-doll-cap"><span>Your everyday loadout</span>'+(wornCount?'<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>':'')+'</p></section>';
+    '<p class="iv-doll-cap"><span>Your everyday loadout</span>'+(wornCount?'<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>':'')+'</p></section>' +
+    '<section class="iv-character" aria-label="Character preview"><header class="iv-section-head"><h3>Character</h3><span>Live outfit</span></header>' +
+    '<div class="iv-character-stage">'+invDollHTML()+'</div><p class="iv-outfit-caption">'+esc(invOutfitWords())+'</p></section>';
 
   h += '<div class="iv-hold"><header class="iv-section-head"><h3>Wardrobe</h3><span>' + W.items.length + (W.items.length === 1 ? ' item' : ' items') + '</span></header><div class="iv-bar" role="group" aria-label="Show">' +
       '<button type="button" class="iv-f' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
@@ -8721,17 +8810,17 @@ function gearDlgRender(focusSel) {
       "</div></div>" +
       '<label class="bk-l">Kind<select name="kind">' + kindsFor(d.slot).map(x =>
         '<option value="' + x[0] + '"' + (d.kind === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>").join("") +
-        '</select><span class="gear-hint">Choose the shape used for the item artwork.</span></label>' +
+        '</select><span class="gear-hint">Sets the silhouette and layering on your character.</span></label>' +
     '<fieldset class="gear-colors"><legend class="bk-l">Colour</legend><div class="gear-sw-row">' +
       GEAR_COLORS.map(c => '<button type="button" class="gear-sw' + (c === d.color.toLowerCase() ? " is-cur" : "") +
         '" data-inv="gearcolor" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
       '<label class="gear-pick"><input type="color" name="color" value="' + esc(d.color) + '" aria-label="Any other colour"></label>' +
-    "</div><p class=\"gear-hint\">Used for the item artwork when no photo is added.</p></fieldset>" +
+    "</div><p class=\"gear-hint\">Colours your character’s garment, even when the inventory uses a photo.</p></fieldset>" +
     '<label class="bk-l">Note<input type="text" name="note" maxlength="80" value="' + esc(d.note) + '" placeholder="brand, where it lives, what it goes with" autocomplete="off"></label>' +
     '<div class="gear-photo"><button type="button" class="btn btn-ghost btn-sm" data-inv="gearphoto">' +
       (d.img ? "Replace photo" : "Add a photo") + "</button>" +
       (d.img ? '<button type="button" class="btn btn-ghost btn-sm" data-inv="gearphotox">Remove photo</button>' : "") +
-      '<span class="gear-photo-note">Optional, and kept at 160px — the board travels as one row.</span></div>' +
+      '<span class="gear-photo-note">Photo for the wardrobe. Your character uses the selected kind and colour.</span></div>' +
     '<div class="bk-foot">' +
       (d.id ? '<button type="button" class="btn btn-danger btn-sm gear-del" data-inv="geardel">Delete</button>' : "") +
       '<button type="button" class="btn btn-ghost btn-sm" data-inv="gearcancel">Cancel</button>' +
