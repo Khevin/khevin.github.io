@@ -6457,11 +6457,14 @@ function sanitize(s) {
      rather than left dangling. */
   {
     const wr = (s.wardrobe && typeof s.wardrobe === "object") ? s.wardrobe : {};
+    migrateOuterwear(wr);
     const items = (Array.isArray(wr.items) ? wr.items : []).filter(x => x && x.id).slice(0, GEAR_CAP).map(x => ({
       id: String(x.id), name: String(x.name || "Untitled").slice(0, 60),
       slot: WEAR_BY[x.slot] ? String(x.slot) : "top",
       kind: kindOk(WEAR_BY[x.slot] ? x.slot : "top", x.kind) ? String(x.kind) : kindsFor(WEAR_BY[x.slot] ? x.slot : "top")[0][0],
       color: /^#[0-9a-fA-F]{6}$/.test(x.color) ? String(x.color) : "#6b6257",
+      pattern: ['sticks','spots','abstract','flowers','sprigs'].includes(x.pattern)?x.pattern:'sticks',
+      printColor: shirtInk(x.printColor,'#202326'), printColor2: shirtInk(x.printColor2,'#779b83'), printSecond: x.printSecond===true,
       note: String(x.note || "").slice(0, 80),
       img: (typeof x.img === "string" && x.img.startsWith("data:image")) ? x.img : ""
     }));
@@ -8138,8 +8141,8 @@ const WEAR = [
   { k: "neck",  name: "Neck",      kinds: [["chain", "Chain"], ["scarf", "Scarf"]] },
   { k: "wrist", name: "Wrist",     kinds: [["watch", "Watch"], ["band", "Band"], ["cuff", "Cuff"]] },
   { k: "ring",  name: "Ring",      kinds: [["band", "Band"], ["signet", "Signet"], ["stone", "Stone"]] },
-  { k: "outer", name: "Overshirt", kinds: [["shacket", "Overshirt"], ["jacket", "Jacket"], ["hoodie", "Zip hoodie"], ["blazer", "Blazer"], ["coat", "Coat"], ["sherpa", "Lined denim jacket (jaqueta forrada)"]] },
-  { k: "top",   name: "Top",       kinds: [["tee", "T-shirt"], ["hoodie", "Hoodie"], ["sweater", "Sweater"], ["shirt", "Dress shirt"], ["polo", "Polo"], ["tank", "Tank top"]] },
+  { k: "outer", name: "Overshirt", kinds: [["shacket", "Overshirt"], ["jacket", "Jacket"], ["hoodie", "Zip hoodie"], ["blazer", "Blazer"], ["coat", "Coat"], ["sherpa", "Lined denim jacket (jaqueta forrada)"], ["pullover", "Pullover hoodie"], ["sweater", "Sweater"]] },
+  { k: "top",   name: "Top",       kinds: [["tee", "T-shirt"], ["shirt", "Dress shirt"], ["polo", "Polo"], ["printed", "Patterned short-sleeve shirt"], ["tank", "Tank top"]] },
   { k: "belt",  name: "Belt",      kinds: [["leather", "Leather"], ["woven", "Woven"], ["chain", "Chain"]] },
   { k: "legs",  name: "Trousers",  kinds: [["jeans", "Jeans"], ["chinos", "Chinos"], ["joggers", "Joggers"], ["shorts", "Shorts"]] },
   { k: "feet",  name: "Shoes",     kinds: [["sneakers", "Sneakers"], ["boots", "Boots"], ["loafers", "Loafers"]] },
@@ -8173,7 +8176,7 @@ const SLOTS = [
   { k: "scent",   f: "scent", short: "Scent" }
 ];
 const FLY_GROUPS = ["head-l", "head-r", "hand-l", "hand-r"];
-const wardrobeFamily = k => k === 'ring' ? 'neck' : k;
+const wardrobeFamily = k => ['ring','neck','ear','nose'].includes(k) ? 'ear' : k;
 const wardrobeMatches = (slot, filter) => !filter || wardrobeFamily(slot) === wardrobeFamily(filter);
 const WEAR_BY = Object.fromEntries(WEAR.map(w => [w.k, w]));
 const SLOTS_OF = f => SLOTS.filter(s => s.f === f);
@@ -8198,11 +8201,40 @@ const WEAR_GLYPH = {
   belt:  '<path d="M2.5 9.5h19v5h-19Z"/><path d="M6.5 8h4v8h-4Z"/><path d="M17 12h.01M19 12h.01"/>',
   scent: '<path d="M9 9.5h6a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z"/><path d="M10.5 6h3v3.5h-3Z"/><path d="M9.5 3h5v3h-5Z"/>'
 };
+
+function migrateOuterwear(wr) {
+  if(!wr || !Array.isArray(wr.items)) return wr;
+  wr.items=wr.items.map(x=>x && x.slot==='top' && ['hoodie','sweater'].includes(x.kind) ? {...x,slot:'outer',kind:x.kind==='hoodie'?'pullover':'sweater'} : x);
+  if(wr.worn && wr.worn.top && wr.items.some(x=>x && x.id===wr.worn.top && x.slot==='outer')) {
+    if(!wr.worn.outer) wr.worn.outer=wr.worn.top;
+    delete wr.worn.top;
+  }
+  return wr;
+}
+const SHIRT_PRINTS=[['sticks','Fine strokes'],['spots','Small spots'],['abstract','Bold spots'],['flowers','Large flowers'],['sprigs','Small florals']];
+const shirtInk=(c,f)=>/^#[0-9a-f]{6}$/i.test(c||'')?c:f;
+function shirtPattern(it,id,scale=1) {
+  const a=shirtInk(it.printColor,'#202326'), b=it.printSecond?shirtInk(it.printColor2,'#779b83'):a;
+  const k=it.pattern||'sticks';
+  let marks='';
+  if(k==='sticks') marks='<path d="M2 2l2 4m5-5-1 5m5 3 3-2M3 12l-1 4m6-6 2 4m5 1 1 3" fill="none" stroke="'+a+'" stroke-width=".8" stroke-linecap="round"/><path d="M6 7l1 3m9-6-2 2" stroke="'+b+'" stroke-width=".8"/>';
+  else if(k==='abstract') marks='<path d="M4 2 8 1l3 3-1 6-5 2-3-4ZM16 15l4-2 3 4-1 5-5 1-3-4Z" fill="'+a+'"/><path d="M19 3l3 2-1 4-4-1Z" fill="'+b+'"/>';
+  else if(k==='spots') marks='<path d="M3 2q4-2 4 2l-1 3q-4 2-4-2ZM12 11q3-2 4 1l-1 4q-4 2-5-1Z" fill="'+a+'"/><path d="M13 2q3-1 3 2l-2 2-2-2Z" fill="'+b+'"/>';
+  else if(k==='flowers') marks='<g fill="'+a+'"><path d="M6 2C1-2-1 5 3 7c-4 5 3 9 6 5 6 2 9-5 4-7 1-5-5-7-7-3Z"/></g><path d="M20 17c-4-5-9 0-6 4-4 3 1 8 5 5 5 4 9-2 5-5 2-4-1-6-4-4Z" fill="'+b+'"/><g fill="'+shirtInk(it.color,'#172026')+'"><circle cx="7" cy="7" r="2.2"/><circle cx="20" cy="22" r="2"/></g>';
+  else marks='<path d="M8 9q-3 8 1 14m-1-6q-7 0-6-5 5-1 6 5m0 2q7-1 6-6-5 0-6 6" fill="'+b+'" stroke="'+b+'" stroke-width=".6"/><path d="M8 3c-4-3-7 2-4 4-2 4 4 6 5 3 5 1 6-5 2-5Z" fill="'+a+'"/><path d="M6 6q4-3 4 2" fill="none" stroke="'+shirtInk(it.color,'#172026')+'" stroke-width=".7"/>';
+  const size=k==='flowers'?30:k==='sprigs'?32:k==='abstract'?24:18;
+  return '<pattern id="'+id+'" patternUnits="userSpaceOnUse" width="'+size+'" height="'+size+'" patternTransform="scale('+scale+')">'+marks+'</pattern>';
+}
+function shirtPrintFields(d) {
+  if(d.kind!=='printed'||d.slot!=='top')return '';
+  return '<fieldset class="gear-colors"><legend class="bk-l">Shirt print</legend><label class="bk-l">Pattern<select name="pattern">'+SHIRT_PRINTS.map(([k,n])=>'<option value="'+k+'"'+((d.pattern||'sticks')===k?' selected':'')+'>'+n+'</option>').join('')+'</select></label><div style="display:flex;gap:18px;flex-wrap:wrap"><label class="bk-l">Print colour<input type="color" name="printColor" value="'+shirtInk(d.printColor,'#202326')+'"></label><label class="bk-l"><span><input type="checkbox" name="printSecond"'+(d.printSecond?' checked':'')+'> Second print colour</span><input type="color" name="printColor2" aria-label="Second print colour" value="'+shirtInk(d.printColor2,'#779b83')+'"'+(d.printSecond?'':' disabled')+'></label></div><p class="gear-hint">Use Colour above for the background. Fine strokes, spots and florals suggest the fabric without copying every detail.</p></fieldset>';
+}
+
 const wardrobe = () => {
   if (!state.wardrobe || typeof state.wardrobe !== "object") state.wardrobe = { items: [], worn: {} };
   if (!Array.isArray(state.wardrobe.items)) state.wardrobe.items = [];
   if (!state.wardrobe.worn || typeof state.wardrobe.worn !== "object") state.wardrobe.worn = {};
-  return state.wardrobe;
+  return migrateOuterwear(state.wardrobe);
 };
 const gearById = id => wardrobe().items.find(x => x.id === id) || null;
 const gearWorn = k => gearById(wardrobe().worn[k]);
@@ -8759,7 +8791,14 @@ let ivIcnN = 0;
 /* a belt is read end-on and a square window would draw it at half size in the wide cell it
    sits in, so it crops the same 40-unit space to its own shape. Nothing else needs to. */
 const GEAR_VIEW = { belt: "-4 9 48 22" };
+GEAR_ICON.outer.pullover=GEAR_ICON.top.hoodie;
+GEAR_ICON.outer.sweater=GEAR_ICON.top.sweater;
 function gearIconHTML(it) {
+  if(it.slot==='top' && it.kind==='printed') {
+    const id='print-'+(++ivIcnN), p=ivCloth(it.color);
+    const shape='M15 6Q20 10 25 6L32 9 37 19 29 22 28 36Q20 38 12 36L11 22 3 19 8 9Z';
+    return '<svg class="iv-icn" viewBox="-4 -4 48 48" aria-hidden="true"><defs>'+shirtPattern(it,id,.4)+'</defs><path d="'+shape+'" fill="'+it.color+'"/><path d="'+shape+'" fill="url(#'+id+')"/>'+ivPart(p,it.color,'M15 6 20 11 16 15 12 9ZM25 6 20 11 24 15 28 9Z')+'<path d="M20 12v23" stroke="'+p.dark+'" stroke-width=".7"/><g fill="'+p.dark+'"><circle cx="20" cy="18" r=".6"/><circle cx="20" cy="25" r=".6"/><circle cx="20" cy="32" r=".6"/></g></svg>';
+  }
   const set = GEAR_ICON[it.slot] || {};
   const fn = set[it.kind] || set[Object.keys(set)[0]];
   return '<svg class="iv-icn" viewBox="' + (GEAR_VIEW[it.slot] || "-4 -4 48 48") + '" aria-hidden="true">' +
@@ -8871,7 +8910,8 @@ function ivTrousers(c, leg, w) {
     IV_MIRROR('<path ' + IV_LINE(c, w) + ' d="' + leg + '"/>');
 }
 function invDollHTML() {
-  const worn = k => gearWorn(k), top = worn("top"), outer = worn("outer"), legs = worn("legs"), feet = worn("feet");
+  const worn = k => gearWorn(k), outer = worn('outer'), closedOuter=outer && ['pullover','sweater'].includes(outer.kind);
+  const top=closedOuter?{...outer,kind:outer.kind==='pullover'?'hoodie':'sweater'}:worn('top'), legs=worn('legs'), feet=worn('feet');
   const color = (it, fallback) => it && /^#[0-9a-f]{6}$/i.test(it.color) ? it.color : fallback;
   let defs = '';
   /* One light, in the figure's own coordinates. A gradient left on objectBoundingBox is remapped
@@ -8965,38 +9005,58 @@ function invDollHTML() {
   // Base garments retain their own silhouette even underneath an open outer layer.
   if(top) {
     const k=top.kind,long=['hoodie','sweater','shirt'].includes(k);
-    g+='<g data-avatar-layer="top" data-kind="'+esc(k)+'">';
+    g+='<g data-avatar-layer="'+(closedOuter?'outer':'top')+'" data-kind="'+esc(closedOuter?outer.kind:k)+'">';
     const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
-    g+=path(shape,fabric,tEdge,0.9);
+    const shirt= ['shirt','printed'].includes(k), print=k==='printed';
+    const shirtBody='M96 109L104 119 110 128 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z';
+    const cut=shirt?shirtBody:shape;
+    g+=path(cut,fabric,tEdge,0.9);
     /* The sleeve goes on OVER the body. Underneath, the body's own outline runs diagonally from
        the neck down to the armpit, and stroked dark that reads as a raglan seam on a garment
        that has none. Covered by the sleeve, the only seam left is the sleeve's inner edge —
        which is where a set-in sleeve is actually joined, and which is now the garment's own
        colour taken down a third rather than the near-black every other part of the figure uses. */
     if(k!=='tank')g+=sleeveJoined(fabric,fabricM,long,tEdge,0.9);
+    if(print) {
+      defs+=shirtPattern(top,'av-shirt-print',1);
+      g+=path(cut,'url(#av-shirt-print)','none',0)+sleeveJoined('url(#av-shirt-print)','url(#av-shirt-print)',false,'none',0);
+      // A transparent cloth light pass keeps printed fabric rounded rather than sticker-flat.
+      defs+='<linearGradient id="av-print-light" x1="0" x2="1"><stop stop-color="#fff" stop-opacity=".12"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>';
+      g+=path(cut,'url(#av-print-light)','none',0);
+    }
     g+=(long?folds():drape());
     if(k==='hoodie') {
       g+=path('M91 108Q79 103 81 118L92 136Q110 144 129 134L140 117Q140 103 129 108L124 119Q110 128 96 119Z',fabric,tEdge,0.9);
       g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,ivShade(topc,-0.24),1);
       g+=line('M97 129l-2 37m29-37 2 37','#e8dfc1',1.8)+line('M95 164v5m31-5v5','#554f40',2);
       g+=line('M80 239q30 8 60 0','#00000026',3.5);
-    } else if(k==='shirt'||k==='polo') {
-      g+=path('M97 108l13 12-9 14-9-15Z',fabric,tEdge,0.8)+path('M123 108l-13 12 9 14 9-15Z',fabric,tEdge,0.8);
-      g+=line('M110 123v'+(k==='polo'?35:120),'#00000026',1.8);
-      for(let y=137;y<(k==='polo'?160:239);y+=20)g+='<circle cx="110" cy="'+y+'" r="1.3" fill="#cfbf9d"/>';
+    } else if(shirt||k==='polo') {
+      const polo=k==='polo';
+      // A real collar stand with two compact fall points; a short placket for knit polos.
+      g+=path('M96 109Q110 116 124 109L122 117Q110 122 98 117Z',fabric,tEdge,.6);
+      g+=path(polo?'M97 111L109 120 101 130 94 119Z':'M96 109L108 120 99 135 91 120Z',fabric,tEdge,.7);
+      g+=path(polo?'M123 111L111 120 119 130 126 119Z':'M124 109L112 120 121 135 129 120Z',fabric,tEdge,.7);
+      g+=path('M108 123h4v'+(polo?31:122)+'h-4Z',fabric,ivShade(topc,-.18),.5);
+      for(let y=polo?134:140;y<(polo?154:243);y+=polo?12:23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+      if(polo)g+=both(line('M55 155l21 8',ivShade(topc,-.2),2.2));
+      if(k==='shirt') {
+        g+=both(line('M49 226l16 5',ivShade(topc,-.2),1.6));
+        g+=path('M121 149h12v17q-6 5-12 0Z','none',ivShade(topc,-.16),.7);
+      }
     } else {
       /* a crew neck is a rib, not a line: the dark of the opening with the band's lit edge above
          it, and the seam where a set-in sleeve is stitched to the body */
       /* the body's own outline already draws the opening; this is the rib sitting on it */
       g+=line(k==='tank'?'M92 115Q110 145 128 115':'M97 109Q110 120 123 109','#ffffff26',2.4);
     }
+    if(k==='sweater')g+=both(line('M49 226l15 5',ivShade(topc,-.12),2.5))+line('M81 239q29 7 58 0',ivShade(topc,-.12),3);
     g+=line('M82 240q28 6 56 0','#ffffff20');
     /* the cuff was a four-unit bar of #0006 laid across each forearm. A sleeve ends where its
        own path ends; it does not need a line drawn across it to say so. */
     g+='</g>';
   }
   // Each outer layer has its own cut; a continuous light joins sleeves and shoulders.
-  if(outer) {
+  if(outer && !closedOuter) {
     const k=outer.kind, coat=k==='coat', tailored=coat||k==='blazer', sherpa=k==='sherpa';
     const hem=coat?303:k==='blazer'?257:k==='shacket'?250:239;
     const panel='M95 109Q83 109 75 119Q70 131 74 157L78 194 74 '+(hem-3)+'Q84 '+(hem+3)+' 99 '+hem+'L97 185Q96 144 102 120Z';
@@ -9141,7 +9201,7 @@ function renderInv() {
 
   /* the marks are unlabelled, so the one on show is named once, here, where it costs no line */
   const filterFamily = wardrobeFamily(gearFilter);
-  const fam = filterFamily ? {...WEAR_BY[filterFamily], name:filterFamily === 'neck' ? 'Rings & necklaces' : WEAR_BY[filterFamily].name} : null;
+  const fam = filterFamily ? {...WEAR_BY[filterFamily], name:filterFamily === 'ear' ? 'Jewelry' : WEAR_BY[filterFamily].name} : null;
   const wardrobe_ = '<div class="iv-hold"><header class="iv-section-head">' +
       (fam ? '<span class="iv-hold-cur">' + esc(fam.name) + " · " + W.items.filter(x => wardrobeMatches(x.slot, fam.k)).length + "</span>" : "") +
       '<h3>Wardrobe</h3>' +
@@ -9154,8 +9214,8 @@ function renderInv() {
        family on show sits in the header, opposite the Add button, where there is already room. */
     '<div class="iv-bar" role="group" aria-label="Show">' +
       '<button type="button" class="iv-f is-word' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
-      WEAR.filter(w => w.k !== 'ring').map(entry => {
-        const w = entry.k === 'neck' ? {...entry,name:'Rings & necklaces'} : entry;
+      WEAR.filter(w => !['ring','neck','nose'].includes(w.k)).map(entry => {
+        const w = entry.k === 'ear' ? {...entry,name:'Jewelry'} : entry;
         const n = W.items.filter(x => wardrobeMatches(x.slot,w.k)).length;
         return '<button type="button" class="iv-f' + (filterFamily === w.k ? " is-cur" : "") + (n ? "" : " is-bare") +
           '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (filterFamily === w.k) +
@@ -9280,6 +9340,7 @@ function gearDlgRender(focusSel) {
         '" data-inv="gearcolor" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
       '<label class="gear-pick"><input type="color" name="color" value="' + esc(d.color) + '" aria-label="Any other colour"></label>' +
     "</div><p class=\"gear-hint\">Colours your character’s garment, even when the inventory uses a photo.</p></fieldset>" +
+    shirtPrintFields(d) +
     '<label class="bk-l">Note<input type="text" name="note" maxlength="80" value="' + esc(d.note) + '" placeholder="brand, where it lives, what it goes with" autocomplete="off"></label>' +
     '<div class="gear-photo"><button type="button" class="btn btn-ghost btn-sm" data-inv="gearphoto">' +
       (d.img ? "Replace photo" : "Add a photo") + "</button>" +
@@ -9298,7 +9359,10 @@ document.addEventListener("input", e => {
   const t = e.target;
   if (t.name === "name") gearEdit.name = t.value;
   else if (t.name === "note") gearEdit.note = t.value;
-  else if (t.name === "kind") { gearEdit.kind = t.value; gearDlgPreview(); }
+  else if (t.name === "kind") { gearEdit.kind = t.value; gearDlgRender('[name="kind"]'); }
+  else if(t.name==='pattern') {gearEdit.pattern=t.value;gearDlgPreview();}
+  else if(t.name==='printColor'||t.name==='printColor2') {gearEdit[t.name]=t.value;gearDlgPreview();}
+  else if(t.name==='printSecond') {gearEdit.printSecond=t.checked;gearDlgRender('[name="printSecond"]');}
   else if (t.name === "slot") {
     /* a new slot brings its own kinds; keep the one named if the new slot also has it */
     gearEdit.slot = t.value;
@@ -9469,6 +9533,8 @@ function gearDlgSave() {
   if (!it) { it = { id: "gr-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }; W.items.push(it); }
   const moved = !isNew && it.slot !== d.slot;
   it.name = name.slice(0, 60); it.slot = d.slot; it.kind = kindOk(d.slot, d.kind) ? d.kind : kindsFor(d.slot)[0][0]; it.color = d.color;
+  it.pattern=['sticks','spots','abstract','flowers','sprigs'].includes(d.pattern)?d.pattern:'sticks';
+  it.printColor=shirtInk(d.printColor,'#202326');it.printColor2=shirtInk(d.printColor2,'#779b83');it.printSecond=!!d.printSecond;
   it.note = d.note.trim().slice(0, 80); it.img = d.img || "";
   /* a garment that moved to another slot cannot stay worn in the one it left */
   if (moved) SLOTS.forEach(s => { if (W.worn[s.k] === it.id && s.f !== it.slot) delete W.worn[s.k]; });
