@@ -695,26 +695,88 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    colour instead of hard-coding it. It is inherited from .hero.v5, and both
    elements here carry exactly one border, so animating border-color entire
    touches nothing else. */
-@keyframes rule-in {
-  from { border-color: transparent; }
-  to   { border-color: var(--v5-rule); }
+/* They are drawn, not faded. A fade tells you a line has appeared; it does not
+   tell you where it came from, and next to type that rises from somewhere it
+   read as the frame blinking on. Each one now travels in from the outside of
+   the page: the horizontals from the left edge of the window, well beyond the
+   1400px the content sits in, and the uprights downward from the rule above
+   them. Same idea as the process timeline, which is the one that works.
+
+   Borders cannot be scaled, so each rule that is a border hands over to a
+   pseudo-element in exactly its own place — same colour, same width, no
+   layout moves. The base state is full size and the keyframe supplies the
+   empty one, so with animations off the line is simply there. */
+@keyframes draw-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes draw-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+.hero.v5 { position: relative; border-bottom-color: transparent; }
+.hero.v5 .h-block .right { position: relative; border-left-color: transparent; }
+.hero.v5 .dispatches .d { border-right-color: transparent; }
+
+.hero.v5::after,
+.hero.v5 .h-block .right::before,
+.hero.v5 .dispatches .d::after {
+  content: "";
+  position: absolute;
+  background: var(--v5-rule);
+  pointer-events: none;
 }
-@keyframes rule-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+
+/* the upright between the headline and the note beside it, first */
+.hero.v5 .h-block .right::before {
+  left: -1px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform-origin: top center;
+  animation: draw-y 850ms var(--draw) 300ms both;
 }
-/* the upright between the headline and the note beside it */
-.hero.v5 .h-block .right {
-  animation: rule-in 620ms var(--rise) 360ms both;
-}
-/* the full-window line under the headline block — a pseudo-element, so it
-   fades as itself rather than through a border */
+/* the full-window line under the headline block. Re-hung off the left edge
+   rather than centred by transform, so the transform is free to draw it. */
 .hero.v5 .h-block::after {
-  animation: rule-fade 620ms var(--rise) 500ms both;
+  left: calc(50% - 50vw);
+  transform: none;
+  transform-origin: left center;
+  animation: draw-x 1100ms var(--draw) 500ms both;
 }
+/* the dividers between the three dispatches, each just behind its card */
+.hero.v5 .dispatches .d::after {
+  right: -1px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform-origin: top center;
+  animation: draw-y 850ms var(--draw) var(--rule-delay, 600ms) both;
+}
+.hero.v5 .dispatches .d:nth-child(2) { --rule-delay: 690ms; }
+.hero.v5 .dispatches .d:nth-child(3) { --rule-delay: 780ms; }
+.hero.v5 .dispatches .d:last-child::after { display: none; }
 /* and the one that closes the hero, last, under the three dispatches */
-.hero.v5 {
-  animation: rule-in 620ms var(--rise) 720ms both;
+.hero.v5::after {
+  bottom: -1px;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  height: 1px;
+  transform-origin: left center;
+  animation: draw-x 1100ms var(--draw) 820ms both;
+}
+
+/* Under 800px the layout stacks and both of those uprights become horizontal
+   rules instead — so they draw sideways there, from the left. */
+@media (max-width: 800px) {
+  .hero.v5 .h-block .right { border-top-color: transparent; }
+  .hero.v5 .dispatches .d { border-bottom-color: transparent; }
+  .hero.v5 .h-block .right::before,
+  .hero.v5 .dispatches .d::after {
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 1px;
+    transform-origin: left center;
+    animation-name: draw-x;
+  }
+  .hero.v5 .h-block .right::before { top: -1px; bottom: auto; }
+  .hero.v5 .dispatches .d::after { top: auto; bottom: -1px; }
 }
 
 /* ---- sections, on entry ----
@@ -817,9 +879,12 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    arm anything, so the scroll layer never starts; this covers the hero, which
    runs without it. */
 @media (prefers-reduced-motion: reduce) {
-  .hero.v5,
+  /* Every rule's pseudo-element sits at full size by default, so switching the
+     animation off leaves the line drawn rather than erased. */
+  .hero.v5::after,
   .hero.v5 .h-block::after,
-  .hero.v5 .h-block .right,
+  .hero.v5 .h-block .right::before,
+  .hero.v5 .dispatches .d::after,
   .hero.v5 .h-block h1 .a,
   .hero.v5 .h-block h1 .b,
   .hero.v5 .h-block .right p,
