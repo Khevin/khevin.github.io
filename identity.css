@@ -961,6 +961,47 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 }
 
 
+/* ---------- the chapter break ----------
+   Between the three case studies and the pieces that only earned a paragraph,
+   the page changes register. It was marked by the same hairline every section
+   ends with, sitting a few pixels under Amway's own row rule — two hairlines
+   of the same weight, one meaning "next project" and the other meaning "next
+   chapter", with nothing to tell you which was which.
+
+   One heavy red rule, full bleed. Not a thicker version of the row rule: a
+   different weight and a different colour, running the whole width of the
+   window where the rows stop at the text measure. It is the only red
+   horizontal on the page, which is what makes it read as the page turning.
+
+   (It was drawn with a hairline companion under it, a printer's scotch rule,
+   and opening from the centre. Both were wrong here — the companion read as a
+   stray second rule rather than as part of one device, and opening from the
+   centre made it the odd gesture out on a page where every rule draws from
+   the left.)
+
+   Drawn unconditionally, so with no script and no motion it is simply there;
+   only its starting state is conditional. */
+#work { border-bottom: 0; }
+#work::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: var(--accent);
+  pointer-events: none;
+}
+.js-motion #work::after {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.js-motion #work.is-in::after {
+  transform: scaleX(1);
+  transition: transform 1000ms var(--draw);
+}
+
+
 /* Clients: a red bar interior above a continuous near-black counter. */
 #clients {
   background: #1a1815;

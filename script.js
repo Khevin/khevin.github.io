@@ -205,7 +205,7 @@
     /* Marked, never hidden. These carry their motion on a pseudo-element or a
        child, so holding the element itself back would take its contents with
        it: the timeline's rule and arrowhead, the bar's illustration layer. */
-    const TRACKS = ['.process', '.disciplines', '#clients .s-head'];
+    const TRACKS = ['.process', '.disciplines', '#work', '#clients .s-head'];
 
     const nodes = $$(RISE.join(','));
     const tracks = $$(TRACKS.join(','));
