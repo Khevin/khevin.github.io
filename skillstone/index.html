@@ -2677,6 +2677,17 @@ li.is-done .qg { color: var(--verdant); }
 @media (max-width: 1100px) { .iv-armory.iv-with-preview .iv-grid { --iv-cell: 50px; } }
 @media (max-width: 650px)  { .iv-armory.iv-with-preview .iv-grid { --iv-cell: 46px; min-height: calc(6 * var(--iv-cell) + 5 * 2px + 12px); } }
 
+
+/* Category objects reuse the wardrobe's shaded illustration style. */
+.iv-family-art { display:grid; place-items:center; width:100%; height:100%; min-width:0; min-height:0; pointer-events:none; }
+.iv-armory .iv-bar .iv-f:not(.is-word) { width:32px; height:32px; padding:3px; }
+.iv-armory .iv-bar .iv-family-art { width:26px; height:26px; }
+.iv-armory .iv-bar .iv-f.is-bare { opacity:.72; }
+.iv-armory .iv-bar .iv-f.is-cur { opacity:1; }
+.iv-armory .iv-slot:not(.is-on) .iv-family-art { width:64px; height:76px; max-width:100%; max-height:100%; opacity:.56; filter:saturate(.65); }
+.iv-armory .iv-slot.iv-fly:not(.is-on) .iv-family-art { width:38px; height:38px; }
+.iv-armory .iv-slot:not(.is-on) .iv-family-art .iv-icn { width:100%; height:100%; filter:none; }
+.iv-armory .iv-slot:not(.is-on):is(:hover,:focus-visible,.is-pick) .iv-family-art { opacity:.85; filter:saturate(.9); }
 /* writing a garment */
 .gear-dlg { width: min(560px, 94vw); }
 .gear-top { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s4); align-items: start; }
@@ -8747,6 +8758,18 @@ function gearIconHTML(it) {
   return '<svg class="iv-icn" viewBox="' + (GEAR_VIEW[it.slot] || "-4 -4 48 48") + '" aria-hidden="true">' +
     (fn ? fn(it.color, "gi" + (++ivIcnN)) : "") + "</svg>";
 }
+/* Shared illustrated category art for filters and empty equipment sockets. */
+const IV_CATEGORY_ART = {
+  hat:['brim','#c6ad78'], eyes:['sun','#b99b56'], ear:['hoop','#d3ad59'],
+  nose:['ring','#cfa75a'], neck:['chain','#d3ad59'], wrist:['watch','#96724b'],
+  ring:['stone','#cba758'], outer:['jacket','#657862'], top:['tee','#dbceb1'],
+  belt:['leather','#927047'], legs:['jeans','#758397'], feet:['boots','#9c734e'],
+  scent:['bottle','#a083b3']
+};
+function inventoryCategoryArt(k) {
+  const spec=IV_CATEGORY_ART[k];
+  return spec ? '<span class="iv-family-art" aria-hidden="true">'+gearIconHTML({slot:k,kind:spec[0],color:spec[1]})+'</span>' : '';
+}
 /* the slot's own mark, small, for a cell that has to say where a garment goes */
 const slotMarkHTML = k => '<svg class="iv-mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[k] + "</svg>";
 /* every garment kind: what it is, drawn. A kind that is not here falls back to its slot's first. */
@@ -9053,7 +9076,7 @@ function gearCellHTML(it, worn) {
 function invSlotHTML(s) {
   const it = gearWorn(s.k), on = !!it, label = slotLabel(s);
   const face = on ? gearFace(it)
-    : '<svg class="iv-slot-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[s.f] + "</svg>";
+    : inventoryCategoryArt(s.f);
   return '<button type="button" class="iv-slot' + (s.fly ? " iv-fly" : "") + (on ? " is-on" : "") +
     (gearFilter === s.f ? " is-cur" : "") + (gearPick === s.k ? " is-pick" : "") +
     '" aria-pressed="' + (gearPick === s.k) +
@@ -9097,7 +9120,7 @@ function renderInv() {
         return '<button type="button" class="iv-f' + (gearFilter === w.k ? " is-cur" : "") + (n ? "" : " is-bare") +
           '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (gearFilter === w.k) +
           '" title="' + esc(w.name + " · " + n) + '" aria-label="' + esc(w.name + ", " + n + (n === 1 ? " item" : " items")) + '">' +
-          '<svg class="iv-f-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[w.k] + "</svg></button>";
+          inventoryCategoryArt(w.k) + "</button>";
       }).join("") +
     "</div>" +
     (shown.length ? "" : '<p class="iv-empty">' + (W.items.length
