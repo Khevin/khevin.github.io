@@ -742,9 +742,61 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   transition: opacity 420ms linear 900ms;
 }
 
+/* The step rules draw too, instead of fading up with their card.
+   The horizontal rule enters from outside the frame — it starts at -40px —
+   and draws inward across the section. Its uprights do the same thing at
+   ninety degrees: each one descends from the rule it hangs off into the block
+   below, in step with the sweep passing over it. Fading them in was the odd
+   one out, and next to a line that draws it read as the frame being switched
+   on rather than made.
+
+   They are borders, and a border cannot be scaled, so under motion the border
+   goes colourless and its pseudo-element takes over in the same place — no
+   layout moves, because the border keeps its width either way. The tones come
+   from the tokens the section already sets, with the paper values as the
+   fallback for anywhere this runs on light ground. */
+/* Both selectors, because the section sets these same two colours at
+   `#process .process .step` — an id outranks any number of classes, so the
+   plain form alone lost and the borders never went colourless. */
+.js-motion .process .step,
+.js-motion #process .process .step {
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.js-motion .process .step::before,
+.js-motion .process .step::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  pointer-events: none;
+}
+.js-motion .process .step::before {
+  left: -2px;
+  width: 2px;
+  background: var(--dk-line, var(--accent));
+}
+.js-motion .process .step::after {
+  right: -1px;
+  width: 1px;
+  background: var(--dk-rule, var(--ink-faintest));
+}
+/* the last column closes on the section, not on a rule of its own */
+.js-motion .process .step:last-child::after { display: none; }
+/* The transition lives on the arriving state, the way the horizontal rule's
+   does. Declared on the base it would ease back out again whenever the class
+   came off, which is both wrong and what made this look finished on its first
+   test frame. */
+.js-motion .process.is-in .step::before,
+.js-motion .process.is-in .step::after {
+  transform: scaleY(1);
+  transition: transform 760ms var(--rise) var(--rise-delay, 0ms);
+}
+
 /* Each step lights as the rule reaches it — the four delays are spaced to sit
-   just behind the sweep rather than to a rhythm of their own. The borders are
-   part of the element, so the step's own rules arrive with its type. */
+   just behind the sweep rather than to a rhythm of their own. */
 .process .step:nth-child(1) { --rise-delay: 180ms; }
 .process .step:nth-child(2) { --rise-delay: 400ms; }
 .process .step:nth-child(3) { --rise-delay: 620ms; }
