@@ -2478,6 +2478,57 @@ li.is-done .qg { color: var(--verdant); }
 @media (hover: hover) { .iv-cell-add .iv-cell-b:hover { color: var(--bronze); } }
 .iv-empty { color: var(--ash); font-size: 0.8125rem; text-align: center; padding: var(--s4) 0 var(--s2); }
 
+
+/* Equipment cabinet: inset bronze sockets and a continuous stash, inspired by classic ARPGs. */
+.iv-panel:has(.iv-armory) { width:min(1160px,100%); border-radius:3px; padding:20px 24px 28px; border-color:#615139; box-shadow:inset 0 0 0 4px #171410,inset 0 0 0 5px #393126,0 16px 40px #0007; }
+.iv-armory { display:grid; grid-template-columns:minmax(300px, .85fr) minmax(0,1.15fr); gap:32px; }
+.iv-armory .iv-fig { display:block; min-width:0; padding:0; }
+.iv-armory .iv-hold { padding-left:0; border-left:0; }
+.iv-section-head { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #51432f; }
+.iv-section-head h3 { font:600 17px var(--f-display); color:var(--parchment); margin:0; }
+.iv-section-head span { font:10px var(--f-mono); color:var(--ash); }
+.iv-armory .iv-rig { position:relative; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-template-rows:repeat(5,62px); gap:10px; padding:16px 24px; background:radial-gradient(ellipse at center,#73604722,transparent 70%),url("assets/textures/panel.webp") center/512px; border:1px solid #3f372b; box-shadow:inset 0 0 48px #000b; }
+.iv-armory .iv-rig::before,.iv-armory .iv-rig::after { content:"✦"; position:absolute; top:32px; color:#766144; font-size:22px; pointer-events:none; }
+.iv-armory .iv-rig::before { left:14%; } .iv-armory .iv-rig::after { right:14%; }
+.iv-armory .iv-rig [data-k="hat"] { grid-area:1/2/2/3; }
+.iv-armory .iv-rig [data-k="outer"] { grid-area:2/1/5/2; }
+.iv-armory .iv-rig [data-k="top"] { grid-area:2/2/4/3; }
+.iv-armory .iv-rig [data-k="legs"] { grid-area:4/2/6/3; }
+.iv-armory .iv-rig [data-k="neck"] { grid-area:2/3/3/4; }
+.iv-armory .iv-rig [data-k="feet"] { grid-area:3/3/6/4; }
+.iv-armory .iv-slot { min-width:0; }
+.iv-armory .iv-slot-face { border:1px solid #574934; border-radius:1px; background:linear-gradient(135deg,#191812,#080909 75%); box-shadow:inset 0 0 0 2px #090a08,inset 0 0 0 3px #302b21,inset 0 8px 18px #0008; padding:8px 8px 24px; color:#766950; }
+.iv-armory .iv-slot.is-on .iv-slot-face { border-color:#8d754d; box-shadow:inset 0 0 0 2px #10100c,inset 0 0 0 3px #4a3e29; }
+.iv-armory .iv-slot.is-cur .iv-slot-face { border-color:#d2b578; }
+.iv-armory .iv-slot .iv-slot-nm { display:block; color:#b5a589; font:10px var(--f-body); padding:8px 5px 5px; background:linear-gradient(transparent,#090a09); }
+.iv-armory .iv-slot:not(.is-on) .iv-slot-nm { color:#8c806b; }
+.iv-armory .iv-slot .iv-icn { max-height:100%; filter:drop-shadow(0 4px 3px #0009); }
+.iv-armory .iv-slot-face img { object-fit:contain; }
+.iv-accessories { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; padding:12px; background:#0e0f0de0; border:1px solid #403728; margin-top:12px; }
+.iv-armory .iv-accessories .iv-slot { width:auto; height:64px; grid-area:auto; }
+.iv-armory .iv-accessories .iv-slot-face { padding:6px 10px 20px; }
+.iv-armory .iv-doll-cap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin:12px 0 0; font-size:10px; }
+.iv-armory .iv-strip { margin:0; }
+.iv-armory .iv-bar { gap:4px 10px; min-height:72px; align-content:start; margin-bottom:16px; }
+.iv-armory .iv-f { padding:5px 3px; border-radius:0; border:0; border-bottom:1px solid transparent; font-size:10px; }
+.iv-armory .iv-f.is-cur { background:none; border-bottom-color:#c5a56c; }
+.iv-armory .iv-f .n { color:#8d7b59; }
+.iv-armory .iv-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:1px; padding:1px; background:#433823; border:3px solid #12120f; outline:1px solid #675235; }
+.iv-armory .iv-cell { min-width:0; background:#090b09; }
+.iv-armory .iv-cell-b { height:100px; min-width:0; border:1px solid transparent; border-radius:0; background:radial-gradient(ellipse,#2b2b212e,transparent); padding:12px 5px 8px; align-content:center; gap:6px; }
+.iv-armory .iv-cell-face { width:60px; max-width:100%; height:60px; border-radius:0; }
+.iv-armory .iv-cell-face img { object-fit:contain; }
+.iv-armory .iv-cell-nm { font-size:11px; }
+.iv-armory .iv-cell.is-worn .iv-cell-b { border-color:#796540; box-shadow:inset 0 0 18px #75602f16; }
+.iv-armory .iv-cell.is-worn::after { content:"◆"; color:#b89b62; position:absolute; bottom:5px; right:5px; font-size:7px; pointer-events:none; }
+.iv-armory .iv-cell-add .iv-cell-b { border:0; color:#a18b62; }
+.iv-armory .iv-cell-vacant { height:100px; background:#090b09; box-shadow:inset 0 0 18px #0005; }
+.iv-stash-note { color:var(--ash); font-size:12px; margin:14px 0 0; line-height:1.6; }
+.iv-armory .iv-cell-edit { border-radius:2px; }
+@media(hover:hover) { .iv-armory .iv-cell-b:hover,.iv-armory .iv-slot:hover .iv-slot-face { border-color:#b59a67; background-color:#2b2517; } }
+@media(max-width:900px) { .iv-armory { grid-template-columns:minmax(0,1fr); gap:28px; } .iv-armory .iv-fig { width:min(440px,100%); margin:auto; } .iv-armory .iv-rig { width:100%; } }
+@media(max-width:480px) { .iv-panel:has(.iv-armory) { padding:16px 12px 20px; } .iv-armory .iv-rig { padding:12px; gap:6px; grid-template-rows:repeat(5,56px); } .iv-armory .iv-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } .iv-armory .iv-accessories { padding:6px; gap:4px; } .iv-armory .iv-accessories .iv-slot .iv-slot-nm { font-size:8px; } }
+
 /* writing a garment */
 .gear-dlg { width: min(560px, 94vw); }
 .gear-top { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s4); align-items: start; }
@@ -8548,22 +8599,13 @@ function renderInv() {
     .sort((a, b) => (order.indexOf(a.slot) - order.indexOf(b.slot)) || a.name.localeCompare(b.name));
   const wornCount = SLOTS.filter(s => gearWorn(s.k)).length;
 
-  /* Left: the figure, its rig of six worn-on-the-body slots, and the ten too small to paint on
-     a body this tall. Those hang beside it in clusters — the face on a line each side of the
-     head, the hands lower down — each cluster on a hairline pointing back at the part it serves.
-     Right: the wardrobe. The reference puts the stash beside the doll rather than under it, and
-     it is right to: stacked, the figure ate four hundred pixels of height and left five hundred
-     of width empty on either side of itself. Side by side, both are on screen at once. */
-  const grp = g => '<div class="iv-grp" data-g="' + g + '">' +
-    SLOTS.filter(s => s.fly === g).map(invSlotHTML).join("") + "</div>";
-  let h = '<div class="iv-body"><div class="iv-fig">' +
-    '<div class="iv-doll-wrap"><div class="iv-stage">' + invDollHTML() + FLY_GROUPS.map(grp).join("") + "</div>" +
-      '<p class="iv-doll-cap">' + (wornCount ? wornCount + " of " + SLOTS.length + " slots filled" : "Nothing on yet") +
-      (wornCount ? '<button type="button" class="iv-strip" data-inv="strip">Take it all off</button>' : "") + "</p></div>" +
-    '<div class="iv-rig">' + SLOTS.filter(s => !s.fly).map(invSlotHTML).join("") + "</div>" +
-    "</div>";
+  let h = '<div class="iv-body iv-armory"><section class="iv-fig" aria-label="Equipped clothing">' +
+    '<header class="iv-section-head"><h3>Equipped</h3><span>'+wornCount+' / '+SLOTS.length+' slots</span></header>' +
+    '<div class="iv-rig">'+SLOTS.filter(s=>!s.fly).map(invSlotHTML).join("")+'</div>' +
+    '<div class="iv-accessories" role="group" aria-label="Accessories">'+SLOTS.filter(s=>s.fly).map(invSlotHTML).join("")+'</div>' +
+    '<p class="iv-doll-cap"><span>Your everyday loadout</span>'+(wornCount?'<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>':'')+'</p></section>';
 
-  h += '<div class="iv-hold"><div class="iv-bar" role="group" aria-label="Show">' +
+  h += '<div class="iv-hold"><header class="iv-section-head"><h3>Wardrobe</h3><span>' + W.items.length + (W.items.length === 1 ? ' item' : ' items') + '</span></header><div class="iv-bar" role="group" aria-label="Show">' +
       '<button type="button" class="iv-f' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
       WEAR.map(w => '<button type="button" class="iv-f' + (gearFilter === w.k ? " is-cur" : "") + '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (gearFilter === w.k) + '">' +
         esc(w.name) + '<span class="n">' + W.items.filter(x => x.slot === w.k).length + "</span></button>").join("") +
@@ -8580,7 +8622,8 @@ function renderInv() {
       '<span class="iv-cell-face"><svg class="iv-icn" viewBox="0 0 40 40" aria-hidden="true">' +
         '<path d="M20 12v16M12 20h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>' +
       '<span class="iv-cell-nm">Add clothing</span></button></div>' +
-    "</div></div></div>";
+    Array.from({length:Math.max(0,20-shown.length-1)},()=>'<div class="iv-cell-vacant" aria-hidden="true"></div>').join("") +
+    '</div><p class="iv-stash-note">Select an item to equip or remove it. Select an empty equipment slot to find what fits.</p></div></div>';
   el.innerHTML = h;
 }
 /* three shelves in one panel; only the one on show is rendered, and the library renders itself */
@@ -8654,12 +8697,12 @@ function gearDlgRender(focusSel) {
       "</div></div>" +
       '<label class="bk-l">Kind<select name="kind">' + kindsFor(d.slot).map(x =>
         '<option value="' + x[0] + '"' + (d.kind === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>").join("") +
-        '</select><span class="gear-hint">What it is, so the figure knows how it hangs.</span></label>' +
+        '</select><span class="gear-hint">Choose the shape used for the item artwork.</span></label>' +
     '<fieldset class="gear-colors"><legend class="bk-l">Colour</legend><div class="gear-sw-row">' +
       GEAR_COLORS.map(c => '<button type="button" class="gear-sw' + (c === d.color.toLowerCase() ? " is-cur" : "") +
         '" data-inv="gearcolor" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
       '<label class="gear-pick"><input type="color" name="color" value="' + esc(d.color) + '" aria-label="Any other colour"></label>' +
-    "</div><p class=\"gear-hint\">This is what the figure wears.</p></fieldset>" +
+    "</div><p class=\"gear-hint\">Used for the item artwork when no photo is added.</p></fieldset>" +
     '<label class="bk-l">Note<input type="text" name="note" maxlength="80" value="' + esc(d.note) + '" placeholder="brand, where it lives, what it goes with" autocomplete="off"></label>' +
     '<div class="gear-photo"><button type="button" class="btn btn-ghost btn-sm" data-inv="gearphoto">' +
       (d.img ? "Replace photo" : "Add a photo") + "</button>" +
