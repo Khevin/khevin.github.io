@@ -2710,10 +2710,12 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-bar .iv-family-art { width:26px; height:26px; }
 .iv-armory .iv-bar .iv-f.is-bare { opacity:.72; }
 .iv-armory .iv-bar .iv-f.is-cur { opacity:1; }
-.iv-armory .iv-slot:not(.is-on) .iv-family-art { width:64px; height:76px; max-width:100%; max-height:100%; opacity:.56; filter:saturate(.65); }
+/* an empty socket's drawing is a placeholder for what could be there, so it sits well back — the
+   label under it does not, because it is the socket's name */
+.iv-armory .iv-slot:not(.is-on) .iv-family-art { width:64px; height:76px; max-width:100%; max-height:100%; opacity:.3; filter:saturate(.55); transition:opacity var(--t-fast) var(--e-out); }
 .iv-armory .iv-slot.iv-fly:not(.is-on) .iv-family-art { width:38px; height:38px; }
 .iv-armory .iv-slot:not(.is-on) .iv-family-art .iv-icn { width:100%; height:100%; filter:none; }
-.iv-armory .iv-slot:not(.is-on):is(:hover,:focus-visible,.is-pick) .iv-family-art { opacity:.85; filter:saturate(.9); }
+.iv-armory .iv-slot:not(.is-on):is(:hover,:focus-visible,.is-pick) .iv-family-art { opacity:.7; filter:saturate(.9); }
 /* writing a garment */
 .gear-dlg { width: min(560px, 94vw); }
 /* ---------- the garment dialog ----------
