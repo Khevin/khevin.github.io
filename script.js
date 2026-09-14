@@ -148,13 +148,90 @@
     });
   });
 
-  /* ——— Hero cascade reveal ——— */
+  /* ——— Rise-in ———
+     The hero's own cascade is pure CSS — it is above the fold at first paint
+     and must not wait on this file. What lives here is the scroll half: the
+     headings, rows and process steps that lift as you reach them.
+
+     The one rule that matters is WHEN a thing is allowed to be hidden. An
+     element is armed only if the observer's first look finds it below the
+     fold. Anything already on screen is marked done and never touched, so a
+     late script, a failed observer or a deep link cannot leave a blank page
+     behind — which this site has done once before.
+
+     (This block replaces a `.hero → .in-view` toggle that had no CSS behind it
+     anywhere; it had been running and doing nothing.) */
   (() => {
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => hero.classList.add('in-view'));
-    });
+    if (reduced) return;
+
+    const RISE = [
+      '.section-title',             // the section announces itself
+      '.body-lg',                   // and its lead follows
+      '.process .step',             // 01–04, in the order they happen
+      '.principle',
+      '.note-entry',
+      '.work-list .item',
+      '.shelf-title',
+      '.page-hero-grid .l h1',
+      '.library-h1',
+      '.about-page-grid .bio .lead',
+      '.about-page-grid .about-portrait',
+      // the case studies are the longest reads on the site; their section
+      // headings are the only wayfinding in them
+      '.case-grid .body-block h2',
+      '.case-prose h2',
+      '.takeaways__head',
+    ];
+
+    const nodes = $$(RISE.join(','));
+    const track = document.querySelector('.process');
+    if (!nodes.length && !track) return;
+
+    document.documentElement.classList.add('js-motion');
+
+    /* Siblings that arrive together arrive in order. Capped, so a long list
+       does not end up waiting on a queue you can watch. */
+    const SEL = RISE.join(',');
+    const stagger = (el) => {
+      // Read the cascade, not the inline style: the process steps set their own
+      // delays in CSS to sit behind the sweeping rule, and those must win.
+      if (getComputedStyle(el).getPropertyValue('--rise-delay').trim()) return;
+      const kin = Array.from(el.parentElement?.children || []).filter((c) => c.matches(SEL));
+      const i = Math.min(kin.indexOf(el), 5);
+      if (i > 0) el.style.setProperty('--rise-delay', i * 70 + 'ms');
+    };
+
+    const seen = new WeakSet();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const el = e.target;
+        if (e.isIntersecting) {
+          if (!seen.has(el)) { seen.add(el); stagger(el); }
+          el.classList.add('is-in');
+          io.unobserve(el);
+        } else if (!seen.has(el) && e.boundingClientRect.top > 0) {
+          // below the fold and never shown: safe to hold back
+          seen.add(el);
+          stagger(el);
+          el.classList.add('rise-armed');
+        }
+      }
+    }, { rootMargin: '0px 0px -12% 0px' });
+
+    nodes.forEach((n) => io.observe(n));
+
+    /* The timeline container is marked, never hidden: it carries the rule and
+       the arrowhead, and hiding it would take its steps with it. */
+    if (track) {
+      const tio = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('is-in');
+          tio.unobserve(e.target);
+        }
+      }, { rootMargin: '0px 0px -15% 0px' });
+      tio.observe(track);
+    }
   })();
 
   /* ——— Scroll-progress hairline ——— */

@@ -618,6 +618,120 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 }
 
 
+/* ---------- motion ----------
+   The kinetic half of "kinetic editorial". PRODUCT.md bans motion as
+   decoration even in this lane, so each of the three moments below is doing a
+   job that the static page cannot do on its own:
+
+     the hero      says READING ORDER — the lines arrive in the order they are
+                   meant to be read, so the sentence completes itself rather
+                   than landing all at once as a block of type.
+     the sections  say ARRIVAL — a heading lifts as you reach it, which is the
+                   same signal the nav gives by going red.
+     the timeline  says SEQUENCE — the process rule draws left to right and each
+                   step lights as it passes. 01 through 04 is an order in time,
+                   and this is the one place on the site where the motion IS the
+                   content rather than a comment on it.
+
+   Two rules govern the whole layer:
+
+   1. Nothing here may strand content invisible. The hero animates from CSS
+      alone, so there is no script to fail. Everything else is armed by
+      script.js and ONLY while it sits below the fold — if the script never
+      runs, never finishes, or the observer never fires, the page is just the
+      page. This site has made that mistake once already.
+   2. Transform and opacity only. No layout properties, no bounce.
+
+   The curve is DESIGN.md's ease-out. Long, heavily decelerated, no overshoot:
+   things arrive and settle rather than snapping or springing. */
+:root {
+  --rise: cubic-bezier(0.16, 1, 0.3, 1);
+  --rise-dur: 900ms;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(var(--rise-from, 14px)); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---- the hero, on load ----
+   CSS only, deliberately. It is the one thing above the fold at first paint,
+   so it cannot wait for a deferred script without either flashing into place
+   or hiding content the script might never reveal. `both` holds the from-state
+   through the delay so the cascade reads as one movement. */
+.hero.v5 .h-block h1 .a,
+.hero.v5 .h-block h1 .b,
+.hero.v5 .h-block .right p,
+.hero.v5 .dispatches .d {
+  animation: rise var(--rise-dur) var(--rise) var(--rise-delay, 0ms) both;
+}
+.hero.v5 .h-block h1 .a { --rise-delay: 80ms; --rise-from: 18px; }
+/* The second line carries the emphasis, so it comes from a little further and
+   a beat later — the pause you would leave reading it aloud. */
+.hero.v5 .h-block h1 .b { --rise-delay: 230ms; --rise-from: 22px; }
+.hero.v5 .h-block .right p { --rise-delay: 420ms; }
+.hero.v5 .dispatches .d:nth-child(1) { --rise-delay: 560ms; }
+.hero.v5 .dispatches .d:nth-child(2) { --rise-delay: 650ms; }
+.hero.v5 .dispatches .d:nth-child(3) { --rise-delay: 740ms; }
+
+/* ---- sections, on entry ----
+   `.rise-armed` is added by script.js and only to elements that were below the
+   fold when it looked. Anything already on screen is never hidden at all. */
+.rise-armed {
+  opacity: 0;
+  transform: translateY(var(--rise-from, 14px));
+}
+.rise-armed.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--rise-dur) var(--rise) var(--rise-delay, 0ms),
+              transform var(--rise-dur) var(--rise) var(--rise-delay, 0ms);
+}
+
+/* ---- the process timeline ----
+   The rule draws from the left. Its arrowhead is held back until the rule has
+   very nearly arrived, so the arrow reads as the line landing rather than as a
+   shape that was always there. */
+/* The container is only ever marked, never hidden — it carries the rule and
+   the arrowhead as pseudo-elements, and hiding it would take the steps with
+   it. The steps arm normally. */
+.js-motion .process::before {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.js-motion .process.is-in::before {
+  transform: scaleX(1);
+  transition: transform 1150ms var(--rise);
+}
+.js-motion .process::after { opacity: 0; }
+.js-motion .process.is-in::after {
+  opacity: 1;
+  transition: opacity 420ms linear 900ms;
+}
+
+/* Each step lights as the rule reaches it — the four delays are spaced to sit
+   just behind the sweep rather than to a rhythm of their own. The borders are
+   part of the element, so the step's own rules arrive with its type. */
+.process .step:nth-child(1) { --rise-delay: 180ms; }
+.process .step:nth-child(2) { --rise-delay: 400ms; }
+.process .step:nth-child(3) { --rise-delay: 620ms; }
+.process .step:nth-child(4) { --rise-delay: 840ms; }
+
+/* ---- the static fallback ----
+   Reduced motion gets the finished page immediately. script.js also declines to
+   arm anything, so the scroll layer never starts; this covers the hero, which
+   runs without it. */
+@media (prefers-reduced-motion: reduce) {
+  .hero.v5 .h-block h1 .a,
+  .hero.v5 .h-block h1 .b,
+  .hero.v5 .h-block .right p,
+  .hero.v5 .dispatches .d { animation: none; }
+  .rise-armed, .rise-armed.is-in { opacity: 1; transform: none; transition: none; }
+  .js-motion .process::before { transform: none; }
+  .js-motion .process::after { opacity: 1; }
+}
+
+
 /* Clients: a red bar interior above a continuous near-black counter. */
 #clients {
   background: #1a1815;
