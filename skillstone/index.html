@@ -2529,6 +2529,31 @@ li.is-done .qg { color: var(--verdant); }
 @media(max-width:900px) { .iv-armory { grid-template-columns:minmax(0,1fr); gap:28px; } .iv-armory .iv-fig { width:min(440px,100%); margin:auto; } .iv-armory .iv-rig { width:100%; } }
 @media(max-width:480px) { .iv-panel:has(.iv-armory) { padding:16px 12px 20px; } .iv-armory .iv-rig { padding:12px; gap:6px; grid-template-rows:repeat(5,56px); } .iv-armory .iv-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } .iv-armory .iv-accessories { padding:6px; gap:4px; } .iv-armory .iv-accessories .iv-slot .iv-slot-nm { font-size:8px; } }
 
+
+/* Jewellery sits beside the body, in the same equipment board. */
+.iv-armory .iv-rig.iv-loadout { grid-template-columns:repeat(6,minmax(0,1fr)); grid-template-rows:repeat(8,49px); gap:7px; padding:16px; }
+.iv-armory .iv-loadout::before,.iv-armory .iv-loadout::after { content:none; }
+.iv-armory .iv-loadout .iv-slot { width:auto; height:auto; min-width:0; }
+.iv-armory .iv-loadout .iv-fly .iv-slot-face { padding:5px 7px 16px; }
+.iv-armory .iv-loadout .iv-fly .iv-slot-nm { font-size:9px; padding:4px 3px; }
+.iv-armory .iv-rig.iv-loadout [data-k="hat"] { grid-area:1/3/3/5; }
+.iv-armory .iv-rig.iv-loadout [data-k="eyes"] { grid-area:1/2/2/3; }
+.iv-armory .iv-rig.iv-loadout [data-k="ear-l"] { grid-area:2/2/3/3; }
+.iv-armory .iv-rig.iv-loadout [data-k="nose"] { grid-area:1/5/2/6; }
+.iv-armory .iv-rig.iv-loadout [data-k="ear-r"] { grid-area:2/5/3/6; }
+.iv-armory .iv-rig.iv-loadout [data-k="outer"] { grid-area:3/1/6/3; }
+.iv-armory .iv-rig.iv-loadout [data-k="top"] { grid-area:3/3/6/5; }
+.iv-armory .iv-rig.iv-loadout [data-k="neck"] { grid-area:3/5/4/7; }
+.iv-armory .iv-rig.iv-loadout [data-k="feet"] { grid-area:4/5/6/7; }
+.iv-armory .iv-rig.iv-loadout [data-k="legs"] { grid-area:6/3/9/5; }
+.iv-armory .iv-rig.iv-loadout [data-k="wrist-l"] { grid-area:6/1/7/3; }
+.iv-armory .iv-rig.iv-loadout [data-k="wrist-r"] { grid-area:6/5/7/7; }
+.iv-armory .iv-rig.iv-loadout [data-k="ring-l1"] { grid-area:7/1/8/2; }
+.iv-armory .iv-rig.iv-loadout [data-k="ring-l2"] { grid-area:7/2/8/3; }
+.iv-armory .iv-rig.iv-loadout [data-k="ring-r1"] { grid-area:7/5/8/6; }
+.iv-armory .iv-rig.iv-loadout [data-k="ring-r2"] { grid-area:7/6/8/7; }
+@media(max-width:480px) { .iv-armory .iv-rig.iv-loadout { padding:10px; gap:5px; grid-template-rows:repeat(8,44px); } .iv-armory .iv-loadout .iv-fly .iv-slot-nm { font-size:8px; } }
+
 /* writing a garment */
 .gear-dlg { width: min(560px, 94vw); }
 .gear-top { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s4); align-items: start; }
@@ -8601,8 +8626,7 @@ function renderInv() {
 
   let h = '<div class="iv-body iv-armory"><section class="iv-fig" aria-label="Equipped clothing">' +
     '<header class="iv-section-head"><h3>Equipped</h3><span>'+wornCount+' / '+SLOTS.length+' slots</span></header>' +
-    '<div class="iv-rig">'+SLOTS.filter(s=>!s.fly).map(invSlotHTML).join("")+'</div>' +
-    '<div class="iv-accessories" role="group" aria-label="Accessories">'+SLOTS.filter(s=>s.fly).map(invSlotHTML).join("")+'</div>' +
+    '<div class="iv-rig iv-loadout">'+SLOTS.map(invSlotHTML).join("")+'</div>' +
     '<p class="iv-doll-cap"><span>Your everyday loadout</span>'+(wornCount?'<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>':'')+'</p></section>';
 
   h += '<div class="iv-hold"><header class="iv-section-head"><h3>Wardrobe</h3><span>' + W.items.length + (W.items.length === 1 ? ' item' : ' items') + '</span></header><div class="iv-bar" role="group" aria-label="Show">' +
