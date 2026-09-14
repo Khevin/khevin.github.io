@@ -1002,6 +1002,45 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 }
 
 
+/* ---------- the about headline, on load ----------
+   It sits just under the fold on a normal window, so the scroll layer marked
+   it seen before it had a chance to move and it was simply there. It runs on
+   load instead, landing just after the rule that closes the hero — the page
+   finishes its opening sentence, then names the next one. */
+#about .section-title {
+  animation: rise 950ms var(--rise) 1000ms both;
+}
+
+/* ---------- the brands, held like a card ----------
+   The one section on the page that never moved. Each strip now answers the
+   pointer the way the tarot card in skillstone's diary does: it turns toward
+   the hand, up to five degrees, and settles back when you let go. Five rather
+   than that card's eleven because these plates are wide — the same angle across
+   this much width is a lurch, not a tilt. No gloss; the card earns light
+   because it is ceremonial and these are somebody's trademarks.
+
+   One caveat worth writing down: each strip is a single flat PNG, so the plate
+   turns as one. Moving the logos independently needs them as separate
+   elements, and while the first strip has all eight on disk the second is
+   missing ftz, poppin, PlataformaZero and two marks. */
+.clients-strip .col-r { perspective: 900px; }
+.client-strip-img {
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(var(--tilt-s, 1));
+  transition: transform 450ms var(--rise);
+}
+/* While held it tracks the pointer, so the transition is short and linear —
+   an eased one lags the hand and feels like drag. */
+.client-strip-img.is-held {
+  --tilt-s: 1.03;
+  transition: transform 90ms linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  #about .section-title { animation: none; }
+  .client-strip-img,
+  .client-strip-img.is-held { transform: none; transition: none; }
+}
+
+
 /* Clients: a red bar interior above a continuous near-black counter. */
 #clients {
   background: #1a1815;

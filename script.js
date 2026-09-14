@@ -187,6 +187,8 @@
       '.about-grid .lead',          // the about section: its lead,
       '.hats-art',                  // the hats it is illustrated with,
       '.disciplines .d',            // and the four disciplines under their rule
+      '.clients-strip h3',          // the brand rosters: their headings
+      '.client-strip-img',          // and the plates of logos beside them
       '.principle',
       '.note-entry',
       '.work-list .item',
@@ -202,13 +204,30 @@
       '.takeaways__head',
     ];
 
+    /* This one runs on load instead — it sits just under the fold, so being
+       marked seen on the first look meant it never moved at all. */
+    const NOT_HERE = '#about .section-title';
+
     /* Marked, never hidden. These carry their motion on a pseudo-element or a
        child, so holding the element itself back would take its contents with
-       it: the timeline's rule and arrowhead, the bar's illustration layer. */
-    const TRACKS = ['.process', '.disciplines', '#work', '#clients .s-head'];
+       it: the timeline's rule and arrowhead, the bar's illustration layer.
+       `when` watches a different element and marks this one — the chapter rule
+       is drawn at the BOTTOM of #work, and #work is three case studies tall,
+       so watching the section itself lit the rule the moment its top edge
+       appeared, a whole screen before you could see it. #snippets begins
+       exactly where that rule is, so it is the honest trigger. */
+    const TRACKS = [
+      { mark: '.process' },
+      { mark: '.disciplines' },
+      { mark: '#clients .s-head' },
+      { mark: '#work', when: '#snippets' },
+    ];
 
-    const nodes = $$(RISE.join(','));
-    const tracks = $$(TRACKS.join(','));
+    const nodes = $$(RISE.join(',')).filter((n) => !n.matches(NOT_HERE));
+    /* [element to watch, element to mark] — the same one unless `when` says so */
+    const tracks = TRACKS
+      .map((t) => [document.querySelector(t.when || t.mark), document.querySelector(t.mark)])
+      .filter(([watch, mark]) => watch && mark);
     if (!nodes.length && !tracks.length) return;
 
     document.documentElement.classList.add('js-motion');
@@ -245,14 +264,45 @@
     nodes.forEach((n) => io.observe(n));
 
     if (tracks.length) {
+      const marks = new Map(tracks);
       const tio = new IntersectionObserver((entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
-          e.target.classList.add('is-in');
+          marks.get(e.target)?.classList.add('is-in');
           tio.unobserve(e.target);
         }
       }, { rootMargin: '0px 0px -15% 0px' });
-      tracks.forEach((t) => tio.observe(t));
+      tracks.forEach(([watch]) => tio.observe(watch));
+    }
+  })();
+
+  /* ——— The brand strips answer the hand ———
+     The same gesture as the tarot card in skillstone's diary: the plate turns
+     toward the pointer and settles back when you let go. Five degrees rather
+     than that card's eleven, because these are wide — the same angle over this
+     much width is a lurch. No gloss: the card earns light because it is
+     ceremonial, and these are somebody's trademarks.
+
+     Nothing is stored; the pointer is the only state. Coarse pointers are left
+     out because there is no hover to answer, and the tilt would only fire on
+     tap and stick. */
+  (() => {
+    if (reduced || coarse) return;
+    const TILT = 5;
+    for (const plate of $$('.client-strip-img')) {
+      plate.addEventListener('pointermove', (e) => {
+        const r = plate.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        plate.style.setProperty('--tilt-y', ((px - 0.5) * 2 * TILT).toFixed(2) + 'deg');
+        plate.style.setProperty('--tilt-x', ((0.5 - py) * 2 * TILT).toFixed(2) + 'deg');
+        plate.classList.add('is-held');
+      });
+      plate.addEventListener('pointerleave', () => {
+        plate.classList.remove('is-held');
+        plate.style.removeProperty('--tilt-x');
+        plate.style.removeProperty('--tilt-y');
+      });
     }
   })();
 
