@@ -8875,9 +8875,9 @@ const gearArea = it => { const s = gearSpan(it.slot); return s[0] * s[1]; };
    A browser cannot list a folder off static hosting, so the folder is listed here instead, by
    sync-clothing.js. Editing this array by hand is a claim about the folder that goes stale. */
 /* clothing-manifest:start — written by sync-clothing.js, not by hand */
-const CLOTHING_ART = ["bracelet-gold.webp", "earring-doublehoops.webp", "earring-singlehoop.webp", "glasses-rayban-aviatorclassic.avif", "nosering.jpg", "perfume-cartier-pasha.webp", "perfume-jpg-lemaleparfum.png", "perfume-mancera-redtobacco.webp", "tshirt-white.webp", "watch-stgermain-black.jpg"];
+const CLOTHING_ART = ["bracelet-gold.png", "earring-doublehoops.png", "earring-singlehoop.png", "glasses-rayban-aviatorclassic.png", "nosering.png", "perfume-cartier-pasha.png", "perfume-jpg-lemaleparfum.png", "perfume-mancera-redtobacco.png", "tshirt-white.webp", "watch-stgermain-black.png"];
 /* shot on a background rather than cut out: the wardrobe puts these on a plate */
-const CLOTHING_PLATE = ["bracelet-gold.webp", "earring-doublehoops.webp", "earring-singlehoop.webp", "glasses-rayban-aviatorclassic.avif", "nosering.jpg", "perfume-cartier-pasha.webp", "perfume-mancera-redtobacco.webp", "watch-stgermain-black.jpg"];
+const CLOTHING_PLATE = [];
 /* clothing-manifest:end */
 const CLOTHING_DIR = "assets/clothes/";
 const gearArtSrc = it => it.art && CLOTHING_ART.indexOf(it.art) > -1 ? CLOTHING_DIR + it.art : "";
