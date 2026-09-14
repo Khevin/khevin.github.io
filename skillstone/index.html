@@ -8220,7 +8220,7 @@ const WEAR = [
   { k: "eyes",  name: "Eyewear",   kinds: [["sun", "Sunglasses"], ["specs", "Glasses"]] },
   { k: "ear",   name: "Earring",   kinds: [["stud", "Stud"], ["hoop", "Hoop"], ["drop", "Drop"]] },
   { k: "nose",  name: "Nose",      kinds: [["ring", "Ring"], ["stud", "Stud"]] },
-  { k: "neck",  name: "Neck",      kinds: [["chain", "Chain"], ["scarf", "Scarf"]] },
+  { k: "neck",  name: "Neck",      kinds: [["chain", "Chain"], ["scarf", "Scarf"], ["tie", "Tie"]] },
   { k: "wrist", name: "Wrist",     kinds: [["watch", "Watch"], ["band", "Band"], ["cuff", "Cuff"]] },
   { k: "ring",  name: "Ring",      kinds: [["band", "Band"], ["signet", "Signet"], ["stone", "Stone"]] },
   { k: "outer", name: "Overshirt", kinds: [["shacket", "Overshirt"], ["jacket", "Jacket"], ["hoodie", "Zip hoodie"], ["blazer", "Blazer"], ["coat", "Coat"], ["sherpa", "Lined denim jacket (jaqueta forrada)"], ["pullover", "Pullover hoodie"], ["sweater", "Sweater"]] },
@@ -8747,6 +8747,12 @@ const GEAR_ICON = {
         '<path fill="none" stroke="' + p.rim + '" stroke-width="0.8" opacity="0.8" stroke-linecap="round" d="M9.8 7.8a12 11 0 0 0 4.6 6.4"/>' +
         ivPart(p, g, "m20 18 4 5.6-4 5.6-4-5.6Z") +
         '<path fill="' + p.rim + '" opacity="0.65" d="m20 19.6 2.4 3.4-2.4 1.4-2.4-1.4Z"/>' },
+    /* a tie is a knot and a blade, and nothing else is */
+    tie: (c, uid) => { const p = ivCloth(c), g = "url(#" + uid + ")";
+      return ivDefs(uid, p) +
+        ivPart(p, g, "M17.2 6.4h5.6l-1.4 4.6 1.8 18.4-3.2 5.2-3.2-5.2 1.8-18.4Z") +
+        ivPart(p, p.dark, "M17.2 6.4h5.6l-1.4 4.6h-2.8Z") +
+        ivFold(p, "M20 11.4v22"); },
     /* A ring with something hanging off it is a hand mirror, whichever way it is shaded — two
        goes at that proved it. So: the band draped across, a knot where it crosses itself, and
        two fringed tails. Nothing round in it to be mistaken for anything round. */
@@ -9080,7 +9086,13 @@ function invDollHTML() {
      over it. */
   const shoec=color(feet,'#38342d'), wearOver=!!feet&&wardrobe().tuck===true;
   const footwear=()=>{
-    const k=feet.kind, boot=k==='boots', sx=wearOver?[78,106]:[83,102];
+    /* under the trousers, the shaft must sit inside BOTH legs once mirrored about 112.5: the
+       right leg runs 118-139 at the ankle, so the hidden shaft is 86-102 (123-139 mirrored) */
+    const k=feet.kind, boot=k==='boots', sx=wearOver?[78,108]:[86,102];
+    /* The bare feet are not a mirrored pair: the right one stands five units further out than
+       the left's reflection. A shoe mirrored about the body's centre therefore sat five units
+       inboard of the foot it was on. The right shoe is mirrored about x=112.5 instead. */
+    const both=s=>s+'<g transform="translate(225 0) scale(-1 1)">'+s+'</g>';
     const soleC=k==='sneakers'?'#d9d2bf':ivShade(shoec,-.45);
     let s='<g data-avatar-layer="feet" data-kind="'+esc(k)+'" data-over="'+wearOver+'">';
     // the upper: ankle at the top, heel inboard, toe out
@@ -9093,7 +9105,7 @@ function invDollHTML() {
     if(boot)s+=both(path('M96 461h10l1 7h-11z',ivShade(soleC,-.25),'none',0));
     if(k==='sneakers'){s+=both(line('M72 461H104','#00000030',1));s+=both(line('M84 447l12 1m-13 4 13 1',ivShade(shoec,.55),1.2));}
     if(k==='loafers')s+=both(path('M84 452Q92 450 100 452L100 455Q92 453 84 455Z',ivShade(shoec,-.3),'none',0));
-    if(boot){s+=both(line('M'+(sx[0]+2)+' 421H'+(sx[1]-2),ivShade(shoec,.22),1));s+=both(line('M84 428l10 1m-10 5 10 1m-10 5 10 1',ivShade(shoec,.4),1));}
+    if(boot){s+=both(line('M'+(sx[0]+2)+' 421H'+(sx[1]-2),ivShade(shoec,.22),1));s+=both(line('M88 428l9 1m-9 5 9 1m-9 5 9 1',ivShade(shoec,.4),1));}
     return s+'</g>';
   };
   if(!feet) g += bare; else if(!wearOver) g += footwear();
@@ -9101,12 +9113,19 @@ function invDollHTML() {
   if(legs) {
     const short=legs.kind==='shorts', cargo=legs.kind==='cargo', jog=legs.kind==='joggers'||cargo, end=short?336:447, legc=color(legs,'#494641');
     /* the tactical trouser is cut fuller: the leg bellies out below the knee and gathers at the cuff */
+    /* Shorts are cut loose. The trouser leg's hem is 80-103 and the bare thigh under it runs to
+       x=107 at that height, so a short cut from the trouser pattern left the inner thigh standing
+       outside its own hem. The short leg is wider than the thigh by a margin on both sides, hangs
+       lower, and its crotch sits below the body's. */
     const cut=cargo
       ? 'M81 238Q110 246 139 238L146 283 147 380 142 '+end+'Q129 '+(end+4)+' 116 '+end+'L110 288 104 '+end+'Q90 '+(end+4)+' 78 '+end+'L73 380 74 283Z'
+      : short
+      ? 'M81 238Q110 246 139 238L147 283 146 348Q129 353 112 348L110 302 108 348Q91 353 74 348L73 283Z'
       : 'M81 238Q110 246 139 238L144 283 139 '+end+'Q129 '+(end+4)+' 117 '+end+'L110 288 103 '+end+'Q90 '+(end+4)+' 80 '+end+'L76 285Z';
     g+='<g data-avatar-layer="legs" data-kind="'+esc(legs.kind)+'">'+path(cut,trouser);
     g+=line('M82 251q27 5 56 0M110 253v30M87 258q0 18-10 21m56-21q0 18 10 21','#0005',1.5);
-    if(!cargo)g+=both(line('M85 298l10 12-10 5m0 48 11 9-10 7','#ffffff18',1.4));
+    if(!cargo&&!short)g+=both(line('M85 298l10 12-10 5m0 48 11 9-10 7','#ffffff18',1.4));
+    if(short)g+=both(line('M85 298l10 12-10 5','#ffffff18',1.4)+line('M76 344q17 6 34 0','#0000002a',1.2));
     if(cargo) {
       // a thigh pocket with its flap and a snap on each leg, a drawstring at the waist, and the creases a full leg gathers
       g+=both(path('M76 318L100 322 99 352 76 350Z',ivShade(legc,-.1),ivShade(legc,-.32),.9)+path('M75 316L101 320 100 329 75 326Z',ivShade(legc,-.04),ivShade(legc,-.32),.9));
@@ -9158,14 +9177,18 @@ function invDollHTML() {
     const k=top.kind,long=['hoodie','sweater','shirt'].includes(k);
     g+='<g data-avatar-layer="'+(closedOuter?'outer':'top')+'" data-kind="'+esc(closedOuter?outer.kind:k)+'">';
     const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
-    const shirt= ['shirt','printed'].includes(k), print=k==='printed';
-    /* The short-sleeved shirt is worn with the top two buttons open, which is how he wears it:
-       the V runs down to the sternum, the collar points lie out on the chest instead of standing
-       at the throat, and the pale facing shows along the edge of the opening. The dress shirt
-       stays buttoned to the collar. */
+    const shirt= ['shirt','printed'].includes(k), print=k==='printed', polo=k==='polo';
+    /* No shirt is buttoned to the collar unless there is a tie in it. The short-sleeved shirt is
+       worn with the top two open — the V to the sternum, the collar points lying out on the chest,
+       the pale facing along the edge; the dress shirt and the polo with one open, a shorter V and
+       points that stand a little apart. A tie closes the dress shirt and brings the collar stand
+       back, because with a tie the band at the throat is what you see. */
+    const tied=k==='shirt'&&!!worn('neck')&&worn('neck').kind==='tie';
     const shirtBody=print
       ? 'M96 109L104 121 110 152 116 121 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z'
-      : 'M96 109L104 119 110 128 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z';
+      : tied
+      ? 'M96 109L104 119 110 128 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z'
+      : 'M96 109L104 119 110 136 116 119 124 109Q137 110 146 123L140 201 142 245Q126 251 110 248Q94 251 78 245L80 201 74 123Q83 110 96 109Z';
     const cut=shirt?shirtBody:shape;
     g+=path(cut,fabric,tEdge,0.9);
     /* The sleeve goes on OVER the body. Underneath, the body's own outline runs diagonally from
@@ -9187,24 +9210,36 @@ function invDollHTML() {
       g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,ivShade(topc,-0.24),1);
       g+=line('M97 129l-2 37m29-37 2 37','#e8dfc1',1.8)+line('M95 164v5m31-5v5','#554f40',2);
       g+=line('M80 239q30 8 60 0','#00000026',3.5);
-    } else if(shirt||k==='polo') {
-      const polo=k==='polo';
-      // A real collar stand with two compact fall points; a short placket for knit polos.
-      /* the collar stand shows between the points on a buttoned collar; on an open one the
-         points lie flat and the band behind the neck is hidden, so it is not drawn */
-      if(!print)g+=path('M96 109Q110 116 124 109L122 117Q110 122 98 117Z',fabric,tEdge,.6);
+    } else if(shirt||polo) {
+      /* the collar stand shows between the points only on a buttoned collar; open, the points
+         lie flat and the band behind the neck is hidden, so it is not drawn */
+      if(tied)g+=path('M96 109Q110 116 124 109L122 117Q110 122 98 117Z',fabric,tEdge,.6);
       if(print) {
-        // open at the top: the facing along the V, the points lying out, the placket from the first closed button
+        // two open: the facing along the V, the points lying out, the placket from the first closed button
         g+=path('M104 121L110 152 116 121 114 121 110 146 106 121Z','#e8e1cf7a','none',0);
         g+=path('M96 109L86 122 94 134 104 121Z',fabric,tEdge,.7);
         g+=path('M124 109L134 122 126 134 116 121Z',fabric,tEdge,.7);
         g+=path('M108 150h4v95h-4Z',fabric,ivShade(topc,-.18),.5);
         for(let y=160;y<243;y+=23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+      } else if(tied) {
+        g+=path('M96 109L108 120 99 135 91 120Z',fabric,tEdge,.7);
+        g+=path('M124 109L112 120 121 135 129 120Z',fabric,tEdge,.7);
+        g+=path('M108 123h4v122h-4Z',fabric,ivShade(topc,-.18),.5);
+        for(let y=140;y<243;y+=23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+      } else if(polo) {
+        // one open on a knit collar: a short V of skin, the points a little apart, the placket from the first button
+        g+=path('M103 116L110 131 117 116Z',skin,'none',0);
+        g+=path('M97 111L91 123 101 131 104 117Z',fabric,tEdge,.7);
+        g+=path('M123 111L129 123 119 131 116 117Z',fabric,tEdge,.7);
+        g+=path('M108 130h4v24h-4Z',fabric,ivShade(topc,-.18),.5);
+        for(let y=139;y<154;y+=12)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
       } else {
-        g+=path(polo?'M97 111L109 120 101 130 94 119Z':'M96 109L108 120 99 135 91 120Z',fabric,tEdge,.7);
-        g+=path(polo?'M123 111L111 120 119 130 126 119Z':'M124 109L112 120 121 135 129 120Z',fabric,tEdge,.7);
-        g+=path('M108 123h4v'+(polo?31:122)+'h-4Z',fabric,ivShade(topc,-.18),.5);
-        for(let y=polo?134:140;y<(polo?154:243);y+=polo?12:23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
+        // the dress shirt with one open: the facing along the V, the points standing a little apart
+        g+=path('M104 119L110 136 116 119 114 119 110 131 106 119Z','#e8e1cf7a','none',0);
+        g+=path('M96 109L89 124 99 134 104 119Z',fabric,tEdge,.7);
+        g+=path('M124 109L131 124 121 134 116 119Z',fabric,tEdge,.7);
+        g+=path('M108 134h4v111h-4Z',fabric,ivShade(topc,-.18),.5);
+        for(let y=144;y<243;y+=23)g+='<circle cx="110" cy="'+y+'" r="1.1" fill="'+ivShade(topc,-.48)+'"/>';
       }
       if(polo)g+=both(line('M55 155l21 8',ivShade(topc,-.2),2.2));
       if(k==='shirt') {
@@ -9294,7 +9329,7 @@ function invDollHTML() {
     g+=path(hat.kind==='beanie'?'M84 44q25-5 53 0v10q-28-5-53 0Z':hat.kind==='cap'?'M88 46q24-3 44 1l17 9q-32 7-62-1Z':'M80 47q30 8 59 0l11 11q-39 13-80 0Z',f);g+='</g>';}
   // Every small accessory is represented on the character, not only in a socket.
   const eyes=worn('eyes');if(eyes){const c=color(eyes,'#41392e');g+='<g data-avatar-layer="eyes">'+both('<rect x="92" y="60" width="16" height="11" rx="4" fill="'+(eyes.kind==='sun'?'#202b2e':'#d5e1d124')+'" stroke="'+c+'" stroke-width="2"/>')+line('M108 64h4',c,2)+'</g>';}
-  const neck=worn('neck');if(neck){const c=color(neck,'#bc9644');g+='<g data-avatar-layer="neck">'+(neck.kind==='scarf'?path('M93 103q17 10 34 0l4 20-18 6 5 55-15 2-3-60-11-7Z',material('scarf',c)):line('M92 113Q110 173 128 113',c,2)+'<path d="m110 149 4 6-4 6-4-6Z" fill="'+c+'"/>')+'</g>';}
+  const neck=worn('neck');if(neck){const c=color(neck,'#bc9644');g+='<g data-avatar-layer="neck" data-kind="'+esc(neck.kind)+'">'+(neck.kind==='tie'?path('M106 119h8l-2 7 3 62-5 11-5-11 3-62Z',material('tie',c),ivShade(c,-.35),.6)+path('M106 119h8l-2 7h-4Z',ivShade(c,-.3),ivShade(c,-.45),.5):neck.kind==='scarf'?path('M93 103q17 10 34 0l4 20-18 6 5 55-15 2-3-60-11-7Z',material('scarf',c)):line('M92 113Q110 173 128 113',c,2)+'<path d="m110 149 4 6-4 6-4-6Z" fill="'+c+'"/>')+'</g>';}
   for(const [slot,x] of [['ear-l',86],['ear-r',134]]){const it=worn(slot);if(it)g+='<g data-avatar-layer="'+slot+'">'+(it.kind==='stud'?'<circle cx="'+x+'" cy="73" r="2" fill="'+color(it,'#c5a559')+'"/>':'<ellipse cx="'+x+'" cy="'+(it.kind==='drop'?80:76)+'" rx="3" ry="'+(it.kind==='drop'?7:4)+'" fill="none" stroke="'+color(it,'#c5a559')+'" stroke-width="1.8"/>')+'</g>';}
   const nose=worn('nose');if(nose)g+='<circle data-avatar-layer="nose" cx="114" cy="76" r="2" fill="none" stroke="'+color(nose,'#c7ad65')+'" stroke-width="1.3"/>';
   for(const [side,x] of [['l',55],['r',165]]){const it=worn('wrist-'+side);if(it)g+='<g data-avatar-layer="wrist-'+side+'"><rect x="'+(x-7)+'" y="241" width="14" height="6" rx="2" fill="'+color(it,'#7d6943')+'"/>'+(it.kind==='watch'?'<circle cx="'+x+'" cy="244" r="5" fill="#222b29" stroke="'+color(it,'#c1a15b')+'" stroke-width="2"/>':'')+'</g>';for(let n=1;n<=2;n++){const ring=worn('ring-'+side+n);if(ring)g+='<path data-avatar-layer="ring-'+side+n+'" d="M'+(x-3+n*3)+' 264h3" stroke="'+color(ring,'#c5a559')+'" stroke-width="2"/>';}}
