@@ -87,7 +87,16 @@
     <div class="left">
       <h1 class="hx-display">
         <span class="a">Design that</span>
-        <span class="b">solves &amp; ships.</span>
+        <!-- The two verbs change weight on load, so each needs a box that does
+             not change with them. data-word is drawn as a hidden ::before at
+             the headline's real weight — that is what holds the box open — and
+             the visible copy sits on top of it and breathes inside. Without it
+             the line shoves itself sideways as it goes: "solves" is a tenth
+             narrower at the bottom of its dip, and the ampersand would swing.
+             The spare copy is an attribute and a pseudo-element rather than a
+             second span, so the heading's text stays "Design that solves &
+             ships." for a reader, a search engine and a copy-paste alike. -->
+        <span class="b"><span class="wd" data-word="solves"><span class="wd-ink">solves</span></span> &amp; <span class="wd" data-word="ships."><span class="wd-ink">ships.</span></span></span>
       </h1>
     </div>
     <div class="right">

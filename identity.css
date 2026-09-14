@@ -1223,6 +1223,115 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   ::-webkit-scrollbar-corner { background: transparent; }
 }
 
+/* ---------- the two verbs, on load ----------
+   "Design that solves & ships." is the whole argument of the site, and the
+   argument is the two verbs. They change weight once as the cascade finishes:
+   solves settles, then ships — the order the rest of the site is organised in,
+   which is the only reason this earns its place rather than being a wiggle.
+
+   The headline moves to a variable cut of the same face to do it. Fraunces is
+   self-hosted as static 900s, so weight simply had nowhere to go; the flex face
+   is the same family subset to this one headline's sixteen letters over the
+   whole wght axis, 10KB, and it measures identically to the static 900 at rest
+   (245.28px against 245.28px for "solves" at 100px) — so nothing about the page
+   is different until it moves. It goes on the h1 rather than the two words so
+   that both lines are the same cut: a difference in optical sizing between
+   "Design that" and "solves" would show inside a single headline. Anything
+   outside the subset falls through the unicode-range to the static face. */
+.hero.v5 .h-block h1.hx-display {
+  font-family: 'Fraunces Flex', var(--display-font, 'Fraunces'), Georgia, serif;
+}
+
+/* Each word sits in a box the width of itself at 900, held open by a hidden
+   copy of the word, so the weight change cannot move the line. The copy is a
+   pseudo-element off data-word rather than a second span: generated content is
+   not part of the document's text, so the heading a reader, a search engine or
+   a copy-paste sees stays the sentence and not each verb twice.
+   inline-block over inline-grid on purpose: its baseline is the ghost's own
+   baseline, which is the one thing here that must not drift against the
+   ampersand between them. */
+.hero.v5 .h-block h1 .wd { position: relative; display: inline-block; }
+.hero.v5 .h-block h1 .wd::before { content: attr(data-word); visibility: hidden; }
+.hero.v5 .h-block h1 .wd-ink {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  /* The headline's outer edges are fixed and the breathing happens inside it.
+     The first verb is anchored left because its left edge is the page's margin,
+     shared with "Design that" directly above; centring it pulled that edge in
+     by a few pixels mid-dip, and against a margin that straight it was the one
+     thing in the line you could see move. The last is anchored right because
+     its full stop ends the headline. What is left to give is the two gaps
+     around the ampersand, which open and close alternately as each word takes
+     its turn — so the verbs read as leaning in toward it and back out. */
+  text-align: left;
+}
+.hero.v5 .h-block h1 .wd:last-of-type .wd-ink { text-align: right; }
+
+/* A third curve, and the only symmetric one here. --rise and --draw are both
+   ease-outs because everything else on the page is arriving at somewhere; this
+   is a thing going and coming back to where it already was, so it wants equal
+   ends and speed through the middle — a breath, not an arrival. Still no
+   overshoot, which DESIGN.md rules out and the axis could not render anyway:
+   900 is the top of it, so anything past that flattens against the ceiling. */
+:root { --dance: cubic-bezier(0.62, 0, 0.38, 1); }
+
+@keyframes weight-dance {
+  0%   { font-weight: 900; }
+  /* the intake */
+  32%  { font-weight: 600; }
+  /* back, and a smaller second dip so it settles rather than stops dead */
+  64%  { font-weight: 900; }
+  80%  { font-weight: 810; }
+  100% { font-weight: 900; }
+}
+
+/* No fill on it, deliberately. The keyframes open and close on 900, which is
+   what the words inherit whenever no animation applies, so an unfilled
+   animation is invisible before it starts and invisible after it ends — and it
+   leaves font-weight free afterwards for the hover below, which a filled end
+   state would outrank and silently kill.
+   The delay clears .b's own rise (230 + 900), making this the last beat. */
+.hero.v5 .h-block h1 .wd-ink {
+  animation: weight-dance 920ms var(--dance) var(--dance-delay, 1150ms);
+  /* The lean, below. On the base rule so it eases out as well as in. */
+  transition: font-weight 420ms var(--dance) var(--lean-delay, 0ms);
+}
+.hero.v5 .h-block h1 .wd:last-of-type .wd-ink {
+  --dance-delay: 1390ms;
+  --lean-delay: 90ms;
+}
+
+/* And afterwards the words answer the pointer: hovering the headline leans both
+   of them off their weight and releasing settles them back, the second trailing
+   the first by the same beat the dance uses.
+
+   A transition rather than a replay of the animation, for two reasons that both
+   turned up in testing. CSS cannot restart an animation by changing its delay —
+   :hover duly swapped 1150ms for 0ms and the animation, already past its end,
+   stayed finished and nothing moved; replaying it would have meant a second
+   copy of the keyframes under a second name purely to force a fresh one. And
+   the animation above had `both` on it, whose filled end state outranks any
+   transition on the same property, so the lean could not have been seen anyway.
+   Dropping the fill costs nothing here: the keyframes open and close on 900,
+   which is exactly what .wd-ink inherits when no animation is applying.
+
+   Only where there is a pointer. A tap on a phone can leave :hover stuck, and
+   a headline that quietly stayed light after being touched would read as a
+   font that failed to load rather than as anything deliberate. */
+@media (hover: hover) and (pointer: fine) {
+  .hero.v5 .h-block h1:hover .wd-ink { font-weight: 760; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero.v5 .h-block h1 .wd-ink {
+    animation: none;
+    transition: none;
+  }
+  .hero.v5 .h-block h1:hover .wd-ink { font-weight: 900; }
+}
+
 
 /* Clients: a red bar interior above a continuous near-black counter. */
 #clients {

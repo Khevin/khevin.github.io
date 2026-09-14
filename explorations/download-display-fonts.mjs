@@ -14,7 +14,15 @@ const dir = new URL('../fonts/', import.meta.url);   /* served from the repo roo
 await mkdir(dir, { recursive: true });
 
 /* `spec` is the css2 family query; `slug` is the google/fonts repo directory,
-   used only to pull the licence next to the binary. */
+   used only to pull the licence next to the binary.
+
+   Two optional fields serve the hero's weight animation. `text` asks Google for
+   a subset carrying only those characters, which is what makes a variable face
+   affordable here: the whole wght axis over the sixteen letters of one headline
+   is 10KB, where the latin range of the same face is 67KB. `as` renames the
+   family on the way out, so the variable cut can sit beside the static 900
+   without the two being picked for each other's text — the hero opts in by
+   name, and nothing else on the site changes. */
 const FAMILIES = [
   { spec: 'Anton',                         slug: 'anton' },
   { spec: 'Bodoni+Moda:opsz,wght@6..96,900', slug: 'bodonimoda' },
@@ -28,6 +36,16 @@ const FAMILIES = [
   { spec: 'Gloock',                        slug: 'gloock' },
   { spec: 'Fraunces:opsz,wght@9..144,900', slug: 'fraunces' },
   { spec: 'Fraunces:ital,opsz,wght@1,9..144,900', slug: 'fraunces' },
+  /* The hero headline, and only it, on a live weight axis. The text is the
+     headline verbatim: change that line and this has to be changed with it, or
+     the new letters fall through the unicode-range to the static 900 and the
+     one word that is missing stops animating. */
+  {
+    spec: 'Fraunces:opsz,wght@9..144,100..900',
+    slug: 'fraunces',
+    as: 'Fraunces Flex',
+    text: 'Design that solves & ships.',
+  },
 ];
 
 // A modern UA gets woff2 back; without one Google serves ttf.
@@ -38,8 +56,9 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-
 const faces = [];
 const failed = [];
 
-for (const { spec, slug } of FAMILIES) {
-  const url = `https://fonts.googleapis.com/css2?family=${spec}&display=swap`;
+for (const { spec, slug, as, text } of FAMILIES) {
+  const url = `https://fonts.googleapis.com/css2?family=${spec}` +
+    (text ? `&text=${encodeURIComponent(text)}` : '') + '&display=swap';
   try {
     const res = await fetch(url, { headers: { 'User-Agent': UA } });
     if (!res.ok) throw new Error(`css ${res.status}`);
@@ -52,14 +71,24 @@ for (const { spec, slug } of FAMILIES) {
     const latin = blocks.find((b) => /unicode-range:[^;]*U\+0000-00FF/.test(b)) || blocks.at(-1);
     if (!latin) throw new Error('no @font-face in response');
 
-    const family = latin.match(/font-family:\s*'([^']+)'/)[1];
-    const weight = (latin.match(/font-weight:\s*([\d\s]+);/) || [, '400'])[1].trim().split(/\s+/).pop();
+    const family = as || latin.match(/font-family:\s*'([^']+)'/)[1];
+    /* Kept whole rather than reduced to a number: a variable face answers with
+       a range ("100 900"), and that range is the declaration that tells the
+       browser the axis is there to animate. Collapsing it to its last value
+       would ship the file and then pin it shut. */
+    const weight = (latin.match(/font-weight:\s*([\d\s]+);/) || [, '400'])[1].trim();
     const style = (latin.match(/font-style:\s*(\w+)/) || [, 'normal'])[1];
     const src = latin.match(/url\(([^)]+)\)/)[1];
+    /* A text subset covers only what was asked for, so it has to say so — the
+       range is what lets anything outside it fall through to the full face
+       instead of rendering as nothing. */
+    const range = text ? latin.match(/unicode-range:\s*([^;]+);/)?.[1] : null;
 
     const bin = await fetch(src);
     if (!bin.ok) throw new Error(`font ${bin.status}`);
-    const name = `${slugify(family)}-${weight}${style === 'italic' ? '-italic' : ''}.woff2`;
+    const name = as
+      ? `${slugify(as)}.woff2`
+      : `${slugify(family)}-${weight}${style === 'italic' ? '-italic' : ''}.woff2`;
     await writeFile(new URL(name, dir), Buffer.from(await bin.arrayBuffer()));
 
     faces.push(
@@ -69,6 +98,7 @@ for (const { spec, slug } of FAMILIES) {
       `  font-weight: ${weight};\n` +
       `  font-display: swap;\n` +
       `  src: url(./fonts/${name}) format('woff2');\n` +
+      (range ? `  unicode-range: ${range};\n` : '') +
       `}`
     );
 
