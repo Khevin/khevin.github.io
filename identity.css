@@ -674,6 +674,41 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 .hero.v5 .dispatches .d:nth-child(2) { --rise-delay: 650ms; }
 .hero.v5 .dispatches .d:nth-child(3) { --rise-delay: 740ms; }
 
+/* ---- and the rules that frame it ----
+   The hero is drawn on four lines, and three of them were never in the
+   cascade: they stood there at full strength while the words faded up past
+   them, which is the tell that breaks the whole illusion — the frame cannot
+   already be finished while its contents are still arriving.
+   Each one now comes in just ahead of the thing it frames, a little quicker
+   than the type so it settles rather than races it. The dispatch columns are
+   not listed because their rules are borders on the cards themselves, and they
+   have been fading with them all along.
+   One token, --v5-rule, draws all of them, so the keyframe can name the end
+   colour instead of hard-coding it. It is inherited from .hero.v5, and both
+   elements here carry exactly one border, so animating border-color entire
+   touches nothing else. */
+@keyframes rule-in {
+  from { border-color: transparent; }
+  to   { border-color: var(--v5-rule); }
+}
+@keyframes rule-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+/* the upright between the headline and the note beside it */
+.hero.v5 .h-block .right {
+  animation: rule-in 620ms var(--rise) 360ms both;
+}
+/* the full-window line under the headline block — a pseudo-element, so it
+   fades as itself rather than through a border */
+.hero.v5 .h-block::after {
+  animation: rule-fade 620ms var(--rise) 500ms both;
+}
+/* and the one that closes the hero, last, under the three dispatches */
+.hero.v5 {
+  animation: rule-in 620ms var(--rise) 720ms both;
+}
+
 /* ---- sections, on entry ----
    `.rise-armed` is added by script.js and only to elements that were below the
    fold when it looked. Anything already on screen is never hidden at all. */
@@ -722,6 +757,9 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    arm anything, so the scroll layer never starts; this covers the hero, which
    runs without it. */
 @media (prefers-reduced-motion: reduce) {
+  .hero.v5,
+  .hero.v5 .h-block::after,
+  .hero.v5 .h-block .right,
   .hero.v5 .h-block h1 .a,
   .hero.v5 .h-block h1 .b,
   .hero.v5 .h-block .right p,
