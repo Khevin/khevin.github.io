@@ -9176,7 +9176,9 @@ function invDollHTML() {
   if(top) {
     const k=top.kind,long=['hoodie','sweater','shirt'].includes(k);
     g+='<g data-avatar-layer="'+(closedOuter?'outer':'top')+'" data-kind="'+esc(closedOuter?outer.kind:k)+'">';
-    const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
+    /* the tank's straps are broad and its neckline shallow — narrow straps left the whole shoulder
+       standing outside them as a hump */
+    const shape=k==='tank'?'M90 112L95 118Q110 131 125 118L130 112 140 118Q131 142 144 156L138 209 140 243Q110 252 80 243L82 209 76 156Q89 142 80 118Z':body;
     const shirt= ['shirt','printed'].includes(k), print=k==='printed', polo=k==='polo';
     /* No shirt is buttoned to the collar unless there is a tie in it. The short-sleeved shirt is
        worn with the top two open — the V to the sternum, the collar points lying out on the chest,
@@ -9250,7 +9252,10 @@ function invDollHTML() {
       /* a crew neck is a rib, not a line: the dark of the opening with the band's lit edge above
          it, and the seam where a set-in sleeve is stitched to the body */
       /* the body's own outline already draws the opening; this is the rib sitting on it */
-      g+=line(k==='tank'?'M92 115Q110 145 128 115':'M97 109Q110 120 123 109','#ffffff26',2.4);
+      /* the tank's rib was an arc drawn ten units below its own neckline, a grey smile on the
+         chest; the binding follows the cut now, round the neck and round both armholes */
+      if(k==='tank')g+=line('M95 118Q110 131 125 118','#ffffff26',2)+both(line('M80 118Q89 142 76 156','#ffffff1e',1.6));
+      else g+=line('M97 109Q110 120 123 109','#ffffff26',2.4);
     }
     if(k==='sweater')g+=both(line('M49 226l15 5',ivShade(topc,-.12),2.5))+line('M81 239q29 7 58 0',ivShade(topc,-.12),3);
     g+=line('M82 240q28 6 56 0','#ffffff20');
