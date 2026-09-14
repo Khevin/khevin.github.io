@@ -647,6 +647,16 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 :root {
   --rise: cubic-bezier(0.16, 1, 0.3, 1);
   --rise-dur: 900ms;
+  /* A line being drawn needs a different curve from a thing arriving.
+     --rise is an ease-out-expo: it covers about 80% of the distance in the
+     first fifth of its time and spends the rest settling. On something
+     fading up that is exactly right, and you read it as arriving. On a line
+     it means the line is simply THERE, and then creeps imperceptibly to
+     full length — the travel, which is the whole point of a draw, never
+     happens where the eye can catch it.
+     This one is close to even, with soft ends: the stroke is legible the
+     whole way across. */
+  --draw: cubic-bezier(0.45, 0.12, 0.28, 1);
 }
 
 @keyframes rise {
@@ -736,7 +746,7 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 }
 .js-motion .process.is-in::before {
   transform: scaleX(1);
-  transition: transform 1150ms var(--rise);
+  transition: transform 1150ms var(--draw);
 }
 .js-motion .process::after { opacity: 0; }
 .js-motion .process.is-in::after {
@@ -794,7 +804,7 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
 .js-motion .process.is-in .step::before,
 .js-motion .process.is-in .step::after {
   transform: scaleY(1);
-  transition: transform 760ms var(--rise) var(--rise-delay, 0ms);
+  transition: transform 760ms var(--draw) var(--rise-delay, 0ms);
 }
 
 /* Each step lights as the rule reaches it — the four delays are spaced to sit
