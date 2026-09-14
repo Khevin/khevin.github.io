@@ -235,10 +235,10 @@ if (farTone) {
 svg = svg.replace(
   /<svg[^>]*>/,
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" fill="none" ` +
-  /* none, not meet: the footer sets the band's width and height and the
-     drawing fills it. The city is deliberately drawn wide and low there —
-     twice its natural aspect — and "meet" would letterbox that instead. */
-  'preserveAspectRatio="none" aria-hidden="true" focusable="false">'
+  /* These two are intermediates now: build-skyline-band.mjs embeds them into a
+     wider band, so they keep their true proportions and nothing here stretches
+     them. */
+  'preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">'
 );
 
 // Figma ships every path with an id; none of them are referenced.

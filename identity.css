@@ -390,16 +390,18 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
      the field directly.
      Written against the artwork's width because that is what sets its height,
      and because a percentage in a margin resolves against width anyway. */
-  /* The band the city is drawn in. Full width, and about a third of its own
-     natural aspect tall — half the height it used to be. Floored, because on a
-     phone the viewport is already narrow and a share of it is a sliver: at
-     390px the pure ratio gave 45px of city.
-     --sink is derived from it rather than from a percentage of the width, so
-     it is an absolute length wherever it is spent and the old trap — a
-     percentage resolving against height on one property and width on another —
-     cannot come back. */
-  --band: clamp(104px, 11.5vw, 230px);
-  --sink: calc(var(--band) * 22 / 245);
+  /* The band is one composed drawing, 1400x124: São Paulo at a quarter of the
+     width it used to fill, keeping its own proportions, with city built either
+     side of it so the footer reads as one wide horizon. Nothing is stretched.
+
+     Never narrower than 900px. Below that the band overflows the page and is
+     clipped by .foot, so a phone gets the middle of the city at a size you can
+     read rather than the whole thing as a 35px sliver.
+
+     --sink is the band's ground bar, 11 of its 1400 — an absolute length once
+     resolved, so it cannot mean one thing on a margin and another on a height. */
+  --band-w: max(min(100%, 1400px), 900px);
+  --sink: calc(var(--band-w) * 11 / 1400);
   border-top: 0;
   /* The paper lives here rather than on the skyline, so the band the artwork
      is sunk into shows THROUGH it instead of being painted over. */
@@ -427,9 +429,16 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
      keeps going, lying over the field below it. */
   margin-bottom: calc(var(--sink) * -1);
 }
-/* No shared height here: it would out-specify the per-layer heights below,
-   which are what set the band. */
-.foot-skyline img { display: block; }
+/* height: auto or the images take the height="124" off their own markup and
+   stop scaling with the band. And max-width: none because styles.css caps
+   every image at 100% of its container — which is exactly what the band has
+   to break on a phone, where it is deliberately wider than the page and
+   clipped to show the middle of the city. */
+.foot-skyline img {
+  display: block;
+  height: auto;
+  max-width: none;
+}
 /* Full bleed, and drawn at twice its natural aspect: half as tall, twice as
    wide — three times its natural aspect, which lands it at half the height it
    was. At its own 2.9:1 this was a picture of a skyline taking up a third of
@@ -441,8 +450,13 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    the height — took the cathedral spires and Martinelli's flag with it. */
 .foot-skyline__near {
   position: relative;
-  width: 100%;
-  height: var(--band);
+  width: var(--band-w);
+  /* Not `margin: 0 auto`: auto margins resolve to zero once the box is wider
+     than what holds it, so on a phone the band sat flush left and overflowed
+     to the right — you got the outskirts and São Paulo was off screen. This
+     centres whether it fits or not. */
+  left: 50%;
+  transform: translateX(-50%);
 }
 /* The second city, standing behind the first.
    Wider, plainer and lighter — the three things that read as distance. It is
@@ -454,18 +468,15 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 126%;
-  /* The far drawing is wider than the near one to begin with, so at the same
-     compression it lands a little shorter — which is what sets it back. */
-  height: calc(var(--band) * 0.92);
-  /* It has to stop exactly where the night starts, or its pale ground bar lies
-     on the dark field and reads as a smear across it.
-     The offset is --sink, but it CANNOT be spent on `bottom`: a percentage
-     there resolves against the container's height, and --sink is written in
-     percentages of its width. That put it 19px too low. A margin resolves
-     against width whichever edge it is on, so the same value lands right. */
+  /* Exactly the near band's box, so the two grounds cannot drift apart: both
+     drawings are composed on the same 1400x124 canvas and the same ground
+     line. The distance is carried by tone and height inside the drawing, not
+     by sizing the layers differently out here — which is what used to need an
+     offset, and what the offset used to get wrong. This plane's buildings stop
+     ON the ground line rather than below it, so no pale grey overhangs the
+     night and there is nothing left to correct for. */
   bottom: 0;
-  margin-bottom: var(--sink);
+  width: var(--band-w);
 }
 /* Only the home page ends with the city — it is the last thing after the
    invitation to work together, and it earns that place by being the end of the
