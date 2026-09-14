@@ -6545,6 +6545,7 @@ function sanitize(s) {
       pattern: ['sticks','spots','abstract','flowers','sprigs'].includes(x.pattern)?x.pattern:'sticks',
       printColor: shirtInk(x.printColor,'#202326'), printColor2: shirtInk(x.printColor2,'#779b83'), printSecond: x.printSecond===true,
       holes: x.holes === true,
+      graphic: teeGraphic(x.graphic), graphicColor: shirtInk(x.graphicColor,'#2a2a2e'),
       note: String(x.note || "").slice(0, 80),
       img: (typeof x.img === "string" && x.img.startsWith("data:image")) ? x.img : ""
     }));
@@ -8299,6 +8300,23 @@ function migrateOuterwear(wr) {
 }
 const SHIRT_PRINTS=[['sticks','Fine strokes'],['spots','Small spots'],['abstract','Bold spots'],['flowers','Large flowers'],['sprigs','Small florals']];
 const shirtInk=(c,f)=>/^#[0-9a-f]{6}$/i.test(c||'')?c:f;
+/* A t-shirt can carry a graphic: one big print across the chest, or a small logo on the chest
+   where logos sit — the wearer's left, the viewer's right. Both are drawn as a soft blob in one
+   ink, on the figure and on the wardrobe drawing; what the print IS is the photo's business. */
+const TEE_GRAPHICS=[['none','None'],['big','Big print in the middle'],['logo','Small logo on the chest']];
+const teeGraphic=g=>TEE_GRAPHICS.some(x=>x[0]===g)?g:'none';
+const teeGraphicFields=d=>{
+  if(d.kind!=='tee'||d.slot!=='top')return '';
+  const g=teeGraphic(d.graphic);
+  return '<fieldset class="gear-colors"><legend class="bk-l">Graphic</legend>'+
+    '<div class="gear-ink"><select name="graphic" aria-label="Graphic">'+TEE_GRAPHICS.map(([k,n])=>'<option value="'+k+'"'+(g===k?' selected':'')+'>'+n+'</option>').join('')+'</select>'+
+    '<span class="gear-ink-l">Ink</span><label class="gear-pick"><input type="color" name="graphicColor" aria-label="Graphic colour" value="'+shirtInk(d.graphicColor,'#2a2a2e')+'"'+(g==='none'?' disabled':'')+'></label></div></fieldset>';
+};
+/* the blob, in figure space (big across the chest, logo on the right of the chest) and in icon space */
+const TEE_BLOB={
+  fig:{big:'M94 166c6-10 27-11 32-1s2 22-7 26-23 3-27-5-3-12 2-20z',logo:'M121 146c3-3 8-3 10 1s0 7-3 8-8 0-9-3-0-4 2-6z'},
+  icn:{big:'M13.6 17c2.4-4 10.4-4.4 12.6-.4s.8 8.6-2.8 10.2-9.2 1.2-10.8-2-1-5.6 1-7.8z',logo:'M24.4 13.6c1-1.2 3.2-1.2 4 .4s0 2.8-1.2 3.2-3.2 0-3.6-1.2-.2-1.6.8-2.4z'}
+};
 function shirtPattern(it,id,scale=1) {
   const a=shirtInk(it.printColor,'#202326'), b=it.printSecond?shirtInk(it.printColor2,'#779b83'):a;
   const k=it.pattern||'sticks';
@@ -8917,8 +8935,10 @@ function gearIconHTML(it) {
   }
   const set = GEAR_ICON[it.slot] || {};
   const fn = set[it.kind] || set[Object.keys(set)[0]];
+  const tg = it.slot === "top" && it.kind === "tee" ? teeGraphic(it.graphic) : "none";
   return '<svg class="iv-icn" viewBox="' + (GEAR_VIEW[it.slot] || "-4 -4 48 48") + '" aria-hidden="true">' +
-    (fn ? fn(it.color, "gi" + (++ivIcnN)) : "") + "</svg>";
+    (fn ? fn(it.color, "gi" + (++ivIcnN)) : "") +
+    (tg !== "none" ? '<path d="' + TEE_BLOB.icn[tg] + '" fill="' + shirtInk(it.graphicColor, "#2a2a2e") + '" opacity=".92"/>' : "") + "</svg>";
 }
 /* Shared illustrated category art for filters and empty equipment sockets. */
 const IV_CATEGORY_ART = {
@@ -9215,6 +9235,7 @@ function invDollHTML() {
       g+=path(cut,'url(#av-print-light)','none',0);
     }
     g+=(long?folds():drape());
+    if(k==='tee'){const tg=teeGraphic(top.graphic);if(tg!=='none')g+='<path data-avatar-part="graphic" data-graphic="'+tg+'" d="'+TEE_BLOB.fig[tg]+'" fill="'+shirtInk(top.graphicColor,'#2a2a2e')+'" opacity=".94"/>';}
     if(k==='hoodie') {
       g+=path('M91 108Q79 103 81 118L92 136Q110 144 129 134L140 117Q140 103 129 108L124 119Q110 128 96 119Z',fabric,tEdge,0.9);
       g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,ivShade(topc,-0.24),1);
@@ -9579,7 +9600,7 @@ function gearDlgRender(focusSel) {
     /* only worth saying when a photograph is in play, because that is the only time it surprises */
     (d.img ? '<p class="gear-hint">Your character still wears this colour, not the photograph.</p>' : "") +
     "</fieldset>" +
-    shirtPrintFields(d) +
+    shirtPrintFields(d) + teeGraphicFields(d) +
     '<hr class="gear-sep">' +
     /* Everything else. */
     '<label class="bk-l">Note<input type="text" name="note" maxlength="80" value="' + esc(d.note) + '" placeholder="brand, where it lives, what it goes with" autocomplete="off"></label>' +
@@ -9603,7 +9624,8 @@ document.addEventListener("input", e => {
   else if (t.name === "kind") { gearEdit.kind = t.value; gearDlgRender('[name="kind"]'); }
   else if (t.name === "holes") gearEdit.holes = t.checked;
   else if(t.name==='pattern') {gearEdit.pattern=t.value;gearDlgPreview();}
-  else if(t.name==='printColor'||t.name==='printColor2') {gearEdit[t.name]=t.value;gearDlgPreview();}
+  else if(t.name==='printColor'||t.name==='printColor2'||t.name==='graphicColor') {gearEdit[t.name]=t.value;gearDlgPreview();}
+  else if(t.name==='graphic') {gearEdit.graphic=teeGraphic(t.value);gearDlgRender('[name="graphic"]');}
   else if(t.name==='printSecond') {gearEdit.printSecond=t.checked;gearDlgRender('[name="printSecond"]');}
   else if (t.name === "slot") {
     /* a new slot brings its own kinds; keep the one named if the new slot also has it */
@@ -9778,6 +9800,7 @@ function gearDlgSave() {
   it.pattern=['sticks','spots','abstract','flowers','sprigs'].includes(d.pattern)?d.pattern:'sticks';
   it.printColor=shirtInk(d.printColor,'#202326');it.printColor2=shirtInk(d.printColor2,'#779b83');it.printSecond=!!d.printSecond;
   it.holes = !!d.holes;
+  it.graphic=teeGraphic(d.graphic);it.graphicColor=shirtInk(d.graphicColor,'#2a2a2e');
   it.note = d.note.trim().slice(0, 80); it.img = d.img || "";
   /* a garment that moved to another slot cannot stay worn in the one it left */
   if (moved) SLOTS.forEach(s => { if (W.worn[s.k] === it.id && s.f !== it.slot) delete W.worn[s.k]; });
