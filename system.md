@@ -56,25 +56,16 @@ A 44×44 native `<button>` reveals the primary nav as a dropdown panel anchored 
 
 ---
 
-## Pattern: hero-row collapse
+## Pattern: council hero
 
-The hero pairs a copy column with an art column on desktop and stacks them on mobile. The previous inline `style="grid-column: span N"` blocked media queries; the fix is class-based.
+The hero pairs editorial copy with an interactive council, using six of the existing Pantheon SVG drawings. It introduces the full eighteen-designer method without pretending to run a live review or implying personal endorsement.
 
-**Markup.**
-
-```html
-<div class="row hero-row">
-  <div class="hero-col-text"> … body-lg + hero-copy … </div>
-  <div class="hero-col-art">  … hero-art tile …       </div>
-</div>
-```
-
-**CSS.**
-
-- Desktop default: `.hero-col-text { grid-column: span 6 }`, `.hero-col-art { grid-column: 8 / span 5 }`.
-- At `≤760px`: `.hero-row { grid-template-columns: 1fr; gap: 28px }` and both children `grid-column: 1 / -1`. Both span the full width; the value-prop sentence finally has its full measure.
-
-**Rule.** No inline grid-column styles on a row that needs to collapse. If the row is desktop-only, an inline style is acceptable; if it needs to reflow, ship classes.
+- `.council-hero__layout` uses two columns, `1fr 1.1fr`, and stacks at `≤760px`. Responsive rules live in `design-expert-hero.css`; no inline grid-column styles.
+- The council uses a circular arrangement on wide screens and a taller oval on narrow screens, preserving enough room between the seats and the decision card. Designer buttons sit around a central principle and a small worked example. Shared drawings live in `assets/council-symbols.svg`, with non-scaling strokes so they remain legible at small sizes.
+- Six native buttons expose `aria-pressed` and control a polite live region. Click, Enter, Space, arrows, Home, and End work. `design-expert-hero.js` changes only authored example content. There is no auto-rotation, timer, remote call, or framework dependency.
+- Default Rams content is readable before JavaScript loads. Motion is limited to short hover/color transitions and disabled for reduced-motion preferences; anchor scrolling also honors that preference.
+- The final call remains the user's. Link directly to installation, the library, and the full Pantheon.
+- The ChatGPT glyph uses a white filter on the ink theme and keeps its dark original on paper. Both compatibility links remain equally prominent.
 
 ---
 

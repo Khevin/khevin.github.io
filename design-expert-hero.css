@@ -1,0 +1,305 @@
+/* The council: an editorial introduction using the Pantheon's own drawings. */
+.council-hero {
+  padding: 32px 0 0;
+  overflow: clip;
+}
+.council-hero__mast {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+  font: 10px/1.5 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.council-hero__layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  align-items: center;
+  gap: clamp(20px, 3vw, 44px);
+  padding: 46px 0 36px;
+}
+.council-hero__intro { min-width: 0; }
+.council-hero h1 {
+  font: 400 clamp(56px, 6.7vw, 94px)/.99 var(--serif);
+  letter-spacing: -.045em;
+  margin: 0 0 28px;
+}
+.council-hero h1 em {
+  color: var(--accent);
+  font-weight: 400;
+}
+.council-hero__dek {
+  font: 400 clamp(19px, 1.75vw, 24px)/1.4 var(--serif);
+  letter-spacing: -.014em;
+  margin: 0 0 12px;
+}
+.council-hero__copy {
+  max-width: 39ch;
+  margin: 0;
+  color: var(--ink-mute);
+  font-size: 15px;
+  line-height: 1.65;
+}
+.council-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  margin-top: 30px;
+}
+.council-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  background: var(--accent);
+  color: #1a1815;
+  padding: 14px 18px;
+  min-height: 48px;
+  font: 500 13px/1.5 var(--mono);
+  transition: background .18s;
+}
+.council-hero__cta:hover { background: var(--accent-mute); }
+.council-hero__cta span { font-size: 20px; line-height: 1; }
+.council-hero__secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--rule);
+}
+.council-hero__secondary:hover { border-color: var(--accent); }
+.council-hero a:focus-visible,
+.council-seat:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+.council-hero .compat {
+  gap: 8px 12px;
+  margin-top: 27px;
+}
+.council-hero .compat .label {
+  flex-basis: 100%;
+  margin-bottom: 2px;
+  color: var(--ink-mute);
+  font-size: 9px;
+}
+.council-hero .compat .chip.primary {
+  font-size: 11px;
+  padding: 8px 10px;
+  min-height: 40px;
+  white-space: nowrap;
+}
+.council-hero .compat .chip.primary .glyph.clawd,
+.council-hero .compat .chip.primary .glyph.clawd img { height: 16px; }
+.council-hero .compat .chip.primary .glyph.chatgpt,
+.council-hero .compat .chip.primary .glyph.chatgpt img { width: 17px; height: 17px; }
+/* The SVG stays dark on paper and becomes true white on the ink theme. */
+body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
+
+.council-study { min-width: 0; }
+.council-study__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font: 9px/1.5 var(--mono);
+  color: var(--ink-mute);
+}
+.council-study__header > :first-child { color: var(--ink); }
+.council-study__table {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 600 / 570;
+  min-height: 460px;
+  margin-top: 4px;
+  isolation: isolate;
+}
+.council-study__geometry {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+.council-orbit--inner { stroke-dasharray: 1 7; }
+.council-crosshair { stroke: var(--ink-faint); }
+.council-spokes path { stroke-dasharray: 3 5; transition: stroke .2s; }
+.council-spokes .is-selected {
+  stroke: var(--accent);
+  stroke-dasharray: none;
+  stroke-width: 1.5;
+}
+.council-seat {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink-soft);
+  width: 22%;
+  padding: 5px 2px 7px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.council-seat svg {
+  display: block;
+  width: clamp(48px, 5vw, 72px);
+  height: clamp(50px, 5.6vw, 80px);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  margin-bottom: 8px;
+  transition: color .2s, transform .2s;
+}
+.council-seat > span { font: 400 11px/1.4 var(--serif); }
+.council-seat small {
+  margin-top: 3px;
+  font: 8px/1.4 var(--mono);
+  color: var(--ink-mute);
+}
+.council-seat:hover svg { transform: translateY(-3px); }
+.council-seat:hover,
+.council-seat.is-selected { color: var(--accent); }
+.council-seat.is-selected small { color: var(--accent); }
+.council-seat[data-council-seat="rams"] { left: 50%; top: 12%; }
+.council-seat[data-council-seat="vignelli"] { left: 84%; top: 30%; }
+.council-seat[data-council-seat="kare"] { left: 84%; top: 69%; }
+.council-seat[data-council-seat="itten"] { left: 50%; top: 88%; }
+.council-seat[data-council-seat="tufte"] { left: 16%; top: 69%; }
+.council-seat[data-council-seat="muller-brockmann"] { left: 16%; top: 30%; }
+.council-decision {
+  position: absolute;
+  z-index: 1;
+  top: 49%;
+  left: 50%;
+  width: 44%;
+  transform: translate(-50%, -50%);
+  padding: clamp(14px, 1.8vw, 25px) 12px 18px;
+  text-align: center;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  box-shadow: 7px 7px 0 -1px var(--paper), 7px 7px 0 var(--rule);
+}
+.council-decision__label {
+  display: block;
+  font: 8px/1.5 var(--mono);
+  letter-spacing: .03em;
+  color: var(--ink-mute);
+}
+.council-decision__drawing { height: 56px; margin: 12px 0 6px; }
+.council-decision__drawing svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke-width: 1;
+}
+.study-muted { stroke: var(--ink-faint); }
+.study-cut { stroke: var(--accent); opacity: .65; }
+.study-ink { stroke: var(--ink); }
+.study-arrow { stroke: var(--accent); }
+.study-fill { fill: var(--accent); stroke: none; }
+.council-decision__title {
+  font: 400 clamp(22px, 2.3vw, 32px)/1.08 var(--serif);
+  letter-spacing: -.025em;
+  margin: 0;
+  min-height: 2.16em;
+}
+.council-decision__verdict {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--accent);
+  font: 9px/1.5 var(--mono);
+  margin-top: 16px;
+}
+.council-decision__verdict svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.council-study__note {
+  border-top: 1px solid var(--rule);
+  text-align: center;
+  padding-top: 16px;
+}
+.council-study__note p {
+  color: var(--ink-soft);
+  font: italic 16px/1.4 var(--serif);
+  min-height: 2.8em;
+  max-width: 40ch;
+  margin: 0 auto 7px;
+}
+.council-study__note > span { color: var(--ink-mute); font: 9px/1.5 var(--mono); }
+.council-study__disclaimer {
+  margin: 8px 0 0;
+  text-align: center;
+  color: var(--ink-mute);
+  font-size: 10px;
+}
+.council-hero__footer {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr auto;
+  align-items: center;
+  gap: 32px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 0;
+}
+.council-hero__footer p { margin: 0; color: var(--ink-mute); font: 13px/1.6 var(--sans); }
+.council-hero__footer > p:first-child { font: 19px/1.3 var(--serif); color: var(--ink); }
+.council-hero__number { color: var(--accent); }
+.council-hero__footer em { color: var(--ink-mute); font-size: 17px; }
+.council-hero__footer a { display: flex; align-items: center; gap: 18px; min-height: 44px; font: 11px/1.5 var(--mono); }
+.council-hero__footer a:hover { color: var(--accent); }
+
+@media (max-width: 760px) {
+  .council-hero { padding-top: 22px; }
+  .council-hero__mast { font-size: 8px; gap: 12px; }
+  .council-hero__edition { max-width: 18ch; text-align: right; }
+  .council-hero__layout { grid-template-columns: 1fr; gap: 46px; padding: 32px 0; }
+  .council-hero h1 { font-size: clamp(53px, 11.6vw, 84px); margin-bottom: 22px; }
+  .council-hero h1 em br { display: none; }
+  .council-hero__dek { font-size: 21px; }
+  .council-hero__copy { max-width: 43ch; font-size: 14px; }
+  .council-hero__actions { gap: 18px; margin-top: 24px; }
+  .council-hero__cta { font-size: 11px; gap: 18px; padding: 12px 14px; }
+  .council-hero__secondary { font-size: 12px; }
+  .council-hero .compat { gap: 8px; margin-top: 22px; }
+  .council-hero .compat .chip.primary { font-size: 10px; padding: 8px; min-height: 44px; }
+  .council-study { max-width: 560px; width: 100%; justify-self: center; }
+  .council-study__header { font-size: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+  .council-study__table { margin-top: 12px; min-height: 420px; }
+  .council-seat svg { width: clamp(40px, 11vw, 65px); height: clamp(44px, 12vw, 70px); margin-bottom: 6px; }
+  .council-seat > span { font-size: clamp(9px, 2.65vw, 12px); }
+  .council-seat small { font-size: 7px; }
+  .council-decision { width: 45%; padding: 12px 7px; box-shadow: 4px 4px 0 -1px var(--paper), 4px 4px 0 var(--rule); }
+  .council-decision__label { font-size: 6.5px; letter-spacing: 0; }
+  .council-decision__drawing { height: 34px; margin: 8px 0 6px; }
+  .council-decision__title { font-size: clamp(18px, 5vw, 28px); }
+  .council-decision__verdict { font-size: 7px; margin-top: 10px; gap: 4px; }
+  .council-study__note p { font-size: 15px; }
+  .council-study__note > span { font-size: 8px; }
+  .council-study__disclaimer { font-size: 9px; }
+  .council-hero__footer { grid-template-columns: 1fr auto; gap: 18px; padding: 20px 0; }
+  .council-hero__footer > p:nth-child(2) { display: none; }
+  .council-hero__footer a { font-size: 9px; gap: 8px; }
+  .council-hero__footer > p:first-child { font-size: 17px; }
+  .council-hero__footer em { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .council-hero *, .council-hero *::before, .council-hero *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .council-seat:hover svg { transform: none; }
+}
