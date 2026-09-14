@@ -64,6 +64,47 @@
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#changelog">Changelog</a></li>
     </ul>
+
+    <div class="font-switch">
+      <button class="font-switch__trigger" id="font-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="font-panel">
+        <span class="font-switch__aa" aria-hidden="true">Aa</span>
+        <span class="font-switch__name" id="font-current">Source Serif</span>
+        <span class="chev" aria-hidden="true">▾</span>
+      </button>
+
+    <ul class="font-panel" id="font-panel" role="listbox" aria-label="Typeface for every title on this page" hidden>
+      <li role="option" data-font="source" data-label="Source Serif" data-stack='"Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+          aria-selected="true" tabindex="0" class="current">
+        <span class="font-row"><span class="mark" aria-hidden="true">✓</span><span class="font-row__name" style='font-family: "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Source Serif 4</span></span>
+        <span class="font-desc">The face the page was drawn in. Optical sizes hold it even from 11px to 130px.</span>
+      </li>
+      <li role="option" data-font="instrument" data-label="Instrument" data-stack='"Instrument Serif", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+          aria-selected="false" tabindex="-1">
+        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Instrument Serif", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Instrument Serif</span></span>
+        <span class="font-desc">Hairline thin strokes, narrow and tall. The headings read as a masthead.</span>
+      </li>
+      <li role="option" data-font="fraunces" data-label="Fraunces" data-stack='"Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+          aria-selected="false" tabindex="-1">
+        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Fraunces</span></span>
+        <span class="font-desc">Soft old-style with a deliberate wobble. Warms the page and sounds handmade.</span>
+      </li>
+      <li role="option" data-font="newsreader" data-label="Newsreader" data-stack='"Newsreader", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+          aria-selected="false" tabindex="-1">
+        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Newsreader", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Newsreader</span></span>
+        <span class="font-desc">Drawn for newsprint, so the titles report rather than announce.</span>
+      </li>
+      <li role="option" data-font="caslon" data-label="Caslon" data-stack='"Libre Caslon Text", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'
+          aria-selected="false" tabindex="-1">
+        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Libre Caslon Text", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif'>Libre Caslon Text</span></span>
+        <span class="font-desc">Caslon, settled and bookish. The voice of a printed manual.</span>
+      </li>
+      <li role="option" data-font="inter" data-label="Inter Tight" data-stack='"Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif'
+          aria-selected="false" tabindex="-1">
+        <span class="font-row"><span class="mark" aria-hidden="true"></span><span class="font-row__name" style='font-family: "Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif'>Inter Tight</span></span>
+        <span class="font-desc">The page’s own sans. Titles stop being editorial and become interface.</span>
+      </li>
+    </ul>
+    </div>
   </div>
 </nav>
 
@@ -72,20 +113,11 @@
 <!-- ============= HERO ============= -->
 <section class="hero council-hero" aria-labelledby="hero-heading">
   <div class="shell">
-    <div class="council-hero__mast">
-      <span>A design discipline for your AI</span>
-      <span class="council-hero__edition">Open source · Made by a designer</span>
-    </div>
-
     <div class="council-hero__layout">
       <div class="council-hero__intro">
-        <h1 id="hero-heading">Your next design.<br />In <em>good <br />company.</em></h1>
+        <h1 id="hero-heading">The <em>design-expert</em>,<br />at your <span class="under">service</span>.</h1>
         <p class="council-hero__dek">Give your AI a council worth listening to.</p>
         <p class="council-hero__copy">Eighteen designers’ principles help plan, build, and review your work. From the first grid to the final detail, every decision has a reason.</p>
-        <div class="council-hero__actions">
-          <a class="council-hero__cta" href="#install">Bring in the council <span aria-hidden="true">↗</span></a>
-          <a class="council-hero__secondary" href="#library">Explore the skill <span aria-hidden="true">↓</span></a>
-        </div>
         <div class="compat">
           <span class="label">Works with</span>
           <a class="chip primary" href="#install-claude"><span class="glyph clawd"><img src="./assets/clawd.png" alt="" width="30" height="20" /></span>Claude Code<span class="chip-arrow" aria-hidden="true">↗</span></a>
@@ -94,7 +126,6 @@
       </div>
 
       <div class="council-study" aria-label="An illustrated introduction to the design council">
-        <div class="council-study__header"><span>The council, at work</span><span>Six perspectives of eighteen</span></div>
         <div class="council-study__table" data-council-table>
           <svg class="council-study__geometry" viewBox="0 0 600 570" preserveAspectRatio="none" aria-hidden="true">
             <circle class="council-orbit" cx="300" cy="278" r="199" />
@@ -433,9 +464,17 @@
 
     <div class="install-grid">
 
-      <div class="install-card" id="install-claude">
+      <div class="install-tabs" id="install-tabs">
+        <div class="install-tabs__list" role="tablist" aria-label="Choose where design-expert runs">
+          <button class="install-tab" id="install-claude" type="button" role="tab" aria-selected="true" aria-controls="install-panel-claude" tabindex="0">
+            <span class="glyph clawd"><img src="./assets/clawd.png" alt="" width="30" height="20" /></span>Claude Code
+          </button>
+          <button class="install-tab" id="install-codex" type="button" role="tab" aria-selected="false" aria-controls="install-panel-codex" tabindex="-1">
+            <span class="glyph chatgpt"><img src="./assets/chatgpt.svg" alt="" width="20" height="20" /></span>ChatGPT / Codex
+          </button>
+        </div>
+      <div class="install-card install-panel" id="install-panel-claude" role="tabpanel" aria-labelledby="install-claude" tabindex="0">
         <div class="install-card__head">
-          <span class="step">Claude Code</span>
           <h4>Add the marketplace, install the plugin.</h4>
           <p>Two slash commands, run in sequence. The first registers the khev‑tools marketplace. The second installs design‑expert. Restart the session so <span class="mono">/design-expert</span> registers.</p>
         </div>
@@ -463,9 +502,8 @@
         </div>
       </div>
 
-      <div class="install-card" id="install-codex">
+      <div class="install-card install-panel" id="install-panel-codex" role="tabpanel" aria-labelledby="install-codex" tabindex="0" hidden>
         <div class="install-card__head">
-          <span class="step">ChatGPT / Codex</span>
           <h4>Ask the skill installer.</h4>
           <p>One prompt installs the same skill folder with its references and Codex metadata. Start a new task after installation, then invoke it explicitly with <span class="mono">$design-expert</span> or simply describe design work.</p>
         </div>
@@ -488,6 +526,7 @@
           <span class="ok">✓</span> <span class="output-line">$design-expert available · plan, build, iterate, review, write</span>
         </div>
         </div>
+      </div>
       </div>
 
       <div class="install-card">
@@ -611,6 +650,7 @@
           <li><strong>ChatGPT / Codex is first-class.</strong> Install from the GitHub skill folder with <span class="mono">$skill-installer</span>, invoke with <span class="mono">$design-expert</span>, or let design work trigger it automatically.</li>
           <li><strong>One doctrine, two harnesses.</strong> A compact adapter resolves paths, question UI, optional memory, visual workspaces, and council seats without forking the design method.</li>
           <li><strong>Project rules travel.</strong> Discovery reads both <span class="mono">AGENTS.md</span> and <span class="mono">CLAUDE.md</span>; Figma, repository previews, conversation visuals, and prose fallbacks are selected from the capabilities actually present.</li>
+          <li><strong>The page asks you to choose once.</strong> Install is a tab group, so you read the steps for your own harness and never scroll past the ones you cannot use. A typeface control in the nav tries six voices on every title, and the hero dropped the parts that repeated themselves.</li>
         </ul>
       </div>
       <div class="entry">
@@ -1234,6 +1274,118 @@ if ('IntersectionObserver' in window && libRows.length) {
       }, 1500);
     });
   });
+})();
+
+// Install tabs — one harness at a time, so nobody reads the instructions that
+// do not apply to them. The hero's compatibility links point at the tab ids,
+// so arriving from one of those links opens the tab it named.
+(() => {
+  const list = document.querySelector('.install-tabs__list');
+  if (!list) return;
+  const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
+  const select = (tab, moveFocus) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !on;
+    });
+    if (moveFocus) tab.focus();
+  };
+  list.addEventListener('click', (e) => {
+    const tab = e.target.closest('[role="tab"]');
+    if (tab) select(tab, false);
+  });
+  list.addEventListener('keydown', (e) => {
+    const i = tabs.indexOf(document.activeElement);
+    if (i < 0) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); select(tabs[(i + 1) % tabs.length], true); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); select(tabs[(i - 1 + tabs.length) % tabs.length], true); }
+    else if (e.key === 'Home') { e.preventDefault(); select(tabs[0], true); }
+    else if (e.key === 'End') { e.preventDefault(); select(tabs[tabs.length - 1], true); }
+  });
+  const byId = (hash) => tabs.find((t) => '#' + t.id === hash);
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#install-"]');
+    if (!a) return;
+    const t = byId(a.getAttribute('href'));
+    if (t) select(t, false);
+  });
+  window.addEventListener('hashchange', () => { const t = byId(location.hash); if (t) select(t, false); });
+  const initial = byId(location.hash);
+  if (initial) select(initial, false);
+})();
+
+// Title typeface explorer — swaps --title, which every heading rule reads, and
+// nothing else. The five extra faces are fetched the first time the panel is
+// opened, so a reader who never opens it never pays for them.
+(() => {
+  const trigger = document.getElementById('font-trigger');
+  const panel = document.getElementById('font-panel');
+  if (!trigger || !panel) return;
+  const label = document.getElementById('font-current');
+  const options = Array.from(panel.querySelectorAll('[role="option"]'));
+  const KEY = 'design-expert:title-font';
+  let fetched = false;
+  const fetchFaces = () => {
+    if (fetched) return;
+    fetched = true;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter+Tight:ital,wght@0,400;0,500;0,600;1,400&display=swap';
+    document.head.appendChild(link);
+  };
+  const apply = (opt, remember) => {
+    document.documentElement.style.setProperty('--title', opt.dataset.stack);
+    label.textContent = opt.dataset.label;
+    options.forEach((o) => {
+      const on = o === opt;
+      o.setAttribute('aria-selected', String(on));
+      o.classList.toggle('current', on);
+      o.tabIndex = on ? 0 : -1;
+      const mark = o.querySelector('.mark');
+      if (mark) mark.textContent = on ? '✓' : '';
+    });
+    if (remember) { try { localStorage.setItem(KEY, opt.dataset.font); } catch (err) { /* private window */ } }
+  };
+  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
+  const setOpen = (state) => {
+    if (state) fetchFaces();
+    trigger.setAttribute('aria-expanded', String(state));
+    panel.hidden = !state;
+    if (state) (panel.querySelector('.current') || options[0]).focus();
+  };
+  const choose = (opt) => { apply(opt, true); setOpen(false); trigger.focus(); };
+  trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()); });
+  trigger.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
+  });
+  options.forEach((opt) => {
+    opt.addEventListener('click', () => choose(opt));
+    opt.addEventListener('keydown', (e) => {
+      const i = options.indexOf(opt);
+      if (e.key === 'ArrowDown') { e.preventDefault(); options[(i + 1) % options.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); options[(i - 1 + options.length) % options.length].focus(); }
+      else if (e.key === 'Home') { e.preventDefault(); options[0].focus(); }
+      else if (e.key === 'End') { e.preventDefault(); options[options.length - 1].focus(); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(opt); }
+      else if (e.key === 'Escape') { e.preventDefault(); setOpen(false); trigger.focus(); }
+      else if (e.key === 'Tab') { setOpen(false); }
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !e.target.closest('.font-switch')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
+  });
+  let saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (err) { /* private window */ }
+  if (saved) {
+    const opt = options.find((o) => o.dataset.font === saved);
+    if (opt && saved !== 'source') { fetchFaces(); apply(opt, false); }
+  }
 })();
 </script>
 

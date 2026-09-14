@@ -87,6 +87,51 @@ Two list/grid surfaces — the library row-items and the pantheon figures — sw
 
 ---
 
+## Pattern: tab group
+
+Used by the install section, where Claude Code and ChatGPT / Codex are alternatives rather than steps. The model for any future place on this site where two or more paths exist and a reader only needs one of them.
+
+**Markup contract.**
+
+```html
+<div class="install-tabs" id="<group-id>">
+  <div class="install-tabs__list" role="tablist" aria-label="<what is being chosen>">
+    <button class="install-tab" id="<deep-link-id>" type="button" role="tab"
+            aria-selected="true" aria-controls="<panel-id>" tabindex="0"> … </button>
+  </div>
+  <div class="install-card install-panel" id="<panel-id>" role="tabpanel"
+       aria-labelledby="<deep-link-id>" tabindex="0"> … </div>
+</div>
+```
+
+**Rules.**
+
+- The **id that anything already deep-links to goes on the tab, not on the panel**. A hidden panel cannot be scrolled to, and moving the id keeps every existing link working; the script selects the tab whose id the link named. The hero's compatibility chips depend on this.
+- Selection is automatic: arrow keys move focus and select in one step, which is correct when the panels are already in the DOM and cost nothing to show. Home and End jump to the ends. `tabindex` is roving, so the group is one tab stop.
+- **`.install-card` sets `display: grid`, and an author `display` beats the UA rule that the `hidden` attribute relies on.** Any panel styled with an author `display` needs `[hidden] { display: none }` said explicitly, or both panels render at once.
+- The tab row sits on the same 1px hairline the cards use as a divider, and the selected tab draws a 2px accent rule over it. State is a change in the existing line language, never a pill, a filled tab, or a shadow.
+- Panels drop the card's bottom border because the group is already bounded; the card that follows the group takes a top border instead.
+- The tab label is the panel's label. Do not repeat it as a rail heading inside the panel.
+- 48px minimum tab height, accent `:focus-visible` ring at 2px offset, transitions at 150ms.
+
+---
+
+## Pattern: title typeface token and the nav explorer
+
+Every heading on the design-expert landing reads `--title`, which defaults to `var(--serif)`. A single control in the nav rewrites that one custom property on `documentElement`, so the whole page changes voice at once and nothing else moves.
+
+**Rules.**
+
+- **`--title` is for headings only.** Body prose, ledes that are really body, credos, popover text, mono, and every piece of interface chrome stay on `--serif` or `--sans`. The hero's dek is the one non-heading on the token, because it is the second line of the title block and would otherwise sit in a different serif two lines below the first.
+- A new heading rule reads `var(--title)`; a new body rule reads `var(--serif)`. Adding a heading that reads `--serif` is the drift this token exists to prevent.
+- **The five non-default faces are fetched the first time the panel opens**, never on load, so a reader who never opens it pays nothing. A face restored from `localStorage` fetches immediately, because it is already applied.
+- The panel is the namespace switcher's shape exactly: `role="listbox"`, `role="option"` rows, arrow keys, Home, End, Enter, Space, Escape, outside click, focus returned to the trigger. A second dropdown that behaved differently would be a second thing to learn.
+- Each row renders its own name in its own face, and the description says what that face does to the page rather than naming its classification. The style attribute must be **single-quoted**, because font stacks carry double quotes.
+- Below 760px the control keeps `Aa` and drops the face name, `.font-switch` goes `position: static` so the panel anchors to the bar's gutters rather than to a 49px button, and `nav.top .inner` drops its gap to 10px so three controls fit at 375px without pushing the hamburger off the edge.
+- The choice is a reading preference, not a theme. It is stored per reader under `design-expert:title-font` and never affects what anyone else sees.
+
+---
+
 ## Pattern: link-affordance chip
 
 A chip that navigates somewhere needs to read as navigable, not as a label. The fix is twofold: make it a real `<a>`, and add a small typographic `↗` glyph that is the navigation receipt.
