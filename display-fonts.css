@@ -91,5 +91,5 @@
   font-weight: 100 900;
   font-display: swap;
   src: url(./fonts/fraunces-flex.woff2) format('woff2');
-  unicode-range: U+20, U+26, U+2e, U+44, U+61, U+65, U+67-69, U+6c, U+6e-70, U+73-74, U+76;
+  unicode-range: U+20, U+26, U+2e, U+3f, U+44, U+53, U+61-62, U+64-69, U+6c-70, U+72-74, U+76-77, U+79;
 }

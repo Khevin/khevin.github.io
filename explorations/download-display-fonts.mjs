@@ -36,15 +36,20 @@ const FAMILIES = [
   { spec: 'Gloock',                        slug: 'gloock' },
   { spec: 'Fraunces:opsz,wght@9..144,900', slug: 'fraunces' },
   { spec: 'Fraunces:ital,opsz,wght@1,9..144,900', slug: 'fraunces' },
-  /* The hero headline, and only it, on a live weight axis. The text is the
-     headline verbatim: change that line and this has to be changed with it, or
-     the new letters fall through the unicode-range to the static 900 and the
-     one word that is missing stops animating. */
+  /* The words that move, on a live weight axis: the hero's two verbs and the
+     red emphasis word ending each section heading. Only those — the rest of
+     every heading stays on the static 900, which renders identically (measured
+     in situ: an emphasis word is 239.813px wide either way, mixed face and
+     all), so the axis is paid for only where something actually uses it.
+
+     The text is those words verbatim. Change the copy and this has to change
+     with it, or the new letters fall through the unicode-range to the static
+     face — invisible, since the two match, but that word stops animating. */
   {
     spec: 'Fraunces:opsz,wght@9..144,100..900',
     slug: 'fraunces',
     as: 'Fraunces Flex',
-    text: 'Design that solves & ships.',
+    text: 'Design that solves & ships. many hats Same bar worth telling briefly design fit?',
   },
 ];
 

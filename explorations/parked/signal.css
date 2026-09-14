@@ -89,6 +89,17 @@
 .case-prose h2 em,
 .about-page-grid .bio .lead-name em {
   font-style: normal;
+  /* And the weight, which was being decided by what the font happened to have
+     rather than by anything here. styles.css asks three of these for 400 — a
+     leftover from the face this identity replaced, which had one. Fraunces is
+     self-hosted as a single 900, so the browser has been substituting it and
+     the 400 never showed. That held only while the family had nowhere else to
+     go: the moment one of these words is given a variable cut it renders an
+     actual 400 and drops to a light italic-weight word in the middle of a black
+     headline. Saying 900 here changes nothing on screen — measured, the same
+     239.813px before and after — and stops the rendering depending on a gap in
+     the font's coverage. */
+  font-weight: var(--display-weight, 900);
 }
 
 /* ---------- the bio lead ----------
@@ -1240,31 +1251,52 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   font-family: 'Fraunces Flex', var(--display-font, 'Fraunces'), Georgia, serif;
 }
 
-/* Each word sits in a box the width of itself at 900, held open by a hidden
-   copy of the word, so the weight change cannot move the line. The copy is a
-   pseudo-element off data-word rather than a second span: generated content is
-   not part of the document's text, so the heading a reader, a search engine or
-   a copy-paste sees stays the sentence and not each verb twice.
+/* ---------- a word that can change weight without moving anything ----------
+   One .wd per word, wherever a word needs to move: the hero's two verbs and the
+   red word ending each section heading. The word sits in a box the width of
+   itself at 900, held open by a hidden copy, so the weight change cannot shift
+   what is around it. The copy is a pseudo-element off data-word rather than a
+   second span — generated content is not part of the document's text, so what a
+   reader, a search engine and a copy-paste get stays the sentence rather than
+   every moving word twice.
+
+   Per word, not per phrase, and that is the point: "worth telling." in one box
+   could not break across a line, and on a narrow screen a heading that has to
+   wrap mid-phrase would instead overflow. A box each leaves the space between
+   them as an ordinary break opportunity.
+
    inline-block over inline-grid on purpose: its baseline is the ghost's own
-   baseline, which is the one thing here that must not drift against the
-   ampersand between them. */
-.hero.v5 .h-block h1 .wd { position: relative; display: inline-block; }
-.hero.v5 .h-block h1 .wd::before { content: attr(data-word); visibility: hidden; }
-.hero.v5 .h-block h1 .wd-ink {
+   baseline, and against a line of type that is the one thing that must not
+   drift.
+
+   The variable cut goes here, on the box, so the ghost and the ink are always
+   the same face and the box is therefore always the right size. Around it the
+   heading stays on the static 900, which renders identically — measured in
+   place, an emphasis word is 239.813px wide either way, and that is with a
+   letter falling through the unicode-range to the static face mid-word. */
+.wd {
+  position: relative;
+  display: inline-block;
+  font-family: 'Fraunces Flex', var(--display-font, 'Fraunces'), Georgia, serif;
+}
+.wd::before { content: attr(data-word); visibility: hidden; }
+.wd-ink {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  /* The headline's outer edges are fixed and the breathing happens inside it.
-     The first verb is anchored left because its left edge is the page's margin,
-     shared with "Design that" directly above; centring it pulled that edge in
-     by a few pixels mid-dip, and against a margin that straight it was the one
-     thing in the line you could see move. The last is anchored right because
-     its full stop ends the headline. What is left to give is the two gaps
-     around the ampersand, which open and close alternately as each word takes
-     its turn — so the verbs read as leaning in toward it and back out. */
+  /* Anchored left, so the word stays put against whatever precedes it and
+     spends its movement on the ragged right edge, where a line of this setting
+     is already uneven and nothing reads as having moved. */
   text-align: left;
 }
+/* The hero is the exception: its headline has two fixed edges rather than one.
+   The first verb is anchored left because its edge is the page's margin, shared
+   with "Design that" directly above — centring it pulled that edge in a few
+   pixels mid-dip, and against a margin that straight it was the one thing in
+   the line you could see move. The last is anchored right because its full stop
+   ends the headline. What is left to give is the two gaps around the ampersand,
+   which open and close alternately as each verb takes its turn. */
 .hero.v5 .h-block h1 .wd:last-of-type .wd-ink { text-align: right; }
 
 /* A third curve, and the only symmetric one here. --rise and --draw are both
@@ -1293,13 +1325,15 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    The delay clears .b's own rise (230 + 900), making this the last beat. */
 .hero.v5 .h-block h1 .wd-ink {
   animation: weight-dance 920ms var(--dance) var(--dance-delay, 1150ms);
-  /* The lean, below. On the base rule so it eases out as well as in. */
-  transition: font-weight 420ms var(--dance) var(--lean-delay, 0ms);
 }
-.hero.v5 .h-block h1 .wd:last-of-type .wd-ink {
-  --dance-delay: 1390ms;
-  --lean-delay: 90ms;
-}
+.hero.v5 .h-block h1 .wd:last-of-type .wd-ink { --dance-delay: 1390ms; }
+
+/* The lean, below — on every moving word, not just the hero's, and on the base
+   rule rather than on :hover so it eases out as well as in. Each word after the
+   first in a phrase trails the one before it, so a two-word phrase reads as a
+   small wave rather than both halves moving as a block. */
+.wd-ink { transition: font-weight 420ms var(--dance) var(--lean-delay, 0ms); }
+.wd + .wd .wd-ink { --lean-delay: 90ms; }
 
 /* And afterwards the words answer the pointer: hovering the headline leans both
    of them off their weight and releasing settles them back, the second trailing
@@ -1319,13 +1353,22 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
    a headline that quietly stayed light after being touched would read as a
    font that failed to load rather than as anything deliberate. */
 @media (hover: hover) and (pointer: fine) {
-  .hero.v5 .h-block h1:hover .wd-ink { font-weight: 760; }
+  .hero.v5 .h-block h1:hover .wd-ink,
+  /* The same gesture on the red word each section heading ends with — the one
+     word in each that carries the sentence. Hovering anywhere in the heading
+     leans it, rather than asking anyone to find the word itself: the heading is
+     the thing you are reading, and at this size the word alone is a small
+     target sitting in a lot of empty space. */
+  .section-title:hover .wd-ink,
+  .contact-block .l h2:hover .wd-ink { font-weight: 760; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero.v5 .h-block h1 .wd-ink {
+  .wd-ink {
     animation: none;
     transition: none;
   }
-  .hero.v5 .h-block h1:hover .wd-ink { font-weight: 900; }
+  .hero.v5 .h-block h1:hover .wd-ink,
+  .section-title:hover .wd-ink,
+  .contact-block .l h2:hover .wd-ink { font-weight: var(--display-weight, 900); }
 }
