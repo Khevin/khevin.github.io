@@ -2654,7 +2654,8 @@ li.is-done .qg { color: var(--verdant); }
   border: 1px solid var(--mortar-2); border-radius: var(--r-sm);
   box-shadow: inset 0 1px 0 rgba(240,231,209,0.07), inset 0 -10px 16px rgba(0,0,0,0.4);
 }
-.gear-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* a cut-out is shown whole on the socket's own dark ground, never cropped to fill it */
+.gear-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .gear-top-f { display: grid; grid-template-columns: minmax(0, 1fr) 152px; gap: var(--s3); }
 .gear-colors { border: 0; padding: 0; margin: 0; min-width: 0; }
 .gear-colors legend { padding: 0; margin-bottom: 4px; }
@@ -6418,6 +6419,8 @@ function sanitize(s) {
       kind: kindOk(WEAR_BY[x.slot] ? x.slot : "top", x.kind) ? String(x.kind) : kindsFor(WEAR_BY[x.slot] ? x.slot : "top")[0][0],
       color: /^#[0-9a-fA-F]{6}$/.test(x.color) ? String(x.color) : "#6b6257",
       note: String(x.note || "").slice(0, 80),
+      /* a file in assets/clothing — the photograph of the real garment, for the wardrobe */
+      art: (typeof x.art === "string" && /^[a-z0-9][a-z0-9._-]{0,59}$/.test(x.art)) ? x.art : "",
       img: (typeof x.img === "string" && x.img.startsWith("data:image")) ? x.img : ""
     }));
     /* worn is keyed by place, not by family — four fingers, two wrists. The one wrist that
@@ -8722,12 +8725,15 @@ function invDollHTML() {
   const worn = k => gearWorn(k), top = worn("top"), outer = worn("outer"), legs = worn("legs"), feet = worn("feet");
   const color = (it, fallback) => it && /^#[0-9a-f]{6}$/i.test(it.color) ? it.color : fallback;
   let defs = '';
+  /* One light, in the figure's own coordinates. A gradient left on objectBoundingBox is remapped
+     to every path it fills, so a sleeve and the body it joins each get their own ramp and the
+     seam between them shows as a tonal step — which is what made the tee read as a raglan and
+     the trousers as two separate legs. In user space the whole garment is lit once. */
   const material = (id,c) => {
-    defs += '<linearGradient id="av-'+id+'" x1="0" y1="0" x2="1" y2=".25"><stop stop-color="'+ivShade(c,-.30)+'"/><stop offset=".3" stop-color="'+ivShade(c,.18)+'"/><stop offset=".65" stop-color="'+c+'"/><stop offset="1" stop-color="'+ivShade(c,-.38)+'"/></linearGradient>';
+    defs += '<linearGradient id="av-'+id+'" gradientUnits="userSpaceOnUse" x1="58" y1="0" x2="164" y2="0"><stop stop-color="'+ivShade(c,-.30)+'"/><stop offset=".3" stop-color="'+ivShade(c,.18)+'"/><stop offset=".65" stop-color="'+c+'"/><stop offset="1" stop-color="'+ivShade(c,-.38)+'"/></linearGradient>';
     return 'url(#av-'+id+')';
   };
   const skin=material('skin','#ad8062'), hair=material('hair','#302720');
-  defs=defs.replace('id="av-skin" x1="0" y1="0" x2="1" y2=".25"','id="av-skin" gradientUnits="userSpaceOnUse" x1="65" y1="0" x2="155" y2="0"');
   const fabric=material('top',color(top,'#777267')), shell=material('outer',color(outer,'#303d43'));
   const trouser=material('legs',color(legs,'#494641')), shoe=material('feet',color(feet,'#38342d'));
   const path=(d,fill,stroke='#171813',sw=1.2)=>'<path d="'+d+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linejoin="round" stroke-linecap="round"/>';
@@ -8758,13 +8764,16 @@ function invDollHTML() {
      inch inside it, as it was, and a wedge of bare shoulder shows between the two. */
   const sleeve=(fill,long)=>both(path(long?'M89 112Q66 113 59 136L48 230 65 237 76 177 88 144Z':'M89 112Q68 113 62 134L58 160 77 168 89 141Z',fill));
   const folds=()=>both(line('M82 179l7 13-7 5m3 19 12 9m-16 12 12-3','#0003',1.4));
+  /* a heavy garment creases; a jersey tee drapes. The chevrons that read as wear on a coat read
+     as damage on a t-shirt, so the short-sleeved kinds get two long soft lines instead. */
+  const drape=()=>both(line('M88 150q6 26 2 48M97 196q3 16 2 30','#00000016',1.4));
   // Base garments retain their own silhouette even underneath an open outer layer.
   if(top) {
     const k=top.kind,long=['hoodie','sweater','shirt'].includes(k);
     g+='<g data-avatar-layer="top" data-kind="'+esc(k)+'">';
     if(k!=='tank')g+=sleeve(fabric,long);
     const shape=k==='tank'?'M91 113L96 119Q110 135 124 119L129 113 137 117Q129 141 143 155L138 209 140 243Q110 252 80 243L82 209 77 155Q91 141 83 117Z':body;
-    g+=path(shape,fabric)+folds();
+    g+=path(shape,fabric)+(long?folds():drape());
     if(k==='hoodie') {
       g+=path('M91 108Q79 103 81 118L92 136Q110 144 129 134L140 117Q140 103 129 108L124 119Q110 128 96 119Z',fabric);
       g+=path('M93 207l-7 22q24 5 48 0l-7-22Z',fabric,'#0004');
@@ -8774,7 +8783,13 @@ function invDollHTML() {
       g+=path('M91 110l19 12-12 15-12-17Z',fabric)+path('M129 110l-19 12 12 15 12-17Z',fabric);
       g+=line('M110 123v'+(k==='polo'?35:120),'#0004',2);
       for(let y=137;y<(k==='polo'?160:239);y+=20)g+='<circle cx="110" cy="'+y+'" r="1.3" fill="#cfbf9d"/>';
-    } else g+=line(k==='tank'?'M92 115Q110 145 128 115':'M93 116Q110 134 127 116','#0006',3);
+    } else {
+      /* a crew neck is a rib, not a line: the dark of the opening with the band's lit edge above
+         it, and the seam where a set-in sleeve is stitched to the body */
+      g+=line(k==='tank'?'M92 115Q110 145 128 115':'M93 116Q110 134 127 116','#0006',3);
+      g+=line(k==='tank'?'M90 112Q110 143 130 112':'M91 113Q110 132 129 113','#ffffff1e',1.6);
+      if(k!=='tank')g+=both(line('M88 121q3 11 2 24','#00000024',1.5));
+    }
     g+=line('M82 240q28 6 56 0','#ffffff20');
     if(long)g+=both(line('M49 228l17 5','#0006',4));
     g+='</g>';
@@ -8844,11 +8859,26 @@ function invOutfitWords() {
 const GEAR_SPAN = { outer: [2, 3], top: [2, 3], hat: [2, 2], legs: [2, 2], feet: [2, 2], belt: [2, 1], scent: [1, 2] };
 const gearSpan = fam => GEAR_SPAN[fam] || [1, 1];
 const gearArea = it => { const s = gearSpan(it.slot); return s[0] * s[1]; };
+/* ---------- the wardrobe's photographs ----------
+   A garment can carry two pictures. The drawing is derived from its kind and colour and is what
+   the character wears, because a body needs a shape that bends with it. The photograph is the
+   real thing on a white ground and is what the wardrobe shows, because a stash is a shelf and a
+   shelf holds objects. The photograph never reaches the figure.
+
+   A browser cannot list a folder off static hosting, so the folder is listed here instead, by
+   sync-clothing.js. Editing this array by hand is a claim about the folder that goes stale. */
+/* clothing-manifest:start — written by sync-clothing.js, not by hand */
+const CLOTHING_ART = [];
+/* clothing-manifest:end */
+const CLOTHING_DIR = "assets/clothing/";
+const gearArtSrc = it => it.art && CLOTHING_ART.indexOf(it.art) > -1 ? CLOTHING_DIR + it.art : "";
 /* a garment is on if any place its family can go is holding it */
 const gearIsOn = it => SLOTS_OF(it.slot).some(s => wardrobe().worn[s.k] === it.id);
-const gearFace = it => it.img
-  ? '<img src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async">'
-  : gearIconHTML(it);
+/* the catalogue photograph first, then one shot into the dialog, then the drawing */
+const gearFace = it => {
+  const src = gearArtSrc(it) || it.img;
+  return src ? '<img src="' + esc(src) + '" alt="" loading="lazy" decoding="async">' : gearIconHTML(it);
+};
 function gearCellHTML(it, worn) {
   const sp = gearSpan(it.slot), wide = sp[0] > 1;
   return '<div class="iv-cell' + (worn ? " is-worn" : "") + (wide ? " is-wide" : "") +
@@ -8987,7 +9017,7 @@ function gearDlgOpen(id) {
   const it = id ? gearById(id) : null;
   if (id && !it) return;
   const slot0 = gearFilter || "top";
-  gearEdit = it ? Object.assign({}, it) : { id: null, name: "", slot: slot0, kind: kindsFor(slot0)[0][0], color: "#6b6257", note: "", img: "" };
+  gearEdit = it ? Object.assign({}, it) : { id: null, name: "", slot: slot0, kind: kindsFor(slot0)[0][0], color: "#6b6257", note: "", art: "", img: "" };
   gearDlgRender();
   if (!dlg.open) dlg.showModal();
   const t = $("#gearName"); if (t) t.focus();
@@ -9000,7 +9030,7 @@ function gearDlgRender(focusSel) {
     '<div class="bk-top"><p class="bk-h" id="gearDlgTitle">' + (d.id ? "Edit garment" : "Add clothing") + "</p>" + BK_X + "</div>" +
     '<div class="gear-top">' +
       '<span class="gear-preview">' +
-        (d.img ? '<img src="' + esc(d.img) + '" alt="">' : gearIconHTML(d)) + "</span>" +
+        ((gearArtSrc(d) || d.img) ? '<img src="' + esc(gearArtSrc(d) || d.img) + '" alt="">' : gearIconHTML(d)) + "</span>" +
       '<div class="gear-top-f">' +
         '<label class="bk-l">Name<input type="text" id="gearName" name="name" maxlength="60" value="' + esc(d.name) + '" required autocomplete="off" placeholder="the black linen shirt"></label>' +
         '<label class="bk-l">Worn on<select name="slot">' + WEAR.map(w =>
@@ -9009,6 +9039,13 @@ function gearDlgRender(focusSel) {
       '<label class="bk-l">Kind<select name="kind">' + kindsFor(d.slot).map(x =>
         '<option value="' + x[0] + '"' + (d.kind === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>").join("") +
         '</select><span class="gear-hint">Sets the silhouette and layering on your character.</span></label>' +
+      '<label class="bk-l">Wardrobe photo<select name="art">' +
+        '<option value=""' + (d.art ? "" : " selected") + ">Drawn</option>" +
+        CLOTHING_ART.map(f => '<option value="' + esc(f) + '"' + (d.art === f ? " selected" : "") + ">" +
+          esc(f.replace(/\.[a-z0-9]+$/i, "").replace(/[-_]/g, " ")) + "</option>").join("") +
+        '</select><span class="gear-hint">' + (CLOTHING_ART.length
+          ? "A photograph from assets/clothing. The character keeps the drawing."
+          : "Empty. Drop files in assets/clothing, then run sync-clothing.js.") + "</span></label>" +
     '<fieldset class="gear-colors"><legend class="bk-l">Colour</legend><div class="gear-sw-row">' +
       GEAR_COLORS.map(c => '<button type="button" class="gear-sw' + (c === d.color.toLowerCase() ? " is-cur" : "") +
         '" data-inv="gearcolor" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
@@ -9018,7 +9055,7 @@ function gearDlgRender(focusSel) {
     '<div class="gear-photo"><button type="button" class="btn btn-ghost btn-sm" data-inv="gearphoto">' +
       (d.img ? "Replace photo" : "Add a photo") + "</button>" +
       (d.img ? '<button type="button" class="btn btn-ghost btn-sm" data-inv="gearphotox">Remove photo</button>' : "") +
-      '<span class="gear-photo-note">Photo for the wardrobe. Your character uses the selected kind and colour.</span></div>' +
+      '<span class="gear-photo-note">A one-off shot, used when no wardrobe photo is chosen above. Your character uses the kind and colour either way.</span></div>' +
     '<div class="bk-foot">' +
       (d.id ? '<button type="button" class="btn btn-danger btn-sm gear-del" data-inv="geardel">Delete</button>' : "") +
       '<button type="button" class="btn btn-ghost btn-sm" data-inv="gearcancel">Cancel</button>' +
@@ -9033,6 +9070,7 @@ document.addEventListener("input", e => {
   if (t.name === "name") gearEdit.name = t.value;
   else if (t.name === "note") gearEdit.note = t.value;
   else if (t.name === "kind") { gearEdit.kind = t.value; gearDlgPreview(); }
+  else if (t.name === "art") { gearEdit.art = t.value; gearDlgPreview(); }
   else if (t.name === "slot") {
     /* a new slot brings its own kinds; keep the one named if the new slot also has it */
     gearEdit.slot = t.value;
@@ -9046,7 +9084,8 @@ function gearDlgPreview() {
   /* the preview is the garment itself now, not a colour chip, so a new kind or a new colour
      redraws it rather than repainting the square behind it */
   const p = dlg.querySelector(".gear-preview");
-  if (p) p.innerHTML = gearEdit.img ? '<img src="' + esc(gearEdit.img) + '" alt="">' : gearIconHTML(gearEdit);
+  const src = gearArtSrc(gearEdit) || gearEdit.img;
+  if (p) p.innerHTML = src ? '<img src="' + esc(src) + '" alt="">' : gearIconHTML(gearEdit);
   dlg.querySelectorAll(".gear-sw").forEach(b => b.classList.toggle("is-cur", b.dataset.c === gearEdit.color.toLowerCase()));
 }
 function gearDraftColor(c) {
@@ -9101,6 +9140,7 @@ function gearDlgSave() {
   const moved = !isNew && it.slot !== d.slot;
   it.name = name.slice(0, 60); it.slot = d.slot; it.kind = kindOk(d.slot, d.kind) ? d.kind : kindsFor(d.slot)[0][0]; it.color = d.color;
   it.note = d.note.trim().slice(0, 80); it.img = d.img || "";
+  it.art = CLOTHING_ART.indexOf(d.art) > -1 ? d.art : "";
   /* a garment that moved to another slot cannot stay worn in the one it left */
   if (moved) SLOTS.forEach(s => { if (W.worn[s.k] === it.id && s.f !== it.slot) delete W.worn[s.k]; });
   save(); gearDlgClose(); renderInv();
