@@ -2380,6 +2380,14 @@ li.is-done .qg { color: var(--verdant); }
   transition: border-color var(--t-fast) var(--e-out), box-shadow var(--t-fast) var(--e-out);
 }
 .iv-slot-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Why a photograph came out beheaded, and it was never the photograph. Each of these faces is a
+   grid with one implicit track, and an implicit track is sized to its content BEFORE it is asked
+   to fit its container: a portrait image took width:100% of a 49px socket, asked for the 94px of
+   height its ratio wants, grew the track to 94, and was then cut back to 42 by the overflow. The
+   percentage height never resolved, so object-fit never got a box to contain anything in.
+   Pinning both tracks to minmax(0,1fr) makes the socket definite and the whole thing works —
+   for the drawings too, which is why the belt no longer loses its buckle in a 2x1 square. */
+.iv-slot-face, .iv-cell-face, .gear-preview { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
 /* the empty mark grows with its socket, so the big sockets do not read as broken small ones */
 .iv-slot-g { width: 34%; height: auto; aspect-ratio: 1; min-width: 22px; max-width: 46px; }
 /* the garment drawn flat. It sizes to the socket, so the same drawing serves a 58px slot, a
@@ -2513,18 +2521,32 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-accessories .iv-slot-face { padding:6px 10px 20px; }
 .iv-armory .iv-doll-cap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin:12px 0 0; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ash); }
 .iv-armory .iv-strip { margin:0; }
-.iv-armory .iv-bar { gap:4px 10px; min-height:72px; align-content:start; margin-bottom:16px; }
-.iv-armory .iv-f { padding:5px 3px; border-radius:0; border:0; border-bottom:1px solid transparent; font-size:10px; }
-.iv-armory .iv-f.is-cur { background:none; border-bottom-color:#c5a56c; }
+/* one line of marks: a family is a 16px glyph in a 28px socket, its count in the corner, and an
+   empty family dimmed rather than spelled out. The one that is on opens up and says its name. */
+/* A word chip ran about 65px and thirteen of them needed three lines. A mark needs 26, so the
+   same thirteen sit on one and there is room for the next few without a second. Every chip is
+   the same width whatever it holds, so the row never reflows as it is used. */
+.iv-armory .iv-bar { gap:1px; min-height:0; align-content:start; margin-bottom:14px; padding-bottom:10px; }
+.iv-armory .iv-f { position:relative; align-items:center; gap:5px; min-height:0; padding:4px; border-radius:0; border:1px solid transparent; font-size:10px; }
+.iv-armory .iv-f-g { width:16px; height:16px; display:block; flex:none; }
+.iv-armory .iv-f.is-bare { opacity:.34; }
+.iv-armory .iv-f.is-word { padding:4px 8px; letter-spacing:.08em; }
 .iv-armory .iv-f .n { color:#8d7b59; }
+.iv-armory .iv-f.is-cur { background:#221e15; border-color:#7d6640; color:var(--parchment); }
+.iv-armory .iv-f.is-cur .n { color:#c5a56c; }
+/* the header carries the name of the family on show, opposite the button that adds to it */
+.iv-hold .iv-hold-cur { position:absolute; left:0; bottom:12px; font:10px var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:#c5a56c; }
 .iv-armory .iv-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:1px; padding:1px; background:#433823; border:3px solid #12120f; outline:1px solid #675235; }
 .iv-armory .iv-cell { min-width:0; background:#090b09; }
 .iv-armory .iv-cell-b { height:100px; min-width:0; border:1px solid transparent; border-radius:0; background:radial-gradient(ellipse,#2b2b212e,transparent); padding:12px 5px 8px; align-content:center; gap:6px; }
 .iv-armory .iv-cell-face { width:60px; max-width:100%; height:60px; border-radius:0; }
 .iv-armory .iv-cell-face img { object-fit:contain; }
 .iv-armory .iv-cell-nm { font-size:11px; }
-.iv-armory .iv-cell.is-worn .iv-cell-b { border-color:#796540; box-shadow:inset 0 0 18px #75602f16; }
-.iv-armory .iv-cell.is-worn::after { content:"◆"; color:#b89b62; position:absolute; bottom:5px; right:5px; font-size:7px; pointer-events:none; }
+/* A hairline one shade warmer than its neighbours was not an answer to "which of these am I
+   wearing?" — at 52px, across forty squares, #796540 and #2c2a21 are the same colour. Worn is a
+   lit frame and a rail across the top now: the frame carries at a glance, the rail survives
+   being one square in a wall of them, and neither collides with the pen or the family mark. */
+.iv-armory .iv-cell.is-worn .iv-cell-b { border-color:#c9a961; background:linear-gradient(160deg,#2c261a,#141309 78%); box-shadow:inset 0 2px 0 #c9a961,inset 0 0 0 1px #c9a96130,inset 0 0 22px #a8853a2e; }
 .iv-armory .iv-cell-add .iv-cell-b { border:0; color:#a18b62; }
 .iv-armory .iv-cell-vacant { height:100px; background:#090b09; box-shadow:inset 0 0 18px #0005; }
 .iv-stash-note { color:var(--ash); font-size:12px; margin:14px 0 0; line-height:1.6; }
@@ -2627,7 +2649,7 @@ li.is-done .qg { color: var(--verdant); }
 /* a square has no room for a label, and a ring drawn at forty pixels is already its own label */
 .iv-armory .iv-cell:not(.is-wide) .iv-cell-nm,
 .iv-armory .iv-cell:not(.is-wide) .iv-cell-mk { display: none; }
-.iv-armory .iv-cell.is-worn::after { bottom: 3px; right: 4px; }
+/* the corner diamond is gone: the frame and its rail say it, and said it at every size */
 
 /* the place under consideration, and the one decision it offers */
 .iv-armory .iv-slot.is-pick .iv-slot-face { border-color: #d2b578; box-shadow: inset 0 0 0 2px #10100c, inset 0 0 0 3px #6b5730, 0 0 12px #d2b57826; }
@@ -8932,12 +8954,27 @@ function renderInv() {
   const pick = gearPick && gearWorn(gearPick) ? SLOTS.find(s => s.k === gearPick) : null;
   const picked = pick ? gearWorn(pick.k) : null;
 
-  const wardrobe_ = '<div class="iv-hold"><header class="iv-section-head"><h3>Wardrobe</h3>' +
+  /* the marks are unlabelled, so the one on show is named once, here, where it costs no line */
+  const fam = gearFilter ? WEAR_BY[gearFilter] : null;
+  const wardrobe_ = '<div class="iv-hold"><header class="iv-section-head">' +
+      (fam ? '<span class="iv-hold-cur">' + esc(fam.name) + " · " + W.items.filter(x => x.slot === fam.k).length + "</span>" : "") +
+      '<h3>Wardrobe</h3>' +
       '<button type="button" class="iv-add-b" data-inv="gearnew">+ Add clothing</button></header>' +
+    /* Thirteen names set across three lines spent a third of the column saying what the marks
+       beside every empty socket already say. One line of marks instead: a family is a 26px
+       socket rather than a 65px word, which is the whole answer to fitting more of them.
+       Nothing in the row grows when it is picked — a chip that opens up to say its name would
+       shove the last mark onto a second line every time one was chosen — so the name of the
+       family on show sits in the header, opposite the Add button, where there is already room. */
     '<div class="iv-bar" role="group" aria-label="Show">' +
-      '<button type="button" class="iv-f' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
-      WEAR.map(w => '<button type="button" class="iv-f' + (gearFilter === w.k ? " is-cur" : "") + '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (gearFilter === w.k) + '">' +
-        esc(w.name) + '<span class="n">' + W.items.filter(x => x.slot === w.k).length + "</span></button>").join("") +
+      '<button type="button" class="iv-f is-word' + (gearFilter ? "" : " is-cur") + '" data-inv="filter" data-k="" aria-pressed="' + !gearFilter + '">All<span class="n">' + W.items.length + "</span></button>" +
+      WEAR.map(w => {
+        const n = W.items.filter(x => x.slot === w.k).length;
+        return '<button type="button" class="iv-f' + (gearFilter === w.k ? " is-cur" : "") + (n ? "" : " is-bare") +
+          '" data-inv="filter" data-k="' + w.k + '" aria-pressed="' + (gearFilter === w.k) +
+          '" title="' + esc(w.name + " · " + n) + '" aria-label="' + esc(w.name + ", " + n + (n === 1 ? " item" : " items")) + '">' +
+          '<svg class="iv-f-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + WEAR_GLYPH[w.k] + "</svg></button>";
+      }).join("") +
     "</div>" +
     (shown.length ? "" : '<p class="iv-empty">' + (W.items.length
       ? "Nothing in the wardrobe goes in that slot yet."
@@ -9132,9 +9169,13 @@ function gearKnockout(cv) {
     if (y > 0) push(x, y - 1);
     if (y < h - 1) push(x, y + 1);
   }
-  /* nothing worth removing, or it ate the subject and the photograph has no ground to speak of */
-  const frac = cut / (w * h);
-  if (frac < 0.02 || frac > 0.94) return false;
+  /* Nothing worth removing, or the flood leaked through the subject and took it with the ground.
+     The test used to be how much went, capped at 94%, which is wrong twice over: a hoop earring
+     on a big sheet IS 96% ground, and a white shirt that leaks leaves 3% behind and passes. What
+     matters is what is left. A subject survives as a few thousand pixels; a leak leaves crumbs. */
+  if (cut < 0.02 * w * h) return false;
+  const keep = w * h - cut;
+  if (keep < Math.max(400, 0.004 * w * h)) return false;
   /* one pass of feather, so the cut is an edge rather than a staircase */
   for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
     const c = at(x, y); if (d[c + 3] === 0) continue;
@@ -9143,20 +9184,69 @@ function gearKnockout(cv) {
   ctx.putImageData(im, 0, 0);
   return true;
 }
+/* Does this file already carry a cut-out? A product shot exported with its ground taken out
+   arrives with alpha, and there is nothing left to knock out of it. Worth knowing before the
+   encoder is chosen, because a JPEG has no alpha and fills every hole back in with black. */
+function gearHasAlpha(cv) {
+  let im; try { im = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height); } catch (e) { return false; }
+  const d = im.data;
+  for (let i = 3; i < d.length; i += 4) if (d[i] < 248) return true;
+  return false;
+}
+/* The subject's own bounds. A cut-out is photographed on a sheet much larger than the thing on
+   it, and that margin is baked into the file: an earring can be a tenth of its own picture. The
+   square it lands in cannot take the margin back, so it is taken here instead, once. */
+function gearTrim(cv) {
+  const w = cv.width, h = cv.height;
+  let im; try { im = cv.getContext("2d").getImageData(0, 0, w, h); } catch (e) { return cv; }
+  const d = im.data;
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    if (d[(y * w + x) * 4 + 3] > 24) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  if (x1 < x0 || y1 < y0) return cv;
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+  if (bw > w * 0.97 && bh > h * 0.97) return cv;
+  const out = document.createElement("canvas");
+  out.width = bw; out.height = bh;
+  out.getContext("2d").drawImage(cv, x0, y0, bw, bh, 0, 0, bw, bh);
+  return out;
+}
+function gearFit(cv, max) {
+  const r = Math.min(1, max / Math.max(cv.width, cv.height));
+  if (r >= 1) return cv;
+  const out = document.createElement("canvas");
+  out.width = Math.max(1, Math.round(cv.width * r));
+  out.height = Math.max(1, Math.round(cv.height * r));
+  const c = out.getContext("2d");
+  c.imageSmoothingEnabled = true; c.imageSmoothingQuality = "high";
+  c.drawImage(cv, 0, 0, out.width, out.height);
+  return out;
+}
 function gearShrink(file, cb) {
   const url = URL.createObjectURL(file), img = new Image();
   img.onload = () => {
-    const max = 200, r = Math.min(1, max / Math.max(img.width, img.height));
-    const cv = document.createElement("canvas");
-    cv.width = Math.max(1, Math.round(img.width * r));
-    cv.height = Math.max(1, Math.round(img.height * r));
+    /* Read large, ship small. Both the knockout and the trim measure pixels, and a subject that
+       is a tenth of the sheet would already be a tenth of 200px by the time they saw it. So the
+       cutting happens at a working size and the result is fitted down afterwards, which is also
+       why the stored picture is now the garment rather than the garment and its sheet. */
+    const r0 = Math.min(1, 1024 / Math.max(img.width, img.height));
+    let cv = document.createElement("canvas");
+    cv.width = Math.max(1, Math.round(img.width * r0));
+    cv.height = Math.max(1, Math.round(img.height * r0));
     cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
     URL.revokeObjectURL(url);
-    /* PNG only when there is alpha to keep — a JPEG would fill the hole back in with black */
-    const cut = gearKnockout(cv);
+    const had = gearHasAlpha(cv);
+    const cut = had ? false : gearKnockout(cv);
+    const clear = had || cut;
+    const before = cv.width * cv.height;
+    if (clear) cv = gearTrim(cv);
+    const trimmed = cv.width * cv.height < before * 0.92;
+    cv = gearFit(cv, 200);
     let out = null;
-    try { out = cut ? cv.toDataURL("image/png") : cv.toDataURL("image/jpeg", 0.72); } catch (err) { out = null; }
-    cb(out, cut);
+    /* PNG whenever there is alpha to keep, whether this pass made it or the file came with it */
+    try { out = clear ? cv.toDataURL("image/png") : cv.toDataURL("image/jpeg", 0.72); } catch (err) { out = null; }
+    cb(out, cut, trimmed);
   };
   img.onerror = () => { URL.revokeObjectURL(url); cb(null, false); };
   img.src = url;
@@ -9166,11 +9256,13 @@ function gearPhotoPick() {
   inp.value = "";
   inp.onchange = () => {
     const f = inp.files && inp.files[0]; if (!f || !gearEdit) return;
-    gearShrink(f, (out, cut) => {
+    gearShrink(f, (out, cut, trimmed) => {
       if (!out) { showToast("That image could not be read.", false, true); return; }
       if (!gearEdit) return;
       gearEdit.img = out; gearDlgRender('[data-inv="gearphoto"]');
-      showToast(cut ? "Photo added, and its background taken out." : "Photo added.", true);
+      /* say which of the two things happened, because both change the picture he handed over */
+      showToast(cut ? "Photo added, and its background taken out."
+        : trimmed ? "Photo added, cropped in to the garment." : "Photo added.", true);
     });
   };
   inp.click();
