@@ -44,36 +44,80 @@
   };
 
   const scope = new KhevMotion.Scope(study);
-  const controls = document.createElement('div');
-  controls.className = 'council-playback';
-  controls.innerHTML = '<span class="council-playback__hint">Six principles. See them in motion.</span><button type="button" class="council-playback__toggle" aria-label="Pause council tour">Pause tour <span aria-hidden="true">Ⅱ</span></button><button type="button" class="council-playback__replay" aria-label="Replay selected principle">Replay <span aria-hidden="true">↻</span></button>';
-  study.append(controls);
-  const toggle = controls.querySelector('.council-playback__toggle');
-  const replay = controls.querySelector('.council-playback__replay');
   const read = (el, prop) => getComputedStyle(el).getPropertyValue(prop).trim();
   let angle = parseFloat(read(table, '--seat-h')) || 0;
   let orbitAngle = -90;
   let active = 0, timer = 0, steps = 0, entered = false, hovered = false;
   let touring = !scope.reduced.matches;
+  let resumeTimer = 0;
+  const cancelResume = () => { clearTimeout(resumeTimer); resumeTimer = 0; };
   const halt = () => { clearTimeout(timer); timer = 0; };
-  function updateControls() {
-    toggle.disabled = scope.reduced.matches;
-    replay.disabled = scope.reduced.matches;
-    toggle.textContent = scope.reduced.matches ? 'Reduced motion' : touring ? 'Pause tour Ⅱ' : 'Play tour ▷';
-    toggle.setAttribute('aria-label', scope.reduced.matches ? 'Reduced motion enabled' : touring ? 'Pause council tour' : 'Play council tour');
+  function resumeAfterIdle() {
+    cancelResume();
+    if (hovered || !scope.running || scope.reduced.matches || table.matches(':focus-within')) return;
+    resumeTimer = setTimeout(() => {
+      touring = true; steps = 0; updateLive(); select(active); schedule();
+    }, 8000);
+  }
+  // The tour has no controls. It runs on its own, waits while the pointer is
+  // over the council, and picks up again once the pointer has been away a
+  // while; a click, a key or focus hands the council to the reader.
+  function updateLive() {
     // Automatic demonstrations never produce unsolicited announcements.
     decision.setAttribute('aria-live', touring ? 'off' : 'polite');
   }
-  function stopTour() { touring = false; halt(); updateControls(); }
+  function stopTour() { touring = false; halt(); cancelResume(); updateLive(); }
   function schedule() {
     halt();
     if (!touring || !scope.running || hovered) return;
     timer = setTimeout(() => {
       select((active + 1) % seats.length);
-      if (++steps >= seats.length) stopTour();
+      if (++steps >= seats.length) { stopTour(); resumeAfterIdle(); }
       else schedule();
     }, 4800);
   }
+  // Anchor to actual component edges, not fixed illustration coordinates.
+  // This keeps the connectors out of the names and central typography as
+  // the layout changes, including the taller mobile arrangement.
+  const connections = seats.map(seat => {
+    const path = table.querySelector('[data-council-line="' + seat.dataset.councilSeat + '"]');
+    const pulse = path.cloneNode(false);
+    pulse.removeAttribute('data-council-line');
+    pulse.setAttribute('class', 'council-connection-pulse');
+    pulse.setAttribute('pathLength', '1');
+    path.parentNode.append(pulse);
+    return { seat, path, pulse };
+  });
+  function updateConnections() {
+    const box = table.getBoundingClientRect(), center = decision.getBoundingClientRect();
+    if (!box.width || !box.height) return;
+    const target = { x: center.x + center.width / 2, y: center.y + center.height / 2 };
+    const edge = (rect, toward, gap) => {
+      const x = rect.x + rect.width / 2, y = rect.y + rect.height / 2;
+      const dx = toward.x - x, dy = toward.y - y;
+      const t = Math.min((rect.width / 2 + gap) / (Math.abs(dx) || .001), (rect.height / 2 + gap) / (Math.abs(dy) || .001));
+      return { x: x + dx * t, y: y + dy * t };
+    };
+    const point = p => ((p.x - box.x) * 600 / box.width).toFixed(2) + ' ' + ((p.y - box.y) * 570 / box.height).toFixed(2);
+    connections.forEach(({ seat, path, pulse }) => {
+      const bounds = seat.getBoundingClientRect();
+      // Side seats have generous hit areas. Anchor beside their artwork,
+      // rather than letting those invisible hit areas swallow the line.
+      if (!['rams', 'itten'].includes(seat.dataset.councilSeat)) {
+        const icon = seat.querySelector('svg').getBoundingClientRect();
+        bounds.x = icon.x; bounds.y = icon.y;
+        bounds.width = icon.width; bounds.height = icon.height;
+      }
+      const origin = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
+      const near = edge(bounds, target, 0), far = edge(center, origin, 0);
+      const clearance = Math.hypot(far.x - near.x, far.y - near.y) * .2;
+      const start = edge(bounds, target, Math.min(7, clearance)), end = edge(center, origin, Math.min(9, clearance));
+      const d = 'M' + point(start) + 'L' + point(end);
+      path.setAttribute('d', d); pulse.setAttribute('d', d);
+    });
+  }
+  const connectionObserver = new ResizeObserver(updateConnections);
+  connectionObserver.observe(table); connectionObserver.observe(decision);
   function travel(seat) {
     const target = parseFloat(read(seat, '--seat-h'));
     angle += ((target - angle) % 360 + 540) % 360 - 180;
@@ -128,15 +172,20 @@
     // Fixed, repository-authored SVGs; no remote or user-supplied HTML.
     drawing.innerHTML = '<svg class="council-scene" viewBox="0 0 240 120">' + scene.art + '</svg>';
     drawing.dataset.scene = key;
+    updateConnections();
     animateScene();
     scope.animate(seat.querySelector('svg'), [
       { transform: 'translateY(0) scale(1)' },
       { transform: 'translateY(-6px) scale(1.08)', offset: .35 },
       { transform: 'translateY(0) scale(1)' }
     ], { duration: 1000 });
-    const spoke = table.querySelector('[data-council-line="' + key + '"]');
-    spoke.setAttribute('pathLength', '1');
-    scope.animate(spoke, [{ strokeDasharray: '.16 1', strokeDashoffset: 1.16 }, { strokeDasharray: '.16 1', strokeDashoffset: 0 }], { duration: 750, easing: 'cubic-bezier(.45,0,.2,1)' });
+    const pulse = connections[index].pulse;
+    scope.animate(pulse, [
+      { opacity: 0, strokeDashoffset: .18 },
+      { opacity: 1, offset: .2 },
+      { opacity: 1, offset: .75 },
+      { opacity: 0, strokeDashoffset: -1 }
+    ], { duration: 1000, easing: 'cubic-bezier(.45,0,.2,1)' });
     scope.animate(title, [{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'translateY(0)' }], { delay: 180, duration: 700 });
     scope.animate(label, [{ opacity: 0 }, { opacity: 1 }], { delay: 120, duration: 500 });
     scope.animate(note, [{ opacity: 0 }, { opacity: 1 }], { delay: 350, duration: 750 });
@@ -156,21 +205,19 @@
     });
   });
   table.addEventListener('focusin', stopTour);
-  table.addEventListener('pointerenter', () => { hovered = true; halt(); });
-  table.addEventListener('pointerleave', () => { hovered = false; schedule(); });
-  toggle.addEventListener('click', () => {
-    if (touring) { stopTour(); scope.pause(true); }
-    else { touring = true; steps = 0; updateControls(); scope.pause(false); select(active); schedule(); }
-  });
-  replay.addEventListener('click', () => { stopTour(); scope.pause(false); select(active); });
+  table.addEventListener('pointerenter', () => { hovered = true; halt(); cancelResume(); });
+  table.addEventListener('pointerleave', () => { hovered = false; halt(); resumeAfterIdle(); });
+  table.addEventListener('focusout', () => { queueMicrotask(resumeAfterIdle); });
   study.addEventListener('motionstatechange', () => {
+    cancelResume();
     if (scope.reduced.matches) { stopTour(); scope.paused = false; return; }
     if (!entered && scope.visible) {
       entered = true; select(active);
       seats.forEach((seat, i) => scope.animate(seat, [{ opacity: 0 }, { opacity: 1 }], { delay: i * 85, duration: 900 }));
     }
-    schedule(); updateControls();
+    if (touring) schedule(); else resumeAfterIdle();
+    updateLive();
   });
   // Base state is useful even before intersection (and with reduced motion).
-  select(active); updateControls();
+  select(active); updateLive();
 })();

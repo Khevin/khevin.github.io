@@ -62,10 +62,30 @@ The hero pairs editorial copy with an interactive council, using six of the exis
 
 - `.council-hero__layout` uses two columns, `1fr 1.1fr`, and stacks at `≤760px`. Responsive rules live in `design-expert-hero.css`; no inline grid-column styles.
 - The council uses a circular arrangement on wide screens and a taller oval on narrow screens, preserving enough room between the seats and the decision card. Designer buttons sit around a central principle and a small worked example. Shared drawings live in `assets/council-symbols.svg`, with non-scaling strokes so they remain legible at small sizes.
-- Six native buttons expose `aria-pressed` and control a polite live region. Click, Enter, Space, arrows, Home, and End work. `design-expert-hero.js` changes only authored example content. There is no auto-rotation, timer, remote call, or framework dependency.
-- Default Rams content is readable before JavaScript loads. Motion is limited to short hover/color transitions and disabled for reduced-motion preferences; anchor scrolling also honors that preference.
-- The final call remains the user's. Link directly to installation, the library, and the full Pantheon.
+- Six native buttons expose `aria-pressed` and control a polite live region. Click, Enter, Space, arrows, Home, and End work. `design-expert-hero.js` changes only authored example content. The tour has no controls. It runs on its own, one seat every 4.8 seconds, through the six studies and stops; the pointer resting over the council pauses it, a click, key or focus hands the council to the reader, and once the pointer has been away eight seconds it picks up again. Reduced motion never starts it. The live region is `off` while the tour runs and `polite` the moment the reader takes over. Nothing under the council says any of this: the seats are buttons and look it, and the Play and Replay buttons that briefly sat there came out on 15 Sep 2026. There is no remote call or framework dependency.
+- Default Rams content is readable before JavaScript loads. Motion is the tour above, the six studies, short hover transitions and the 600ms hue travel, all disabled for reduced-motion preferences; anchor scrolling also honors that preference.
+- **Each seat carries Itten's hue for its position on the wheel**, yellow at the top and then orange, red, violet, blue, green clockwise, declared as three registered oklch components (`--seat-l`, `--seat-c`, `--seat-h`) on the seat. The table holds the selected copy, which the spokes and the worked example read through `--hue`; the script moves it the short way round the wheel, so a change of seat crosses the hues between and never the grey between two colours. Labels read `--hue-tint`, the hue mixed fifty-five per cent toward the ink, which keeps every seat above 4.5:1 on the page as drawn. A custom property resolves where it is declared, so `--hue` is restated on the seat; inherited from the table it would carry the table's colour into every seat.
+- The final call remains the user's. The hero ends on a full-width hairline, the same rule that separates every other pair of sections; the footer that once carried "18 perspectives" and a link to the Pantheon is gone, since the nav already goes there.
 - The ChatGPT glyph uses a white filter on the ink theme and keeps its dark original on paper. Both compatibility links remain equally prominent.
+
+---
+
+## Pattern: the painters' colours
+
+The palette picker colours the page; two painters colour the drawings. Every token the page reads follows the palette, and two sets of constants do not: Itten's six hues in the council (above) and each designer's own colour in the pantheon. The drawings keep their colour under every palette, which is what lets the picker be a comparison of pages rather than eighteen recolourings of the artwork.
+
+- **Each pantheon drawing takes the one colour its designer is known by**, set as `--pigment` and `--pigment-alpha` by `data-god`: Braun cream for Rams, IBM blue for Rand, Tufte's rust, the Public Theater yellow for Scher, the Tonhalle orange for Müller-Brockmann, CRT phosphor for Muriel Cooper. Itten's wheel is the exception: every stroke in it carries a hue, set inline in the drawing, with the rings split into twelve arcs, one per sector. An af Klint pyramid mapping was tried first and read as arbitrary; a colour has to belong to the person.
+- **Hairlines on dark paper are seen by luminance**, so `--pigment-alpha` rises as a colour darkens (.5 for cream, .9 for a deep red) to keep every card in one band of visibility, roughly 3.5 to 4.5:1 at rest. Hover multiplies the opacity by 1.4, capped at 1.
+- Names, discipline tags and quotation marks stay on `--accent`. Only the drawings are the painter's.
+- Measure a new pigment the way the palette rule says: composite it over `--paper` at its rest opacity (the screen blend adds almost nothing on this ground) and read the ratio through a canvas pixel.
+
+---
+
+## Pattern: emphasis, and the wheel down the page
+
+- **Emphasis is not a colour.** The italic in a headline and the marks around a quotation read `--em`, the ink mixed toward white, so the emphasis is the italic itself. The accent is spent on small things: eyebrows, tags, rules, the one underline in the hero.
+- **Each section turns the accent sixty degrees.** `--accent-0` is the palette's accent; every `.section` sets `--accent` to it turned by `--turn` to the hue that section was asked for (the turns are named in the stylesheet) at the same lightness with chroma capped at .13, and derives `--accent-deep` and `--accent-mute` again from the turned colour. Same lightness is what keeps every section as visible as the one the palette chose. The hero, nav and dialogs keep the accent itself. The rule sits behind `@supports` for relative colour syntax; without it the page is one accent, as before.
+- The page has one palette now, graphite, and the turn is written against `--accent-0`, so a change of palette is still five lines at the root. The crimson was toned from #d50032 to #c23545 because the neon read as an alarm.
 
 ---
 
@@ -87,20 +107,15 @@ Two list/grid surfaces — the library row-items and the pantheon figures — sw
 
 ---
 
-## Pattern: the palette picker
+## Pattern: the page's colours
 
-Seventeen alternative palettes sit behind a control in the nav, plus the page as drawn. Each one states four colours and which of them is the accent; every token the page reads is derived from those five by one block of `color-mix`. That is what makes the picker a comparison rather than four hand-tuned themes and thirteen rough ones.
+The page is graphite: `#141414` ground, `#414141` graphite, `#c23545` crimson as the accent, `#ebebeb` near white. Those four colours and the accent sit on `:root` as `--c1` to `--c4` and `--c-accent`, and every token the page reads is derived from them by one block of `color-mix`, so a change of palette is five lines. A picker in the nav once offered twenty-three other palettes and a mixer; it came out on 15 Sep 2026 once the choice was made, and with it the head script that restored a remembered palette and the `design-expert:palette` key.
 
 **Rules.**
 
-- **The attribute goes on the root**, not on body. The html background paints the canvas and the document scrollbar resolves its properties there, so a palette set on body leaves the gutter and the overscroll behind. The page's own palette lives on `:root` for the same reason.
-- **The four colours are sorted dark to light when authored.** The darkest is the ground; the lightest tints the text toward off-white rather than becoming it, because these are poster palettes and a saturated colour set as body copy at 14px is unreadable.
-- **The accent is named, not indexed.** In some palettes it is the lightest colour and in others the second; no fixed position works. Where all four are dark, the accent is lifted toward the off-white with a `color-mix` in the palette's own declaration, which keeps the hue and buys the contrast.
-- **Check contrast after adding one.** Measure `--ink-soft`, `--ink-mute` and `--accent` against `--paper`, and require 4.5, 3 and 3. Read the colours through a canvas pixel: `getComputedStyle` serialises a `color-mix` result as `oklab(...)`, and parsing those three numbers as if they were RGB gives silently wrong ratios.
-- **A chosen palette is set before first paint** by a small script in the head, so it does not flash the default, and it is remembered per reader under `design-expert:palette`.
-- Nothing in the picker is named on screen. A name is a worse description of a colour than the colour. The names exist as `aria-label`, where a swatch has nothing to say.
-
-**Ordering.** The palette styles live at the end of the stylesheet, so their mobile overrides have to live after them. Twice in one pass a mobile rule placed in the canonical 760 block lost to a base rule further down the file, because at equal specificity the later rule wins. When a component's base styles are appended to the end, its media queries go with them.
+- **The tokens live on the root**, not on body. The html background paints the canvas and the document scrollbar resolves its properties there, so tokens set on body would leave the gutter and the overscroll behind.
+- **The lightest colour tints the text toward off-white rather than becoming it.** `--ink` is `--c4` mixed twenty per cent into `#fbf9f6`, because a saturated colour set as body copy at 14px is unreadable.
+- **Check contrast after changing a colour.** Measure `--ink-soft`, `--ink-mute` and `--accent` against `--paper`, and require 4.5, 3 and 3. Read the colours through a canvas pixel: `getComputedStyle` serialises a `color-mix` result as `oklab(...)`, and parsing those three numbers as if they were RGB gives silently wrong ratios.
 
 ---
 
