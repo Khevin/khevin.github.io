@@ -140,8 +140,8 @@
     scope.animate(title, [{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'translateY(0)' }], { delay: 180, duration: 700 });
     scope.animate(label, [{ opacity: 0 }, { opacity: 1 }], { delay: 120, duration: 500 });
     scope.animate(note, [{ opacity: 0 }, { opacity: 1 }], { delay: 350, duration: 750 });
-    scope.animate(verdict, [{ opacity: 0, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }], { delay: 1850, duration: 700 });
-    scope.animate(verdict.querySelector('path'), [{ strokeDasharray: '20', strokeDashoffset: 20 }, { strokeDasharray: '20', strokeDashoffset: 0 }], { delay: 2000, duration: 500 });
+    scope.animate(verdict, [{ opacity: 0, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }], { delay: 3100, duration: 600 });
+    scope.animate(verdict.querySelector('path'), [{ strokeDasharray: '20', strokeDashoffset: 20 }, { strokeDasharray: '20', strokeDashoffset: 0 }], { delay: 3200, duration: 500 });
   }
   seats.forEach((seat, index) => {
     seat.addEventListener('click', () => { stopTour(); scope.pause(false); select(index); });

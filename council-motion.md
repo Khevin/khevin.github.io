@@ -6,7 +6,7 @@ The hero is the pilot for a reusable motion language, not a site-wide animation 
 
 A selection sends a short arc around the council and a signal down the selected spoke. The outer drawing acknowledges the selection. The central study then demonstrates the principle: Rams subtracts, Vignelli establishes a rhythm, Kare assembles pixels, Itten directs attention, Tufte removes chart noise, and Müller-Brockmann aligns a composition. The checkmark arrives after the work, not before it.
 
-Every study finishes in about 2.6 seconds. The introductory tour holds each seat for 4.8 seconds, visits the other five, returns to the initial seat, then stops. A visible pause control freezes the study and stops the tour. Play starts a fresh lap; Replay repeats only the current study. Selecting a designer or focusing a seat ends automatic selection. Hover pauses only automatic advancement so a study can still finish under the pointer.
+Every study finishes in about 3.7 seconds, including its final checkmark. The introductory tour holds each seat for 4.8 seconds, visits the other five, returns to the initial seat, then stops. A visible pause control freezes the study and stops the tour. Play starts a fresh lap; Replay repeats only the current study. Selecting a designer or focusing a seat ends automatic selection. Hover pauses only automatic advancement so a study can still finish under the pointer.
 
 ## Reusable implementation
 
