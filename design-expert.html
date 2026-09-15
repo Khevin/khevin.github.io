@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="design-expert.css" />
 <link rel="stylesheet" href="design-expert-hero.css" />
 <script src="design-expert-hero.js" defer></script>
+<script>try{var p=localStorage.getItem("design-expert:palette");if(p)document.documentElement.dataset.palette=p;}catch(e){}</script>
 </head>
 <body data-theme="ink" data-density="default">
 
@@ -64,6 +65,34 @@
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#changelog">Changelog</a></li>
     </ul>
+
+    <div class="palette-switch">
+      <button class="palette-switch__trigger" id="palette-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="palette-panel" aria-label="Palette">
+        <span class="swatch" id="palette-current" aria-hidden="true"><span style="background:#1a1815"></span><span style="background:#292520"></span><span style="background:#e3892d"></span><span style="background:#f1ede4"></span></span>
+        <span class="chev" aria-hidden="true">▾</span>
+      </button>
+
+    <ul class="palette-panel" id="palette-panel" role="listbox" aria-label="Palette for the whole page" hidden>
+        <li role="option" data-palette="" aria-selected="true" tabindex="0" class="current" aria-label="the page as it is: near black, warm dark, amber, cream"><span class="swatch" aria-hidden="true"><span style="background:#1a1815"></span><span style="background:#292520"></span><span style="background:#e3892d"></span><span style="background:#f1ede4"></span></span></li>
+        <li role="option" data-palette="indigo-ember" aria-selected="false" tabindex="-1" aria-label="deep indigo, purple, pink, orange"><span class="swatch" aria-hidden="true"><span style="background:#16065a"></span><span style="background:#4a1580"></span><span style="background:#ee3572"></span><span style="background:#fb7f3c"></span></span></li>
+        <li role="option" data-palette="soot-coral" aria-selected="false" tabindex="-1" aria-label="near black, brown, brick, coral"><span class="swatch" aria-hidden="true"><span style="background:#0c0c0c"></span><span style="background:#481b10"></span><span style="background:#a33922"></span><span style="background:#f05f40"></span></span></li>
+        <li role="option" data-palette="plum-cream" aria-selected="false" tabindex="-1" aria-label="dark plum, warm grey, orange, cream"><span class="swatch" aria-hidden="true"><span style="background:#33002b"></span><span style="background:#554f45"></span><span style="background:#f97a00"></span><span style="background:#e1dfd0"></span></span></li>
+        <li role="option" data-palette="navy-signal" aria-selected="false" tabindex="-1" aria-label="navy, wine, crimson, bright red"><span class="swatch" aria-hidden="true"><span style="background:#002a52"></span><span style="background:#611145"></span><span style="background:#9e1236"></span><span style="background:#ff2447"></span></span></li>
+        <li role="option" data-palette="orchid" aria-selected="false" tabindex="-1" aria-label="plum, violet, orchid, pale lilac"><span class="swatch" aria-hidden="true"><span style="background:#2c0a38"></span><span style="background:#7a1bb0"></span><span style="background:#b348df"></span><span style="background:#e9cdf4"></span></span></li>
+        <li role="option" data-palette="magenta-rose" aria-selected="false" tabindex="-1" aria-label="violet, magenta, pink, rose"><span class="swatch" aria-hidden="true"><span style="background:#5a11a0"></span><span style="background:#950f8c"></span><span style="background:#db0c74"></span><span style="background:#e4618e"></span></span></li>
+        <li role="option" data-palette="midnight-plum" aria-selected="false" tabindex="-1" aria-label="near black navy, purple, plum, magenta"><span class="swatch" aria-hidden="true"><span style="background:#04073c"></span><span style="background:#3a0b50"></span><span style="background:#750a55"></span><span style="background:#9a0c63"></span></span></li>
+        <li role="option" data-palette="wine-coral" aria-selected="false" tabindex="-1" aria-label="dark plum, wine, red, coral"><span class="swatch" aria-hidden="true"><span style="background:#220e28"></span><span style="background:#822438"></span><span style="background:#c33044"></span><span style="background:#f05c41"></span></span></li>
+        <li role="option" data-palette="navy-tan" aria-selected="false" tabindex="-1" aria-label="navy, violet, orchid, tan"><span class="swatch" aria-hidden="true"><span style="background:#000959"></span><span style="background:#3c1a5b"></span><span style="background:#c062a0"></span><span style="background:#efc796"></span></span></li>
+        <li role="option" data-palette="neon-violet" aria-selected="false" tabindex="-1" aria-label="black, indigo, violet, hot pink"><span class="swatch" aria-hidden="true"><span style="background:#000000"></span><span style="background:#1a0a50"></span><span style="background:#430a87"></span><span style="background:#fa2273"></span></span></li>
+        <li role="option" data-palette="burnt" aria-selected="false" tabindex="-1" aria-label="black, dark brown, brick, burnt orange"><span class="swatch" aria-hidden="true"><span style="background:#000000"></span><span style="background:#401210"></span><span style="background:#a33630"></span><span style="background:#b4531e"></span></span></li>
+        <li role="option" data-palette="violet-berry" aria-selected="false" tabindex="-1" aria-label="near black indigo, violet, purple, magenta"><span class="swatch" aria-hidden="true"><span style="background:#1a0350"></span><span style="background:#3c0470"></span><span style="background:#7a0490"></span><span style="background:#9c0a82"></span></span></li>
+        <li role="option" data-palette="signal-red" aria-selected="false" tabindex="-1" aria-label="black, dark red, red, bright red"><span class="swatch" aria-hidden="true"><span style="background:#000000"></span><span style="background:#3a0000"></span><span style="background:#a00000"></span><span style="background:#ff0000"></span></span></li>
+        <li role="option" data-palette="periwinkle" aria-selected="false" tabindex="-1" aria-label="dark indigo, indigo, periwinkle, lilac"><span class="swatch" aria-hidden="true"><span style="background:#1e1856"></span><span style="background:#3d3590"></span><span style="background:#8b7ac4"></span><span style="background:#c3a2d0"></span></span></li>
+        <li role="option" data-palette="maroon-pink" aria-selected="false" tabindex="-1" aria-label="maroon, wine, crimson, pink"><span class="swatch" aria-hidden="true"><span style="background:#400a1e"></span><span style="background:#7a1638"></span><span style="background:#b5284f"></span><span style="background:#e8446c"></span></span></li>
+        <li role="option" data-palette="slate-steel" aria-selected="false" tabindex="-1" aria-label="charcoal, slate, slate blue, steel blue"><span class="swatch" aria-hidden="true"><span style="background:#2a2130"></span><span style="background:#3d3247"></span><span style="background:#565d8a"></span><span style="background:#6e8bb8"></span></span></li>
+        <li role="option" data-palette="plum-amber" aria-selected="false" tabindex="-1" aria-label="plum, violet, berry, amber"><span class="swatch" aria-hidden="true"><span style="background:#2d0f47"></span><span style="background:#3c1a5e"></span><span style="background:#9e2864"></span><span style="background:#fcc45f"></span></span></li>
+    </ul>
+    </div>
   </div>
 </nav>
 
@@ -1279,6 +1308,77 @@ if ('IntersectionObserver' in window && libRows.length) {
   window.addEventListener('hashchange', () => { const t = byId(location.hash); if (t) select(t, false); });
   const initial = byId(location.hash);
   if (initial) select(initial, false);
+})();
+
+
+// The palette picker. The attribute goes on the root, because the html
+// background and the document scrollbar both read their colours from there and
+// a palette set on body would leave the canvas and the gutter behind.
+(() => {
+  const trigger = document.getElementById('palette-trigger');
+  const panel = document.getElementById('palette-panel');
+  if (!trigger || !panel) return;
+  const current = document.getElementById('palette-current');
+  const options = Array.from(panel.querySelectorAll('[role="option"]'));
+  const KEY = 'design-expert:palette';
+  const apply = (opt, remember) => {
+    const id = opt.dataset.palette;
+    if (id) document.documentElement.dataset.palette = id;
+    else delete document.documentElement.dataset.palette;
+    current.innerHTML = opt.querySelector('.swatch').innerHTML;
+    options.forEach((o) => {
+      const on = o === opt;
+      o.setAttribute('aria-selected', String(on));
+      o.classList.toggle('current', on);
+      o.tabIndex = on ? 0 : -1;
+    });
+    if (remember) {
+      try {
+        if (id) localStorage.setItem(KEY, id);
+        else localStorage.removeItem(KEY);
+      } catch (err) { /* private window */ }
+    }
+  };
+  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
+  const setOpen = (state) => {
+    trigger.setAttribute('aria-expanded', String(state));
+    panel.hidden = !state;
+    if (state) (panel.querySelector('.current') || options[0]).focus();
+  };
+  const choose = (opt) => { apply(opt, true); setOpen(false); trigger.focus(); };
+  trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()); });
+  trigger.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
+  });
+  const COLS = 6;
+  options.forEach((opt) => {
+    opt.addEventListener('click', () => choose(opt));
+    opt.addEventListener('keydown', (e) => {
+      const i = options.indexOf(opt);
+      const go = (j) => { e.preventDefault(); options[Math.max(0, Math.min(options.length - 1, j))].focus(); };
+      if (e.key === 'ArrowRight') go(i + 1);
+      else if (e.key === 'ArrowLeft') go(i - 1);
+      else if (e.key === 'ArrowDown') go(i + COLS);
+      else if (e.key === 'ArrowUp') go(i - COLS);
+      else if (e.key === 'Home') go(0);
+      else if (e.key === 'End') go(options.length - 1);
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(opt); }
+      else if (e.key === 'Escape') { e.preventDefault(); setOpen(false); trigger.focus(); }
+      else if (e.key === 'Tab') { setOpen(false); }
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !e.target.closest('.palette-switch')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
+  });
+  // The head script already set the attribute; this catches the trigger up.
+  const saved = document.documentElement.dataset.palette;
+  if (saved) {
+    const opt = options.find((o) => o.dataset.palette === saved);
+    if (opt) apply(opt, false);
+  }
 })();
 
 </script>

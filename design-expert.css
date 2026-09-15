@@ -1,16 +1,21 @@
 /* khev-tools / design-expert — editorial system */
 
 :root {
-  --ink: #1a1815;
-  --ink-soft: #423e38;
-  --ink-mute: #6b655c;
-  --ink-faint: #a8a195;
-  --rule: #d6cfc1;
-  --rule-soft: #e8e2d4;
-  --paper: #f5f1ea;
-  --paper-warm: #efe9dc;
-  --paper-deep: #e8e1d0;
-  --accent: oklch(72% 0.15 55);          /* warm amber-orange */
+  /* The page as drawn. These sit on the root rather than on body so the html
+     background, which paints the canvas behind the page, and the document
+     scrollbar, which resolves its properties here, both follow the page
+     instead of a light set nobody uses. A palette chosen in the nav
+     overrides them at this same level. */
+  --paper: #1a1815;
+  --paper-warm: #211e1a;
+  --paper-deep: #292520;
+  --ink: #f1ede4;
+  --ink-soft: #cac3b3;
+  --ink-mute: #92897a;
+  --ink-faint: #5a544a;
+  --rule: #2d2922;
+  --rule-soft: #221f1a;
+  --accent: oklch(78% 0.16 55);          /* warm amber-orange */
   --accent-deep: oklch(56% 0.13 55);
   --accent-mute: oklch(82% 0.07 55);
   --signal: oklch(48% 0.10 145);         /* moss, used once */
@@ -1261,25 +1266,6 @@ body[data-density="generous"] .section { padding: clamp(120px, 18vh, 240px) 0; }
 body[data-density="tight"] .section { padding: clamp(56px, 8vh, 100px) 0; }
 
 /* ——— Theme: ink ——— */
-/* The ink palette is lifted to the root as well as the body. Two things read
-   their colours from the root element and would otherwise get the light set:
-   the html background, which paints the canvas behind the page and shows in
-   the scrollbar gutter and on an overscroll bounce, and the document
-   scrollbar itself, whose custom properties resolve on the root. :has keeps
-   both following the body theme instead of duplicating the values. */
-:root:has(body[data-theme="ink"]),
-body[data-theme="ink"] {
-  --paper: #1a1815;
-  --paper-warm: #211e1a;
-  --paper-deep: #292520;
-  --ink: #f1ede4;
-  --ink-soft: #cac3b3;
-  --ink-mute: #92897a;
-  --ink-faint: #5a544a;
-  --rule: #2d2922;
-  --rule-soft: #221f1a;
-  --accent: oklch(78% 0.16 55);
-}
 body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 
 /* ——— Hide nav scroll on tiny ——— */
@@ -1973,6 +1959,10 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
      When toggled open, render the list as an absolute dropdown panel
      anchored to the right edge of the nav, matching the namespace switcher. */
   .nav-toggle { display: inline-flex; }
+  nav.top .inner { gap: 10px; }
+  .nav-toggle { order: 2; margin-left: 4px; }
+  .palette-switch { order: 1; margin-left: auto; }
+  .brand-switch { white-space: nowrap; }
 
   /* A library row is an icon, a filename and a tag; at 375px there is no
      width left to split it in two. */
@@ -2105,4 +2095,152 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 
   /* Nothing lives where the two bars meet; left alone it paints a grey square. */
   ::-webkit-scrollbar-corner { background: transparent; }
+}
+
+
+/* ——— Palettes ———
+   A palette states four colours and which of them is the accent. Everything the
+   page reads is derived from those five by one set of rules, so switching is a
+   fair comparison rather than four hand-tuned themes and thirteen rough ones.
+   The darkest colour is the ground, the lightest tints the text toward white
+   rather than becoming it, because these palettes are built for posters and a
+   saturated colour set as body copy is unreadable at fourteen pixels.
+
+   The attribute lives on the root: the html background paints the canvas and
+   the document scrollbar resolves its colours there, so a palette set on body
+   would leave both behind. */
+:root[data-palette="indigo-ember"] { --c1: #16065a; --c2: #4a1580; --c3: #ee3572; --c4: #fb7f3c; --c-accent: #fb7f3c; }
+:root[data-palette="soot-coral"] { --c1: #0c0c0c; --c2: #481b10; --c3: #a33922; --c4: #f05f40; --c-accent: #f05f40; }
+:root[data-palette="plum-cream"] { --c1: #33002b; --c2: #554f45; --c3: #f97a00; --c4: #e1dfd0; --c-accent: #f97a00; }
+:root[data-palette="navy-signal"] { --c1: #002a52; --c2: #611145; --c3: #9e1236; --c4: #ff2447; --c-accent: #ff2447; }
+:root[data-palette="orchid"] { --c1: #2c0a38; --c2: #7a1bb0; --c3: #b348df; --c4: #e9cdf4; --c-accent: #b348df; }
+:root[data-palette="magenta-rose"] { --c1: #5a11a0; --c2: #950f8c; --c3: #db0c74; --c4: #e4618e; --c-accent: #e4618e; }
+:root[data-palette="midnight-plum"] { --c1: #04073c; --c2: #3a0b50; --c3: #750a55; --c4: #9a0c63; --c-accent: color-mix(in oklab, #9a0c63 60%, #fbf9f6); }
+:root[data-palette="wine-coral"] { --c1: #220e28; --c2: #822438; --c3: #c33044; --c4: #f05c41; --c-accent: #f05c41; }
+:root[data-palette="navy-tan"] { --c1: #000959; --c2: #3c1a5b; --c3: #c062a0; --c4: #efc796; --c-accent: #c062a0; }
+:root[data-palette="neon-violet"] { --c1: #000000; --c2: #1a0a50; --c3: #430a87; --c4: #fa2273; --c-accent: #fa2273; }
+:root[data-palette="burnt"] { --c1: #000000; --c2: #401210; --c3: #a33630; --c4: #b4531e; --c-accent: #b4531e; }
+:root[data-palette="violet-berry"] { --c1: #1a0350; --c2: #3c0470; --c3: #7a0490; --c4: #9c0a82; --c-accent: color-mix(in oklab, #9c0a82 60%, #fbf9f6); }
+:root[data-palette="signal-red"] { --c1: #000000; --c2: #3a0000; --c3: #a00000; --c4: #ff0000; --c-accent: #ff0000; }
+:root[data-palette="periwinkle"] { --c1: #1e1856; --c2: #3d3590; --c3: #8b7ac4; --c4: #c3a2d0; --c-accent: #8b7ac4; }
+:root[data-palette="maroon-pink"] { --c1: #400a1e; --c2: #7a1638; --c3: #b5284f; --c4: #e8446c; --c-accent: #e8446c; }
+:root[data-palette="slate-steel"] { --c1: #2a2130; --c2: #3d3247; --c3: #565d8a; --c4: #6e8bb8; --c-accent: #6e8bb8; }
+:root[data-palette="plum-amber"] { --c1: #2d0f47; --c2: #3c1a5e; --c3: #9e2864; --c4: #fcc45f; --c-accent: #fcc45f; }
+
+:root[data-palette] {
+  --paper: var(--c1);
+  --paper-warm: color-mix(in oklab, var(--c1) 92%, var(--c4));
+  --paper-deep: color-mix(in oklab, var(--c1) 85%, var(--c4));
+  --ink: color-mix(in oklab, var(--c4) 20%, #fbf9f6);
+  --ink-soft: color-mix(in oklab, var(--ink) 78%, var(--c1));
+  --ink-mute: color-mix(in oklab, var(--ink) 52%, var(--c1));
+  --ink-faint: color-mix(in oklab, var(--ink) 30%, var(--c1));
+  --rule: color-mix(in oklab, var(--c1) 85%, var(--ink));
+  --rule-soft: color-mix(in oklab, var(--c1) 92%, var(--ink));
+  --accent: var(--c-accent);
+  --accent-deep: color-mix(in oklab, var(--c-accent) 74%, #000);
+  --accent-mute: color-mix(in oklab, var(--c-accent) 38%, var(--c1));
+  --signal: color-mix(in oklab, var(--c-accent) 55%, var(--c2));
+}
+
+/* ——— The palette picker ———
+   The trigger is the palette itself, four bands in a small block, and every
+   option in the panel is the same. Nothing is named, because a name is a worse
+   description of a colour than the colour. The names exist for screen readers,
+   where a swatch has nothing to say. */
+/* Flex, not block: the trigger is inline-flex with negative vertical margins,
+   and on a line box those margins do not pull the parent in, so the bar grew
+   nine pixels. As a flex item the button is blockified and they apply. */
+.palette-switch { position: relative; display: flex; align-items: center; }
+.palette-switch__trigger {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  margin: -10px;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  color: var(--ink-mute);
+  transition: background 150ms, color 150ms;
+}
+.palette-switch__trigger:hover { background: var(--rule-soft); color: var(--ink); }
+.palette-switch__trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.palette-switch__trigger .chev {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-faint);
+  transition: transform 150ms cubic-bezier(0.16,1,0.3,1), color 150ms;
+}
+.palette-switch__trigger[aria-expanded="true"] .chev { transform: rotate(180deg); color: var(--ink); }
+
+.swatch {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  flex: none;
+}
+.swatch span { display: block; height: 25%; }
+
+nav.top ul.palette-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  left: auto;
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  width: 348px;
+  max-width: calc(100vw - 2 * var(--gutter));
+  box-shadow: 0 8px 32px -16px color-mix(in oklch, var(--ink) 16%, transparent);
+  z-index: 60;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  flex-direction: row;
+}
+nav.top ul.palette-panel[hidden] { display: none; }
+.palette-panel li[role="option"] {
+  display: block;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  outline-offset: 2px;
+}
+.palette-panel li[role="option"] .swatch {
+  width: 100%;
+  height: 46px;
+  border-radius: 3px;
+  transition: transform 150ms cubic-bezier(0.16,1,0.3,1);
+}
+.palette-panel li[role="option"]:hover .swatch { transform: translateY(-2px); }
+.palette-panel li[role="option"]:focus-visible { outline: 2px solid var(--accent); }
+.palette-panel li[role="option"].current .swatch {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+@media (max-width: 760px) {
+  /* The bar is 375px wide and already carries the namespace switcher and the
+     hamburger. The chevron goes: the swatch is the affordance, and dropping it
+     is the thirteen pixels that keep all three on one line. */
+  .palette-switch { position: static; }
+  .palette-switch__trigger { padding: 10px 6px; margin: -10px -6px; gap: 0; }
+  .palette-switch__trigger .chev { display: none; }
+  nav.top ul.palette-panel {
+    top: calc(100% + 6px);
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+    max-width: none;
+  }
 }

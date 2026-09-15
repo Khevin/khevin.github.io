@@ -87,23 +87,20 @@ Two list/grid surfaces — the library row-items and the pantheon figures — sw
 
 ---
 
-## Pattern: a theme declared on body needs lifting to the root
+## Pattern: the palette picker
 
-The design-expert page sets its ink palette on `body[data-theme="ink"]`, which is the natural place for it and is wrong for two things that read their colours from the root element instead.
+Seventeen alternative palettes sit behind a control in the nav, plus the page as drawn. Each one states four colours and which of them is the accent; every token the page reads is derived from those five by one block of `color-mix`. That is what makes the picker a comparison rather than four hand-tuned themes and thirteen rough ones.
 
-- **The html background paints the canvas.** `html, body { background: var(--paper) }` resolves `--paper` on the root, so html took the light value and painted a pale ground behind a dark page. Body covered it, which is why nobody noticed, but it shows in the scrollbar gutter and on an overscroll bounce.
-- **The document scrollbar resolves its custom properties on the root.** A scrollbar styled with `var(--rule)` would have drawn the light theme's hairline against the dark page.
+**Rules.**
 
-**The fix is one selector, not a second copy of the values:**
+- **The attribute goes on the root**, not on body. The html background paints the canvas and the document scrollbar resolves its properties there, so a palette set on body leaves the gutter and the overscroll behind. The page's own palette lives on `:root` for the same reason.
+- **The four colours are sorted dark to light when authored.** The darkest is the ground; the lightest tints the text toward off-white rather than becoming it, because these are poster palettes and a saturated colour set as body copy at 14px is unreadable.
+- **The accent is named, not indexed.** In some palettes it is the lightest colour and in others the second; no fixed position works. Where all four are dark, the accent is lifted toward the off-white with a `color-mix` in the palette's own declaration, which keeps the hue and buys the contrast.
+- **Check contrast after adding one.** Measure `--ink-soft`, `--ink-mute` and `--accent` against `--paper`, and require 4.5, 3 and 3. Read the colours through a canvas pixel: `getComputedStyle` serialises a `color-mix` result as `oklab(...)`, and parsing those three numbers as if they were RGB gives silently wrong ratios.
+- **A chosen palette is set before first paint** by a small script in the head, so it does not flash the default, and it is remembered per reader under `design-expert:palette`.
+- Nothing in the picker is named on screen. A name is a worse description of a colour than the colour. The names exist as `aria-label`, where a swatch has nothing to say.
 
-```css
-:root:has(body[data-theme="ink"]),
-body[data-theme="ink"] { --paper: #1a1815; /* … */ }
-```
-
-Body's own declaration still wins for body and everything under it, so the page does not change. Only the root element sees the new values, which is exactly who needed them. `:has` keeps it following the body attribute rather than hard-coding a second palette that can drift.
-
-**Rule.** Any surface here that declares its palette on `body` and then styles the scrollbar, the html background, or anything else that resolves at the root, lifts the palette with this selector. Check it by reading `getComputedStyle(document.documentElement)` rather than the body's.
+**Ordering.** The palette styles live at the end of the stylesheet, so their mobile overrides have to live after them. Twice in one pass a mobile rule placed in the canonical 760 block lost to a base rule further down the file, because at equal specificity the later rule wins. When a component's base styles are appended to the end, its media queries go with them.
 
 ---
 
