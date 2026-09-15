@@ -103,7 +103,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   position: relative;
   width: 100%;
   aspect-ratio: 600 / 570;
-  min-height: 460px;
+  min-height: 540px;
   margin-top: 4px;
   isolation: isolate;
   /* The selected hue, opening on Rams. The script moves these three. Each
@@ -129,6 +129,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   stroke-width: 1;
 }
 .council-orbit--inner { stroke-dasharray: 1 7; }
+.council-orbit-sweep { stroke: var(--hue-tint); stroke-width: 2; stroke-linecap: round; stroke-dasharray: .09 .91; opacity: 0; transform-origin: 300px 278px; }
 .council-crosshair { stroke: var(--ink-faint); }
 .council-spokes path { stroke-dasharray: 3 5; transition: stroke .2s; }
 .council-spokes .is-selected {
@@ -176,7 +177,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   font: 8px/1.4 var(--mono);
   color: var(--ink-mute);
 }
-.council-seat:hover svg { transform: translateY(-3px); }
+.council-seat:hover svg { filter: brightness(1.12); }
 .council-seat:hover svg,
 .council-seat.is-selected svg { color: var(--hue); }
 /* The label takes a tint lifted toward the ink: violet and blue at full
@@ -212,7 +213,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   letter-spacing: .03em;
   color: var(--ink-mute);
 }
-.council-decision__drawing { height: 56px; margin: 12px 0 6px; }
+.council-decision__drawing { height: clamp(76px, 9vw, 124px); margin: 14px 0 12px; }
 .council-decision__drawing svg {
   width: 100%;
   height: 100%;
@@ -226,26 +227,26 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
 .study-ink { stroke: var(--ink); }
 .study-arrow { stroke: var(--hue); }
 .study-fill { fill: var(--hue); stroke: none; }
-/* The handover. The old drawing and words dissolve, then the new drawing
-   draws itself on stroke by stroke, the muted parts first and the arrow last,
-   while the title rises under it. The script sets pathLength="1" on every
-   stroke so one dash offset draws any shape. */
-.council-decision.is-leaving .council-decision__drawing,
-.council-decision.is-leaving .council-decision__title,
-.council-decision.is-leaving .council-decision__verdict { opacity: 0; transition: opacity .16s ease-in; }
-.council-decision.is-live .council-decision__drawing :is(path, rect, circle) {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: council-draw .55s cubic-bezier(.4, 0, .2, 1) both;
-}
-.council-decision.is-live .council-decision__drawing :is(.study-ink, .study-ink *) { animation-delay: .12s; }
-.council-decision.is-live .council-decision__drawing :is(.study-arrow, .study-cut) { animation-delay: .28s; }
-.council-decision.is-live .council-decision__drawing :is(.study-fill, text) { stroke-dasharray: none; animation: council-appear .3s .3s both; }
-.council-decision.is-live .council-decision__title { animation: council-rise .42s .1s cubic-bezier(.2, .7, .2, 1) both; }
-.council-decision.is-live .council-decision__verdict { animation: council-appear .3s .38s both; }
-@keyframes council-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes council-appear { from { opacity: 0; } to { opacity: 1; } }
-@keyframes council-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* Choreography is owned by KhevMotion; base styles are the finished study. */
+.council-scene { overflow: visible; }
+.council-scene [data-motion] { transform-box: fill-box; transform-origin: center; }
+.scene-paper { fill: var(--paper); stroke: var(--ink-soft); }
+.scene-ink { stroke: var(--ink); }
+.scene-muted { stroke: var(--ink-faint); }
+.scene-accent { stroke: var(--hue); stroke-width: 1.5; }
+.scene-solid { fill: var(--hue-tint); stroke: none; }
+.scene-knockout { stroke: var(--paper); stroke-width: 1.5; }
+.scene-guide { stroke: var(--hue-tint); stroke-dasharray: 2 5; opacity: .3; }
+.scene-ghost { stroke: var(--ink-mute); opacity: 0; }
+.scene-label, .scene-value { fill: var(--ink-soft); stroke: none; font: 10px var(--mono); }
+.scene-value { fill: var(--hue-tint); font-size: 12px; }
+.council-playback { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 18px; margin-top: 4px; }
+.council-playback__hint { color: var(--ink-mute); font: 9px/1.5 var(--mono); }
+.council-playback button { min-height: 44px; padding: 8px 2px; border: 0; background: none; color: var(--ink-soft); cursor: pointer; font: 10px/1.5 var(--mono); }
+.council-playback button:hover { color: var(--ink); }
+.council-playback button:focus-visible { outline: 2px solid var(--ink-soft); outline-offset: 4px; }
+.council-playback button:disabled { cursor: default; color: var(--ink-mute); }
+.council-playback__replay:disabled { display: none; }
 .council-decision__title {
   font: 400 clamp(22px, 2.3vw, 32px)/1.08 var(--title);
   letter-spacing: -.025em;
@@ -304,13 +305,13 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   .council-hero .compat { gap: 8px; margin-top: 22px; }
   .council-hero .compat .chip.primary { font-size: 10px; padding: 8px; min-height: 44px; }
   .council-study { max-width: 560px; width: 100%; justify-self: center; }
-  .council-study__table { margin-top: 0; min-height: 420px; }
+  .council-study__table { margin-top: 0; min-height: 490px; }
   .council-seat svg { width: clamp(40px, 11vw, 65px); height: clamp(44px, 12vw, 70px); margin-bottom: 6px; }
   .council-seat > span { font-size: clamp(9px, 2.65vw, 12px); }
   .council-seat small { font-size: 7px; }
   .council-decision { width: 45%; padding: 12px 7px; }
   .council-decision__label { font-size: 6.5px; letter-spacing: 0; }
-  .council-decision__drawing { height: 34px; margin: 8px 0 6px; }
+  .council-decision__drawing { height: 76px; margin: 10px 0 8px; }
   .council-decision__title { font-size: clamp(18px, 5vw, 28px); }
   .council-decision__verdict { font-size: 7px; margin-top: 10px; gap: 4px; }
   .council-study__note p { font-size: 15px; }
