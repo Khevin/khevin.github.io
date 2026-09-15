@@ -7,8 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./display-fonts.css" />
 <link rel="stylesheet" href="design-expert.css" />
 <link rel="stylesheet" href="design-expert-hero.css?v=20260915-motion" />
+<script>try{var f=localStorage.getItem("design-expert:face");if(f)document.documentElement.dataset.face=f;}catch(e){}</script>
 <script src="site-motion.js?v=20260915-motion" defer></script>
 <script src="council-scenes.js?v=20260915-motion" defer></script>
 <script src="design-expert-hero.js?v=20260915-motion" defer></script>
@@ -66,6 +68,29 @@
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#changelog">Changelog</a></li>
     </ul>
+
+    <div class="face-switch">
+      <button class="face-switch__trigger" id="face-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="face-panel" aria-label="Typeface for every title on this page">
+        <span class="face-switch__aa" aria-hidden="true">Aa</span>
+        <span class="face-switch__name" id="face-current">Fraunces</span>
+        <span class="chev" aria-hidden="true">▾</span>
+      </button>
+
+    <ul class="face-panel" id="face-panel" role="listbox" aria-label="Typeface for every title on this page" hidden>
+        <li role="option" data-face="fraunces" aria-selected="true" tabindex="0" class="current" aria-label="Fraunces"><span class="face-row"><span class="mark" aria-hidden="true">✓</span><span class="face-row__name" style='font-family: "Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: "opsz" 144'>Fraunces</span></span><span class="face-desc">The page as drawn. Soft old-style with a deliberate wobble.</span></li>
+        <li role="option" data-face="fraunces-wonk" aria-selected="false" tabindex="-1" aria-label="Fraunces, wonky"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Fraunces Flex", "Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1'>Fraunces, wonky</span></span><span class="face-desc">The same face with its axes opened: softer terminals, the leaning g.</span></li>
+        <li role="option" data-face="gloock" aria-selected="false" tabindex="-1" aria-label="Gloock"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Gloock", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Gloock</span></span><span class="face-desc">A Didone pushed until the thin strokes almost disappear.</span></li>
+        <li role="option" data-face="bodoni" aria-selected="false" tabindex="-1" aria-label="Bodoni Moda"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Bodoni Moda", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Bodoni Moda</span></span><span class="face-desc">Bodoni at its heaviest. Fashion-masthead authority, and no warmth at all.</span></li>
+        <li role="option" data-face="baskerville" aria-selected="false" tabindex="-1" aria-label="Libre Baskerville"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Libre Baskerville", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Libre Baskerville</span></span><span class="face-desc">Settled and bookish. The page starts sounding like a printed manual.</span></li>
+        <li role="option" data-face="syne" aria-selected="false" tabindex="-1" aria-label="Syne"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Syne", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Syne</span></span><span class="face-desc">Art-school geometry. The widths refuse to behave and that is the point.</span></li>
+        <li role="option" data-face="unbounded" aria-selected="false" tabindex="-1" aria-label="Unbounded"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Unbounded", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Unbounded</span></span><span class="face-desc">Round and confident, closer to a logotype than to a text face.</span></li>
+        <li role="option" data-face="anton" aria-selected="false" tabindex="-1" aria-label="Anton"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Anton", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Anton</span></span><span class="face-desc">One weight, tightly condensed. Built to be read across a room.</span></li>
+        <li role="option" data-face="big-shoulders" aria-selected="false" tabindex="-1" aria-label="Big Shoulders"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Big Shoulders Display", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Big Shoulders</span></span><span class="face-desc">Industrial signage: narrow, upright, nothing spare.</span></li>
+        <li role="option" data-face="alfa-slab" aria-selected="false" tabindex="-1" aria-label="Alfa Slab One"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Alfa Slab One", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Alfa Slab One</span></span><span class="face-desc">A fat slab serif with circus-poster energy.</span></li>
+        <li role="option" data-face="bungee" aria-selected="false" tabindex="-1" aria-label="Bungee"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Bungee", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Bungee</span></span><span class="face-desc">Drawn for signs that have to read downward as well as across.</span></li>
+        <li role="option" data-face="climate" aria-selected="false" tabindex="-1" aria-label="Climate Crisis"><span class="face-row"><span class="mark" aria-hidden="true"></span><span class="face-row__name" style='font-family: "Climate Crisis", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif; font-variation-settings: normal'>Climate Crisis</span></span><span class="face-desc">A face whose weight is an argument. Uncomfortable on purpose.</span></li>
+    </ul>
+    </div>
 
 </nav>
 
@@ -1261,6 +1286,75 @@ if ('IntersectionObserver' in window && libRows.length) {
   if (initial) select(initial, false);
 })();
 
+
+
+// The title typeface. Every heading reads --title, so this swaps the voice of
+// the page and leaves body prose, mono and the chrome alone. The faces are
+// self-hosted, so opening the panel costs nothing over the network.
+(() => {
+  const trigger = document.getElementById('face-trigger');
+  const panel = document.getElementById('face-panel');
+  if (!trigger || !panel) return;
+  const root = document.documentElement;
+  const label = document.getElementById('face-current');
+  const options = Array.from(panel.querySelectorAll('[role="option"]'));
+  const KEY = 'design-expert:face';
+  const apply = (opt, remember) => {
+    const id = opt.dataset.face;
+    if (id === 'fraunces') delete root.dataset.face; else root.dataset.face = id;
+    label.textContent = opt.getAttribute('aria-label');
+    options.forEach((o) => {
+      const on = o === opt;
+      o.setAttribute('aria-selected', String(on));
+      o.classList.toggle('current', on);
+      o.tabIndex = on ? 0 : -1;
+      const mark = o.querySelector('.mark');
+      if (mark) mark.textContent = on ? '✓' : '';
+    });
+    if (remember) {
+      try {
+        if (id === 'fraunces') localStorage.removeItem(KEY); else localStorage.setItem(KEY, id);
+      } catch (err) { /* private window */ }
+    }
+  };
+  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
+  const setOpen = (state) => {
+    trigger.setAttribute('aria-expanded', String(state));
+    panel.hidden = !state;
+    if (state) (panel.querySelector('.current') || options[0]).focus();
+  };
+  const choose = (opt) => { apply(opt, true); setOpen(false); trigger.focus(); };
+  trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()); });
+  trigger.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
+  });
+  options.forEach((opt) => {
+    opt.addEventListener('click', () => choose(opt));
+    opt.addEventListener('keydown', (e) => {
+      const i = options.indexOf(opt);
+      const go = (j) => { e.preventDefault(); options[(j + options.length) % options.length].focus(); };
+      if (e.key === 'ArrowDown') go(i + 1);
+      else if (e.key === 'ArrowUp') go(i - 1);
+      else if (e.key === 'Home') go(0);
+      else if (e.key === 'End') go(options.length - 1);
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(opt); }
+      else if (e.key === 'Escape') { e.preventDefault(); setOpen(false); trigger.focus(); }
+      else if (e.key === 'Tab') { setOpen(false); }
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !e.target.closest('.face-switch')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
+  });
+  // The head script already set the attribute; this catches the trigger up.
+  const saved = root.dataset.face;
+  if (saved) {
+    const opt = options.find((o) => o.dataset.face === saved);
+    if (opt) apply(opt, false);
+  }
+})();
 
 </script>
 
