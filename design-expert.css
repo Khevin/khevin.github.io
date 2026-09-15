@@ -2212,7 +2212,10 @@ nav.top .palette-panel {
   z-index: 60;
   display: block;
 }
-.palette-presets {
+/* Qualified, because the generic nav.top ul sets display:flex with a 22px gap
+   and outranks a bare class. Unqualified, the swatches collapsed to two pixels
+   wide and the panel read as a row of hairlines. */
+nav.top ul.palette-presets {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -2220,7 +2223,7 @@ nav.top .palette-panel {
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
 }
-.palette-presets[hidden] { display: none; }
+nav.top ul.palette-presets[hidden] { display: none; }
 nav.top .palette-panel[hidden] { display: none; }
 .palette-presets li[role="option"] {
   display: block;
