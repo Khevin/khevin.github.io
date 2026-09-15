@@ -1,29 +1,36 @@
 /* khev-tools / design-expert — editorial system */
 
 :root {
-  /* The page as drawn. These sit on the root rather than on body so the html
-     background, which paints the canvas behind the page, and the document
-     scrollbar, which resolves its properties here, both follow the page
-     instead of a light set nobody uses. A palette chosen in the nav
-     overrides them at this same level. */
-  --paper: #1a1815;
-  --paper-warm: #211e1a;
-  --paper-deep: #292520;
-  --ink: #f1ede4;
-  --ink-soft: #cac3b3;
-  --ink-mute: #92897a;
-  --ink-faint: #5a544a;
-  --rule: #2d2922;
-  --rule-soft: #221f1a;
-  --accent-0: oklch(78% 0.16 55);        /* warm amber-orange: the palette's accent */
+  /* The page as drawn: graphite. Four colours and an accent, and every token
+     below is derived from those five by one block of color-mix, so a change
+     of palette is five lines. The picker that offered other palettes came
+     out on 15 Sep 2026; this is the one Khevin chose. The tokens sit on the
+     root rather than on body so the html background, which paints the
+     canvas behind the page, and the document scrollbar, which resolves its
+     properties here, both follow the page. */
+  --c1: #141414;                         /* ground */
+  --c2: #414141;                         /* graphite */
+  --c3: #c23545;                         /* crimson, toned from #d50032 */
+  --c4: #ebebeb;                         /* near white */
+  --c-accent: var(--c3);
+  --paper: var(--c1);
+  --paper-warm: color-mix(in oklab, var(--c1) 92%, var(--c4));
+  --paper-deep: color-mix(in oklab, var(--c1) 85%, var(--c4));
+  --ink: color-mix(in oklab, var(--c4) 20%, #fbf9f6);
+  --ink-soft: color-mix(in oklab, var(--ink) 78%, var(--c1));
+  --ink-mute: color-mix(in oklab, var(--ink) 52%, var(--c1));
+  --ink-faint: color-mix(in oklab, var(--ink) 30%, var(--c1));
+  --rule: color-mix(in oklab, var(--c1) 85%, var(--ink));
+  --rule-soft: color-mix(in oklab, var(--c1) 92%, var(--ink));
+  --accent-0: var(--c-accent);           /* the palette's accent */
   --accent: var(--accent-0);             /* the accent in use; sections turn it, below */
   /* Emphasis is not a colour. Italics in a headline and the marks around a
      quotation sit a shade above the ink, almost white, so the emphasis is
      the italic itself and the accent is spent on smaller things. */
   --em: color-mix(in oklab, var(--ink) 55%, #fff);
-  --accent-deep: oklch(56% 0.13 55);
-  --accent-mute: oklch(82% 0.07 55);
-  --signal: oklch(48% 0.10 145);         /* moss, used once */
+  --accent-deep: color-mix(in oklab, var(--c-accent) 74%, #000);
+  --accent-mute: color-mix(in oklab, var(--c-accent) 38%, var(--c1));
+  --signal: color-mix(in oklab, var(--c-accent) 55%, var(--c2));
 
   --serif: "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif;
   --sans: "Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif;
@@ -1708,7 +1715,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 .lib-pop__icon svg circle,
 .lib-pop__icon svg rect {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--icon, var(--accent));
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1769,7 +1776,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
   color: var(--ink-faint);
   text-transform: uppercase;
 }
-.lib-pop__brand { color: var(--accent); }
+.lib-pop__brand { color: var(--icon, var(--accent)); }
 
 @media (max-width: 600px) {
   .lib-pop__card { padding: 22px 20px 18px; }
@@ -1998,8 +2005,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
      anchored to the right edge of the nav, matching the namespace switcher. */
   .nav-toggle { display: inline-flex; }
   nav.top .inner { gap: 10px; }
-  .nav-toggle { order: 2; margin-left: 4px; }
-  .palette-switch { order: 1; margin-left: auto; }
+  .nav-toggle { order: 2; margin-left: auto; }
   .brand-switch { white-space: nowrap; }
 
   /* A library row is an icon, a filename and a tag; at 375px there is no
@@ -2134,61 +2140,6 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
   /* Nothing lives where the two bars meet; left alone it paints a grey square. */
   ::-webkit-scrollbar-corner { background: transparent; }
 }
-
-
-/* ——— Palettes ———
-   A palette states four colours and which of them is the accent. Everything the
-   page reads is derived from those five by one set of rules, so switching is a
-   fair comparison rather than four hand-tuned themes and thirteen rough ones.
-   The darkest colour is the ground, the lightest tints the text toward white
-   rather than becoming it, because these palettes are built for posters and a
-   saturated colour set as body copy is unreadable at fourteen pixels.
-
-   The attribute lives on the root: the html background paints the canvas and
-   the document scrollbar resolves its colours there, so a palette set on body
-   would leave both behind. */
-:root[data-palette="indigo-ember"] { --c1: #16065a; --c2: #4a1580; --c3: #ee3572; --c4: #fb7f3c; --c-accent: #fb7f3c; }
-:root[data-palette="soot-coral"] { --c1: #0c0c0c; --c2: #481b10; --c3: #a33922; --c4: #f05f40; --c-accent: #f05f40; }
-:root[data-palette="plum-cream"] { --c1: #33002b; --c2: #554f45; --c3: #f97a00; --c4: #e1dfd0; --c-accent: #f97a00; }
-:root[data-palette="navy-signal"] { --c1: #002a52; --c2: #611145; --c3: #9e1236; --c4: #ff2447; --c-accent: #ff2447; }
-:root[data-palette="orchid"] { --c1: #2c0a38; --c2: #7a1bb0; --c3: #b348df; --c4: #e9cdf4; --c-accent: #b348df; }
-:root[data-palette="magenta-rose"] { --c1: #5a11a0; --c2: #950f8c; --c3: #db0c74; --c4: #e4618e; --c-accent: #e4618e; }
-:root[data-palette="midnight-plum"] { --c1: #04073c; --c2: #3a0b50; --c3: #750a55; --c4: #9a0c63; --c-accent: color-mix(in oklab, #9a0c63 60%, #fbf9f6); }
-:root[data-palette="wine-coral"] { --c1: #220e28; --c2: #822438; --c3: #c33044; --c4: #f05c41; --c-accent: #f05c41; }
-:root[data-palette="navy-tan"] { --c1: #000959; --c2: #3c1a5b; --c3: #c062a0; --c4: #efc796; --c-accent: #c062a0; }
-:root[data-palette="neon-violet"] { --c1: #000000; --c2: #1a0a50; --c3: #430a87; --c4: #fa2273; --c-accent: #fa2273; }
-:root[data-palette="burnt"] { --c1: #000000; --c2: #401210; --c3: #a33630; --c4: #b4531e; --c-accent: #b4531e; }
-:root[data-palette="violet-berry"] { --c1: #1a0350; --c2: #3c0470; --c3: #7a0490; --c4: #9c0a82; --c-accent: color-mix(in oklab, #9c0a82 60%, #fbf9f6); }
-:root[data-palette="signal-red"] { --c1: #000000; --c2: #3a0000; --c3: #a00000; --c4: #ff0000; --c-accent: #ff0000; }
-:root[data-palette="periwinkle"] { --c1: #1e1856; --c2: #3d3590; --c3: #8b7ac4; --c4: #c3a2d0; --c-accent: #8b7ac4; }
-:root[data-palette="maroon-pink"] { --c1: #400a1e; --c2: #7a1638; --c3: #b5284f; --c4: #e8446c; --c-accent: #e8446c; }
-:root[data-palette="slate-steel"] { --c1: #2a2130; --c2: #3d3247; --c3: #565d8a; --c4: #6e8bb8; --c-accent: #6e8bb8; }
-:root[data-palette="plum-amber"] { --c1: #2d0f47; --c2: #3c1a5e; --c3: #9e2864; --c4: #fcc45f; --c-accent: #fcc45f; }
-:root[data-palette="clay-tan"] { --c1: #2e2422; --c2: #573a28; --c3: #b55b32; --c4: #debc8e; --c-accent: #b55b32; }
-:root[data-palette="graphite-red"] { --c1: #141414; --c2: #414141; --c3: #c23545; --c4: #ebebeb; --c-accent: #c23545; }
-:root[data-palette="navy-blush"] { --c1: #050a26; --c2: #343854; --c3: #5c6183; --c4: #f2a9c4; --c-accent: #f2a9c4; }
-:root[data-palette="burgundy-peach"] { --c1: #33132a; --c2: #7a0b2e; --c3: #ee9a73; --c4: #fbdcc0; --c-accent: #ee9a73; }
-:root[data-palette="teal-coral"] { --c1: #013d59; --c2: #4a2b5e; --c3: #bf4e75; --c4: #f95f5c; --c-accent: #f95f5c; }
-:root[data-palette="plum-scarlet"] { --c1: #2b1024; --c2: #7e142e; --c3: #cc2b3e; --c4: #ef4438; --c-accent: #ef4438; }
-:root[data-palette="maroon-gold"] { --c1: #3d0410; --c2: #7e1430; --c3: #aa2043; --c4: #f7d06b; --c-accent: #f7d06b; }
-
-:root[data-palette] {
-  --paper: var(--c1);
-  --paper-warm: color-mix(in oklab, var(--c1) 92%, var(--c4));
-  --paper-deep: color-mix(in oklab, var(--c1) 85%, var(--c4));
-  --ink: color-mix(in oklab, var(--c4) 20%, #fbf9f6);
-  --ink-soft: color-mix(in oklab, var(--ink) 78%, var(--c1));
-  --ink-mute: color-mix(in oklab, var(--ink) 52%, var(--c1));
-  --ink-faint: color-mix(in oklab, var(--ink) 30%, var(--c1));
-  --rule: color-mix(in oklab, var(--c1) 85%, var(--ink));
-  --rule-soft: color-mix(in oklab, var(--c1) 92%, var(--ink));
-  --accent-0: var(--c-accent);
-  --accent: var(--accent-0);
-  --accent-deep: color-mix(in oklab, var(--c-accent) 74%, #000);
-  --accent-mute: color-mix(in oklab, var(--c-accent) 38%, var(--c1));
-  --signal: color-mix(in oklab, var(--c-accent) 55%, var(--c2));
-}
-
 /* ——— The wheel down the page ———
    One accent would paint six sections the same colour. Each section turns the
    palette's accent to a hue it was asked for, at the same
@@ -2212,246 +2163,39 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
   .council-hero { --turn: 333; }   /* red, which the rule under "service" draws */
   #library { --turn: 140; }        /* teal */
   #pantheon { --turn: 280; }       /* magenta */
-  #install { --turn: 0; }          /* the accent's own orange */
+  #install { --accent: oklch(from var(--accent-0) 0.78 min(c, 0.14) calc(h + 62)); }  /* gold */
   #faq { --turn: 237; }            /* the violet of Alan Cooper's drawing */
-  #changelog { --turn: 195; }      /* blue */
+  #changelog { --turn: 280; }      /* the pantheon's purple, shared */
 
   /* Within the library the icon says what kind of file the row is: green for
      the core foundations, blue for a discipline, gold for a canon index, and
      a yellow of its own for the single root file. */
-  .library .row-item[data-tag="core"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 140)); }
-  /* A little more chroma and a little further round than the canon gold, so
-     the one root file is not mistaken for a sixth canon index. */
-  .library .row-item[data-tag="root"] { --icon: oklch(from var(--accent-0) l min(c, 0.16) calc(h + 50)); }
-  .library .row-item[data-tag="discipline"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 195)); }
-  .library .row-item[data-tag="canon"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 35)); }
+  :root {
+    --kind-core: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 140));
+    --kind-discipline: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 195));
+    /* Lightness named, not inherited: the base sits at about half and a
+       yellow at half lightness is an olive. */
+    --kind-root: oklch(from var(--accent-0) 0.84 min(c, 0.16) calc(h + 82));
+  }
 }
 
 /* Named, not turned: the hero red is the product's own colour and does not
    move when a palette does. It sits after the feature query so it is the last
    word on .council-hero, and outside it because a plain colour has no reason
    to wait on relative-colour support. */
-.council-hero { --accent: #c23545; }
-
-/* ——— The palette picker ———
-   The trigger is the palette itself, four bands in a small block, and every
-   option in the panel is the same. Nothing is named, because a name is a worse
-   description of a colour than the colour. The names exist for screen readers,
-   where a swatch has nothing to say. */
-/* Flex, not block: the trigger is inline-flex with negative vertical margins,
-   and on a line box those margins do not pull the parent in, so the bar grew
-   nine pixels. As a flex item the button is blockified and they apply. */
-.palette-switch { position: relative; display: flex; align-items: center; }
-.palette-switch__trigger {
-  font: inherit;
-  border: 0;
-  background: transparent;
-  padding: 10px;
-  margin: -10px;
-  border-radius: 2px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  color: var(--ink-mute);
-  transition: background 150ms, color 150ms;
+/* The four kinds of file in the library, named once so the row icon and the
+   dialog that opens from it are the same colour. Core and discipline turn
+   with the palette; the root file has a yellow of its own and the canon
+   indexes take the hero red, both because they were asked for. */
+:root {
+  --hero-red: #c23545;
+  --kind-core: #008754;
+  --kind-discipline: #00829f;
+  --kind-root: #e0c93c;
+  --kind-canon: var(--hero-red);
 }
-.palette-switch__trigger:hover { background: var(--rule-soft); color: var(--ink); }
-.palette-switch__trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.palette-switch__trigger .chev {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--ink-faint);
-  transition: transform 150ms cubic-bezier(0.16,1,0.3,1), color 150ms;
-}
-.palette-switch__trigger[aria-expanded="true"] .chev { transform: rotate(180deg); color: var(--ink); }
-
-.swatch {
-  display: block;
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
-  border: 1px solid var(--rule);
-  overflow: hidden;
-  flex: none;
-}
-.swatch span { display: block; height: 25%; }
-
-nav.top .palette-panel {
-  position: absolute;
-  top: calc(100% + 14px);
-  right: 0;
-  left: auto;
-  list-style: none;
-  margin: 0;
-  padding: 10px;
-  background: var(--paper-warm);
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  width: 292px;
-  max-width: calc(100vw - 2 * var(--gutter));
-  box-shadow: 0 8px 32px -16px color-mix(in oklch, var(--ink) 16%, transparent);
-  z-index: 60;
-  display: block;
-}
-/* Qualified, because the generic nav.top ul sets display:flex with a 22px gap
-   and outranks a bare class. Unqualified, the swatches collapsed to two pixels
-   wide and the panel read as a row of hairlines. */
-nav.top ul.palette-presets {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-nav.top ul.palette-presets[hidden] { display: none; }
-nav.top .palette-panel[hidden] { display: none; }
-.palette-presets li[role="option"] {
-  display: block;
-  padding: 0;
-  cursor: pointer;
-  border-radius: 3px;
-  outline-offset: 2px;
-}
-.palette-presets li[role="option"] .swatch {
-  width: 100%;
-  height: 46px;
-  border-radius: 3px;
-  transition: transform 150ms cubic-bezier(0.16,1,0.3,1);
-}
-.palette-presets li[role="option"]:hover .swatch { transform: translateY(-2px); }
-.palette-presets li[role="option"]:focus-visible { outline: 2px solid var(--accent); }
-.palette-presets li[role="option"].current .swatch {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-
-@media (max-width: 760px) {
-  /* The bar is 375px wide and already carries the namespace switcher and the
-     hamburger. The chevron goes: the swatch is the affordance, and dropping it
-     is the thirteen pixels that keep all three on one line. */
-  .palette-switch { position: static; }
-  .palette-switch__trigger { padding: 10px 6px; margin: -10px -6px; gap: 0; }
-  .palette-switch__trigger .chev { display: none; }
-  nav.top .palette-panel {
-    top: calc(100% + 6px);
-    left: var(--gutter);
-    right: var(--gutter);
-    width: auto;
-    max-width: none;
-  }
-}
-
-/* ——— Mixing your own ———
-   The presets answer "which of these"; the mixer answers "what if the ground
-   came from one and the accent from another". Each band offers the colours that
-   appear at that position across the palettes, so a ground stays a ground and
-   the lightest band stays light enough to tint the text rather than become it.
-   The page updates as you click, because comparing is the point. */
-.palette-modes {
-  display: flex;
-  gap: 2px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid var(--rule);
-}
-.palette-mode {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  padding: 7px 10px;
-  min-height: 34px;
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: var(--ink-mute);
-  transition: color 150ms, border-color 150ms;
-}
-.palette-mode:hover { color: var(--ink); }
-.palette-mode.is-on { color: var(--ink); border-bottom-color: var(--accent); }
-.palette-mode:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-.palette-mix[hidden] { display: none; }
-.mix-preview {
-  display: grid;
-  grid-template-rows: repeat(4, 1fr);
-  height: 116px;
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.mix-band {
-  appearance: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  position: relative;
-  background: transparent;
-}
-.mix-band span {
-  position: absolute;
-  inset: 0;
-  display: block;
-}
-.mix-band + .mix-band { border-top: 1px solid color-mix(in oklab, var(--ink) 22%, transparent); }
-.mix-band.is-on::after {
-  content: "";
-  position: absolute;
-  inset: 2px;
-  border: 1px solid var(--paper);
-  outline: 1px solid var(--ink);
-  border-radius: 2px;
-  pointer-events: none;
-}
-.mix-band:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-
-.mix-accents {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 10px 0;
-}
-.mix-accents::before {
-  content: "accent";
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-right: 2px;
-}
-.mix-accent {
-  appearance: none;
-  flex: 1;
-  height: 22px;
-  padding: 0;
-  cursor: pointer;
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  transition: box-shadow 150ms, border-color 150ms;
-}
-.mix-accent.is-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.mix-accent:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-.mix-chips {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-}
-.mix-chips[hidden] { display: none; }
-.mix-chip {
-  appearance: none;
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  height: 26px;
-  padding: 0;
-  cursor: pointer;
-  transition: transform 150ms cubic-bezier(0.16,1,0.3,1);
-}
-.mix-chip:hover { transform: translateY(-2px); }
-.mix-chip.is-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.mix-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.library .row-item[data-tag="core"], .lib-pop[data-tag="core"] { --icon: var(--kind-core); }
+.library .row-item[data-tag="discipline"], .lib-pop[data-tag="discipline"] { --icon: var(--kind-discipline); }
+.library .row-item[data-tag="root"], .lib-pop[data-tag="root"] { --icon: var(--kind-root); }
+.library .row-item[data-tag="canon"], .lib-pop[data-tag="canon"] { --icon: var(--kind-canon); }
+.council-hero { --accent: var(--hero-red); }

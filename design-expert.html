@@ -12,7 +12,6 @@
 <script src="site-motion.js?v=20260915-motion" defer></script>
 <script src="council-scenes.js?v=20260915-motion" defer></script>
 <script src="design-expert-hero.js?v=20260915-motion" defer></script>
-<script>try{var p=localStorage.getItem("design-expert:palette");if(p)document.documentElement.dataset.palette=p;}catch(e){}</script>
 </head>
 <body data-theme="ink" data-density="default">
 
@@ -68,167 +67,6 @@
       <li><a href="#changelog">Changelog</a></li>
     </ul>
 
-    <div class="palette-switch">
-      <button class="palette-switch__trigger" id="palette-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="palette-panel" aria-label="Palette">
-        <span class="swatch" id="palette-current" aria-hidden="true"><span style="background:#1a1815"></span><span style="background:#292520"></span><span style="background:#e3892d"></span><span style="background:#f1ede4"></span></span>
-        <span class="chev" aria-hidden="true">▾</span>
-      </button>
-
-    <div class="palette-panel" id="palette-panel" hidden>
-      <div class="palette-modes" role="tablist" aria-label="Choose or mix">
-        <button class="palette-mode is-on" id="mode-presets" type="button" role="tab" aria-selected="true" aria-controls="palette-presets" tabindex="0">Palettes</button>
-        <button class="palette-mode" id="mode-mix" type="button" role="tab" aria-selected="false" aria-controls="palette-mix" tabindex="-1">Mix</button>
-      </div>
-      <ul class="palette-presets" id="palette-presets" role="listbox" aria-label="Palette for the whole page">
-        <li role="option" data-palette="" aria-selected="true" tabindex="0" class="current" aria-label="the page as it is: near black, warm dark, amber, cream"><span class="swatch" aria-hidden="true"><span style="background:#1a1815"></span><span style="background:#292520"></span><span style="background:#e3892d"></span><span style="background:#f1ede4"></span></span></li>
-        <li role="option" data-palette="indigo-ember" aria-selected="false" tabindex="-1" aria-label="deep indigo, purple, pink, orange"><span class="swatch" aria-hidden="true"><span style="background:#16065a"></span><span style="background:#4a1580"></span><span style="background:#ee3572"></span><span style="background:#fb7f3c"></span></span></li>
-        <li role="option" data-palette="soot-coral" aria-selected="false" tabindex="-1" aria-label="near black, brown, brick, coral"><span class="swatch" aria-hidden="true"><span style="background:#0c0c0c"></span><span style="background:#481b10"></span><span style="background:#a33922"></span><span style="background:#f05f40"></span></span></li>
-        <li role="option" data-palette="plum-cream" aria-selected="false" tabindex="-1" aria-label="dark plum, warm grey, orange, cream"><span class="swatch" aria-hidden="true"><span style="background:#33002b"></span><span style="background:#554f45"></span><span style="background:#f97a00"></span><span style="background:#e1dfd0"></span></span></li>
-        <li role="option" data-palette="navy-signal" aria-selected="false" tabindex="-1" aria-label="navy, wine, crimson, bright red"><span class="swatch" aria-hidden="true"><span style="background:#002a52"></span><span style="background:#611145"></span><span style="background:#9e1236"></span><span style="background:#ff2447"></span></span></li>
-        <li role="option" data-palette="orchid" aria-selected="false" tabindex="-1" aria-label="plum, violet, orchid, pale lilac"><span class="swatch" aria-hidden="true"><span style="background:#2c0a38"></span><span style="background:#7a1bb0"></span><span style="background:#b348df"></span><span style="background:#e9cdf4"></span></span></li>
-        <li role="option" data-palette="magenta-rose" aria-selected="false" tabindex="-1" aria-label="violet, magenta, pink, rose"><span class="swatch" aria-hidden="true"><span style="background:#5a11a0"></span><span style="background:#950f8c"></span><span style="background:#db0c74"></span><span style="background:#e4618e"></span></span></li>
-        <li role="option" data-palette="midnight-plum" aria-selected="false" tabindex="-1" aria-label="near black navy, purple, plum, magenta"><span class="swatch" aria-hidden="true"><span style="background:#04073c"></span><span style="background:#3a0b50"></span><span style="background:#750a55"></span><span style="background:#9a0c63"></span></span></li>
-        <li role="option" data-palette="wine-coral" aria-selected="false" tabindex="-1" aria-label="dark plum, wine, red, coral"><span class="swatch" aria-hidden="true"><span style="background:#220e28"></span><span style="background:#822438"></span><span style="background:#c33044"></span><span style="background:#f05c41"></span></span></li>
-        <li role="option" data-palette="navy-tan" aria-selected="false" tabindex="-1" aria-label="navy, violet, orchid, tan"><span class="swatch" aria-hidden="true"><span style="background:#000959"></span><span style="background:#3c1a5b"></span><span style="background:#c062a0"></span><span style="background:#efc796"></span></span></li>
-        <li role="option" data-palette="neon-violet" aria-selected="false" tabindex="-1" aria-label="black, indigo, violet, hot pink"><span class="swatch" aria-hidden="true"><span style="background:#000000"></span><span style="background:#1a0a50"></span><span style="background:#430a87"></span><span style="background:#fa2273"></span></span></li>
-        <li role="option" data-palette="burnt" aria-selected="false" tabindex="-1" aria-label="black, dark brown, brick, burnt orange"><span class="swatch" aria-hidden="true"><span style="background:#000000"></span><span style="background:#401210"></span><span style="background:#a33630"></span><span style="background:#b4531e"></span></span></li>
-        <li role="option" data-palette="violet-berry" aria-selected="false" tabindex="-1" aria-label="near black indigo, violet, purple, magenta"><span class="swatch" aria-hidden="true"><span style="background:#1a0350"></span><span style="background:#3c0470"></span><span style="background:#7a0490"></span><span style="background:#9c0a82"></span></span></li>
-        <li role="option" data-palette="signal-red" aria-selected="false" tabindex="-1" aria-label="black, dark red, red, bright red"><span class="swatch" aria-hidden="true"><span style="background:#000000"></span><span style="background:#3a0000"></span><span style="background:#a00000"></span><span style="background:#ff0000"></span></span></li>
-        <li role="option" data-palette="periwinkle" aria-selected="false" tabindex="-1" aria-label="dark indigo, indigo, periwinkle, lilac"><span class="swatch" aria-hidden="true"><span style="background:#1e1856"></span><span style="background:#3d3590"></span><span style="background:#8b7ac4"></span><span style="background:#c3a2d0"></span></span></li>
-        <li role="option" data-palette="maroon-pink" aria-selected="false" tabindex="-1" aria-label="maroon, wine, crimson, pink"><span class="swatch" aria-hidden="true"><span style="background:#400a1e"></span><span style="background:#7a1638"></span><span style="background:#b5284f"></span><span style="background:#e8446c"></span></span></li>
-        <li role="option" data-palette="slate-steel" aria-selected="false" tabindex="-1" aria-label="charcoal, slate, slate blue, steel blue"><span class="swatch" aria-hidden="true"><span style="background:#2a2130"></span><span style="background:#3d3247"></span><span style="background:#565d8a"></span><span style="background:#6e8bb8"></span></span></li>
-        <li role="option" data-palette="plum-amber" aria-selected="false" tabindex="-1" aria-label="plum, violet, berry, amber"><span class="swatch" aria-hidden="true"><span style="background:#2d0f47"></span><span style="background:#3c1a5e"></span><span style="background:#9e2864"></span><span style="background:#fcc45f"></span></span></li>
-        <li role="option" data-palette="clay-tan" aria-selected="false" tabindex="-1" aria-label="dark brown, brown, terracotta, tan"><span class="swatch" aria-hidden="true"><span style="background:#2e2422"></span><span style="background:#573a28"></span><span style="background:#b55b32"></span><span style="background:#debc8e"></span></span></li>
-        <li role="option" data-palette="graphite-red" aria-selected="false" tabindex="-1" aria-label="near black, graphite, crimson, near white"><span class="swatch" aria-hidden="true"><span style="background:#141414"></span><span style="background:#414141"></span><span style="background:#c23545"></span><span style="background:#ebebeb"></span></span></li>
-        <li role="option" data-palette="navy-blush" aria-selected="false" tabindex="-1" aria-label="near black navy, slate, blue grey, blush pink"><span class="swatch" aria-hidden="true"><span style="background:#050a26"></span><span style="background:#343854"></span><span style="background:#5c6183"></span><span style="background:#f2a9c4"></span></span></li>
-        <li role="option" data-palette="burgundy-peach" aria-selected="false" tabindex="-1" aria-label="dark plum, burgundy, salmon, pale peach"><span class="swatch" aria-hidden="true"><span style="background:#33132a"></span><span style="background:#7a0b2e"></span><span style="background:#ee9a73"></span><span style="background:#fbdcc0"></span></span></li>
-        <li role="option" data-palette="teal-coral" aria-selected="false" tabindex="-1" aria-label="deep teal, purple, rose, coral"><span class="swatch" aria-hidden="true"><span style="background:#013d59"></span><span style="background:#4a2b5e"></span><span style="background:#bf4e75"></span><span style="background:#f95f5c"></span></span></li>
-        <li role="option" data-palette="plum-scarlet" aria-selected="false" tabindex="-1" aria-label="dark plum, wine, crimson, scarlet"><span class="swatch" aria-hidden="true"><span style="background:#2b1024"></span><span style="background:#7e142e"></span><span style="background:#cc2b3e"></span><span style="background:#ef4438"></span></span></li>
-        <li role="option" data-palette="maroon-gold" aria-selected="false" tabindex="-1" aria-label="dark maroon, wine, crimson, gold"><span class="swatch" aria-hidden="true"><span style="background:#3d0410"></span><span style="background:#7e1430"></span><span style="background:#aa2043"></span><span style="background:#f7d06b"></span></span></li>
-      </ul>
-
-      <div class="palette-mix" id="palette-mix" hidden>
-        <div class="mix-preview" aria-label="The four bands">
-          <button class="mix-band is-on" type="button" data-slot="0" aria-pressed="true" aria-label="Band 1 of four"><span></span></button>
-          <button class="mix-band" type="button" data-slot="1" aria-pressed="false" aria-label="Band 2 of four"><span></span></button>
-          <button class="mix-band" type="button" data-slot="2" aria-pressed="false" aria-label="Band 3 of four"><span></span></button>
-          <button class="mix-band" type="button" data-slot="3" aria-pressed="false" aria-label="Band 4 of four"><span></span></button>
-        </div>
-        <div class="mix-accents" aria-label="Which band carries the accent">
-          <button class="mix-accent" type="button" data-accent="0" aria-pressed="false" aria-label="Band 1 carries the accent"></button>
-          <button class="mix-accent" type="button" data-accent="1" aria-pressed="false" aria-label="Band 2 carries the accent"></button>
-          <button class="mix-accent" type="button" data-accent="2" aria-pressed="false" aria-label="Band 3 carries the accent"></button>
-          <button class="mix-accent is-on" type="button" data-accent="3" aria-pressed="true" aria-label="Band 4 carries the accent"></button>
-        </div>
-        <div class="mix-chips" data-for="0">
-          <button class="mix-chip" type="button" data-color="#000000" style="background:#000000" aria-label="#000000"></button>
-          <button class="mix-chip" type="button" data-color="#0c0c0c" style="background:#0c0c0c" aria-label="#0c0c0c"></button>
-          <button class="mix-chip" type="button" data-color="#050a26" style="background:#050a26" aria-label="#050a26"></button>
-          <button class="mix-chip" type="button" data-color="#04073c" style="background:#04073c" aria-label="#04073c"></button>
-          <button class="mix-chip" type="button" data-color="#141414" style="background:#141414" aria-label="#141414"></button>
-          <button class="mix-chip" type="button" data-color="#220e28" style="background:#220e28" aria-label="#220e28"></button>
-          <button class="mix-chip" type="button" data-color="#1a0350" style="background:#1a0350" aria-label="#1a0350"></button>
-          <button class="mix-chip" type="button" data-color="#33002b" style="background:#33002b" aria-label="#33002b"></button>
-          <button class="mix-chip" type="button" data-color="#000959" style="background:#000959" aria-label="#000959"></button>
-          <button class="mix-chip" type="button" data-color="#1a1815" style="background:#1a1815" aria-label="#1a1815"></button>
-          <button class="mix-chip" type="button" data-color="#2b1024" style="background:#2b1024" aria-label="#2b1024"></button>
-          <button class="mix-chip" type="button" data-color="#2c0a38" style="background:#2c0a38" aria-label="#2c0a38"></button>
-          <button class="mix-chip" type="button" data-color="#16065a" style="background:#16065a" aria-label="#16065a"></button>
-          <button class="mix-chip" type="button" data-color="#3d0410" style="background:#3d0410" aria-label="#3d0410"></button>
-          <button class="mix-chip" type="button" data-color="#33132a" style="background:#33132a" aria-label="#33132a"></button>
-          <button class="mix-chip" type="button" data-color="#2d0f47" style="background:#2d0f47" aria-label="#2d0f47"></button>
-          <button class="mix-chip" type="button" data-color="#400a1e" style="background:#400a1e" aria-label="#400a1e"></button>
-          <button class="mix-chip" type="button" data-color="#1e1856" style="background:#1e1856" aria-label="#1e1856"></button>
-          <button class="mix-chip" type="button" data-color="#2a2130" style="background:#2a2130" aria-label="#2a2130"></button>
-          <button class="mix-chip" type="button" data-color="#2e2422" style="background:#2e2422" aria-label="#2e2422"></button>
-          <button class="mix-chip" type="button" data-color="#002a52" style="background:#002a52" aria-label="#002a52"></button>
-          <button class="mix-chip" type="button" data-color="#013d59" style="background:#013d59" aria-label="#013d59"></button>
-          <button class="mix-chip" type="button" data-color="#5a11a0" style="background:#5a11a0" aria-label="#5a11a0"></button>
-        </div>
-        <div class="mix-chips" data-for="1" hidden>
-          <button class="mix-chip" type="button" data-color="#3a0000" style="background:#3a0000" aria-label="#3a0000"></button>
-          <button class="mix-chip" type="button" data-color="#1a0a50" style="background:#1a0a50" aria-label="#1a0a50"></button>
-          <button class="mix-chip" type="button" data-color="#401210" style="background:#401210" aria-label="#401210"></button>
-          <button class="mix-chip" type="button" data-color="#3a0b50" style="background:#3a0b50" aria-label="#3a0b50"></button>
-          <button class="mix-chip" type="button" data-color="#292520" style="background:#292520" aria-label="#292520"></button>
-          <button class="mix-chip" type="button" data-color="#481b10" style="background:#481b10" aria-label="#481b10"></button>
-          <button class="mix-chip" type="button" data-color="#3c0470" style="background:#3c0470" aria-label="#3c0470"></button>
-          <button class="mix-chip" type="button" data-color="#3c1a5b" style="background:#3c1a5b" aria-label="#3c1a5b"></button>
-          <button class="mix-chip" type="button" data-color="#3c1a5e" style="background:#3c1a5e" aria-label="#3c1a5e"></button>
-          <button class="mix-chip" type="button" data-color="#611145" style="background:#611145" aria-label="#611145"></button>
-          <button class="mix-chip" type="button" data-color="#4a1580" style="background:#4a1580" aria-label="#4a1580"></button>
-          <button class="mix-chip" type="button" data-color="#3d3247" style="background:#3d3247" aria-label="#3d3247"></button>
-          <button class="mix-chip" type="button" data-color="#4a2b5e" style="background:#4a2b5e" aria-label="#4a2b5e"></button>
-          <button class="mix-chip" type="button" data-color="#343854" style="background:#343854" aria-label="#343854"></button>
-          <button class="mix-chip" type="button" data-color="#7a0b2e" style="background:#7a0b2e" aria-label="#7a0b2e"></button>
-          <button class="mix-chip" type="button" data-color="#7a1638" style="background:#7a1638" aria-label="#7a1638"></button>
-          <button class="mix-chip" type="button" data-color="#7e142e" style="background:#7e142e" aria-label="#7e142e"></button>
-          <button class="mix-chip" type="button" data-color="#7e1430" style="background:#7e1430" aria-label="#7e1430"></button>
-          <button class="mix-chip" type="button" data-color="#573a28" style="background:#573a28" aria-label="#573a28"></button>
-          <button class="mix-chip" type="button" data-color="#414141" style="background:#414141" aria-label="#414141"></button>
-          <button class="mix-chip" type="button" data-color="#3d3590" style="background:#3d3590" aria-label="#3d3590"></button>
-          <button class="mix-chip" type="button" data-color="#822438" style="background:#822438" aria-label="#822438"></button>
-          <button class="mix-chip" type="button" data-color="#554f45" style="background:#554f45" aria-label="#554f45"></button>
-          <button class="mix-chip" type="button" data-color="#7a1bb0" style="background:#7a1bb0" aria-label="#7a1bb0"></button>
-          <button class="mix-chip" type="button" data-color="#950f8c" style="background:#950f8c" aria-label="#950f8c"></button>
-        </div>
-        <div class="mix-chips" data-for="2" hidden>
-          <button class="mix-chip" type="button" data-color="#430a87" style="background:#430a87" aria-label="#430a87"></button>
-          <button class="mix-chip" type="button" data-color="#750a55" style="background:#750a55" aria-label="#750a55"></button>
-          <button class="mix-chip" type="button" data-color="#7a0490" style="background:#7a0490" aria-label="#7a0490"></button>
-          <button class="mix-chip" type="button" data-color="#a00000" style="background:#a00000" aria-label="#a00000"></button>
-          <button class="mix-chip" type="button" data-color="#9e1236" style="background:#9e1236" aria-label="#9e1236"></button>
-          <button class="mix-chip" type="button" data-color="#9e2864" style="background:#9e2864" aria-label="#9e2864"></button>
-          <button class="mix-chip" type="button" data-color="#aa2043" style="background:#aa2043" aria-label="#aa2043"></button>
-          <button class="mix-chip" type="button" data-color="#a33630" style="background:#a33630" aria-label="#a33630"></button>
-          <button class="mix-chip" type="button" data-color="#a33922" style="background:#a33922" aria-label="#a33922"></button>
-          <button class="mix-chip" type="button" data-color="#565d8a" style="background:#565d8a" aria-label="#565d8a"></button>
-          <button class="mix-chip" type="button" data-color="#b5284f" style="background:#b5284f" aria-label="#b5284f"></button>
-          <button class="mix-chip" type="button" data-color="#5c6183" style="background:#5c6183" aria-label="#5c6183"></button>
-          <button class="mix-chip" type="button" data-color="#c33044" style="background:#c33044" aria-label="#c33044"></button>
-          <button class="mix-chip" type="button" data-color="#c23545" style="background:#c23545" aria-label="#c23545"></button>
-          <button class="mix-chip" type="button" data-color="#cc2b3e" style="background:#cc2b3e" aria-label="#cc2b3e"></button>
-          <button class="mix-chip" type="button" data-color="#db0c74" style="background:#db0c74" aria-label="#db0c74"></button>
-          <button class="mix-chip" type="button" data-color="#b55b32" style="background:#b55b32" aria-label="#b55b32"></button>
-          <button class="mix-chip" type="button" data-color="#bf4e75" style="background:#bf4e75" aria-label="#bf4e75"></button>
-          <button class="mix-chip" type="button" data-color="#b348df" style="background:#b348df" aria-label="#b348df"></button>
-          <button class="mix-chip" type="button" data-color="#ee3572" style="background:#ee3572" aria-label="#ee3572"></button>
-          <button class="mix-chip" type="button" data-color="#c062a0" style="background:#c062a0" aria-label="#c062a0"></button>
-          <button class="mix-chip" type="button" data-color="#8b7ac4" style="background:#8b7ac4" aria-label="#8b7ac4"></button>
-          <button class="mix-chip" type="button" data-color="#f97a00" style="background:#f97a00" aria-label="#f97a00"></button>
-          <button class="mix-chip" type="button" data-color="#e3892d" style="background:#e3892d" aria-label="#e3892d"></button>
-          <button class="mix-chip" type="button" data-color="#ee9a73" style="background:#ee9a73" aria-label="#ee9a73"></button>
-        </div>
-        <div class="mix-chips" data-for="3" hidden>
-          <button class="mix-chip" type="button" data-color="#9a0c63" style="background:#9a0c63" aria-label="#9a0c63"></button>
-          <button class="mix-chip" type="button" data-color="#9c0a82" style="background:#9c0a82" aria-label="#9c0a82"></button>
-          <button class="mix-chip" type="button" data-color="#b4531e" style="background:#b4531e" aria-label="#b4531e"></button>
-          <button class="mix-chip" type="button" data-color="#ff0000" style="background:#ff0000" aria-label="#ff0000"></button>
-          <button class="mix-chip" type="button" data-color="#e8446c" style="background:#e8446c" aria-label="#e8446c"></button>
-          <button class="mix-chip" type="button" data-color="#fa2273" style="background:#fa2273" aria-label="#fa2273"></button>
-          <button class="mix-chip" type="button" data-color="#ef4438" style="background:#ef4438" aria-label="#ef4438"></button>
-          <button class="mix-chip" type="button" data-color="#ff2447" style="background:#ff2447" aria-label="#ff2447"></button>
-          <button class="mix-chip" type="button" data-color="#6e8bb8" style="background:#6e8bb8" aria-label="#6e8bb8"></button>
-          <button class="mix-chip" type="button" data-color="#f05c41" style="background:#f05c41" aria-label="#f05c41"></button>
-          <button class="mix-chip" type="button" data-color="#e4618e" style="background:#e4618e" aria-label="#e4618e"></button>
-          <button class="mix-chip" type="button" data-color="#f05f40" style="background:#f05f40" aria-label="#f05f40"></button>
-          <button class="mix-chip" type="button" data-color="#f95f5c" style="background:#f95f5c" aria-label="#f95f5c"></button>
-          <button class="mix-chip" type="button" data-color="#fb7f3c" style="background:#fb7f3c" aria-label="#fb7f3c"></button>
-          <button class="mix-chip" type="button" data-color="#c3a2d0" style="background:#c3a2d0" aria-label="#c3a2d0"></button>
-          <button class="mix-chip" type="button" data-color="#f2a9c4" style="background:#f2a9c4" aria-label="#f2a9c4"></button>
-          <button class="mix-chip" type="button" data-color="#debc8e" style="background:#debc8e" aria-label="#debc8e"></button>
-          <button class="mix-chip" type="button" data-color="#fcc45f" style="background:#fcc45f" aria-label="#fcc45f"></button>
-          <button class="mix-chip" type="button" data-color="#efc796" style="background:#efc796" aria-label="#efc796"></button>
-          <button class="mix-chip" type="button" data-color="#f7d06b" style="background:#f7d06b" aria-label="#f7d06b"></button>
-          <button class="mix-chip" type="button" data-color="#e9cdf4" style="background:#e9cdf4" aria-label="#e9cdf4"></button>
-          <button class="mix-chip" type="button" data-color="#e1dfd0" style="background:#e1dfd0" aria-label="#e1dfd0"></button>
-          <button class="mix-chip" type="button" data-color="#fbdcc0" style="background:#fbdcc0" aria-label="#fbdcc0"></button>
-          <button class="mix-chip" type="button" data-color="#ebebeb" style="background:#ebebeb" aria-label="#ebebeb"></button>
-          <button class="mix-chip" type="button" data-color="#f1ede4" style="background:#f1ede4" aria-label="#f1ede4"></button>
-        </div>
-      </div>
-    </div>
-  </div>
 </nav>
 
 <main id="top">
@@ -301,15 +139,8 @@
         </div>
         <div class="council-study__note">
           <p id="council-note">Remove the extra card. Let the essential action lead.</p>
-          <span>Select a designer to see their principle at work.</span>
         </div>
       </div>
-    </div>
-
-    <div class="council-hero__footer">
-      <p><span class="council-hero__number">18</span> perspectives.<br /><em>The final call is yours.</em></p>
-      <p>A library of craft. A council of principles.<br />One skill, from brief to finished interface.</p>
-      <a href="#pantheon">Meet the full council <span aria-hidden="true">↘</span></a>
     </div>
   </div>
 </section>
@@ -747,7 +578,7 @@
   <div class="shell">
     <div class="s-head sm">
       <div>
-        <h3 class="section-title-sm">Recent updates.</h3>
+        <h3 class="section-title-sm">Recent <em>updates.</em></h3>
         <p class="body">design-expert is the first plugin in the khev-tools marketplace. The skill itself is the product, and it ships small.</p>
       </div>
     </div>
@@ -1087,6 +918,8 @@ if ('IntersectionObserver' in window && libRows.length) {
     const key = row.dataset.skill;
     const data = SNIPPETS[key];
     if (!data) return;
+    // The dialog takes the row's kind, so it opens in the skill's own colour.
+    if (row.dataset.tag) dialog.dataset.tag = row.dataset.tag; else delete dialog.dataset.tag;
     elIcon.innerHTML    = row.querySelector('.icon')?.innerHTML || '';
     elName.textContent  = row.querySelector('.name')?.textContent || '';
     elDesc.textContent  = row.querySelector('.desc')?.textContent || '';
@@ -1428,179 +1261,6 @@ if ('IntersectionObserver' in window && libRows.length) {
   if (initial) select(initial, false);
 })();
 
-
-// The palette picker. The attribute goes on the root, because the html
-// background and the document scrollbar both read their colours from there and
-// a palette set on body would leave the canvas and the gutter behind.
-//
-// Two ways in. The presets apply a whole palette. The mixer sets the four
-// bands one at a time, writing them as inline custom properties on the root
-// under data-palette="mix", which the same derivation block picks up: a mix is
-// not a special case, it is a palette whose four colours you chose.
-(() => {
-  const trigger = document.getElementById('palette-trigger');
-  const panel = document.getElementById('palette-panel');
-  if (!trigger || !panel) return;
-  const root = document.documentElement;
-  const current = document.getElementById('palette-current');
-  const presets = document.getElementById('palette-presets');
-  const mixPane = document.getElementById('palette-mix');
-  const options = Array.from(presets.querySelectorAll('[role="option"]'));
-  const modes = Array.from(panel.querySelectorAll('.palette-mode'));
-  const bands = Array.from(panel.querySelectorAll('.mix-band'));
-  const accents = Array.from(panel.querySelectorAll('.mix-accent'));
-  const chipSets = Array.from(panel.querySelectorAll('.mix-chips'));
-  const KEY = 'design-expert:palette';
-  const MIX = 'design-expert:mix';
-
-  const swatchOf = (cs) => cs.map((c) => '<span style="background:' + c + '"></span>').join('');
-
-  /* ——— presets ——— */
-  const applyPreset = (opt, remember) => {
-    const id = opt.dataset.palette;
-    ['--c1', '--c2', '--c3', '--c4', '--c-accent'].forEach((v) => root.style.removeProperty(v));
-    if (id) root.dataset.palette = id; else delete root.dataset.palette;
-    current.innerHTML = opt.querySelector('.swatch').innerHTML;
-    options.forEach((o) => {
-      const on = o === opt;
-      o.setAttribute('aria-selected', String(on));
-      o.classList.toggle('current', on);
-      o.tabIndex = on ? 0 : -1;
-    });
-    if (remember) {
-      try {
-        if (id) localStorage.setItem(KEY, id); else localStorage.removeItem(KEY);
-      } catch (err) { /* private window */ }
-    }
-  };
-
-  /* ——— the mix ——— */
-  let mix = ['#1a1815', '#292520', '#e3892d', '#f1ede4'];
-  let accentIndex = 2;
-  let slot = 0;
-
-  const paintMix = () => {
-    bands.forEach((b, i) => { b.firstElementChild.style.background = mix[i]; });
-    accents.forEach((a, i) => {
-      const on = i === accentIndex;
-      a.style.background = mix[i];
-      a.classList.toggle('is-on', on);
-      a.setAttribute('aria-pressed', String(on));
-    });
-    chipSets.forEach((set, i) => {
-      set.hidden = i !== slot;
-      set.querySelectorAll('.mix-chip').forEach((c) => c.classList.toggle('is-on', c.dataset.color === mix[i]));
-    });
-    bands.forEach((b, i) => {
-      const on = i === slot;
-      b.classList.toggle('is-on', on);
-      b.setAttribute('aria-pressed', String(on));
-    });
-  };
-
-  const applyMix = (remember) => {
-    mix.forEach((c, i) => root.style.setProperty('--c' + (i + 1), c));
-    root.style.setProperty('--c-accent', mix[accentIndex]);
-    root.dataset.palette = 'mix';
-    current.innerHTML = swatchOf(mix);
-    options.forEach((o) => { o.setAttribute('aria-selected', 'false'); o.classList.remove('current'); o.tabIndex = -1; });
-    paintMix();
-    if (remember) {
-      try {
-        localStorage.setItem(KEY, 'mix');
-        localStorage.setItem(MIX, JSON.stringify({ mix: mix, accent: accentIndex }));
-      } catch (err) { /* private window */ }
-    }
-  };
-
-  const setMode = (id) => {
-    modes.forEach((m) => {
-      const on = m.id === id;
-      m.classList.toggle('is-on', on);
-      m.setAttribute('aria-selected', String(on));
-      m.tabIndex = on ? 0 : -1;
-    });
-    presets.hidden = id !== 'mode-presets';
-    mixPane.hidden = id !== 'mode-mix';
-  };
-
-  modes.forEach((m) => {
-    m.addEventListener('click', () => setMode(m.id));
-    m.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        const other = modes[(modes.indexOf(m) + 1) % modes.length];
-        setMode(other.id); other.focus();
-      }
-    });
-  });
-
-  bands.forEach((b) => b.addEventListener('click', () => { slot = Number(b.dataset.slot); paintMix(); }));
-  accents.forEach((a) => a.addEventListener('click', () => { accentIndex = Number(a.dataset.accent); applyMix(true); }));
-  chipSets.forEach((set, i) => set.addEventListener('click', (e) => {
-    const chip = e.target.closest('.mix-chip');
-    if (!chip) return;
-    mix[i] = chip.dataset.color;
-    applyMix(true);
-  }));
-
-  /* ——— the panel ——— */
-  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
-  const setOpen = (state) => {
-    trigger.setAttribute('aria-expanded', String(state));
-    panel.hidden = !state;
-    if (state) (presets.querySelector('.current') || modes[0]).focus();
-  };
-  const choose = (opt) => { applyPreset(opt, true); setOpen(false); trigger.focus(); };
-  trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()); });
-  trigger.addEventListener('keydown', (e) => {
-    if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
-  });
-  const COLS = 5;
-  options.forEach((opt) => {
-    opt.addEventListener('click', () => choose(opt));
-    opt.addEventListener('keydown', (e) => {
-      const i = options.indexOf(opt);
-      const go = (j) => { e.preventDefault(); options[Math.max(0, Math.min(options.length - 1, j))].focus(); };
-      if (e.key === 'ArrowRight') go(i + 1);
-      else if (e.key === 'ArrowLeft') go(i - 1);
-      else if (e.key === 'ArrowDown') go(i + COLS);
-      else if (e.key === 'ArrowUp') go(i - COLS);
-      else if (e.key === 'Home') go(0);
-      else if (e.key === 'End') go(options.length - 1);
-      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(opt); }
-      else if (e.key === 'Escape') { e.preventDefault(); setOpen(false); trigger.focus(); }
-      else if (e.key === 'Tab') { setOpen(false); }
-    });
-  });
-  document.addEventListener('click', (e) => {
-    if (isOpen() && !e.target.closest('.palette-switch')) setOpen(false);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
-  });
-
-  /* ——— what was chosen last time ——— */
-  let saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (err) { /* private window */ }
-  if (saved === 'mix') {
-    try {
-      const stored = JSON.parse(localStorage.getItem(MIX));
-      if (stored && Array.isArray(stored.mix) && stored.mix.length === 4) {
-        mix = stored.mix;
-        accentIndex = Number(stored.accent) || 0;
-      }
-    } catch (err) { /* nothing usable */ }
-    applyMix(false);
-    setMode('mode-mix');
-  } else if (saved) {
-    const opt = options.find((o) => o.dataset.palette === saved);
-    if (opt) applyPreset(opt, false);
-    paintMix();
-  } else {
-    paintMix();
-  }
-})();
 
 </script>
 
