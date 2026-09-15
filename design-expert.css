@@ -671,9 +671,15 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
 }
 
 /* ——— Library files ——— */
+/* Eleven root files against five folders, so as two equal columns the section
+   ran twice as tall as it needed and left the right half empty below Folders.
+   Three equal columns now, with Skills spanning two of them and splitting its
+   list across both. The inner gap is the outer gap, which makes each Skills
+   sub-column exactly the width of the Folders column: one measure, three
+   times across, rather than a wide list beside a short one. */
 .library {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: clamp(24px, 4vw, 56px);
   margin-top: 32px;
 }
@@ -691,6 +697,14 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   padding: 14px 0 12px;
   border-bottom: 1px solid var(--rule-soft);
 }
+.library-col--skills {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: clamp(24px, 4vw, 56px);
+  align-content: start;
+}
+.library-col--skills .col-label { grid-column: 1 / -1; }
 .library .row-item {
   display: grid;
   grid-template-columns: 44px 1fr auto;
@@ -789,6 +803,7 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
     grid-template-columns: 1fr;
     gap: 0;
   }
+  .library-col--skills { grid-column: auto; column-gap: 32px; }
   .library-col + .library-col {
     margin-top: 24px;
   }
@@ -1958,6 +1973,10 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
      When toggled open, render the list as an absolute dropdown panel
      anchored to the right edge of the nav, matching the namespace switcher. */
   .nav-toggle { display: inline-flex; }
+
+  /* A library row is an icon, a filename and a tag; at 375px there is no
+     width left to split it in two. */
+  .library-col--skills { grid-template-columns: 1fr; }
 
   /* Install: the rail stacks over the terminal, and the tabs shrink their
      type without dropping below a 48px target. */
