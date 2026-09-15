@@ -91,6 +91,13 @@
         <li role="option" data-palette="maroon-pink" aria-selected="false" tabindex="-1" aria-label="maroon, wine, crimson, pink"><span class="swatch" aria-hidden="true"><span style="background:#400a1e"></span><span style="background:#7a1638"></span><span style="background:#b5284f"></span><span style="background:#e8446c"></span></span></li>
         <li role="option" data-palette="slate-steel" aria-selected="false" tabindex="-1" aria-label="charcoal, slate, slate blue, steel blue"><span class="swatch" aria-hidden="true"><span style="background:#2a2130"></span><span style="background:#3d3247"></span><span style="background:#565d8a"></span><span style="background:#6e8bb8"></span></span></li>
         <li role="option" data-palette="plum-amber" aria-selected="false" tabindex="-1" aria-label="plum, violet, berry, amber"><span class="swatch" aria-hidden="true"><span style="background:#2d0f47"></span><span style="background:#3c1a5e"></span><span style="background:#9e2864"></span><span style="background:#fcc45f"></span></span></li>
+        <li role="option" data-palette="clay-tan" aria-selected="false" tabindex="-1" aria-label="dark brown, brown, terracotta, tan"><span class="swatch" aria-hidden="true"><span style="background:#2e2422"></span><span style="background:#573a28"></span><span style="background:#b55b32"></span><span style="background:#debc8e"></span></span></li>
+        <li role="option" data-palette="graphite-red" aria-selected="false" tabindex="-1" aria-label="near black, graphite, crimson, near white"><span class="swatch" aria-hidden="true"><span style="background:#141414"></span><span style="background:#414141"></span><span style="background:#d50032"></span><span style="background:#ebebeb"></span></span></li>
+        <li role="option" data-palette="navy-blush" aria-selected="false" tabindex="-1" aria-label="near black navy, slate, blue grey, blush pink"><span class="swatch" aria-hidden="true"><span style="background:#050a26"></span><span style="background:#343854"></span><span style="background:#5c6183"></span><span style="background:#f2a9c4"></span></span></li>
+        <li role="option" data-palette="burgundy-peach" aria-selected="false" tabindex="-1" aria-label="dark plum, burgundy, salmon, pale peach"><span class="swatch" aria-hidden="true"><span style="background:#33132a"></span><span style="background:#7a0b2e"></span><span style="background:#ee9a73"></span><span style="background:#fbdcc0"></span></span></li>
+        <li role="option" data-palette="teal-coral" aria-selected="false" tabindex="-1" aria-label="deep teal, purple, rose, coral"><span class="swatch" aria-hidden="true"><span style="background:#013d59"></span><span style="background:#4a2b5e"></span><span style="background:#bf4e75"></span><span style="background:#f95f5c"></span></span></li>
+        <li role="option" data-palette="plum-scarlet" aria-selected="false" tabindex="-1" aria-label="dark plum, wine, crimson, scarlet"><span class="swatch" aria-hidden="true"><span style="background:#2b1024"></span><span style="background:#7e142e"></span><span style="background:#cc2b3e"></span><span style="background:#ef4438"></span></span></li>
+        <li role="option" data-palette="maroon-gold" aria-selected="false" tabindex="-1" aria-label="dark maroon, wine, crimson, gold"><span class="swatch" aria-hidden="true"><span style="background:#3d0410"></span><span style="background:#7e1430"></span><span style="background:#aa2043"></span><span style="background:#f7d06b"></span></span></li>
     </ul>
     </div>
   </div>
@@ -1350,7 +1357,7 @@ if ('IntersectionObserver' in window && libRows.length) {
   trigger.addEventListener('keydown', (e) => {
     if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
   });
-  const COLS = 6;
+  const COLS = 5;
   options.forEach((opt) => {
     opt.addEventListener('click', () => choose(opt));
     opt.addEventListener('keydown', (e) => {
