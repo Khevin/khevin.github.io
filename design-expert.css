@@ -746,14 +746,14 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   appearance: none;
 }
 .library .row-item:hover {
-  background: color-mix(in oklch, var(--accent) 6%, transparent);
+  background: color-mix(in oklch, var(--icon, var(--accent)) 6%, transparent);
 }
 .library .row-item:hover .name {
-  color: var(--accent);
+  color: var(--icon, var(--accent));
 }
 .library .row-item:focus { outline: none; }
 .library .row-item:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--icon, var(--accent));
   outline-offset: -2px;
 }
 .library .row-item .icon {
@@ -816,7 +816,7 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   white-space: nowrap;
 }
 .library .row-item:hover .tag {
-  color: color-mix(in oklch, var(--accent) 70%, var(--ink-soft));
+  color: color-mix(in oklch, var(--icon, var(--accent)) 70%, var(--ink-soft));
 }
 
 @media (max-width: 800px) {
