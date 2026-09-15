@@ -2195,7 +2195,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 }
 .swatch span { display: block; height: 25%; }
 
-nav.top ul.palette-panel {
+nav.top .palette-panel {
   position: absolute;
   top: calc(100% + 14px);
   right: 0;
@@ -2210,28 +2210,34 @@ nav.top ul.palette-panel {
   max-width: calc(100vw - 2 * var(--gutter));
   box-shadow: 0 8px 32px -16px color-mix(in oklch, var(--ink) 16%, transparent);
   z-index: 60;
+  display: block;
+}
+.palette-presets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
-  flex-direction: row;
 }
-nav.top ul.palette-panel[hidden] { display: none; }
-.palette-panel li[role="option"] {
+.palette-presets[hidden] { display: none; }
+nav.top .palette-panel[hidden] { display: none; }
+.palette-presets li[role="option"] {
   display: block;
   padding: 0;
   cursor: pointer;
   border-radius: 3px;
   outline-offset: 2px;
 }
-.palette-panel li[role="option"] .swatch {
+.palette-presets li[role="option"] .swatch {
   width: 100%;
   height: 46px;
   border-radius: 3px;
   transition: transform 150ms cubic-bezier(0.16,1,0.3,1);
 }
-.palette-panel li[role="option"]:hover .swatch { transform: translateY(-2px); }
-.palette-panel li[role="option"]:focus-visible { outline: 2px solid var(--accent); }
-.palette-panel li[role="option"].current .swatch {
+.palette-presets li[role="option"]:hover .swatch { transform: translateY(-2px); }
+.palette-presets li[role="option"]:focus-visible { outline: 2px solid var(--accent); }
+.palette-presets li[role="option"].current .swatch {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent);
 }
@@ -2243,7 +2249,7 @@ nav.top ul.palette-panel[hidden] { display: none; }
   .palette-switch { position: static; }
   .palette-switch__trigger { padding: 10px 6px; margin: -10px -6px; gap: 0; }
   .palette-switch__trigger .chev { display: none; }
-  nav.top ul.palette-panel {
+  nav.top .palette-panel {
     top: calc(100% + 6px);
     left: var(--gutter);
     right: var(--gutter);
@@ -2251,3 +2257,115 @@ nav.top ul.palette-panel[hidden] { display: none; }
     max-width: none;
   }
 }
+
+/* ——— Mixing your own ———
+   The presets answer "which of these"; the mixer answers "what if the ground
+   came from one and the accent from another". Each band offers the colours that
+   appear at that position across the palettes, so a ground stays a ground and
+   the lightest band stays light enough to tint the text rather than become it.
+   The page updates as you click, because comparing is the point. */
+.palette-modes {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.palette-mode {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 7px 10px;
+  min-height: 34px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-mute);
+  transition: color 150ms, border-color 150ms;
+}
+.palette-mode:hover { color: var(--ink); }
+.palette-mode.is-on { color: var(--ink); border-bottom-color: var(--accent); }
+.palette-mode:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.palette-mix[hidden] { display: none; }
+.mix-preview {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  height: 116px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.mix-band {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+}
+.mix-band span {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.mix-band + .mix-band { border-top: 1px solid color-mix(in oklab, var(--ink) 22%, transparent); }
+.mix-band.is-on::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid var(--paper);
+  outline: 1px solid var(--ink);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.mix-band:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.mix-accents {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0;
+}
+.mix-accents::before {
+  content: "accent";
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-right: 2px;
+}
+.mix-accent {
+  appearance: none;
+  flex: 1;
+  height: 22px;
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  transition: box-shadow 150ms, border-color 150ms;
+}
+.mix-accent.is-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.mix-accent:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.mix-chips {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.mix-chips[hidden] { display: none; }
+.mix-chip {
+  appearance: none;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  height: 26px;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 150ms cubic-bezier(0.16,1,0.3,1);
+}
+.mix-chip:hover { transform: translateY(-2px); }
+.mix-chip.is-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.mix-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
