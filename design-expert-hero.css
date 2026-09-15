@@ -132,7 +132,14 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   stroke-width: 1;
 }
 .council-orbit--inner { stroke-dasharray: 1 7; }
-.council-orbit-sweep { stroke: var(--hue-tint); stroke-width: 2; stroke-linecap: round; stroke-dasharray: .09 .91; opacity: 0; transform-origin: 300px 278px; }
+.council-orbit-sweep {
+  stroke: var(--hue-tint);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: .09 .91;
+  opacity: 0;
+  vector-effect: non-scaling-stroke;
+}
 .council-crosshair { stroke: var(--ink-faint); }
 .council-spokes path { stroke: var(--ink-faint); stroke-width: 1; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: .32; transition: stroke .3s, opacity .3s; }
 .council-spokes .is-selected {

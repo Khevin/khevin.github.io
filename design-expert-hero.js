@@ -46,7 +46,7 @@
   const scope = new KhevMotion.Scope(study);
   const read = (el, prop) => getComputedStyle(el).getPropertyValue(prop).trim();
   let angle = parseFloat(read(table, '--seat-h')) || 0;
-  let orbitAngle = -90;
+  let orbitOffset = 0.75;   /* the top of the ring, where the first seat sits */
   let active = 0, timer = 0, steps = 0, entered = false, hovered = false;
   let touring = !scope.reduced.matches;
   let resumeTimer = 0;
@@ -56,7 +56,11 @@
     cancelResume();
     if (hovered || !scope.running || scope.reduced.matches || table.matches(':focus-within')) return;
     resumeTimer = setTimeout(() => {
-      touring = true; steps = 0; updateLive(); select(active); schedule();
+      touring = true; steps = 0; updateLive();
+      // Resume at the next seat. The tour ends where it began, and the seat
+      // has been on screen for the whole idle wait, so re-selecting it played
+      // the same study twice.
+      select((active + 1) % seats.length); schedule();
     }, 8000);
   }
   // The tour has no controls. It runs on its own, waits while the pointer is
@@ -158,13 +162,20 @@
       line.classList.toggle('is-selected', line.dataset.councilLine === key);
     });
     travel(seat);
-    const previousAngle = orbitAngle;
-    orbitAngle += ((index * 60 - 90 - orbitAngle) % 360 + 540) % 360 - 180;
+    // The geometry is drawn with preserveAspectRatio="none", so the ring is an
+    // ellipse on screen and rotating the element tumbled that ellipse: it
+    // changed shape as it turned, which is what made the sweep look wrong.
+    // Moving the dash along a stationary path instead leaves the ring alone.
+    // A circle path starts at three o'clock, so the seat at the top is three
+    // quarters of the way round.
+    const previousOffset = orbitOffset;
+    const seatOffset = ((index * 60 - 90) % 360 + 360) % 360 / 360;
+    orbitOffset += ((seatOffset - orbitOffset) % 1 + 1.5) % 1 - 0.5;
     scope.animate(table.querySelector('.council-orbit-sweep'), [
-      { opacity: 0, transform: 'rotate(' + previousAngle + 'deg)' },
+      { opacity: 0, strokeDashoffset: -previousOffset },
       { opacity: .85, offset: .3 },
-      { opacity: 0, transform: 'rotate(' + orbitAngle + 'deg)' }
-    ], { duration: 1400 });
+      { opacity: 0, strokeDashoffset: -orbitOffset }
+    ], { duration: 1400, easing: 'cubic-bezier(.33,0,.2,1)' });
     title.replaceChildren(principle.title[0], document.createElement('br'), principle.title[1]);
     verdict.querySelector('span').textContent = principle.verdict;
     note.textContent = principle.note;
