@@ -2211,18 +2211,27 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
      one too, measured from the accent's own 55 degrees. */
   .council-hero { --turn: 333; }   /* red, which the rule under "service" draws */
   #library { --turn: 140; }        /* teal */
-  #pantheon { --turn: 237; }       /* the violet of Alan Cooper's drawing */
+  #pantheon { --turn: 280; }       /* magenta */
   #install { --turn: 0; }          /* the accent's own orange */
-  #faq { --turn: 280; }            /* magenta */
+  #faq { --turn: 237; }            /* the violet of Alan Cooper's drawing */
   #changelog { --turn: 195; }      /* blue */
 
-  /* Within the library the icon says what kind of file the row is: the core
-     foundations, a discipline, a canon index. The root file keeps the
-     section's own teal, because it is the one the others hang from. */
-  .library .row-item[data-tag="core"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 95)); }
+  /* Within the library the icon says what kind of file the row is: green for
+     the core foundations, blue for a discipline, gold for a canon index, and
+     a yellow of its own for the single root file. */
+  .library .row-item[data-tag="core"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 140)); }
+  /* A little more chroma and a little further round than the canon gold, so
+     the one root file is not mistaken for a sixth canon index. */
+  .library .row-item[data-tag="root"] { --icon: oklch(from var(--accent-0) l min(c, 0.16) calc(h + 50)); }
   .library .row-item[data-tag="discipline"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 195)); }
   .library .row-item[data-tag="canon"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 35)); }
 }
+
+/* Named, not turned: the hero red is the product's own colour and does not
+   move when a palette does. It sits after the feature query so it is the last
+   word on .council-hero, and outside it because a plain colour has no reason
+   to wait on relative-colour support. */
+.council-hero { --accent: #c23545; }
 
 /* ——— The palette picker ———
    The trigger is the palette itself, four bands in a small block, and every
