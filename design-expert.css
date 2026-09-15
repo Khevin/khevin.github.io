@@ -856,14 +856,14 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   height: 90%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.55;
+  opacity: var(--pigment-alpha, 0.55);
   mix-blend-mode: multiply;
   -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 95%);
           mask-image: linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 95%);
   transition: opacity .25s, transform .35s ease;
 }
 .pantheon .figure:hover > .squiggle {
-  opacity: 0.85;
+  opacity: min(1, calc(var(--pigment-alpha, 0.55) * 1.4));
   transform: translateY(-50%) translateX(-4px);
 }
 .pantheon .figure > .squiggle svg {
@@ -874,17 +874,44 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
 .pantheon .figure > .squiggle circle,
 .pantheon .figure > .squiggle rect {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--pigment, var(--accent));
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
+/* The palette picker colours the page; the painters colour the drawings. The
+   council takes Itten's wheel (design-expert-hero.css). Here each drawing takes
+   the one colour its designer is known by, and nothing the picker does reaches
+   it: Braun's cream case, IBM blue, Tufte's rust, the Public Theater yellow,
+   the Tonhalle orange, the Media Lab's phosphor green. Itten's own wheel is
+   the exception: every stroke in it carries a hue, set inline in the drawing. Hairlines on
+   dark paper are seen by luminance, so --pigment-alpha rises as a colour
+   darkens and keeps every card in one band of visibility; hover multiplies it
+   by 1.4, capped at 1. */
+.pantheon .figure[data-god="rams"] { --pigment: #e2dacb; --pigment-alpha: .5; }                /* the T3's cream case */
+.pantheon .figure[data-god="vignelli"] { --pigment: #3d7bc4; --pigment-alpha: .7; }            /* fallback; the routes colour themselves like the 1972 map */
+.pantheon .figure[data-god="ive"] { --pigment: #bcc3cc; --pigment-alpha: .55; }                /* anodised aluminium */
+.pantheon .figure[data-god="norman"] { --pigment: #e0342b; --pigment-alpha: .8; }              /* the Carelman coffeepot */
+.pantheon .figure[data-god="nielsen"] { --pigment: #d9a441; --pigment-alpha: .65; }            /* heat-map amber */
+.pantheon .figure[data-god="victor"] { --pigment: #5cc3d9; --pigment-alpha: .65; }             /* live, glowing cyan */
+.pantheon .figure[data-god="kare"] { --pigment: #e0cfa8; --pigment-alpha: .5; }                /* Macintosh beige */
+.pantheon .figure[data-god="rand"] { --pigment: #4a7fd4; --pigment-alpha: .7; }                /* fallback; eye, bee and M colour themselves */
+.pantheon .figure[data-god="eames"] { --pigment: #8fbfa9; --pigment-alpha: .65; }              /* fibreglass seafoam */
+.pantheon .figure[data-god="corum"] { --pigment: #9aa8b4; --pigment-alpha: .6; }               /* newsprint slate */
+.pantheon .figure[data-god="tufte"] { --pigment: #c0603f; --pigment-alpha: .8; }               /* Tufte's rust */
+.pantheon .figure[data-god="cooper"] { --pigment: #8a7bc4; --pigment-alpha: .75; }             /* About Face violet */
+.pantheon .figure[data-god="frere-jones"] { --pigment: #c9cfd6; --pigment-alpha: .55; }        /* Gotham steel */
+.pantheon .figure[data-god="muriel-cooper"] { --pigment: #6fd28a; --pigment-alpha: .65; }      /* CRT phosphor */
+.pantheon .figure[data-god="scher"] { --pigment: #f2dc3c; --pigment-alpha: .55; }              /* Public Theater yellow */
+.pantheon .figure[data-god="muller-brockmann"] { --pigment: #f26f21; --pigment-alpha: .75; }   /* Tonhalle orange */
+.pantheon .figure[data-god="jan-tschichold"] { --pigment: #c8352b; --pigment-alpha: .9; }      /* Die neue Typographie red */
+.pantheon .figure[data-god="itten"] { --pigment: #e2dacb; --pigment-alpha: .6; }               /* fallback only; the drawing colours itself */
 body[data-theme="ink"] .pantheon .figure > .squiggle {
   mix-blend-mode: screen;
-  opacity: 0.55;
+  opacity: var(--pigment-alpha, 0.55);
 }
-body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
+body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, calc(var(--pigment-alpha, 0.55) * 1.4)); }
 
 .pantheon .figure .top,
 .pantheon .figure h4,
@@ -894,7 +921,13 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: 0.85; }
 }
 .pantheon .figure .top { display: flex; justify-content: space-between; align-items: baseline; }
 .pantheon .figure .num { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
-.pantheon .figure .disc { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase; }
+.pantheon .figure .disc {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: color-mix(in oklab, var(--pigment, var(--accent)) 72%, var(--ink));
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .pantheon .figure h4 {
   font-family: var(--title); font-weight: 400; font-size: 30px;
   letter-spacing: -0.014em; margin: 0; line-height: 1.0;
