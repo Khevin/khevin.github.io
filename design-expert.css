@@ -15,7 +15,12 @@
   --ink-faint: #5a544a;
   --rule: #2d2922;
   --rule-soft: #221f1a;
-  --accent: oklch(78% 0.16 55);          /* warm amber-orange */
+  --accent-0: oklch(78% 0.16 55);        /* warm amber-orange: the palette's accent */
+  --accent: var(--accent-0);             /* the accent in use; sections turn it, below */
+  /* Emphasis is not a colour. Italics in a headline and the marks around a
+     quotation sit a shade above the ink, almost white, so the emphasis is
+     the italic itself and the accent is spent on smaller things. */
+  --em: color-mix(in oklab, var(--ink) 55%, #fff);
   --accent-deep: oklch(56% 0.13 55);
   --accent-mute: oklch(82% 0.07 55);
   --signal: oklch(48% 0.10 145);         /* moss, used once */
@@ -79,7 +84,7 @@ a.link:hover { border-color: var(--ink); }
 }
 .display em {
   font-style: italic;
-  color: var(--accent);
+  color: var(--em);
 }
 h3.section-title-sm {
   font-family: var(--title);
@@ -623,7 +628,7 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
 .ba .card.after { background: var(--paper); }
 .ba .card.after .tag { color: var(--accent); }
 .ba .card.after h5 { font-family: var(--title); font-weight: 400; font-size: 26px; letter-spacing: -0.01em; margin: 0; line-height: 1.05; }
-.ba .card.after h5 em { font-style: italic; color: var(--accent); }
+.ba .card.after h5 em { font-style: italic; color: var(--em); }
 .ba .card.after p { font-size: 13px; color: var(--ink-mute); margin: 0; }
 .ba .card.after .fake-btn {
   font-family: var(--mono); font-size: 12px;
@@ -752,7 +757,7 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
 .library .row-item .icon svg circle,
 .library .row-item .icon svg rect {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--icon, var(--accent));
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -924,7 +929,7 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, cal
 .pantheon .figure .disc {
   font-family: var(--mono);
   font-size: 11px;
-  color: color-mix(in oklab, var(--pigment, var(--accent)) 72%, var(--ink));
+  color: var(--em);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -939,8 +944,8 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, cal
   margin-top: auto;
   text-wrap: pretty;
 }
-.pantheon .figure .credo::before { content: "“"; color: var(--accent); margin-right: 2px; font-size: 22px; line-height: 0; vertical-align: -8px;}
-.pantheon .figure .credo::after { content: "”"; color: var(--accent); margin-left: 2px; font-size: 22px; line-height: 0; vertical-align: -8px;}
+.pantheon .figure .credo::before { content: "“"; color: var(--em); margin-right: 2px; font-size: 22px; line-height: 0; vertical-align: -8px;}
+.pantheon .figure .credo::after { content: "”"; color: var(--em); margin-left: 2px; font-size: 22px; line-height: 0; vertical-align: -8px;}
 
 @media (max-width: 900px) {
   .pantheon { grid-template-columns: 1fr 1fr; }
@@ -1244,7 +1249,7 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, cal
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: color-mix(in oklab, var(--accent) 60%, var(--ink));
   margin-bottom: 6px;
 }
 .faq-entry__q {
@@ -1556,7 +1561,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 .hero-title h1 .l1 em {
   font-style: italic;
   font-family: var(--title);
-  color: var(--accent);
+  color: var(--em);
 }
 .hero-title h1 .l2 {
   display: block;
@@ -2160,7 +2165,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 :root[data-palette="slate-steel"] { --c1: #2a2130; --c2: #3d3247; --c3: #565d8a; --c4: #6e8bb8; --c-accent: #6e8bb8; }
 :root[data-palette="plum-amber"] { --c1: #2d0f47; --c2: #3c1a5e; --c3: #9e2864; --c4: #fcc45f; --c-accent: #fcc45f; }
 :root[data-palette="clay-tan"] { --c1: #2e2422; --c2: #573a28; --c3: #b55b32; --c4: #debc8e; --c-accent: #b55b32; }
-:root[data-palette="graphite-red"] { --c1: #141414; --c2: #414141; --c3: #d50032; --c4: #ebebeb; --c-accent: #d50032; }
+:root[data-palette="graphite-red"] { --c1: #141414; --c2: #414141; --c3: #c23545; --c4: #ebebeb; --c-accent: #c23545; }
 :root[data-palette="navy-blush"] { --c1: #050a26; --c2: #343854; --c3: #5c6183; --c4: #f2a9c4; --c-accent: #f2a9c4; }
 :root[data-palette="burgundy-peach"] { --c1: #33132a; --c2: #7a0b2e; --c3: #ee9a73; --c4: #fbdcc0; --c-accent: #ee9a73; }
 :root[data-palette="teal-coral"] { --c1: #013d59; --c2: #4a2b5e; --c3: #bf4e75; --c4: #f95f5c; --c-accent: #f95f5c; }
@@ -2177,10 +2182,46 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
   --ink-faint: color-mix(in oklab, var(--ink) 30%, var(--c1));
   --rule: color-mix(in oklab, var(--c1) 85%, var(--ink));
   --rule-soft: color-mix(in oklab, var(--c1) 92%, var(--ink));
-  --accent: var(--c-accent);
+  --accent-0: var(--c-accent);
+  --accent: var(--accent-0);
   --accent-deep: color-mix(in oklab, var(--c-accent) 74%, #000);
   --accent-mute: color-mix(in oklab, var(--c-accent) 38%, var(--c1));
   --signal: color-mix(in oklab, var(--c-accent) 55%, var(--c2));
+}
+
+/* ——— The wheel down the page ———
+   One accent would paint six sections the same colour. Each section turns the
+   palette's accent to a hue it was asked for, at the same
+   lightness, with the chroma capped where yellows leave the gamut, so the page
+   walks red, teal, violet, orange, magenta and blue from the hero to the
+   changelog, and every section stays as visible as the accent the palette
+   chose. Sixty degrees at a time walked it evenly and landed the FAQ on a
+   periwinkle, so the turns are named now. The nav and the dialogs keep the
+   accent itself. The deep and mute tones are
+   derived again here, because a custom property resolves where it is declared
+   and the root's copies would still carry the base accent. */
+@supports (color: oklch(from red l min(c, 0.13) calc(h + 60))) {
+  .section,
+  .council-hero {
+    --accent: oklch(from var(--accent-0) l min(c, 0.13) calc(h + var(--turn, 0)));
+    --accent-deep: color-mix(in oklab, var(--accent) 74%, #000);
+    --accent-mute: color-mix(in oklab, var(--accent) 38%, var(--paper));
+  }
+  /* The hue channel is a bare number inside a relative colour, so the turn is
+     one too, measured from the accent's own 55 degrees. */
+  .council-hero { --turn: 333; }   /* red, which the rule under "service" draws */
+  #library { --turn: 140; }        /* teal */
+  #pantheon { --turn: 237; }       /* the violet of Alan Cooper's drawing */
+  #install { --turn: 0; }          /* the accent's own orange */
+  #faq { --turn: 280; }            /* magenta */
+  #changelog { --turn: 195; }      /* blue */
+
+  /* Within the library the icon says what kind of file the row is: the core
+     foundations, a discipline, a canon index. The root file keeps the
+     section's own teal, because it is the one the others hang from. */
+  .library .row-item[data-tag="core"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 95)); }
+  .library .row-item[data-tag="discipline"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 195)); }
+  .library .row-item[data-tag="canon"] { --icon: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 35)); }
 }
 
 /* ——— The palette picker ———

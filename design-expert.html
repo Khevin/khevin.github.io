@@ -97,7 +97,7 @@
         <li role="option" data-palette="slate-steel" aria-selected="false" tabindex="-1" aria-label="charcoal, slate, slate blue, steel blue"><span class="swatch" aria-hidden="true"><span style="background:#2a2130"></span><span style="background:#3d3247"></span><span style="background:#565d8a"></span><span style="background:#6e8bb8"></span></span></li>
         <li role="option" data-palette="plum-amber" aria-selected="false" tabindex="-1" aria-label="plum, violet, berry, amber"><span class="swatch" aria-hidden="true"><span style="background:#2d0f47"></span><span style="background:#3c1a5e"></span><span style="background:#9e2864"></span><span style="background:#fcc45f"></span></span></li>
         <li role="option" data-palette="clay-tan" aria-selected="false" tabindex="-1" aria-label="dark brown, brown, terracotta, tan"><span class="swatch" aria-hidden="true"><span style="background:#2e2422"></span><span style="background:#573a28"></span><span style="background:#b55b32"></span><span style="background:#debc8e"></span></span></li>
-        <li role="option" data-palette="graphite-red" aria-selected="false" tabindex="-1" aria-label="near black, graphite, crimson, near white"><span class="swatch" aria-hidden="true"><span style="background:#141414"></span><span style="background:#414141"></span><span style="background:#d50032"></span><span style="background:#ebebeb"></span></span></li>
+        <li role="option" data-palette="graphite-red" aria-selected="false" tabindex="-1" aria-label="near black, graphite, crimson, near white"><span class="swatch" aria-hidden="true"><span style="background:#141414"></span><span style="background:#414141"></span><span style="background:#c23545"></span><span style="background:#ebebeb"></span></span></li>
         <li role="option" data-palette="navy-blush" aria-selected="false" tabindex="-1" aria-label="near black navy, slate, blue grey, blush pink"><span class="swatch" aria-hidden="true"><span style="background:#050a26"></span><span style="background:#343854"></span><span style="background:#5c6183"></span><span style="background:#f2a9c4"></span></span></li>
         <li role="option" data-palette="burgundy-peach" aria-selected="false" tabindex="-1" aria-label="dark plum, burgundy, salmon, pale peach"><span class="swatch" aria-hidden="true"><span style="background:#33132a"></span><span style="background:#7a0b2e"></span><span style="background:#ee9a73"></span><span style="background:#fbdcc0"></span></span></li>
         <li role="option" data-palette="teal-coral" aria-selected="false" tabindex="-1" aria-label="deep teal, purple, rose, coral"><span class="swatch" aria-hidden="true"><span style="background:#013d59"></span><span style="background:#4a2b5e"></span><span style="background:#bf4e75"></span><span style="background:#f95f5c"></span></span></li>
@@ -184,7 +184,7 @@
           <button class="mix-chip" type="button" data-color="#b5284f" style="background:#b5284f" aria-label="#b5284f"></button>
           <button class="mix-chip" type="button" data-color="#5c6183" style="background:#5c6183" aria-label="#5c6183"></button>
           <button class="mix-chip" type="button" data-color="#c33044" style="background:#c33044" aria-label="#c33044"></button>
-          <button class="mix-chip" type="button" data-color="#d50032" style="background:#d50032" aria-label="#d50032"></button>
+          <button class="mix-chip" type="button" data-color="#c23545" style="background:#c23545" aria-label="#c23545"></button>
           <button class="mix-chip" type="button" data-color="#cc2b3e" style="background:#cc2b3e" aria-label="#cc2b3e"></button>
           <button class="mix-chip" type="button" data-color="#db0c74" style="background:#db0c74" aria-label="#db0c74"></button>
           <button class="mix-chip" type="button" data-color="#b55b32" style="background:#b55b32" aria-label="#b55b32"></button>
@@ -251,7 +251,7 @@
           <svg class="council-study__geometry" viewBox="0 0 600 570" preserveAspectRatio="none" aria-hidden="true">
             <circle class="council-orbit" cx="300" cy="278" r="199" />
             <circle class="council-orbit council-orbit--inner" cx="300" cy="278" r="179" />
-            <path class="council-crosshair" d="M294 278h12m-6-6v12M300 59v12M300 485v12M82 278h12M506 278h12" />
+            <path class="council-crosshair" d="M300 59v12M300 485v12M82 278h12M506 278h12" />
             <g class="council-spokes">
               <path data-council-line="rams" class="is-selected" d="M300 121V186" />
               <path data-council-line="vignelli" d="M458 182L390 225" />
@@ -324,67 +324,67 @@
     <div class="library">
       <div class="library-col library-col--skills">
         <div class="col-label">Skills · root files</div>
-        <button class="row-item" type="button" data-skill="skill-md">
+        <button class="row-item" type="button" data-skill="skill-md" data-tag="root">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M15 12 L 45 12 L 45 48 L 15 48 Z M 22 22 L 38 22 M 22 30 L 38 30 M 22 38 L 32 38"/><path class="pulse" d="M30 6 L 30 54"/></svg></span>
           <span class="name">SKILL.md</span>
           <span class="desc">The manifesto + index. Loaded on every command. The "why" before the "how."</span>
           <span class="tag">root</span>
         </button>
-        <button class="row-item" type="button" data-skill="foundations">
+        <button class="row-item" type="button" data-skill="foundations" data-tag="core">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 50 L 30 10 L 50 50 Z M 18 38 L 42 38"/></svg></span>
           <span class="name">foundations.md</span>
           <span class="desc">Perception, hierarchy, contrast, gestalt. Nielsen's 10 + UD7 + the 10-lens review framework.</span>
           <span class="tag">core</span>
         </button>
-        <button class="row-item" type="button" data-skill="craft">
+        <button class="row-item" type="button" data-skill="craft" data-tag="core">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 18 L 26 18 L 26 50 L 10 50 Z M 30 10 L 50 10 L 50 30 L 30 30 Z M 30 36 L 50 36 L 50 50 L 30 50 Z"/></svg></span>
           <span class="name">craft.md</span>
           <span class="desc">Composition, layering, the four craft tests, iteration sizing, density. The visual grammar.</span>
           <span class="tag">core</span>
         </button>
-        <button class="row-item" type="button" data-skill="grids">
+        <button class="row-item" type="button" data-skill="grids" data-tag="core">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 10 H22 V22 H10 Z M26 10 H38 V22 H26 Z M42 10 H54 V22 H42 Z M10 26 H22 V38 H10 Z M26 26 H38 V38 H26 Z M42 26 H54 V38 H42 Z M10 42 H22 V54 H10 Z M26 42 H38 V54 H26 Z M42 42 H54 V54 H42 Z"/></svg></span>
           <span class="name">grids.md</span>
           <span class="desc">Swiss school, asymmetric grids, spacing systems, container/column/gutter/baseline. The deepest layer.</span>
           <span class="tag">core</span>
         </button>
-        <button class="row-item" type="button" data-skill="layouts">
+        <button class="row-item" type="button" data-skill="layouts" data-tag="core">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 10 H50 V18 H10 Z M10 22 H28 V40 H10 Z M32 22 H50 V40 H32 Z M10 44 H50 V52 H10 Z"/></svg></span>
           <span class="name">layouts.md</span>
           <span class="desc">The 32-pattern catalog organized by register. 8 editorial + 8 dashboard + 8 interface + 8 landing patterns.</span>
           <span class="tag">core</span>
         </button>
-        <button class="row-item" type="button" data-skill="typography">
+        <button class="row-item" type="button" data-skill="typography" data-tag="core">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M14 14 L 46 14 M 30 14 L 30 46 M 24 46 L 36 46"/><path class="draw" d="M40 26 C 50 26 50 38 40 38 L 38 38 L 38 26 Z"/></svg></span>
           <span class="name">typography.md</span>
           <span class="desc">Pairings, scales, optical sizing, type-pairing rules. Ban lists for the fonts the model defaults to.</span>
           <span class="tag">core</span>
         </button>
-        <button class="row-item" type="button" data-skill="components">
+        <button class="row-item" type="button" data-skill="components" data-tag="core">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 22 L 26 22 L 26 38 L 10 38 Z M 34 22 L 50 22 L 50 38 L 34 38 Z M 22 30 L 34 30"/><circle class="draw" cx="30" cy="12" r="4"/><circle class="draw" cx="30" cy="48" r="4"/></svg></span>
           <span class="name">components.md</span>
           <span class="desc">Carbon cells, icons, data-viz primitives. The vocabulary every product screen reuses.</span>
           <span class="tag">core</span>
         </button>
-        <button class="row-item" type="button" data-skill="interaction">
+        <button class="row-item" type="button" data-skill="interaction" data-tag="core">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M8 30 Q 18 14 30 30 T 52 30"/><circle class="pulse" cx="15" cy="30" r="3"/></svg></span>
           <span class="name">interaction.md</span>
           <span class="desc">States, motion, responsive, onboarding. How a screen behaves once a human touches it.</span>
           <span class="tag">core</span>
         </button>
-        <button class="row-item" type="button" data-skill="anti-slop">
+        <button class="row-item" type="button" data-skill="anti-slop" data-tag="discipline">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><circle class="draw" cx="30" cy="30" r="20"/><path class="draw" d="M16 16 L 44 44"/></svg></span>
           <span class="name">anti-slop.md</span>
           <span class="desc">The named patterns the model reaches for by default. Each paired with the move a human designer would make instead.</span>
           <span class="tag">discipline</span>
         </button>
-        <button class="row-item" type="button" data-skill="output-format">
+        <button class="row-item" type="button" data-skill="output-format" data-tag="discipline">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 14 L 50 14 M 10 24 L 40 24 M 10 34 L 50 34 M 10 44 L 35 44"/><path class="pulse" d="M44 42 L 50 48 L 56 38"/></svg></span>
           <span class="name">output-format.md</span>
           <span class="desc">Review template, confidence, scoring. The reviewer's rubric in machine-readable form.</span>
           <span class="tag">discipline</span>
         </button>
-        <button class="row-item" type="button" data-skill="self-review">
+        <button class="row-item" type="button" data-skill="self-review" data-tag="discipline">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><circle class="draw" cx="26" cy="26" r="14"/><path class="draw" d="M37 37 L 50 50"/><path class="pulse" d="M20 24 L 24 28 L 32 20"/></svg></span>
           <span class="name">self-review.md</span>
           <span class="desc">End-of-work review discipline. Anti-slop self-scan, the four craft tests, register-conditional verdict, honest cut-list. Cuts / Holds / Risks report.</span>
@@ -394,31 +394,31 @@
 
       <div class="library-col library-col--folders">
         <div class="col-label">Folders · curated indexes</div>
-        <button class="row-item" type="button" data-skill="design-gods">
+        <button class="row-item" type="button" data-skill="design-gods" data-tag="canon">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><circle class="draw" cx="30" cy="30" r="4"/><circle class="draw" cx="30" cy="30" r="14"/><circle class="draw" cx="30" cy="30" r="24"/></svg></span>
           <span class="name">design-gods<span class="slash">/</span></span>
           <span class="desc">Per-designer files. Each canonical name's rules, work, and the moments their judgment overrides the skill's defaults.</span>
           <span class="tag">canon</span>
         </button>
-        <button class="row-item" type="button" data-skill="library">
+        <button class="row-item" type="button" data-skill="library" data-tag="canon">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 14 L 26 14 L 26 30 L 10 30 Z M 34 14 L 50 14 L 50 30 L 34 30 Z M 10 36 L 26 36 L 26 50 L 10 50 Z M 34 36 L 50 36 L 50 50 L 34 50 Z"/><path class="pulse" d="M14 22 L 22 22 M 38 22 L 46 22"/></svg></span>
           <span class="name">library<span class="slash">/</span></span>
           <span class="desc">Worked examples. Annotated screens. The skill's own portfolio — the bar it asks the work to meet.</span>
           <span class="tag">canon</span>
         </button>
-        <button class="row-item" type="button" data-skill="references">
+        <button class="row-item" type="button" data-skill="references" data-tag="canon">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M14 8 H46 V52 L 30 42 L 14 52 Z"/><path class="draw" d="M22 20 H38 M 22 28 H38 M 22 36 H32"/></svg></span>
           <span class="name">references<span class="slash">/</span></span>
           <span class="desc">Eight quality references plus the 270+ NNg article index. Pentagram, Carbon, HIG, Linear, Stripe, Refactoring UI, Vignelli, Material 3.</span>
           <span class="tag">canon</span>
         </button>
-        <button class="row-item" type="button" data-skill="styles">
+        <button class="row-item" type="button" data-skill="styles" data-tag="canon">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M30 8 L 36.7 22.4 L 52.4 24.1 L 40.6 34.6 L 44.1 50 L 30 41.8 L 15.9 50 L 19.4 34.6 L 7.6 24.1 L 23.3 22.4 Z"/></svg></span>
           <span class="name">styles<span class="slash">/</span></span>
           <span class="desc">Register-specific disciplines. Editorial (case studies, magazine pieces) and expressive (avant-garde, motion-led, brand-as-product).</span>
           <span class="tag">canon</span>
         </button>
-        <button class="row-item" type="button" data-skill="voices">
+        <button class="row-item" type="button" data-skill="voices" data-tag="canon">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M10 14 L 38 14 L 38 36 L 22 36 L 14 44 L 16 36 L 10 36 Z"/><path class="draw" d="M30 24 L 50 24 L 50 46 L 36 46 L 28 54 L 30 46 L 30 24 Z"/></svg></span>
           <span class="name">voices<span class="slash">/</span></span>
           <span class="desc">Writing-context disciplines. UX copy, long-form (Work&Co tone), and marketing — multi-flavor by ad-lord (Lois, Bernbach, Gossage, Ogilvy).</span>
@@ -447,7 +447,7 @@
         <p class="credo">Less, but better. Honest, unobtrusive, and as little design as possible.</p>
       </button>
       <button class="figure" type="button" data-god="vignelli">
-        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><path d="M 560 160 V 600 L 860 900 H 1240"/><circle cx="560" cy="330" r="18"/><circle cx="1120" cy="900" r="18"/><path d="M 620 160 V 575.1 L 884.9 840 H 1240"/><circle cx="620" cy="330" r="18"/><circle cx="1120" cy="840" r="18"/><path d="M 680 160 V 550.3 L 909.7 780 H 1240"/><circle cx="680" cy="330" r="18"/><circle cx="1120" cy="780" r="18"/><path d="M 740 160 V 525.4 L 934.6 720 H 1240"/><circle cx="740" cy="330" r="18"/><circle cx="1120" cy="720" r="18"/><circle cx="1000" cy="900" r="34"/><circle cx="1000" cy="900" r="14"/></g></svg></div>
+        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><path d="M 560 160 V 600 L 860 900 H 1240" style="stroke:#ee4e3f"/><circle cx="560" cy="330" r="18" style="stroke:#ee4e3f"/><circle cx="1120" cy="900" r="18" style="stroke:#ee4e3f"/><path d="M 620 160 V 575.1 L 884.9 840 H 1240" style="stroke:#ff7a2a"/><circle cx="620" cy="330" r="18" style="stroke:#ff7a2a"/><circle cx="1120" cy="840" r="18" style="stroke:#ff7a2a"/><path d="M 680 160 V 550.3 L 909.7 780 H 1240" style="stroke:#f7cf2a"/><circle cx="680" cy="330" r="18" style="stroke:#f7cf2a"/><circle cx="1120" cy="780" r="18" style="stroke:#f7cf2a"/><path d="M 740 160 V 525.4 L 934.6 720 H 1240" style="stroke:#2fa85a"/><circle cx="740" cy="330" r="18" style="stroke:#2fa85a"/><circle cx="1120" cy="720" r="18" style="stroke:#2fa85a"/><circle cx="1000" cy="900" r="34" style="stroke:#3d7bc4"/><circle cx="1000" cy="900" r="14" style="stroke:#3d7bc4"/></g></svg></div>
         <div class="top"><span class="num">02</span><span class="disc">Graphic</span></div>
         <h4><span class="first">Massimo</span>Vignelli</h4>
         <p class="credo">The life of a designer is a life of fight against ugliness.</p>
@@ -459,7 +459,7 @@
         <p class="credo">Care shows. So does its absence.</p>
       </button>
       <button class="figure" type="button" data-god="norman">
-        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><path d="M 640 540 C 600 640 470 760 480 900 C 490 1030 590 1110 700 1110 C 810 1110 910 1030 920 900 C 930 760 800 640 760 540 Z"/><path d="M 620 540 Q 700 470 780 540"/><line x1="620" y1="540" x2="780" y2="540"/><circle cx="700" cy="462" r="18"/><path d="M 806 630 C 950 610 1040 550 1082 456"/><path d="M 840 716 C 990 696 1076 634 1124 498"/><line x1="1082" y1="456" x2="1124" y2="498"/><path d="M 906 800 C 1050 790 1100 880 1090 950 C 1080 1022 1006 1064 888 1054"/><path d="M 910 842 C 1012 838 1052 892 1048 944 C 1044 988 1000 1014 894 1014"/></g></svg></div>
+        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><path d="M 630 590 C 610 700 470 770 480 910 C 490 1040 590 1110 700 1110 C 810 1110 910 1040 920 910 C 930 770 790 700 770 590 Z"/><path d="M 616 590 H 784"/><path d="M 626 560 Q 700 470 774 560"/><path d="M 616 560 H 784"/><path d="M 700 492 V 520"/><circle cx="700" cy="476" r="18"/><path d="M 806 650 C 950 630 1040 560 1082 466"/><path d="M 842 740 C 990 720 1076 654 1124 508"/><path d="M 1082 466 L 1124 508"/><path d="M 906 810 C 1050 800 1100 890 1090 960 C 1080 1032 1006 1074 888 1064"/><path d="M 910 852 C 1012 848 1052 902 1048 954 C 1044 998 1000 1024 894 1024"/></g></svg></div>
         <div class="top"><span class="num">04</span><span class="disc">Cognitive</span></div>
         <h4><span class="first">Don</span>Norman</h4>
         <p class="credo">If a design fails, it is the design's fault, not the user's.</p>
@@ -483,7 +483,7 @@
         <p class="credo">Good icons are more like road signs than illustrations.</p>
       </button>
       <button class="figure" type="button" data-god="rand">
-        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><path d="M 260 700 C 320 600 520 600 580 700 C 520 800 320 800 260 700 Z"/><circle cx="420" cy="700" r="58"/><circle cx="420" cy="700" r="24"/><rect x="660" y="640" width="200" height="120" rx="60"/><line x1="720" y1="648" x2="720" y2="752"/><line x1="760" y1="646" x2="760" y2="754"/><line x1="800" y1="648" x2="800" y2="752"/><circle cx="894" cy="700" r="34"/><path d="M 905 668 Q 930 620 960 640"/><path d="M 890 666 Q 900 610 940 600"/><path d="M 720 640 C 700 560 780 540 790 640"/><path d="M 790 640 C 800 550 880 560 860 640"/><line x1="660" y1="700" x2="636" y2="700"/><path d="M 1008 798 V 558 H 1070 L 1128 668 L 1186 558 H 1248 V 798 H 1196 V 646 L 1128 762 L 1060 646 V 798 Z"/></g></svg></div>
+        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><path d="M 262 620 C 330 552 510 552 578 620" style="stroke:#e84a2e"/><path d="M 260 700 C 320 600 520 600 580 700 C 520 800 320 800 260 700 Z" style="stroke:#e8e0d0"/><circle cx="420" cy="700" r="58" style="stroke:#c49a6c"/><circle cx="420" cy="700" r="24" style="stroke:#e8e0d0"/><rect x="660" y="640" width="200" height="120" rx="60" style="stroke:#f5c518"/><line x1="720" y1="648" x2="720" y2="752" style="stroke:#f5c518"/><line x1="760" y1="646" x2="760" y2="754" style="stroke:#f5c518"/><line x1="800" y1="648" x2="800" y2="752" style="stroke:#f5c518"/><line x1="660" y1="700" x2="636" y2="700" style="stroke:#f5c518"/><circle cx="894" cy="700" r="34" style="stroke:#e88fb0"/><path d="M 905 668 Q 930 620 960 640" style="stroke:#e88fb0"/><path d="M 890 666 Q 900 610 940 600" style="stroke:#e88fb0"/><path d="M 720 640 C 700 560 780 540 790 640" style="stroke:#6f9a5a"/><path d="M 790 640 C 800 550 880 560 860 640" style="stroke:#6f9a5a"/><path d="M 1008 798 V 558 H 1070 L 1128 668 L 1186 558 H 1248 V 798 H 1196 V 646 L 1128 762 L 1060 646 V 798 Z" style="stroke:#4a7fd4"/></g></svg></div>
         <div class="top"><span class="num">08</span><span class="disc">Identity</span></div>
         <h4><span class="first">Paul</span>Rand</h4>
         <p class="credo">Design is the silent ambassador of your brand.</p>
@@ -543,25 +543,7 @@
         <p class="credo">Perfect typography is more a science than an art.</p>
       </button>
       <button class="figure" type="button" data-god="itten">
-        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><circle cx="700" cy="700" r="560"/>
-    <circle cx="700" cy="700" r="400"/>
-    <path d="M 803.5 313.6 L 844.9 159.1"/>
-    <path d="M 596.5 313.6 L 555.1 159.1"/>
-    <path d="M 417.2 417.2 L 304.0 304.0"/>
-    <path d="M 313.6 596.5 L 159.1 555.1"/>
-    <path d="M 313.6 803.5 L 159.1 844.9"/>
-    <path d="M 417.2 982.8 L 304.0 1096.0"/>
-    <path d="M 596.5 1086.4 L 555.1 1240.9"/>
-    <path d="M 803.5 1086.4 L 844.9 1240.9"/>
-    <path d="M 982.8 982.8 L 1096.0 1096.0"/>
-    <path d="M 1086.4 803.5 L 1240.9 844.9"/>
-    <path d="M 1086.4 596.5 L 1240.9 555.1"/>
-    <path d="M 982.8 417.2 L 1096.0 304.0"/>
-    <path d="M 959.8 550.0 L 700.0 400.0 L 440.2 550.0 L 440.2 850.0 L 700.0 1000.0 L 959.8 850.0 Z"/>
-    <path d="M 700.0 400.0 L 959.8 850.0 L 440.2 850.0 Z"/>
-    <path d="M 700.0 700.0 L 829.9 625.0"/>
-    <path d="M 700.0 700.0 L 700.0 850.0"/>
-    <path d="M 700.0 700.0 L 570.1 625.0"/></g></svg></div>
+        <div class="squiggle"><svg viewBox="0 0 1400 1400" preserveAspectRatio="xMidYMid meet"><g><path d="M 555.1 159.1 A 560 560 0 0 1 844.9 159.1" style="stroke:#f2e600"/><path d="M 844.9 159.1 A 560 560 0 0 1 1096.0 304.0" style="stroke:#f5c518"/><path d="M 1096.0 304.0 A 560 560 0 0 1 1240.9 555.1" style="stroke:#f39200"/><path d="M 1240.9 555.1 A 560 560 0 0 1 1240.9 844.9" style="stroke:#ea5b1a"/><path d="M 1240.9 844.9 A 560 560 0 0 1 1096.0 1096.0" style="stroke:#e3231b"/><path d="M 1096.0 1096.0 A 560 560 0 0 1 844.9 1240.9" style="stroke:#b62a6b"/><path d="M 844.9 1240.9 A 560 560 0 0 1 555.1 1240.9" style="stroke:#6e3b8c"/><path d="M 555.1 1240.9 A 560 560 0 0 1 304.0 1096.0" style="stroke:#3f4d9c"/><path d="M 304.0 1096.0 A 560 560 0 0 1 159.1 844.9" style="stroke:#2e6bb3"/><path d="M 159.1 844.9 A 560 560 0 0 1 159.1 555.1" style="stroke:#1c8a8a"/><path d="M 159.1 555.1 A 560 560 0 0 1 304.0 304.0" style="stroke:#009150"/><path d="M 304.0 304.0 A 560 560 0 0 1 555.1 159.1" style="stroke:#8bb928"/><path d="M 596.5 313.6 A 400 400 0 0 1 803.5 313.6" style="stroke:#f2e600"/><path d="M 803.5 313.6 A 400 400 0 0 1 982.8 417.2" style="stroke:#f5c518"/><path d="M 982.8 417.2 A 400 400 0 0 1 1086.4 596.5" style="stroke:#f39200"/><path d="M 1086.4 596.5 A 400 400 0 0 1 1086.4 803.5" style="stroke:#ea5b1a"/><path d="M 1086.4 803.5 A 400 400 0 0 1 982.8 982.8" style="stroke:#e3231b"/><path d="M 982.8 982.8 A 400 400 0 0 1 803.5 1086.4" style="stroke:#b62a6b"/><path d="M 803.5 1086.4 A 400 400 0 0 1 596.5 1086.4" style="stroke:#6e3b8c"/><path d="M 596.5 1086.4 A 400 400 0 0 1 417.2 982.8" style="stroke:#3f4d9c"/><path d="M 417.2 982.8 A 400 400 0 0 1 313.6 803.5" style="stroke:#2e6bb3"/><path d="M 313.6 803.5 A 400 400 0 0 1 313.6 596.5" style="stroke:#1c8a8a"/><path d="M 313.6 596.5 A 400 400 0 0 1 417.2 417.2" style="stroke:#009150"/><path d="M 417.2 417.2 A 400 400 0 0 1 596.5 313.6" style="stroke:#8bb928"/><path d="M 803.5 313.6 L 844.9 159.1" style="stroke:#f5c518"/><path d="M 982.8 417.2 L 1096.0 304.0" style="stroke:#f39200"/><path d="M 1086.4 596.5 L 1240.9 555.1" style="stroke:#ea5b1a"/><path d="M 1086.4 803.5 L 1240.9 844.9" style="stroke:#e3231b"/><path d="M 982.8 982.8 L 1096.0 1096.0" style="stroke:#b62a6b"/><path d="M 803.5 1086.4 L 844.9 1240.9" style="stroke:#6e3b8c"/><path d="M 596.5 1086.4 L 555.1 1240.9" style="stroke:#3f4d9c"/><path d="M 417.2 982.8 L 304.0 1096.0" style="stroke:#2e6bb3"/><path d="M 313.6 803.5 L 159.1 844.9" style="stroke:#1c8a8a"/><path d="M 313.6 596.5 L 159.1 555.1" style="stroke:#009150"/><path d="M 417.2 417.2 L 304.0 304.0" style="stroke:#8bb928"/><path d="M 596.5 313.6 L 555.1 159.1" style="stroke:#f2e600"/><path d="M 700 400 L 959.8 550" style="stroke:#f5c518"/><path d="M 959.8 550 L 959.8 850" style="stroke:#ea5b1a"/><path d="M 959.8 850 L 700 1000" style="stroke:#b62a6b"/><path d="M 700 1000 L 440.2 850" style="stroke:#3f4d9c"/><path d="M 440.2 850 L 440.2 550" style="stroke:#1c8a8a"/><path d="M 440.2 550 L 700 400" style="stroke:#8bb928"/><path d="M 700 400 L 959.8 850" style="stroke:#f39200"/><path d="M 959.8 850 L 440.2 850" style="stroke:#6e3b8c"/><path d="M 440.2 850 L 700 400" style="stroke:#009150"/><path d="M 700 700 L 829.9 625" style="stroke:#f39200"/><path d="M 700 700 L 700 850" style="stroke:#6e3b8c"/><path d="M 700 700 L 570.1 625" style="stroke:#009150"/></g></svg></div>
         <div class="top"><span class="num">18</span><span class="disc">Color</span></div>
         <h4><span class="first">Johannes</span>Itten</h4>
         <p class="credo">Color is life.</p>

@@ -1,4 +1,20 @@
-/* The council: an editorial introduction using the Pantheon's own drawings. */
+/* The council: an editorial introduction using the Pantheon's own drawings.
+
+   Colour here follows one rule, shared with the pantheon: the palette picker
+   colours the page, and the painters colour the drawings. The six seats sit
+   where Itten's twelve-hue wheel puts its primaries and secondaries, so each
+   takes that hue and nothing the picker does moves it: yellow at the top,
+   then orange, red, violet at the bottom, blue, green.
+
+   The hue is stored as three registered components rather than one colour.
+   A colour transition interpolates in Oklab, where yellow to violet passes
+   through grey; three numbers interpolate as numbers, so the selection
+   travels around the wheel and always through the hues between. The script
+   keeps the angle on the shortest arc. */
+@property --seat-l { syntax: "<percentage>"; inherits: true; initial-value: 92%; }
+@property --seat-c { syntax: "<number>"; inherits: true; initial-value: 0.19; }
+@property --seat-h { syntax: "<angle>"; inherits: true; initial-value: 100deg; }
+
 .council-hero {
   padding: 20px 0 0;
   overflow: clip;
@@ -31,6 +47,8 @@
 }
 .council-hero__line { white-space: nowrap; }
 .council-hero h1 em {
+  /* The product name and the rule under "service" are one colour, which is
+     the hero section turned to red. */
   color: var(--accent);
   font-weight: 400;
 }
@@ -88,6 +106,18 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   min-height: 460px;
   margin-top: 4px;
   isolation: isolate;
+  /* The selected hue, opening on Rams. The script moves these three. Each
+     seat declares its own copy below, which is how a seat keeps its hue while
+     the table's travels; --hue is then spelled out again on the seat rather
+     than inherited, because a custom property resolves where it is declared,
+     and inherited from here it would carry the table's colour into every
+     seat. */
+  --seat-l: 92%;
+  --seat-c: 0.19;
+  --seat-h: 100deg;
+  --hue: oklch(var(--seat-l) var(--seat-c) var(--seat-h));
+  --hue-tint: color-mix(in oklab, var(--hue) 55%, var(--ink));
+  transition: --seat-l .6s ease-in-out, --seat-c .6s ease-in-out, --seat-h .6s ease-in-out;
 }
 .council-study__geometry {
   position: absolute;
@@ -102,7 +132,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
 .council-crosshair { stroke: var(--ink-faint); }
 .council-spokes path { stroke-dasharray: 3 5; transition: stroke .2s; }
 .council-spokes .is-selected {
-  stroke: var(--accent);
+  stroke: var(--hue);
   stroke-dasharray: none;
   stroke-width: 1.5;
 }
@@ -121,6 +151,9 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   transform: translate(-50%, -50%);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  /* This seat's own hue, from the three numbers it declares below. */
+  --hue: oklch(var(--seat-l) var(--seat-c) var(--seat-h));
+  --hue-tint: color-mix(in oklab, var(--hue) 55%, var(--ink));
 }
 .council-seat svg {
   display: block;
@@ -132,6 +165,9 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   stroke-linecap: round;
   stroke-linejoin: round;
   margin-bottom: 8px;
+  /* At rest the pigment is chalked toward the text colour, so the wheel is
+     present without shouting. Hover and selection bring it whole. */
+  color: color-mix(in oklab, var(--hue) 55%, var(--ink-soft));
   transition: color .2s, transform .2s;
 }
 .council-seat > span { font: 400 11px/1.4 var(--serif); }
@@ -141,15 +177,23 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   color: var(--ink-mute);
 }
 .council-seat:hover svg { transform: translateY(-3px); }
+.council-seat:hover svg,
+.council-seat.is-selected svg { color: var(--hue); }
+/* The label takes a tint lifted toward the ink: violet and blue at full
+   pigment are too dark to read at eleven pixels on this paper. Fifty-five
+   per cent hue keeps every seat above 4.5:1 on the page as drawn and above
+   3:1 on the lightest ground in the picker, which is the bar the accent
+   itself meets there. */
 .council-seat:hover,
-.council-seat.is-selected { color: var(--accent); }
-.council-seat.is-selected small { color: var(--accent); }
-.council-seat[data-council-seat="rams"] { left: 50%; top: 12%; }
-.council-seat[data-council-seat="vignelli"] { left: 84%; top: 30%; }
-.council-seat[data-council-seat="kare"] { left: 84%; top: 69%; }
-.council-seat[data-council-seat="itten"] { left: 50%; top: 88%; }
-.council-seat[data-council-seat="tufte"] { left: 16%; top: 69%; }
-.council-seat[data-council-seat="muller-brockmann"] { left: 16%; top: 30%; }
+.council-seat.is-selected,
+.council-seat.is-selected small { color: var(--hue-tint); }
+/* Itten's six, as they sit on the wheel; measured from the printed circle. */
+.council-seat[data-council-seat="rams"] { --seat-l: 92%; --seat-c: 0.19; --seat-h: 100deg; left: 50%; top: 12%; }
+.council-seat[data-council-seat="vignelli"] { --seat-l: 74%; --seat-c: 0.17; --seat-h: 62deg; left: 84%; top: 30%; }
+.council-seat[data-council-seat="kare"] { --seat-l: 58%; --seat-c: 0.22; --seat-h: 30deg; left: 84%; top: 69%; }
+.council-seat[data-council-seat="itten"] { --seat-l: 46%; --seat-c: 0.14; --seat-h: 310deg; left: 50%; top: 88%; }
+.council-seat[data-council-seat="tufte"] { --seat-l: 53%; --seat-c: 0.14; --seat-h: 255deg; left: 16%; top: 69%; }
+.council-seat[data-council-seat="muller-brockmann"] { --seat-l: 58%; --seat-c: 0.15; --seat-h: 155deg; left: 16%; top: 30%; }
 .council-decision {
   position: absolute;
   z-index: 1;
@@ -159,9 +203,8 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   transform: translate(-50%, -50%);
   padding: clamp(14px, 1.8vw, 25px) 12px 18px;
   text-align: center;
-  background: var(--paper-warm);
-  border: 1px solid var(--rule);
-  box-shadow: 7px 7px 0 -1px var(--paper), 7px 7px 0 var(--rule);
+  /* No fill, no rule, no cast line: the principle sits on the same paper as
+     the seats and the geometry behind it stays visible. */
 }
 .council-decision__label {
   display: block;
@@ -176,11 +219,33 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   fill: none;
   stroke-width: 1;
 }
+/* The worked example is drawn in the selected seat's hue, which is what the
+   reader sees travel when the selection moves. */
 .study-muted { stroke: var(--ink-faint); }
-.study-cut { stroke: var(--accent); opacity: .65; }
+.study-cut { stroke: var(--hue); opacity: .65; }
 .study-ink { stroke: var(--ink); }
-.study-arrow { stroke: var(--accent); }
-.study-fill { fill: var(--accent); stroke: none; }
+.study-arrow { stroke: var(--hue); }
+.study-fill { fill: var(--hue); stroke: none; }
+/* The handover. The old drawing and words dissolve, then the new drawing
+   draws itself on stroke by stroke, the muted parts first and the arrow last,
+   while the title rises under it. The script sets pathLength="1" on every
+   stroke so one dash offset draws any shape. */
+.council-decision.is-leaving .council-decision__drawing,
+.council-decision.is-leaving .council-decision__title,
+.council-decision.is-leaving .council-decision__verdict { opacity: 0; transition: opacity .16s ease-in; }
+.council-decision.is-live .council-decision__drawing :is(path, rect, circle) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: council-draw .55s cubic-bezier(.4, 0, .2, 1) both;
+}
+.council-decision.is-live .council-decision__drawing :is(.study-ink, .study-ink *) { animation-delay: .12s; }
+.council-decision.is-live .council-decision__drawing :is(.study-arrow, .study-cut) { animation-delay: .28s; }
+.council-decision.is-live .council-decision__drawing :is(.study-fill, text) { stroke-dasharray: none; animation: council-appear .3s .3s both; }
+.council-decision.is-live .council-decision__title { animation: council-rise .42s .1s cubic-bezier(.2, .7, .2, 1) both; }
+.council-decision.is-live .council-decision__verdict { animation: council-appear .3s .38s both; }
+@keyframes council-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes council-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes council-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .council-decision__title {
   font: 400 clamp(22px, 2.3vw, 32px)/1.08 var(--title);
   letter-spacing: -.025em;
@@ -192,7 +257,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  color: var(--accent);
+  color: var(--hue-tint);
   font: 9px/1.5 var(--mono);
   margin-top: 16px;
 }
@@ -241,7 +306,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   .council-seat svg { width: clamp(40px, 11vw, 65px); height: clamp(44px, 12vw, 70px); margin-bottom: 6px; }
   .council-seat > span { font-size: clamp(9px, 2.65vw, 12px); }
   .council-seat small { font-size: 7px; }
-  .council-decision { width: 45%; padding: 12px 7px; box-shadow: 4px 4px 0 -1px var(--paper), 4px 4px 0 var(--rule); }
+  .council-decision { width: 45%; padding: 12px 7px; }
   .council-decision__label { font-size: 6.5px; letter-spacing: 0; }
   .council-decision__drawing { height: 34px; margin: 8px 0 6px; }
   .council-decision__title { font-size: clamp(18px, 5vw, 28px); }
@@ -260,4 +325,6 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
     transition: none !important;
   }
   .council-seat:hover svg { transform: none; }
+  /* With the draw-on gone, the strokes must not be left at offset one. */
+  .council-decision.is-live .council-decision__drawing * { stroke-dasharray: none; stroke-dashoffset: 0; }
 }
