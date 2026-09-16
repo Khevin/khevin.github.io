@@ -2650,6 +2650,28 @@ li.is-done .qg { color: var(--verdant); }
 .iv-character-stage { min-height:520px; background:radial-gradient(ellipse at 50% 42%,#b49b6330,transparent 65%); border-bottom:1px solid #58492e; }
 .iv-character-stage .iv-avatar { width:244px; max-width:100%; height:auto; filter:drop-shadow(0 12px 10px #0007); }
 .iv-outfit-caption { font-size:12px; color:var(--ash); line-height:1.6; text-align:center; margin:12px auto 0; max-width:30ch; }
+/* ---------- the 3D figure in the Character column ----------
+   The view choice sits where the Wardrobe header keeps its Add plate, as the same word chips
+   the filter row uses; the turntable is a chip row under the figure; the body editor borrows the
+   garment dialog's swatch wells and legends, so there is one way to pick a colour in the app. */
+.iv-character .iv-view { position:absolute; right:0; bottom:9px; display:flex; gap:2px; }
+.iv-stage-3d { display:grid; place-items:center; }
+.iv-stage-3d canvas { display:block; width:244px; height:520px; max-width:100%; filter:drop-shadow(0 12px 10px #0007); touch-action:none; }
+.iv-fig-wait { font:10px var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:#8c806b; }
+.iv-figbar { display:flex; flex-wrap:wrap; gap:4px; align-items:center; margin:12px 0 0; }
+.iv-figbar .sp { flex:1; }
+.iv-armory .iv-figbar .iv-f { min-height:32px; }
+.iv-figbody { margin-top:12px; padding-top:12px; border-top:1px solid #51432f; display:grid; gap:12px; text-align:left; }
+.iv-figbody .gear-sw-row { grid-template-columns:repeat(6, 24px); gap:14px; }
+.iv-figbody .gear-sw, .iv-figbody .gear-pick { width:24px; height:24px; }
+.iv-figbody .gear-pick input { width:40px; height:40px; }
+.iv-fighair { display:flex; gap:10px; align-items:center; margin-bottom:8px; }
+.iv-fighair select { flex:1; min-width:0; }
+.iv-figrange { display:block; margin-top:8px; }
+.iv-figrange .bk-l { display:flex; justify-content:space-between; }
+.iv-figrange output { color:var(--dust); letter-spacing:0; text-transform:none; font-variant-numeric:tabular-nums; }
+.iv-figrange input[type=range] { display:block; width:100%; height:32px; margin:0; accent-color:var(--gold); background:none; }
+@media(max-width:650px) { .iv-stage-3d canvas { width:190px; height:405px; } }
 .iv-with-preview .iv-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
 /* narrow: the figure and what is on him keep their pair and the wardrobe takes the row below */
 @media(max-width:1100px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(220px,.9fr) minmax(280px,1fr); } .iv-with-preview .iv-character { order:1; } .iv-with-preview .iv-fig { order:2; } .iv-with-preview .iv-hold { order:3; grid-column:1/-1; } }
@@ -6739,6 +6761,18 @@ function sanitize(s) {
        it lives with what is worn rather than on an item */
     s.wardrobe = { items, worn, tuck: wr.tuck === true };
   }
+  /* The 3D figure's body: how he is drawn, not what he wears. It travels with the board, like the
+     wardrobe, so the figure is the same on every machine. Unknown values fall back, never throw. */
+  {
+    const a = (s.avatar && typeof s.avatar === "object") ? s.avatar : {};
+    const hex = (c, f) => /^#[0-9a-fA-F]{6}$/.test(c) ? String(c).toLowerCase() : f;
+    const num = (v, lo, hi, f) => (typeof v === "number" && v >= lo && v <= hi) ? v : f;
+    s.avatar = {
+      skin: hex(a.skin, "#ad8062"), hair: ["buzzed", "parted", "long", "buns", "none"].includes(a.hair) ? a.hair : "buzzed", beard: a.beard === true,
+      hairColor: hex(a.hairColor, "#302720"), eyes: hex(a.eyes, "#3a2a1e"),
+      height: num(a.height, 1.5, 2.1, 1.78), strength: num(a.strength, 0.7, 1.4, 1), build: num(a.build, 0.7, 1.5, 1)
+    };
+  }
   /* Games are one title per record, with platforms and Steam accounts as lists. Never
      infer completion from playtime or replace hand-written fields during an import. */
   {
@@ -8576,6 +8610,18 @@ let invSub = (() => { try { const v = localStorage.getItem("skillstone-inv-sub")
   return INV_SUBS.indexOf(v) > -1 ? v : "gear"; } catch (e) { return "gear"; } })();
 let gearFilter = "";      /* which family the board is showing, "" for everything */
 let gearPick = "";        /* the equipped place under consideration, "" for none */
+/* ---------- the 3D figure ----------
+   The Character column shows the drawing or a figure that turns. Which one is a view preference
+   of this machine, like the tab; the body — tone, hair, height, build — is state.avatar and goes
+   wherever the board goes. The figure module loads only when 3D is chosen, so the drawing costs
+   nothing new. One canvas lives for the session and is re-seated on every render. */
+let figureMode = localStorage.getItem("skillstone-figure") === "3d" ? "3d" : "2d";
+let fig3d = null, fig3dLoading = null, figBodyOpen = false, figApplyRaf = 0, figAvatarKey = "";
+const FIG_HAIRS = [["buzzed", "Buzzed"], ["parted", "Parted"], ["long", "Long"], ["buns", "Buns"], ["none", "None"]];
+const FIG_SKINS = ["#f1d3b8", "#dcb08d", "#c99a72", "#ad8062", "#8a5a3c", "#6b4128", "#4a2c1c", "#2f1b12"];
+const FIG_HAIR_COLORS = ["#0f0d0c", "#302720", "#5a3a22", "#8a5a2b", "#b8863f", "#d9b982", "#8c8c8c", "#e8e1cf"];
+const FIG_EYES = ["#2a1a12", "#3a2a1e", "#5a4a2a", "#2a4a3a", "#3a5a7a", "#6a8aa8"];
+const FIG_FMT = { height: v => Math.round(v * 100) + " cm", strength: v => Math.round(v * 100) + "%", build: v => Math.round(v * 100) + "%" };
 let gearEdit = null;      /* the garment being written, until Save */
 
 /* ================= GAMES =================
@@ -10164,6 +10210,69 @@ function invTuckHTML() {
     '<span class="iv-tuck-track" aria-hidden="true"><span class="iv-tuck-knob"></span></span>' +
     '<span class="iv-tuck-nm">Tuck</span></button>';
 }
+function figureViewHTML() {
+  const chip = (k, n) => '<button type="button" class="iv-f is-word' + (figureMode === k ? " is-cur" : "") + '" data-inv="figmode" data-k="' + k + '" aria-pressed="' + (figureMode === k) + '">' + n + "</button>";
+  return '<div class="iv-view" role="group" aria-label="Figure">' + chip("2d", "2D") + chip("3d", "3D") + "</div>";
+}
+/* the turntable row and, when opened, the body editor beneath it */
+function figureControlsHTML() {
+  const a = state.avatar, ang = fig3d ? Math.round(fig3d.angle) : 0;
+  const chip = (d, n) => '<button type="button" class="iv-f is-word' + (ang === d ? " is-cur" : "") + '" data-inv="figangle" data-k="' + d + '" aria-pressed="' + (ang === d) + '">' + n + "</button>";
+  return '<div class="iv-figbar" role="group" aria-label="Turn the figure">' + chip(0, "Front") + chip(40, "¾") + chip(90, "Side") + chip(180, "Back") +
+    '<button type="button" class="iv-f is-word' + (fig3d && fig3d.spinning ? " is-cur" : "") + '" data-inv="figspin" aria-pressed="' + !!(fig3d && fig3d.spinning) + '">Spin</button>' +
+    '<span class="sp"></span>' +
+    '<button type="button" class="iv-f is-word' + (figBodyOpen ? " is-cur" : "") + '" data-inv="figbody" aria-expanded="' + figBodyOpen + '" aria-controls="figBody">Body</button></div>' +
+    (figBodyOpen ? figureBodyHTML(a) : "");
+}
+function figureBodyHTML(a) {
+  /* the same swatch wells as the garment dialog: one way to pick a colour in the whole app */
+  const sw = (name, list, cur) => '<div class="gear-sw-row iv-figsw">' + list.map(c => '<button type="button" class="gear-sw' + (c === cur ? " is-cur" : "") +
+      '" data-inv="figset" data-f="' + name + '" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
+    '<label class="gear-pick"><input type="color" name="' + name + '" value="' + cur + '" aria-label="Any other colour"></label></div>';
+  const range = (name, label, v, lo, hi, step) => '<label class="iv-figrange"><span class="bk-l">' + label + "<output>" + FIG_FMT[name](v) + "</output></span>" +
+    '<input type="range" name="' + name + '" min="' + lo + '" max="' + hi + '" step="' + step + '" value="' + v + '"></label>';
+  return '<div class="iv-figbody" id="figBody">' +
+    '<fieldset class="gear-colors"><legend class="bk-l">Skin</legend>' + sw("skin", FIG_SKINS, a.skin) + "</fieldset>" +
+    '<fieldset class="gear-colors"><legend class="bk-l">Hair</legend><div class="iv-fighair"><select name="hair" aria-label="Hair">' +
+      FIG_HAIRS.map(([k, n]) => '<option value="' + k + '"' + (a.hair === k ? " selected" : "") + ">" + n + "</option>").join("") + "</select>" +
+      '<label class="gear-2nd"><input type="checkbox" name="beard"' + (a.beard ? " checked" : "") + ">Beard</label></div>" + sw("hairColor", FIG_HAIR_COLORS, a.hairColor) + "</fieldset>" +
+    '<fieldset class="gear-colors"><legend class="bk-l">Eyes</legend>' + sw("eyes", FIG_EYES, a.eyes) + "</fieldset>" +
+    '<fieldset class="gear-colors"><legend class="bk-l">Frame</legend>' +
+      range("height", "Height", a.height, 1.55, 2.0, 0.01) + range("strength", "Strength", a.strength, 0.75, 1.35, 0.01) + range("build", "Build", a.build, 0.8, 1.4, 0.01) +
+    "</fieldset></div>";
+}
+async function figureMount() {
+  const stage = $("#figStage"); if (!stage) return;
+  if (!fig3d) {
+    if (!fig3dLoading) fig3dLoading = import("./assets/3d/figure.js").then(mod => mod.createFigure({ url: "assets/3d/khev-figure.glb", width: 244, height: 520 }));
+    try { fig3d = await fig3dLoading; } catch (e) { fig3dLoading = null; const st = $("#figStage"); if (st) st.innerHTML = '<p class="iv-fig-wait">The figure could not load.</p>'; return; }
+    if (!$("#figStage")) return;                     /* the view changed while it loaded */
+  }
+  const st = $("#figStage");
+  if (fig3d.canvas.parentNode !== st) { st.textContent = ""; st.appendChild(fig3d.canvas); }
+  const key = JSON.stringify(state.avatar);
+  if (key !== figAvatarKey) { figAvatarKey = key; fig3d.setAvatar(state.avatar); }
+  fig3d.setOutfit(wardrobe());
+  window.__fig3d = fig3d;                            /* for the suites */
+  const bar = document.querySelector(".iv-figbar"); if (bar) bar.outerHTML = figureControlsHTML();
+}
+/* a slider moves the figure as it moves; the work is coalesced to one rebuild per frame */
+function figureApplyAvatar() {
+  if (!fig3d) return;
+  cancelAnimationFrame(figApplyRaf);
+  figApplyRaf = requestAnimationFrame(() => { figAvatarKey = JSON.stringify(state.avatar); fig3d.setAvatar(state.avatar); });
+}
+function figureBodyRender() { const b = $("#figBody"); if (b) b.outerHTML = figureBodyHTML(state.avatar); }
+document.addEventListener("input", e => {
+  const box = e.target.closest && e.target.closest("#figBody"); if (!box) return;
+  const t = e.target, a = state.avatar;
+  if (t.type === "range") { a[t.name] = parseFloat(t.value); const out = t.parentNode.querySelector("output"); if (out) out.textContent = FIG_FMT[t.name](a[t.name]); }
+  else if (t.type === "color") a[t.name] = t.value.toLowerCase();
+  else if (t.name === "hair") a.hair = t.value;
+  else if (t.name === "beard") a.beard = t.checked;
+  figureApplyAvatar();
+});
+document.addEventListener("change", e => { if (e.target.closest && e.target.closest("#figBody")) save(); });
 function renderInv() {
   const el = $("#invEquip");
   if (!el) return;
@@ -10214,8 +10323,10 @@ function renderInv() {
     '<p class="iv-stash-note">Select an item to equip it. Select an equipped one to see what else fits.</p></div>';
 
   const character = '<section class="iv-character" aria-label="Character preview">' +
-    '<header class="iv-section-head"><h3>Character</h3></header>' +
-    '<div class="iv-character-stage">' + invDollHTML() + '</div>' +
+    '<header class="iv-section-head"><h3>Character</h3>' + figureViewHTML() + "</header>" +
+    (figureMode === "3d"
+      ? '<div class="iv-character-stage iv-stage-3d" id="figStage">' + (fig3d ? "" : '<p class="iv-fig-wait">Loading the figure</p>') + "</div>" + figureControlsHTML()
+      : '<div class="iv-character-stage">' + invDollHTML() + "</div>") +
     '<p class="iv-outfit-caption">' + esc(invOutfitWords()) + "</p></section>";
 
   /* Taking a thing off is a second decision, not a side effect of looking at it: selecting a
@@ -10232,6 +10343,7 @@ function renderInv() {
 
   el.innerHTML = '<div class="iv-body iv-armory iv-with-preview">' + wardrobe_ + character + equipped + "</div>";
   invFloor();
+  if (figureMode === "3d") figureMount();
 }
 /* The empty board keeps its squares. The columns are elastic, so the lattice cannot be a constant
    in the stylesheet: it is measured off the laid-out grid once per render and handed back as a
@@ -10563,6 +10675,21 @@ function invAct(el) {
       { const b = document.querySelector('.iv-slot[data-k="' + d.k + '"]'); if (b) b.focus({ preventScroll: true }); }
       break;
     case "unequip":    gearPick = ""; gearTakeOff(d.k); break;
+    case "figmode":
+      figureMode = d.k === "3d" ? "3d" : "2d"; try { localStorage.setItem("skillstone-figure", figureMode); } catch (e) {}
+      if (figureMode === "2d" && fig3d) fig3d.spin(false);
+      renderInv(); { const b = document.querySelector('.iv-view [data-k="' + figureMode + '"]'); if (b) b.focus({ preventScroll: true }); }
+      break;
+    case "figangle":   if (fig3d) fig3d.setAngle(+d.k); { const bar = document.querySelector(".iv-figbar"); if (bar) bar.outerHTML = figureControlsHTML(); } break;
+    case "figspin":    if (fig3d) fig3d.spin(); { const bar = document.querySelector(".iv-figbar"); if (bar) bar.outerHTML = figureControlsHTML(); } break;
+    case "figbody": {
+      figBodyOpen = !figBodyOpen;
+      const bar = document.querySelector(".iv-figbar"), old = $("#figBody"); if (old) old.remove();
+      if (bar) bar.outerHTML = figureControlsHTML();
+      const b = document.querySelector('[data-inv="figbody"]'); if (b) b.focus({ preventScroll: true });
+      break;
+    }
+    case "figset":     state.avatar[d.f] = d.c; save(); figureApplyAvatar(); figureBodyRender(); break;
     case "tuck": {
       const W = wardrobe(); W.tuck = W.tuck !== true; save(); renderInv();
       const b = document.querySelector(".iv-tuck"); if (b) b.focus({ preventScroll: true });
