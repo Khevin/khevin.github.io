@@ -2661,10 +2661,10 @@ li.is-done .qg { color: var(--verdant); }
 .iv-figbar { display:flex; flex-wrap:wrap; gap:4px; align-items:center; margin:12px 0 0; }
 .iv-figbar .sp { flex:1; }
 .iv-armory .iv-figbar .iv-f { min-height:32px; }
-.iv-figbody { margin-top:12px; padding-top:12px; border-top:1px solid #51432f; display:grid; gap:12px; text-align:left; }
-.iv-figbody .gear-sw-row { grid-template-columns:repeat(6, 24px); gap:14px; }
-.iv-figbody .gear-sw, .iv-figbody .gear-pick { width:24px; height:24px; }
-.iv-figbody .gear-pick input { width:40px; height:40px; }
+/* the editor takes the side columns; the shell is the same section head the columns always wear */
+.iv-figbody { display:grid; gap:16px; text-align:left; align-content:start; }
+.iv-bodyed .iv-figbody .gear-sw-row { grid-template-columns:repeat(auto-fill, 28px); gap:16px; }
+.iv-fig-note { font-size:12px; color:var(--ash); line-height:1.6; margin:4px 0 0; }
 .iv-fighair { display:flex; gap:10px; align-items:center; margin-bottom:8px; }
 .iv-fighair select { flex:1; min-width:0; }
 .iv-figrange { display:block; margin-top:8px; }
@@ -10539,25 +10539,30 @@ function figureControlsHTML() {
   return '<div class="iv-figbar" role="group" aria-label="Turn the figure">' + chip(0, "Front") + chip(40, "¾") + chip(90, "Side") + chip(180, "Back") +
     '<button type="button" class="iv-f is-word' + (fig3d && fig3d.spinning ? " is-cur" : "") + '" data-inv="figspin" aria-pressed="' + !!(fig3d && fig3d.spinning) + '">Spin</button>' +
     '<span class="sp"></span>' +
-    '<button type="button" class="iv-f is-word' + (figBodyOpen ? " is-cur" : "") + '" data-inv="figbody" aria-expanded="' + figBodyOpen + '" aria-controls="figBody">Body</button></div>' +
-    (figBodyOpen ? figureBodyHTML(a) : "");
+    /* editing the body takes the whole tab: the wardrobe and the equipped board step aside and the
+       editor sits either side of the figure, so a change is seen on him as it is made */
+    '<button type="button" class="iv-f is-word' + (figBodyOpen ? " is-cur" : "") + '" data-inv="figbody" aria-pressed="' + figBodyOpen + '">' + (figBodyOpen ? "Done" : "Body") + "</button></div>";
 }
-function figureBodyHTML(a) {
-  /* the same swatch wells as the garment dialog: one way to pick a colour in the whole app */
-  const sw = (name, list, cur) => '<div class="gear-sw-row iv-figsw">' + list.map(c => '<button type="button" class="gear-sw' + (c === cur ? " is-cur" : "") +
-      '" data-inv="figset" data-f="' + name + '" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
-    '<label class="gear-pick"><input type="color" name="' + name + '" value="' + cur + '" aria-label="Any other colour"></label></div>';
-  const range = (name, label, v, lo, hi, step) => '<label class="iv-figrange"><span class="bk-l">' + label + "<output>" + FIG_FMT[name](v) + "</output></span>" +
-    '<input type="range" name="' + name + '" min="' + lo + '" max="' + hi + '" step="' + step + '" value="' + v + '"></label>';
-  return '<div class="iv-figbody" id="figBody">' +
-    '<fieldset class="gear-colors"><legend class="bk-l">Skin</legend>' + sw("skin", FIG_SKINS, a.skin) + "</fieldset>" +
+/* the same swatch wells as the garment dialog: one way to pick a colour in the whole app */
+const figSw = (name, list, cur) => '<div class="gear-sw-row iv-figsw">' + list.map(c => '<button type="button" class="gear-sw' + (c === cur ? " is-cur" : "") +
+    '" data-inv="figset" data-f="' + name + '" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>').join("") +
+  '<label class="gear-pick"><input type="color" name="' + name + '" value="' + cur + '" aria-label="Any other colour"></label></div>';
+const figRange = (name, label, v, lo, hi, step) => '<label class="iv-figrange"><span class="bk-l">' + label + "<output>" + FIG_FMT[name](v) + "</output></span>" +
+  '<input type="range" name="' + name + '" min="' + lo + '" max="' + hi + '" step="' + step + '" value="' + v + '"></label>';
+/* left of the figure: what he looks like */
+function figureBodyLeftHTML(a) {
+  return '<div class="iv-hold iv-bodyed"><header class="iv-section-head"><h3>Body</h3></header><div class="iv-figbody" id="figBodyA">' +
+    '<fieldset class="gear-colors"><legend class="bk-l">Skin</legend>' + figSw("skin", FIG_SKINS, a.skin) + "</fieldset>" +
     '<fieldset class="gear-colors"><legend class="bk-l">Hair</legend><div class="iv-fighair"><select name="hair" aria-label="Hair">' +
       FIG_HAIRS.map(([k, n]) => '<option value="' + k + '"' + (a.hair === k ? " selected" : "") + ">" + n + "</option>").join("") + "</select>" +
-      '<label class="gear-2nd"><input type="checkbox" name="beard"' + (a.beard ? " checked" : "") + ">Beard</label></div>" + sw("hairColor", FIG_HAIR_COLORS, a.hairColor) + "</fieldset>" +
-    '<fieldset class="gear-colors"><legend class="bk-l">Eyes</legend>' + sw("eyes", FIG_EYES, a.eyes) + "</fieldset>" +
-    '<fieldset class="gear-colors"><legend class="bk-l">Frame</legend>' +
-      range("height", "Height", a.height, 1.55, 2.0, 0.01) + range("strength", "Strength", a.strength, 0.75, 1.35, 0.01) + range("build", "Build", a.build, 0.8, 1.4, 0.01) +
-    "</fieldset></div>";
+      '<label class="gear-2nd"><input type="checkbox" name="beard"' + (a.beard ? " checked" : "") + ">Beard</label></div>" + figSw("hairColor", FIG_HAIR_COLORS, a.hairColor) + "</fieldset>" +
+    '<fieldset class="gear-colors"><legend class="bk-l">Eyes</legend>' + figSw("eyes", FIG_EYES, a.eyes) + "</fieldset></div></div>";
+}
+/* right of the figure: how he is built */
+function figureBodyRightHTML(a) {
+  return '<section class="iv-fig iv-bodyed" aria-label="Frame"><header class="iv-section-head"><h3>Frame</h3></header><div class="iv-figbody" id="figBodyB">' +
+    figRange("height", "Height", a.height, 1.55, 2.0, 0.01) + figRange("strength", "Strength", a.strength, 0.75, 1.35, 0.01) + figRange("build", "Build", a.build, 0.8, 1.4, 0.01) +
+    '<p class="iv-fig-note">Saved as you go. Done returns to the wardrobe.</p></div></section>';
 }
 async function figureMount() {
   const stage = $("#figStage"); if (!stage) return;
@@ -10580,9 +10585,13 @@ function figureApplyAvatar() {
   cancelAnimationFrame(figApplyRaf);
   figApplyRaf = requestAnimationFrame(() => { figAvatarKey = JSON.stringify(state.avatar); fig3d.setAvatar(state.avatar); });
 }
-function figureBodyRender() { const b = $("#figBody"); if (b) b.outerHTML = figureBodyHTML(state.avatar); }
+function figureBodyRender() {
+  const a = $("#figBodyA"), b = $("#figBodyB");
+  if (a) a.outerHTML = figureBodyLeftHTML(state.avatar).replace(/^<div class="iv-hold iv-bodyed"><header[^]*?<\/header>/, "").replace(/<\/div>$/, "");
+  if (b) b.outerHTML = figureBodyRightHTML(state.avatar).replace(/^<section[^]*?<\/header>/, "").replace(/<\/section>$/, "");
+}
 document.addEventListener("input", e => {
-  const box = e.target.closest && e.target.closest("#figBody"); if (!box) return;
+  const box = e.target.closest && e.target.closest(".iv-figbody"); if (!box) return;
   const t = e.target, a = state.avatar;
   if (t.type === "range") { a[t.name] = parseFloat(t.value); const out = t.parentNode.querySelector("output"); if (out) out.textContent = FIG_FMT[t.name](a[t.name]); }
   else if (t.type === "color") a[t.name] = t.value.toLowerCase();
@@ -10590,7 +10599,7 @@ document.addEventListener("input", e => {
   else if (t.name === "beard") a.beard = t.checked;
   figureApplyAvatar();
 });
-document.addEventListener("change", e => { if (e.target.closest && e.target.closest("#figBody")) save(); });
+document.addEventListener("change", e => { if (e.target.closest && e.target.closest(".iv-figbody")) save(); });
 function renderInv() {
   const el = $("#invEquip");
   if (!el) return;
@@ -10659,8 +10668,10 @@ function renderInv() {
     '<p class="iv-doll-cap"><span>' + wornCount + " / " + SLOTS.length + " slots</span>" +
     (wornCount ? '<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>' : "") + "</p></section>";
 
-  el.innerHTML = '<div class="iv-body iv-armory iv-with-preview">' + wardrobe_ + character + equipped + "</div>";
-  invFloor();
+  const editing = figureMode === "3d" && figBodyOpen;
+  el.innerHTML = '<div class="iv-body iv-armory iv-with-preview' + (editing ? " iv-editing" : "") + '">' +
+    (editing ? figureBodyLeftHTML(state.avatar) : wardrobe_) + character + (editing ? figureBodyRightHTML(state.avatar) : equipped) + "</div>";
+  if (!editing) invFloor();
   if (figureMode === "3d") figureMount();
 }
 /* The empty board keeps its squares. The columns are elastic, so the lattice cannot be a constant
@@ -10995,15 +11006,13 @@ function invAct(el) {
     case "unequip":    gearPick = ""; gearTakeOff(d.k); break;
     case "figmode":
       figureMode = d.k === "3d" ? "3d" : "2d"; try { localStorage.setItem("skillstone-figure", figureMode); } catch (e) {}
-      if (figureMode === "2d" && fig3d) fig3d.spin(false);
+      if (figureMode === "2d") { figBodyOpen = false; if (fig3d) fig3d.spin(false); }
       renderInv(); { const b = document.querySelector('.iv-view [data-k="' + figureMode + '"]'); if (b) b.focus({ preventScroll: true }); }
       break;
     case "figangle":   if (fig3d) fig3d.setAngle(+d.k); { const bar = document.querySelector(".iv-figbar"); if (bar) bar.outerHTML = figureControlsHTML(); } break;
     case "figspin":    if (fig3d) fig3d.spin(); { const bar = document.querySelector(".iv-figbar"); if (bar) bar.outerHTML = figureControlsHTML(); } break;
     case "figbody": {
-      figBodyOpen = !figBodyOpen;
-      const bar = document.querySelector(".iv-figbar"), old = $("#figBody"); if (old) old.remove();
-      if (bar) bar.outerHTML = figureControlsHTML();
+      figBodyOpen = !figBodyOpen; renderInv();
       const b = document.querySelector('[data-inv="figbody"]'); if (b) b.focus({ preventScroll: true });
       break;
     }

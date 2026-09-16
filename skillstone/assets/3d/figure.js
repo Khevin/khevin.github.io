@@ -173,7 +173,7 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
   function shapeBody(avatar) {
     const s = avatar.strength ?? 1, b = avatar.build ?? 1;
     const amounts = { upperarm_l: 0.84 * s, upperarm_r: 0.84 * s, lowerarm_l: 0.86 * s, lowerarm_r: 0.86 * s, clavicle_l: 0.92 * s, clavicle_r: 0.92 * s, spine_03: 0.93 * s,
-      spine_02: 0.95 * b, spine_01: 0.96 * b, pelvis: 0.97 * b, thigh_l: 0.93 * b, thigh_r: 0.93 * b, calf_l: 0.92 * Math.sqrt(b), calf_r: 0.92 * Math.sqrt(b) };
+      spine_02: 0.89 * b, spine_01: 0.87 * b, pelvis: 0.93 * b, thigh_l: 0.93 * b, thigh_r: 0.93 * b, calf_l: 0.92 * Math.sqrt(b), calf_r: 0.92 * Math.sqrt(b) };
     const p = new THREE.Vector3(), q = new THREE.Vector3();
     for (let v = 0; v < P.count; v++) {
       const bone = boneOf(dom[v]).name, f = amounts[bone];
@@ -405,6 +405,7 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
       long:     v => !collar(v) && ((torsoish(v) && v.y > HEM - 0.02 - BAND) || ARM_U.has(v.bone) || (ARM_L.has(v.bone) && v.t < 0.92)),
       trousers: v => LEGS(v) && v.y <= WAIST + BAND && v.y > ANKLE - BAND,
       shorts:   v => LEGS(v) && v.y <= WAIST + BAND && v.y > KNEE - BAND,
+      briefs:   v => (LEGS(v) || v.bone === "spine_01" || v.bone === "spine_02") && v.y <= WAIST + 0.09 + BAND && v.y > Y.thigh - 0.15 - BAND,
       shoes:    v => (FOOT.has(v.bone) || CALF.has(v.bone)) && v.y < ANKLE + 0.012,
       boots:    v => (FOOT.has(v.bone) || CALF.has(v.bone)) && v.y < Y.foot + 0.22,
     };
@@ -418,6 +419,7 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
       vneck:    v => torsoish(v) && v.y < HEM - 0.02 ? HEM - 0.02 : vee(0.12, 0.06)(v),
       trousers: v => v.y > WAIST ? WAIST : v.y < ANKLE ? ANKLE : null,
       shorts:   v => v.y > WAIST ? WAIST : v.y < KNEE ? KNEE : null,
+      briefs:   v => v.y > WAIST + 0.09 ? WAIST + 0.09 : v.y < Y.thigh - 0.15 ? Y.thigh - 0.15 : null,
       shoes: null, boots: null,
     };
   }
@@ -436,17 +438,20 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
     currentWardrobe = w; undress();
     const worn = {}; if (w) for (const k of Object.keys(w.worn || {})) worn[k] = (w.items || []).find(x => x.id === w.worn[k]);
     const top = worn.top, outer = worn.outer, legs = worn.legs, feet = worn.feet;
-    const legKind = legs ? legs.kind : "chinos", legRule = LEG_RULE[legKind] || "trousers";
-    derive("legs", RULES[legRule], legKind === "cargo" ? 0.03 : legKind === "joggers" ? 0.024 : 0.019, cloth(hexInt(legs && legs.color) ?? 0x3a3835), CLAMP[legRule]);
-    if (feet ? FEET_RULE[feet.kind] !== null : true) {
-      const fr = feet ? (FEET_RULE[feet.kind] || "shoes") : "shoes", shoeC = hexInt(feet && feet.color) ?? 0x1b1a17, star = feet && (feet.kind === "lowtop" || feet.kind === "hightop");
+    if (legs) {
+      const legKind = legs.kind, legRule = LEG_RULE[legKind] || "trousers";
+      derive("legs", RULES[legRule], legKind === "cargo" ? 0.03 : legKind === "joggers" ? 0.024 : 0.019, cloth(hexInt(legs.color) ?? 0x3a3835), CLAMP[legRule]);
+    } else derive("briefs", RULES.briefs, 0.012, cloth(0x383a37), CLAMP.briefs);
+    if (feet && FEET_RULE[feet.kind] !== null) {
+      const fr = FEET_RULE[feet.kind] || "shoes", shoeC = hexInt(feet.color) ?? 0x1b1a17, star = feet.kind === "lowtop" || feet.kind === "hightop";
       derive("feet", RULES[fr], 0.022, cloth(shoeC, 0.6), CLAMP[fr]);
-      const soleM = cloth(star ? 0xe9e4d8 : feet && feet.kind === "sneakers" ? new THREE.Color(shoeC).multiplyScalar(0.7).getHex() : 0x1a1714, 0.8);
+      const soleM = cloth(star ? 0xe9e4d8 : feet.kind === "sneakers" ? new THREE.Color(shoeC).multiplyScalar(0.7).getHex() : 0x1a1714, 0.8);
       sole("foot_l", soleM); sole("foot_r", soleM);
     }
-    const topKind = top ? top.kind : "tee", topRule = TOP_RULE[topKind] || "tee", soft = { relax: true, hang: true, iters: 6 };
+    const topKind = top ? top.kind : null, topRule = TOP_RULE[topKind] || "tee", soft = { relax: true, hang: true, iters: 6 };
     const topC = hexInt(top && top.color) ?? 0xf2efe6;
-    if (top && (topKind === "printed" || topKind === "polo" || topKind === "shirt")) {
+    if (!top) { /* bare */ }
+    else if (topKind === "printed" || topKind === "polo" || topKind === "shirt") {
       const style = SHIRT_STYLE[topKind], clamp = topKind === "printed" ? CLAMP.shirtOpen2 : topKind === "polo" ? CLAMP.shirtOpen1 : CLAMP.shirtClosed;
       const m = topKind === "printed" ? new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.92, metalness: 0, side: THREE.DoubleSide }) : cloth(topC);
       const shell = derive("top", RULES[topRule], 0.03, m, clamp, { ...soft, uv: topKind === "printed" ? "cylinder" : undefined, hang: true });
