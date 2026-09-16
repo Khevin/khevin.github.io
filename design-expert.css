@@ -36,10 +36,15 @@
   --sans: "Inter Tight", "Söhne", "Helvetica Neue", system-ui, sans-serif;
   --mono: "JetBrains Mono", "Berkeley Mono", ui-monospace, monospace;
 
-  /* Titles are Fraunces: a soft old-style with a deliberate wobble that
-     warms the page and keeps the headings from sounding institutional.
-     Body prose stays on --serif, which is drawn to disappear. */
-  --title: "Fraunces", "Source Serif 4", "GT Sectra", "Iowan Old Style", Georgia, serif;
+  /* Titles are Anton: one weight, tightly condensed, drawn to be read across
+     a room. It gives the headings the flatness of signage rather than the
+     warmth of a book, which is the right voice for a page that argues for
+     restraint. Body prose stays on --serif, which is drawn to disappear.
+
+     One token, because every heading on the page reads it. That is also what
+     let the type tester audition twenty-seven faces here without touching a
+     single heading rule; see TYPE-TESTER.md if it is ever wanted back. */
+  --title: "Anton", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   --max: 1400px;
   --gutter: clamp(20px, 4vw, 56px);
@@ -2009,11 +2014,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
      anchored to the right edge of the nav, matching the namespace switcher. */
   .nav-toggle { display: inline-flex; }
   nav.top .inner { gap: 10px; }
-  /* The face control rides in front of the hamburger. One auto margin, on
-     the first of the pair, pushes both to the right edge and keeps them 4px
-     apart; an auto margin on each would split the free space between them. */
-  .tt { order: 1; margin-left: auto; }
-  .nav-toggle { order: 2; margin-left: 4px; }
+  .nav-toggle { order: 2; margin-left: auto; }
   .brand-switch { white-space: nowrap; }
 
   /* A library row is an icon, a filename and a tag; at 375px there is no

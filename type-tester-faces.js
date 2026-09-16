@@ -14,7 +14,7 @@ window.TYPE_TESTER = {
   /* The face used when nothing is stored. It sets no attribute on the root,
      so the page's own CSS keeps describing the default, and it is the
      yardstick every other face is scaled against. */
-  base: 'fraunces',
+  base: 'anton',
 
   categories: [
     {

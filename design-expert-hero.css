@@ -33,17 +33,21 @@
 .council-hero h1 {
   /* Two caps. The viewport clamp sets the ceiling; 15.5cqw keeps the first
      line inside its own column at every width, which is what stops
-     "The design-expert," breaking at the hyphen on a wide screen. The
-     coefficient is measured from Fraunces; a different title face needs it
-     measured again. */
+     "The design-expert," breaking at the hyphen on a wide screen. Both the
+     clamp and the coefficient are measured from Anton; a different title
+     face needs them measured again. */
   font-family: var(--title);
   font-weight: 400;
-  /* Fraunces carries an optical-size axis, so left on auto the same words run
-     20 per cent wider at 56px than at 94px and no single coefficient can hold
-     the line. The hero is display type at every width, so it takes the display
-     cut and the width becomes predictable. */
-  font-variation-settings: var(--title-vf, "opsz" 144);
-  font-size: calc(min(clamp(56px, 6.7vw, 94px), 15.5cqw) * var(--title-scale, 1));
+  /* Anton has one weight and no axes, so there is nothing to pin: the width
+     of a word is the same at every size and one coefficient holds the line.
+     That is why the optical-size pinning this rule used to carry is gone.
+
+     The sizes are the old Fraunces numbers times the 0.9043 the two faces
+     measured apart, so the headline reads at the weight it did before
+     rather than simply smaller. --title-scale stays as a hook, at 1 for
+     Anton, so the type tester can be reattached without touching this. */
+  font-variation-settings: var(--title-vf, normal);
+  font-size: calc(min(clamp(51px, 6.06vw, 85px), 14cqw) * var(--title-scale, 1));
   line-height: .99;
   letter-spacing: -.045em;
   margin: 0 0 28px;
@@ -285,7 +289,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
 @media (max-width: 760px) {
   .council-hero { padding-top: 22px; }
   .council-hero__layout { grid-template-columns: 1fr; gap: 46px; padding: 14px 0 32px; }
-  .council-hero h1 { font-size: calc(min(clamp(53px, 11.6vw, 84px), 15.5cqw) * var(--title-scale, 1)); margin-bottom: 22px; }
+  .council-hero h1 { font-size: calc(min(clamp(48px, 10.5vw, 76px), 14cqw) * var(--title-scale, 1)); margin-bottom: 22px; }
   .council-hero h1 em br { display: none; }
   .council-hero__dek { font-size: 21px; }
   .council-hero__copy { max-width: 43ch; font-size: 14px; }
