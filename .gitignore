@@ -33,3 +33,9 @@ nihongo/.cache/
 
 # Separate private repo, cloned inside this one by mistake-proofing; never publish it here.
 lastro-playbook/
+
+# Wardrobe reference photography — product shots used while drawing the garments as SVG.
+# Nothing in the site or the app loads them (the wardrobe renders inline SVG), they are not
+# khevin's to publish, and they sit in a directory Pages serves. Keep them local.
+assets/clothes/
+skillstone/assets/clothes/
