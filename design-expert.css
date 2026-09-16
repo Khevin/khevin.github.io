@@ -444,6 +444,8 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
 /* Clawd glyph — pixel-art mascot from PNG, no background, crisp pixels.
    Source PNG is 275×183 (≈3:2). We size by height and let width auto-scale,
    then nearest-neighbor render so the pixels stay sharp at small size. */
+.compat .chip.primary .glyph.github { background: transparent; color: var(--ink); width: 18px; height: 18px; }
+.compat .chip.primary .glyph.github svg { display: block; }
 .compat .chip.primary .glyph.clawd {
   background: transparent;
   border-radius: 0;
@@ -1013,12 +1015,28 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, cal
   max-width: 960px;
   scroll-margin-top: 92px;
 }
+.install-tabs__row { display: flex; align-items: stretch; flex-wrap: wrap; border-bottom: 1px solid var(--rule); }
 .install-tabs__list {
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
-  border-bottom: 1px solid var(--rule);
+  flex: 1;
 }
+.install-link {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  min-height: 48px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-mute);
+}
+.install-link:hover { color: var(--ink); }
+.install-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.install-link .glyph { display: inline-flex; color: var(--ink-soft); }
+.install-link .glyph svg { width: 17px; height: 17px; display: block; }
 .install-tab {
   appearance: none;
   background: transparent;
@@ -1236,7 +1254,28 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, cal
    by position means adding a release cannot leave the previous one still
    wearing the accent, which is exactly what an inline style on each entry
    allowed: 1.3.0 and 1.2.1 both read as current. */
-.changelog .entry:first-child .meta .ver { color: var(--accent); }
+.changelog .entry:first-child .meta .ver { color: var(--em); }
+/* Everything but the current release folds behind one line. The list is a
+   record, not the news; the news is the entry above it. */
+.changelog__older > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+  border-bottom: 1px solid var(--rule);
+}
+.changelog__older > summary::-webkit-details-marker { display: none; }
+.changelog__older > summary:hover { color: var(--ink); }
+.changelog__older > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.changelog__older .chev { width: 12px; height: 12px; transition: transform .2s; }
+.changelog__older[open] > summary .chev { transform: rotate(180deg); }
+.changelog__older[open] > summary { border-bottom: 0; }
 .changelog .entry ul { margin: 0; padding-left: 18px; color: var(--ink-soft); font-size: 14.5px; }
 .changelog .entry li { margin-bottom: 8px; line-height: 1.5; }
 .changelog .entry li strong { color: var(--ink); font-weight: 600; }
@@ -1248,8 +1287,9 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, cal
 /* ——— FAQ ———
    Editorial back-page treatment — numbered Q-and-A entries with a
    mono caption naming the concern, big serif question, indented
-   serif answer. No accordion: at six entries totaling ~250 words,
-   always-open reads faster than click-to-disclose. */
+   serif answer. The answers open with their first two lines and a chevron;
+   the rest comes on request, so the six questions scan as a list first and
+   read as prose second (decided 16 Sep 2026, reversing the always-open call). */
 .faq-list {
   list-style: none;
   margin: 32px 0 0;
@@ -1291,6 +1331,34 @@ body[data-theme="ink"] .pantheon .figure:hover > .squiggle { opacity: min(1, cal
   max-width: 62ch;
   text-wrap: pretty;
 }
+.faq-entry__q { cursor: pointer; }
+.faq-entry:not(.is-open) .faq-entry__a {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.faq-entry__more {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 10px 0 0;
+  margin: 2px 0 0;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--accent) 60%, var(--ink));
+}
+.faq-entry__more:hover { color: var(--ink); }
+.faq-entry__more:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.faq-entry__more .chev { width: 12px; height: 12px; transition: transform .2s; }
+.faq-entry.is-open .faq-entry__more .chev { transform: rotate(180deg); }
 .faq-entry__a .mono {
   font-family: var(--mono);
   font-size: 0.9em;
