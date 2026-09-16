@@ -86,17 +86,20 @@ say("nsBarSync() defined, and called from renderAuth and authBoot");
 t = t.replace(SCRIPT_END, SCRIPT_END + "\n\n<script>\n" + chunks.behaviour + "\n" + SCRIPT_END + "\n");
 say("switcher dropdown behaviour → before the closing </script>");
 
-/* Refuse to write rather than write something wrong. */
-/* Counts taken from fdfe42d:skillstone/index.html — the last deploy that still had the bar.
-   <script> and </script> are in the list because an unbalanced pair is exactly the kind of
-   damage that still renders fine at the top of a 3MB page. */
+/* Refuse to write rather than write something wrong.
+   Counts taken from fdfe42d:skillstone/index.html — the last deploy that still had the bar. */
 const must = [["ns-bar", 5], ["Connect with Google", 1], ["nsBarSync", 3],
-              ["ns-switcher-behaviour", 1], ["ns-trigger", 3], ["ns-panel", 4],
-              ["<script>", 2], ["</script>", 2]];
+              ["ns-switcher-behaviour", 1], ["ns-trigger", 3], ["ns-panel", 4]];
 for (const [needle, want] of must) {
   const got = t.split(needle).length - 1;
   if (got !== want) { console.error("expected " + want + " × '" + needle + "', got " + got); process.exit(1); }
 }
+/* Script tags are checked for BALANCE rather than for a count. An earlier version asserted
+   exactly two of each, which was true on the day it was written and would refuse the deploy
+   the moment the app grew a module or an importmap — a guard that fails on healthy change is
+   a guard that gets deleted. What actually matters is that injection left no tag unclosed. */
+const opens = t.split("<script").length - 1, closes = t.split("</script>").length - 1;
+if (opens !== closes) { console.error(opens + " <script> vs " + closes + " </script> — not deploying"); process.exit(1); }
 for (const personal of ["Khevin", "khevinm@"]) {
   const got = t.split(personal).length - 1;
   if (got) { console.error("'" + personal + "' appears " + got + " × in the output — not deploying"); process.exit(1); }

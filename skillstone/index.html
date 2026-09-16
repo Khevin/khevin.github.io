@@ -4155,6 +4155,14 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-view-switch button[aria-pressed="true"] { color: var(--gold-2); background: var(--stone-3); box-shadow: inset 0 0 0 1px var(--mortar-2); }
 .gm-view-switch button:hover, .gm-view-switch button:focus-visible { color: var(--parchment); }
 .gm-view-switch svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; flex: none; }
+@media (max-width: 620px) {
+  .gm-view-switch button span { display: none; }
+  .gm-view-switch button { padding: 5px 11px; }
+}
+/* Tags carry no mark, so the chip closes up around the word. */
+.gm-tag-picker button { padding: 6px 12px; }
+/* Every number that stacks down a column is tabular, or the column wobbles as it is read. */
+.gm-count, .gm-small, .gm-meta { font-variant-numeric: tabular-nums; }
 .gm-section { margin-bottom: var(--s6); }
 .gm-section-h { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s3); }
 .gm-section-h h3 { font: 700 1rem var(--f-display); color: var(--gold-2); }
@@ -4182,9 +4190,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-chip { border: 1px solid var(--mortar); color: var(--dust); padding: 1px 5px; text-transform: none; letter-spacing: 0; }
 .gm-card-actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
 .gm-card-actions button { background: none; border: 0; padding: 8px 0; min-height: 44px; cursor: pointer; color: var(--dust); font: 600 .75rem var(--f-ui); text-decoration: underline; text-decoration-color: var(--mortar-2); text-underline-offset: 3px; }
-.gm-card-actions button:hover { color: var(--gold-2); }
+@media (hover: hover) { .gm-card-actions button:hover { color: var(--gold-2); } }
 .gm-card-actions .gm-complete { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 44px; padding: 6px 9px; color: var(--dust); border: 1px solid var(--mortar-2); border-radius: 4px; background: var(--stone-3); text-decoration: none; }
-.gm-card-actions .gm-complete:hover { border-color: var(--bronze); }
+@media (hover: hover) { .gm-card-actions .gm-complete:hover { border-color: var(--bronze); } }
 .gm-card-actions .gm-complete[aria-pressed="true"] { color: var(--verdant); border-color: color-mix(in oklch, var(--verdant) 55%, var(--mortar)); background: color-mix(in oklch, var(--verdant) 12%, var(--stone-3)); }
 .gm-complete-mark { display: inline-grid; place-items: center; width: 19px; height: 19px; flex: none; border: 1.5px solid currentColor; border-radius: 50%; font: 700 .75rem/1 var(--f-ui); }
 .gm-complete[aria-pressed="true"] .gm-complete-mark { background: var(--verdant); color: var(--cave); border-color: var(--verdant); }
@@ -4197,6 +4205,59 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-view-compact .gm-card-actions button { font-size: .6875rem; }
 .gm-view-compact .gm-complete-label, .gm-view-compact .gm-edit-label { display: none; }
 .gm-view-compact .gm-card-actions .gm-complete, .gm-view-compact .gm-card-actions .gm-edit { width: 44px; padding: 6px; }
+/* ---------- the ledger ----------
+   The Proficiency board's line, carrying a game instead of a skill: mark, name, state, value,
+   on a 46px floor with a hairline between rows and no fill of its own. Per DESIGN.md "Why both
+   panels are the same shell", a second list in this app is not allowed to be a second grammar -
+   so there is no header row, no sort caret and no zebra. The stone is the ground; hover is the
+   only wash, and only where a pointer exists to produce it. */
+/* A row is read left to right and its state is read down a column, so the row gets a measure
+   rather than the panel width: at 1000px the jump from a short title to its mark is most of a
+   screen. 760px, in the same spirit as the 680px the Steam block already keeps. */
+.gm-view-ledger { display: block; max-width: 760px; }
+.gm-row {
+  display: grid; align-items: center; gap: var(--s3);
+  grid-template-columns: 24px minmax(0, 1fr) 44px;
+  min-height: 46px; padding: 0 var(--s2); margin: 0 calc(-1 * var(--s2));
+  border-top: 1px solid rgba(62, 53, 39, 0.5); border-radius: var(--r-sm);
+}
+/* The year column is drawn only when some title in the section can fill it. */
+.gm-view-ledger.has-year .gm-row { grid-template-columns: 24px minmax(0, 1fr) 44px 52px; }
+.gm-row:first-child { border-top: 0; }
+@media (hover: hover) { .gm-row:hover { background: var(--stone-2); } }
+.gm-row .gm-platform-mark { width: 24px; height: 24px; }
+.gm-row-name {
+  min-width: 0; display: flex; align-items: baseline; gap: 6px;
+  background: none; border: 0; padding: var(--s2) 0; cursor: pointer;
+  color: var(--parchment); font: 600 .875rem/1.3 var(--f-ui); text-align: left;
+}
+/* The truncation lives on the label, not on the button: text-overflow has no effect on a
+   flex container, so the ellipsis went missing and the title was cut mid-word instead. */
+.gm-row-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-row.is-complete .gm-row-name { color: var(--dust); }
+.gm-row.is-wish .gm-row-name { color: var(--gold-2); }
+.gm-row-plus { flex: none; color: var(--ash); font: 500 .6875rem var(--f-mono); }
+/* 44px of target around a 19px mark: the floor applies to what the finger lands on. */
+.gm-row-state {
+  width: 44px; min-height: 44px; display: grid; place-items: center;
+  background: none; border: 0; padding: 0; cursor: pointer; color: var(--dust);
+}
+.gm-row-mark {
+  display: grid; place-items: center; width: 19px; height: 19px; flex: none;
+  border: 1.5px solid currentColor; border-radius: 50%; font: 700 .75rem/1 var(--f-ui);
+}
+.gm-row-state[aria-pressed="true"] { color: var(--verdant); }
+.gm-row-state[aria-pressed="true"] .gm-row-mark {
+  background: var(--verdant); color: var(--cave); border-color: var(--verdant);
+}
+.gm-row-mark.is-wish { border-color: var(--bronze); color: var(--gold-2); }
+.gm-row-name:focus-visible, .gm-row-state:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-sm);
+}
+.gm-row-year {
+  text-align: right; color: var(--ash);
+  font: 500 .8125rem var(--f-mono); font-variant-numeric: tabular-nums;
+}
 .gm-view-list { display: block; }
 .gm-view-list .gm-card { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: var(--s3); min-height: 84px; padding: 8px 0; border-bottom: 1px solid var(--mortar); animation: none; }
 .gm-view-list .gm-cover { width: 54px; height: 68px; aspect-ratio: auto; }
@@ -4241,7 +4302,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-platform-picker { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s2); }
 .gm-platform-picker button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 10px; border: 1px solid var(--mortar); border-radius: 4px; background: var(--socket); color: var(--dust); cursor: pointer; font: 600 .8125rem var(--f-ui); }
 .gm-platform-picker button[aria-pressed="true"] { border-color: var(--bronze); background: var(--stone-3); color: var(--gold-2); }
-.gm-platform-picker button:hover { border-color: var(--gold); }
+@media (hover: hover) { .gm-platform-picker button:hover { border-color: var(--gold); } }
 .gm-platform-picker .gm-platform-mark { width: 22px; height: 22px; }
 .gm-platform-picker .gm-platform-mark--steam img { width: 18px; height: 18px; }
 .gm-platform-custom { display: flex; gap: var(--s2); align-items: end; margin-top: var(--s3); }
@@ -4250,7 +4311,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-platform-help { min-height: 1.25em; color: var(--ash); font-size: .75rem; }
 @keyframes gm-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 650px) { .gm { padding: var(--s4) var(--s2) var(--s7); } .gm-head { align-items: start; flex-direction: column; } .gm-add { align-self: stretch; justify-content: center; } .gm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s2); } .game-dlg .bk-row { grid-template-columns: 1fr; } }
-@media (max-width: 650px) { .gm-view-compact { grid-template-columns: repeat(auto-fill, 88px); } .gm-view-list { display: block; } .gm-view-list .gm-card { grid-template-columns: 48px minmax(0, 1fr); gap: var(--s2); } .gm-view-list .gm-cover { width: 48px; height: 64px; } .gm-view-list .gm-card-actions { grid-column: 2; margin-top: -4px; } .gm-view-switch { width: 100%; justify-content: space-between; } .gm-view-switch button { flex: 1; } }
+@media (max-width: 650px) { .gm-view-compact { grid-template-columns: repeat(auto-fill, 96px); } .gm-view-list { display: block; } .gm-view-list .gm-card { grid-template-columns: 48px minmax(0, 1fr); gap: var(--s2); } .gm-view-list .gm-cover { width: 48px; height: 64px; } .gm-view-list .gm-card-actions { grid-column: 2; margin-top: -4px; } .gm-view-switch { width: 100%; justify-content: space-between; } .gm-view-switch button { flex: 1; } }
 @media (prefers-reduced-motion: reduce) { .gm-card { animation: none; } }
 </style>
 <style>
@@ -6688,7 +6749,11 @@ function sanitize(s) {
       (/^https:\/\/[^\s<>"']+$/i.test(x) || /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(x))
       ? x.slice(0, 160000) : "";
     s.games = {
-      view: ["covers", "compact", "list"].includes(g.view) ? g.view : "covers",
+      /* GAME_VIEWS, not a fourth copy of the list: this sanitiser runs on every board that
+         loads, so a view it has not heard of is silently replaced. That is what kept the new
+         density from surviving a reload — the switch worked, the write worked, and the next
+         load quietly put it back on covers. */
+      view: GAME_VIEWS.includes(g.view) ? g.view : "covers",
       items: (Array.isArray(g.items) ? g.items : []).filter(x => x && x.id).slice(0, 2000).map(x => ({
         id: String(x.id).slice(0, 80), name: String(x.name || "Untitled").slice(0, 160),
         cover: cover(x.cover), complete: x.complete === true, wish: x.wish === true,
@@ -8527,6 +8592,14 @@ const gameCoverOK = v => typeof v === "string" &&
   (/^https:\/\/[^\s<>"']+$/i.test(v) || /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(v));
 const gameList = v => [...new Set(String(v || "").split(",").map(x => x.trim().slice(0, 32)).filter(Boolean))].slice(0, 16);
 const GAME_PLATFORM_PRESETS = ['Steam', 'Nintendo Switch 2', 'Nintendo Switch', 'PlayStation 5', 'Xbox Series X|S', 'PC'];
+/* Four densities, one verb each: browse the shelf, scan it, read it, find one title in a
+   library a Steam sync can fill with hundreds. The ledger is the Proficiency row's shell
+   rather than a table of its own — per DESIGN.md "Why both panels are the same shell", the
+   player never learns a second way to read a second menu. */
+const GAME_VIEWS = ['covers', 'compact', 'list', 'ledger'];
+const gameView = () => GAME_VIEWS.includes(games().view) ? games().view : 'covers';
+const GAME_TAG_PRESETS = ['Action', 'Adventure', 'RPG', 'JRPG', 'Roguelite', 'Metroidvania',
+  'Soulslike', 'Strategy', 'Platformer', 'Puzzle', 'Shooter', 'Simulation', 'Co-op', 'Story-rich'];
 const GAME_STEAM_LOGO = 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg';
 const GAME_SWITCH2_LOGO = 'https://upload.wikimedia.org/wikipedia/commons/c/c9/Nintendo_Switch_2_logo.svg';
 function gamePlatformMark(name) {
@@ -8572,6 +8645,37 @@ function gameCard(it) {
       '<button type="button" class="gm-edit" data-game="edit" data-id="' + esc(it.id) + '" aria-label="Edit ' + esc(it.name) +
       '"><span aria-hidden="true">✎</span> <span class="gm-edit-label">Edit</span></button></div></article>';
 }
+/* The year is the only number on the shelf that aligns down a column, and most titles do not
+   have one - a Steam import carries no release date. So the column is drawn only when some
+   title in the section can fill it, rather than reserving 52px of blank for the rest. */
+function gameYear(it) {
+  const m = /^(\d{4})-\d{2}-\d{2}$/.exec(it.release || '');
+  return m ? m[1] : '';
+}
+/* One row of the ledger: the Proficiency board's line carrying a game instead of a skill.
+   Same 46px floor, same mark-then-name-then-value order, same quiet hover. Two targets rather
+   than one - the name opens the editor, the state toggles - because a button inside a button
+   is not a thing, and state is the field most often changed from a list. */
+function gameLedgerRow(it) {
+  const year = gameYear(it);
+  const mark = (it.platforms || []).length ? gamePlatformMark(it.platforms[0]) :
+    '<span class="gm-platform-mark gm-platform-mark--other" aria-hidden="true">·</span>';
+  const extra = Math.max(0, (it.platforms || []).length - 1);
+  const state = it.wish
+    ? '<button type="button" class="gm-row-state" data-game="acquire" data-id="' + esc(it.id) +
+      '" title="Move to owned" aria-label="Move ' + esc(it.name) + ' to owned"><span class="gm-row-mark is-wish" aria-hidden="true">☆</span></button>'
+    : '<button type="button" class="gm-row-state" data-game="complete" data-id="' + esc(it.id) +
+      '" aria-pressed="' + !!it.complete + '" title="' + (it.complete ? 'Mark in progress' : 'Mark complete') +
+      '" aria-label="' + (it.complete ? 'Mark ' + esc(it.name) + ' in progress' : 'Mark ' + esc(it.name) + ' complete') +
+      '"><span class="gm-row-mark" aria-hidden="true">' + (it.complete ? '✓' : '') + '</span></button>';
+  return '<div class="gm-row' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
+    mark +
+    '<button type="button" class="gm-row-name" data-game="edit" data-id="' + esc(it.id) + '">' +
+    '<span class="gm-row-label">' + esc(it.name) + '</span>' +
+    (extra ? '<span class="gm-row-plus">+' + extra + '</span>' : '') + '</button>' +
+    state +
+    '<span class="gm-row-year">' + esc(year) + '</span></div>';
+}
 function gameMatches(it) {
   if (gameScope === "owned" && it.wish || gameScope === "wish" && !it.wish || gameScope === "complete" && !it.complete) return false;
   if (gamePlatform && !(it.platforms || []).some(p => p.toLowerCase() === gamePlatform.toLowerCase())) return false;
@@ -8587,10 +8691,11 @@ function renderGamesList() {
     : a.name.localeCompare(b.name));
   const sections = gameScope === 'all' ? [['Owned', shown.filter(x => !x.wish)], ['Wishlist', shown.filter(x => x.wish)]] :
     [[gameScope === 'wish' ? 'Wishlist' : gameScope === 'complete' ? 'Completed' : 'Owned', shown]];
-  const view = ['covers', 'compact', 'list'].includes(games().view) ? games().view : 'covers';
+  const view = gameView();
   el.innerHTML = shown.length ? sections.filter(([, list]) => list.length).map(([name, list]) =>
     '<section class="gm-section"><div class="gm-section-h"><h3>' + name + '</h3><span class="gm-count">' + list.length + '</span></div>' +
-    '<div class="gm-grid gm-view-' + view + '">' + list.map(gameCard).join('') + '</div></section>').join('') :
+    '<div class="gm-grid gm-view-' + view + (view === 'ledger' && shown.some(gameYear) ? ' has-year' : '') + '">' +
+    list.map(view === 'ledger' ? gameLedgerRow : gameCard).join('') + '</div></section>').join('') :
     '<div class="gm-empty"><strong>' + (all.length ? 'No titles match this view.' : 'Your first game belongs here.') + '</strong>' +
     '<p>' + (all.length ? 'Try another search, platform or tag.' : 'Add a Nintendo game, another console, or something you hope to play someday.') + '</p></div>';
   const n = $('#gameVisibleCount'); if (n) n.textContent = shown.length + (shown.length === 1 ? ' title' : ' titles');
@@ -8598,12 +8703,13 @@ function renderGamesList() {
 function renderGames() {
   const el = $('#invGames'); if (!el) return;
   const g = games(), owned = g.items.filter(x => !x.wish).length, wish = g.items.length - owned;
-  const view = ['covers', 'compact', 'list'].includes(g.view) ? g.view : 'covers';
+  const view = gameView();
   const options = key => [...new Set(g.items.flatMap(x => x[key] || []))].sort((a,b) => a.localeCompare(b));
   const viewIcon = {
     covers: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7"/><rect x="11" y="2" width="7" height="7"/><rect x="2" y="11" width="7" height="7"/><rect x="11" y="11" width="7" height="7"/></svg>',
     compact: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="4" height="4"/><rect x="8" y="2" width="4" height="4"/><rect x="14" y="2" width="4" height="4"/><rect x="2" y="8" width="4" height="4"/><rect x="8" y="8" width="4" height="4"/><rect x="14" y="8" width="4" height="4"/><rect x="2" y="14" width="4" height="4"/><rect x="8" y="14" width="4" height="4"/><rect x="14" y="14" width="4" height="4"/></svg>',
-    list: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3" width="3" height="3"/><path d="M8 4.5h10"/><rect x="2" y="9" width="3" height="3"/><path d="M8 10.5h10"/><rect x="2" y="15" width="3" height="3"/><path d="M8 16.5h10"/></svg>'
+    list: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3" width="3" height="3"/><path d="M8 4.5h10"/><rect x="2" y="9" width="3" height="3"/><path d="M8 10.5h10"/><rect x="2" y="15" width="3" height="3"/><path d="M8 16.5h10"/></svg>',
+    ledger: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 4.5h16M2 8.5h16M2 12.5h16M2 16.5h16"/></svg>'
   };
   el.innerHTML = '<div class="gm"><header class="gm-head"><div><span class="gm-kicker">Equipment / Games</span>' +
     '<h2>The game shelf</h2><p>What you own, what you finished, and what is still on the horizon.</p></div>' +
@@ -8612,8 +8718,8 @@ function renderGames() {
     [['owned','Owned',owned],['wish','Wishlist',wish],['complete','Completed',g.items.filter(x => x.complete).length],['all','All',g.items.length]]
       .map(([k,n,c]) => '<button type="button" data-game="scope" data-k="' + k + '" aria-pressed="' + (gameScope === k) + '">' + n + ' <span class="gm-small">' + c + '</span></button>').join('') +
     '</div><div class="gm-tools"><div class="gm-view-switch" role="group" aria-label="Game display">' +
-    [['covers','Covers'],['compact','Small covers'],['list','List']].map(([k,n]) => '<button type="button" data-game="view" data-k="' + k +
-      '" aria-pressed="' + (view === k) + '" title="' + n + '">' + viewIcon[k] + '<span>' + n + '</span></button>').join('') + '</div>' +
+    [['covers','Covers'],['compact','Small covers'],['list','List'],['ledger','Ledger']].map(([k,n]) => '<button type="button" data-game="view" data-k="' + k +
+      '" aria-pressed="' + (view === k) + '" title="' + n + '" aria-label="' + n + '">' + viewIcon[k] + '<span>' + n + '</span></button>').join('') + '</div>' +
     '<input id="gameSearch" type="search" aria-label="Search games" placeholder="Search the shelf" value="' + esc(gameQuery) + '">' +
     '<select id="gamePlatform" aria-label="Filter by platform"><option value="">All platforms</option>' + options('platforms').map(p =>
       '<option value="' + esc(p) + '"' + (p === gamePlatform ? ' selected' : '') + '>' + esc(p) + '</option>').join('') + '</select>' +
@@ -8653,9 +8759,11 @@ function gameDlgOpen(id) {
     '<div class="gm-platform-custom"><label class="bk-l">Another console or storefront<input id="gamePlatformCustom" maxlength="32" placeholder="e.g. GameCube"></label>' +
     '<button type="button" class="btn btn-ghost btn-sm" data-game="platform-add">Add</button></div>' +
     '<p class="gm-platform-help" id="gamePlatformHelp" aria-live="polite">Choose every platform you own this game on.</p></fieldset>' +
-    '<label class="bk-l">Tags / categories<input name="tags" maxlength="300" value="' +
-    esc(gameEdit.tags.join(', ')) + '" placeholder="JRPG, Strategy, Pokémon"></label>' +
-    '<p class="gm-note">Separate tags with commas. Your own consoles and categories are welcome.</p>' +
+    '<fieldset class="bk-state gm-platform-field"><legend class="bk-lg">Tags / categories</legend>' +
+    '<div class="gm-platform-picker gm-tag-picker" id="gameTagPicker"></div>' +
+    '<div class="gm-platform-custom"><label class="bk-l">Another tag<input id="gameTagCustom" maxlength="32" placeholder="e.g. Pokémon"></label>' +
+    '<button type="button" class="btn btn-ghost btn-sm" data-game="tag-add">Add</button></div>' +
+    '<p class="gm-platform-help" id="gameTagHelp" aria-live="polite">Pick as many as fit. Your own tags join the list.</p></fieldset>' +
     '<div class="bk-row"><label class="bk-l">Release date (optional)<input type="date" name="release" value="' + esc(gameEdit.release) +
     '"></label><label class="bk-l">Steam App ID (optional)<input name="steamAppId" inputmode="numeric" pattern="[0-9]*" maxlength="10" value="' +
     esc(gameEdit.steamAppId) + '" placeholder="For matching imports"></label></div>' +
@@ -8669,13 +8777,35 @@ function gameDlgOpen(id) {
     '<div class="bk-foot">' + (it ? '<button type="button" class="btn btn-danger btn-sm" data-game="delete">Delete</button>' : '') +
     '<button type="button" class="btn btn-ghost btn-sm" data-game="cancel">Cancel</button>' +
     '<button type="submit" class="btn btn-primary btn-sm">' + (it ? 'Save changes' : 'Add to the shelf') + '</button></div></form>';
-  gamePlatformPickerRender(); gameCoverPreview(); dlg.showModal(); dlg.querySelector('[name="name"]').focus();
+  gamePlatformPickerRender(); gameTagPickerRender(); gameCoverPreview(); dlg.showModal(); dlg.querySelector('[name="name"]').focus();
 }
 function gamePlatformPickerRender() {
   const el = $('#gamePlatformPicker'); if (!el || !gameEdit) return;
   const choices = [...GAME_PLATFORM_PRESETS, ...gameEdit.platforms.filter(p => !GAME_PLATFORM_PRESETS.some(x => x.toLowerCase() === p.toLowerCase()))];
   el.innerHTML = choices.map(p => '<button type="button" data-game="platform-toggle" data-platform="' + esc(p) + '" aria-pressed="' +
     gameEdit.platforms.some(x => x.toLowerCase() === p.toLowerCase()) + '">' + gamePlatformMark(p) + '<span>' + esc(p) + '</span></button>').join('');
+}
+function gameTagPickerRender() {
+  const el = $('#gameTagPicker'); if (!el || !gameEdit) return;
+  const used = [...new Set(games().items.flatMap(x => x.tags || []))];
+  const seen = new Set(), choices = [];
+  for (const t of [...GAME_TAG_PRESETS, ...used, ...gameEdit.tags]) {
+    const k = t.toLowerCase();
+    if (!seen.has(k)) { seen.add(k); choices.push(t); }
+  }
+  el.innerHTML = choices.map(t => '<button type="button" data-game="tag-toggle" data-tag="' + esc(t) + '" aria-pressed="' +
+    gameEdit.tags.some(x => x.toLowerCase() === t.toLowerCase()) + '"><span>' + esc(t) + '</span></button>').join('');
+}
+function gameTagAdd() {
+  const field = $('#gameTagCustom'); if (!field || !gameEdit) return;
+  const name = field.value.trim().slice(0, 32);
+  if (!name) { field.focus(); return; }
+  if (!gameEdit.tags.some(t => t.toLowerCase() === name.toLowerCase())) {
+    if (gameEdit.tags.length >= 16) { $('#gameTagHelp').textContent = 'A game can carry up to 16 tags.'; return; }
+    gameEdit.tags.push(name);
+  }
+  field.value = ''; $('#gameTagHelp').textContent = name + ' added.';
+  gameTagPickerRender(); field.focus();
 }
 function gamePlatformAdd() {
   const field = $('#gamePlatformCustom'); if (!field || !gameEdit) return;
@@ -8693,14 +8823,28 @@ function gameCoverPreview() {
   el.innerHTML = gameCoverOK(gameEdit.cover) ? '<img src="' + esc(gameEdit.cover) + '" alt="Cover preview" onerror="this.remove()">' : 'COVER';
 }
 function gameDlgClose() { const d = $('#gameDlg'); if (d?.open) d.close(); gameEdit = null; }
-function gameCommit(fn) {
+/* Two ways to write the shelf, and the difference is the undo stack. gameCommit is an EDIT:
+   it takes a snapshot, so the toast's Undo reverts it. gameSave is BOOKKEEPING — a display
+   preference, an avatar Steam handed back on its own — and takes none. It has to be that way:
+   the snapshot is one slot, so a bookkeeping write silently rearmed it, and an Undo offered
+   for "marked complete" reverted the view instead. Mark a game done, switch view, press the
+   Undo still on screen, and the game stayed done. */
+function gameWrite(fn, takesSnapshot) {
   const g = games(), before = structuredClone(g), earlierUndo = snapshot;
-  takeSnapshot(); fn(g);
+  if (takesSnapshot) takeSnapshot();
+  fn(g);
+  /* A bookkeeping write also lands in the pending undo target, or undoing an EDIT would drag
+     the preference back with it: mark a game complete, switch to covers, undo, and the shelf
+     returned to the view you had left. Undo is about the board, never about how you are
+     looking at it. */
+  if (!takesSnapshot && snapshot && snapshot.games) { try { fn(snapshot.games); } catch (_) {} }
   try { localStorage.setItem(STORE, JSON.stringify(state)); }
   catch (e) { state.games = before; snapshot = earlierUndo;
     showToast('The cover or library is too large to store. Try a smaller image.', false, true); return false; }
   cloudQueue(); renderGames(); return true;
 }
+const gameCommit = (fn) => gameWrite(fn, true);
+const gameSave = (fn) => gameWrite(fn, false);
 function gameDlgSave() {
   const form = $('#gameDlg form'), d = gameEdit; if (!form || !d || !form.reportValidity()) return;
   const fd = new FormData(form), name = String(fd.get('name') || '').trim();
@@ -8716,7 +8860,11 @@ function gameDlgSave() {
   if (appid && games().items.some(x => x.id !== d.id && x.steamAppId === appid)) {
     showToast('That Steam App ID is already on another title. Edit that title instead.', false, true); return;
   }
-  const it = { ...d, id: d.id || uid(), name, cover, platforms, tags: gameList(fd.get('tags')),
+  const tags = [...gameEdit.tags];
+  const pendingTag = String($('#gameTagCustom')?.value || '').trim().slice(0, 32);
+  if (pendingTag && !tags.some(t => t.toLowerCase() === pendingTag.toLowerCase())) tags.push(pendingTag);
+  if (tags.length > 16) { showToast('A game can carry up to 16 tags.', false, true); return; }
+  const it = { ...d, id: d.id || uid(), name, cover, platforms, tags,
     wish: fd.get('shelf') === 'wish', complete: fd.get('shelf') === 'wish' ? false : fd.has('complete'),
     release: String(fd.get('release') || ''), steamAppId: appid };
   if (gameCommit(g => { const i = g.items.findIndex(x => x.id === it.id); if (i < 0) g.items.push(it); else g.items[i] = it; })) {
@@ -8765,7 +8913,7 @@ async function gameSteamProfile(id) {
     if (!r.ok) return;
     const data = await r.json(), avatar = String(data.profile?.avatar || '');
     if (!/^https:\/\/(?:avatars(?:\.akamai)?\.steamstatic\.com|steamcdn-a\.akamaihd\.net)\//i.test(avatar)) return;
-    if (games().accounts.some(a => a.id === id)) gameCommit(g => {
+    if (games().accounts.some(a => a.id === id)) gameSave(g => {
       const account = g.accounts.find(a => a.id === id);
       if (account) { account.avatar = avatar.slice(0, 500); account.profileName = String(data.profile?.name || '').slice(0, 80); }
     });
@@ -8830,9 +8978,16 @@ function gameAct(el) {
       gamePlatformPickerRender(); $('#gamePlatformPicker [data-platform="' + CSS.escape(p) + '"]')?.focus({preventScroll:true});
     } break;
     case 'platform-add': gamePlatformAdd(); break;
+    case 'tag-toggle': if (gameEdit) {
+      const t = String(el.dataset.tag || ''), i = gameEdit.tags.findIndex(x => x.toLowerCase() === t.toLowerCase());
+      if (i < 0 && gameEdit.tags.length >= 16) { $('#gameTagHelp').textContent = 'A game can carry up to 16 tags.'; break; }
+      if (i < 0) gameEdit.tags.push(t); else gameEdit.tags.splice(i, 1);
+      gameTagPickerRender(); $('#gameTagPicker [data-tag="' + CSS.escape(t) + '"]')?.focus({preventScroll:true});
+    } break;
+    case 'tag-add': gameTagAdd(); break;
     case 'scope': gameScope = k; renderGames(); el = $('#invGames [data-game="scope"][data-k="' + k + '"]'); el?.focus({preventScroll:true}); break;
-    case 'view': if (['covers','compact','list'].includes(k)) {
-      gameCommit(g => { g.view = k; });
+    case 'view': if (GAME_VIEWS.includes(k)) {
+      gameSave(g => { g.view = k; });
       $('#invGames [data-game="view"][data-k="' + k + '"]')?.focus({preventScroll:true});
     } break;
     case 'complete': if (it && gameCommit(() => { it.complete = !it.complete; })) showToast(it.complete ? '“' + it.name + '” complete. Well played.' : '“' + it.name + '” back in progress.', true); break;
@@ -8866,6 +9021,7 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('keydown', e => {
   if (e.target.id === 'gamePlatformCustom' && e.key === 'Enter') { e.preventDefault(); gamePlatformAdd(); }
+  if (e.target.id === 'gameTagCustom' && e.key === 'Enter') { e.preventDefault(); gameTagAdd(); }
 });
 
 /* ---------- the figure ----------
