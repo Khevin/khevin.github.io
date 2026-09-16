@@ -20,14 +20,18 @@ const slash = (p) => p.split(path.sep).join('/');
 /* The canon. `href` takes the prefix a page needs to reach the repo root. */
 const NAMESPACES = [
   { key: 'portfolio',     ns: 'khevin-mituti', href: (up) => `${up}index.html`,         desc: 'the work — what khevin ships for clients' },
-  { key: 'design-expert', ns: 'khev-tools',    href: (up) => `${up}design-expert/`,     desc: 'the plugin — what khevin makes for designers' },
+  { key: 'design-expert', ns: 'khev-tools',    href: (up) => `${up}design-expert.html`, desc: 'the plugin — what khevin makes for designers' },
   { key: 'skillstone',    ns: 'khevin-mituti', href: (up) => `${up}skillstone/`,        desc: 'the character sheet — what khevin keeps for himself' },
   { key: 'nihongo',       ns: 'khevin-mituti', href: (up) => `${up}nihongo/`,           desc: 'the study space — what khevin is learning' },
 ];
 
-/* Three of the four are folders now, so each has its own root to scan and its own `./`.
-   The portfolio is the site itself and stays at the repo root. */
-const HOMES = { 'design-expert': 'design-expert', skillstone: 'skillstone', nihongo: 'nihongo' };
+/* Two of the four are folders with their own root to scan and their own `./`. The portfolio
+   is the site itself and stays at the repo root. design-expert stays a root-level page
+   because khevin.com/design-expert/ is NOT ours to use: the Khevin/design-expert repo has
+   GitHub Pages enabled, and a project site under an account whose user site has a custom
+   domain is served at that domain under /<repo>/. It owns the whole prefix — a folder here
+   of that name is shadowed, assets and all. */
+const HOMES = { skillstone: 'skillstone', nihongo: 'nihongo' };
 
 /* skillstone/index.html is a build artifact — skillstone/deploy.mjs writes it from a build of
    skill-tracker-v5.html plus deploy/ns-bar.html. So the panel is edited in the snippet, which
@@ -37,7 +41,7 @@ const HOMES = { 'design-expert': 'design-expert', skillstone: 'skillstone', niho
 const PUBLISHED_AS = { 'skillstone/deploy/ns-bar.html': 'skillstone/index.html' };
 
 const files = ['skillstone/deploy/ns-bar.html'];
-for (const dir of ['.', 'projects', 'design-expert', 'nihongo']) {
+for (const dir of ['.', 'projects', 'nihongo']) {
   for (const name of await readdir(dir)) {
     if (name.endsWith('.html')) files.push(slash(path.join(dir, name)).replace(/^\.\//, ''));
   }
