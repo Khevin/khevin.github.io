@@ -4411,6 +4411,17 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-figure.is-empty .gm-figure-v { color: var(--ash); font-size: .875rem; }
 .gm-figure-track { display: block; margin-top: 10px; max-width: 200px; }
 .gm-plate-tags { margin-top: var(--s4); }
+/* Round, because the square marks beside it already mean "platform". Same size family, same
+   bronze edge as the account list in the Steam block, so the face reads as the same object in
+   both places. */
+.gm-owners { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: var(--s2); }
+.gm-owners-k { color: var(--ash); font: .6875rem var(--f-ui); }
+.gm-owner { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.gm-owner-mark { position: relative; width: 22px; height: 22px; flex: none; display: grid; place-items: center;
+  overflow: hidden; border-radius: 50%; border: 1px solid var(--bronze); background: var(--stone-3); }
+.gm-owner-mark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.gm-owner-mark .gm-platform-mark { width: 15px; height: 15px; border: 0; background: transparent; border-radius: 0; }
+.gm-owner-name { color: var(--dust); font: .75rem var(--f-ui); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Full width, the stacked plate left most of its right side empty: a 124px cover, a title, and
    then eight hundred pixels of nothing above a row of two figures. There is not much here -
    that is the point of opening in place rather than navigating - so the width carries it
@@ -8842,7 +8853,6 @@ function gameReleaseLabel(d) {
 }
 function gameCard(it) {
   const cover = gameCoverOK(it.cover) ? '<img src="' + esc(it.cover) + '" alt="" loading="lazy" onerror="this.remove()">' : "";
-  const accounts = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)?.label).filter(Boolean);
   const platforms = (it.platforms || []).length ? it.platforms.map(p => '<span class="gm-platform-line">' + gamePlatformMark(p) +
     '<span class="gm-platform-label">' + esc(p) + '</span></span>').join('') : '<span class="gm-meta">Platform not set</span>';
   return '<article class="gm-card' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') +
@@ -8935,7 +8945,17 @@ function gamePlate(it) {
         : 'Not recorded') + '</span></div>';
   const hoursBlock = '<div class="gm-figure"><span class="gm-figure-k">Hours played</span>' +
     '<span class="gm-figure-v">' + (hours ? esc(hours) : '—') + '</span></div>';
-  const accounts = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)?.label).filter(Boolean);
+  const owners = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)).filter(Boolean);
+  const ownerRow = owners.length
+    ? '<p class="gm-owners"><span class="gm-owners-k">From</span>' + owners.map(a =>
+        /* The Steam mark is always underneath and the face sits on top of it. A Steam avatar URL
+           carries a content hash and stops resolving when the profile picture changes, and
+           onerror removes the image - without something beneath it that leaves a hole rather
+           than a fallback. */
+        '<span class="gm-owner"><span class="gm-owner-mark">' + gamePlatformMark('Steam') +
+        (a.avatar ? '<img src="' + esc(a.avatar) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</span>' +
+        '<span class="gm-owner-name">' + esc(a.profileName || a.label) + '</span></span>').join('') + '</p>'
+    : '';
   return '<article class="gm-plate' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
     '<button type="button" class="gm-plate-back" data-game="close"><span aria-hidden="true">×</span> Close</button>' +
     '<div class="gm-plate-main">' +
@@ -8945,7 +8965,7 @@ function gamePlate(it) {
     '<div class="gm-plate-id"><h3 class="gm-plate-title">' + esc(it.name) + '</h3>' +
     '<div class="gm-platforms">' + platforms + '</div>' +
     (it.release ? '<p class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</p>' : '') +
-    (accounts.length ? '<p class="gm-meta">From ' + esc(accounts.join(' · ')) + '</p>' : '') +
+    ownerRow +
     '</div>' +
     '<div class="gm-figures">' + hoursBlock + achBlock + '</div>' +
     ((it.tags || []).length ? '<div class="gm-tags gm-plate-tags">' +
