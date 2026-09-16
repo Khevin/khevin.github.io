@@ -217,7 +217,10 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
       const v = CANON[v0]; if (map[v] >= 0) return map[v];
       const i = pos.length / 3; map[v] = i;
       const nx = AVGN[v * 3], ny = AVGN[v * 3 + 1], nz = AVGN[v * 3 + 2];
-      const tb = vTag[v].bone, off = opts.armScale && (ARM_U.has(tb) || ARM_L.has(tb)) ? offset * opts.armScale : offset; offs.push(off);
+      const tb = vTag[v].bone; let off = offset;
+      if (opts.armScale && ARM_L.has(tb)) off = offset * opts.armScale;
+      else if (opts.armScale && ARM_U.has(tb)) { const k = Math.max(0, Math.min(1, vTag[v].t / 0.4)); off = offset * (1 + (opts.armScale - 1) * k); }
+      offs.push(off);
       let x = P.getX(v) + nx * off, y = P.getY(v) + ny * off, z = P.getZ(v) + nz * off;
       let pin = 0;
       if (clamp) { const c = clamp(vTag[v]); if (typeof c === "number") y = c; else if (c) { if (c.x != null) { x = c.x; pin = 1; } if (c.y != null) y = c.y; if (c.z != null) { z = c.z; pin = 1; } } }
@@ -359,7 +362,7 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
     }
     /* the two points: triangles from the band's front ends lying down onto the chest */
     const ends = rs.filter(p => !front(p) && (p[2] - cz) > 0).sort((a, b) => a[0] - b[0]);
-    if (ends.length >= 2) {
+    if (ends.length >= 2 && !style.noPoints) {
       for (const [v, s] of [[ends[0], -1], [ends[ends.length - 1], 1]]) {
         const p = at(v), o = out(v);
         const tip = p.clone().add(new THREE.Vector3(-s * style.pointIn, -style.pointDrop, 0)).addScaledVector(o, 0.014);
@@ -426,12 +429,28 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
       return v.y > COLLAR ? COLLAR : null;
     };
     const torsoish = v => TORSO.has(v.bone) || v.bone === "pelvis" || THIGH.has(v.bone);
+    /* a jacket's front: a gap either side of the centre line from the hem to the collar, its edges
+       pulled straight and pinned, so whatever is under it shows in a clean strip */
+    const opening = (halfGap, yBot) => v => {
+      const dz = v.z - SPINE.cz, dx = v.x - SPINE.cx;
+      if (dz < 0.02 || !(TORSO.has(v.bone) || v.bone === "pelvis" || THIGH.has(v.bone) || v.bone === "neck_01")) return neckline(v);
+      if (v.y < yBot) return null;
+      if (v.y > COLLAR + BAND) return COLLAR;
+      if (Math.abs(dx) < halfGap * 0.6) return false;
+      if (Math.abs(dx) < halfGap * 2.4) return { x: SPINE.cx + (dx < 0 ? -halfGap : halfGap), y: Math.min(v.y, COLLAR) };
+      return v.y > COLLAR ? COLLAR : null;
+    };
+    /* the tank: straps 8.5 cm either side of the centre above the armhole line, a deeper scoop */
+    const STRAP = 0.1, ARMHOLE = Y.neck - 0.105;
+    const tankNeck = v => { if (v.r >= 0.13) return null; const front = Math.max(0, Math.min(1, (v.z - SPINE.cz) / 0.08)); const dip = COLLAR - 0.05 - 0.05 * front; return v.y > dip ? dip : null; };
     const LEGS = v => v.bone === "pelvis" || THIGH.has(v.bone) || CALF.has(v.bone) || FOOT.has(v.bone) || (v.bone === "spine_01" && v.y <= WAIST + BAND);
     RULES = {
       tee:      v => !collar(v) && ((torsoish(v) && v.y > HEM - BAND) || (ARM_U.has(v.bone) && v.t < 0.5)),
       shirt:    v => !collar(v) && ((torsoish(v) && v.y > HEM - 0.03 - BAND) || (ARM_U.has(v.bone) && v.t < 0.8)),
-      tank:     v => !collar(v) && torsoish(v) && v.y > HEM - BAND && !(v.bone.startsWith("clavicle") && Math.abs(v.x) > 0.12) && !(v.y > Y.neck - 0.07 && v.r < 0.11),
+      tank:     v => !collar(v) && torsoish(v) && v.y > HEM - BAND && !(v.y > ARMHOLE && Math.abs(v.x - SPINE.cx) > STRAP * 1.35),
       long:     v => !collar(v) && ((torsoish(v) && v.y > HEM - 0.02 - BAND) || ARM_U.has(v.bone) || (ARM_L.has(v.bone) && v.t < 0.92)),
+      longTo:   hem => v => !collar(v) && ((torsoish(v) && v.y > hem - BAND) || ARM_U.has(v.bone) || (ARM_L.has(v.bone) && v.t < 0.92)),
+      under:    hem => v => !collar(v) && torsoish(v) && v.y > hem - BAND,
       trousers: v => LEGS(v) && v.y <= WAIST + BAND && v.y > ANKLE - BAND,
       shorts:   v => LEGS(v) && v.y <= WAIST + BAND && v.y > KNEE - BAND,
       briefs:   v => (LEGS(v) || v.bone === "spine_01" || v.bone === "spine_02") && v.y <= WAIST + 0.09 + BAND && v.y > Y.thigh - 0.15 - BAND,
@@ -440,7 +459,9 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
     };
     CLAMP = {
       tee:      v => torsoish(v) && v.y < HEM ? HEM : neckline(v),
-      tank:     v => torsoish(v) && v.y < HEM ? HEM : neckline(v),
+      tank:     v => { if (torsoish(v) && v.y < HEM) return HEM; const dx = v.x - SPINE.cx; if (v.y > ARMHOLE && Math.abs(dx) > STRAP) return { x: SPINE.cx + (dx < 0 ? -STRAP : STRAP), y: v.y }; return tankNeck(v); },
+      openTo:   (hem, gap) => v => torsoish(v) && v.y < hem ? hem : opening(gap, hem)(v),
+      closedTo: hem => v => torsoish(v) && v.y < hem ? hem : neckline(v),
       long:     v => torsoish(v) && v.y < HEM - 0.02 ? HEM - 0.02 : neckline(v),
       shirtOpen2: v => torsoish(v) && v.y < HEM - 0.03 ? HEM - 0.03 : vee(0.13, 0.045)(v),
       shirtOpen1: v => torsoish(v) && v.y < HEM - 0.03 ? HEM - 0.03 : vee(0.075, 0.035)(v),
@@ -482,23 +503,36 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
       const soleM = cloth(star ? 0xe9e4d8 : feet.kind === "sneakers" ? new THREE.Color(shoeC).multiplyScalar(0.7).getHex() : 0x1a1714, 0.8);
       sole("foot_l", soleM); sole("foot_r", soleM);
     }
-    const topKind = top ? top.kind : null, topRule = TOP_RULE[topKind] || "tee", soft = { relax: true, hang: true, iters: 6 };
+    const topKind = top ? top.kind : null, topRule = TOP_RULE[topKind] || "tee";
+    const covered = !!outer, soft = covered ? { relax: true, hang: false, iters: 3 } : { relax: true, hang: true, iters: 6 };
+    const topOff = covered ? 0.016 : 0.03, topRuleFn = covered ? RULES.under(HEM - 0.01) : RULES[topRule];
     const topC = hexInt(top && top.color) ?? 0xf2efe6;
     if (!top) { /* bare */ }
     else if (topKind === "printed" || topKind === "polo" || topKind === "shirt") {
       const closed = topKind === "shirt" && tied;
       const style = closed ? { ...SHIRT_STYLE.shirt, vDepth: 0, openHalf: 0 } : SHIRT_STYLE[topKind], clamp = topKind === "printed" ? CLAMP.shirtOpen2 : closed ? CLAMP.shirtClosed : CLAMP.shirtOpen1;
       const m = topKind === "printed" ? new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.92, metalness: 0, side: THREE.DoubleSide }) : cloth(topC);
-      const shell = derive("top", RULES[topRule], 0.03, m, clamp, { ...soft, uv: topKind === "printed" ? "cylinder" : undefined, hang: true, armScale: topRule === "long" ? 0.5 : undefined });
+      const shell = derive("top", topRuleFn, topOff, m, clamp, { ...soft, uv: topKind === "printed" ? "cylinder" : undefined, armScale: topRule === "long" ? 0.5 : undefined });
       if (topKind === "printed") patternTexture(top).then(tex => { m.map = tex; m.needsUpdate = true; });
       const st = { ...style, placketTo: topKind === "polo" ? COLLAR - style.vDepth - 0.09 : HEM - 0.03 + 0.02, buttonColor: topKind === "shirt" ? 0xe8e1cf : style.buttonColor };
       shirtFront(shell, topKind === "printed" ? cloth(topC) : m, st);
       if (closed) tieOn(shell, hexInt(worn.neck.color) ?? 0x5a1f24);
-    } else derive("top", RULES[topRule], 0.03, cloth(topC), CLAMP[topRule], soft);
+    } else derive("top", topRuleFn, topOff, cloth(topC), covered ? CLAMP.closedTo(HEM - 0.01) : CLAMP[topRule], soft);
     if (outer) {
-      const oc = hexInt(outer.color) ?? 0x303d43;
-      if (outer.kind === "vneck") derive("outer", RULES.long, 0.044, cloth(oc), CLAMP.vneck, { ...soft, armScale: 0.55 });
-      else derive("outer", RULES.long, 0.044, cloth(oc), CLAMP.long, { ...soft, armScale: 0.55 });
+      const oc = hexInt(outer.color) ?? 0x303d43, k = outer.kind, oSoft = { relax: true, hang: true, iters: 6, armScale: 0.5 };
+      const OUTER = { coat: { hem: HEM - 0.22, open: 0.03 }, blazer: { hem: HEM - 0.1, open: 0.03 }, jacket: { hem: HEM - 0.03, open: 0.028 }, shacket: { hem: HEM - 0.04, open: 0.026 }, sherpa: { hem: HEM - 0.03, open: 0.03 } };
+      const o = OUTER[k];
+      if (o) {
+        const shell = derive("outer", RULES.longTo(o.hem), 0.036, cloth(oc), CLAMP.openTo(o.hem, o.open), oSoft);
+        /* a collar in the jacket's own cloth; the lined denim jacket wears its fleece */
+        const cm = k === "sherpa" ? cloth(0xe8e1cf, 0.95) : cloth(oc);
+        shirtFront(shell, cm, { collarH: k === "sherpa" ? 0.05 : 0.04, openHalf: o.open, pointDrop: k === "blazer" || k === "coat" ? 0.11 : 0.085, pointIn: 0.03, pointOut: 0.06, placketTo: null });
+      } else if (k === "vneck") derive("outer", RULES.long, 0.036, cloth(oc), CLAMP.vneck, oSoft);
+      else {
+        const shell = derive("outer", RULES.long, 0.036, cloth(oc), CLAMP.long, oSoft);
+        /* a hood, lying back: a tall ring round the neck with no points */
+        if (k === "hoodie" || k === "pullover") shirtFront(shell, cloth(oc), { collarH: 0.045, openHalf: 0, noPoints: true, placketTo: null });
+      }
     }
     return garments.map(g => ({ name: g.name, tris: g.geometry.index ? g.geometry.index.count / 3 : g.geometry.attributes.position.count / 3 }));
   }
