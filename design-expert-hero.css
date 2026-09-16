@@ -185,7 +185,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   /* At rest the pigment is chalked toward the text colour, so the wheel is
      present without shouting. Hover and selection bring it whole. */
   color: color-mix(in oklab, var(--hue) 55%, var(--ink-soft));
-  transition: color .2s, transform .2s;
+  transition: color .2s, transform .2s, opacity .25s;
 }
 .council-seat > span { font: 400 11px/1.4 var(--serif); }
 .council-seat small {
@@ -193,6 +193,30 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   font: 8px/1.4 var(--mono);
   color: var(--ink-mute);
 }
+/* The six seats are a ring with one of them speaking. The other five step
+   back rather than disappear, which on this ground means going darker.
+
+   The opacity is on the children, not on the button: the button's paper
+   background is what hides the orbit line running behind it, and fading
+   that would draw the ring straight through all six seats.
+
+   Two depths, because the symbol and the name are not doing the same job.
+   The symbol carries the colour, so it is what makes the ring look dim, and
+   it can go a long way down. The name is how you find a designer in the
+   ring, so it stops where it is still readable: measured on this ground,
+   .38 would put it at 2.95:1 and .72 holds it above 4.5. */
+.council-seat svg { opacity: .38; }
+.council-seat > span,
+.council-seat small { opacity: .72; transition: opacity .25s; }
+.council-seat:hover svg,
+.council-seat:focus-visible svg,
+.council-seat.is-selected svg,
+.council-seat:hover > span,
+.council-seat:focus-visible > span,
+.council-seat.is-selected > span,
+.council-seat:hover small,
+.council-seat:focus-visible small,
+.council-seat.is-selected small { opacity: 1; }
 .council-seat:hover svg { filter: brightness(1.12); }
 .council-seat:hover svg,
 .council-seat.is-selected svg { color: var(--hue); }
@@ -266,12 +290,10 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   color: var(--hue-tint);
   font: 9px/1.5 var(--mono);
   margin-top: 16px;
 }
-.council-decision__verdict svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; }
 .council-study__note {
   border-top: 1px solid var(--rule);
   text-align: center;
@@ -304,7 +326,7 @@ body[data-theme="ink"] .glyph.chatgpt img { filter: brightness(0) invert(1); }
   .council-decision__label { font-size: 6.5px; letter-spacing: 0; }
   .council-decision__drawing { height: 76px; margin: 10px 0 8px; }
   .council-decision__title { font-size: clamp(18px, 5vw, 28px); }
-  .council-decision__verdict { font-size: 7px; margin-top: 10px; gap: 4px; }
+  .council-decision__verdict { font-size: 7px; margin-top: 10px; }
   .council-study__note p { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
