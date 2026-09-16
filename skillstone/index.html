@@ -4348,10 +4348,27 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
    between - were the part that got squeezed. Here nothing is displaced; the row simply opens.
    The cards that move are carried to their new positions rather than repainted there, because
    a grid reflow that jumps loses the reader's place in a shelf this long. */
-.gm-pane { grid-column: 1 / -1; margin: var(--s3) 0 var(--s5); padding: var(--s5);
+/* The panel opens by growing its own row from nothing to its content height. Because that
+   height changes continuously, the covers below are pushed down by the layout itself rather
+   than by a script re-laying them out, and the contents fade in over the movement. The box -
+   padding, border, margin - sits on the plate INSIDE the collapsing wrapper; on the wrapper it
+   would refuse to collapse past its own padding. */
+.gm-pane { grid-column: 1 / -1; display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .3s var(--e-out); }
+.gm-pane.is-in { grid-template-rows: 1fr; }
+.gm-pane-in { overflow: hidden; min-height: 0; }
+.gm-pane .gm-plate { margin: var(--s3) 0 var(--s5); padding: var(--s5);
   background: var(--stone-2); border: 1px solid var(--mortar); border-radius: var(--r-sm);
-  animation: gm-open .24s var(--e-out) both; }
-@keyframes gm-open { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  opacity: 0; transition: opacity .22s var(--e-out) .05s; }
+.gm-pane.is-in .gm-plate { opacity: 1; }
+/* Beside the title, at the right edge, instead of a full-width row that spent a line of
+   vertical space saying one word. 44px of target around a small glyph. */
+.gm-plate-headrow { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s3); }
+.gm-plate-close { flex: none; width: 44px; height: 44px; margin: -10px -12px 0 0;
+  display: grid; place-items: center; background: none; border: 0; padding: 0;
+  color: var(--dust); font: 400 1.375rem/1 var(--f-ui); cursor: pointer; border-radius: var(--r-sm); }
+@media (hover: hover) { .gm-plate-close:hover { color: var(--gold-2); background: var(--stone-3); } }
+.gm-plate-close:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 /* The cover that is open keeps the gold it earned on click, so the plate below is attributable
    to a card without a line drawn between them. */
 .gm-card.is-open .gm-cover { border-color: var(--gold); }
@@ -4387,10 +4404,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 
 /* ---------- the plate ---------- */
 .gm-plate { padding: 0 0 var(--s4); }
-.gm-plate-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
-  background: none; border: 0; padding: 0; color: var(--dust); font: 600 .8125rem var(--f-ui); cursor: pointer; }
-@media (hover: hover) { .gm-plate-back:hover { color: var(--gold-2); } }
-.gm-plate-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 .gm-plate-cover { position: relative; aspect-ratio: 2/3; display: grid; place-items: center; overflow: hidden;
   background: var(--socket); border: 1px solid var(--mortar-2); }
 .gm-plate-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -4499,7 +4512,11 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-ach-slash { color: var(--ash); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-@media (prefers-reduced-motion: reduce) { .gm-card, .gm-pane { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .gm-card { animation: none; }
+  .gm-pane { transition: none; }
+  .gm-pane .gm-plate { transition: none; opacity: 1; }
+}
 </style>
 <style>
   /* ——— namespace switcher ——— */
@@ -9119,7 +9136,15 @@ function gameSetOpen(id) {
   card.parentElement.insertBefore(pane, gamePaneIndex(card.parentElement, card));
   gameMarkCard(id, true);
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) pane.classList.add('is-in');
-  else requestAnimationFrame(() => requestAnimationFrame(() => pane.classList.add('is-in')));
+  else {
+    /* Read a layout property to commit the collapsed state, then open. requestAnimationFrame
+       would be the usual way to wait a frame, but it does not fire in a tab the browser is not
+       painting - a backgrounded window, a hidden preview - and the panel would then sit at zero
+       height until the tab came back. A forced reflow does not care whether anything is being
+       painted. */
+    void pane.offsetHeight;
+    pane.classList.add('is-in');
+  }
   gameAchAuto(id);
 }
 function gameClosePane() {
