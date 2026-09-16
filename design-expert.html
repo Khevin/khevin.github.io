@@ -160,7 +160,7 @@
 
     <div class="library">
       <div class="library-col library-col--skills">
-        <div class="col-label">Skills · root files</div>
+        <div class="col-label">Skills · root files, modes, and the run</div>
         <button class="row-item" type="button" data-skill="skill-md" data-tag="root">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M15 12 L 45 12 L 45 48 L 15 48 Z M 22 22 L 38 22 M 22 30 L 38 30 M 22 38 L 32 38"/><path class="pulse" d="M30 6 L 30 54"/></svg></span>
           <span class="name">SKILL.md</span>
@@ -221,17 +221,71 @@
           <span class="desc">Review template, confidence, scoring. The reviewer's rubric in machine-readable form.</span>
           <span class="tag">discipline</span>
         </button>
-        <button class="row-item" type="button" data-skill="council" data-tag="discipline">
-          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle class="draw" cx="30" cy="30" r="14"/><path class="draw" d="M30 12V24M46 20L35 27M46 40L35 33M30 48V36M14 40L25 33M14 20L25 27"/><circle class="pulse" cx="30" cy="30" r="4"/><path class="draw" d="M27 6H33V12H27ZM45 14H51V20H45ZM45 40H51V46H45ZM27 48H33V54H27ZM9 40H15V46H9ZM9 14H15V20H9Z"/></svg></span>
-          <span class="name">council.md</span>
-          <span class="desc">A council sized to the decision. Relevant designers, grounded verdicts, recorded dissent, and room to go deeper when the work needs it.</span>
-          <span class="tag">discipline</span>
-        </button>
         <button class="row-item" type="button" data-skill="self-review" data-tag="discipline">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path class="draw" d="M12 12h9v9h-9zM27 16.5h21M12 25.5h9v9h-9zM27 30h17M12 39h9v9h-9zM27 43.5h20"/><path class="draw" d="M14 16.5l2.5 2.5 4.5-5M14 30l2.5 2.5 4.5-5"/><path class="pulse" d="M14 43.5l2.5 2.5 4.5-5"/></svg></span>
           <span class="name">self-review.md</span>
           <span class="desc">End-of-work review discipline. Anti-slop self-scan, the four craft tests, register-conditional verdict, honest cut-list. Cuts / Holds / Risks report.</span>
           <span class="tag">discipline</span>
+        </button>
+        <button class="row-item" type="button" data-skill="plan" data-tag="mode">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><rect class="draw" x="10" y="10" width="40" height="40"/><path class="draw" d="M10 30H30V50M30 10V30H50"/><path class="pulse" d="M38 18H44M20 40H24"/></svg></span>
+          <span class="name">modes/plan.md</span>
+          <span class="desc">Writes <span class="mono">PRODUCT.md</span>, <span class="mono">DESIGN.md</span>, and <span class="mono">DECISIONS.md</span> through discovery, direction probes, a scoped council, a layout walk, and personas.</span>
+          <span class="tag">mode</span>
+        </button>
+        <button class="row-item" type="button" data-skill="build" data-tag="mode">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path class="draw" d="M8 40H26V50H8ZM30 40H52V50H30ZM14 28H36V38H14ZM40 28H52V38H40ZM8 28H10V38H8Z"/><path class="pulse" d="M20 16H42V26H20Z"/></svg></span>
+          <span class="name">modes/build.md</span>
+          <span class="desc">New UI, or iteration on existing UI at any size, through the gates: shape, layout exploration, references, intent, the build, the self-review.</span>
+          <span class="tag">mode</span>
+        </button>
+        <button class="row-item" type="button" data-skill="review" data-tag="mode">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path class="draw" d="M8 30Q30 10 52 30Q30 50 8 30Z"/><circle class="draw" cx="30" cy="30" r="8"/><circle class="pulse" cx="30" cy="30" r="3"/></svg></span>
+          <span class="name">modes/review.md</span>
+          <span class="desc">Notes, not changes. The ten lenses, Universal Design 7, the heuristics, and anti-defaultism with the mandated-pattern check, in a structured verdict.</span>
+          <span class="tag">mode</span>
+        </button>
+        <button class="row-item" type="button" data-skill="write" data-tag="mode">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path class="draw" d="M30 8L42 30L30 52L18 30ZM18 30H42"/><path class="draw" d="M30 30V52"/><circle class="pulse" cx="30" cy="30" r="3"/></svg></span>
+          <span class="name">modes/write.md</span>
+          <span class="desc">Copy in three contexts: UX micro-copy, long-form, and marketing. Each loads its voice file; the visible work is the words.</span>
+          <span class="tag">mode</span>
+        </button>
+        <button class="row-item" type="button" data-skill="harnesses" data-tag="runtime">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path class="draw" d="M10 20H28V40H10ZM32 20H50V40H32Z"/><path class="draw" d="M28 26H32M28 34H32"/><path class="pulse" d="M4 30H10M50 30H56"/></svg></span>
+          <span class="name">harnesses.md</span>
+          <span class="desc">Claude Code and ChatGPT/Codex mapped once: paths, question UI, memory, concept surfaces, council seats. One method, two harnesses.</span>
+          <span class="tag">runtime</span>
+        </button>
+        <button class="row-item" type="button" data-skill="memory" data-tag="runtime">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path class="draw" d="M12 20H48V48H12ZM20 20V13H32V20"/><path class="draw" d="M20 30H40M20 37H34"/><circle class="pulse" cx="42" cy="12" r="3"/></svg></span>
+          <span class="name">memory.md</span>
+          <span class="desc">The profile and project records. Role, receiver, deploy target, and system pointers are asked once and never re-asked.</span>
+          <span class="tag">runtime</span>
+        </button>
+        <button class="row-item" type="button" data-skill="discovery" data-tag="runtime">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle class="draw" cx="25" cy="25" r="13"/><path class="draw" d="M34 34L50 50"/><path class="pulse" d="M17 25H33M25 17V33"/></svg></span>
+          <span class="name">discovery.md</span>
+          <span class="desc">Finds the project’s design system before judging anything: system files, tokens in code, Figma libraries. A found system changes what counts as a finding.</span>
+          <span class="tag">runtime</span>
+        </button>
+        <button class="row-item" type="button" data-skill="targets" data-tag="runtime">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle class="draw" cx="30" cy="30" r="14"/><path class="draw" d="M30 8V16M30 44V52M8 30H16M44 30H52"/><circle class="pulse" cx="30" cy="30" r="3"/></svg></span>
+          <span class="name">targets.md</span>
+          <span class="desc">Where concepts are shown and where the build lands: Figma, canvas, code, or briefs, decided by who is asking and how big the change is.</span>
+          <span class="tag">runtime</span>
+        </button>
+        <button class="row-item" type="button" data-skill="handoff" data-tag="runtime">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path class="draw" d="M8 20H28V40H8ZM8 28H28"/><path class="draw" d="M34 30H50"/><path class="pulse" d="M44 24L50 30L44 36"/></svg></span>
+          <span class="name">handoff.md</span>
+          <span class="desc">What the finished work is handed over as, shaped by who receives it: designer to developer, developer to designer, product to either.</span>
+          <span class="tag">runtime</span>
+        </button>
+        <button class="row-item" type="button" data-skill="council" data-tag="runtime">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle class="draw" cx="30" cy="30" r="14"/><path class="draw" d="M30 12V24M46 20L35 27M46 40L35 33M30 48V36M14 40L25 33M14 20L25 27"/><circle class="pulse" cx="30" cy="30" r="4"/><path class="draw" d="M27 6H33V12H27ZM45 14H51V20H45ZM45 40H51V46H45ZM27 48H33V54H27ZM9 40H15V46H9ZM9 14H15V20H9Z"/></svg></span>
+          <span class="name">council.md</span>
+          <span class="desc">A council sized to the decision. Relevant designers, grounded verdicts, recorded dissent, and room to go deeper when the work needs it.</span>
+          <span class="tag">runtime</span>
         </button>
       </div>
 
@@ -925,6 +979,42 @@ if ('IntersectionObserver' in window && libRows.length) {
     'voices': {
       from: 'voices.md · Why a voices taxonomy',
       text: "A button label and a magazine pull quote are not the same writing problem; trying to use one voice for both produces button labels that read like marketing slogans, or pull quotes that read like form-field validation. The voices taxonomy makes context-specific writing discipline explicit. UX copy, long-form (Work&Co tone), and marketing — each with its own rules, plus per-ad-lord files for the marketing flavors (Lois, Bernbach, Gossage, Ogilvy). Strunk and White as the floor across all three."
+    },
+    'plan': {
+      from: 'modes/plan.md · When triage picks this mode',
+      text: "Plan runs when a project is new, when neither PRODUCT.md nor DESIGN.md exists at its scope, when a brief has drifted from the product, or when a build request arrives at system size. It is the highest-leverage moment in the workflow: a constraint missed here is one the brief never carries, so the council is sized to the decisions rather than to a headcount."
+    },
+    'build': {
+      from: 'modes/build.md · The first decision is the heaviest',
+      text: "Build is for the moment when there is nothing on the screen yet and every default in the model leans forward to fill the void with the most common dashboard. Triage has already read memory, discovered the design system, confirmed the register, sized the request and picked the target; the gates assume those facts and cite them. Where a gate used to ask, it now states."
+    },
+    'review': {
+      from: 'modes/review.md · Notes, not changes',
+      text: "Review runs when the question is whether this is good enough to ship, and if not what must change, and the user wants the answer in writing. A Figma frame, a deployed surface, a PR diff, a screenshot. Depth follows the scope of what is reviewed, never time pressure, and the output is a structured document with severity tiers and cited principles."
+    },
+    'write': {
+      from: 'modes/write.md · Three writing contexts',
+      text: "The visible work is the words. UX copy loads voices/ux-copy.md: buttons, labels, errors, empty states. Long-form loads the Work&Co tone for case studies and articles. Marketing loads one of four ad-lords by temperament: Lois for spectacle, Bernbach for honest restraint, Gossage for the reader’s intelligence, Ogilvy for the long sell. The first task is deciding which context the brief belongs to."
+    },
+    'harnesses': {
+      from: 'harnesses.md · Resolve the environment',
+      text: "The few capabilities that coding-agent harnesses name differently, resolved once at the start of a run: where personal state lives, how a question is asked, whether memory persists, where a concept can be shown, how a council seat is spawned. Use the first matching row. Never require a harness-specific tool the environment does not expose, and never imitate a missing one with shell commands."
+    },
+    'memory': {
+      from: 'memory.md · Why memory comes first',
+      text: "Every invocation needs five things before a single design decision is defensible: who is asking, who receives the work, where it will land, how the design system is implemented, and which register the surface lives in. Asked every time, they turn a tool into an interrogation. A field that is present in the record is a fact: do not re-ask it, do not re-infer it, do not confirm it in passing."
+    },
+    'discovery': {
+      from: 'discovery.md · Why discovery comes before judgment',
+      text: "A design system is a set of decisions already made. Building without reading it produces a second system inside the first: a new radius beside the old one, a hex value beside a token. Reviewing without reading it is worse, because it flags the project’s own conventions as findings. Discovery starts with the relevant token and pattern sections and stops when the task’s constraints are clear."
+    },
+    'targets': {
+      from: 'targets.md · Why the target is a triage decision',
+      text: "The same brief produces different deliverables for different people. A designer with a Figma library wants frames bound to that library’s variables, because the frames are what their developer will read. A developer wants code in the repository’s framework. A stakeholder wants a brief. The target follows who is asking, what tools are connected, and how big the change is."
+    },
+    'handoff': {
+      from: 'handoff.md · Why the handoff is part of the work',
+      text: "Work that is finished but not handed over is finished for one person. A developer who receives a screenshot rebuilds the spacing by eye; a designer who receives a pull request measures the deployed page back into Figma. The handoff artifact is shaped by its receiver and runs at build Gate 11, at review’s Next Steps, and at plan Gate 8."
     },
     'commands': {
       from: 'commands/build.md · The build workflow',

@@ -728,9 +728,13 @@ nav.top .install:hover { background: var(--ink); color: var(--paper); }
   align-content: start;
 }
 .library-col--skills .col-label { grid-column: 1 / -1; }
+/* Left, what the skill knows: the root file, the core, the disciplines.
+   Right, how it runs: the four modes, then the files a run reads on its way. */
 .library-col--skills .row-item[data-tag="root"],
-.library-col--skills .row-item[data-tag="core"] { grid-column: 1; }
-.library-col--skills .row-item[data-tag="discipline"] { grid-column: 2; }
+.library-col--skills .row-item[data-tag="core"],
+.library-col--skills .row-item[data-tag="discipline"] { grid-column: 1; }
+.library-col--skills .row-item[data-tag="mode"],
+.library-col--skills .row-item[data-tag="runtime"] { grid-column: 2; }
 .library .row-item {
   display: grid;
   grid-template-columns: 44px 1fr auto;
@@ -2188,6 +2192,8 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
     /* Lightness named, not inherited: the base sits at about half and a
        yellow at half lightness is an olive. */
     --kind-root: oklch(from var(--accent-0) 0.84 min(c, 0.16) calc(h + 82));
+    --kind-mode: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 300));
+    --kind-runtime: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 237));
   }
 }
 
@@ -2204,10 +2210,14 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
   --kind-core: #008754;
   --kind-discipline: #00829f;
   --kind-root: #e0c93c;
+  --kind-mode: #9155a0;
+  --kind-runtime: #3f6fbb;
   --kind-canon: var(--hero-red);
 }
 .library .row-item[data-tag="core"], .lib-pop[data-tag="core"] { --icon: var(--kind-core); }
 .library .row-item[data-tag="discipline"], .lib-pop[data-tag="discipline"] { --icon: var(--kind-discipline); }
 .library .row-item[data-tag="root"], .lib-pop[data-tag="root"] { --icon: var(--kind-root); }
 .library .row-item[data-tag="canon"], .lib-pop[data-tag="canon"] { --icon: var(--kind-canon); }
+.library .row-item[data-tag="mode"], .lib-pop[data-tag="mode"] { --icon: var(--kind-mode); }
+.library .row-item[data-tag="runtime"], .lib-pop[data-tag="runtime"] { --icon: var(--kind-runtime); }
 .council-hero { --accent: var(--hero-red); }
