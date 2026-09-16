@@ -4150,6 +4150,11 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-tools input, .gm-tools select { background: var(--socket); border: 1px solid var(--mortar); color: var(--parchment); border-radius: 4px; min-height: 44px; }
 .gm-tools input { font: .875rem var(--f-ui); padding: 8px 12px; width: min(220px, 70vw); }
 .gm-tools select { padding: 8px; }
+.gm-view-switch { display: flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--mortar); border-radius: 6px; background: var(--socket); }
+.gm-view-switch button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 5px 9px; border: 0; border-radius: 3px; background: transparent; color: var(--dust); cursor: pointer; font: 600 .75rem var(--f-ui); }
+.gm-view-switch button[aria-pressed="true"] { color: var(--gold-2); background: var(--stone-3); box-shadow: inset 0 0 0 1px var(--mortar-2); }
+.gm-view-switch button:hover, .gm-view-switch button:focus-visible { color: var(--parchment); }
+.gm-view-switch svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; flex: none; }
 .gm-section { margin-bottom: var(--s6); }
 .gm-section-h { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s3); }
 .gm-section-h h3 { font: 700 1rem var(--f-display); color: var(--gold-2); }
@@ -4161,13 +4166,45 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-card.is-wish .gm-cover { border-color: var(--bronze); }
 .gm-badge { position: absolute; z-index: 2; top: 8px; right: 8px; background: var(--cave); color: var(--gold-2); border: 1px solid var(--bronze); padding: 3px 6px; font: 600 .5625rem var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
 .gm-card-title { font: 700 1rem/1.2 var(--f-ui); color: var(--parchment); margin-top: var(--s2); overflow-wrap: anywhere; }
+.gm-card.is-complete .gm-cover { border-color: color-mix(in oklch, var(--verdant) 60%, var(--mortar-2)); }
+.gm-platforms { display: flex; align-items: center; flex-wrap: wrap; column-gap: 10px; row-gap: 4px; margin-top: 5px; }
+.gm-platform-line { display: inline-flex; align-items: center; gap: 5px; min-width: 0; color: var(--dust); font: .6875rem/1.3 var(--f-ui); }
+.gm-platform-mark { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex: none; overflow: hidden; color: var(--gold-2); font: 700 .5625rem/1 var(--f-ui); border: 1px solid var(--mortar-2); border-radius: 3px; background: var(--stone-3); }
+.gm-platform-mark img { width: 100%; height: 100%; object-fit: contain; }
+.gm-platform-mark--steam img { width: 15px; height: 15px; filter: invert(1); }
+.gm-platform-mark--switch2 { background: #e60012; border-color: #e60012; }
+.gm-platform-mark--switch2 img { width: 100%; height: 100%; }
+.gm-platform-mark--playstation { color: #a8bff7; }
+.gm-platform-mark--xbox { color: #a9d18c; }
+.gm-platform-mark--pc svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.7; }
 .gm-meta { margin-top: 3px; text-transform: none; letter-spacing: 0; overflow-wrap: anywhere; }
 .gm-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--s2); }
 .gm-chip { border: 1px solid var(--mortar); color: var(--dust); padding: 1px 5px; text-transform: none; letter-spacing: 0; }
 .gm-card-actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
 .gm-card-actions button { background: none; border: 0; padding: 8px 0; min-height: 44px; cursor: pointer; color: var(--dust); font: 600 .75rem var(--f-ui); text-decoration: underline; text-decoration-color: var(--mortar-2); text-underline-offset: 3px; }
 .gm-card-actions button:hover { color: var(--gold-2); }
-.gm-card-actions .is-done { color: var(--verdant); }
+.gm-card-actions .gm-complete { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 44px; padding: 6px 9px; color: var(--dust); border: 1px solid var(--mortar-2); border-radius: 4px; background: var(--stone-3); text-decoration: none; }
+.gm-card-actions .gm-complete:hover { border-color: var(--bronze); }
+.gm-card-actions .gm-complete[aria-pressed="true"] { color: var(--verdant); border-color: color-mix(in oklch, var(--verdant) 55%, var(--mortar)); background: color-mix(in oklch, var(--verdant) 12%, var(--stone-3)); }
+.gm-complete-mark { display: inline-grid; place-items: center; width: 19px; height: 19px; flex: none; border: 1.5px solid currentColor; border-radius: 50%; font: 700 .75rem/1 var(--f-ui); }
+.gm-complete[aria-pressed="true"] .gm-complete-mark { background: var(--verdant); color: var(--cave); border-color: var(--verdant); }
+.gm-view-compact { grid-template-columns: repeat(auto-fill, 96px); gap: var(--s4) var(--s2); }
+.gm-view-compact .gm-spine { inset: 4px; padding: 4px; font-size: .6875rem; }
+.gm-view-compact .gm-card-title { font-size: .75rem; line-height: 1.25; }
+.gm-view-compact .gm-badge { top: 4px; right: 4px; padding: 2px 3px; font-size: .5rem; }
+.gm-view-compact .gm-platforms, .gm-view-compact .gm-meta, .gm-view-compact .gm-tags { display: none; }
+.gm-view-compact .gm-card-actions { gap: 4px; margin-top: 5px; }
+.gm-view-compact .gm-card-actions button { font-size: .6875rem; }
+.gm-view-compact .gm-complete-label, .gm-view-compact .gm-edit-label { display: none; }
+.gm-view-compact .gm-card-actions .gm-complete, .gm-view-compact .gm-card-actions .gm-edit { width: 44px; padding: 6px; }
+.gm-view-list { display: block; }
+.gm-view-list .gm-card { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: var(--s3); min-height: 84px; padding: 8px 0; border-bottom: 1px solid var(--mortar); animation: none; }
+.gm-view-list .gm-cover { width: 54px; height: 68px; aspect-ratio: auto; }
+.gm-view-list .gm-spine { inset: 3px; padding: 2px; font-size: .5rem; }
+.gm-view-list .gm-badge { top: auto; right: 2px; bottom: 2px; padding: 1px 2px; font-size: .45rem; }
+.gm-view-list .gm-card-title { margin-top: 0; }
+.gm-view-list .gm-card-actions { margin-top: 0; align-items: center; }
+.gm-view-list .gm-tags { margin-top: 5px; }
 .gm-empty { padding: var(--s7) var(--s4); border: 1px dashed var(--mortar-2); text-align: center; color: var(--dust); }
 .gm-empty strong { display: block; font: 700 1.125rem var(--f-display); color: var(--parchment); margin-bottom: var(--s2); }
 .gm-steam { border-top: 1px solid var(--mortar-2); padding-top: var(--s4); margin-top: var(--s6); }
@@ -4175,7 +4212,13 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-steam-inner { max-width: 680px; padding-top: var(--s4); color: var(--dust); font-size: .875rem; }
 .gm-steam-inner p + p { margin-top: var(--s2); }
 .gm-account { display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; padding: var(--s2) 0; border-bottom: 1px solid var(--mortar); }
-.gm-account span { flex: 1; min-width: 180px; overflow-wrap: anywhere; }
+.gm-account-info { flex: 1; min-width: 180px; overflow-wrap: anywhere; }
+.gm-avatar { width: 48px; height: 48px; flex: none; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--bronze); border-radius: 4px; background: var(--stone-3); color: var(--gold-2); font: 700 .75rem var(--f-ui); }
+.gm-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.gm-avatar .gm-platform-mark { width: 32px; height: 32px; border: 0; background: transparent; }
+.gm-avatar .gm-platform-mark--steam img { width: 28px; height: 28px; }
+.gm-account-info b { color: var(--parchment); }
+.gm-account-info .gm-persona { display: block; color: var(--gold-2); font-size: .75rem; }
 .gm-account button { min-height: 44px; }
 .gm-account-form { display: flex; gap: var(--s2); flex-wrap: wrap; margin-top: var(--s4); }
 .gm-account-form input { min-height: 44px; background: var(--socket); border: 1px solid var(--mortar); color: var(--parchment); padding: 8px; border-radius: 4px; font: .875rem var(--f-ui); }
@@ -4186,108 +4229,34 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .game-dlg .gm-form-state { display: flex; flex-wrap: wrap; gap: var(--s3); }
 .game-dlg .gm-form-state label { font-size: .875rem; color: var(--dust); display: inline-flex; gap: 6px; align-items: center; min-height: 44px; }
 .game-dlg .gm-form-state input { accent-color: var(--gold); }
+.game-dlg .gm-complete-field { display: flex; align-items: center; width: fit-content; gap: 10px; min-height: 44px; padding: 7px 12px; border: 1px solid var(--mortar-2); border-radius: 4px; background: var(--socket); color: var(--dust); cursor: pointer; }
+.game-dlg .gm-complete-field:has(input:checked) { border-color: var(--verdant); color: var(--verdant); background: color-mix(in oklch, var(--verdant) 10%, var(--socket)); }
+.game-dlg .gm-complete-field input { width: 18px; height: 18px; margin: 0; }
 .game-dlg .bk-l input { min-height: 44px; }
 .game-dlg .gm-cover-row { display: flex; gap: var(--s3); align-items: center; }
 .game-dlg .gm-cover-mini { width: 60px; aspect-ratio: 2/3; flex: none; background: var(--socket); border: 1px solid var(--mortar); display: grid; place-items: center; color: var(--ash); font: .625rem var(--f-mono); overflow: hidden; }
 .game-dlg .gm-cover-mini img { width: 100%; height: 100%; object-fit: cover; }
 .game-dlg .gm-cover-controls { display: flex; gap: var(--s2); flex-wrap: wrap; }
 .game-dlg .gm-cover-controls button { min-height: 44px; }
+.gm-platform-picker { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s2); }
+.gm-platform-picker button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 10px; border: 1px solid var(--mortar); border-radius: 4px; background: var(--socket); color: var(--dust); cursor: pointer; font: 600 .8125rem var(--f-ui); }
+.gm-platform-picker button[aria-pressed="true"] { border-color: var(--bronze); background: var(--stone-3); color: var(--gold-2); }
+.gm-platform-picker button:hover { border-color: var(--gold); }
+.gm-platform-picker .gm-platform-mark { width: 22px; height: 22px; }
+.gm-platform-picker .gm-platform-mark--steam img { width: 18px; height: 18px; }
+.gm-platform-custom { display: flex; gap: var(--s2); align-items: end; margin-top: var(--s3); }
+.gm-platform-custom label { flex: 1; }
+.gm-platform-custom button { min-height: 44px; }
+.gm-platform-help { min-height: 1.25em; color: var(--ash); font-size: .75rem; }
 @keyframes gm-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 650px) { .gm { padding: var(--s4) var(--s2) var(--s7); } .gm-head { align-items: start; flex-direction: column; } .gm-add { align-self: stretch; justify-content: center; } .gm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s2); } .game-dlg .bk-row { grid-template-columns: 1fr; } }
+@media (max-width: 650px) { .gm-view-compact { grid-template-columns: repeat(auto-fill, 88px); } .gm-view-list { display: block; } .gm-view-list .gm-card { grid-template-columns: 48px minmax(0, 1fr); gap: var(--s2); } .gm-view-list .gm-cover { width: 48px; height: 64px; } .gm-view-list .gm-card-actions { grid-column: 2; margin-top: -4px; } .gm-view-switch { width: 100%; justify-content: space-between; } .gm-view-switch button { flex: 1; } }
 @media (prefers-reduced-motion: reduce) { .gm-card { animation: none; } }
-</style>
-<style>
-  /* ——— namespace switcher ——— */
-  nav.ns-bar { position: sticky; top: 0; z-index: 60; background: var(--socket);
-    border-bottom: 1px solid var(--mortar); font-family: var(--f-ui); font-size: 13px; }
-  nav.ns-bar[hidden] { display: none; }
-  nav.ns-bar .ns-inner { max-width: 1180px; margin: 0 auto;
-    padding: 10px clamp(16px, 3vw, 32px); position: relative;
-    display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  /* Sign-in lives here rather than only in Settings because this bar is the
-     visitor’s bar — the one thing on the page addressed to someone who is
-     not signed in, and it leaves with the bar once they are. */
-  .ns-google { display: inline-flex; align-items: center; gap: 8px;
-    background: var(--stone-2); color: var(--parchment);
-    border: 1px solid var(--mortar-2); border-radius: 3px;
-    padding: 6px 12px; font: inherit; font-size: 12.5px; cursor: pointer;
-    transition: border-color .15s, background .15s; }
-  .ns-google:hover { background: var(--stone-3); border-color: var(--bronze); }
-  .ns-google:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-  .ns-google svg { flex: none; }
-  @media (max-width: 560px) { .ns-google span { display: none; } .ns-google { padding: 6px 9px; } }
-  .ns-switch { display: inline-flex; align-items: center; gap: 6px; background: transparent;
-    border: 0; padding: 4px 2px; color: var(--dust); font: inherit; cursor: pointer; letter-spacing: .02em; }
-  .ns-switch:hover { color: var(--parchment); }
-  .ns-switch:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
-  .ns-switch .child { color: var(--gold); }
-  .ns-switch .slash { color: var(--ash); }
-  .ns-switch .chev { font-size: 10px; color: var(--ash); }
-  .ns-list { position: absolute; top: calc(100% + 6px); left: clamp(16px, 3vw, 32px);
-    min-width: 340px; margin: 0; padding: 6px; list-style: none; z-index: 70;
-    background: var(--stone-2); border: 1px solid var(--mortar); border-radius: 4px;
-    box-shadow: var(--shadow-float); }
-  .ns-list[hidden] { display: none; }
-  .ns-list li { padding: 9px 12px; border-radius: 3px; cursor: pointer; color: var(--dust); }
-  .ns-list li:hover, .ns-list li:focus-visible { background: var(--stone-3); color: var(--parchment); outline: none; }
-  .ns-list li.current { background: rgba(232,176,84,0.10); }
-  .ns-list .ns-row { display: flex; align-items: baseline; gap: 8px; font-family: var(--f-mono); font-size: 12.5px; }
-  .ns-list .mark { width: 12px; color: var(--gold); }
-  .ns-list .child { color: var(--gold); }
-  .ns-list .slash { color: var(--ash); }
-  .ns-list .ns-desc { display: block; margin: 3px 0 0 20px; font-size: 12px; color: var(--ash); }
 </style>
 </head>
 <body>
 <canvas id="sky" class="sky" hidden aria-hidden="true"></canvas>
 
-<nav class="ns-bar">
-  <div class="ns-inner">
-    <button class="ns-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
-      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">skillstone</span>
-      <span class="chev" aria-hidden="true">▾</span>
-    </button>
-    <ul class="ns-list" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
-      <li role="option" aria-selected="false" data-href="../index.html" tabindex="-1">
-        <span class="ns-row">
-          <span class="mark" aria-hidden="true"></span>
-          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
-        </span>
-        <span class="ns-desc">the work — what khevin ships for clients</span>
-      </li>
-      <li role="option" aria-selected="false" data-href="../design-expert.html" tabindex="-1">
-        <span class="ns-row">
-          <span class="mark" aria-hidden="true"></span>
-          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
-        </span>
-        <span class="ns-desc">the plugin — what khevin makes for designers</span>
-      </li>
-      <li role="option" aria-selected="true" data-href="./" class="current" tabindex="0">
-        <span class="ns-row">
-          <span class="mark" aria-hidden="true">✓</span>
-          <span>khevin-mituti<span class="slash">/</span><span class="child">skillstone</span></span>
-        </span>
-        <span class="ns-desc">the character sheet — what khevin keeps for himself</span>
-      </li>
-      <li role="option" aria-selected="false" data-href="../nihongo.html" tabindex="-1">
-        <span class="ns-row">
-          <span class="mark" aria-hidden="true"></span>
-          <span>khevin-mituti<span class="slash">/</span><span class="child">nihongo</span></span>
-        </span>
-        <span class="ns-desc">the study space — what khevin is learning</span>
-      </li>
-    </ul>
-    <button type="button" class="ns-google" data-action="auth-google">
-      <svg viewBox="0 0 18 18" width="14" height="14" aria-hidden="true">
-        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
-        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/>
-        <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/>
-        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
-      </svg>
-      <span>Connect with Google</span>
-    </button>
-  </div>
-</nav>
 <div class="wrap">
   <header class="masthead">
     <div class="namebar">
@@ -6630,6 +6599,7 @@ function sanitize(s) {
       (/^https:\/\/[^\s<>"']+$/i.test(x) || /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(x))
       ? x.slice(0, 160000) : "";
     s.games = {
+      view: ["covers", "compact", "list"].includes(g.view) ? g.view : "covers",
       items: (Array.isArray(g.items) ? g.items : []).filter(x => x && x.id).slice(0, 2000).map(x => ({
         id: String(x.id).slice(0, 80), name: String(x.name || "Untitled").slice(0, 160),
         cover: cover(x.cover), complete: x.complete === true, wish: x.wish === true,
@@ -6642,7 +6612,10 @@ function sanitize(s) {
       })),
       accounts: (Array.isArray(g.accounts) ? g.accounts : []).filter(a => a && /^\d{17}$/.test(String(a.id)))
         .slice(0, 8).map(a => ({ id: String(a.id), label: String(a.label || "Steam account").slice(0, 40),
-          synced: Number(a.synced) || 0 }))
+          synced: Number(a.synced) || 0,
+          avatar: /^https:\/\/(?:avatars(?:\.akamai)?\.steamstatic\.com|steamcdn-a\.akamaihd\.net)\//i.test(String(a.avatar || ""))
+            ? String(a.avatar).slice(0, 500) : "",
+          profileName: String(a.profileName || "").slice(0, 80) }))
     };
   }
   /* campaigns are the owner's to edit, so only the shape is enforced, never the content */
@@ -7735,14 +7708,7 @@ async function authSignOut() {
   renderAuth();
   showToast("Signed out. The board stays on this device.");
 }
-/* The namespace bar is visitor chrome. Signed in, this is his own board and
-   the chrome comes off — including the sign-in button it carries. */
-function nsBarSync() {
-  const bar = document.querySelector("nav.ns-bar");
-  if (bar) bar.hidden = !!auth;
-}
 function renderAuth() {
-  nsBarSync();
   const box = $("#authBox"); if (!box) return;
   const form = document.querySelector(".cloud-form");
   if (auth) {
@@ -7758,9 +7724,6 @@ function renderAuth() {
 }
 async function authBoot() {
   authLoad();
-  /* on the synchronous read, not after the network round-trip — otherwise a
-     signed-in visit flashes the bar before removing it */
-  nsBarSync();
   /* Google's own return leg (the calendar connection) is recognised by its state and taken
      first; the sign-in's return leg only sees a code that was not ours */
   const cal = await gcalFinish();
@@ -8464,8 +8427,23 @@ const gameById = id => games().items.find(x => x.id === id);
 const gameCoverOK = v => typeof v === "string" &&
   (/^https:\/\/[^\s<>"']+$/i.test(v) || /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(v));
 const gameList = v => [...new Set(String(v || "").split(",").map(x => x.trim().slice(0, 32)).filter(Boolean))].slice(0, 16);
+const GAME_PLATFORM_PRESETS = ['Steam', 'Nintendo Switch 2', 'Nintendo Switch', 'PlayStation 5', 'Xbox Series X|S', 'PC'];
+const GAME_STEAM_LOGO = 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg';
+const GAME_SWITCH2_LOGO = 'https://upload.wikimedia.org/wikipedia/commons/c/c9/Nintendo_Switch_2_logo.svg';
+function gamePlatformMark(name) {
+  const key = String(name).toLowerCase();
+  let kind = 'other', content = esc(String(name).trim().slice(0, 2).toUpperCase() || '•');
+  if (key === 'steam') { kind = 'steam'; content = '<img src="' + GAME_STEAM_LOGO + '" alt="">'; }
+  else if (key === 'nintendo switch 2' || key === 'switch 2') { kind = 'switch2'; content = '<img src="' + GAME_SWITCH2_LOGO + '" alt="">'; }
+  else if (key.includes('nintendo') || key.includes('switch')) { kind = 'nintendo'; content = 'NS'; }
+  else if (key.includes('playstation') || key === 'ps5' || key === 'ps4') { kind = 'playstation'; content = 'PS'; }
+  else if (key.includes('xbox')) { kind = 'xbox'; content = 'X'; }
+  else if (key === 'pc' || key === 'windows') { kind = 'pc'; content = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3" width="16" height="11" rx="1"/><path d="M7 17h6M10 14v3"/></svg>'; }
+  return '<span class="gm-platform-mark gm-platform-mark--' + kind + '" aria-hidden="true">' + content + '</span>';
+}
 let gameScope = "owned", gameQuery = "", gamePlatform = "", gameTag = "", gameSort = "name";
 let gameEdit = null, gameBusy = "";
+const gameProfileTried = new Set();
 function gameReleaseLabel(d) {
   if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return "Release date unknown";
   const at = new Date(d + "T12:00:00"), now = new Date();
@@ -8476,20 +8454,24 @@ function gameReleaseLabel(d) {
 }
 function gameCard(it) {
   const cover = gameCoverOK(it.cover) ? '<img src="' + esc(it.cover) + '" alt="" loading="lazy" onerror="this.remove()">' : "";
-  const places = (it.platforms || []).join(" · ") || "Platform not set";
   const accounts = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)?.label).filter(Boolean);
-  return '<article class="gm-card' + (it.wish ? ' is-wish' : '') + '">' +
+  const platforms = (it.platforms || []).length ? it.platforms.map(p => '<span class="gm-platform-line">' + gamePlatformMark(p) +
+    '<span class="gm-platform-label">' + esc(p) + '</span></span>').join('') : '<span class="gm-meta">Platform not set</span>';
+  return '<article class="gm-card' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
     '<div class="gm-cover"><span class="gm-spine" aria-hidden="true">' + esc(it.name) + '</span>' + cover +
-    (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Complete</span>' : '') + '</div>' +
-    '<h4 class="gm-card-title">' + esc(it.name) + '</h4><p class="gm-meta">' + esc(places) + '</p>' +
+    (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Finished</span>' : '') + '</div>' +
+    '<div class="gm-card-body"><h4 class="gm-card-title">' + esc(it.name) + '</h4><div class="gm-platforms">' + platforms + '</div>' +
     (it.wish ? '<p class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</p>' : '') +
     (accounts.length ? '<p class="gm-meta">' + esc(accounts.join(' · ')) + '</p>' : '') +
-    '<div class="gm-tags">' + (it.tags || []).map(t => '<span class="gm-chip">' + esc(t) + '</span>').join('') + '</div>' +
+    '<div class="gm-tags">' + (it.tags || []).map(t => '<span class="gm-chip">' + esc(t) + '</span>').join('') + '</div></div>' +
     '<div class="gm-card-actions">' + (it.wish
       ? '<button type="button" data-game="acquire" data-id="' + esc(it.id) + '">Move to owned</button>'
-      : '<button type="button" class="' + (it.complete ? 'is-done' : '') + '" data-game="complete" data-id="' + esc(it.id) + '">' +
-        (it.complete ? '✓ Completed' : 'Mark complete') + '</button>') +
-      '<button type="button" data-game="edit" data-id="' + esc(it.id) + '">Edit</button></div></article>';
+      : '<button type="button" class="gm-complete" data-game="complete" data-id="' + esc(it.id) + '" aria-pressed="' + !!it.complete +
+        '" aria-label="' + (it.complete ? 'Mark ' + esc(it.name) + ' in progress' : 'Mark ' + esc(it.name) + ' complete') +
+        '" title="' + (it.complete ? 'Mark in progress' : 'Mark complete') + '"><span class="gm-complete-mark" aria-hidden="true">' +
+        (it.complete ? '✓' : '') + '</span><span class="gm-complete-label">' + (it.complete ? 'Completed' : 'Mark complete') + '</span></button>') +
+      '<button type="button" class="gm-edit" data-game="edit" data-id="' + esc(it.id) + '" aria-label="Edit ' + esc(it.name) +
+      '"><span aria-hidden="true">✎</span> <span class="gm-edit-label">Edit</span></button></div></article>';
 }
 function gameMatches(it) {
   if (gameScope === "owned" && it.wish || gameScope === "wish" && !it.wish || gameScope === "complete" && !it.complete) return false;
@@ -8506,9 +8488,10 @@ function renderGamesList() {
     : a.name.localeCompare(b.name));
   const sections = gameScope === 'all' ? [['Owned', shown.filter(x => !x.wish)], ['Wishlist', shown.filter(x => x.wish)]] :
     [[gameScope === 'wish' ? 'Wishlist' : gameScope === 'complete' ? 'Completed' : 'Owned', shown]];
+  const view = ['covers', 'compact', 'list'].includes(games().view) ? games().view : 'covers';
   el.innerHTML = shown.length ? sections.filter(([, list]) => list.length).map(([name, list]) =>
     '<section class="gm-section"><div class="gm-section-h"><h3>' + name + '</h3><span class="gm-count">' + list.length + '</span></div>' +
-    '<div class="gm-grid">' + list.map(gameCard).join('') + '</div></section>').join('') :
+    '<div class="gm-grid gm-view-' + view + '">' + list.map(gameCard).join('') + '</div></section>').join('') :
     '<div class="gm-empty"><strong>' + (all.length ? 'No titles match this view.' : 'Your first game belongs here.') + '</strong>' +
     '<p>' + (all.length ? 'Try another search, platform or tag.' : 'Add a Nintendo game, another console, or something you hope to play someday.') + '</p></div>';
   const n = $('#gameVisibleCount'); if (n) n.textContent = shown.length + (shown.length === 1 ? ' title' : ' titles');
@@ -8516,14 +8499,23 @@ function renderGamesList() {
 function renderGames() {
   const el = $('#invGames'); if (!el) return;
   const g = games(), owned = g.items.filter(x => !x.wish).length, wish = g.items.length - owned;
+  const view = ['covers', 'compact', 'list'].includes(g.view) ? g.view : 'covers';
   const options = key => [...new Set(g.items.flatMap(x => x[key] || []))].sort((a,b) => a.localeCompare(b));
+  const viewIcon = {
+    covers: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7"/><rect x="11" y="2" width="7" height="7"/><rect x="2" y="11" width="7" height="7"/><rect x="11" y="11" width="7" height="7"/></svg>',
+    compact: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="4" height="4"/><rect x="8" y="2" width="4" height="4"/><rect x="14" y="2" width="4" height="4"/><rect x="2" y="8" width="4" height="4"/><rect x="8" y="8" width="4" height="4"/><rect x="14" y="8" width="4" height="4"/><rect x="2" y="14" width="4" height="4"/><rect x="8" y="14" width="4" height="4"/><rect x="14" y="14" width="4" height="4"/></svg>',
+    list: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3" width="3" height="3"/><path d="M8 4.5h10"/><rect x="2" y="9" width="3" height="3"/><path d="M8 10.5h10"/><rect x="2" y="15" width="3" height="3"/><path d="M8 16.5h10"/></svg>'
+  };
   el.innerHTML = '<div class="gm"><header class="gm-head"><div><span class="gm-kicker">Equipment / Games</span>' +
     '<h2>The game shelf</h2><p>What you own, what you finished, and what is still on the horizon.</p></div>' +
     '<button type="button" class="j3-btn gm-add" data-game="new">+ Add a game</button></header>' +
     '<div class="gm-toolbar"><div class="gm-tabs" role="group" aria-label="Show games">' +
     [['owned','Owned',owned],['wish','Wishlist',wish],['complete','Completed',g.items.filter(x => x.complete).length],['all','All',g.items.length]]
       .map(([k,n,c]) => '<button type="button" data-game="scope" data-k="' + k + '" aria-pressed="' + (gameScope === k) + '">' + n + ' <span class="gm-small">' + c + '</span></button>').join('') +
-    '</div><div class="gm-tools"><input id="gameSearch" type="search" aria-label="Search games" placeholder="Search the shelf" value="' + esc(gameQuery) + '">' +
+    '</div><div class="gm-tools"><div class="gm-view-switch" role="group" aria-label="Game display">' +
+    [['covers','Covers'],['compact','Small covers'],['list','List']].map(([k,n]) => '<button type="button" data-game="view" data-k="' + k +
+      '" aria-pressed="' + (view === k) + '" title="' + n + '">' + viewIcon[k] + '<span>' + n + '</span></button>').join('') + '</div>' +
+    '<input id="gameSearch" type="search" aria-label="Search games" placeholder="Search the shelf" value="' + esc(gameQuery) + '">' +
     '<select id="gamePlatform" aria-label="Filter by platform"><option value="">All platforms</option>' + options('platforms').map(p =>
       '<option value="' + esc(p) + '"' + (p === gamePlatform ? ' selected' : '') + '>' + esc(p) + '</option>').join('') + '</select>' +
     '<select id="gameTag" aria-label="Filter by tag"><option value="">All tags</option>' + options('tags').map(t =>
@@ -8533,8 +8525,10 @@ function renderGames() {
     '<span class="gm-count" id="gameVisibleCount"></span><div id="gameList"></div>' +
     '<details class="gm-steam"><summary>Steam accounts · ' + g.accounts.length + '</summary><div class="gm-steam-inner">' +
     '<p>Bring in owned games from either account. Add its 17-digit SteamID64; no Steam password goes here. Your completion marks and tags stay yours on every sync.</p>' +
-    g.accounts.map(a => '<div class="gm-account"><span><b>' + esc(a.label) + '</b><br><span class="gm-small">' + esc(a.id) +
-      (a.synced ? ' · synced ' + esc(new Date(a.synced).toLocaleDateString()) : ' · not synced') + '</span></span>' +
+    g.accounts.map(a => '<div class="gm-account"><span class="gm-avatar">' + (a.avatar ? '<img src="' + esc(a.avatar) + '" alt="" loading="lazy" onerror="this.remove()">' :
+      gamePlatformMark('Steam')) + '</span><span class="gm-account-info"><b>' + esc(a.label) + '</b>' +
+      (a.profileName && a.profileName !== a.label ? '<span class="gm-persona">' + esc(a.profileName) + '</span>' : '') +
+      '<span class="gm-small">' + esc(a.id) + (a.synced ? ' · synced ' + esc(new Date(a.synced).toLocaleDateString()) : ' · not synced') + '</span></span>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-game="sync" data-id="' + esc(a.id) + '"' + (gameBusy ? ' disabled' : '') + '>' +
       (gameBusy === a.id ? 'Syncing…' : 'Sync') + '</button><button type="button" class="btn btn-ghost btn-sm" data-game="account-remove" data-id="' + esc(a.id) + '">Remove</button></div>').join('') +
     '<form class="gm-account-form" data-form="game-account"><input name="label" aria-label="Account label" maxlength="40" placeholder="Account label (e.g. Main)" required>' +
@@ -8544,6 +8538,7 @@ function renderGames() {
     '</div></details></div>';
   $('#gameSort').value = gameSort;
   renderGamesList();
+  if (auth && !gameBusy) g.accounts.filter(a => !a.avatar && !gameProfileTried.has(a.id)).forEach(a => gameSteamProfile(a.id));
 }
 function gameDlgOpen(id) {
   const it = id ? gameById(id) : null;
@@ -8555,14 +8550,17 @@ function gameDlgOpen(id) {
     '<label class="bk-l">Name<input name="name" maxlength="160" required value="' + esc(gameEdit.name) + '" placeholder="The title as you know it"></label>' +
     '<fieldset class="bk-state gm-form-state"><legend class="bk-lg">Shelf</legend><label><input type="radio" name="shelf" value="owned"' + (!gameEdit.wish ? ' checked' : '') + '> Owned</label>' +
     '<label><input type="radio" name="shelf" value="wish"' + (gameEdit.wish ? ' checked' : '') + '> Wishlist</label></fieldset>' +
-    '<div class="bk-row"><label class="bk-l">Platforms<input name="platforms" maxlength="300" value="' + esc(gameEdit.platforms.join(', ')) +
-    '" placeholder="Nintendo Switch, Steam" required></label><label class="bk-l">Tags / categories<input name="tags" maxlength="300" value="' +
-    esc(gameEdit.tags.join(', ')) + '" placeholder="JRPG, Strategy, Pokémon"></label></div>' +
-    '<p class="gm-note">Separate multiple platforms or tags with commas. Add any console or category you use.</p>' +
+    '<fieldset class="bk-state gm-platform-field"><legend class="bk-lg">Platforms / consoles</legend><div class="gm-platform-picker" id="gamePlatformPicker"></div>' +
+    '<div class="gm-platform-custom"><label class="bk-l">Another console or storefront<input id="gamePlatformCustom" maxlength="32" placeholder="e.g. GameCube"></label>' +
+    '<button type="button" class="btn btn-ghost btn-sm" data-game="platform-add">Add</button></div>' +
+    '<p class="gm-platform-help" id="gamePlatformHelp" aria-live="polite">Choose every platform you own this game on.</p></fieldset>' +
+    '<label class="bk-l">Tags / categories<input name="tags" maxlength="300" value="' +
+    esc(gameEdit.tags.join(', ')) + '" placeholder="JRPG, Strategy, Pokémon"></label>' +
+    '<p class="gm-note">Separate tags with commas. Your own consoles and categories are welcome.</p>' +
     '<div class="bk-row"><label class="bk-l">Release date (optional)<input type="date" name="release" value="' + esc(gameEdit.release) +
     '"></label><label class="bk-l">Steam App ID (optional)<input name="steamAppId" inputmode="numeric" pattern="[0-9]*" maxlength="10" value="' +
     esc(gameEdit.steamAppId) + '" placeholder="For matching imports"></label></div>' +
-    '<label class="gm-form-state"><input type="checkbox" name="complete"' + (gameEdit.complete ? ' checked' : '') + '> Completed</label>' +
+    '<label class="gm-form-state gm-complete-field"><input type="checkbox" name="complete"' + (gameEdit.complete ? ' checked' : '') + '> I completed this game</label>' +
     '<div class="gm-cover-row"><span class="gm-cover-mini" id="gameCoverPreview"></span><div><div class="gm-cover-controls">' +
     '<button type="button" class="btn btn-ghost btn-sm" data-game="cover-pick">Upload cover</button>' +
     '<button type="button" class="btn btn-ghost btn-sm" data-game="cover-clear">Clear</button></div>' +
@@ -8572,7 +8570,24 @@ function gameDlgOpen(id) {
     '<div class="bk-foot">' + (it ? '<button type="button" class="btn btn-danger btn-sm" data-game="delete">Delete</button>' : '') +
     '<button type="button" class="btn btn-ghost btn-sm" data-game="cancel">Cancel</button>' +
     '<button type="submit" class="btn btn-primary btn-sm">' + (it ? 'Save changes' : 'Add to the shelf') + '</button></div></form>';
-  gameCoverPreview(); dlg.showModal(); dlg.querySelector('[name="name"]').focus();
+  gamePlatformPickerRender(); gameCoverPreview(); dlg.showModal(); dlg.querySelector('[name="name"]').focus();
+}
+function gamePlatformPickerRender() {
+  const el = $('#gamePlatformPicker'); if (!el || !gameEdit) return;
+  const choices = [...GAME_PLATFORM_PRESETS, ...gameEdit.platforms.filter(p => !GAME_PLATFORM_PRESETS.some(x => x.toLowerCase() === p.toLowerCase()))];
+  el.innerHTML = choices.map(p => '<button type="button" data-game="platform-toggle" data-platform="' + esc(p) + '" aria-pressed="' +
+    gameEdit.platforms.some(x => x.toLowerCase() === p.toLowerCase()) + '">' + gamePlatformMark(p) + '<span>' + esc(p) + '</span></button>').join('');
+}
+function gamePlatformAdd() {
+  const field = $('#gamePlatformCustom'); if (!field || !gameEdit) return;
+  const name = field.value.trim().slice(0, 32);
+  if (!name) { field.focus(); return; }
+  if (!gameEdit.platforms.some(p => p.toLowerCase() === name.toLowerCase())) {
+    if (gameEdit.platforms.length >= 16) { $('#gamePlatformHelp').textContent = 'A game can have up to 16 platforms.'; return; }
+    gameEdit.platforms.push(name);
+  }
+  field.value = ''; $('#gamePlatformHelp').textContent = name + ' selected for this game.';
+  gamePlatformPickerRender(); field.focus();
 }
 function gameCoverPreview() {
   const el = $('#gameCoverPreview'); if (!el || !gameEdit) return;
@@ -8593,7 +8608,10 @@ function gameDlgSave() {
   const coverInput = String(fd.get('cover') || '').trim();
   const cover = coverInput || d.cover;
   if (!gameCoverOK(cover) || cover.length > 160000) { showToast('Add a valid HTTPS cover URL or upload a cover.', false, true); return; }
-  const platforms = gameList(fd.get('platforms'));
+  const platforms = [...gameEdit.platforms];
+  const pendingPlatform = String($('#gamePlatformCustom')?.value || '').trim().slice(0, 32);
+  if (pendingPlatform && !platforms.some(p => p.toLowerCase() === pendingPlatform.toLowerCase())) platforms.push(pendingPlatform);
+  if (platforms.length > 16) { showToast('A game can have up to 16 platforms.', false, true); return; }
   if (!platforms.length) { showToast('Name at least one platform.', false, true); return; }
   const appid = String(fd.get('steamAppId') || '').trim();
   if (appid && games().items.some(x => x.id !== d.id && x.steamAppId === appid)) {
@@ -8633,10 +8651,26 @@ function gameAccountSave(form) {
   const fd = new FormData(form), id = String(fd.get('steamid') || '').trim(), label = String(fd.get('label') || '').trim();
   if (!/^\d{17}$/.test(id) || !label) return;
   if (games().accounts.some(a => a.id === id)) { showToast('That Steam account is already listed.', false, true); return; }
-  if (gameCommit(g => g.accounts.push({ id, label, synced: 0 }))) {
+  if (gameCommit(g => g.accounts.push({ id, label, synced: 0, avatar: '', profileName: '' }))) {
     const det = $('#invGames .gm-steam'); if (det) det.open = true;
     showToast('Account added. Sync it when the server key is ready.');
   }
+}
+async function gameSteamProfile(id) {
+  gameProfileTried.add(id);
+  try {
+    if (!(await authRefreshIfNeeded())) return;
+    const url = ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + '/functions/v1/steam-games';
+    const r = await fetch(url, { method: 'POST', headers: { apikey: authKey(), Authorization: 'Bearer ' + auth.access_token,
+      'Content-Type': 'application/json' }, body: JSON.stringify({ steamid: id, profileOnly: true }) });
+    if (!r.ok) return;
+    const data = await r.json(), avatar = String(data.profile?.avatar || '');
+    if (!/^https:\/\/(?:avatars(?:\.akamai)?\.steamstatic\.com|steamcdn-a\.akamaihd\.net)\//i.test(avatar)) return;
+    if (games().accounts.some(a => a.id === id)) gameCommit(g => {
+      const account = g.accounts.find(a => a.id === id);
+      if (account) { account.avatar = avatar.slice(0, 500); account.profileName = String(data.profile?.name || '').slice(0, 80); }
+    });
+  } catch (_) { /* A profile picture is optional; sync remains available. */ }
 }
 async function gameSteamSync(id) {
   if (gameBusy) return;
@@ -8669,7 +8703,14 @@ async function gameSteamSync(id) {
             steamAccounts: [id], added: Date.now() }); added++;
         }
       });
-      const account = g.accounts.find(a => a.id === id); if (account) account.synced = Date.now();
+      const account = g.accounts.find(a => a.id === id); if (account) {
+        account.synced = Date.now();
+        const avatar = String(result.profile?.avatar || '');
+        if (/^https:\/\/(?:avatars(?:\.akamai)?\.steamstatic\.com|steamcdn-a\.akamaihd\.net)\//i.test(avatar)) {
+          account.avatar = avatar.slice(0, 500);
+          account.profileName = String(result.profile?.name || '').slice(0, 80);
+        }
+      }
     });
     if (ok) showToast('Steam shelf synced: ' + added + ' new, ' + linked + ' matched. Completion marks kept.', true);
   } catch (e) { showToast('Steam sync: ' + e.message, false, true); }
@@ -8683,7 +8724,18 @@ function gameAct(el) {
     case 'cancel': gameDlgClose(); break;
     case 'cover-pick': gameCoverPick(); break;
     case 'cover-clear': if (gameEdit) { gameEdit.cover = ''; $('#gameDlg [name="cover"]').value = ''; gameCoverPreview(); } break;
+    case 'platform-toggle': if (gameEdit) {
+      const p = String(el.dataset.platform || ''), i = gameEdit.platforms.findIndex(x => x.toLowerCase() === p.toLowerCase());
+      if (i < 0 && gameEdit.platforms.length >= 16) { $('#gamePlatformHelp').textContent = 'A game can have up to 16 platforms.'; break; }
+      if (i < 0) gameEdit.platforms.push(p); else gameEdit.platforms.splice(i, 1);
+      gamePlatformPickerRender(); $('#gamePlatformPicker [data-platform="' + CSS.escape(p) + '"]')?.focus({preventScroll:true});
+    } break;
+    case 'platform-add': gamePlatformAdd(); break;
     case 'scope': gameScope = k; renderGames(); el = $('#invGames [data-game="scope"][data-k="' + k + '"]'); el?.focus({preventScroll:true}); break;
+    case 'view': if (['covers','compact','list'].includes(k)) {
+      gameCommit(g => { g.view = k; });
+      $('#invGames [data-game="view"][data-k="' + k + '"]')?.focus({preventScroll:true});
+    } break;
     case 'complete': if (it && gameCommit(() => { it.complete = !it.complete; })) showToast(it.complete ? '“' + it.name + '” complete. Well played.' : '“' + it.name + '” back in progress.', true); break;
     case 'acquire': if (it && gameCommit(() => { it.wish = false; })) showToast('“' + it.name + '” moved to your owned shelf.', true); break;
     case 'delete': if (gameEdit && confirm('Remove “' + gameEdit.name + '” from your game shelf?')) {
@@ -8712,6 +8764,9 @@ document.addEventListener('change', e => {
   if (e.target.id === 'gamePlatform') { gamePlatform = e.target.value; renderGamesList(); }
   if (e.target.id === 'gameTag') { gameTag = e.target.value; renderGamesList(); }
   if (e.target.id === 'gameSort') { gameSort = e.target.value; renderGamesList(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'gamePlatformCustom' && e.key === 'Enter') { e.preventDefault(); gamePlatformAdd(); }
 });
 
 /* ---------- the figure ----------
@@ -17675,49 +17730,5 @@ else if (newerThanBuild) showToast("This board was saved by a newer Skillstone �
 else if (loadFailed) showToast("Could not read your saved board — starting fresh. Your earlier saves are still in storage.", false, true);
 </script>
 
-<script>
-/* ns-switcher-behaviour: mirrors the switcher in ../script.js. This page loads
-   neither styles.css nor script.js, so the behaviour lives here. */
-(() => {
-  const trigger = document.getElementById('ns-trigger');
-  const panel = document.getElementById('ns-panel');
-  if (!trigger || !panel) return;
-  const options = [...panel.querySelectorAll('[role="option"]')];
-
-  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
-  const setOpen = (state) => {
-    trigger.setAttribute('aria-expanded', String(state));
-    panel.hidden = !state;
-    if (state) (panel.querySelector('.current') || options[0])?.focus();
-  };
-  const go = (opt) => { const h = opt.dataset.href; if (h) window.location.href = h; };
-
-  trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()); });
-  trigger.addEventListener('keydown', (e) => {
-    if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
-  });
-
-  options.forEach((opt) => {
-    opt.addEventListener('click', () => go(opt));
-    opt.addEventListener('keydown', (e) => {
-      const i = options.indexOf(opt);
-      if (e.key === 'ArrowDown') { e.preventDefault(); options[(i + 1) % options.length].focus(); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); options[(i - 1 + options.length) % options.length].focus(); }
-      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(opt); }
-      else if (e.key === 'Escape') { e.preventDefault(); setOpen(false); trigger.focus(); }
-      else if (e.key === 'Tab') { setOpen(false); }
-    });
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!isOpen()) return;
-    if (e.target.closest('#ns-trigger') || e.target.closest('#ns-panel')) return;
-    setOpen(false);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
-  });
-})();
-</script>
 </body>
 </html>
