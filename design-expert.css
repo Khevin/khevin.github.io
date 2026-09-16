@@ -2188,7 +2188,9 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
      a yellow of its own for the single root file. */
   :root {
     --kind-core: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 140));
-    --kind-discipline: oklch(from var(--accent-0) l min(c, 0.13) calc(h + 195));
+    /* The disciplines burn a little brighter than the rest: a tangerine lifted
+       above the accent's lightness, since a warning deserves the eye. */
+    --kind-discipline: oklch(from var(--accent-0) 0.72 0.17 calc(h + 42));
     /* Lightness named, not inherited: the base sits at about half and a
        yellow at half lightness is an olive. */
     --kind-root: oklch(from var(--accent-0) 0.84 min(c, 0.16) calc(h + 82));
@@ -2208,7 +2210,7 @@ body[data-theme="ink"] .ba .card.after { background: var(--paper-warm); }
 :root {
   --hero-red: #c23545;
   --kind-core: #008754;
-  --kind-discipline: #00829f;
+  --kind-discipline: #e8823a;
   --kind-root: #e0c93c;
   --kind-mode: #9155a0;
   --kind-runtime: #3f6fbb;
