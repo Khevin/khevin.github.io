@@ -4334,6 +4334,129 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 @keyframes gm-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 650px) { .gm { padding: var(--s4) var(--s2) var(--s7); } .gm-head { align-items: start; flex-direction: column; } .gm-add { align-self: stretch; justify-content: center; } .gm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s2); } .game-dlg .bk-row { grid-template-columns: 1fr; } }
 @media (max-width: 650px) { .gm-view-compact { grid-template-columns: repeat(auto-fill, 96px); } .gm-view-list { display: block; } .gm-view-list .gm-card { grid-template-columns: 48px minmax(0, 1fr); gap: var(--s2); } .gm-view-list .gm-cover { width: 48px; height: 64px; } .gm-view-list .gm-card-actions { grid-column: 2; margin-top: -4px; } .gm-view-switch { width: 100%; justify-content: space-between; } .gm-view-switch button { flex: 1; } }
+/* ---------- the shelf beside the plate ----------
+   The shape Skills and Proficiency already use, for the reason DESIGN.md gives: the player
+   never learns a second way to read a second menu. With nothing open the rail is the whole
+   width and shows whichever density is selected; opening a game narrows it and drops it to
+   ledger rows, which is what lets the cover grid keep its full width the rest of the time. */
+.gm-split.is-open { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: var(--s5); align-items: start; }
+.gm-split.is-open .gm-rail { max-height: 68vh; overflow-y: auto; padding-right: var(--s3); border-right: 1px solid var(--mortar); }
+.gm-split.is-open .gm-pane { position: sticky; top: var(--s3); }
+/* Below the panel's own measure two columns cannot both be read, so the plate takes the
+   surface and the rail waits behind the back link - the narrow-viewport exception. */
+@media (max-width: 860px) {
+  .gm-split.is-open { grid-template-columns: minmax(0, 1fr); }
+  .gm-split.is-open .gm-rail { display: none; }
+  .gm-split.is-open .gm-pane { position: static; }
+}
+
+/* ---------- the card is the target ----------
+   Its two buttons moved to the plate, so there is nothing left on a card to press except the
+   card. Everything inside is phrasing content because a <div> or an <h4> inside a <button> is
+   invalid and the invalid version is the one that breaks in a screen reader. */
+.gm-open { display: block; width: 100%; padding: 0; border: 0; background: none;
+  color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.gm-open .gm-card-body { display: block; }
+.gm-open .gm-meta { display: block; }
+.gm-card-title { display: flex; align-items: baseline; gap: 6px; }
+/* The always-on signifier. Hover cannot be the only one: a touch screen never hovers, so a
+   tap-only reader would have nothing to read before committing. Bronze is not available for
+   this - it already means wishlist in this palette, and a hover that paints an owned game
+   with a status colour teaches the wrong thing. */
+.gm-go { flex: none; color: var(--ash); font: 600 1rem/1 var(--f-ui); transition: color var(--t-fast) var(--e-out); }
+@media (hover: hover) {
+  .gm-open:hover .gm-cover { border-color: var(--dust); }
+  .gm-open:hover .gm-card-title { text-decoration: underline; text-decoration-color: var(--mortar-2); text-underline-offset: 3px; }
+  .gm-open:hover .gm-go { color: var(--gold-2); }
+}
+.gm-open:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--r-sm); }
+.gm-open:focus-visible .gm-cover { border-color: var(--dust); }
+.gm-open:focus-visible .gm-go { color: var(--gold-2); }
+.gm-open[aria-current="true"] .gm-cover { border-color: var(--gold); }
+.gm-hours { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.gm-row.is-open { background: var(--stone-3); }
+.gm-row-state.is-done { color: var(--verdant); }
+.gm-row-state.is-done .gm-row-mark { background: var(--verdant); color: var(--cave); border-color: var(--verdant); }
+
+/* ---------- the plate ---------- */
+.gm-plate { padding: 0 0 var(--s4); }
+.gm-plate-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+  background: none; border: 0; padding: 0; color: var(--dust); font: 600 .8125rem var(--f-ui); cursor: pointer; }
+@media (hover: hover) { .gm-plate-back:hover { color: var(--gold-2); } }
+.gm-plate-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+.gm-plate-head { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: var(--s4); align-items: start; }
+.gm-plate-cover { position: relative; aspect-ratio: 2/3; display: grid; place-items: center; overflow: hidden;
+  background: var(--socket); border: 1px solid var(--mortar-2); }
+.gm-plate-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gm-plate.is-complete .gm-plate-cover { border-color: color-mix(in oklch, var(--verdant) 60%, var(--mortar-2)); }
+.gm-plate.is-wish .gm-plate-cover { border-color: var(--bronze); }
+.gm-plate-title { font: 700 1.25rem/1.2 var(--f-display); color: var(--gold-2); overflow-wrap: anywhere; }
+.gm-plate-id .gm-platforms { margin-top: var(--s2); }
+/* The two figures. One label, one number, and for achievements the same 2px track the skill
+   rows use - a run of achievements is a progression and this app draws progression one way.
+   No percentage beside the fraction: earned over total already states the ratio. */
+.gm-figures { display: flex; flex-wrap: wrap; gap: var(--s6); margin-top: var(--s5);
+  padding-top: var(--s4); border-top: 1px solid var(--mortar); }
+.gm-figure { min-width: 140px; }
+.gm-figure-k { display: block; font: 600 .625rem var(--f-ui); text-transform: uppercase;
+  letter-spacing: .09em; color: var(--ash); }
+.gm-figure-v { display: block; margin-top: 3px; color: var(--parchment);
+  font: 500 1.375rem/1 var(--f-mono); font-variant-numeric: tabular-nums; }
+.gm-figure.is-empty .gm-figure-v { color: var(--ash); font-size: .875rem; }
+.gm-figure-track { display: block; margin-top: 10px; max-width: 200px; }
+.gm-plate-tags { margin-top: var(--s4); }
+.gm-plate-actions { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; margin-top: var(--s5); }
+.gm-plate-actions .gm-complete { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 44px; padding: 8px 14px; border: 1px solid var(--mortar-2); border-radius: 4px;
+  background: var(--stone-3); color: var(--dust); font: 600 .8125rem var(--f-ui); cursor: pointer; }
+.gm-plate-actions .gm-complete[aria-pressed="true"] { color: var(--verdant);
+  border-color: color-mix(in oklch, var(--verdant) 55%, var(--mortar));
+  background: color-mix(in oklch, var(--verdant) 12%, var(--stone-3)); }
+.gm-plate-actions .gm-complete[aria-pressed="true"] .gm-complete-mark {
+  background: var(--verdant); color: var(--cave); border-color: var(--verdant); }
+
+/* ---------- the filters ----------
+   Two menus with a count beside every value, and the applied values named underneath. A
+   trigger that reads only "Platforms . 2" reports that something is filtering without
+   reporting what, and that recall cost repeats on every glance back at the shelf. */
+.gm-filter { position: relative; }
+.gm-filter > summary { list-style: none; display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 8px 12px; background: var(--socket); border: 1px solid var(--mortar);
+  border-radius: 4px; color: var(--parchment); font: .875rem var(--f-ui); cursor: pointer; }
+.gm-filter > summary::-webkit-details-marker { display: none; }
+.gm-filter > summary::marker { content: ""; }
+.gm-filter[open] > summary { border-color: var(--bronze); }
+.gm-filter > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.gm-filter .chev { color: var(--ash); font-size: 10px; }
+.gm-filter-label { max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-filter-menu { position: absolute; z-index: 40; top: calc(100% + 4px); left: 0;
+  min-width: 250px; max-height: 320px; overflow-y: auto; padding: 6px;
+  background: var(--stone-2); border: 1px solid var(--mortar); border-radius: 4px; box-shadow: var(--shadow-float); }
+.gm-filter-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px;
+  align-items: center; min-height: 40px; padding: 4px 8px; border-radius: 3px;
+  color: var(--dust); cursor: pointer; font: .8125rem var(--f-ui); }
+@media (hover: hover) { .gm-filter-row:hover { background: var(--stone-3); color: var(--parchment); } }
+/* The toolbar sets every input it contains to 220px wide (for the search box); a checkbox
+   inside the filter menu is also inside .gm-tools, so it inherited that and pushed the value
+   names out of the menu entirely. The checkbox is sized for what it is. */
+.gm-filter-row input[type="checkbox"] { width: 16px; height: 16px; min-height: 0; min-width: 0;
+  padding: 0; margin: 0; flex: none; accent-color: var(--gold); }
+.gm-filter-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-filter-count { color: var(--ash); font: 500 .75rem var(--f-mono); font-variant-numeric: tabular-nums; }
+.gm-filter-empty { padding: 8px; color: var(--ash); font-size: .8125rem; }
+.gm-applied { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--s3); }
+.gm-applied-chip { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 4px 10px;
+  background: var(--stone-3); border: 1px solid var(--bronze); border-radius: 3px;
+  color: var(--gold-2); font: 600 .75rem var(--f-ui); cursor: pointer; }
+@media (hover: hover) { .gm-applied-chip:hover { border-color: var(--gold); color: var(--parchment); } }
+.gm-applied-clear { min-height: 32px; background: none; border: 0; padding: 4px 6px;
+  color: var(--dust); font: 600 .75rem var(--f-ui); cursor: pointer; text-decoration: underline;
+  text-decoration-color: var(--mortar-2); text-underline-offset: 3px; }
+.gm-ach-pair { display: flex; align-items: center; gap: 6px; }
+.gm-ach-pair input { min-width: 0; }
+.gm-ach-slash { color: var(--ash); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 @media (prefers-reduced-motion: reduce) { .gm-card { animation: none; } }
 </style>
 <style>
@@ -6796,6 +6919,15 @@ function sanitize(s) {
         steamAppId: /^\d{1,10}$/.test(String(x.steamAppId || "")) ? String(x.steamAppId) : "",
         steamAccounts: (Array.isArray(x.steamAccounts) ? x.steamAccounts : [])
           .filter(a => /^\d{17}$/.test(String(a))).map(String).slice(0, 8),
+        /* Whole hours. Steam sends minutes; a hand-typed number is trusted the same way,
+           clamped to something a human could actually have played. */
+        hours: Math.max(0, Math.min(99999, Math.round(Number(x.hours) || 0))),
+        /* earned / total, with the stamp of when it was fetched. Null when never asked for. */
+        ach: (x.ach && Number(x.ach.total) > 0) ? {
+          earned: Math.max(0, Math.min(9999, Math.round(Number(x.ach.earned) || 0))),
+          total: Math.max(0, Math.min(9999, Math.round(Number(x.ach.total) || 0))),
+          at: Number(x.ach.at) || 0
+        } : null,
         added: Number(x.added) || 0
       })),
       accounts: (Array.isArray(g.accounts) ? g.accounts : []).filter(a => a && /^\d{17}$/.test(String(a.id)))
@@ -8659,7 +8791,13 @@ function gamePlatformMark(name) {
   else if (key === 'pc' || key === 'windows') { kind = 'pc'; content = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3" width="16" height="11" rx="1"/><path d="M7 17h6M10 14v3"/></svg>'; }
   return '<span class="gm-platform-mark gm-platform-mark--' + kind + '" aria-hidden="true">' + content + '</span>';
 }
-let gameScope = "owned", gameQuery = "", gamePlatform = "", gameTag = "", gameSort = "name";
+let gameScope = "owned", gameQuery = "", gameSort = "name";
+/* Two facets, each a list: within a facet the values are OR (Steam or Switch), across facets
+   they are AND (Steam AND Roguelite), which is what every filter the owner has used elsewhere
+   does and therefore the only behaviour he will not have to learn. */
+let gamePlatforms = [], gameTags = [];
+/* The id of the game whose plate is open. Empty means the shelf is showing. */
+let gameOpen = "";
 let gameEdit = null, gameBusy = "";
 const gameProfileTried = new Set();
 function gameReleaseLabel(d) {
@@ -8676,20 +8814,32 @@ function gameCard(it) {
   const platforms = (it.platforms || []).length ? it.platforms.map(p => '<span class="gm-platform-line">' + gamePlatformMark(p) +
     '<span class="gm-platform-label">' + esc(p) + '</span></span>').join('') : '<span class="gm-meta">Platform not set</span>';
   return '<article class="gm-card' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
-    '<div class="gm-cover"><span class="gm-spine" aria-hidden="true">' + esc(it.name) + '</span>' + cover +
-    (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Finished</span>' : '') + '</div>' +
-    '<div class="gm-card-body"><h4 class="gm-card-title">' + esc(it.name) + '</h4><div class="gm-platforms">' + platforms + '</div>' +
-    (it.wish ? '<p class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</p>' : '') +
-    (accounts.length ? '<p class="gm-meta">' + esc(accounts.join(' · ')) + '</p>' : '') +
-    '<div class="gm-tags">' + (it.tags || []).map(t => '<span class="gm-chip">' + esc(t) + '</span>').join('') + '</div></div>' +
-    '<div class="gm-card-actions">' + (it.wish
-      ? '<button type="button" data-game="acquire" data-id="' + esc(it.id) + '">Move to owned</button>'
-      : '<button type="button" class="gm-complete" data-game="complete" data-id="' + esc(it.id) + '" aria-pressed="' + !!it.complete +
-        '" aria-label="' + (it.complete ? 'Mark ' + esc(it.name) + ' in progress' : 'Mark ' + esc(it.name) + ' complete') +
-        '" title="' + (it.complete ? 'Mark in progress' : 'Mark complete') + '"><span class="gm-complete-mark" aria-hidden="true">' +
-        (it.complete ? '✓' : '') + '</span><span class="gm-complete-label">' + (it.complete ? 'Completed' : 'Mark complete') + '</span></button>') +
-      '<button type="button" class="gm-edit" data-game="edit" data-id="' + esc(it.id) + '" aria-label="Edit ' + esc(it.name) +
-      '"><span aria-hidden="true">✎</span> <span class="gm-edit-label">Edit</span></button></div></article>';
+    '<button type="button" class="gm-open" data-game="open" data-id="' + esc(it.id) +
+    '" aria-label="Open ' + esc(it.name) + '"' + (gameOpen === it.id ? ' aria-current="true"' : '') + '>' +
+    '<span class="gm-cover"><span class="gm-spine" aria-hidden="true">' + esc(it.name) + '</span>' + cover +
+    (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Finished</span>' : '') + '</span>' +
+    '<span class="gm-card-body"><span class="gm-card-title">' + esc(it.name) +
+    /* The one always-on signifier. Hover cannot be the only cue: a touch screen has no hover,
+       so a tap-only reader would get nothing to read before committing. */
+    '<span class="gm-go" aria-hidden="true">›</span></span>' +
+    '<span class="gm-platforms">' + platforms + '</span>' +
+    (it.wish ? '<span class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</span>' : '') +
+    (gameHours(it) ? '<span class="gm-meta gm-hours">' + esc(gameHours(it)) + '</span>' : '') +
+    '<span class="gm-tags">' + (it.tags || []).map(t => '<span class="gm-chip">' + esc(t) + '</span>').join('') + '</span>' +
+    '</span></button></article>';
+}
+/* Hours come from Steam as playtime_forever in minutes, or are typed by hand. Whole hours in
+   the mono face: a library with a 2000-hour title in it does not need a decimal place, and the
+   numbers stack down a column in the plate and the card alike. */
+function gameHours(it) {
+  const h = Number(it.hours) || 0;
+  return h > 0 ? h + 'h' : '';
+}
+/* Earned over total, and nothing else. The fraction already states the ratio, so a percentage
+   beside it would encode the same value twice. */
+function gameAchText(it) {
+  const a = it.ach;
+  return (a && Number(a.total) > 0) ? (Number(a.earned) || 0) + ' / ' + Number(a.total) : '';
 }
 /* The year is the only number on the shelf that aligns down a column, and most titles do not
    have one - a Steam import carries no release date. So the column is drawn only when some
@@ -8707,27 +8857,124 @@ function gameLedgerRow(it) {
   const mark = (it.platforms || []).length ? gamePlatformMark(it.platforms[0]) :
     '<span class="gm-platform-mark gm-platform-mark--other" aria-hidden="true">·</span>';
   const extra = Math.max(0, (it.platforms || []).length - 1);
+  /* Read-only: a glyph at this density and the full word on the cover cards, so the state is
+     legible everywhere without a second place to change it. */
   const state = it.wish
-    ? '<button type="button" class="gm-row-state" data-game="acquire" data-id="' + esc(it.id) +
-      '" title="Move to owned" aria-label="Move ' + esc(it.name) + ' to owned"><span class="gm-row-mark is-wish" aria-hidden="true">☆</span></button>'
-    : '<button type="button" class="gm-row-state" data-game="complete" data-id="' + esc(it.id) +
-      '" aria-pressed="' + !!it.complete + '" title="' + (it.complete ? 'Mark in progress' : 'Mark complete') +
-      '" aria-label="' + (it.complete ? 'Mark ' + esc(it.name) + ' in progress' : 'Mark ' + esc(it.name) + ' complete') +
-      '"><span class="gm-row-mark" aria-hidden="true">' + (it.complete ? '✓' : '') + '</span></button>';
-  return '<div class="gm-row' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
+    ? '<span class="gm-row-state"><span class="gm-row-mark is-wish" aria-hidden="true">☆</span><span class="sr-only">Wishlist</span></span>'
+    : '<span class="gm-row-state' + (it.complete ? ' is-done' : '') + '"><span class="gm-row-mark" aria-hidden="true">' +
+      (it.complete ? '✓' : '') + '</span>' + (it.complete ? '<span class="sr-only">Finished</span>' : '') + '</span>';
+  return '<div class="gm-row' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') +
+    (gameOpen === it.id ? ' is-open' : '') + '">' +
     mark +
-    '<button type="button" class="gm-row-name" data-game="edit" data-id="' + esc(it.id) + '">' +
+    '<button type="button" class="gm-row-name" data-game="open" data-id="' + esc(it.id) + '"' +
+    (gameOpen === it.id ? ' aria-current="true"' : '') + '>' +
     '<span class="gm-row-label">' + esc(it.name) + '</span>' +
     (extra ? '<span class="gm-row-plus">+' + extra + '</span>' : '') + '</button>' +
     state +
     '<span class="gm-row-year">' + esc(year) + '</span></div>';
 }
+/* The plate: one game, its numbers, and every control that changes it. It is the right-hand
+   pane of the panel the Skills and Proficiency boards already use — the council blocked a
+   full-width drill-down on the grounds that walking a library would cost two clicks a title
+   instead of one, and that this app had already paid once to escape a divergent panel shape. */
+function gamePlate(it) {
+  if (!it) return '';
+  const cover = gameCoverOK(it.cover)
+    ? '<img src="' + esc(it.cover) + '" alt="" loading="lazy" onerror="this.remove()">'
+    : '<span class="gm-spine" aria-hidden="true">' + esc(it.name) + '</span>';
+  const platforms = (it.platforms || []).length
+    ? (it.platforms || []).map(p => '<span class="gm-platform-line">' + gamePlatformMark(p) +
+        '<span class="gm-platform-label">' + esc(p) + '</span></span>').join('')
+    : '<span class="gm-meta">Platform not set</span>';
+  const ach = gameAchText(it), hours = gameHours(it);
+  const pct = (it.ach && Number(it.ach.total) > 0)
+    ? Math.max(0, Math.min(100, Math.round((Number(it.ach.earned) || 0) / Number(it.ach.total) * 100))) : 0;
+  /* The same 2px track the skill rows use, with the same tokens: a fraction of a run of
+     achievements is a progression, and this app already draws progression one way. */
+  const achBlock = ach
+    ? '<div class="gm-figure"><span class="gm-figure-k">Achievements</span>' +
+      '<span class="gm-figure-v">' + esc(ach) + '</span>' +
+      '<span class="pf-track gm-figure-track"><i style="width:' + pct + '%"></i></span></div>'
+    : '<div class="gm-figure is-empty"><span class="gm-figure-k">Achievements</span>' +
+      '<span class="gm-figure-v">' + (it.steamAppId ? 'Not fetched' : 'Not recorded') + '</span></div>';
+  const hoursBlock = '<div class="gm-figure"><span class="gm-figure-k">Hours played</span>' +
+    '<span class="gm-figure-v">' + (hours ? esc(hours) : '—') + '</span></div>';
+  const accounts = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)?.label).filter(Boolean);
+  return '<article class="gm-plate' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
+    '<button type="button" class="gm-plate-back" data-game="close"><span aria-hidden="true">‹</span> All games</button>' +
+    '<div class="gm-plate-head">' +
+    '<span class="gm-plate-cover">' + cover +
+    (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Finished</span>' : '') + '</span>' +
+    '<div class="gm-plate-id"><h3 class="gm-plate-title">' + esc(it.name) + '</h3>' +
+    '<div class="gm-platforms">' + platforms + '</div>' +
+    (it.release ? '<p class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</p>' : '') +
+    (accounts.length ? '<p class="gm-meta">From ' + esc(accounts.join(' · ')) + '</p>' : '') +
+    '</div></div>' +
+    '<div class="gm-figures">' + hoursBlock + achBlock + '</div>' +
+    ((it.tags || []).length ? '<div class="gm-tags gm-plate-tags">' +
+      (it.tags || []).map(t => '<span class="gm-chip">' + esc(t) + '</span>').join('') + '</div>' : '') +
+    '<div class="gm-plate-actions">' +
+    (it.wish
+      ? '<button type="button" class="btn btn-primary btn-sm" data-game="acquire" data-id="' + esc(it.id) + '">Move to owned</button>'
+      : '<button type="button" class="gm-complete" data-game="complete" data-id="' + esc(it.id) + '" aria-pressed="' + !!it.complete +
+        '" aria-label="' + (it.complete ? 'Mark ' + esc(it.name) + ' in progress' : 'Mark ' + esc(it.name) + ' complete') +
+        '"><span class="gm-complete-mark" aria-hidden="true">' + (it.complete ? '✓' : '') + '</span>' +
+        '<span class="gm-complete-label">' + (it.complete ? 'Finished' : 'Mark finished') + '</span></button>') +
+    '<button type="button" class="btn btn-ghost btn-sm" data-game="edit" data-id="' + esc(it.id) + '">Edit</button>' +
+    (it.steamAppId ? '<button type="button" class="btn btn-ghost btn-sm" data-game="ach-sync" data-id="' + esc(it.id) + '"' +
+      (gameBusy ? ' disabled' : '') + '>' + (gameBusy === 'ach:' + it.id ? 'Fetching…' : 'Fetch achievements') + '</button>' : '') +
+    '</div></article>';
+}
 function gameMatches(it) {
   if (gameScope === "owned" && it.wish || gameScope === "wish" && !it.wish || gameScope === "complete" && !it.complete) return false;
-  if (gamePlatform && !(it.platforms || []).some(p => p.toLowerCase() === gamePlatform.toLowerCase())) return false;
-  if (gameTag && !(it.tags || []).some(t => t.toLowerCase() === gameTag.toLowerCase())) return false;
+  if (gamePlatforms.length && !gamePlatforms.some(f => (it.platforms || []).some(p => p.toLowerCase() === f.toLowerCase()))) return false;
+  if (gameTags.length && !gameTags.some(f => (it.tags || []).some(t => t.toLowerCase() === f.toLowerCase()))) return false;
   const hay = [it.name, ...(it.platforms || []), ...(it.tags || [])].join(' ').toLowerCase();
   return hay.includes(gameQuery.toLowerCase().trim());
+}
+/* A count beside a filter value answers "is this worth clicking" before the click. It is
+   counted against everything EXCEPT its own facet, so the numbers do not all collapse to zero
+   the moment one value is picked — the standard faceted-count rule. */
+function gameFacetCounts(key) {
+  const other = key === 'platforms' ? 'tags' : 'platforms';
+  const otherPicked = other === 'platforms' ? gamePlatforms : gameTags;
+  const q = gameQuery.toLowerCase().trim();
+  const counts = new Map();
+  for (const it of games().items) {
+    if (gameScope === 'owned' && it.wish || gameScope === 'wish' && !it.wish) continue;
+    if (gameScope === 'complete' && !it.complete) continue;
+    if (otherPicked.length && !otherPicked.some(f => (it[other] || []).some(v => v.toLowerCase() === f.toLowerCase()))) continue;
+    if (q && ![it.name, ...(it.platforms || []), ...(it.tags || [])].join(' ').toLowerCase().includes(q)) continue;
+    for (const v of new Set((it[key] || []).map(x => x))) counts.set(v, (counts.get(v) || 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+/* Nielsen's rule for this toolbar: a trigger that says only "Platforms · 2" reports that
+   something is filtering without reporting what, and the recall cost repeats on every glance
+   back at the shelf. Up to three values are named; past that the count carries it, and the
+   chips below the toolbar name them in full either way. */
+function gameFilterLabel(name, picked) {
+  if (!picked.length) return name;
+  if (picked.length <= 3) return picked.join(', ');
+  return name + ' · ' + picked.length;
+}
+function gameFilterMenu(name, key, picked) {
+  const rows = gameFacetCounts(key).map(([v, n]) =>
+    '<label class="gm-filter-row"><input type="checkbox" data-game="facet" data-key="' + key + '" value="' + esc(v) + '"' +
+    (picked.some(p => p.toLowerCase() === v.toLowerCase()) ? ' checked' : '') + '>' +
+    '<span class="gm-filter-name">' + esc(v) + '</span><span class="gm-filter-count">' + n + '</span></label>').join('');
+  return '<details class="gm-filter" data-facet="' + key + '"><summary aria-label="Filter by ' + name.toLowerCase() + '">' +
+    '<span class="gm-filter-label">' + esc(gameFilterLabel(name, picked)) + '</span><span class="chev" aria-hidden="true">▾</span></summary>' +
+    '<div class="gm-filter-menu">' + (rows || '<p class="gm-filter-empty">Nothing to filter by yet.</p>') + '</div></details>';
+}
+/* The applied filters, spelled out, with the one gesture that removes each. */
+function gameFilterChips() {
+  const all = [...gamePlatforms.map(v => ['platforms', v]), ...gameTags.map(v => ['tags', v])];
+  if (!all.length) return '';
+  return '<div class="gm-applied">' + all.map(([k, v]) =>
+    '<button type="button" class="gm-applied-chip" data-game="facet-off" data-key="' + k + '" data-value="' + esc(v) + '">' +
+    esc(v) + '<span aria-hidden="true">×</span><span class="sr-only"> — remove filter</span></button>').join('') +
+    '<button type="button" class="gm-applied-clear" data-game="facet-clear">Clear all</button></div>';
 }
 function renderGamesList() {
   const el = $('#gameList'); if (!el) return;
@@ -8737,7 +8984,9 @@ function renderGamesList() {
     : a.name.localeCompare(b.name));
   const sections = gameScope === 'all' ? [['Owned', shown.filter(x => !x.wish)], ['Wishlist', shown.filter(x => x.wish)]] :
     [[gameScope === 'wish' ? 'Wishlist' : gameScope === 'complete' ? 'Completed' : 'Owned', shown]];
-  const view = gameView();
+  /* The density switch still says what it says; the rail simply cannot show 172px covers in
+     360px, so an open plate forces the ledger and the switch returns when the plate closes. */
+  const view = gameOpen ? 'ledger' : gameView();
   el.innerHTML = shown.length ? sections.filter(([, list]) => list.length).map(([name, list]) =>
     '<section class="gm-section"><div class="gm-section-h"><h3>' + name + '</h3><span class="gm-count">' + list.length + '</span></div>' +
     '<div class="gm-grid gm-view-' + view + (view === 'ledger' && shown.some(gameYear) ? ' has-year' : '') + '">' +
@@ -8750,7 +8999,6 @@ function renderGames() {
   const el = $('#invGames'); if (!el) return;
   const g = games(), owned = g.items.filter(x => !x.wish).length, wish = g.items.length - owned;
   const view = gameView();
-  const options = key => [...new Set(g.items.flatMap(x => x[key] || []))].sort((a,b) => a.localeCompare(b));
   const viewIcon = {
     covers: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7"/><rect x="11" y="2" width="7" height="7"/><rect x="2" y="11" width="7" height="7"/><rect x="11" y="11" width="7" height="7"/></svg>',
     compact: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="4" height="4"/><rect x="8" y="2" width="4" height="4"/><rect x="14" y="2" width="4" height="4"/><rect x="2" y="8" width="4" height="4"/><rect x="8" y="8" width="4" height="4"/><rect x="14" y="8" width="4" height="4"/><rect x="2" y="14" width="4" height="4"/><rect x="8" y="14" width="4" height="4"/><rect x="14" y="14" width="4" height="4"/></svg>',
@@ -8767,13 +9015,20 @@ function renderGames() {
     [['covers','Covers'],['compact','Small covers'],['list','List'],['ledger','Ledger']].map(([k,n]) => '<button type="button" data-game="view" data-k="' + k +
       '" aria-pressed="' + (view === k) + '" title="' + n + '" aria-label="' + n + '">' + viewIcon[k] + '<span>' + n + '</span></button>').join('') + '</div>' +
     '<input id="gameSearch" type="search" aria-label="Search games" placeholder="Search the shelf" value="' + esc(gameQuery) + '">' +
-    '<select id="gamePlatform" aria-label="Filter by platform"><option value="">All platforms</option>' + options('platforms').map(p =>
-      '<option value="' + esc(p) + '"' + (p === gamePlatform ? ' selected' : '') + '>' + esc(p) + '</option>').join('') + '</select>' +
-    '<select id="gameTag" aria-label="Filter by tag"><option value="">All tags</option>' + options('tags').map(t =>
-      '<option value="' + esc(t) + '"' + (t === gameTag ? ' selected' : '') + '>' + esc(t) + '</option>').join('') + '</select>' +
+    gameFilterMenu('Platforms', 'platforms', gamePlatforms) +
+    gameFilterMenu('Tags', 'tags', gameTags) +
     '<select id="gameSort" aria-label="Sort games"><option value="name">A–Z</option><option value="recent"' + (gameSort === 'recent' ? ' selected' : '') +
     '>Recently added</option><option value="release"' + (gameSort === 'release' ? ' selected' : '') + '>Release date</option></select></div></div>' +
-    '<span class="gm-count" id="gameVisibleCount"></span><div id="gameList"></div>' +
+    gameFilterChips() +
+    '<span class="gm-count" id="gameVisibleCount"></span>' +
+    /* The shelf and the plate side by side, the way Skills and Proficiency are built. With
+       nothing open the rail is the whole width and shows the density the owner picked; with a
+       plate open it narrows and drops to ledger rows, so the list never unmounts and walking
+       the library costs one click a title rather than two. */
+    '<div class="gm-split' + (gameOpen ? ' is-open' : '') + '">' +
+    '<div class="gm-rail" id="gameList"></div>' +
+    (gameOpen ? '<div class="gm-pane" id="gamePane">' + gamePlate(gameById(gameOpen)) + '</div>' : '') +
+    '</div>' +
     '<details class="gm-steam"><summary>Steam accounts · ' + g.accounts.length + '</summary><div class="gm-steam-inner">' +
     '<p>Bring in owned games from either account. Add its 17-digit SteamID64; no Steam password goes here. Your completion marks and tags stay yours on every sync.</p>' +
     g.accounts.map(a => '<div class="gm-account"><span class="gm-avatar">' + (a.avatar ? '<img src="' + esc(a.avatar) + '" alt="" loading="lazy" onerror="this.remove()">' :
@@ -8794,7 +9049,7 @@ function renderGames() {
 function gameDlgOpen(id) {
   const it = id ? gameById(id) : null;
   gameEdit = it ? structuredClone(it) : { id: '', name: '', cover: '', complete: false, wish: gameScope === 'wish',
-    platforms: [], tags: [], release: '', steamAppId: '', steamAccounts: [], added: Date.now() };
+    platforms: [], tags: [], release: '', steamAppId: '', steamAccounts: [], hours: 0, ach: null, added: Date.now() };
   const dlg = $('#gameDlg');
   dlg.innerHTML = '<form method="dialog" data-form="game-save"><div class="bk-top"><p class="bk-h" id="gameDlgTitle">' +
     (it ? 'Edit game' : 'Add a game') + '</p><button type="button" class="bk-x" data-game="cancel" aria-label="Close">×</button></div>' +
@@ -8813,6 +9068,13 @@ function gameDlgOpen(id) {
     '<div class="bk-row"><label class="bk-l">Release date (optional)<input type="date" name="release" value="' + esc(gameEdit.release) +
     '"></label><label class="bk-l">Steam App ID (optional)<input name="steamAppId" inputmode="numeric" pattern="[0-9]*" maxlength="10" value="' +
     esc(gameEdit.steamAppId) + '" placeholder="For matching imports"></label></div>' +
+    '<div class="bk-row"><label class="bk-l">Hours played<input name="hours" inputmode="numeric" pattern="[0-9]*" maxlength="5" value="' +
+    (gameEdit.hours || '') + '" placeholder="Steam fills this on sync"></label>' +
+    '<label class="bk-l">Achievements<span class="gm-ach-pair"><input name="achEarned" inputmode="numeric" pattern="[0-9]*" maxlength="4" value="' +
+    (gameEdit.ach ? gameEdit.ach.earned : '') + '" aria-label="Achievements earned" placeholder="earned">' +
+    '<span class="gm-ach-slash" aria-hidden="true">/</span>' +
+    '<input name="achTotal" inputmode="numeric" pattern="[0-9]*" maxlength="4" value="' +
+    (gameEdit.ach ? gameEdit.ach.total : '') + '" aria-label="Achievements in total" placeholder="total"></span></label></div>' +
     '<label class="gm-form-state gm-complete-field"><input type="checkbox" name="complete"' + (gameEdit.complete ? ' checked' : '') + '> I completed this game</label>' +
     '<div class="gm-cover-row"><span class="gm-cover-mini" id="gameCoverPreview"></span><div><div class="gm-cover-controls">' +
     '<button type="button" class="btn btn-ghost btn-sm" data-game="cover-pick">Upload cover</button>' +
@@ -8910,7 +9172,12 @@ function gameDlgSave() {
   const pendingTag = String($('#gameTagCustom')?.value || '').trim().slice(0, 32);
   if (pendingTag && !tags.some(t => t.toLowerCase() === pendingTag.toLowerCase())) tags.push(pendingTag);
   if (tags.length > 16) { showToast('A game can carry up to 16 tags.', false, true); return; }
-  const it = { ...d, id: d.id || uid(), name, cover, platforms, tags,
+  const hours = Math.max(0, Math.min(99999, Math.round(Number(fd.get('hours')) || 0)));
+  const earned = Math.round(Number(fd.get('achEarned')) || 0), total = Math.round(Number(fd.get('achTotal')) || 0);
+  if (total > 0 && earned > total) { showToast('Earned achievements cannot exceed the total.', false, true); return; }
+  const ach = total > 0 ? { earned: Math.max(0, Math.min(9999, earned)), total: Math.min(9999, total),
+    at: (d.ach && d.ach.earned === earned && d.ach.total === total) ? d.ach.at : Date.now() } : null;
+  const it = { ...d, id: d.id || uid(), name, cover, platforms, tags, hours, ach,
     wish: fd.get('shelf') === 'wish', complete: fd.get('shelf') === 'wish' ? false : fd.has('complete'),
     release: String(fd.get('release') || ''), steamAppId: appid };
   if (gameCommit(g => { const i = g.items.findIndex(x => x.id === it.id); if (i < 0) g.items.push(it); else g.items[i] = it; })) {
@@ -8965,6 +9232,27 @@ async function gameSteamProfile(id) {
     });
   } catch (_) { /* A profile picture is optional; sync remains available. */ }
 }
+async function gameAchSync(gid) {
+  const it = gameById(gid); if (!it || !it.steamAppId || gameBusy) return;
+  const account = (it.steamAccounts || [])[0] || (games().accounts[0] || {}).id;
+  if (!account) { showToast('Add a Steam account first — achievements are read per player.', false, true); return; }
+  if (!auth) { showToast('Sign in to Skillstone before fetching achievements.', false, true); return; }
+  gameBusy = 'ach:' + gid; renderGames();
+  try {
+    if (!(await authRefreshIfNeeded())) throw new Error('Your sign-in expired. Sign in again.');
+    const url = ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + '/functions/v1/steam-games';
+    const r = await fetch(url, { method: 'POST', headers: { apikey: authKey(), Authorization: 'Bearer ' + auth.access_token,
+      'Content-Type': 'application/json' }, body: JSON.stringify({ steamid: account, appid: it.steamAppId }) });
+    const result = await r.json(); if (!r.ok) throw new Error(result.error || ('Steam returned ' + r.status));
+    const total = Math.round(Number(result.achievements?.total) || 0);
+    if (!total) throw new Error('This title publishes no achievements.');
+    const earned = Math.round(Number(result.achievements?.earned) || 0);
+    gameCommit(g => { const x = g.items.find(y => y.id === gid);
+      if (x) x.ach = { earned: Math.max(0, Math.min(total, earned)), total, at: Date.now() }; });
+    showToast(earned + ' of ' + total + ' achievements.', true);
+  } catch (e) { showToast('Achievements: ' + e.message, false, true); }
+  finally { gameBusy = ''; renderGames(); }
+}
 async function gameSteamSync(id) {
   if (gameBusy) return;
   if (!auth) { showToast('Sign in to Skillstone before syncing Steam.', false, true); return; }
@@ -8983,8 +9271,10 @@ async function gameSteamSync(id) {
         let it = g.items.find(x => x.steamAppId === appid);
         if (!it) { const exact = g.items.filter(x => !x.steamAppId && x.name.trim().toLowerCase() === String(raw.name).trim().toLowerCase());
           if (exact.length === 1) it = exact[0]; }
+        const mins = Number(raw.playtime) || 0;
         if (it) {
           it.steamAppId = appid; it.wish = false;
+          if (mins > 0) it.hours = Math.round(mins / 60);
           if (!it.platforms.some(p => p.toLowerCase() === 'steam')) it.platforms.push('Steam');
           if (!it.steamAccounts.includes(id)) it.steamAccounts.push(id);
           if (!it.cover) it.cover = 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/' + appid + '/library_600x900.jpg';
@@ -8993,7 +9283,7 @@ async function gameSteamSync(id) {
           g.items.push({ id: uid(), name: String(raw.name).slice(0,160),
             cover: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/' + appid + '/library_600x900.jpg',
             complete: false, wish: false, platforms: ['Steam'], tags: [], release: '', steamAppId: appid,
-            steamAccounts: [id], added: Date.now() }); added++;
+            steamAccounts: [id], hours: mins > 0 ? Math.round(mins / 60) : 0, ach: null, added: Date.now() }); added++;
         }
       });
       const account = g.accounts.find(a => a.id === id); if (account) {
@@ -9012,6 +9302,23 @@ async function gameSteamSync(id) {
 function gameAct(el) {
   const { game: act, id, k } = el.dataset, it = id && gameById(id);
   switch (act) {
+    case 'open': if (it) { gameOpen = id; renderGames();
+      $('#gamePane')?.scrollIntoView({ block: 'nearest' });
+      $('#gamePane .gm-plate-back')?.focus({ preventScroll: true }); } break;
+    case 'close': {
+      const was = gameOpen; gameOpen = ''; renderGames();
+      /* Focus goes back to the row that opened the plate, not to the top of the document. */
+      $('#gameList [data-game="open"][data-id="' + CSS.escape(was) + '"]')?.focus({ preventScroll: true });
+      break;
+    }
+    case 'facet-off': {
+      const key = el.dataset.key, value = el.dataset.value;
+      const list = key === 'platforms' ? gamePlatforms : gameTags;
+      const i = list.findIndex(v => v.toLowerCase() === String(value).toLowerCase());
+      if (i >= 0) list.splice(i, 1);
+      renderGames(); break;
+    }
+    case 'facet-clear': gamePlatforms = []; gameTags = []; renderGames(); break;
     case 'new': gameDlgOpen(); break;
     case 'edit': if (it) gameDlgOpen(id); break;
     case 'cancel': gameDlgClose(); break;
@@ -9052,6 +9359,7 @@ function gameAct(el) {
       } break;
     }
     case 'sync': if (games().accounts.some(a => a.id === id)) gameSteamSync(id); break;
+    case 'ach-sync': if (it) gameAchSync(id); break;
   }
 }
 document.addEventListener('input', e => {
@@ -9061,8 +9369,18 @@ document.addEventListener('input', e => {
   }
 });
 document.addEventListener('change', e => {
-  if (e.target.id === 'gamePlatform') { gamePlatform = e.target.value; renderGamesList(); }
-  if (e.target.id === 'gameTag') { gameTag = e.target.value; renderGamesList(); }
+  if (e.target.dataset && e.target.dataset.game === 'facet') {
+    const key = e.target.dataset.key, value = e.target.value;
+    const list = key === 'platforms' ? gamePlatforms : gameTags;
+    const i = list.findIndex(v => v.toLowerCase() === value.toLowerCase());
+    if (e.target.checked && i < 0) list.push(value); else if (!e.target.checked && i >= 0) list.splice(i, 1);
+    /* Re-render the shelf but keep the menu open — the owner is usually picking more than one,
+       and a menu that closes on every tick makes the second pick cost another open. */
+    const facet = e.target.closest('.gm-filter')?.dataset.facet;
+    renderGames();
+    const back = $('.gm-filter[data-facet="' + facet + '"]');
+    if (back) { back.open = true; back.querySelector('input[value="' + CSS.escape(value) + '"]')?.focus({ preventScroll: true }); }
+  }
   if (e.target.id === 'gameSort') { gameSort = e.target.value; renderGamesList(); }
 });
 document.addEventListener('keydown', e => {
