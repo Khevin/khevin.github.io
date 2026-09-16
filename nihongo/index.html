@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>日本語 · khevin/mituti</title>
+<meta name="description" content="A personal Japanese study space — vocabulary books, flashcards, and a dictionary built to learn as I go." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16x16.png" />
+<link rel="icon" type="image/svg+xml" href="../assets/favicon/favicon.svg" />
+<link rel="shortcut icon" href="../assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="../assets/favicon/site.webmanifest" />
+<style>
+  /* ── JP accent layer ─────────────────────────────────────────────────
+     Supplements styles.css. Warm paper palette mirroring the study app.   */
+  :root {
+    /* Cherry, not beige. The paper family sits at blossom hue while every
+       token keeps the lightness it had, so no contrast ratio moved. The
+       portfolio's own page tokens are overridden here too, scoped to this
+       page: the study space has its own weather, the rest of the site does
+       not follow it. */
+    --paper:        #fdf6f4;
+    --paper-warm:   #f8ecea;
+    --paper-deep:   #f2e2df;
+    --jp-paper:     #f9ebe7;
+    --jp-paper-2:   #fdf6f3;
+    --jp-edge:      #eed8d3;
+    --jp-accent:      #c07f88;
+    --jp-accent-deep: #b24c5d;
+    --jp-accent-soft: #dcbfb2;
+    --jp-ink:       #3a2818;
+    --jp-ink-2:     #6b5740;
+    --jp-ink-3:     #9c8681;
+    --serif-jp:     'Shippori Mincho', 'Noto Serif JP', 'Hiragino Mincho Pro', serif;
+    --sans-jp:      'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+  }
+
+  /* ── page hero override ──────────────────────────────────────────── */
+  .jp-hero {
+    background: var(--jp-paper);
+    border-bottom: 1px solid var(--jp-edge);
+    position: relative;
+    overflow: hidden;
+  }
+  .jp-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 80% 50%, rgba(198,128,132,0.09), transparent 55%),
+      radial-gradient(circle at 20% 80%, rgba(176,132,140,0.06), transparent 50%);
+    pointer-events: none;
+  }
+
+  .jp-eyebrow {
+    font-family: var(--serif-jp);
+    font-size: 13px;
+    color: var(--jp-ink-3);
+    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+    display: block;
+  }
+
+  /* decorative kanji — large, faded, right side */
+  .jp-deco {
+    font-family: var(--serif-jp);
+    font-weight: 800;
+    font-size: clamp(100px, 18vw, 180px);
+    color: var(--jp-accent-soft);
+    line-height: 1;
+    user-select: none;
+    opacity: 0.55;
+    letter-spacing: -0.02em;
+  }
+
+  /* ── enter CTA ───────────────────────────────────────────────────── */
+  /* Tighten the gap between the hero and the CTA card. The shared .section
+     adds 96px top padding; this page only has the one .section (the hero is
+     .page-hero), so the override is local. */
+  .section { padding-top: 44px; }
+  .jp-enter {
+    margin: 8px 0 56px;
+  }
+  .jp-enter-link {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 24px;
+    background: var(--jp-paper);
+    border: 1px solid var(--jp-edge);
+    border-left: 4px solid var(--jp-accent);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--jp-ink);
+    max-width: 560px;
+    transition: border-color .15s, box-shadow .15s, transform .15s;
+    box-shadow: 0 2px 8px rgba(100,72,30,0.07);
+  }
+  .jp-enter-link:hover {
+    border-color: var(--jp-accent);
+    border-left-color: var(--jp-accent-deep);
+    box-shadow: 0 4px 18px rgba(100,72,30,0.13);
+    transform: translateY(-1px);
+  }
+  .jp-enter-mark {
+    height: 144px;
+    width: auto;
+    max-width: 176px;
+    object-fit: contain;
+    flex: 0 0 auto;
+    align-self: center;
+  }
+  .jp-enter-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* keep the text centred against the taller logo */
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+    align-self: center;
+  }
+  .jp-enter-label {
+    font-family: var(--serif-jp);
+    font-size: 17px;
+    color: var(--jp-ink);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .jp-enter-sub {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--jp-ink-3);
+  }
+  .jp-enter-arrow {
+    font-size: 20px;
+    color: var(--jp-accent);
+    flex: 0 0 auto;
+    transition: transform .15s;
+  }
+  .jp-enter-link:hover .jp-enter-arrow {
+    transform: translateX(3px);
+  }
+
+  /* ── what's inside grid ──────────────────────────────────────────── */
+  .jp-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .jp-sec {
+    background: var(--jp-paper);
+    border: 1px solid var(--jp-edge);
+    border-radius: 8px;
+    padding: 20px 18px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .jp-sec::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--jp-accent-soft);
+    border-radius: 3px 0 0 3px;
+  }
+  .jp-sec-glyph {
+    display: block;
+    font-family: var(--serif-jp);
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--jp-accent-deep);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .jp-sec h4 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--jp-ink);
+    margin: 0 0 6px;
+  }
+  .jp-sec p {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--jp-ink-3);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── section label ───────────────────────────────────────────────── */
+  .jp-section-label {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--jp-ink-3);
+    letter-spacing: 0.06em;
+    margin: 0 0 16px;
+    text-transform: lowercase;
+  }
+
+  /* ── two doors: the app, and the reader ──────────────────────────── */
+  .jp-doors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 14px;
+    margin: 8px 0 48px;
+  }
+  .jp-enter { margin: 0; }                     /* the door now lives in the grid */
+  .jp-enter-link { max-width: none; height: 100%; }
+  /* The second door is not open yet: same shape, quieter ink, no lift. */
+  .jp-enter-link.is-soon {
+    border-left-color: var(--jp-accent-soft);
+    cursor: default;
+    box-shadow: none;
+  }
+  .jp-enter-link.is-soon:hover {
+    transform: none;
+    border-color: var(--jp-edge);
+    border-left-color: var(--jp-accent-soft);
+    box-shadow: none;
+  }
+  .jp-enter-link.is-soon .jp-enter-label { color: var(--jp-ink-2); }
+  .jp-door-mark {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    flex: none;
+    font-family: var(--serif-jp);
+    font-size: 22px;
+    color: var(--jp-accent-deep);
+    background: var(--jp-paper-2);
+    border: 1px solid var(--jp-edge);
+    border-radius: 6px;
+  }
+  .jp-soon {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--jp-ink-3);
+  }
+
+  /* ── a branch behind the bar ──────────────────────────────────────
+     The study app's own sakura paper, cropped to the richest branch and
+     laid behind the navbar's empty middle. It is masked to fade before it
+     reaches the switcher on one side and the links on the other, and it
+     sits at z-index -1 so it passes under the text rather than over it.
+     Scoped to this page: the portfolio keeps its own plain bar. */
+  nav.top .inner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* the asset is a band cut out of its paper, shaped for this bar: its own
+       height is the bar’s height, so the flowers are never sliced by the edge */
+    background: url("./nihongo/images/bg/global/nav-sakura.webp") 47% 50% / auto 100% no-repeat;
+    opacity: .95;
+  }
+  @media (max-width: 700px) {
+    /* the bar is nearly all control at this width; the branch would crowd it */
+    nav.top .inner::before { display: none; }
+  }
+
+  /* the one nav item that leaves the page carries the accent */
+  .nav-open {
+    color: var(--jp-accent-deep) !important;
+  }
+  .nav-open:hover { color: var(--jp-ink) !important; }
+
+  /* ── the why ─────────────────────────────────────────────────────── */
+  .jp-vision {
+    max-width: 68ch;
+    margin: 0 0 44px;
+  }
+  .jp-vision p {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.62;
+    color: var(--jp-ink-2);
+    margin: 0 0 14px;
+  }
+  .jp-vision p:last-child { margin-bottom: 0; }
+  .jp-vision em { color: var(--jp-ink); font-style: italic; }
+
+  /* ── a look inside: prose leads, the figure's width is the emphasis ──
+     Single-column long-form with graded breakouts. Four scales, in order of
+     weight: full (breaks the shell), wide (fills it), pair (two at half),
+     aside (a narrow supplement beside the prose). The image inventory is
+     mixed — two cinematic, two landscape, one near-square, one portrait —
+     so the scales are chosen per shape rather than applied uniformly. */
+  .jp-moment {
+    margin: 0 0 64px;
+  }
+  .jp-moment:last-of-type { margin-bottom: 8px; }
+  .jp-moment-head {
+    max-width: 64ch;
+    margin: 0 0 18px;
+  }
+  .jp-moment h3 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 23px;
+    line-height: 1.25;
+    color: var(--jp-ink);
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .jp-moment h3 .ja {
+    font-family: var(--serif-jp);
+    font-weight: 400;
+    font-size: 17px;
+    color: var(--jp-ink-3);
+    margin-left: 10px;
+    letter-spacing: 0.04em;
+  }
+  .jp-moment p {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--jp-ink-2);
+    margin: 0 0 10px;
+  }
+  .jp-moment p:last-child { margin-bottom: 0; }
+  .jp-moment b { font-weight: 600; color: var(--jp-ink); }
+
+  /* the scales */
+  .jp-fig { margin: 0; }
+  .jp-fig img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--jp-edge);
+    border-radius: 6px;
+    background: var(--jp-paper-2);
+    box-shadow: 0 2px 10px rgba(100,72,30,0.09);
+  }
+  .jp-fig figcaption {
+    margin-top: 8px;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--jp-ink-3);
+    max-width: 78ch;
+  }
+  /* full: steps outside the shell, up to the viewport, for the one shot that
+     earns the whole width */
+  .jp-fig.is-full {
+    width: min(100vw - 32px, 1560px);
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+  /* medium: a closing note does not need the full width */
+  .jp-fig.is-medium { max-width: 760px; }
+  .jp-fig.is-pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 18px;
+  }
+  .jp-fig.is-pair figcaption { grid-column: auto; }
+  .jp-pair-item { margin: 0; }
+  .jp-pair-item img { width: 100%; }
+  /* aside: the card sits beside the prose only when the prose still has a
+     comfortable measure; below that it stacks rather than squeeze to 45ch */
+  .jp-aside { display: grid; gap: 20px; }
+  .jp-aside .jp-fig img { max-height: 420px; width: auto; margin: 0 auto; }
+  @media (min-width: 900px) {
+    .jp-aside { grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; align-items: start; }
+    .jp-aside .jp-fig img { margin: 0 0 0 auto; }
+  }
+  @media (max-width: 760px) {
+    .jp-moment h3 { font-size: 20px; }
+    .jp-fig.is-full { width: 100%; margin-left: 0; transform: none; }
+  }
+
+  @media (max-width: 640px) {
+    .jp-vision p { font-size: 16px; }
+  }
+</style>
+</head>
+<body data-page="nihongo">
+
+<!-- ============= NAV ============= -->
+<nav class="top">
+  <div class="inner">
+    <button class="brand-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">nihongo</span>
+      <span class="chev" aria-hidden="true">&#9662;</span>
+    </button>
+
+    <ul class="ns-panel" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="false" data-href="../index.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work — what khevin ships for clients</span>
+      </li>
+      <li role="option" aria-selected="false" data-href="../design-expert/" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
+        </span>
+        <span class="ns-desc">the plugin — what khevin makes for designers</span>
+      </li>
+      <li role="option" aria-selected="false" data-href="../skillstone/" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">skillstone</span></span>
+        </span>
+        <span class="ns-desc">the character sheet — what khevin keeps for himself</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="./" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">✓</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">nihongo</span></span>
+        </span>
+        <span class="ns-desc">the study space — what khevin is learning</span>
+      </li>
+    </ul>
+
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-haspopup="menu" aria-controls="nav-primary" aria-expanded="false" aria-label="Open menu">
+      <svg class="nav-toggle__open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7 H20 M4 12 H20 M4 17 H20"/></svg>
+      <svg class="nav-toggle__close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5 L19 19 M5 19 L19 5"/></svg>
+    </button>
+
+    <ul class="primary" id="nav-primary">
+      <li><a href="#top">about</a></li>
+      <li><a href="#inside">what&rsquo;s inside</a></li>
+      <li><a href="#gallery">gallery</a></li>
+      <li><a href="./app.html" class="nav-open">勉強 &middot; open the app</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="top">
+
+<!-- ============= HERO ============= -->
+<section class="page-hero jp-hero">
+  <div class="shell">
+    <div class="crumbs">
+      <span class="ns" lang="ja">日本語</span>
+      <span class="sep">/</span>
+      <span aria-current="page">the study space</span>
+    </div>
+
+    <div class="page-hero-grid">
+      <div class="l">
+        <span class="jp-eyebrow" lang="ja">日本語の勉強</span>
+        <h1>Learning <em>Japanese.</em></h1>
+        <p class="sub">A personal study space built as I go. Vocabulary books tied to hand-drawn cheatsheets, flashcards, a small dictionary. The tools are mine &mdash; the shelf is open.</p>
+      </div>
+      <aside class="page-hero-aside" aria-hidden="true">
+        <span class="jp-deco" aria-hidden="true">語</span>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============= ENTER + SECTIONS ============= -->
+<section class="section">
+  <div class="shell">
+
+    <div class="jp-doors">
+      <div class="jp-enter">
+        <a href="./app.html" class="jp-enter-link">
+          <img class="jp-enter-mark" src="./images/logo.webp" alt="" aria-hidden="true" />
+          <span class="jp-enter-body">
+            <span class="jp-enter-label">勉強アプリを開く<br>Open the study app</span>
+            <span class="jp-enter-sub">Vocabulary &middot; Flashcards &middot; Dictionary &middot; Sentences</span>
+          </span>
+          <span class="jp-enter-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+      <div class="jp-enter">
+        <span class="jp-enter-link is-soon">
+          <span class="jp-door-mark" lang="ja" aria-hidden="true">札</span>
+          <span class="jp-enter-body">
+            <span class="jp-enter-label">日本語リーダー<br>Nihongo Reader &mdash; Chrome extension</span>
+            <span class="jp-enter-sub">Read any Japanese page with my own cards</span>
+            <span class="jp-soon">in testing &mdash; not in the store yet</span>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <div class="jp-vision">
+      <p>I started this because the apps I tried all taught the same 500 words in the same order, and none of them knew what I had already learned. So the rule here is the opposite: <em>everything is tied to what I have actually studied.</em> A word I meet in a story links back to the card I drew for it, the sentence I broke apart, the picture I made to remember it.</p>
+      <p>The study app is the desk. The reader extension is the part I am most excited about: it takes that same desk out into the wild, so a Nintendo page or a news article becomes readable in place &mdash; the sentence broken into particle-tagged blocks, each word carrying my own mnemonic, every kanji I look at quietly counted as an encounter.</p>
+      <p>It is not a product and there is no roadmap. It grows in the direction I happen to be studying, which is why there is a whole world for eating out, and why the dictionary knows the word for Pokédex.</p>
+    </div>
+
+    <p class="jp-section-label" id="inside">what&rsquo;s inside</p>
+
+    <div class="jp-sections">
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">語</span>
+        <h4>Vocabulary books</h4>
+        <p>Themed word lists &mdash; home, food, stays, the internet &mdash; each word illustrated and tied to a watercolour cheatsheet.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">札</span>
+        <h4>Flashcards</h4>
+        <p>Kanji and vocabulary decks with animated stroke order, hand-made mnemonic pictures, and spaced review.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">文</span>
+        <h4>Writing &amp; grammar</h4>
+        <p>Kana, particles and sentence structure, taught as coloured blocks you can read left to right.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">話</span>
+        <h4>Shadowing studio</h4>
+        <p>Hear a phrase, record yourself, and get scored on rhythm, clarity, pitch and naturalness.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">食</span>
+        <h4>Food &amp; dining</h4>
+        <p>A whole eating-out world &mdash; menus, a food gallery, and guides to flavour and texture words.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">辞</span>
+        <h4>Dictionary</h4>
+        <p>Every everyday kanji with its readings and meaning, plus the game vocabulary I keep running into.</p>
+      </div>
+      <div class="jp-sec">
+        <span class="jp-sec-glyph" lang="ja" aria-hidden="true">読</span>
+        <h4>The reader</h4>
+        <p>A Chrome extension that reads the page you are on, in the same blocks, against your own cards.</p>
+      </div>
+    </div>
+
+    <p class="jp-section-label" id="gallery">gallery</p>
+
+    <div class="jp-moment">
+      <div class="jp-moment-head" id="reader">
+        <h3>Reading a page nobody wrote for a learner<span class="ja" lang="ja">読む</span></h3>
+        <p>Textbook Japanese is graded. The internet is not. The reader is my answer to that: it takes the page as it is and does the work of a patient teacher beside you. Select a line and a 札 button appears; tap it and the sentence drops into a bar at the foot of the page, already taken apart.</p>
+        <p>The panel on the right is the part that matters. It lists every word in the selection with its reading, then every kanji inside those words, marked with a dot when it is one I have a card for. <b>Each kanji I look at is counted as a studied encounter</b>, so the app slowly learns what the web has already taught me. Nothing is sent anywhere unless I ask for it.</p>
+      </div>
+      <figure class="jp-fig is-full">
+        <img src="./images/showcase/reader-on-zelda.webp" alt="The Nihongo Reader extension open on a Japanese Zelda page: a selected sentence with the 札 button beside it, a floating bar showing the sentence as coloured blocks, and a side panel listing the words ハイラル, 王国, 辺境 and the kanji 王 国 辺 境." loading="lazy" width="1600" height="764" />
+        <figcaption>Chapter 2 of 時のオカリナ on Nintendo&rsquo;s own site. The panel has already recorded six kanji encounters from one sentence.</figcaption>
+      </figure>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-moment-head">
+        <h3>One alphabet for every sentence<span class="ja" lang="ja">文型</span></h3>
+        <p>Japanese marks the job of each word with a particle rather than with word order, which is exactly what an English speaker keeps losing track of. So every sentence in this project &mdash; in the grammar lessons and in the reader alike &mdash; is drawn in the same shapes: <b>words are chevrons, particles are diamonds, and the verb closes the line</b>. Colour carries the role, not decoration.</p>
+        <p>Once you have read twenty sentences this way, the shape arrives before the meaning does. You see a red diamond and know something has just been made the topic, before you have finished reading the word in front of it.</p>
+      </div>
+      <figure class="jp-fig">
+        <img src="./images/showcase/sentence-blocks.webp" alt="A sentence diagram for 私は私の可愛い猫とアニメを見る, with each word a coloured chevron, each particle a diamond, and a legend naming the role of each piece." loading="lazy" width="1400" height="460" />
+        <figcaption>&ldquo;I watch anime with my cute cat.&rdquo; 私の可愛い猫 is one noun phrase, so it takes one block; と marks the cat as the co-participant; を marks what is being watched.</figcaption>
+      </figure>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-moment-head">
+        <h3>Words worth looking at<span class="ja" lang="ja">語彙</span></h3>
+        <p>The vocabulary books are themed the way a life is, not the way a syllabus is: home, food, stays, the internet. Every entry is drawn rather than photographed, because a drawing can carry the one feature that makes the word stick and leave everything else out.</p>
+        <p>The stranger sections are the useful ones. <b>Texture words</b> get a line beside them that behaves the way the word feels &mdash; a soft wave for もちもち, a sawtooth for さくさく &mdash; which is the only way I have found to remember a set of words English simply does not have.</p>
+      </div>
+      <div class="jp-fig is-pair">
+        <figure class="jp-pair-item">
+          <img src="./images/showcase/vocabulary-fruits.webp" alt="The vocabulary section showing a grid of illustrated fruit cards with Japanese names and taste tags." loading="lazy" width="1600" height="800" />
+          <figcaption>果物, twenty entries. The tags say which are あまい and which are すっぱい.</figcaption>
+        </figure>
+        <figure class="jp-pair-item">
+          <img src="./images/showcase/textures.webp" alt="The textures world: a row of texture words from soft to hard, above an illustrated card for さくさく with a sawtooth line drawing." loading="lazy" width="1147" height="869" />
+          <figcaption>食感, run from やわらかい to かたい. The line under each word is its texture.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-aside">
+        <div class="jp-moment-head">
+          <h3>A card is a picture first<span class="ja" lang="ja">単語札</span></h3>
+          <p>Most kanji decks show you a character and ask you to recall a word. These start from the other end. <b>The picture is the mnemonic</b>, drawn so the character is inside the thing it means: 木 is a tree whose trunk and branches are the strokes themselves. The readings sit underneath, kun first, then on.</p>
+          <p>Behind the card sit the parts that make it work: animated stroke order, the story I wrote when I made it, and a review queue that asks again at widening intervals. The reader links straight back here, so a kanji met in the wild opens the card I already drew for it.</p>
+        </div>
+        <figure class="jp-fig">
+          <img src="./images/showcase/kanji-tree.webp" alt="A flashcard for the kanji 木: an illustration of a tree whose trunk and branches are the character itself, with the readings き and ボク and the meaning tree / wood." loading="lazy" width="539" height="745" />
+          <figcaption>木 &mdash; tree / wood.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="jp-moment">
+      <div class="jp-moment-head">
+        <h3>And the dictionary underneath<span class="ja" lang="ja">辞書</span></h3>
+        <p>Under all of it is a small dictionary the reader carries with it: <b>every one of the 2,136 kanji taught in Japanese schools</b>, with their readings and meanings, plus the game vocabulary I keep running into. A character with no card of its own still answers when you tap it, which means a translation service is never the first thing reached for.</p>
+      </div>
+      <figure class="jp-fig is-medium">
+        <img src="./images/showcase/kanji-card.webp" alt="A kanji detail page for 色 showing large stroke-order artwork and its readings." loading="lazy" width="1144" height="667" />
+        <figcaption>色 in the dictionary, with the stroke order drawn out.</figcaption>
+      </figure>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ============= FOOTER ============= -->
+<footer class="foot">
+  <div class="foot-body">
+    <div class="shell">
+      <div class="colophon">
+        <div class="l">
+          <span>&copy; 2026 khevin mituti</span>
+        </div>
+        <div class="r"><a href="../index.html">&#8629; All work</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js" defer></script>
+</body>
+</html>

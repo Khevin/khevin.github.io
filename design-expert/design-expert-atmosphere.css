@@ -7,7 +7,7 @@ main::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: url("./assets/graphite-grain.svg") repeat;
+  background: url("../assets/graphite-grain.svg") repeat;
   opacity: .022;
 }
 .council-hero, .section { position: relative; isolation: isolate; }

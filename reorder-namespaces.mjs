@@ -20,13 +20,24 @@ const slash = (p) => p.split(path.sep).join('/');
 /* The canon. `href` takes the prefix a page needs to reach the repo root. */
 const NAMESPACES = [
   { key: 'portfolio',     ns: 'khevin-mituti', href: (up) => `${up}index.html`,         desc: 'the work — what khevin ships for clients' },
-  { key: 'design-expert', ns: 'khev-tools',    href: (up) => `${up}design-expert.html`, desc: 'the plugin — what khevin makes for designers' },
+  { key: 'design-expert', ns: 'khev-tools',    href: (up) => `${up}design-expert/`,     desc: 'the plugin — what khevin makes for designers' },
   { key: 'skillstone',    ns: 'khevin-mituti', href: (up) => `${up}skillstone/`,        desc: 'the character sheet — what khevin keeps for himself' },
-  { key: 'nihongo',       ns: 'khevin-mituti', href: (up) => `${up}nihongo.html`,       desc: 'the study space — what khevin is learning' },
+  { key: 'nihongo',       ns: 'khevin-mituti', href: (up) => `${up}nihongo/`,           desc: 'the study space — what khevin is learning' },
 ];
 
-const files = [];
-for (const dir of ['.', 'projects', 'skillstone']) {
+/* Three of the four are folders now, so each has its own root to scan and its own `./`.
+   The portfolio is the site itself and stays at the repo root. */
+const HOMES = { 'design-expert': 'design-expert', skillstone: 'skillstone', nihongo: 'nihongo' };
+
+/* skillstone/index.html is a build artifact — skillstone/deploy.mjs writes it from a build of
+   skill-tracker-v5.html plus deploy/ns-bar.html. So the panel is edited in the snippet, which
+   is where it survives; editing the artifact would last exactly until the next deploy. The
+   snippet sits two folders deep but is injected into a page one deep, so it is measured by
+   where it lands, not where it lives. */
+const PUBLISHED_AS = { 'skillstone/deploy/ns-bar.html': 'skillstone/index.html' };
+
+const files = ['skillstone/deploy/ns-bar.html'];
+for (const dir of ['.', 'projects', 'design-expert', 'nihongo']) {
   for (const name of await readdir(dir)) {
     if (name.endsWith('.html')) files.push(slash(path.join(dir, name)).replace(/^\.\//, ''));
   }
@@ -40,9 +51,11 @@ for (const rel of files) {
   const [whole, open, body, close] = m;
 
   const nl = s.includes('\r\n') ? '\r\n' : '\n';
-  const inProjects = rel.startsWith('projects/');
-  const inSkillstone = rel.startsWith('skillstone/');
-  const up = inProjects || inSkillstone ? '../' : './';
+  const lands = PUBLISHED_AS[rel] || rel;
+  const depth = lands.split('/').length - 1;
+  const up = depth ? '../'.repeat(depth) : './';
+  /* Which project's own folder is this page sitting in, if any? */
+  const home = Object.keys(HOMES).find((k) => lands.startsWith(HOMES[k] + '/'));
 
   /* Which namespace is this page? Prefer what it already claims; fall back to
      where it sits, which is what the case-study pages need. */
@@ -50,16 +63,13 @@ for (const rel of files) {
     || body.match(/<span class="child">([^<]+)<\/span>(?=[\s\S]*?class="current")/);
   let current = claimed?.[1];
   if (!NAMESPACES.some((n) => n.key === current)) {
-    current = inSkillstone ? 'skillstone'
-      : rel === 'design-expert.html' ? 'design-expert'
-      : rel === 'nihongo.html' ? 'nihongo'
-      : 'portfolio';
+    current = home || 'portfolio';
   }
 
   const item = (n) => {
     const isCur = n.key === current;
-    // skillstone is its own root, so it links to ./ rather than ../skillstone/
-    const href = inSkillstone && n.key === 'skillstone' ? './' : n.href(up);
+    // a project page is already at its own root, so it links to ./ rather than ../itself/
+    const href = home === n.key ? './' : n.href(up);
     return [
       `      <li role="option" aria-selected="${isCur}" data-href="${href}"${isCur ? ' class="current" tabindex="0"' : ' tabindex="-1"'}>`,
       `        <span class="ns-row">`,
