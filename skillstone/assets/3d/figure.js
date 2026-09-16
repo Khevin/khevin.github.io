@@ -69,7 +69,7 @@ function relaxShell(pos, index, base, nrm, tags, offset, opts, pinned) {
   const boundary = new Uint8Array(count);
   for (const [key, c] of edges) if (c === 1) { const [a, b] = key.split("_").map(Number); boundary[a] = 1; boundary[b] = 1; }
   if (opts.hang) {
-    const { cx, cz, top: topY, sectors = 40, mix = 0.85 } = opts.hang, order = [];
+    const { cx, cz, top: topY, sectors = 40 } = opts.hang, order = [];
     for (let v = 0; v < count; v++) if (tags[v].torso) order.push(v);
     order.sort((a, b) => pos[b * 3 + 1] - pos[a * 3 + 1]);
     const runMax = new Float32Array(sectors);
@@ -77,6 +77,7 @@ function relaxShell(pos, index, base, nrm, tags, offset, opts, pinned) {
       const x = pos[v * 3] - cx, z = pos[v * 3 + 2] - cz, y = pos[v * 3 + 1];
       const sec = ((Math.floor((Math.atan2(z, x) + Math.PI) / (2 * Math.PI) * sectors) % sectors) + sectors) % sectors, r = Math.hypot(x, z);
       if (y > topY) { runMax[sec] = Math.max(runMax[sec], r); continue; }
+      const mix = 0.3 + 0.45 * Math.max(0, 1 - (topY - y) / 0.3);
       const want = Math.max(r, r + (runMax[sec] - r) * mix);
       if (want > r) { const k = want / r; pos[v * 3] = cx + x * k; pos[v * 3 + 2] = cz + z * k; }
       runMax[sec] = Math.max(runMax[sec], want);
@@ -218,7 +219,7 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
       const nx = AVGN[v * 3], ny = AVGN[v * 3 + 1], nz = AVGN[v * 3 + 2];
       let x = P.getX(v) + nx * offset, y = P.getY(v) + ny * offset, z = P.getZ(v) + nz * offset;
       let pin = 0;
-      if (clamp) { const c = clamp(vTag[v]); if (typeof c === "number") y = c; else if (c) { if (c.x != null) { x = c.x; pin = 1; } if (c.y != null) y = c.y; if (c.z != null) z = c.z; } }
+      if (clamp) { const c = clamp(vTag[v]); if (typeof c === "number") y = c; else if (c) { if (c.x != null) { x = c.x; pin = 1; } if (c.y != null) y = c.y; if (c.z != null) { z = c.z; pin = 1; } } }
       pos.push(x, y, z); nor.push(nx, ny, nz); pins.push(pin);
       for (let k = 0; k < 4; k++) { si.push(SI.getComponent(v, k)); sw.push(SW.getComponent(v, k)); }
       base.push(P.getX(v), P.getY(v), P.getZ(v)); nrms.push(nx, ny, nz);
@@ -306,7 +307,13 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
     for (let v = 0; v < P.count; v++) { const t = vTag[v]; if (!(t.bone === boneName || t.bone === "ball" + side || t.bone === "ball_leaf" + side)) continue;
       min.x = Math.min(min.x, P.getX(v)); max.x = Math.max(max.x, P.getX(v)); min.z = Math.min(min.z, P.getZ(v)); max.z = Math.max(max.z, P.getZ(v)); }
     min.x -= 0.014; max.x += 0.014; min.z -= 0.012; max.z += 0.022;
-    const g = new THREE.BoxGeometry(max.x - min.x, thick, max.z - min.z); g.translate((min.x + max.x) / 2, thick / 2, (min.z + max.z) / 2);
+    /* the footprint as a rounded outline, extruded and bevelled, rather than a box */
+    const w = max.x - min.x, d = max.z - min.z, r = Math.min(w, d) * 0.45, sh = new THREE.Shape();
+    const x0 = min.x, y0 = -max.z;   /* the extrusion is turned onto the floor below, which mirrors z */
+    sh.moveTo(x0 + r, y0); sh.lineTo(x0 + w - r, y0); sh.quadraticCurveTo(x0 + w, y0, x0 + w, y0 + r); sh.lineTo(x0 + w, y0 + d - r); sh.quadraticCurveTo(x0 + w, y0 + d, x0 + w - r, y0 + d);
+    sh.lineTo(x0 + r, y0 + d); sh.quadraticCurveTo(x0, y0 + d, x0, y0 + d - r); sh.lineTo(x0, y0 + r); sh.quadraticCurveTo(x0, y0, x0 + r, y0);
+    const g = new THREE.ExtrudeGeometry(sh, { depth: thick, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.003, bevelSegments: 2, curveSegments: 6 });
+    g.rotateX(-Math.PI / 2); g.translate(0, 0.002, 0);
     const n = g.attributes.position.count, si = new Uint16Array(n * 4), sw = new Float32Array(n * 4);
     for (let i = 0; i < n; i++) { si[i * 4] = bi; sw[i * 4] = 1; }
     g.setAttribute("skinIndex", new THREE.BufferAttribute(si, 4)); g.setAttribute("skinWeight", new THREE.BufferAttribute(sw, 4));
@@ -440,13 +447,18 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
     currentWardrobe = w; undress();
     const worn = {}; if (w) for (const k of Object.keys(w.worn || {})) worn[k] = (w.items || []).find(x => x.id === w.worn[k]);
     const top = worn.top, outer = worn.outer, legs = worn.legs, feet = worn.feet;
+    if (!legs || !top) derive("briefs", RULES.briefs, 0.012, cloth(0x2b2b2a), CLAMP.briefs);
     if (legs) {
       const legKind = legs.kind, legRule = LEG_RULE[legKind] || "trousers";
       derive("legs", RULES[legRule], legKind === "cargo" ? 0.03 : legKind === "joggers" ? 0.024 : 0.019, cloth(hexInt(legs.color) ?? 0x3a3835), CLAMP[legRule]);
-    } else derive("briefs", RULES.briefs, 0.012, cloth(0x383a37), CLAMP.briefs);
+    }
     if (feet && FEET_RULE[feet.kind] !== null) {
       const fr = FEET_RULE[feet.kind] || "shoes", shoeC = hexInt(feet.color) ?? 0x1b1a17, star = feet.kind === "lowtop" || feet.kind === "hightop";
-      derive("feet", RULES[fr], 0.022, cloth(shoeC, 0.6), CLAMP[fr]);
+      const shoeOpts = { relax: true, iters: 5, hang: false };
+      derive("feet", RULES[fr], 0.02, cloth(shoeC, 0.55), CLAMP[fr], shoeOpts);
+      if (star) { let footZ = -Infinity; for (let v = 0; v < P.count; v++) if (FOOT.has(vTag[v].bone)) footZ = Math.max(footZ, vTag[v].z);
+        const capZ = footZ - 0.075;
+        derive("toecap", v => RULES[fr](v) && v.z > capZ - 0.03 && v.y < Y.foot + 0.06, 0.026, cloth(0xe9e4d8, 0.5), v => v.z < capZ ? { z: capZ } : null, shoeOpts); }
       const soleM = cloth(star ? 0xe9e4d8 : feet.kind === "sneakers" ? new THREE.Color(shoeC).multiplyScalar(0.7).getHex() : 0x1a1714, 0.8);
       sole("foot_l", soleM); sole("foot_r", soleM);
     }
