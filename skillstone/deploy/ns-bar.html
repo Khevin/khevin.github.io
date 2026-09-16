@@ -1,0 +1,149 @@
+<!-- ns-bar — the deployed-only namespace switcher.
+     Extracted from fdfe42d:skillstone/index.html, which carried it by hand. It is not in
+     skill-tracker-v5.html: the bar is site chrome (it links the four khevin.com projects),
+     not part of the board. deploy.mjs injects these three chunks into each fresh build.
+     Chunk boundaries are the <!-- @name --> markers; edit the content, not the markers. -->
+
+<!-- @style -->
+<style>
+  /* ——— namespace switcher ——— */
+  nav.ns-bar { position: sticky; top: 0; z-index: 60; background: var(--socket);
+    border-bottom: 1px solid var(--mortar); font-family: var(--f-ui); font-size: 13px; }
+  nav.ns-bar[hidden] { display: none; }
+  nav.ns-bar .ns-inner { max-width: 1180px; margin: 0 auto;
+    padding: 10px clamp(16px, 3vw, 32px); position: relative;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  /* Sign-in lives here rather than only in Settings because this bar is the
+     visitor’s bar — the one thing on the page addressed to someone who is
+     not signed in, and it leaves with the bar once they are. */
+  .ns-google { display: inline-flex; align-items: center; gap: 8px;
+    background: var(--stone-2); color: var(--parchment);
+    border: 1px solid var(--mortar-2); border-radius: 3px;
+    padding: 6px 12px; font: inherit; font-size: 12.5px; cursor: pointer;
+    transition: border-color .15s, background .15s; }
+  .ns-google:hover { background: var(--stone-3); border-color: var(--bronze); }
+  .ns-google:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .ns-google svg { flex: none; }
+  @media (max-width: 560px) { .ns-google span { display: none; } .ns-google { padding: 6px 9px; } }
+  .ns-switch { display: inline-flex; align-items: center; gap: 6px; background: transparent;
+    border: 0; padding: 4px 2px; color: var(--dust); font: inherit; cursor: pointer; letter-spacing: .02em; }
+  .ns-switch:hover { color: var(--parchment); }
+  .ns-switch:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+  .ns-switch .child { color: var(--gold); }
+  .ns-switch .slash { color: var(--ash); }
+  .ns-switch .chev { font-size: 10px; color: var(--ash); }
+  .ns-list { position: absolute; top: calc(100% + 6px); left: clamp(16px, 3vw, 32px);
+    min-width: 340px; margin: 0; padding: 6px; list-style: none; z-index: 70;
+    background: var(--stone-2); border: 1px solid var(--mortar); border-radius: 4px;
+    box-shadow: var(--shadow-float); }
+  .ns-list[hidden] { display: none; }
+  .ns-list li { padding: 9px 12px; border-radius: 3px; cursor: pointer; color: var(--dust); }
+  .ns-list li:hover, .ns-list li:focus-visible { background: var(--stone-3); color: var(--parchment); outline: none; }
+  .ns-list li.current { background: rgba(232,176,84,0.10); }
+  .ns-list .ns-row { display: flex; align-items: baseline; gap: 8px; font-family: var(--f-mono); font-size: 12.5px; }
+  .ns-list .mark { width: 12px; color: var(--gold); }
+  .ns-list .child { color: var(--gold); }
+  .ns-list .slash { color: var(--ash); }
+  .ns-list .ns-desc { display: block; margin: 3px 0 0 20px; font-size: 12px; color: var(--ash); }
+</style>
+
+<!-- @nav -->
+<nav class="ns-bar">
+  <div class="ns-inner">
+    <button class="ns-switch" id="ns-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ns-panel" aria-label="Switch namespace">
+      <span class="ns">khevin-mituti</span><span class="slash">/</span><span class="child">skillstone</span>
+      <span class="chev" aria-hidden="true">▾</span>
+    </button>
+    <ul class="ns-list" id="ns-panel" role="listbox" aria-label="Namespace" hidden>
+      <li role="option" aria-selected="false" data-href="../index.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">portfolio</span></span>
+        </span>
+        <span class="ns-desc">the work — what khevin ships for clients</span>
+      </li>
+      <li role="option" aria-selected="false" data-href="../design-expert.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khev-tools<span class="slash">/</span><span class="child">design-expert</span></span>
+        </span>
+        <span class="ns-desc">the plugin — what khevin makes for designers</span>
+      </li>
+      <li role="option" aria-selected="true" data-href="./" class="current" tabindex="0">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true">✓</span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">skillstone</span></span>
+        </span>
+        <span class="ns-desc">the character sheet — what khevin keeps for himself</span>
+      </li>
+      <li role="option" aria-selected="false" data-href="../nihongo.html" tabindex="-1">
+        <span class="ns-row">
+          <span class="mark" aria-hidden="true"></span>
+          <span>khevin-mituti<span class="slash">/</span><span class="child">nihongo</span></span>
+        </span>
+        <span class="ns-desc">the study space — what khevin is learning</span>
+      </li>
+    </ul>
+    <button type="button" class="ns-google" data-action="auth-google">
+      <svg viewBox="0 0 18 18" width="14" height="14" aria-hidden="true">
+        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/>
+        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+      </svg>
+      <span>Connect with Google</span>
+    </button>
+  </div>
+</nav>
+
+<!-- @script -->
+/* The namespace bar is visitor chrome. Signed in, this is his own board and
+   the chrome comes off — including the sign-in button it carries. */
+function nsBarSync() {
+  const bar = document.querySelector("nav.ns-bar");
+  if (bar) bar.hidden = !!auth;
+}
+
+<!-- @behaviour -->
+/* ns-switcher-behaviour: mirrors the switcher in ../script.js. This page loads
+   neither styles.css nor script.js, so the behaviour lives here. */
+(() => {
+  const trigger = document.getElementById('ns-trigger');
+  const panel = document.getElementById('ns-panel');
+  if (!trigger || !panel) return;
+  const options = [...panel.querySelectorAll('[role="option"]')];
+
+  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
+  const setOpen = (state) => {
+    trigger.setAttribute('aria-expanded', String(state));
+    panel.hidden = !state;
+    if (state) (panel.querySelector('.current') || options[0])?.focus();
+  };
+  const go = (opt) => { const h = opt.dataset.href; if (h) window.location.href = h; };
+
+  trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()); });
+  trigger.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); setOpen(true); }
+  });
+
+  options.forEach((opt) => {
+    opt.addEventListener('click', () => go(opt));
+    opt.addEventListener('keydown', (e) => {
+      const i = options.indexOf(opt);
+      if (e.key === 'ArrowDown') { e.preventDefault(); options[(i + 1) % options.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); options[(i - 1 + options.length) % options.length].focus(); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(opt); }
+      else if (e.key === 'Escape') { e.preventDefault(); setOpen(false); trigger.focus(); }
+      else if (e.key === 'Tab') { setOpen(false); }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!isOpen()) return;
+    if (e.target.closest('#ns-trigger') || e.target.closest('#ns-panel')) return;
+    setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); trigger.focus(); }
+  });
+})();
