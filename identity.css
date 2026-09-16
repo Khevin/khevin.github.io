@@ -1488,6 +1488,16 @@ nav.top ul.primary a[aria-current='page']:hover { color: var(--accent-deep); }
   #clients .s-head {
     min-height: 0;
     aspect-ratio: auto;
+  }
+  /* On ::before, which is where the illustration actually is. These two lines
+     used to sit on .s-head itself — true when the art was painted on the
+     element, and dead the moment it moved to its own layer so it could drift.
+     Nothing errored; the background simply kept the desktop `cover` and
+     `center`, and on a phone that meant scaling a 1774x887 image to the height
+     of a 412x377 box and throwing away 170px off EACH side — the glass sliced
+     down the middle on the right, and the empty left 62% this whole layout is
+     built around cropped away on the left. */
+  #clients .s-head::before {
     background-size: 100% auto;
     background-position: left bottom;
   }

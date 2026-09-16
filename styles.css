@@ -1755,6 +1755,58 @@ nav.top ul.primary a:hover { color: var(--ink); }
 /* Phone — vertical asset takes most of the column, slightly inset. */
 @media (max-width: 600px) {
   .client-strip-img img { width: 90%; }
+
+  /* ---- the twelve-column grids, on a phone ----
+     Twelve columns and a 32px gap need 352px of gutter before a single pixel
+     of content, and a 412px phone leaves 348px inside the shell. So every
+     track collapses to zero and the children — still spanning twelve — come
+     out 352px wide in a 348px box: four pixels over, on the right only. That
+     is why the contact values sat nearer the edge than their own labels, and
+     it was doing the same to the roster and the about lead.
+
+     Below about 416px viewport it collapses; above it the grid is fine (at
+     600px the tracks are 15px and nothing overflows), so this stays a phone
+     rule. A single column is not enough by itself: `grid-column: span 12`
+     conjures eleven implicit tracks whatever the template says, so the spans
+     have to be released too. */
+  .about-grid,
+  .clients-strip,
+  .contact-block { grid-template-columns: 1fr; }
+  /* Written out child by child rather than as `.parent > *`, because the spans
+     being released are set as `.parent .child` — two classes — and a child
+     combinator against the universal selector is only one. The short version
+     lost silently and the tracks stayed collapsed. */
+  .about-grid .lead,
+  .about-grid .hats-art,
+  .clients-strip .col-l,
+  .clients-strip .col-r,
+  .contact-block .l,
+  .contact-block .r { grid-column: auto; }
+
+  /* ---- the heading and the hats stop sharing a row ----
+     Side by side, the art took 168px of the 348px shell and left the headline
+     191px — which is where "A designer" broke after "A" and "who has worn"
+     broke after "has". Stacked, the headline gets its own measure back and
+     falls on the three lines it is written for, and the illustration nearly
+     doubles instead of being squeezed into a third of the screen. */
+  .s-head--with-art { grid-template-columns: 1fr; gap: 28px; }
+  .hats-art--inline {
+    width: 100%;
+    /* The -12px that let the brim kiss past the COLUMN edge was reaching past
+       the SCREEN edge here: it was the whole of the page's horizontal scroll,
+       and the reason a white bar showed when you dragged the page left. */
+    margin-right: 0;
+  }
+
+  /* ---- the briefly grid, on a phone ----
+     One column, so the two-column furniture has to go. The centre hairline was
+     drawn at 50% of the grid regardless of how many columns there were, so it
+     ran straight down the middle of every card, through the text, and kept
+     going 96px past the last one. And the last ROW is a single card now, so
+     dropping the rule from the last TWO left the one above it unseparated. */
+  .snip-grid::before { display: none; }
+  .snip:nth-last-child(-n+2) { border-bottom: 1px solid var(--ink-faintest); }
+  .snip:last-child { border-bottom: 0; }
 }
 
 /* =========================================================
@@ -2748,6 +2800,16 @@ nav.top ul.primary a:hover { color: var(--ink); }
 }
 @media (max-width: 720px) {
   .principles { grid-template-columns: 1fr; }
+}
+/* Both of these headings stop scaling at a floor that is still wider than a
+   small phone: at 320px the page hero needed 327px for a 256px column and the
+   principle headings 273px for 254px, and between them they pushed the
+   document 39px sideways. Kept under 400px so nothing at a common phone width
+   moves — 400px is where 15.5vw and 9vw meet the floors they replace, so the
+   size is continuous across the boundary rather than stepping. */
+@media (max-width: 400px) {
+  .page-hero-grid .l h1 { font-size: clamp(38px, 15.5vw, 64px); }
+  .principle h2 { font-size: clamp(24px, 9vw, 34px); }
 }
 
 /* Closing block on the process page — full-width single lead.
@@ -3800,7 +3862,14 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
 @media (max-width: 900px) {
   .chapter,
   .takeaways {
-    grid-template-columns: 1fr;
+    /* minmax(0, …), not a bare 1fr. A bare 1fr is minmax(auto, 1fr), and that
+       auto is a min-content floor: the column refuses to be narrower than the
+       widest thing in it. Amway's status table is deliberately 640px wide with
+       its own overflow-x so it can be swiped, and the floor handed that 640px
+       straight to the column — so the PAGE scrolled sideways instead of the
+       table, 262px of it, on the one page that has such a table. The desktop
+       rule above already says minmax(0, 1fr); this one dropped it. */
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     padding: 56px 0;
   }
@@ -3820,6 +3889,16 @@ body[data-project] .case-section:first-of-type { padding-top: 80px; }
 body[data-project] .case-hero.case-hero--wide .case-title {
   font-size: clamp(56px, 8vw, 88px);
   line-height: 1;
+}
+/* That 56px floor stops scaling long before a phone does, and a display face
+   at 56px has words wider than a 296px column: "redesigned" in the Spaces
+   title measured 339px in it, and a single word was pushing the whole document
+   12px sideways. Below 560px the size tracks the viewport again, with a floor
+   low enough that the longest title word still fits at 320px. */
+@media (max-width: 560px) {
+  body[data-project] .case-hero.case-hero--wide .case-title {
+    font-size: clamp(34px, 12vw, 56px);
+  }
 }
 
 /* Drop all the rule lines bracketing the hero key visual — case-hero
@@ -4114,6 +4193,17 @@ body[data-project="amway"] .carousel-counter {
   body[data-project="amway"] .carousel-card[data-pos="3"] { transform: translate(48px, 30px) scale(0.88) rotate(6deg); }
   body[data-project="amway"] .carousel-card[data-pos="4"] { transform: translate(64px, 40px) scale(0.84) rotate(8deg); }
   body[data-project="amway"] .carousel-card[data-pos="5"] { transform: translate(80px, 50px) scale(0.80) rotate(10deg); }
+  /* The fan throws the back cards up to 80px to the right of a column that is
+     already the full width of a phone, so the top card's rotated corner landed
+     past the screen edge and the page scrolled by six pixels — a white bar for
+     a decorative overhang. Clipped to the column: the cards still read as
+     receding off the edge, which is what the fan is saying anyway.
+     `clip` rather than `hidden` so it stays a clip and not a scroll container,
+     and the vertical overhang the fan also needs is untouched. */
+  body[data-project="amway"] .carousel-stack {
+    overflow-x: clip;
+    overflow-y: visible;
+  }
 }
 
 /* =========================================================
