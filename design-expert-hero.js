@@ -88,13 +88,18 @@
     const pulse = path.cloneNode(false);
     pulse.removeAttribute('data-council-line');
     pulse.setAttribute('class', 'council-connection-pulse');
-    pulse.setAttribute('pathLength', '1');
     path.parentNode.append(pulse);
-    return { seat, path, pulse };
+    return { seat, path, pulse, length: 0 };
   });
   function updateConnections() {
     const box = table.getBoundingClientRect(), center = decision.getBoundingClientRect();
     if (!box.width || !box.height) return;
+    // Connect to the content, not its generous transparent padding.
+    const centerStyle = getComputedStyle(decision);
+    const insetX = parseFloat(centerStyle.paddingLeft), insetY = parseFloat(centerStyle.paddingTop);
+    center.x += insetX; center.y += insetY;
+    center.width -= insetX + parseFloat(centerStyle.paddingRight);
+    center.height -= insetY + parseFloat(centerStyle.paddingBottom);
     const target = { x: center.x + center.width / 2, y: center.y + center.height / 2 };
     const edge = (rect, toward, gap) => {
       const x = rect.x + rect.width / 2, y = rect.y + rect.height / 2;
@@ -103,21 +108,31 @@
       return { x: x + dx * t, y: y + dy * t };
     };
     const point = p => ((p.x - box.x) * 600 / box.width).toFixed(2) + ' ' + ((p.y - box.y) * 570 / box.height).toFixed(2);
-    connections.forEach(({ seat, path, pulse }) => {
+    connections.forEach(connection => {
+      const { seat, path, pulse } = connection;
       const bounds = seat.getBoundingClientRect();
       // Side seats have generous hit areas. Anchor beside their artwork,
       // rather than letting those invisible hit areas swallow the line.
       if (!['rams', 'itten'].includes(seat.dataset.councilSeat)) {
-        const icon = seat.querySelector('svg').getBoundingClientRect();
-        bounds.x = icon.x; bounds.y = icon.y;
-        bounds.width = icon.width; bounds.height = icon.height;
+        // Read layout dimensions, never the animated transform. Hover and
+        // selection lift the glyph; its connector stays planted on the page.
+        const iconStyle = getComputedStyle(seat.querySelector('svg'));
+        const width = parseFloat(iconStyle.width), height = parseFloat(iconStyle.height);
+        bounds.x += (bounds.width - width) / 2;
+        bounds.y += parseFloat(getComputedStyle(seat).paddingTop);
+        bounds.width = width; bounds.height = height;
       }
       const origin = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
       const near = edge(bounds, target, 0), far = edge(center, origin, 0);
-      const clearance = Math.hypot(far.x - near.x, far.y - near.y) * .2;
+      const available = Math.hypot(far.x - near.x, far.y - near.y);
+      const forward = (far.x - near.x) * (target.x - origin.x) + (far.y - near.y) * (target.y - origin.y) > 0;
+      // Never draw backwards into a label when unusually tight text wraps.
+      path.style.display = pulse.style.display = forward && available > 4 ? '' : 'none';
+      const clearance = available * .2;
       const start = edge(bounds, target, Math.min(7, clearance)), end = edge(center, origin, Math.min(9, clearance));
       const d = 'M' + point(start) + 'L' + point(end);
       path.setAttribute('d', d); pulse.setAttribute('d', d);
+      connection.length = Math.hypot(end.x - start.x, end.y - start.y);
     });
   }
   const connectionObserver = new ResizeObserver(updateConnections);
@@ -190,13 +205,24 @@
       { transform: 'translateY(-6px) scale(1.08)', offset: .35 },
       { transform: 'translateY(0) scale(1)' }
     ], { duration: 1000 });
-    const pulse = connections[index].pulse;
-    scope.animate(pulse, [
-      { opacity: 0, strokeDashoffset: .18 },
-      { opacity: 1, offset: .2 },
-      { opacity: 1, offset: .75 },
-      { opacity: 0, strokeDashoffset: -1 }
-    ], { duration: 1000, easing: 'cubic-bezier(.45,0,.2,1)' });
+    const { pulse, length } = connections[index];
+    if (length < 24) {
+      // A moving dash on a tiny connection reads as a flicker. Let the
+      // whole short hairline softly acknowledge the handover instead.
+      pulse.style.strokeDasharray = 'none';
+      scope.animate(pulse, [{ opacity: 0 }, { opacity: .8, offset: .4 }, { opacity: 0 }], { delay: 180, duration: 850, easing: 'ease-in-out' });
+    } else {
+      // Non-scaling strokes use screen-space dash lengths, like the
+      // measured connector, even when the SVG is stretched on mobile.
+      const tail = Math.min(9, length * .2);
+      pulse.style.strokeDasharray = tail + ' ' + (length + tail);
+      scope.animate(pulse, [
+        { opacity: 0, strokeDashoffset: tail },
+        { opacity: .85, offset: .18 },
+        { opacity: .85, offset: .78 },
+        { opacity: 0, strokeDashoffset: -length }
+      ], { delay: 180, duration: (length + tail) / 85 * 1000, easing: 'linear' });
+    }
     scope.animate(title, [{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'translateY(0)' }], { delay: 180, duration: 700 });
     scope.animate(label, [{ opacity: 0 }, { opacity: 1 }], { delay: 120, duration: 500 });
     scope.animate(note, [{ opacity: 0 }, { opacity: 1 }], { delay: 350, duration: 750 });

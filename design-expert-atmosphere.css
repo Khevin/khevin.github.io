@@ -1,0 +1,89 @@
+/* Graphite drafting paper. Atmosphere belongs to the margins; the content
+   and the council remain the only things asking for attention. */
+main { position: relative; isolation: isolate; }
+main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url("./assets/graphite-grain.svg") repeat;
+  opacity: .022;
+}
+.council-hero, .section { position: relative; isolation: isolate; }
+.council-hero::before, .council-hero::after,
+#library::before, #library::after, #pantheon::before, #install::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+/* Twelve columns, aligned to the same shell as the real layout. Horizontal
+   rules have a calmer cadence than graph paper's tightly packed squares. */
+.council-hero::before, #library::before {
+  width: calc(100% - 2 * var(--gutter));
+  max-width: calc(var(--max) - 2 * var(--gutter));
+  margin-inline: auto;
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%, 100% 64px;
+  mask-image: radial-gradient(ellipse 66% 90% at 76% 22%, #000 5%, transparent 78%);
+}
+.council-hero::after {
+  background: radial-gradient(ellipse 54% 65% at 5% 95%, color-mix(in srgb, var(--hero-red) 9%, transparent), transparent 75%);
+}
+/* The halo changes only when the council changes speaker. It has no loop,
+   cursor tracking, blur filter, or independent animation competing with it. */
+.council-study__table::before {
+  content: "";
+  position: absolute;
+  inset: 16% 17%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--hue) 8%, transparent), transparent 72%);
+}
+#library::before {
+  mask-image: radial-gradient(ellipse 53% 54% at 93% 14%, #000, transparent 82%);
+}
+#library::after {
+  background: radial-gradient(ellipse 54% 48% at 93% 8%, color-mix(in srgb, var(--kind-core) 10%, transparent), transparent 78%);
+}
+#pantheon::before {
+  background: radial-gradient(ellipse 58% 30% at 88% 9%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 80%);
+}
+#install::before {
+  background: radial-gradient(ellipse 48% 35% at 12% 0%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 78%);
+}
+/* A registration cross, attached to the library's construction field.
+   No extra markup or decorative labels enter the reading order. */
+#library > .shell { position: relative; }
+#library > .shell::after {
+  content: "";
+  position: absolute;
+  right: var(--gutter);
+  top: 8px;
+  width: 11px;
+  height: 11px;
+  pointer-events: none;
+  opacity: .24;
+  background:
+    linear-gradient(var(--accent), var(--accent)) center / 1px 11px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) center / 11px 1px no-repeat;
+}
+/* Reading-heavy sections intentionally have no grid or hue wash. */
+@media (max-width: 760px) {
+  .council-hero::before, #library::before {
+    background-size: calc(100% / 6) 100%, 100% 64px;
+    opacity: .65;
+  }
+  .council-hero::before { mask-image: radial-gradient(ellipse 90% 42% at 75% 65%, #000, transparent 85%); }
+  #library::before { mask-image: radial-gradient(ellipse 60% 25% at 100% 4%, #000, transparent 85%); }
+  #pantheon::before { opacity: .7; }
+}
+@media (prefers-contrast: more), (forced-colors: active) {
+  main::before, .council-hero::before, .council-hero::after,
+  .council-study__table::before, #library::before, #library::after,
+  #library > .shell::after, #pantheon::before, #install::before { display: none; }
+}

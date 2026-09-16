@@ -70,6 +70,16 @@ The hero pairs editorial copy with an interactive council, using six of the exis
 
 ---
 
+## Pattern: graphite atmosphere
+
+`design-expert-atmosphere.css` adds depth without changing the content hierarchy. A static, tiled SVG grain sits beneath the page at 2.2% opacity. A twelve-column drafting grid aligns with the shell in the hero and library, fades through a mask, and becomes six columns below 760px. Localized crimson, green, violet, and gold washes follow existing section colors; the FAQ and changelog have neither a grid nor a wash.
+
+The council alone has a small halo that inherits the selected designer's hue. It changes with selection, never on an independent loop. Decorative layers have no pointer events and sit behind content; high-contrast and forced-color modes remove them. Do not add cursor spotlights, floating particles, or continuous background motion to this treatment.
+
+Connector anchors use untransformed glyph layout dimensions. Long paths carry a constant-speed highlight; short paths receive a soft whole-line emphasis rather than a twitchy dash. The central study remains the primary moving element.
+
+---
+
 ## Pattern: the painters' colours
 
 The palette picker colours the page; two painters colour the drawings. Every token the page reads follows the palette, and two sets of constants do not: Itten's six hues in the council (above) and each designer's own colour in the pantheon. The drawings keep their colour under every palette, which is what lets the picker be a comparison of pages rather than eighteen recolourings of the artwork.
