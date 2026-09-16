@@ -8873,9 +8873,6 @@ const gameAchTried = new Set();
 const GAME_ACH_STALE = 30 * 24 * 60 * 60 * 1000;
 /* The id of the game whose plate is open. Empty means the shelf is showing. */
 let gameOpen = "";
-/* Card positions captured just before a render that moves them, so the covers can be animated
-   from where they were to where they land. */
-let gameFlipFrom = null;
 let gameEdit = null, gameBusy = "";
 const gameProfileTried = new Set();
 function gameReleaseLabel(d) {
@@ -9166,7 +9163,7 @@ function gamePaneRefresh() {
   const inner = $('#gamePane .gm-pane-in'); if (!inner || !gameOpen) return;
   inner.innerHTML = gamePlate(gameById(gameOpen));
 }
-function gamePlacePlate(previous) {
+function gamePlacePlate() {
   const pane = $('#gamePane'); if (!pane) return;
   const grid = pane.parentElement; if (!grid) return;
   const cards = [...grid.children].filter(el => el !== pane);
@@ -9182,25 +9179,6 @@ function gamePlacePlate(previous) {
   if (pane.previousElementSibling === (before ? before.previousElementSibling : cards[cards.length - 1])
       && pane.nextElementSibling === before) return;
   grid.insertBefore(pane, before);
-  if (previous) gameFlip(previous, cards);
-}
-/* First, last, invert, play. Positions are taken before the plate moves and after, and each
-   card that ended up somewhere else is put back where it was and then released. */
-function gameFlipRead(cards) {
-  const m = new Map();
-  for (const el of cards) { const r = el.getBoundingClientRect(); m.set(el, { x: r.left, y: r.top }); }
-  return m;
-}
-function gameFlip(first, cards) {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  for (const el of cards) {
-    const a = first.get(el); if (!a) continue;
-    const r = el.getBoundingClientRect();
-    const dx = a.x - r.left, dy = a.y - r.top;
-    if (!dx && !dy) continue;
-    el.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }],
-      { duration: 260, easing: 'cubic-bezier(.22,.61,.36,1)' });
-  }
 }
 function renderGamesList() {
   const el = $('#gameList'); if (!el) return;
@@ -9220,7 +9198,7 @@ function renderGamesList() {
     '</div></section>').join('') :
     '<div class="gm-empty"><strong>' + (all.length ? 'No titles match this view.' : 'Your first game belongs here.') + '</strong>' +
     '<p>' + (all.length ? 'Try another search, platform or tag.' : 'Add a Nintendo game, another console, or something you hope to play someday.') + '</p></div>';
-  gamePlacePlate(gameFlipFrom); gameFlipFrom = null;
+  gamePlacePlate();
   const n = $('#gameVisibleCount'); if (n) n.textContent = shown.length + (shown.length === 1 ? ' title' : ' titles');
 }
 function renderGames() {
