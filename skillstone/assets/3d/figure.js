@@ -16,8 +16,10 @@ import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js/+esm";
 import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/environments/RoomEnvironment.js/+esm";
 
-export const DEFAULT_AVATAR = { skin: "#ad8062", hair: "buzzed", beard: false, hairColor: "#302720", eyes: "#3a2a1e", height: 1.78, strength: 1, build: 1 };
-export const HAIRS = [["buzzed", "Buzzed"], ["parted", "Parted"], ["long", "Long"], ["buns", "Buns"], ["none", "None"]];
+export const DEFAULT_AVATAR = { skin: "#ad8062", hair: "buzzed", beard: "none", hairColor: "#302720", eyes: "#3a2a1e", height: 1.78, strength: 1, build: 1 };
+export const HAIRS = [["buzzed", "Buzzed"], ["parted", "Parted"], ["long", "Long"], ["buns", "Buns"], ["none", "Bald"]];
+/* one beard mesh, two ways to wear it: stubble is the same shape drawn as a shadow on the skin */
+export const BEARDS = [["none", "None"], ["stubble", "Stubble"], ["short", "Short"]];
 const HAIR_MESH = { buzzed: "Hair_Buzzed", parted: "Hair_SimpleParted", long: "Hair_Long", buns: "Hair_Buns" };
 const MODEL_HEIGHT = 1.86;                 /* the baked body, crown to sole, before scaling */
 const TILE_M = 0.19;                       /* one pattern tile is about 19 cm of cloth */
@@ -473,10 +475,14 @@ export async function createFigure({ url, width = 244, height = 520, pixelRatio 
     avatar = { ...DEFAULT_AVATAR, ...(a || {}) };
     body.material.color.copy(skinTint(avatar.skin));
     for (const [k, mesh] of Object.entries(hairs)) mesh.visible = HAIR_MESH[avatar.hair] === k;
-    if (beard) beard.visible = !!avatar.beard;
+    const bm = avatar.beard === true ? "short" : (avatar.beard || "none");
     const hc = new THREE.Color(avatar.hairColor);
     for (const mesh of Object.values(hairs)) { mesh.material.color.copy(hc); mesh.material.roughness = 0.75; }
-    if (beard) beard.material.color.copy(hc);
+    if (beard) {
+      beard.visible = bm !== "none";
+      beard.material.color.copy(hc); beard.material.transparent = bm === "stubble"; beard.material.opacity = bm === "stubble" ? 0.45 : 1;
+      beard.material.depthWrite = bm !== "stubble"; beard.material.needsUpdate = true;
+    }
     if (brows) brows.material.color.copy(hc);
     if (eyes) eyes.material.color.copy(new THREE.Color(avatar.eyes).lerp(new THREE.Color(0xffffff), 0.35));
     const scale = (avatar.height || DEFAULT_AVATAR.height) / MODEL_HEIGHT; root.scale.setScalar(scale);

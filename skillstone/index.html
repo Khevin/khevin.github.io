@@ -2661,6 +2661,9 @@ li.is-done .qg { color: var(--verdant); }
 .iv-figbar { display:flex; flex-wrap:wrap; gap:4px; align-items:center; margin:12px 0 0; }
 .iv-figbar .sp { flex:1; }
 .iv-armory .iv-figbar .iv-f { min-height:32px; }
+.iv-figbar .iv-figedit { flex:none; }
+.iv-fighair { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:end; margin-bottom:10px; }
+.iv-fighair select { min-width:0; }
 /* the editor takes the side columns; the shell is the same section head the columns always wear */
 .iv-figbody { display:grid; gap:16px; text-align:left; align-content:start; }
 .iv-bodyed .iv-figbody .gear-sw-row { grid-template-columns:repeat(auto-fill, 28px); gap:16px; }
@@ -6891,7 +6894,9 @@ function sanitize(s) {
     const hex = (c, f) => /^#[0-9a-fA-F]{6}$/.test(c) ? String(c).toLowerCase() : f;
     const num = (v, lo, hi, f) => (typeof v === "number" && v >= lo && v <= hi) ? v : f;
     s.avatar = {
-      skin: hex(a.skin, "#ad8062"), hair: ["buzzed", "parted", "long", "buns", "none"].includes(a.hair) ? a.hair : "buzzed", beard: a.beard === true,
+      skin: hex(a.skin, "#ad8062"), hair: ["buzzed", "parted", "long", "buns", "none"].includes(a.hair) ? a.hair : "buzzed",
+      /* the beard was a tick before it was a choice; a board saved with `true` wears the short one */
+      beard: ["none", "stubble", "short"].includes(a.beard) ? a.beard : a.beard === true ? "short" : "none",
       hairColor: hex(a.hairColor, "#302720"), eyes: hex(a.eyes, "#3a2a1e"),
       height: num(a.height, 1.5, 2.1, 1.78), strength: num(a.strength, 0.7, 1.4, 1), build: num(a.build, 0.7, 1.5, 1)
     };
@@ -8749,7 +8754,8 @@ let gearPick = "";        /* the equipped place under consideration, "" for none
    nothing new. One canvas lives for the session and is re-seated on every render. */
 let figureMode = localStorage.getItem("skillstone-figure") === "3d" ? "3d" : "2d";
 let fig3d = null, fig3dLoading = null, figBodyOpen = false, figApplyRaf = 0, figAvatarKey = "";
-const FIG_HAIRS = [["buzzed", "Buzzed"], ["parted", "Parted"], ["long", "Long"], ["buns", "Buns"], ["none", "None"]];
+const FIG_HAIRS = [["buzzed", "Buzzed"], ["parted", "Parted"], ["long", "Long"], ["buns", "Buns"], ["none", "Bald"]];
+const FIG_BEARDS = [["none", "None"], ["stubble", "Stubble"], ["short", "Short"]];
 const FIG_SKINS = ["#f1d3b8", "#dcb08d", "#c99a72", "#ad8062", "#8a5a3c", "#6b4128", "#4a2c1c", "#2f1b12"];
 const FIG_HAIR_COLORS = ["#0f0d0c", "#302720", "#5a3a22", "#8a5a2b", "#b8863f", "#d9b982", "#8c8c8c", "#e8e1cf"];
 const FIG_EYES = ["#2a1a12", "#3a2a1e", "#5a4a2a", "#2a4a3a", "#3a5a7a", "#6a8aa8"];
@@ -10541,7 +10547,8 @@ function figureControlsHTML() {
     '<span class="sp"></span>' +
     /* editing the body takes the whole tab: the wardrobe and the equipped board step aside and the
        editor sits either side of the figure, so a change is seen on him as it is made */
-    '<button type="button" class="iv-f is-word' + (figBodyOpen ? " is-cur" : "") + '" data-inv="figbody" aria-pressed="' + figBodyOpen + '">' + (figBodyOpen ? "Done" : "Body") + "</button></div>";
+    /* the same stone plate as "+ Add clothing": it opens a mode, so it is a button, not a chip */
+    '<button type="button" class="j3-btn iv-figedit" data-inv="figbody" aria-pressed="' + figBodyOpen + '">' + (figBodyOpen ? "Done" : "Edit body") + "</button></div>";
 }
 /* the same swatch wells as the garment dialog: one way to pick a colour in the whole app */
 const figSw = (name, list, cur) => '<div class="gear-sw-row iv-figsw">' + list.map(c => '<button type="button" class="gear-sw' + (c === cur ? " is-cur" : "") +
@@ -10553,9 +10560,10 @@ const figRange = (name, label, v, lo, hi, step) => '<label class="iv-figrange"><
 function figureBodyLeftHTML(a) {
   return '<div class="iv-hold iv-bodyed"><header class="iv-section-head"><h3>Body</h3></header><div class="iv-figbody" id="figBodyA">' +
     '<fieldset class="gear-colors"><legend class="bk-l">Skin</legend>' + figSw("skin", FIG_SKINS, a.skin) + "</fieldset>" +
-    '<fieldset class="gear-colors"><legend class="bk-l">Hair</legend><div class="iv-fighair"><select name="hair" aria-label="Hair">' +
-      FIG_HAIRS.map(([k, n]) => '<option value="' + k + '"' + (a.hair === k ? " selected" : "") + ">" + n + "</option>").join("") + "</select>" +
-      '<label class="gear-2nd"><input type="checkbox" name="beard"' + (a.beard ? " checked" : "") + ">Beard</label></div>" + figSw("hairColor", FIG_HAIR_COLORS, a.hairColor) + "</fieldset>" +
+    '<fieldset class="gear-colors"><legend class="bk-l">Hair</legend><div class="iv-fighair">' +
+      '<label class="bk-l">Head<select name="hair">' + FIG_HAIRS.map(([k, n]) => '<option value="' + k + '"' + (a.hair === k ? " selected" : "") + ">" + n + "</option>").join("") + "</select></label>" +
+      '<label class="bk-l">Beard<select name="beard">' + FIG_BEARDS.map(([k, n]) => '<option value="' + k + '"' + (a.beard === k ? " selected" : "") + ">" + n + "</option>").join("") + "</select></label>" +
+    "</div>" + figSw("hairColor", FIG_HAIR_COLORS, a.hairColor) + "</fieldset>" +
     '<fieldset class="gear-colors"><legend class="bk-l">Eyes</legend>' + figSw("eyes", FIG_EYES, a.eyes) + "</fieldset></div></div>";
 }
 /* right of the figure: how he is built */
@@ -10596,7 +10604,7 @@ document.addEventListener("input", e => {
   if (t.type === "range") { a[t.name] = parseFloat(t.value); const out = t.parentNode.querySelector("output"); if (out) out.textContent = FIG_FMT[t.name](a[t.name]); }
   else if (t.type === "color") a[t.name] = t.value.toLowerCase();
   else if (t.name === "hair") a.hair = t.value;
-  else if (t.name === "beard") a.beard = t.checked;
+  else if (t.name === "beard") a.beard = t.value;
   figureApplyAvatar();
 });
 document.addEventListener("change", e => { if (e.target.closest && e.target.closest(".iv-figbody")) save(); });
