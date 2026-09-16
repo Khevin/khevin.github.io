@@ -1,0 +1,219 @@
+/* Three candidate backgrounds for the hero and the sections under it,
+   built to be compared rather than shipped. Each is a separate layer, each
+   is independently switchable, and they are designed to stack: the question
+   the comparison page exists to answer is partly whether any two of them
+   work together.
+
+   All three read --bg-strength, so the argument is never "is this too
+   loud", only "is this the right idea". Turn it down before deciding.
+
+   Nothing here paints over content. Every layer sits in a wrapper pinned
+   behind the section's own children, and the section's content is lifted a
+   step above it. */
+
+[data-bg] { --bg-strength: 1; }
+
+.bg-host { position: relative; isolation: isolate; }
+.bg-host > .shell { position: relative; z-index: 1; }
+
+.bg-layers {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: clip;
+}
+.bg-layers > * {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 320ms cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ——— 1. The drafting underlay ———
+
+   The council ring is drawn from a centre, a radius and six seats 60 degrees
+   apart. This takes that construction off the illustration and puts it under
+   the whole register: the circle continues past the edges of the section, the
+   spokes run through as chords rather than stopping at the rim, and the
+   tangents and ticks are the marks you would leave setting it out. The claim
+   is that the page was drawn, not composed, which is the same claim the
+   section copy makes in words. */
+
+.bg-draft { color: var(--rule); }
+[data-bg~="draft"] .bg-draft { opacity: calc(.9 * var(--bg-strength)); }
+
+.bg-draft svg { width: 100%; height: 100%; display: block; }
+.bg-draft svg * { fill: none; vector-effect: non-scaling-stroke; }
+.bg-draft .d-arc { stroke: currentColor; stroke-width: 1; }
+.bg-draft .d-chord { stroke: currentColor; stroke-width: 1; stroke-dasharray: 3 5; opacity: .75; }
+.bg-draft .d-tangent { stroke: currentColor; stroke-width: 1; stroke-dasharray: 1 6; opacity: .6; }
+.bg-draft .d-tick { stroke: currentColor; stroke-width: 1; }
+/* The one mark that is not a hairline. A drafting sheet has a centre, and
+   finding it is the first thing that happens. */
+.bg-draft .d-centre { stroke: var(--accent); stroke-width: 1; opacity: .5; }
+
+/* ——— 2. The grid made visible ———
+
+   Not a decorative twelve-column overlay. This layer is a grid with the same
+   template as the layout it sits under, so the rules land on the tracks the
+   content is actually using and keep landing there when the layout changes.
+   The gutter edges are the shell; the inner pair is the split between the
+   headline and the council.
+
+   The register changes what you see, which is the point of trying it on more
+   than one section: the hero is two uneven columns, the library is three. */
+
+.bg-grid { color: var(--rule); }
+[data-bg~="grid"] .bg-grid { opacity: calc(.85 * var(--bg-strength)); }
+
+.bg-grid__shell {
+  position: absolute;
+  inset: 0;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: grid;
+  gap: clamp(20px, 3vw, 44px);
+  grid-template-columns: var(--bg-grid-cols, 1.12fr 1fr);
+}
+.bg-grid__shell > span {
+  display: block;
+  border-left: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  opacity: .55;
+}
+/* The shell's own edges, drawn stronger, because they are the only two lines
+   on the page that never move. */
+.bg-grid__edge {
+  position: absolute;
+  inset: 0;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.bg-grid__edge::before,
+.bg-grid__edge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: currentColor;
+}
+.bg-grid__edge::before { left: var(--gutter); }
+.bg-grid__edge::after { right: var(--gutter); }
+
+/* ——— 3. The hue wash ———
+
+   Every section already carries a hue: the hero is red, the library teal, the
+   pantheon magenta. Today that hue only reaches the accents. This lets it
+   reach the ground, as a single soft field anchored where the section's
+   weight already is, so the page warms and cools as you scroll instead of
+   sitting on one flat ink.
+
+   Two stops, not three, and no hard edge anywhere: the moment a wash has a
+   visible boundary it reads as a graphic rather than as light. */
+
+[data-bg~="wash"] .bg-wash { opacity: calc(1 * var(--bg-strength)); }
+.bg-wash {
+  background:
+    radial-gradient(120% 90% at 78% 32%,
+      color-mix(in oklab, var(--accent) 13%, transparent) 0%,
+      color-mix(in oklab, var(--accent) 5%, transparent) 42%,
+      transparent 72%),
+    radial-gradient(90% 70% at 8% 88%,
+      color-mix(in oklab, var(--accent) 7%, transparent) 0%,
+      transparent 60%);
+}
+
+/* ——— the comparison page's own chrome ——— */
+
+.bg-lab {
+  position: fixed;
+  right: clamp(12px, 3vw, 28px);
+  bottom: clamp(12px, 3vw, 28px);
+  z-index: 200;
+  width: 268px;
+  max-width: calc(100vw - 24px);
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 14px 16px 16px;
+  box-shadow: 0 10px 40px -18px color-mix(in oklch, var(--ink) 40%, transparent);
+  font-family: var(--sans);
+}
+.bg-lab__title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 10px;
+}
+.bg-lab__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 7px 0;
+  cursor: pointer;
+  min-height: 44px;
+}
+.bg-lab__row input { margin: 2px 0 0; accent-color: var(--accent); flex: none; width: 15px; height: 15px; }
+.bg-lab__name { display: block; font-size: 13.5px; color: var(--ink); line-height: 1.3; }
+.bg-lab__note { display: block; font-size: 11.5px; color: var(--ink-mute); line-height: 1.4; margin-top: 1px; }
+.bg-lab__strength { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule-soft); }
+.bg-lab__strength label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+}
+.bg-lab__strength input { width: 100%; margin: 8px 0 0; accent-color: var(--accent); }
+.bg-lab__presets { display: flex; gap: 6px; margin-top: 12px; }
+.bg-lab__presets button {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 8px 4px;
+  min-height: 34px;
+  background: transparent;
+  color: var(--ink-mute);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.bg-lab__presets button:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+/* A second register to judge against, because a treatment that flatters the
+   hero and ruins everything under it is not a treatment. */
+.bg-demo { padding: 72px 0 84px; border-bottom: 1px solid var(--rule); }
+.bg-demo h2 { font-family: var(--title); font-variation-settings: var(--title-vf, "opsz" 144); font-size: clamp(30px, 4vw, 46px); margin: 0 0 14px; letter-spacing: -.03em; }
+.bg-demo h2 em { font-style: normal; color: var(--accent); }
+.bg-demo p { max-width: 54ch; color: var(--ink-mute); margin: 0 0 26px; }
+.bg-demo__rows { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 44px); }
+.bg-demo__rows div { border-top: 1px solid var(--rule); padding-top: 12px; }
+.bg-demo__rows strong { display: block; font-family: var(--mono); font-size: 12.5px; font-weight: 500; color: var(--ink); }
+.bg-demo__rows span { display: block; font-size: 12.5px; color: var(--ink-mute); margin-top: 4px; }
+
+@media (max-width: 760px) {
+  /* Both layouts collapse to a single column at this width, so the overlay
+     collapses with them. Drawing the desktop tracks here would be the exact
+     failure this layer exists to argue against: rules that no longer
+     describe where anything sits. The property is set directly, not through
+     --bg-grid-cols, because the demo section passes its tracks inline. */
+  .bg-grid__shell { grid-template-columns: 1fr; }
+  .bg-grid__shell > span + span { display: none; }
+
+  .bg-lab { left: 12px; right: 12px; bottom: 12px; width: auto; }
+  .bg-demo__rows { grid-template-columns: 1fr; gap: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-layers > * { transition: none; }
+}
