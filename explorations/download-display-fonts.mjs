@@ -34,6 +34,27 @@ const FAMILIES = [
   { spec: 'Climate+Crisis',                slug: 'climatecrisis' },
   { spec: 'Big+Shoulders+Display:wght@800', slug: 'bigshouldersdisplay' },
   { spec: 'Gloock',                        slug: 'gloock' },
+
+  /* Added for the categorised picker. The three Khevin picked out were Anton,
+     Big Shoulders and Libre Baskerville, so the set grows along those two
+     lines: more condensed signage faces, more bookish serifs. The sans tab is
+     new outright, because every face above is either a serif or a shout and
+     the page never had the option of a plain grotesque title. */
+  { spec: 'Newsreader:opsz,wght@6..72,600', slug: 'newsreader' },
+  { spec: 'Young+Serif',                   slug: 'youngserif' },
+  { spec: 'Instrument+Serif',              slug: 'instrumentserif' },
+  { spec: 'Playfair+Display:wght@800',     slug: 'playfairdisplay' },
+  { spec: 'Prata',                         slug: 'prata' },
+  { spec: 'Abril+Fatface',                 slug: 'abrilfatface' },
+  { spec: 'Oswald:wght@600',               slug: 'oswald' },
+  { spec: 'Bebas+Neue',                    slug: 'bebasneue' },
+  { spec: 'Fjalla+One',                    slug: 'fjallaone' },
+  { spec: 'Archivo:wdth,wght@62,700',      slug: 'archivo' },
+  { spec: 'Archivo+Black',                 slug: 'archivoblack' },
+  { spec: 'Space+Grotesk:wght@700',        slug: 'spacegrotesk' },
+  { spec: 'Bricolage+Grotesque:opsz,wdth,wght@96,75,800', slug: 'bricolagegrotesque' },
+  { spec: 'Schibsted+Grotesk:wght@800',    slug: 'schibstedgrotesk' },
+  { spec: 'Darker+Grotesque:wght@800',     slug: 'darkergrotesque' },
   { spec: 'Fraunces:opsz,wght@9..144,900', slug: 'fraunces' },
   { spec: 'Fraunces:ital,opsz,wght@1,9..144,900', slug: 'fraunces' },
   /* The words that move, on a live weight axis: the hero's two verbs and the

@@ -1,0 +1,169 @@
+/* type-tester: the control, the tabs and the specimen list.
+ *
+ * Every colour and face reads a project token with a plain fallback behind
+ * it, so this file works unchanged in a page that has no token system and
+ * quietly matches one that does. The names it looks for are the usual ones:
+ * --paper-warm, --ink, --ink-mute, --ink-faint, --rule, --rule-soft,
+ * --accent, --mono, --sans, --gutter.
+ *
+ * Every rule below is scoped under .tt, and that is deliberate rather than
+ * tidy. A drop-in lands inside markup it cannot see: mounted in a nav, its
+ * list is matched by whatever the host says about `nav ul`, and a bare
+ * .tt__list loses to it because one class beats nothing but one class plus
+ * one element beats one class. Scoping costs a character and makes every
+ * rule here at least two classes, which is enough to win in a host that has
+ * not gone looking for a fight with !important.
+ */
+
+.tt { position: relative; display: flex; align-items: center; }
+
+.tt .tt__trigger {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  margin: -10px;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  color: var(--ink-mute, #6b6b6b);
+  transition: background 150ms, color 150ms;
+}
+.tt .tt__trigger:hover { background: var(--rule-soft, rgba(0, 0, 0, .05)); color: var(--ink, #111); }
+.tt .tt__trigger:focus-visible { outline: 2px solid var(--accent, #c23545); outline-offset: 2px; }
+
+/* The Aa is set in whatever the title currently is, so the control shows the
+   answer rather than describing it. */
+.tt .tt__aa {
+  font-family: var(--title, Georgia, serif);
+  font-variation-settings: var(--title-vf, normal);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink, #111);
+}
+.tt .tt__name { font-family: var(--mono, ui-monospace, monospace); font-size: 12px; }
+.tt .tt__chev {
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 13px;
+  color: var(--ink-faint, #9a9a9a);
+  transition: transform 150ms cubic-bezier(.16, 1, .3, 1), color 150ms;
+}
+.tt .tt__trigger[aria-expanded="true"] .tt__chev { transform: rotate(180deg); color: var(--ink, #111); }
+
+/* ——— the panel ——— */
+
+.tt .tt__panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  left: auto;
+  width: 350px;
+  max-width: calc(100vw - 2 * var(--gutter, 20px));
+  background: var(--paper-warm, #fff);
+  border: 1px solid var(--rule, rgba(0, 0, 0, .14));
+  border-radius: 2px;
+  box-shadow: 0 8px 32px -16px color-mix(in oklch, var(--ink, #111) 16%, transparent);
+  z-index: 60;
+  display: block;
+}
+.tt .tt__panel[hidden] { display: none; }
+
+.tt .tt__tabs {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 4px 4px 0;
+  border-bottom: 1px solid var(--rule-soft, rgba(0, 0, 0, .07));
+}
+.tt .tt__tab {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10.5px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  border: 0;
+  background: transparent;
+  color: var(--ink-faint, #9a9a9a);
+  padding: 9px 2px;
+  min-height: 34px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 150ms, border-color 150ms;
+}
+.tt .tt__tab:hover { color: var(--ink, #111); }
+.tt .tt__tab.is-on { color: var(--ink, #111); border-bottom-color: var(--accent, #c23545); }
+.tt .tt__tab:focus-visible { outline: 2px solid var(--accent, #c23545); outline-offset: -2px; }
+
+/* min-height is set from the tallest list once, in script, so moving between
+   tabs does not resize the panel under the pointer. */
+.tt .tt__lists {
+  padding: 4px;
+  margin: 0;
+  max-height: min(62vh, 520px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.tt .tt__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: block;
+  gap: 0;
+  flex-direction: column;
+}
+.tt .tt__list[hidden] { display: none; }
+
+.tt .tt__option {
+  display: block;
+  width: auto;
+  padding: 11px 13px;
+  margin: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 150ms;
+}
+.tt .tt__option:hover,
+.tt .tt__option:focus-visible { background: var(--rule-soft, rgba(0, 0, 0, .05)); outline: none; }
+.tt .tt__option.is-current { background: color-mix(in oklch, var(--accent, #c23545) 22%, transparent); }
+
+.tt .tt__row { display: flex; align-items: baseline; gap: 8px; color: var(--ink, #111); }
+.tt .tt__mark {
+  width: 12px;
+  flex: none;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10px;
+  color: var(--accent, #c23545);
+}
+.tt .tt__specimen { font-size: 23px; line-height: 1.05; }
+.tt .tt__note {
+  display: block;
+  font-family: var(--sans, system-ui, sans-serif);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--ink-mute, #6b6b6b);
+  margin-top: 3px;
+  margin-left: 20px;
+  text-wrap: pretty;
+}
+
+@media (max-width: 760px) {
+  /* The bar is 375px wide and already carries whatever else the project puts
+     there. The name and chevron go; the Aa is the affordance. Static, so the
+     panel can anchor to the page gutters rather than to a 40px button. */
+  .tt { position: static; }
+  .tt .tt__name, .tt .tt__chev { display: none; }
+  .tt .tt__trigger { padding: 10px 6px; margin: -10px -6px; gap: 0; }
+  .tt .tt__panel {
+    top: calc(100% + 6px);
+    left: var(--gutter, 20px);
+    right: var(--gutter, 20px);
+    width: auto;
+    max-width: none;
+  }
+  .tt .tt__lists { max-height: 58vh; }
+}
