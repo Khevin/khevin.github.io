@@ -221,6 +221,12 @@
           <span class="desc">Review template, confidence, scoring. The reviewer's rubric in machine-readable form.</span>
           <span class="tag">discipline</span>
         </button>
+        <button class="row-item" type="button" data-skill="council" data-tag="discipline">
+          <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle class="draw" cx="30" cy="30" r="14"/><path class="draw" d="M30 12V24M46 20L35 27M46 40L35 33M30 48V36M14 40L25 33M14 20L25 27"/><circle class="pulse" cx="30" cy="30" r="4"/><path class="draw" d="M27 6H33V12H27ZM45 14H51V20H45ZM45 40H51V46H45ZM27 48H33V54H27ZM9 40H15V46H9ZM9 14H15V20H9Z"/></svg></span>
+          <span class="name">council.md</span>
+          <span class="desc">A council sized to the decision. Relevant designers, grounded verdicts, recorded dissent, and room to go deeper when the work needs it.</span>
+          <span class="tag">discipline</span>
+        </button>
         <button class="row-item" type="button" data-skill="self-review" data-tag="discipline">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><circle class="draw" cx="26" cy="26" r="14"/><path class="draw" d="M37 37 L 50 50"/><path class="pulse" d="M20 24 L 24 28 L 32 20"/></svg></span>
           <span class="name">self-review.md</span>
@@ -246,7 +252,7 @@
         <button class="row-item" type="button" data-skill="references" data-tag="canon">
           <span class="icon"><svg viewBox="0 0 60 60" preserveAspectRatio="xMidYMid meet"><path class="draw" d="M14 8 H46 V52 L 30 42 L 14 52 Z"/><path class="draw" d="M22 20 H38 M 22 28 H38 M 22 36 H32"/></svg></span>
           <span class="name">references<span class="slash">/</span></span>
-          <span class="desc">Eight quality references plus the 270+ NNg article index. Pentagram, Carbon, HIG, Linear, Stripe, Refactoring UI, Vignelli, Material 3.</span>
+          <span class="desc">An expandable index of 18 resources: design systems, canonical texts, NNg research, accessibility, service design, data visualization, internationalization, and web craft.</span>
           <span class="tag">canon</span>
         </button>
         <button class="row-item" type="button" data-skill="styles" data-tag="canon">
@@ -434,7 +440,7 @@
         </div>
         <div class="terminal-output">
           <span class="ok">✓</span> <span class="output-line">marketplace added · 1 plugin available</span><br/>
-          <span class="ok">✓</span> <span class="output-line">design-expert 1.3.0 installed</span><br/>
+          <span class="ok">✓</span> <span class="output-line">design-expert 1.3.1 installed</span><br/>
           <span class="ok">✓</span> <span class="output-line">/design-expert registered · one command, five modes</span>
         </div>
         </div>
@@ -587,6 +593,18 @@
     </div>
 
     <div class="changelog">
+      <div class="entry">
+        <div class="meta">
+          <span class="ver">v1.3.1</span>
+          September 15, 2026
+        </div>
+        <ul>
+          <li><strong>A pass over the core.</strong> A few core files and canon libraries were reread against the outputs they produce and tightened where results drifted.</li>
+          <li><strong>A council sized to the decision.</strong> Seat counts and verdict lengths are flexible. Simple work stays concise; complex tradeoffs can go deeper without losing evidence or dissent.</li>
+          <li><strong>A broader reference shelf.</strong> Eighteen linked resources now cover accessibility, service design, visualization, internationalization, and web implementation alongside the original design systems and books.</li>
+          <li><strong>Fewer arbitrary ceilings.</strong> Expandable capsules and tags, consistent instructions across modes, and pending questions that stay pending instead of silently becoming approvals.</li>
+        </ul>
+      </div>
       <div class="entry">
         <div class="meta">
           <span class="ver">v1.3.0</span>
@@ -872,6 +890,10 @@ if ('IntersectionObserver' in window && libRows.length) {
       from: 'anti-slop.md · The “would a viewer say AI made that?” test',
       text: "The triggers are concrete and ranked. Purple-blue gradients on a hero. Glassmorphism panels stacked on a dashboard with no functional reason. Hero metric cards with italic inverted-comma quotes pretending to be testimonials. Neon accents on dense data UI. Sparkle icons on every AI feature. A centered H1 wrapped to six lines because the container was too narrow. Three equal feature cards with an icon, a sentence-case headline, and a “Learn more” link. Each is a ratchet click toward “AI made that.”"
     },
+    'council': {
+      from: 'council.md · Defaults, not quotas',
+      text: "Seat count, depth of reading, and response length are separate choices: a broad capsule pass can use more than five designers, while a narrow council can use fewer than seven. Expand when another seat covers an unresolved decision, a distinct user risk, or a meaningful opposing principle; stop when the next seat would repeat an existing contribution. The discipline is in the evidence, the disagreement, and the decision—not the number of chairs."
+    },
     'output-format': {
       from: 'output-format.md · Why review structure matters',
       text: "Reviews are documents that survive the conversation that produced them. Six months later, a new designer opens the project's review log and either trusts what is written or dismisses it. They were not in the room. They cannot ask follow-up questions. They have the words on the page, the citations, the severity tiers, and the open questions you were honest enough to flag. If the review is well-structured, they pick up the work. If it is a stream of opinions, they re-do the review from scratch — or ship around it."
@@ -894,7 +916,7 @@ if ('IntersectionObserver' in window && libRows.length) {
     },
     'references': {
       from: 'references.md · Why we keep a reference list',
-      text: "References are broad-stroke and discipline-shaped: Pentagram, IBM Carbon, Apple HIG, Linear, Stripe — whose practice to study at the system level. The library is surface-specific (what good and bad look like for a dashboard, a navbar, a table). References tell you whose discipline to study; library tells you what good and bad versions of this surface look like. The two complement; neither replaces the other. The folder also houses the 270+ NNg article index — the citation backbone of every review the skill produces."
+      text: "A reference is not a template. Start with the decision, find the source that addresses it, and extract the principle—not the pixels. The index connects working design systems and canonical texts with accessibility standards, service patterns, data visualization, internationalization, and web implementation. Read one source when it answers the question; add complementary sources when they resolve a gap or disagreement. The list is a growing library, not a reading quota."
     },
     'styles': {
       from: 'styles.md · Why a styles taxonomy',
