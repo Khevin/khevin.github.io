@@ -4342,16 +4342,20 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
    never learns a second way to read a second menu. With nothing open the rail is the whole
    width and shows whichever density is selected; opening a game narrows it and drops it to
    ledger rows, which is what lets the cover grid keep its full width the rest of the time. */
-.gm-split.is-open { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: var(--s5); align-items: start; }
-.gm-split.is-open .gm-rail { max-height: 68vh; overflow-y: auto; padding-right: var(--s3); border-right: 1px solid var(--mortar); }
-.gm-split.is-open .gm-pane { position: sticky; top: var(--s3); }
-/* Below the panel's own measure two columns cannot both be read, so the plate takes the
-   surface and the rail waits behind the back link - the narrow-viewport exception. */
-@media (max-width: 860px) {
-  .gm-split.is-open { grid-template-columns: minmax(0, 1fr); }
-  .gm-split.is-open .gm-rail { display: none; }
-  .gm-split.is-open .gm-pane { position: static; }
-}
+/* The plate opens inside the grid, under the row the cover sits in, spanning every column.
+   It replaced a list-beside-detail rail: with 176 titles synced the rail was a wall of names
+   next to a plate that carries six facts, and the covers - the thing actually being chosen
+   between - were the part that got squeezed. Here nothing is displaced; the row simply opens.
+   The cards that move are carried to their new positions rather than repainted there, because
+   a grid reflow that jumps loses the reader's place in a shelf this long. */
+.gm-pane { grid-column: 1 / -1; margin: var(--s3) 0 var(--s5); padding: var(--s5);
+  background: var(--stone-2); border: 1px solid var(--mortar); border-radius: var(--r-sm);
+  animation: gm-open .24s var(--e-out) both; }
+@keyframes gm-open { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+/* The cover that is open keeps the gold it earned on click, so the plate below is attributable
+   to a card without a line drawn between them. */
+.gm-card.is-open .gm-cover { border-color: var(--gold); }
+.gm-view-list .gm-pane, .gm-view-ledger .gm-pane { margin-left: 0; margin-right: 0; }
 
 /* ---------- the card is the target ----------
    Its two buttons moved to the plate, so there is nothing left on a card to press except the
@@ -4387,7 +4391,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   background: none; border: 0; padding: 0; color: var(--dust); font: 600 .8125rem var(--f-ui); cursor: pointer; }
 @media (hover: hover) { .gm-plate-back:hover { color: var(--gold-2); } }
 .gm-plate-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
-.gm-plate-head { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: var(--s4); align-items: start; }
 .gm-plate-cover { position: relative; aspect-ratio: 2/3; display: grid; place-items: center; overflow: hidden;
   background: var(--socket); border: 1px solid var(--mortar-2); }
 .gm-plate-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -4408,6 +4411,23 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-figure.is-empty .gm-figure-v { color: var(--ash); font-size: .875rem; }
 .gm-figure-track { display: block; margin-top: 10px; max-width: 200px; }
 .gm-plate-tags { margin-top: var(--s4); }
+/* Full width, the stacked plate left most of its right side empty: a 124px cover, a title, and
+   then eight hundred pixels of nothing above a row of two figures. There is not much here -
+   that is the point of opening in place rather than navigating - so the width carries it
+   instead. The cover anchors the left, everything else stacks beside it in one column, and the
+   plate stays short enough that the covers below it are still on screen. */
+.gm-plate-main { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: var(--s5); align-items: start; }
+@media (max-width: 719px) { .gm-plate-main { grid-template-columns: 96px minmax(0, 1fr); gap: var(--s4); } }
+/* On a phone the second column has 139px to hold a title, two platform marks, two figures, the
+   tags and three buttons, which is not a column, it is a queue. The cover goes on top instead
+   and the body takes the width. */
+@media (max-width: 560px) {
+  .gm-plate-main { grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
+  .gm-plate-cover { max-width: 132px; }
+}
+.gm-plate-body { min-width: 0; }
+.gm-plate-body .gm-figures { margin-top: var(--s4); }
+.gm-plate-body .gm-plate-tags, .gm-plate-body .gm-plate-actions { margin-top: var(--s4); }
 .gm-plate-actions { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; margin-top: var(--s5); }
 .gm-plate-actions .gm-complete { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   min-height: 44px; padding: 8px 14px; border: 1px solid var(--mortar-2); border-radius: 4px;
@@ -4460,7 +4480,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-ach-slash { color: var(--ash); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-@media (prefers-reduced-motion: reduce) { .gm-card { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .gm-card, .gm-pane { animation: none; } }
 </style>
 <style>
   /* ——— namespace switcher ——— */
@@ -8802,8 +8822,14 @@ let gameScope = "owned", gameQuery = "", gameSort = "name";
    they are AND (Steam AND Roguelite), which is what every filter the owner has used elsewhere
    does and therefore the only behaviour he will not have to learn. */
 let gamePlatforms = [], gameTags = [];
+/* Appids asked for this session, so a plate reopened five times still costs one call. */
+const gameAchTried = new Set();
+const GAME_ACH_STALE = 30 * 24 * 60 * 60 * 1000;
 /* The id of the game whose plate is open. Empty means the shelf is showing. */
 let gameOpen = "";
+/* Card positions captured just before a render that moves them, so the covers can be animated
+   from where they were to where they land. */
+let gameFlipFrom = null;
 let gameEdit = null, gameBusy = "";
 const gameProfileTried = new Set();
 function gameReleaseLabel(d) {
@@ -8819,7 +8845,8 @@ function gameCard(it) {
   const accounts = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)?.label).filter(Boolean);
   const platforms = (it.platforms || []).length ? it.platforms.map(p => '<span class="gm-platform-line">' + gamePlatformMark(p) +
     '<span class="gm-platform-label">' + esc(p) + '</span></span>').join('') : '<span class="gm-meta">Platform not set</span>';
-  return '<article class="gm-card' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
+  return '<article class="gm-card' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') +
+    (gameOpen === it.id ? ' is-open' : '') + '" data-card="' + esc(it.id) + '">' +
     '<button type="button" class="gm-open" data-game="open" data-id="' + esc(it.id) +
     '" aria-label="Open ' + esc(it.name) + '"' + (gameOpen === it.id ? ' aria-current="true"' : '') + '>' +
     '<span class="gm-cover"><span class="gm-spine" aria-hidden="true">' + esc(it.name) + '</span>' + cover +
@@ -8870,7 +8897,7 @@ function gameLedgerRow(it) {
     : '<span class="gm-row-state' + (it.complete ? ' is-done' : '') + '"><span class="gm-row-mark" aria-hidden="true">' +
       (it.complete ? '✓' : '') + '</span>' + (it.complete ? '<span class="sr-only">Finished</span>' : '') + '</span>';
   return '<div class="gm-row' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') +
-    (gameOpen === it.id ? ' is-open' : '') + '">' +
+    (gameOpen === it.id ? ' is-open' : '') + '" data-card="' + esc(it.id) + '">' +
     mark +
     '<button type="button" class="gm-row-name" data-game="open" data-id="' + esc(it.id) + '"' +
     (gameOpen === it.id ? ' aria-current="true"' : '') + '>' +
@@ -8897,25 +8924,29 @@ function gamePlate(it) {
     ? Math.max(0, Math.min(100, Math.round((Number(it.ach.earned) || 0) / Number(it.ach.total) * 100))) : 0;
   /* The same 2px track the skill rows use, with the same tokens: a fraction of a run of
      achievements is a progression, and this app already draws progression one way. */
+  const fetching = gameBusy === 'ach:' + it.id;
   const achBlock = ach
     ? '<div class="gm-figure"><span class="gm-figure-k">Achievements</span>' +
       '<span class="gm-figure-v">' + esc(ach) + '</span>' +
       '<span class="pf-track gm-figure-track"><i style="width:' + pct + '%"></i></span></div>'
     : '<div class="gm-figure is-empty"><span class="gm-figure-k">Achievements</span>' +
-      '<span class="gm-figure-v">' + (it.steamAppId ? 'Not fetched' : 'Not recorded') + '</span></div>';
+      '<span class="gm-figure-v">' + (fetching ? 'Reading\u2026'
+        : it.steamAppId ? (gameAchTried.has(it.steamAppId) ? 'None published' : 'Not fetched')
+        : 'Not recorded') + '</span></div>';
   const hoursBlock = '<div class="gm-figure"><span class="gm-figure-k">Hours played</span>' +
     '<span class="gm-figure-v">' + (hours ? esc(hours) : '—') + '</span></div>';
   const accounts = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)?.label).filter(Boolean);
   return '<article class="gm-plate' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
-    '<button type="button" class="gm-plate-back" data-game="close"><span aria-hidden="true">‹</span> All games</button>' +
-    '<div class="gm-plate-head">' +
+    '<button type="button" class="gm-plate-back" data-game="close"><span aria-hidden="true">×</span> Close</button>' +
+    '<div class="gm-plate-main">' +
     '<span class="gm-plate-cover">' + cover +
     (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Finished</span>' : '') + '</span>' +
+    '<div class="gm-plate-body">' +
     '<div class="gm-plate-id"><h3 class="gm-plate-title">' + esc(it.name) + '</h3>' +
     '<div class="gm-platforms">' + platforms + '</div>' +
     (it.release ? '<p class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</p>' : '') +
     (accounts.length ? '<p class="gm-meta">From ' + esc(accounts.join(' · ')) + '</p>' : '') +
-    '</div></div>' +
+    '</div>' +
     '<div class="gm-figures">' + hoursBlock + achBlock + '</div>' +
     ((it.tags || []).length ? '<div class="gm-tags gm-plate-tags">' +
       (it.tags || []).map(t => '<span class="gm-chip">' + esc(t) + '</span>').join('') + '</div>' : '') +
@@ -8927,9 +8958,12 @@ function gamePlate(it) {
         '"><span class="gm-complete-mark" aria-hidden="true">' + (it.complete ? '✓' : '') + '</span>' +
         '<span class="gm-complete-label">' + (it.complete ? 'Finished' : 'Mark finished') + '</span></button>') +
     '<button type="button" class="btn btn-ghost btn-sm" data-game="edit" data-id="' + esc(it.id) + '">Edit</button>' +
-    (it.steamAppId ? '<button type="button" class="btn btn-ghost btn-sm" data-game="ach-sync" data-id="' + esc(it.id) + '"' +
-      (gameBusy ? ' disabled' : '') + '>' + (gameBusy === 'ach:' + it.id ? 'Fetching…' : 'Fetch achievements') + '</button>' : '') +
-    '</div></article>';
+    /* The first fetch happens on its own when the plate opens, so this is only ever a refresh -
+       and it is offered only once there is something to refresh. */
+    (it.steamAppId && (ach || gameAchTried.has(it.steamAppId))
+      ? '<button type="button" class="btn btn-ghost btn-sm" data-game="ach-sync" data-id="' + esc(it.id) + '"' +
+        (gameBusy ? ' disabled' : '') + '>' + (fetching ? 'Reading…' : 'Refresh achievements') + '</button>' : '') +
+    '</div></div></div></article>';
 }
 function gameMatches(it) {
   if (gameScope === "owned" && it.wish || gameScope === "wish" && !it.wish || gameScope === "complete" && !it.complete) return false;
@@ -8982,6 +9016,42 @@ function gameFilterChips() {
     esc(v) + '<span aria-hidden="true">×</span><span class="sr-only"> — remove filter</span></button>').join('') +
     '<button type="button" class="gm-applied-clear" data-game="facet-clear">Clear all</button></div>';
 }
+function gamePlacePlate(previous) {
+  const pane = $('#gamePane'); if (!pane) return;
+  const grid = pane.parentElement; if (!grid) return;
+  const cards = [...grid.children].filter(el => el !== pane);
+  const idx = cards.findIndex(el => el.dataset.card === gameOpen);
+  if (idx < 0) return;
+  /* How many cards fit a row right now. The ledger and list are one column; the two cover
+     grids are whatever the track count says, which changes with the viewport. */
+  const cols = Math.max(1, getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length);
+  /* The end of the row the open card sits in, so the plate opens under a complete row rather
+     than tearing a hole in the middle of one. */
+  const at = Math.min(cards.length, (Math.floor(idx / cols) + 1) * cols);
+  const before = cards[at] || null;
+  if (pane.previousElementSibling === (before ? before.previousElementSibling : cards[cards.length - 1])
+      && pane.nextElementSibling === before) return;
+  grid.insertBefore(pane, before);
+  if (previous) gameFlip(previous, cards);
+}
+/* First, last, invert, play. Positions are taken before the plate moves and after, and each
+   card that ended up somewhere else is put back where it was and then released. */
+function gameFlipRead(cards) {
+  const m = new Map();
+  for (const el of cards) { const r = el.getBoundingClientRect(); m.set(el, { x: r.left, y: r.top }); }
+  return m;
+}
+function gameFlip(first, cards) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for (const el of cards) {
+    const a = first.get(el); if (!a) continue;
+    const r = el.getBoundingClientRect();
+    const dx = a.x - r.left, dy = a.y - r.top;
+    if (!dx && !dy) continue;
+    el.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }],
+      { duration: 260, easing: 'cubic-bezier(.22,.61,.36,1)' });
+  }
+}
 function renderGamesList() {
   const el = $('#gameList'); if (!el) return;
   const all = games().items, shown = all.filter(gameMatches);
@@ -8990,15 +9060,17 @@ function renderGamesList() {
     : a.name.localeCompare(b.name));
   const sections = gameScope === 'all' ? [['Owned', shown.filter(x => !x.wish)], ['Wishlist', shown.filter(x => x.wish)]] :
     [[gameScope === 'wish' ? 'Wishlist' : gameScope === 'complete' ? 'Completed' : 'Owned', shown]];
-  /* The density switch still says what it says; the rail simply cannot show 172px covers in
-     360px, so an open plate forces the ledger and the switch returns when the plate closes. */
-  const view = gameOpen ? 'ledger' : gameView();
+  const view = gameView();
   el.innerHTML = shown.length ? sections.filter(([, list]) => list.length).map(([name, list]) =>
     '<section class="gm-section"><div class="gm-section-h"><h3>' + name + '</h3><span class="gm-count">' + list.length + '</span></div>' +
     '<div class="gm-grid gm-view-' + view + (view === 'ledger' && shown.some(gameYear) ? ' has-year' : '') + '">' +
-    list.map(view === 'ledger' ? gameLedgerRow : gameCard).join('') + '</div></section>').join('') :
+    list.map(view === 'ledger' ? gameLedgerRow : gameCard).join('') +
+    (gameOpen && list.some(x => x.id === gameOpen)
+      ? '<div class="gm-pane" id="gamePane">' + gamePlate(gameById(gameOpen)) + '</div>' : '') +
+    '</div></section>').join('') :
     '<div class="gm-empty"><strong>' + (all.length ? 'No titles match this view.' : 'Your first game belongs here.') + '</strong>' +
     '<p>' + (all.length ? 'Try another search, platform or tag.' : 'Add a Nintendo game, another console, or something you hope to play someday.') + '</p></div>';
+  gamePlacePlate(gameFlipFrom); gameFlipFrom = null;
   const n = $('#gameVisibleCount'); if (n) n.textContent = shown.length + (shown.length === 1 ? ' title' : ' titles');
 }
 function renderGames() {
@@ -9031,10 +9103,7 @@ function renderGames() {
        nothing open the rail is the whole width and shows the density the owner picked; with a
        plate open it narrows and drops to ledger rows, so the list never unmounts and walking
        the library costs one click a title rather than two. */
-    '<div class="gm-split' + (gameOpen ? ' is-open' : '') + '">' +
-    '<div class="gm-rail" id="gameList"></div>' +
-    (gameOpen ? '<div class="gm-pane" id="gamePane">' + gamePlate(gameById(gameOpen)) + '</div>' : '') +
-    '</div>' +
+    '<div id="gameList"></div>' +
     '<details class="gm-steam"><summary>Steam accounts · ' + g.accounts.length + '</summary><div class="gm-steam-inner">' +
     '<p>Bring in owned games from either account. Add its 17-digit SteamID64; no Steam password goes here. Your completion marks and tags stay yours on every sync.</p>' +
     g.accounts.map(a => '<div class="gm-account"><span class="gm-avatar">' + (a.avatar ? '<img src="' + esc(a.avatar) + '" alt="" loading="lazy" onerror="this.remove()">' :
@@ -9238,8 +9307,16 @@ async function gameSteamProfile(id) {
     });
   } catch (_) { /* A profile picture is optional; sync remains available. */ }
 }
-async function gameAchSync(gid) {
+function gameAchAuto(gid) {
+  const it = gameById(gid);
+  if (!it || !it.steamAppId || !auth || gameBusy) return;
+  if (gameAchTried.has(it.steamAppId)) return;
+  if (it.ach && Date.now() - (Number(it.ach.at) || 0) < GAME_ACH_STALE) return;
+  gameAchSync(gid, true);
+}
+async function gameAchSync(gid, quiet) {
   const it = gameById(gid); if (!it || !it.steamAppId || gameBusy) return;
+  gameAchTried.add(it.steamAppId);
   const account = (it.steamAccounts || [])[0] || (games().accounts[0] || {}).id;
   if (!account) { showToast('Add a Steam account first — achievements are read per player.', false, true); return; }
   if (!auth) { showToast('Sign in to Skillstone before fetching achievements.', false, true); return; }
@@ -9251,12 +9328,18 @@ async function gameAchSync(gid) {
       'Content-Type': 'application/json' }, body: JSON.stringify({ steamid: account, appid: it.steamAppId }) });
     const result = await r.json(); if (!r.ok) throw new Error(result.error || ('Steam returned ' + r.status));
     const total = Math.round(Number(result.achievements?.total) || 0);
-    if (!total) throw new Error('This title publishes no achievements.');
+    if (!total) {
+      /* Not an error: plenty of titles ship none. Record the nothing so the plate can say so
+         rather than sitting on "Not fetched" forever. */
+      gameSave(g => { const x = g.items.find(y => y.id === gid); if (x) x.ach = null; });
+      if (!quiet) showToast('This title publishes no achievements.');
+      return;
+    }
     const earned = Math.round(Number(result.achievements?.earned) || 0);
-    gameCommit(g => { const x = g.items.find(y => y.id === gid);
+    gameSave(g => { const x = g.items.find(y => y.id === gid);
       if (x) x.ach = { earned: Math.max(0, Math.min(total, earned)), total, at: Date.now() }; });
-    showToast(earned + ' of ' + total + ' achievements.', true);
-  } catch (e) { showToast('Achievements: ' + e.message, false, true); }
+    if (!quiet) showToast(earned + ' of ' + total + ' achievements.', true);
+  } catch (e) { if (!quiet) showToast('Achievements: ' + e.message, false, true); }
   finally { gameBusy = ''; renderGames(); }
 }
 async function gameSteamSync(id) {
@@ -9308,12 +9391,18 @@ async function gameSteamSync(id) {
 function gameAct(el) {
   const { game: act, id, k } = el.dataset, it = id && gameById(id);
   switch (act) {
-    case 'open': if (it) { gameOpen = id; renderGames();
-      $('#gamePane')?.scrollIntoView({ block: 'nearest' });
-      $('#gamePane .gm-plate-back')?.focus({ preventScroll: true }); } break;
+    case 'open': if (it) {
+      gameFlipFrom = gameFlipRead([...($('#gameList .gm-grid')?.children || [])]);
+      gameOpen = id; renderGames();
+      $('#gamePane .gm-plate-back')?.focus({ preventScroll: true });
+      gameAchAuto(id);
+      break;
+    }
     case 'close': {
-      const was = gameOpen; gameOpen = ''; renderGames();
-      /* Focus goes back to the row that opened the plate, not to the top of the document. */
+      const was = gameOpen;
+      gameFlipFrom = gameFlipRead([...($('#gameList .gm-grid')?.children || [])]);
+      gameOpen = ''; renderGames();
+      /* Focus goes back to the card that opened the plate, not to the top of the document. */
       $('#gameList [data-game="open"][data-id="' + CSS.escape(was) + '"]')?.focus({ preventScroll: true });
       break;
     }
@@ -9365,7 +9454,7 @@ function gameAct(el) {
       } break;
     }
     case 'sync': if (games().accounts.some(a => a.id === id)) gameSteamSync(id); break;
-    case 'ach-sync': if (it) gameAchSync(id); break;
+    case 'ach-sync': if (it) { gameAchTried.delete(it.steamAppId); gameAchSync(id); } break;
   }
 }
 document.addEventListener('input', e => {
@@ -9389,7 +9478,13 @@ document.addEventListener('change', e => {
   }
   if (e.target.id === 'gameSort') { gameSort = e.target.value; renderGamesList(); }
 });
+addEventListener('resize', () => { if (gameOpen) gamePlacePlate(null); });
 document.addEventListener('keydown', e => {
+  /* Escape closes the plate, the way it closes every other transient surface in this app. */
+  if (e.key === 'Escape' && gameOpen && !document.querySelector('dialog[open]')) {
+    const was = gameOpen; gameOpen = ''; renderGames();
+    $('#gameList [data-game="open"][data-id="' + CSS.escape(was) + '"]')?.focus({ preventScroll: true });
+  }
   if (e.target.id === 'gamePlatformCustom' && e.key === 'Enter') { e.preventDefault(); gamePlatformAdd(); }
   if (e.target.id === 'gameTagCustom' && e.key === 'Enter') { e.preventDefault(); gameTagAdd(); }
 });
