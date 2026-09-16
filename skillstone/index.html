@@ -9004,12 +9004,14 @@ function gamePlate(it) {
         '<span class="gm-owner-name">' + esc(a.profileName || a.label) + '</span></span>').join('') + '</p>'
     : '';
   return '<article class="gm-plate' + (it.wish ? ' is-wish' : '') + (it.complete ? ' is-complete' : '') + '">' +
-    '<button type="button" class="gm-plate-back" data-game="close"><span aria-hidden="true">×</span> Close</button>' +
     '<div class="gm-plate-main">' +
     '<span class="gm-plate-cover">' + cover +
     (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Finished</span>' : '') + '</span>' +
     '<div class="gm-plate-body">' +
-    '<div class="gm-plate-id"><h3 class="gm-plate-title">' + esc(it.name) + '</h3>' +
+    '<div class="gm-plate-id"><div class="gm-plate-headrow">' +
+    '<h3 class="gm-plate-title">' + esc(it.name) + '</h3>' +
+    '<button type="button" class="gm-plate-close" data-game="close" aria-label="Close ' + esc(it.name) +
+    '"><span aria-hidden="true">×</span></button></div>' +
     '<div class="gm-platforms">' + platforms + '</div>' +
     (it.release ? '<p class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</p>' : '') +
     ownerRow +
@@ -9083,6 +9085,62 @@ function gameFilterChips() {
     esc(v) + '<span aria-hidden="true">×</span><span class="sr-only"> — remove filter</span></button>').join('') +
     '<button type="button" class="gm-applied-clear" data-game="facet-clear">Clear all</button></div>';
 }
+const gameCardEl = id => id ? $('#gameList [data-card="' + CSS.escape(id) + '"]') : null;
+/* Where the plate belongs: the end of the row its card sits in, which needs the column count,
+   which is only knowable once the browser has laid the grid out. */
+function gamePaneIndex(grid, card) {
+  const cards = [...grid.children].filter(el => el.id !== 'gamePane');
+  const idx = cards.indexOf(card);
+  if (idx < 0) return null;
+  const cols = Math.max(1, getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length);
+  const at = Math.min(cards.length, (Math.floor(idx / cols) + 1) * cols);
+  return cards[at] || null;
+}
+function gameMarkCard(id, on) {
+  const card = gameCardEl(id); if (!card) return;
+  card.classList.toggle('is-open', on);
+  const btn = card.querySelector('[data-game="open"]');
+  if (btn) { if (on) btn.setAttribute('aria-current', 'true'); else btn.removeAttribute('aria-current'); }
+}
+/* Open, switch, or toggle shut — without a re-render. The panel's own height carries the
+   animation: a grid row going from 0fr to 1fr changes height continuously, so the covers below
+   are pushed down by the layout rather than by a script, and the contents fade in over it. */
+function gameSetOpen(id) {
+  const prev = gameOpen;
+  if (prev === id) { gameClosePane(); return; }
+  $('#gamePane')?.remove();
+  if (prev) gameMarkCard(prev, false);
+  const card = gameCardEl(id);
+  if (!card) { gameOpen = id; renderGames(); gameAchAuto(id); return; }
+  gameOpen = id;
+  const pane = document.createElement('div');
+  pane.className = 'gm-pane'; pane.id = 'gamePane';
+  pane.innerHTML = '<div class="gm-pane-in">' + gamePlate(gameById(id)) + '</div>';
+  card.parentElement.insertBefore(pane, gamePaneIndex(card.parentElement, card));
+  gameMarkCard(id, true);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) pane.classList.add('is-in');
+  else requestAnimationFrame(() => requestAnimationFrame(() => pane.classList.add('is-in')));
+  gameAchAuto(id);
+}
+function gameClosePane() {
+  const pane = $('#gamePane'), was = gameOpen;
+  gameOpen = '';
+  gameMarkCard(was, false);
+  gameCardEl(was)?.querySelector('[data-game="open"]')?.focus({ preventScroll: true });
+  if (!pane) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { pane.remove(); return; }
+  pane.classList.remove('is-in');
+  pane.addEventListener('transitionend', e => { if (e.target === pane) pane.remove(); }, { once: true });
+  /* A transition that never fires (the pane was already collapsed, or the tab is hidden) must
+     not leave the panel in the tree forever. */
+  setTimeout(() => { if (pane.isConnected) pane.remove(); }, 600);
+}
+/* Redraw only the open plate — used when a number arrives on its own, so an achievement count
+   landing does not rebuild the shelf underneath the reader. */
+function gamePaneRefresh() {
+  const inner = $('#gamePane .gm-pane-in'); if (!inner || !gameOpen) return;
+  inner.innerHTML = gamePlate(gameById(gameOpen));
+}
 function gamePlacePlate(previous) {
   const pane = $('#gamePane'); if (!pane) return;
   const grid = pane.parentElement; if (!grid) return;
@@ -9133,7 +9191,7 @@ function renderGamesList() {
     '<div class="gm-grid gm-view-' + view + (view === 'ledger' && shown.some(gameYear) ? ' has-year' : '') + '">' +
     list.map(view === 'ledger' ? gameLedgerRow : gameCard).join('') +
     (gameOpen && list.some(x => x.id === gameOpen)
-      ? '<div class="gm-pane" id="gamePane">' + gamePlate(gameById(gameOpen)) + '</div>' : '') +
+      ? '<div class="gm-pane is-in" id="gamePane"><div class="gm-pane-in">' + gamePlate(gameById(gameOpen)) + '</div></div>' : '') +
     '</div></section>').join('') :
     '<div class="gm-empty"><strong>' + (all.length ? 'No titles match this view.' : 'Your first game belongs here.') + '</strong>' +
     '<p>' + (all.length ? 'Try another search, platform or tag.' : 'Add a Nintendo game, another console, or something you hope to play someday.') + '</p></div>';
@@ -9295,6 +9353,16 @@ function gameWrite(fn, takesSnapshot) {
 }
 const gameCommit = (fn) => gameWrite(fn, true);
 const gameSave = (fn) => gameWrite(fn, false);
+/* Persist without redrawing anything: for a value that arrived on its own while the reader is
+   looking at the surface it would rebuild. The caller repaints the one part that changed. */
+function gameSaveQuiet(fn) {
+  const g = games(), before = structuredClone(g);
+  fn(g);
+  if (snapshot && snapshot.games) { try { fn(snapshot.games); } catch (_) {} }
+  try { localStorage.setItem(STORE, JSON.stringify(state)); }
+  catch (e) { state.games = before; return false; }
+  cloudQueue(); return true;
+}
 function gameDlgSave() {
   const form = $('#gameDlg form'), d = gameEdit; if (!form || !d || !form.reportValidity()) return;
   const fd = new FormData(form), name = String(fd.get('name') || '').trim();
@@ -9387,7 +9455,7 @@ async function gameAchSync(gid, quiet) {
   const account = (gameHoursRows(it)[0] || {}).id || (it.steamAccounts || [])[0] || (games().accounts[0] || {}).id;
   if (!account) { showToast('Add a Steam account first — achievements are read per player.', false, true); return; }
   if (!auth) { showToast('Sign in to Skillstone before fetching achievements.', false, true); return; }
-  gameBusy = 'ach:' + gid; renderGames();
+  gameBusy = 'ach:' + gid; gamePaneRefresh();
   try {
     if (!(await authRefreshIfNeeded())) throw new Error('Your sign-in expired. Sign in again.');
     const url = ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + '/functions/v1/steam-games';
@@ -9398,16 +9466,18 @@ async function gameAchSync(gid, quiet) {
     if (!total) {
       /* Not an error: plenty of titles ship none. Record the nothing so the plate can say so
          rather than sitting on "Not fetched" forever. */
-      gameSave(g => { const x = g.items.find(y => y.id === gid); if (x) x.ach = null; });
+      gameSaveQuiet(g => { const x = g.items.find(y => y.id === gid); if (x) x.ach = null; });
+      gamePaneRefresh();
       if (!quiet) showToast('This title publishes no achievements.');
       return;
     }
     const earned = Math.round(Number(result.achievements?.earned) || 0);
-    gameSave(g => { const x = g.items.find(y => y.id === gid);
+    gameSaveQuiet(g => { const x = g.items.find(y => y.id === gid);
       if (x) x.ach = { earned: Math.max(0, Math.min(total, earned)), total, at: Date.now(), by: account }; });
+    gamePaneRefresh();
     if (!quiet) showToast(earned + ' of ' + total + ' achievements.', true);
   } catch (e) { if (!quiet) showToast('Achievements: ' + e.message, false, true); }
-  finally { gameBusy = ''; renderGames(); }
+  finally { gameBusy = ''; gamePaneRefresh(); }
 }
 async function gameSteamSync(id) {
   if (gameBusy) return;
@@ -9462,21 +9532,10 @@ async function gameSteamSync(id) {
 function gameAct(el) {
   const { game: act, id, k } = el.dataset, it = id && gameById(id);
   switch (act) {
-    case 'open': if (it) {
-      gameFlipFrom = gameFlipRead([...($('#gameList .gm-grid')?.children || [])]);
-      gameOpen = id; renderGames();
-      $('#gamePane .gm-plate-back')?.focus({ preventScroll: true });
-      gameAchAuto(id);
-      break;
-    }
-    case 'close': {
-      const was = gameOpen;
-      gameFlipFrom = gameFlipRead([...($('#gameList .gm-grid')?.children || [])]);
-      gameOpen = ''; renderGames();
-      /* Focus goes back to the card that opened the plate, not to the top of the document. */
-      $('#gameList [data-game="open"][data-id="' + CSS.escape(was) + '"]')?.focus({ preventScroll: true });
-      break;
-    }
+    /* Clicking the open title again shuts it, which is what a toggle that looks like a toggle
+       has to do. */
+    case 'open': if (it) gameSetOpen(id); break;
+    case 'close': gameClosePane(); break;
     case 'facet-off': {
       const key = el.dataset.key, value = el.dataset.value;
       const list = key === 'platforms' ? gamePlatforms : gameTags;
@@ -9552,10 +9611,7 @@ document.addEventListener('change', e => {
 addEventListener('resize', () => { if (gameOpen) gamePlacePlate(null); });
 document.addEventListener('keydown', e => {
   /* Escape closes the plate, the way it closes every other transient surface in this app. */
-  if (e.key === 'Escape' && gameOpen && !document.querySelector('dialog[open]')) {
-    const was = gameOpen; gameOpen = ''; renderGames();
-    $('#gameList [data-game="open"][data-id="' + CSS.escape(was) + '"]')?.focus({ preventScroll: true });
-  }
+  if (e.key === 'Escape' && gameOpen && !document.querySelector('dialog[open]')) gameClosePane();
   if (e.target.id === 'gamePlatformCustom' && e.key === 'Enter') { e.preventDefault(); gamePlatformAdd(); }
   if (e.target.id === 'gameTagCustom' && e.key === 'Enter') { e.preventDefault(); gameTagAdd(); }
 });
