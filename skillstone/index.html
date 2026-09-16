@@ -4134,6 +4134,67 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bk-manual { grid-template-columns: 1fr 1fr 1fr; }
 .astro-prev { min-height: 1.4em; font-family: var(--f-mono); font-size: 0.75rem; color: var(--dust); }
 @media (max-width: 700px) { .astro { padding: var(--s4) var(--s2) var(--s6); } .astro-twin td.a { display: none; } .astro-twin th:last-child { display: none; } }
+/* Games: a cabinet of jackets, not another dashboard. A missing cover gets a letterpress spine. */
+.gm { padding: var(--s5) clamp(16px, 3vw, 48px) var(--s8); }
+.gm-head { display: flex; align-items: end; justify-content: space-between; gap: var(--s5); border-bottom: 1px solid var(--mortar-2); padding-bottom: var(--s5); }
+.gm-kicker, .gm-count, .gm-meta, .gm-chip, .gm-small { font: 0.625rem/1.5 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ash); }
+.gm-head h2 { font: 700 1.7rem/1.15 var(--f-display); color: var(--parchment); margin-top: 4px; }
+.gm-head p { color: var(--dust); font-size: .875rem; max-width: 58ch; margin-top: 6px; }
+.gm-add { flex: none; min-height: 44px; }
+.gm-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; padding: var(--s4) 0 var(--s5); }
+.gm-tabs { display: flex; gap: 2px; flex-wrap: wrap; }
+.gm-tabs button, .gm-tools select { border: 1px solid transparent; background: none; color: var(--dust); cursor: pointer; font: 600 .875rem var(--f-ui); padding: 8px 12px; border-radius: 4px; min-height: 44px; }
+.gm-tabs button[aria-pressed="true"] { border-color: var(--mortar-2); background: var(--stone-3); color: var(--gold-2); }
+.gm-tabs button:hover, .gm-tabs button:focus-visible { color: var(--parchment); }
+.gm-tools { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; }
+.gm-tools input, .gm-tools select { background: var(--socket); border: 1px solid var(--mortar); color: var(--parchment); border-radius: 4px; min-height: 44px; }
+.gm-tools input { font: .875rem var(--f-ui); padding: 8px 12px; width: min(220px, 70vw); }
+.gm-tools select { padding: 8px; }
+.gm-section { margin-bottom: var(--s6); }
+.gm-section-h { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s3); }
+.gm-section-h h3 { font: 700 1rem var(--f-display); color: var(--gold-2); }
+.gm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 172px), 1fr)); gap: var(--s5) var(--s4); }
+.gm-card { min-width: 0; animation: gm-arrive .35s var(--e-out) both; }
+.gm-cover { position: relative; aspect-ratio: 2/3; background: var(--socket); border: 1px solid var(--mortar-2); overflow: hidden; display: grid; place-items: center; }
+.gm-cover img { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 1; }
+.gm-spine { position: absolute; inset: 7px; display: grid; place-items: center; text-align: center; padding: var(--s4); border: 1px solid var(--mortar); color: var(--bronze); font: 700 1rem/1.45 var(--f-display); overflow-wrap: anywhere; }
+.gm-card.is-wish .gm-cover { border-color: var(--bronze); }
+.gm-badge { position: absolute; z-index: 2; top: 8px; right: 8px; background: var(--cave); color: var(--gold-2); border: 1px solid var(--bronze); padding: 3px 6px; font: 600 .5625rem var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
+.gm-card-title { font: 700 1rem/1.2 var(--f-ui); color: var(--parchment); margin-top: var(--s2); overflow-wrap: anywhere; }
+.gm-meta { margin-top: 3px; text-transform: none; letter-spacing: 0; overflow-wrap: anywhere; }
+.gm-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--s2); }
+.gm-chip { border: 1px solid var(--mortar); color: var(--dust); padding: 1px 5px; text-transform: none; letter-spacing: 0; }
+.gm-card-actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
+.gm-card-actions button { background: none; border: 0; padding: 8px 0; min-height: 44px; cursor: pointer; color: var(--dust); font: 600 .75rem var(--f-ui); text-decoration: underline; text-decoration-color: var(--mortar-2); text-underline-offset: 3px; }
+.gm-card-actions button:hover { color: var(--gold-2); }
+.gm-card-actions .is-done { color: var(--verdant); }
+.gm-empty { padding: var(--s7) var(--s4); border: 1px dashed var(--mortar-2); text-align: center; color: var(--dust); }
+.gm-empty strong { display: block; font: 700 1.125rem var(--f-display); color: var(--parchment); margin-bottom: var(--s2); }
+.gm-steam { border-top: 1px solid var(--mortar-2); padding-top: var(--s4); margin-top: var(--s6); }
+.gm-steam summary { cursor: pointer; color: var(--gold); font: 700 .875rem var(--f-ui); width: fit-content; min-height: 44px; display: flex; align-items: center; }
+.gm-steam-inner { max-width: 680px; padding-top: var(--s4); color: var(--dust); font-size: .875rem; }
+.gm-steam-inner p + p { margin-top: var(--s2); }
+.gm-account { display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; padding: var(--s2) 0; border-bottom: 1px solid var(--mortar); }
+.gm-account span { flex: 1; min-width: 180px; overflow-wrap: anywhere; }
+.gm-account button { min-height: 44px; }
+.gm-account-form { display: flex; gap: var(--s2); flex-wrap: wrap; margin-top: var(--s4); }
+.gm-account-form input { min-height: 44px; background: var(--socket); border: 1px solid var(--mortar); color: var(--parchment); padding: 8px; border-radius: 4px; font: .875rem var(--f-ui); }
+.gm-account-form input[name="steamid"] { flex: 1 1 190px; }
+.gm-account-form input[name="label"] { flex: 1 1 130px; }
+.gm-note { color: var(--ash); font-size: .8125rem; margin-top: var(--s3); line-height: 1.5; }
+.game-dlg .bk-row { grid-template-columns: 1fr 1fr; }
+.game-dlg .gm-form-state { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.game-dlg .gm-form-state label { font-size: .875rem; color: var(--dust); display: inline-flex; gap: 6px; align-items: center; min-height: 44px; }
+.game-dlg .gm-form-state input { accent-color: var(--gold); }
+.game-dlg .bk-l input { min-height: 44px; }
+.game-dlg .gm-cover-row { display: flex; gap: var(--s3); align-items: center; }
+.game-dlg .gm-cover-mini { width: 60px; aspect-ratio: 2/3; flex: none; background: var(--socket); border: 1px solid var(--mortar); display: grid; place-items: center; color: var(--ash); font: .625rem var(--f-mono); overflow: hidden; }
+.game-dlg .gm-cover-mini img { width: 100%; height: 100%; object-fit: cover; }
+.game-dlg .gm-cover-controls { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.game-dlg .gm-cover-controls button { min-height: 44px; }
+@keyframes gm-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 650px) { .gm { padding: var(--s4) var(--s2) var(--s7); } .gm-head { align-items: start; flex-direction: column; } .gm-add { align-self: stretch; justify-content: center; } .gm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s2); } .game-dlg .bk-row { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .gm-card { animation: none; } }
 </style>
 <style>
   /* ——— namespace switcher ——— */
@@ -4306,12 +4367,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
         </div>
         <div id="invEquip" role="tabpanel" aria-labelledby="ivTabGear"></div>
         <div id="viewTomes" role="tabpanel" aria-labelledby="ivTabTomes" hidden></div>
-        <div id="invGames" role="tabpanel" aria-labelledby="ivTabGames" hidden>
-          <section class="tab-blank">
-            <img src="assets/quests/spare-lotus-moon.png" alt="" width="256" height="256" loading="lazy">
-            <p>Nothing on this shelf yet</p>
-          </section>
-        </div>
+        <div id="invGames" role="tabpanel" aria-labelledby="ivTabGames" hidden></div>
       </section>
     </div>
   </div>
@@ -4460,6 +4516,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 <dialog id="gcalDlg" class="bk-dlg" aria-labelledby="gcalTitle"></dialog>
 <dialog id="gearDlg" class="bk-dlg gear-dlg" aria-labelledby="gearDlgTitle"></dialog>
 <input type="file" id="gearFile" accept="image/*" hidden>
+<dialog id="gameDlg" class="bk-dlg game-dlg" aria-labelledby="gameDlgTitle"></dialog>
+<input type="file" id="gameCoverFile" accept="image/png,image/jpeg,image/webp" hidden>
 <dialog id="campDlg" class="bk-dlg camp-dlg" aria-labelledby="campDlgTitle"></dialog>
 <dialog id="questDlg" class="bk-dlg" aria-label="New side quest">
   <form method="dialog" data-form="quest-save">
@@ -6562,6 +6620,31 @@ function sanitize(s) {
        it lives with what is worn rather than on an item */
     s.wardrobe = { items, worn, tuck: wr.tuck === true };
   }
+  /* Games are one title per record, with platforms and Steam accounts as lists. Never
+     infer completion from playtime or replace hand-written fields during an import. */
+  {
+    const g = (s.games && typeof s.games === "object") ? s.games : {};
+    const names = a => (Array.isArray(a) ? a : []).filter(x => typeof x === "string")
+      .map(x => x.trim().slice(0, 32)).filter(Boolean).slice(0, 16);
+    const cover = x => typeof x === "string" &&
+      (/^https:\/\/[^\s<>"']+$/i.test(x) || /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(x))
+      ? x.slice(0, 160000) : "";
+    s.games = {
+      items: (Array.isArray(g.items) ? g.items : []).filter(x => x && x.id).slice(0, 2000).map(x => ({
+        id: String(x.id).slice(0, 80), name: String(x.name || "Untitled").slice(0, 160),
+        cover: cover(x.cover), complete: x.complete === true, wish: x.wish === true,
+        platforms: names(x.platforms), tags: names(x.tags),
+        release: /^\d{4}-\d{2}-\d{2}$/.test(x.release) ? x.release : "",
+        steamAppId: /^\d{1,10}$/.test(String(x.steamAppId || "")) ? String(x.steamAppId) : "",
+        steamAccounts: (Array.isArray(x.steamAccounts) ? x.steamAccounts : [])
+          .filter(a => /^\d{17}$/.test(String(a))).map(String).slice(0, 8),
+        added: Number(x.added) || 0
+      })),
+      accounts: (Array.isArray(g.accounts) ? g.accounts : []).filter(a => a && /^\d{17}$/.test(String(a.id)))
+        .slice(0, 8).map(a => ({ id: String(a.id), label: String(a.label || "Steam account").slice(0, 40),
+          synced: Number(a.synced) || 0 }))
+    };
+  }
   /* campaigns are the owner's to edit, so only the shape is enforced, never the content */
   s.campaigns = (Array.isArray(s.campaigns) ? s.campaigns : []).filter(c => c && c.id).map(c => ({
     id: String(c.id), name: String(c.name || "Untitled"), emblem: String(c.emblem || "quill"),
@@ -8368,6 +8451,269 @@ let gearFilter = "";      /* which family the board is showing, "" for everythin
 let gearPick = "";        /* the equipped place under consideration, "" for none */
 let gearEdit = null;      /* the garment being written, until Save */
 
+/* ================= GAMES =================
+   A title is one record even when it lives on several platforms. Steam imports only add
+   ownership; completion, tags, manually chosen covers and release dates remain the owner's. */
+const games = () => {
+  if (!state.games || typeof state.games !== "object") state.games = { items: [], accounts: [] };
+  if (!Array.isArray(state.games.items)) state.games.items = [];
+  if (!Array.isArray(state.games.accounts)) state.games.accounts = [];
+  return state.games;
+};
+const gameById = id => games().items.find(x => x.id === id);
+const gameCoverOK = v => typeof v === "string" &&
+  (/^https:\/\/[^\s<>"']+$/i.test(v) || /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(v));
+const gameList = v => [...new Set(String(v || "").split(",").map(x => x.trim().slice(0, 32)).filter(Boolean))].slice(0, 16);
+let gameScope = "owned", gameQuery = "", gamePlatform = "", gameTag = "", gameSort = "name";
+let gameEdit = null, gameBusy = "";
+function gameReleaseLabel(d) {
+  if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return "Release date unknown";
+  const at = new Date(d + "T12:00:00"), now = new Date();
+  if (isNaN(at.getTime())) return "Release date unknown";
+  const days = Math.ceil((at - now) / 86400000);
+  return at.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) +
+    (days > 0 ? " · in " + days + (days === 1 ? " day" : " days") : "");
+}
+function gameCard(it) {
+  const cover = gameCoverOK(it.cover) ? '<img src="' + esc(it.cover) + '" alt="" loading="lazy" onerror="this.remove()">' : "";
+  const places = (it.platforms || []).join(" · ") || "Platform not set";
+  const accounts = (it.steamAccounts || []).map(id => games().accounts.find(a => a.id === id)?.label).filter(Boolean);
+  return '<article class="gm-card' + (it.wish ? ' is-wish' : '') + '">' +
+    '<div class="gm-cover"><span class="gm-spine" aria-hidden="true">' + esc(it.name) + '</span>' + cover +
+    (it.wish ? '<span class="gm-badge">Wishlist</span>' : it.complete ? '<span class="gm-badge">Complete</span>' : '') + '</div>' +
+    '<h4 class="gm-card-title">' + esc(it.name) + '</h4><p class="gm-meta">' + esc(places) + '</p>' +
+    (it.wish ? '<p class="gm-meta">' + esc(gameReleaseLabel(it.release)) + '</p>' : '') +
+    (accounts.length ? '<p class="gm-meta">' + esc(accounts.join(' · ')) + '</p>' : '') +
+    '<div class="gm-tags">' + (it.tags || []).map(t => '<span class="gm-chip">' + esc(t) + '</span>').join('') + '</div>' +
+    '<div class="gm-card-actions">' + (it.wish
+      ? '<button type="button" data-game="acquire" data-id="' + esc(it.id) + '">Move to owned</button>'
+      : '<button type="button" class="' + (it.complete ? 'is-done' : '') + '" data-game="complete" data-id="' + esc(it.id) + '">' +
+        (it.complete ? '✓ Completed' : 'Mark complete') + '</button>') +
+      '<button type="button" data-game="edit" data-id="' + esc(it.id) + '">Edit</button></div></article>';
+}
+function gameMatches(it) {
+  if (gameScope === "owned" && it.wish || gameScope === "wish" && !it.wish || gameScope === "complete" && !it.complete) return false;
+  if (gamePlatform && !(it.platforms || []).some(p => p.toLowerCase() === gamePlatform.toLowerCase())) return false;
+  if (gameTag && !(it.tags || []).some(t => t.toLowerCase() === gameTag.toLowerCase())) return false;
+  const hay = [it.name, ...(it.platforms || []), ...(it.tags || [])].join(' ').toLowerCase();
+  return hay.includes(gameQuery.toLowerCase().trim());
+}
+function renderGamesList() {
+  const el = $('#gameList'); if (!el) return;
+  const all = games().items, shown = all.filter(gameMatches);
+  shown.sort((a, b) => gameSort === 'recent' ? (b.added - a.added) || a.name.localeCompare(b.name)
+    : gameSort === 'release' ? (a.release || '9999').localeCompare(b.release || '9999') || a.name.localeCompare(b.name)
+    : a.name.localeCompare(b.name));
+  const sections = gameScope === 'all' ? [['Owned', shown.filter(x => !x.wish)], ['Wishlist', shown.filter(x => x.wish)]] :
+    [[gameScope === 'wish' ? 'Wishlist' : gameScope === 'complete' ? 'Completed' : 'Owned', shown]];
+  el.innerHTML = shown.length ? sections.filter(([, list]) => list.length).map(([name, list]) =>
+    '<section class="gm-section"><div class="gm-section-h"><h3>' + name + '</h3><span class="gm-count">' + list.length + '</span></div>' +
+    '<div class="gm-grid">' + list.map(gameCard).join('') + '</div></section>').join('') :
+    '<div class="gm-empty"><strong>' + (all.length ? 'No titles match this view.' : 'Your first game belongs here.') + '</strong>' +
+    '<p>' + (all.length ? 'Try another search, platform or tag.' : 'Add a Nintendo game, another console, or something you hope to play someday.') + '</p></div>';
+  const n = $('#gameVisibleCount'); if (n) n.textContent = shown.length + (shown.length === 1 ? ' title' : ' titles');
+}
+function renderGames() {
+  const el = $('#invGames'); if (!el) return;
+  const g = games(), owned = g.items.filter(x => !x.wish).length, wish = g.items.length - owned;
+  const options = key => [...new Set(g.items.flatMap(x => x[key] || []))].sort((a,b) => a.localeCompare(b));
+  el.innerHTML = '<div class="gm"><header class="gm-head"><div><span class="gm-kicker">Equipment / Games</span>' +
+    '<h2>The game shelf</h2><p>What you own, what you finished, and what is still on the horizon.</p></div>' +
+    '<button type="button" class="j3-btn gm-add" data-game="new">+ Add a game</button></header>' +
+    '<div class="gm-toolbar"><div class="gm-tabs" role="group" aria-label="Show games">' +
+    [['owned','Owned',owned],['wish','Wishlist',wish],['complete','Completed',g.items.filter(x => x.complete).length],['all','All',g.items.length]]
+      .map(([k,n,c]) => '<button type="button" data-game="scope" data-k="' + k + '" aria-pressed="' + (gameScope === k) + '">' + n + ' <span class="gm-small">' + c + '</span></button>').join('') +
+    '</div><div class="gm-tools"><input id="gameSearch" type="search" aria-label="Search games" placeholder="Search the shelf" value="' + esc(gameQuery) + '">' +
+    '<select id="gamePlatform" aria-label="Filter by platform"><option value="">All platforms</option>' + options('platforms').map(p =>
+      '<option value="' + esc(p) + '"' + (p === gamePlatform ? ' selected' : '') + '>' + esc(p) + '</option>').join('') + '</select>' +
+    '<select id="gameTag" aria-label="Filter by tag"><option value="">All tags</option>' + options('tags').map(t =>
+      '<option value="' + esc(t) + '"' + (t === gameTag ? ' selected' : '') + '>' + esc(t) + '</option>').join('') + '</select>' +
+    '<select id="gameSort" aria-label="Sort games"><option value="name">A–Z</option><option value="recent"' + (gameSort === 'recent' ? ' selected' : '') +
+    '>Recently added</option><option value="release"' + (gameSort === 'release' ? ' selected' : '') + '>Release date</option></select></div></div>' +
+    '<span class="gm-count" id="gameVisibleCount"></span><div id="gameList"></div>' +
+    '<details class="gm-steam"><summary>Steam accounts · ' + g.accounts.length + '</summary><div class="gm-steam-inner">' +
+    '<p>Bring in owned games from either account. Add its 17-digit SteamID64; no Steam password goes here. Your completion marks and tags stay yours on every sync.</p>' +
+    g.accounts.map(a => '<div class="gm-account"><span><b>' + esc(a.label) + '</b><br><span class="gm-small">' + esc(a.id) +
+      (a.synced ? ' · synced ' + esc(new Date(a.synced).toLocaleDateString()) : ' · not synced') + '</span></span>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-game="sync" data-id="' + esc(a.id) + '"' + (gameBusy ? ' disabled' : '') + '>' +
+      (gameBusy === a.id ? 'Syncing…' : 'Sync') + '</button><button type="button" class="btn btn-ghost btn-sm" data-game="account-remove" data-id="' + esc(a.id) + '">Remove</button></div>').join('') +
+    '<form class="gm-account-form" data-form="game-account"><input name="label" aria-label="Account label" maxlength="40" placeholder="Account label (e.g. Main)" required>' +
+    '<input name="steamid" aria-label="SteamID64" inputmode="numeric" pattern="[0-9]{17}" maxlength="17" placeholder="17-digit SteamID64" required>' +
+    '<button type="submit" class="j3-btn">+ Add account</button></form>' +
+    '<p class="gm-note">Steam import needs the server function and a private Steam Web API key configured. The Steam library must be visible to the key. Import adds and updates; it never deletes a title when Steam omits it. Nintendo and other platforms are entered above.</p>' +
+    '</div></details></div>';
+  $('#gameSort').value = gameSort;
+  renderGamesList();
+}
+function gameDlgOpen(id) {
+  const it = id ? gameById(id) : null;
+  gameEdit = it ? structuredClone(it) : { id: '', name: '', cover: '', complete: false, wish: gameScope === 'wish',
+    platforms: [], tags: [], release: '', steamAppId: '', steamAccounts: [], added: Date.now() };
+  const dlg = $('#gameDlg');
+  dlg.innerHTML = '<form method="dialog" data-form="game-save"><div class="bk-top"><p class="bk-h" id="gameDlgTitle">' +
+    (it ? 'Edit game' : 'Add a game') + '</p><button type="button" class="bk-x" data-game="cancel" aria-label="Close">×</button></div>' +
+    '<label class="bk-l">Name<input name="name" maxlength="160" required value="' + esc(gameEdit.name) + '" placeholder="The title as you know it"></label>' +
+    '<fieldset class="bk-state gm-form-state"><legend class="bk-lg">Shelf</legend><label><input type="radio" name="shelf" value="owned"' + (!gameEdit.wish ? ' checked' : '') + '> Owned</label>' +
+    '<label><input type="radio" name="shelf" value="wish"' + (gameEdit.wish ? ' checked' : '') + '> Wishlist</label></fieldset>' +
+    '<div class="bk-row"><label class="bk-l">Platforms<input name="platforms" maxlength="300" value="' + esc(gameEdit.platforms.join(', ')) +
+    '" placeholder="Nintendo Switch, Steam" required></label><label class="bk-l">Tags / categories<input name="tags" maxlength="300" value="' +
+    esc(gameEdit.tags.join(', ')) + '" placeholder="JRPG, Strategy, Pokémon"></label></div>' +
+    '<p class="gm-note">Separate multiple platforms or tags with commas. Add any console or category you use.</p>' +
+    '<div class="bk-row"><label class="bk-l">Release date (optional)<input type="date" name="release" value="' + esc(gameEdit.release) +
+    '"></label><label class="bk-l">Steam App ID (optional)<input name="steamAppId" inputmode="numeric" pattern="[0-9]*" maxlength="10" value="' +
+    esc(gameEdit.steamAppId) + '" placeholder="For matching imports"></label></div>' +
+    '<label class="gm-form-state"><input type="checkbox" name="complete"' + (gameEdit.complete ? ' checked' : '') + '> Completed</label>' +
+    '<div class="gm-cover-row"><span class="gm-cover-mini" id="gameCoverPreview"></span><div><div class="gm-cover-controls">' +
+    '<button type="button" class="btn btn-ghost btn-sm" data-game="cover-pick">Upload cover</button>' +
+    '<button type="button" class="btn btn-ghost btn-sm" data-game="cover-clear">Clear</button></div>' +
+    '<p class="gm-note">A cover is required. Upload a small image or paste an HTTPS image URL below.</p></div></div>' +
+    '<label class="bk-l">Cover image URL<input type="url" name="cover" value="' + esc(gameEdit.cover.startsWith('data:') ? '' : gameEdit.cover) +
+    '" placeholder="https://…/cover.jpg"></label>' +
+    '<div class="bk-foot">' + (it ? '<button type="button" class="btn btn-danger btn-sm" data-game="delete">Delete</button>' : '') +
+    '<button type="button" class="btn btn-ghost btn-sm" data-game="cancel">Cancel</button>' +
+    '<button type="submit" class="btn btn-primary btn-sm">' + (it ? 'Save changes' : 'Add to the shelf') + '</button></div></form>';
+  gameCoverPreview(); dlg.showModal(); dlg.querySelector('[name="name"]').focus();
+}
+function gameCoverPreview() {
+  const el = $('#gameCoverPreview'); if (!el || !gameEdit) return;
+  el.innerHTML = gameCoverOK(gameEdit.cover) ? '<img src="' + esc(gameEdit.cover) + '" alt="Cover preview" onerror="this.remove()">' : 'COVER';
+}
+function gameDlgClose() { const d = $('#gameDlg'); if (d?.open) d.close(); gameEdit = null; }
+function gameCommit(fn) {
+  const g = games(), before = structuredClone(g), earlierUndo = snapshot;
+  takeSnapshot(); fn(g);
+  try { localStorage.setItem(STORE, JSON.stringify(state)); }
+  catch (e) { state.games = before; snapshot = earlierUndo;
+    showToast('The cover or library is too large to store. Try a smaller image.', false, true); return false; }
+  cloudQueue(); renderGames(); return true;
+}
+function gameDlgSave() {
+  const form = $('#gameDlg form'), d = gameEdit; if (!form || !d || !form.reportValidity()) return;
+  const fd = new FormData(form), name = String(fd.get('name') || '').trim();
+  const coverInput = String(fd.get('cover') || '').trim();
+  const cover = coverInput || d.cover;
+  if (!gameCoverOK(cover) || cover.length > 160000) { showToast('Add a valid HTTPS cover URL or upload a cover.', false, true); return; }
+  const platforms = gameList(fd.get('platforms'));
+  if (!platforms.length) { showToast('Name at least one platform.', false, true); return; }
+  const appid = String(fd.get('steamAppId') || '').trim();
+  if (appid && games().items.some(x => x.id !== d.id && x.steamAppId === appid)) {
+    showToast('That Steam App ID is already on another title. Edit that title instead.', false, true); return;
+  }
+  const it = { ...d, id: d.id || uid(), name, cover, platforms, tags: gameList(fd.get('tags')),
+    wish: fd.get('shelf') === 'wish', complete: fd.get('shelf') === 'wish' ? false : fd.has('complete'),
+    release: String(fd.get('release') || ''), steamAppId: appid };
+  if (gameCommit(g => { const i = g.items.findIndex(x => x.id === it.id); if (i < 0) g.items.push(it); else g.items[i] = it; })) {
+    gameDlgClose(); showToast(d.id ? '“' + name + '” saved.' : '“' + name + '” joins the shelf.', true);
+  }
+}
+function gameCoverPick() {
+  const input = $('#gameCoverFile'); input.value = '';
+  input.onchange = () => {
+    const file = input.files?.[0]; if (!file || !gameEdit) return;
+    if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 5000000) {
+      showToast('Choose a PNG, JPEG or WebP under 5 MB.', false, true); return;
+    }
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url); if (!gameEdit) return;
+      const cv = document.createElement('canvas'), scale = Math.min(1, 360 / Math.max(img.width, img.height));
+      cv.width = Math.max(1, Math.round(img.width * scale)); cv.height = Math.max(1, Math.round(img.height * scale));
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      gameEdit.cover = cv.toDataURL('image/jpeg', .7);
+      if (gameEdit.cover.length > 160000) { gameEdit.cover = ''; showToast('That cover is still too large. Try a smaller one.', false, true); return; }
+      const field = $('#gameDlg [name="cover"]'); if (field) field.value = '';
+      gameCoverPreview(); showToast('Cover ready to save.');
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); showToast('That image could not be read.', false, true); };
+    img.src = url;
+  };
+  input.click();
+}
+function gameAccountSave(form) {
+  const fd = new FormData(form), id = String(fd.get('steamid') || '').trim(), label = String(fd.get('label') || '').trim();
+  if (!/^\d{17}$/.test(id) || !label) return;
+  if (games().accounts.some(a => a.id === id)) { showToast('That Steam account is already listed.', false, true); return; }
+  if (gameCommit(g => g.accounts.push({ id, label, synced: 0 }))) {
+    const det = $('#invGames .gm-steam'); if (det) det.open = true;
+    showToast('Account added. Sync it when the server key is ready.');
+  }
+}
+async function gameSteamSync(id) {
+  if (gameBusy) return;
+  if (!auth) { showToast('Sign in to Skillstone before syncing Steam.', false, true); return; }
+  gameBusy = id; const wasOpen = $('#invGames .gm-steam')?.open; renderGames(); $('#invGames .gm-steam').open = wasOpen;
+  try {
+    if (!(await authRefreshIfNeeded())) throw new Error('Your sign-in expired. Sign in again.');
+    const url = ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + '/functions/v1/steam-games';
+    const r = await fetch(url, { method: 'POST', headers: { apikey: authKey(), Authorization: 'Bearer ' + auth.access_token,
+      'Content-Type': 'application/json' }, body: JSON.stringify({ steamid: id }) });
+    const result = await r.json(); if (!r.ok) throw new Error(result.error || ('Steam returned ' + r.status));
+    if (!Array.isArray(result.games)) throw new Error('Steam sent no readable library. Check game-details visibility.');
+    let added = 0, linked = 0;
+    const ok = gameCommit(g => {
+      result.games.slice(0, 2000).forEach(raw => {
+        const appid = String(raw.appid || ''); if (!/^\d{1,10}$/.test(appid) || !raw.name) return;
+        let it = g.items.find(x => x.steamAppId === appid);
+        if (!it) { const exact = g.items.filter(x => !x.steamAppId && x.name.trim().toLowerCase() === String(raw.name).trim().toLowerCase());
+          if (exact.length === 1) it = exact[0]; }
+        if (it) {
+          it.steamAppId = appid; it.wish = false;
+          if (!it.platforms.some(p => p.toLowerCase() === 'steam')) it.platforms.push('Steam');
+          if (!it.steamAccounts.includes(id)) it.steamAccounts.push(id);
+          if (!it.cover) it.cover = 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/' + appid + '/library_600x900.jpg';
+          linked++;
+        } else if (g.items.length < 2000) {
+          g.items.push({ id: uid(), name: String(raw.name).slice(0,160),
+            cover: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/' + appid + '/library_600x900.jpg',
+            complete: false, wish: false, platforms: ['Steam'], tags: [], release: '', steamAppId: appid,
+            steamAccounts: [id], added: Date.now() }); added++;
+        }
+      });
+      const account = g.accounts.find(a => a.id === id); if (account) account.synced = Date.now();
+    });
+    if (ok) showToast('Steam shelf synced: ' + added + ' new, ' + linked + ' matched. Completion marks kept.', true);
+  } catch (e) { showToast('Steam sync: ' + e.message, false, true); }
+  finally { gameBusy = ''; renderGames(); $('#invGames .gm-steam').open = true; }
+}
+function gameAct(el) {
+  const { game: act, id, k } = el.dataset, it = id && gameById(id);
+  switch (act) {
+    case 'new': gameDlgOpen(); break;
+    case 'edit': if (it) gameDlgOpen(id); break;
+    case 'cancel': gameDlgClose(); break;
+    case 'cover-pick': gameCoverPick(); break;
+    case 'cover-clear': if (gameEdit) { gameEdit.cover = ''; $('#gameDlg [name="cover"]').value = ''; gameCoverPreview(); } break;
+    case 'scope': gameScope = k; renderGames(); el = $('#invGames [data-game="scope"][data-k="' + k + '"]'); el?.focus({preventScroll:true}); break;
+    case 'complete': if (it && gameCommit(() => { it.complete = !it.complete; })) showToast(it.complete ? '“' + it.name + '” complete. Well played.' : '“' + it.name + '” back in progress.', true); break;
+    case 'acquire': if (it && gameCommit(() => { it.wish = false; })) showToast('“' + it.name + '” moved to your owned shelf.', true); break;
+    case 'delete': if (gameEdit && confirm('Remove “' + gameEdit.name + '” from your game shelf?')) {
+      const name = gameEdit.name, removeId = gameEdit.id;
+      if (gameCommit(g => { g.items = g.items.filter(x => x.id !== removeId); })) { gameDlgClose(); showToast('“' + name + '” removed.', true); }
+    } break;
+    case 'account-remove': {
+      const account = games().accounts.find(a => a.id === id);
+      if (account && confirm('Remove “' + account.label + '” from connected accounts? Imported games stay on the shelf.')) {
+        if (gameCommit(g => { g.accounts = g.accounts.filter(a => a.id !== id);
+          g.items.forEach(x => { x.steamAccounts = x.steamAccounts.filter(a => a !== id); }); })) {
+          $('#invGames .gm-steam').open = true; showToast('Steam account removed. Games kept.', true);
+        }
+      } break;
+    }
+    case 'sync': if (games().accounts.some(a => a.id === id)) gameSteamSync(id); break;
+  }
+}
+document.addEventListener('input', e => {
+  if (e.target.id === 'gameSearch') { gameQuery = e.target.value; renderGamesList(); }
+  if (e.target.name === 'cover' && e.target.closest('#gameDlg') && gameEdit) {
+    gameEdit.cover = e.target.value.trim(); gameCoverPreview();
+  }
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'gamePlatform') { gamePlatform = e.target.value; renderGamesList(); }
+  if (e.target.id === 'gameTag') { gameTag = e.target.value; renderGamesList(); }
+  if (e.target.id === 'gameSort') { gameSort = e.target.value; renderGamesList(); }
+});
+
 /* ---------- the figure ----------
    Drawn with curves and round-capped strokes rather than boxes: limbs are strokes, so they
    taper and end in a radius; the torso is one cubic path. The figure has to read as a body
@@ -9597,6 +9943,7 @@ function invEnter() {
   invSyncSubs();
   if (invSub === "tomes") renderTomes();
   else if (invSub === "gear") renderInv();
+  else if (invSub === "games") renderGames();
 }
 function invSetSub(k) {
   invSub = INV_SUBS.indexOf(k) > -1 ? k : "gear";
@@ -16816,6 +17163,7 @@ function undo() {
   state = snapshot; snapshot = null;
   save();
   renderGrid(); renderDetail(false);
+  if (view === "inv") invEnter();
   hideToast();
 }
 function showToast(msg, withUndo, isErr) {
@@ -17045,6 +17393,8 @@ document.addEventListener("click", e => {
   if (pf) { profAct(pf); return; }
   const iv = e.target.closest("[data-inv]");
   if (iv) { invAct(iv); return; }
+  const gm = e.target.closest("[data-game]");
+  if (gm) { gameAct(gm); return; }
   const tm = e.target.closest("[data-tm]");
   if (tm) { tomeAct(tm); if (tm.dataset.tm !== "skills") return; }
 
@@ -17243,6 +17593,8 @@ document.addEventListener("submit", e => {
   if (f.dataset.form === "step-save") { qStepDlgSave(); return; }
   if (f.dataset.form === "camp-save") { campDlgSave(); return; }
   if (f.dataset.form === "gear-save") { gearDlgSave(); return; }
+  if (f.dataset.form === "game-save") { gameDlgSave(); return; }
+  if (f.dataset.form === "game-account") { gameAccountSave(f); return; }
   if (f.dataset.form === "quest-save") { qQuestDlgSave(); return; }
   if (f.dataset.form === "birth-save") { birthDlgSave(); return; }
   if (f.dataset.form === "del-quest") {
