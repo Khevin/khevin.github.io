@@ -4757,6 +4757,13 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 <section class="cfg-sec">
     <h3 class="cfg-h">Account &amp; sync <span class="cloud-state" id="cloudState" aria-live="polite"></span></h3><p class="cfg-help">Keep your board with you across devices.</p>
   <div id="authBox" class="auth-box"></div>
+  <div class="cloud-row">
+    <button type="button" class="btn btn-ghost btn-sm" data-action="export">Download board</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-action="import">Restore from file</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-action="replaced" id="replacedBtn" hidden></button>
+  </div>
+  <input type="file" id="impFile" accept="application/json,.json" hidden>
+  <p class="cloud-note" id="impNote"></p>
   <form class="cloud-form" data-form="cloud">
     <details class="cfg-advanced"><summary>Advanced sync setup</summary><div class="cfg-advanced-body"><p class="cfg-help">Connect a Supabase project or use an existing board setup.</p>
     <label class="cloud-l">Project URL
@@ -7783,12 +7790,12 @@ function cloudMark(patch) { if (!cloud) return; Object.assign(cloud, patch); sav
 /* A cheap fingerprint of the whole board. Whether there is unsent work is a question about
    the board, not about who last called save() — boot-time migrations call it too, and a flag
    set by those made every load look dirty, which would stop a second machine ever catching up. */
-function boardStamp() {
-  const t = JSON.stringify(state);
+function stampOf(t) {
   let h = 5381;
   for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0;
   return t.length.toString(36) + ":" + h.toString(36);
 }
+function boardStamp() { return stampOf(JSON.stringify(state)); }
 /* the local board says something the cloud row has not been told */
 /* A board that has never been stamped under this scheme is NOT evidence that the local
    copy is the newer one — it is the absence of evidence. Resolving that in favour of the
@@ -7821,7 +7828,36 @@ function cloudSet(s, msg) {
   if (s === "ok") cloudStamp = new Date().toTimeString().slice(0, 5);
   renderCloud(msg);
 }
+/* the board this device had before the last cloud adoption, offered back while the slot holds one */
+function readReplaced() {
+  try { const r = JSON.parse(localStorage.getItem(REPLACED_KEY) || "null");
+    return (r && r.board && Array.isArray(r.board.skills)) ? r : null; } catch (e) { return null; }
+}
+function renderReplaced() {
+  const b = $("#replacedBtn"); if (!b) return;
+  const r = readReplaced();
+  b.hidden = !r;
+  if (r) b.textContent = "Restore this device\u2019s board from " + new Date(r.ts).toLocaleString(undefined,
+    { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+function restoreReplaced() {
+  const r = readReplaced();
+  if (!r) { impNote("Nothing to restore.", true); return; }
+  let next;
+  try { next = sanitize(upgrade(r.board) || r.board); runPolish(next); }
+  catch (e) { impNote("That board could not be read: " + e.message, true); return; }
+  takeSnapshot();
+  state = next;
+  save();
+  renderGrid(); renderDetail(false);
+  if (typeof renderCrests === "function") renderCrests();
+  if (typeof renderHero === "function") renderHero();
+  if (cloud) cloudFlush();                /* the owner chose this copy: it becomes the row, now */
+  impNote("Restored this device\u2019s earlier board" + (cloud ? " \u2014 sending it to the cloud." : "."));
+  showToast("Restored the board this device had. Undo if that was the wrong one.", true);
+}
 function renderCloud(msg) {
+  renderReplaced();
   /* No tooltip on the gear. It covered the turn — you cannot watch a thing spin through a
      box that appears the moment you point at it — and it printed the board id, the secret
      half of the pairing, to anyone reading over a shoulder or watching a screen share. The
@@ -7875,6 +7911,10 @@ async function cloudPull() {
   const up = upgrade(row.data);
   if (!up) throw new Error("that row does not hold a Skillstone board");
   takeSnapshot();                       /* every adoption is undoable */
+  /* ...and for longer than the toast lasts. Replacing the board is the one move here that can
+     lose work, so the board being replaced is kept in a slot of its own; Account & sync
+     offers it back until the next adoption overwrites it. */
+  try { localStorage.setItem(REPLACED_KEY, JSON.stringify({ ts: Date.now(), board: state })); } catch (e) {}
   state = sanitize(up);
   runPolish(state);
   try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
@@ -7885,14 +7925,21 @@ async function cloudPull() {
 }
 async function cloudPush(opts) {
   if (!cloud) return;
-  const alive = !!(opts && opts.keepalive);   /* leaving the page: the request must outlive it */
+  /* The body is fixed before the request leaves, and so is its fingerprint: an edit that lands
+     while the request is in flight must not be stamped as sent. Leaving the page, the request
+     must outlive it — keepalive does that, but the fetch standard caps a keepalive body at
+     64 KiB and every browser enforces it (the request is rejected outright, "Failed to fetch").
+     A real board is bigger than that, so a bigger board goes as an ordinary request and gets
+     whatever time the browser allows; the boot check sends anything that did not land. */
+  const text = JSON.stringify(state), sent = stampOf(text);
+  const alive = !!(opts && opts.keepalive) && new Blob([text]).size < KEEPALIVE_MAX;
   cloudSet("busy");
   try {
     let res;
     if (cloudSeen === null) {           /* no row yet - create it */
       res = await fetch(cloudUrl(), { method: "POST", keepalive: alive,
         headers: cloudHdr({ Prefer: "return=representation" }),
-        body: JSON.stringify({ id: cloud.board, data: state }) });
+        body: '{"id":' + JSON.stringify(cloud.board) + ',"data":' + text + "}" });
       if (res.status === 409) {         /* the other machine created it first */
         await cloudPull();
         showToast("That board already existed in the cloud \u2014 loaded it instead.", true);
@@ -7902,7 +7949,7 @@ async function cloudPush(opts) {
       res = await fetch(cloudUrl() + "?id=eq." + encodeURIComponent(cloud.board) +
         "&updated_at=eq." + encodeURIComponent(cloudSeen), { method: "PATCH", keepalive: alive,
         headers: cloudHdr({ Prefer: "return=representation" }),
-        body: JSON.stringify({ data: state }) });
+        body: '{"data":' + text + "}" });
     }
     const txt = await res.text();
     if (!res.ok) { const err = new Error("HTTP " + res.status + " \u2014 " + txt.slice(0, 160)); err.status = res.status; throw err; }
@@ -7913,32 +7960,57 @@ async function cloudPush(opts) {
       cloudSet("ok", ""); return;
     }
     cloudSeen = rows[0].updated_at;
-    cloudDirty = false;                 /* cleared here and nowhere else: a failed push still owes */
-    cloudMark({ seen: cloudSeen, stamp: boardStamp() });
+    cloudMark({ seen: cloudSeen, stamp: sent });
+    cloudDirty = boardStamp() !== sent; /* cleared here and nowhere else: a failed push still owes,
+                                           and so does an edit made while this one was in flight */
     cloudSet("ok", "");
+    if (cloudDirty) cloudQueue();
   } catch (e) { cloudState = "error"; renderCloud(); cloudFail(String(e.message || e), e.status); }
 }
-/* Every edit used to schedule a push 700ms out, which made a stepper session a stream of
-   network writes. The queue only marks the board dirty; the clock below pushes every five
-   minutes if anything changed, and LEAVING the tab flushes at once — the two moments that
-   matter are "regularly" and "before the lid closes", not "after every tap".
-   The flag is written to the cloud record the first time a session dirties the board, so a
-   reload knows the local copy is ahead of the cloud and must not be overwritten by it. */
+/* WHEN THE BOARD IS SENT. Every edit used to schedule a push 700ms out, which made a stepper
+   session a stream of network writes. Then the queue only marked the board dirty, and the two
+   moments that pushed were a five-minute clock (while the tab was visible) and LEAVING the tab,
+   with keepalive so the request outlived the page. That design lost thirteen days of work in
+   September 2026: keepalive refuses any body over 64 KiB, a real board is bigger (a fresh one is
+   49 KB before a single portrait), so the leaving flush was rejected every time — in a tab that
+   was already hidden, where nobody saw the error. A session under five minutes never reached
+   the cloud at all, and a signed-in board got no check at boot either.
+   Now an edit schedules a push a few seconds after the LAST edit — a stepper session is still
+   one write, a quiet board is none — the clock stays as the backstop, a hidden tab flushes with
+   an ordinary request (it is still alive; only pagehide needs keepalive), and keepalive is used
+   only when the body fits under its limit. */
 const CLOUD_EVERY = 5 * 60 * 1000;
-let cloudDirty = false;
-function cloudQueue() { if (cloud) cloudDirty = true; }   /* the in-memory hint the clock reads */
+const CLOUD_SOON = 4000;                    /* after the last edit */
+const KEEPALIVE_MAX = 60 * 1024;            /* the standard's 64 KiB, shared by every in-flight keepalive request */
+const REPLACED_KEY = "skillstone-replaced"; /* the board this device had before the last adoption */
+let cloudDirty = false, cloudTimer = 0, cloudNagged = false;
+function cloudQueue() {
+  if (!cloud) return;
+  cloudDirty = true;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(() => { cloudTimer = 0; cloudFlush(); }, CLOUD_SOON);
+}
 function cloudFlush(opts) {
   if (!cloud || cloudState === "busy") return;
+  /* a signed-in board whose session has lapsed cannot write its row. It waits and says so —
+     once, loudly — rather than fail in a loop or slip into local-only without a word */
+  if (cloud.user && !auth) {
+    cloudState = "error"; renderCloud();
+    if (!cloudNagged) { cloudNagged = true; cloudFail("Signed out \u2014 sign in again to resume syncing. Your edits stay on this device until then."); }
+    return;
+  }
   if (!cloudDirty && !cloudAhead()) return;   /* the flag is cheap; the fingerprint is the truth */
+  clearTimeout(cloudTimer); cloudTimer = 0;
   cloudPush(opts);                      /* cleared by the push, once it lands */
 }
 setInterval(() => { if (!document.hidden) cloudFlush(); }, CLOUD_EVERY);
-document.addEventListener("visibilitychange", () => { if (document.hidden) cloudFlush({ keepalive: true }); });
+document.addEventListener("visibilitychange", () => { if (document.hidden) cloudFlush(); });
 window.addEventListener("pagehide", () => cloudFlush({ keepalive: true }));
 /* came back to the tab: has the other machine written since we last looked?
    A queued local write outranks it - those edits are newer by definition. */
 async function cloudCheckFresh() {
   if (!cloud || document.hidden || cloudState === "busy") return;
+  if (cloud.user && !auth) { cloudFlush(); return; }   /* says why it cannot; touches nothing */
   try {
     const row = await cloudGet("updated_at");
     if (!row) { cloudSeen = null; cloudMark({ seen: null }); cloudDirty = true; cloudFlush(); return; }
@@ -8069,7 +8141,14 @@ async function authRefreshIfNeeded() {
   if (auth.expires_at - Date.now() > 60000) return true;
   const url = (cloud && cloud.url) || authUrl(), key = (cloud && cloud.key) || authKey();
   try { authSave(await authToken(url, key, "refresh_token", { refresh_token: auth.refresh_token })); return true; }
-  catch (e) { authSave(null); cloudDisconnect(); renderAuth(); cloudFail("Your sign-in expired \u2014 sign in again."); return false; }
+  catch (e) {
+    /* The session is gone; the board's cloud record is not. Disconnecting here made every later
+       save local-only, silently, and threw away the stamp that lets the next sign-in tell which
+       copy is newer. Keep the record, stop the writes, say so. */
+    authSave(null); cloudState = "error"; renderCloud(); renderAuth();
+    cloudFail("Your sign-in expired \u2014 sign in again to resume syncing. Your edits stay on this device until then.");
+    return false;
+  }
 }
 /* signed in: the board is the user\u2019s, on every device, with nothing to pair */
 async function authConnect() {
@@ -8077,11 +8156,22 @@ async function authConnect() {
   const src = authCloudUrlKey || { url: (cloud && cloud.url) || authUrl(), key: (cloud && cloud.key) || authKey() };
   if (!src.url || !src.key) return;
   const prev = cloud, prevSeen = cloudSeen;
+  /* the same board as before, with a stamp: this device knows whether it has unsent work */
+  const same = (prev && prev.board === "u-" + auth.user.id && typeof prev.stamp === "string") ? prev : null;
   cloud = { url: src.url, key: src.key, board: "u-" + auth.user.id, user: 1 };
+  if (same) { cloud.stamp = same.stamp; cloud.seen = same.seen; }
   cloudSet("busy", "checking\u2026");
   try {
     const row = await cloudGet("updated_at");
-    if (row) { await cloudPull(); showToast("Signed in \u2014 your board is here.", true); }
+    if (row && same && same.stamp !== boardStamp()) {
+      /* signing back in after the session lapsed: the edits made meanwhile outrank the row,
+         as they do on refocus. Pulling here replaced them with the older copy. */
+      cloudSeen = row.updated_at; cloudDirty = true;
+      await cloudPush();
+      if (cloudState === "error") throw new Error($("#cloudNote").textContent || "upload failed");
+      showToast("Signed in \u2014 this device\u2019s newer edits were sent to the cloud.");
+    }
+    else if (row) { await cloudPull(); showToast("Signed in \u2014 your board is here. Undo, or restore this device\u2019s board from Settings.", true); }
     else { cloudSeen = null; await cloudPush();
       if (cloudState === "error") throw new Error($("#cloudNote").textContent || "upload failed");
       showToast("Signed in \u2014 this board is now yours in the cloud."); }
@@ -18102,9 +18192,9 @@ function addSkill() {
 function takeSnapshot() { snapshot = JSON.parse(JSON.stringify(state)); }
 
 /* ---------- the board as a file ---------- */
-/* No longer in the panel (owner's call, once sign-in made the cloud row the record). Kept
-   as the emergency path: exportBoard() from the console downloads the board; importBoard(file)
-   restores one. DEPLOY.md says how. */
+/* Back in the panel (Account & sync) since 20 Sep 2026: the file is the one copy that depends
+   on neither a browser nor a server, and moving a board between machines by hand needs it.
+   exportBoard() and importBoard(file) still work from the console. */
 function impNote(msg, bad) {
   const n = $("#impNote");
   if (!n) return;
@@ -18148,8 +18238,9 @@ function importBoard(file) {
     renderGrid(); renderDetail(false);
     if (typeof renderCrests === "function") renderCrests();
     if (typeof renderHero === "function") renderHero();
+    if (cloud) cloudFlush();              /* a restore is the owner's word: it becomes the row, now */
     impNote("Restored \u2014 " + state.skills.length + " skills, " +
-      (state.campaigns || []).length + " campaigns.");
+      (state.campaigns || []).length + " campaigns." + (cloud ? " Sending to the cloud." : ""));
     showToast("Board restored from file. Undo if that was the wrong one.", true);
   };
   r.onerror = () => impNote("Could not read that file.", true);
@@ -18439,6 +18530,9 @@ document.addEventListener("click", e => {
     case "sky-where":   { const s = sanSky(state.hero.sky); const k = act.dataset.k; s.where[k] = s.where[k] ? 0 : 1; state.hero.sky = s; save(); renderSettings(); skySet(skyHere(view)); break; }
     case "gear":        { state.hero.gear = act.dataset.k; save(); renderSettings(); break; }
     case "cloud-off":   cloudDisconnect(); break;
+    case "export":      exportBoard(); break;
+    case "import":      { const f = $("#impFile"); if (f) f.click(); break; }
+    case "replaced":    restoreReplaced(); break;
     case "auth-google": authStart(); break;
     case "auth-out":    authSignOut(); break;
     case "cloud-code":  cloudCode(); break;
@@ -18662,9 +18756,11 @@ bindPop($("#readPop"), () => $(".d-tomes-btn"), 340, "left", () => {
 bindCloud();
 loadCloud();
 renderCloud();
-/* the sign-in return leg and the session come first; a paired board without a session
-   keeps its own check */
-authBoot().then(() => { if (cloud && !cloud.user) cloudCheckFresh(); });
+/* the sign-in return leg and the session come first; then every connected board — paired or
+   signed-in — asks whether it is ahead of its row or behind it. A signed-in board used to skip
+   this on the belief that authConnect had done it, but authConnect runs only on the sign-in
+   itself; on every later open nothing was sent until the five-minute clock. */
+authBoot().then(() => { if (cloud) cloudCheckFresh(); });
 watchGridWidth();
 save();
 if (rescuedFrom) showToast(`Board carried forward from ${rescuedFrom}. Nothing was deleted.`);
