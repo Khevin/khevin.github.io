@@ -25,6 +25,8 @@
   .ns-google:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   .ns-google svg { flex: none; }
   @media (max-width: 560px) { .ns-google span { display: none; } .ns-google { padding: 6px 9px; } }
+  /* the finger gets the 44px floor; the eye keeps the 28px bar on a mouse (QA, 21 Sep 2026) */
+  @media (pointer: coarse) { .ns-switch, .ns-google { min-height: 44px; } .ns-google { min-width: 44px; justify-content: center; } .ns-list li { min-height: 44px; display: flex; align-items: center; } }
   .ns-switch { display: inline-flex; align-items: center; gap: 6px; background: transparent;
     border: 0; padding: 4px 2px; color: var(--dust); font: inherit; cursor: pointer; letter-spacing: .02em; }
   .ns-switch:hover { color: var(--parchment); }

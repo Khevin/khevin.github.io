@@ -167,7 +167,7 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 .hero-class { display: flex; align-items: center; gap: var(--s2); }
 .class-pick .sig { display: grid; place-items: center; color: var(--gold); flex: none; }
 /* it is the only class control now, so it has to be a real target where fingers are used */
-@media (pointer: coarse) { .class-pick { min-height: 44px; } }
+@media (pointer: coarse) { .class-pick { min-height: 44px; } .hero-name { min-height: 44px; display: inline-flex; align-items: center; } }
 .class-pick {
   display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
   height: 30px; padding: 0 var(--s2);
@@ -3788,6 +3788,10 @@ li.is-done .qg { color: var(--verdant); }
 @media (pointer: coarse) {
   .j3-grip, .j3-habits.editing .j3-x { width: 44px; height: 44px; }
   .j3-habits.editing th.ha, .j3-habits.editing td.ha { width: 100px; }
+  /* the paper buttons are 28px for the eye; the finger gets the floor (QA, 21 Sep 2026) */
+  .j3-btn { min-height: 44px; }
+  .j3-nav .j3-btn { min-width: 44px; }
+  .j3-page.right .j3-view-switch button { min-height: 44px; }
 }
 /* the week view: the name and the schedule are text */
 .j3-hname { flex: 1; min-width: 0; padding: 5px var(--s1) 5px 0; font-family: var(--f-ui); font-size: 0.875rem; color: var(--parchment); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -4614,6 +4618,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ns-google:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   .ns-google svg { flex: none; }
   @media (max-width: 560px) { .ns-google span { display: none; } .ns-google { padding: 6px 9px; } }
+  /* the finger gets the 44px floor; the eye keeps the 28px bar on a mouse (QA, 21 Sep 2026) */
+  @media (pointer: coarse) { .ns-switch, .ns-google { min-height: 44px; } .ns-google { min-width: 44px; justify-content: center; } .ns-list li { min-height: 44px; display: flex; align-items: center; } }
   .ns-switch { display: inline-flex; align-items: center; gap: 6px; background: transparent;
     border: 0; padding: 4px 2px; color: var(--dust); font: inherit; cursor: pointer; letter-spacing: .02em; }
   .ns-switch:hover { color: var(--parchment); }
