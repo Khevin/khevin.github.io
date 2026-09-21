@@ -3908,8 +3908,84 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
 }
 @media (max-width: 420px) {
   .d-hero { flex-direction: column; align-items: flex-start; }
-  .tools { width: 100%; }
   .d-head { flex-wrap: wrap; }
+}
+
+/* ================= the phone =================
+   Under 700px the sheet is one column already (960). This is where the header, the tab plaque and
+   the pages that had no phone drawing get theirs. One breakpoint for all of it, matching the
+   ladder in DESIGN.md (1100 · 960 · 700), so every phone rule can be found in one place. */
+.iv-wip { display: none; }
+.iv-wip-k { font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin: 0; }
+.iv-wip-h { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; line-height: 1.25; color: var(--parchment); margin: 0; }
+.iv-wip-p { font-size: 1rem; line-height: 1.5; color: var(--dust); max-width: 34ch; margin: 0; }
+@media (max-width: 700px) {
+  /* The masthead. The plate could not hold portrait, name and four crests at this width — the
+     name was printing underneath CHA — and stretching the plate taller distorts the owner's
+     drawing. So the crests step off it onto a row of their own, the gear sits at the plate's
+     end, and the plaque takes the third row. The name bar keeps its plate. */
+  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s2); row-gap: var(--s2); align-items: center; }
+  .namebar { display: contents; }
+  .hero { grid-column: 1; grid-row: 1; align-items: center; gap: var(--s3); min-height: 84px; padding: 0 var(--s5);
+    background: url("assets/gears/bar-name-cut.webp") 50% 50% / 100% 100% no-repeat; }
+  .portrait { width: 48px; height: 62px; }
+  .hero-name { font-size: 1.125rem; }
+  .tools { grid-column: 2; grid-row: 1; width: auto; }
+  .crests { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: 0; padding: 2px var(--s2); overflow: visible;
+    border-top: 1px solid var(--mortar); border-bottom: 1px solid var(--mortar); }
+  .crest { min-width: 0; flex: 1 1 0; min-height: 44px; }
+  .crest-rule { margin: 4px 0; }
+  .tabs { grid-column: 1 / -1; grid-row: 3; margin: 0; align-self: stretch; max-width: 100%; }
+  .tab { font-size: 0.75rem; letter-spacing: 0.05em; padding: var(--s2) 7px; }
+  /* the plaque scrolls; a fade at whichever end has more says so. Grid items of the masthead, laid
+     over the plaque's cell just inside its finials — a sticky child of the scroll row itself does
+     not paint over the leather. */
+  .masthead::before, .masthead::after { content: ""; grid-row: 3; grid-column: 1 / -1; align-self: center; width: 34px; height: 44px;
+    margin: 0 30px; position: relative; z-index: 1; pointer-events: none; opacity: 0; transition: opacity var(--t-fast) var(--e-out); }
+  .masthead::before { justify-self: start; background: linear-gradient(90deg, rgba(20,14,10,0.95), rgba(20,14,10,0)); }
+  .masthead::after  { justify-self: end; background: linear-gradient(270deg, rgba(20,14,10,0.95), rgba(20,14,10,0)); }
+  .masthead.more-l::before, .masthead.more-r::after { opacity: 1; }
+
+  /* Skills: the five halves wrap instead of pushing the page wide; three tiles across, as on
+     the laptop board; no 560px floor under a detail that sits below the sheet here */
+  .sk-subs { flex-wrap: wrap; row-gap: var(--s2); }
+  .sect-cells { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tile { padding: var(--s2); min-height: 84px; }
+  .board-skills { padding: var(--s2); }
+  .board-detail { min-height: 0; }
+
+  /* Quests: the panel under the rail has no need of a 60vh floor */
+  .qh-main { min-height: 0; }
+
+  /* Journal: one sheet, so one veil — the fold between two pages has nothing to sit between */
+  .j3-paper::before { background-image: url("assets/textures/paper-1.webp"); background-size: 100% 100%; background-position: left top; }
+
+  /* Diary: five medallions across the card. Qualified by the card, because the Diary's own rules
+     come later in this sheet and would otherwise win the tie. */
+  .dy-moodc .dy-medal-img, .dy-moodc .dy-medal-img img { width: 48px; height: 48px; }
+  .dy-moodc .dy-medal-w { font-size: 0.5625rem; letter-spacing: 0.05em; }
+  .dy-moodc .dy-scale { gap: var(--s1); }
+
+  /* Settings: five card backs across, the labels no longer breaking mid-word */
+  .cfg-back .cb { width: 48px; height: 80px; }
+  .cfg-back .cn { font-size: 0.6875rem; overflow-wrap: normal; }
+
+  /* Games: a filter opens as a sheet at the foot of the screen instead of past its edge */
+  .gm-filter > .gm-filter-menu { position: fixed; left: var(--s4); right: var(--s4); top: auto; bottom: var(--s4);
+    width: auto; max-width: none; max-height: 60dvh; overflow: auto; }
+
+  /* Equipment: the work-in-progress plate stands in for the figure and the sockets */
+  #invEquip > :not(.iv-wip) { display: none; }
+  .iv-wip { display: grid; gap: var(--s3); justify-items: center; text-align: center; padding: var(--s7) var(--s4);
+    margin: var(--s4) 0 var(--s5); border: 1px dashed var(--mortar-2); border-radius: var(--r-md); }
+}
+/* the smallest phones: five medallions still on one row */
+@media (max-width: 360px) {
+  .dy-moodc .dy-medal-img, .dy-moodc .dy-medal-img img { width: 38px; height: 38px; }
+  .dy-moodc .dy-medal-w { font-size: 0.5rem; }
+  /* a skill's name at display size was the one thing wider than a 320px sheet */
+  #detail .d-name { font-size: 1.5rem; overflow-wrap: anywhere; min-width: 0; }
+  #detail .name-row, #detail .d-head-main { min-width: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -8704,6 +8780,26 @@ function renderSubs() {
     (x.hours ? "subPaneProf" : "subPaneAttr") + '" aria-selected="' + (x.k === skSub) + '"' +
     (x.k === skSub ? "" : ' tabindex="-1"') + ">" + esc(x.name) + "</button>").join("");
 }
+/* The tab plaque scrolls on a phone. Two things make that honest: the chosen tab is brought into
+   view (scrolling the plaque, never the page), and a fade at either end says there is more. */
+function tabsMore() {
+  const el = document.querySelector(".tabs"); if (!el) return;
+  const host = el.parentElement || el;           /* the fades are the masthead's pseudo-elements */
+  host.classList.toggle("more-r", el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  host.classList.toggle("more-l", el.scrollLeft > 1);
+}
+function tabsReveal() {
+  const el = document.querySelector(".tabs"), t = $("#" + VIEW_TAB[view]);
+  if (!el) return;
+  if (t && el.scrollWidth > el.clientWidth + 1) {
+    const r = t.getBoundingClientRect(), R = el.getBoundingClientRect();
+    const left = el.scrollLeft + (r.left - (R.left + el.clientLeft)) - (el.clientWidth - r.width) / 2;
+    el.scrollTo({ left: Math.max(0, left), behavior: reduced() ? "auto" : "smooth" });
+  }
+  tabsMore();
+}
+(() => { const el = document.querySelector(".tabs"); if (!el) return;
+  el.addEventListener("scroll", tabsMore, { passive: true }); window.addEventListener("resize", tabsMore); })();
 function setView(v) {
   /* Proficiency was its own tab until it became half of Skills; a view saved under the old
      name still lands where it meant to */
@@ -8718,6 +8814,7 @@ function setView(v) {
     if (t) { t.setAttribute("aria-selected", String(k === view)); t.tabIndex = k === view ? 0 : -1; }
   });
   try { localStorage.setItem("skillstone-view", view); } catch (e) {}
+  tabsReveal();
   if (view === "journal") renderJ3();
   if (view === "inv") invEnter();
   if (view === "camp") renderCampaigns();
@@ -10923,6 +11020,17 @@ document.addEventListener("input", e => {
   figureApplyAvatar();
 });
 document.addEventListener("change", e => { if (e.target.closest && e.target.closest(".iv-figbody")) save(); });
+/* Equipment on the phone. The figure, the sockets and the wardrobe were drawn for the wide sheet
+   and have no phone layout of their own yet. Rather than ship them squeezed, the shelf says so —
+   and the 3D figure is not fetched for a screen that will not show it. */
+const ivPhone = () => window.matchMedia("(max-width: 700px)").matches;
+function ivWipHTML() {
+  return '<section class="iv-wip" aria-label="Equipment on the phone">' +
+    '<p class="iv-wip-k">Work in progress</p>' +
+    '<h3 class="iv-wip-h">Equipment is being fitted for the phone</h3>' +
+    '<p class="iv-wip-p">The figure, the sockets and the wardrobe still need the wide sheet. Open Skillstone on a laptop to dress the character \u2014 what you wear travels with the board.</p>' +
+    '</section>';
+}
 function renderInv() {
   const el = $("#invEquip");
   if (!el) return;
@@ -10992,10 +11100,10 @@ function renderInv() {
     (wornCount ? '<button type="button" class="iv-strip" data-inv="strip">Unequip all</button>' : "") + "</p></section>";
 
   const editing = figureMode === "3d" && figBodyOpen;
-  el.innerHTML = '<div class="iv-body iv-armory iv-with-preview' + (editing ? " iv-editing" : "") + '">' +
+  el.innerHTML = ivWipHTML() + '<div class="iv-body iv-armory iv-with-preview' + (editing ? " iv-editing" : "") + '">' +
     (editing ? figureBodyLeftHTML(state.avatar) : wardrobe_) + character + (editing ? figureBodyRightHTML(state.avatar) : equipped) + "</div>";
   if (!editing) invFloor();
-  if (figureMode === "3d") figureMount();
+  if (figureMode === "3d" && !ivPhone()) figureMount();
 }
 /* The empty board keeps its squares. The columns are elastic, so the lattice cannot be a constant
    in the stylesheet: it is measured off the laid-out grid once per render and handed back as a
@@ -14476,6 +14584,11 @@ function campAct(el) {
       if (q && q.t === "qlog" && !(q.x.camp && campById(q.x.camp))) qCampSel = null;
       else if (q && q.t === "camp") qCampSel = q.c.id;
       renderCampaigns();
+      /* stacked on a phone, the panel is below the rail: bring what was chosen into view */
+      if (window.matchMedia("(max-width: 860px)").matches) {
+        const m = document.querySelector(".qh-main");
+        if (m) m.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+      }
       break;
     }
     case "stepnew":    qStepDlgOpen(d.id); break;
