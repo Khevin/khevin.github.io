@@ -4994,6 +4994,13 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .dy-bodyc, .dy-ritc { padding: 36px 28px 24px; }
 .bd { flex: 1 1 auto; width: 100%; display: flex; flex-direction: column; gap: var(--s2); }
 .bd-cap { margin: 0; text-align: center; font-family: var(--f-read); font-size: 0.875rem; color: var(--dust); }
+/* the weigh-in's age, coloured as it grows stale: parchment after 10 days, gold after 30, amber after 90, cinnabar
+   after a year. Amber and cinnabar are new to the palette, 7.3:1 and 5.0:1 on the plate */
+.dy2 { --amber: #EC8B3F; --cinnabar: #E5574A; }
+.bd-age[data-age="10"] { color: var(--parchment); }
+.bd-age[data-age="30"] { color: var(--gold); }
+.bd-age[data-age="90"] { color: var(--amber); }
+.bd-age[data-age="365"] { color: var(--cinnabar); }
 .bd-lead { display: grid; gap: 2px; }
 /* the weight leads, in the measured face */
 .bd-kg { margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 6px; font-family: var(--f-mono); color: var(--parchment); font-variant-numeric: tabular-nums; }
@@ -5125,8 +5132,15 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .dy-bodyc .bd-t, .dy-ritc .rt-t { margin: 0; text-align: left; font-size: 0.8125rem; letter-spacing: 0.16em; color: var(--gold); }
   .dy-bodyc .bd-cap, .dy-bodyc .bd-kgl { text-align: left; justify-content: space-between; }
   .dy-bodyc .bd-kg { justify-content: flex-start; margin-top: var(--s2); }
+  /* the column draws the figure as the phone does wherever it is wide enough for the figure's labels (260px, the
+     phone's own scale; from about 1280 up); narrower, the readings are the list */
+  .dy-bodyc { container: bdcol / inline-size; }
   .dy-bodyc .bd-trend, .dy-bodyc .bd-fig { display: none; }
   .dy-bodyc .bd-core { display: grid; }
+  @container bdcol (min-width: 260px) {
+    .dy-bodyc .bd-trend, .dy-bodyc .bd-fig { display: block; }
+    .dy-bodyc .bd-core { display: none; }
+  }
   .dy-bodyc .bd-acts { align-items: stretch; }
   .dy-bodyc .bd-link { align-self: flex-start; }
   .dy-bodyc .bd-edit { max-width: none; }
@@ -20667,6 +20681,9 @@ function bdStatusHTML() {
   const said = bdNote || (ok ? "Biomedic scale · synced from Fitdays " + bdAgo(ok) : "Biomedic scale · not synced with Fitdays yet");
   return '<p class="bd-sync" aria-live="polite">' + esc(said) + ' <button type="button" class="bd-now" data-bd="sync">Sync now</button></p>';
 }
+/* how stale the last weigh-in is, said in its colour as well as its words: after 10 days, 30, 90 and a year */
+const BD_AGES = [365, 90, 30, 10];
+const bdAgeMark = at => { const d = (Date.now() - at) / 86400000, a = BD_AGES.find(n => d >= n); return a ? ' data-age="' + a + '"' : ""; };
 /* the body readings: the weigh-in of the morning on show, or the last one before it */
 function bdPlateHTML() {
   const { sel } = rtSel(), end = addDays(sel, 1).getTime() + DAY_TURNS_AT * 3600000;
@@ -20676,8 +20693,9 @@ function bdPlateHTML() {
     h += '<p class="bd-empty">No weigh-ins yet.</p>';
   } else {
     const onDay = dySame(bdDayOf(last.at), sel), isToday = dySame(sel, dayNow());
-    const when = onDay ? (isToday ? "Today" : bdDate(last.at)) + ", " + rtHm(last.at) : bdDate(last.at) + " · " + bdAgo(last.at);
-    h += '<p class="bd-cap">' + esc(when) + " · " + bdSrc(last) + "</p>" +
+    const when = onDay ? esc((isToday ? "Today" : bdDate(last.at)) + ", " + rtHm(last.at))
+      : esc(bdDate(last.at)) + ' · <span class="bd-age"' + bdAgeMark(last.at) + ">" + esc(bdAgo(last.at)) + "</span>";
+    h += '<p class="bd-cap">' + when + " · " + bdSrc(last) + "</p>" +
       '<div class="bd-lead"><p class="bd-kg"><span class="bd-n">' + bdFmt(BD_F.kg, last.kg) + '</span><span class="bd-u">kg</span></p>' +
       '<p class="bd-kgl"><span>Weight</span>' + (prev ? '<span class="bd-prev">Previous: ' + bdFmt(BD_F.kg, prev.kg) + " kg</span>" : "") + "</p></div>" +
       /* the phone and the stack draw the trend and the figure; the laptop's column keeps the list */
