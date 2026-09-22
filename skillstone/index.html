@@ -4581,6 +4581,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
    The Chronicle — the week closes. PRODUCT.md § The Chronicle (22 Sep 2026); DESIGN.md § The Chronicle.
    Installed by .chronicle/splice.mjs between these markers; edit there and re-run. */
 .ch { --f-read: 'Lora', Georgia, serif; --paper: #F3EAD6; --u: 12px; --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.12  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  /* the moods wear their medallions' own hues, sampled from the drawings; the tarot's resonance is one lilac, its only colour */
+  --mood-1: #E07A3C; --mood-2: #D9A441; --mood-3: #E6D8AE; --mood-4: #9CC85F; --mood-5: #63DDD3;
+  --astral: #A896D6;
   display: grid; gap: var(--s5); padding: var(--s4) 0 var(--s7); }
 
 /* the head: the week, and the way to the weeks either side */
@@ -4613,8 +4616,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-sh::after { content: ""; height: 1px; background: var(--mortar); flex: 1; }
 
 /* the seven days: one grid, five rows, a gutter for the rungs */
-.ch-grid { display: grid; grid-template-columns: 3rem repeat(7, minmax(0, 1fr)); grid-template-rows: auto auto 100px auto auto; column-gap: 0; }
-.ch-sep { grid-row: 1 / 6; width: 0; justify-self: start; border-left: 1px solid rgba(62,53,39,0.7); }
+.ch-grid { display: grid; grid-template-columns: 3rem repeat(7, minmax(0, 1fr)) 3.75rem; grid-template-rows: auto auto 100px auto auto auto; column-gap: 0; }
+.ch-sep { grid-row: 1 / 7; width: 0; justify-self: start; border-left: 1px solid rgba(62,53,39,0.7); }
+.ch-strip-sr { grid-row: 3; grid-column: 2 / 9; }
 .ch-dcell { padding: 0 var(--s2); min-width: 0; }
 .ch-r1 { grid-row: 1; text-align: center; padding-bottom: var(--s3); }
 .ch-dow { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment); margin: 0; }
@@ -4632,15 +4636,27 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-r3 { grid-row: 3; }
 .ch-rungs { position: relative; height: 100px; grid-column: 1; }
 .ch-rungs span { position: absolute; right: var(--s2); top: calc(var(--y) * 1%); transform: translateY(-50%); font-family: var(--f-mono); font-size: 0.625rem; color: var(--ash); white-space: nowrap; }
+.ch-rungs-r { grid-column: 9; }
+.ch-rungs-r span { right: auto; left: var(--s2); color: var(--astral); opacity: 0.8; }
 .ch-mline { grid-row: 3; grid-column: 2 / 9; width: 100%; height: 100px; display: block; }
 .ch-rung { stroke: rgba(82,70,47,0.9); stroke-width: 1; stroke-dasharray: 2 5; }
 .ch-seg { stroke: var(--gold); stroke-width: 1.5; }
+.ch-res { stroke: var(--astral); stroke-width: 1.25; opacity: 0.7; }
 .ch-mcell { position: relative; height: 100px; }
-.ch-mdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 2px #17130F; }
+.ch-mdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
+  box-shadow: 0 0 0 2px #17130F, 0 6px 14px rgba(0,0,0,0.5); }
+.ch-rdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--astral); opacity: 0.85; box-shadow: 0 0 0 1px #17130F; }
 .ch-mdash { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--ash); font-family: var(--f-mono); }
 .ch-r4 { grid-row: 4; margin: var(--s1) 0 0; text-align: center; font-family: var(--f-ui); font-size: 0.8125rem; color: var(--ash); }
 .ch-mword.is-set { color: var(--parchment); }
-.ch-r5 { grid-row: 5; padding-top: var(--s3); }
+.ch .m1.is-set, .ch .ch-fmood.m1 { color: var(--mood-1); } .ch .m2.is-set, .ch .ch-fmood.m2 { color: var(--mood-2); } .ch .m3.is-set, .ch .ch-fmood.m3 { color: var(--mood-3); }
+.ch .m4.is-set, .ch .ch-fmood.m4 { color: var(--mood-4); } .ch .m5.is-set, .ch .ch-fmood.m5 { color: var(--mood-5); }
+/* the feelings the reading was met with, faint and in the tarot's lilac — felt slightly, as he asked */
+.ch-r5 { grid-row: 5; }
+.ch-feel { margin: var(--s1) 0 0; text-align: center; font-family: var(--f-read); font-style: italic; font-size: 0.6875rem; line-height: 1.4; color: var(--astral); opacity: 0.8;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.ch-feel:empty { display: none; }
+.ch-r6 { grid-row: 6; padding-top: var(--s3); }
 
 /* the diary marks: a page (1½u × 2u) and three squares (1u), half a unit apart; a filled mark is a written field */
 .ch-marks { display: flex; justify-content: center; align-items: center; gap: calc(var(--u) / 2); }
@@ -4726,6 +4742,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-ffirst.is-empty { min-height: 22px; border-bottom: 1px dashed rgba(232,176,84,0.25); }
 .ch-fmood { margin: var(--s3) 0 0; text-align: center; font-family: var(--f-ui); font-size: 0.9375rem; color: var(--ash); }
 .ch-fmood.is-set { color: var(--gold); }
+.ch-ffeel { font-size: 0.8125rem; margin-top: var(--s1); }
 .ch-fthree { list-style: none; margin: var(--s3) 0; padding: 0; display: grid; gap: var(--s2); }
 .ch-fthree li { min-height: 26px; padding: 2px 0 6px; font-family: var(--f-read); font-style: italic; font-size: 0.9375rem; line-height: 1.5; color: var(--dust); border-bottom: 1px solid rgba(232,176,84,0.45); }
 .ch-fthree li.is-empty { border-bottom: 1px dashed rgba(232,176,84,0.25); }
@@ -4738,7 +4755,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-fs-dows { grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; margin-top: var(--s1);
   font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--ash); }
 .ch-fs-dows .is-front { color: var(--gold); }
-.ch-fmarks { grid-column: 1 / -1; grid-row: 3; width: 100%; border-collapse: collapse; margin-top: var(--s4); }
+.ch-fs-cap { grid-column: 1 / -1; grid-row: 3; margin: var(--s2) 0 0; text-align: center; font-family: var(--f-mono); font-size: 0.625rem; color: var(--astral); opacity: 0.8; }
+.ch-fmarks { grid-column: 1 / -1; grid-row: 4; width: 100%; border-collapse: collapse; margin-top: var(--s4); }
 .ch-fmarks th { text-align: left; font-family: var(--f-ui); font-weight: 400; font-size: 0.8125rem; color: var(--dust); padding: var(--s1) var(--s2) var(--s1) 0; white-space: nowrap; }
 .ch-fmarks td { text-align: center; padding: var(--s1) 0; }
 .ch-fmarks .ch-mk { vertical-align: middle; }
@@ -19218,15 +19236,30 @@ function chCardHTML(x) {
   if (x.card) return '<figure class="ch-card' + (x.rec.r ? " is-rev" : "") + '"><img src="' + tarImg(x.card) + '" alt="' + esc(x.card.n) + (x.rec.r ? ", reversed" : "") + '" width="132" height="220" loading="lazy"></figure>';
   return '<div class="ch-card ch-back' + (x.fut ? " is-fut" : x.today ? "" : " is-past") + '" role="img" aria-label="' + (x.fut ? "Not yet come" : "Not turned") + '">' + tarBackSVG() + "</div>";
 }
-/* the mood strip: five rungs at equal pitch, straight segments between neighbouring days that both have a mood */
+/* the mood strip: five rungs at equal pitch, straight segments between neighbouring days that both have a mood.
+   Behind it, in lilac, how the reading sat — the tarot dial, 0 against me to 100 with me — between days that both have one. */
+const chMoodY = m => 110 - m * 20, chResY = v => 90 - v * 0.8;
+const chRes = x => (x.rec && typeof x.rec.v === "number") ? x.rec.v : null;
 function chMoodSVG(F) {
-  const moods = F.days.map(x => (x.e && x.e.mood) || 0), y = m => 110 - m * 20;
+  const moods = F.days.map(x => (x.e && x.e.mood) || 0), vals = F.days.map(chRes);
   let p = '<svg class="ch-mline ch-r3" viewBox="0 0 700 100" preserveAspectRatio="none" aria-hidden="true">';
   for (let i = 0; i < 5; i++) p += '<line x1="0" x2="700" y1="' + (10 + i * 20) + '" y2="' + (10 + i * 20) + '" class="ch-rung" vector-effect="non-scaling-stroke"/>';
+  for (let i = 0; i < 6; i++) if (vals[i] !== null && vals[i + 1] !== null)
+    p += '<line x1="' + (i * 100 + 50) + '" y1="' + chResY(vals[i]) + '" x2="' + (i * 100 + 150) + '" y2="' + chResY(vals[i + 1]) + '" class="ch-res" vector-effect="non-scaling-stroke"/>';
   for (let i = 0; i < 6; i++) if (moods[i] && moods[i + 1])
-    p += '<line x1="' + (i * 100 + 50) + '" y1="' + y(moods[i]) + '" x2="' + (i * 100 + 150) + '" y2="' + y(moods[i + 1]) + '" class="ch-seg" vector-effect="non-scaling-stroke"/>';
+    p += '<line x1="' + (i * 100 + 50) + '" y1="' + chMoodY(moods[i]) + '" x2="' + (i * 100 + 150) + '" y2="' + chMoodY(moods[i + 1]) + '" class="ch-seg" vector-effect="non-scaling-stroke"/>';
   return p + "</svg>";
 }
+/* one day's marks on the strip: the mood's own medallion at its rung, the reading's lilac point behind it, a dash for no mood */
+function chStripCell(x) {
+  const m = x.e && x.e.mood, v = chRes(x), set = (state.hero && state.hero.moods === "faces") ? "assets/moods/faces/" : "assets/moods/";
+  return (v !== null ? '<span class="ch-rdot" style="--y:' + chResY(v) + '"></span>' : "") +
+    (m ? '<img class="ch-mdot m' + m + '" src="' + set + "0" + m + "-" + DY_MOODS[m - 1].toLowerCase() + '-clicked.webp" alt="" width="28" height="28" style="--y:' + chMoodY(m) + '" loading="lazy">'
+       : '<span class="ch-mdash">–</span>');
+}
+const chFeelings = x => (x.rec && Array.isArray(x.rec.f) && x.rec.f.length) ? x.rec.f.map(esc).join(" · ") : "";
+const chStripLabel = F => "Moods: " + F.days.map(x => DOW_SHORT[x.i] + " " + (x.e && x.e.mood ? DY_MOODS[x.e.mood - 1] : "none")).join(", ") +
+  ". How the reading sat, 0 against me to 100 with me: " + F.days.map(x => DOW_SHORT[x.i] + " " + (chRes(x) === null ? "none" : chRes(x))).join(", ") + ".";
 /* the laptop plate: one grid, five rows, a gutter for the rungs, a hairline between days */
 function chGridHTML(F) {
   const col = i => ' style="grid-column:' + (i + 2) + '"';
@@ -19235,10 +19268,12 @@ function chGridHTML(F) {
   F.days.forEach(x => { h += '<div class="ch-dcell ch-r1' + (x.today ? " is-today" : "") + (x.fut ? " is-fut" : "") + '"' + col(x.i) + '><p class="ch-dow">' + DOW_LONG[x.i] + '</p><p class="ch-date">' + chDayShort(x.d) + "</p></div>"; });
   F.days.forEach(x => { h += '<div class="ch-dcell ch-r2"' + col(x.i) + ">" + chCardHTML(x) + '<p class="ch-cslot">' + (x.rec && x.rec.r ? '<span class="tar-rev-l">Reversed</span>' : "") + "</p></div>"; });
   h += '<div class="ch-rungs ch-r3" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>";
-  h += chMoodSVG(F);
-  F.days.forEach(x => { const m = x.e && x.e.mood; h += '<div class="ch-dcell ch-r3 ch-mcell"' + col(x.i) + ">" + (m ? '<span class="ch-mdot" style="--y:' + (110 - m * 20) + '"></span>' : '<span class="ch-mdash">–</span>') + "</div>"; });
-  F.days.forEach(x => { const m = x.e && x.e.mood; h += '<p class="ch-dcell ch-r4 ch-mword' + (m ? " is-set" : "") + '"' + col(x.i) + ">" + (m ? DY_MOODS[m - 1] : "–") + "</p>"; });
-  F.days.forEach(x => { h += '<div class="ch-dcell ch-r5"' + col(x.i) + ">" + chMarksHTML(x.e) + "</div>"; });
+  h += '<div class="ch-strip-sr" role="img" aria-label="' + esc(chStripLabel(F)) + '"></div>' + chMoodSVG(F);
+  F.days.forEach(x => { h += '<div class="ch-dcell ch-r3 ch-mcell"' + col(x.i) + ">" + chStripCell(x) + "</div>"; });
+  h += '<div class="ch-rungs ch-rungs-r ch-r3" aria-hidden="true"><span style="--y:10">with me</span><span style="--y:90">against me</span></div>';
+  F.days.forEach(x => { const m = x.e && x.e.mood; h += '<p class="ch-dcell ch-r4 ch-mword' + (m ? " is-set m" + m : "") + '"' + col(x.i) + ">" + (m ? DY_MOODS[m - 1] : "–") + "</p>"; });
+  F.days.forEach(x => { h += '<p class="ch-dcell ch-r5 ch-feel"' + col(x.i) + ">" + chFeelings(x) + "</p>"; });
+  F.days.forEach(x => { h += '<div class="ch-dcell ch-r6"' + col(x.i) + ">" + chMarksHTML(x.e) + "</div>"; });
   return h + "</div>";
 }
 function chFootHTML(F) {
@@ -19275,20 +19310,23 @@ function chFrontDayHTML(x) {
     '<button type="button" class="ch-step" data-ch="front" data-d="1" aria-label="Later day"' + (x.i === 6 ? " disabled" : "") + ">›</button></div>";
   if (x.card && x.rec.r) h += '<p class="tar-rev-l ch-frev">Reversed</p>';
   h += first ? '<p class="ch-ffirst">' + esc(first) + "</p>" : '<p class="ch-ffirst is-empty"></p>';
-  h += '<p class="ch-fmood' + (e && e.mood ? " is-set" : "") + '">' + (e && e.mood ? DY_MOODS[e.mood - 1] : "–") + "</p>";
+  h += '<p class="ch-fmood' + (e && e.mood ? " is-set m" + e.mood : "") + '">' + (e && e.mood ? DY_MOODS[e.mood - 1] : "–") + "</p>";
+  const feel = chFeelings(x);
+  if (feel) h += '<p class="ch-feel ch-ffeel">' + feel + "</p>";
   h += '<ol class="ch-fthree">' + [0, 1, 2].map(i => { const t = e && e.three && e.three[i]; return '<li class="' + (t ? "is-set" : "is-empty") + '">' + (t ? esc(t) : "") + "</li>"; }).join("") + "</ol>";
   return h + "</div>";
 }
 /* under the hand: the same mood strip at phone width, the day initials, and the diary marks as four
    labelled rows across the seven days — the row label teaches the mark once (Kare, DECISIONS.md D4) */
 function chFstripHTML(F) {
-  const lab = "Moods: " + F.days.map(x => DOW_SHORT[x.i] + " " + (x.e && x.e.mood ? DY_MOODS[x.e.mood - 1] : "none")).join(", ");
+  const any = F.days.some(x => chRes(x) !== null);
   return '<div class="ch-fstrip">' +
     '<div class="ch-rungs" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>" +
-    '<div class="ch-fs-plot" role="img" aria-label="' + esc(lab) + '">' + chMoodSVG(F) + '<div class="ch-fs-dots">' +
-      F.days.map(x => { const m = x.e && x.e.mood; return '<div class="ch-mcell">' + (m ? '<span class="ch-mdot" style="--y:' + (110 - m * 20) + '"></span>' : '<span class="ch-mdash">–</span>') + "</div>"; }).join("") +
+    '<div class="ch-fs-plot" role="img" aria-label="' + esc(chStripLabel(F)) + '">' + chMoodSVG(F) + '<div class="ch-fs-dots">' +
+      F.days.map(x => '<div class="ch-mcell">' + chStripCell(x) + "</div>").join("") +
     "</div></div>" +
     '<div class="ch-fs-dows" aria-hidden="true">' + F.days.map(x => "<span" + (x.i === chFront ? ' class="is-front"' : "") + ">" + DOW_SHORT[x.i][0] + "</span>").join("") + "</div>" +
+    (any ? '<p class="ch-fs-cap" aria-hidden="true">in lilac, how the reading sat — against me → with me</p>' : "") +
     '<table class="ch-fmarks"><tbody>' + ["page", "book", "one", "thanks"].map(k => '<tr><th scope="row">' + CH_MARK_L[k] + "</th>" +
       F.days.map(x => "<td>" + chMark(k, !!(x.e && x.e[k]), DOW_LONG[x.i] + " · " + CH_MARK_L[k] + (x.e && x.e[k] ? ": written" : "")) + "</td>").join("") + "</tr>").join("") +
     "</tbody></table></div>";
