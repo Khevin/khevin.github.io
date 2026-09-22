@@ -2676,6 +2676,14 @@ li.is-done .qg { color: var(--verdant); }
 .iv-figrange input[type=range] { display:block; width:100%; height:32px; margin:0; accent-color:var(--gold); background:none; }
 @media(max-width:650px) { .iv-stage-3d canvas { width:190px; height:405px; } }
 .iv-with-preview .iv-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+/* The wardrobe scrolls in its own frame instead of stretching the page (21 Sep 2026). Its column
+   takes the row's height — set by the figure and the sockets beside it — through the height:0 /
+   min-height:100% pair: the grid contributes nothing to the row's size, then fills what it gets.
+   Below 1100px the wardrobe is a row of its own under the pair, so it takes a viewport share. */
+.iv-armory.iv-with-preview .iv-hold { display:flex; flex-direction:column; height:0; min-height:100%; }
+.iv-armory.iv-with-preview .iv-hold .iv-bar { flex:none; }
+.iv-armory.iv-with-preview .iv-hold .iv-grid { flex:1 1 0; min-height:0; overflow-y:auto; align-content:start; scrollbar-width:thin; scrollbar-color:#675235 #12120f; }
+@media(max-width:1100px) { .iv-armory.iv-with-preview .iv-hold { height:auto; min-height:0; } .iv-armory.iv-with-preview .iv-hold .iv-grid { flex:none; max-height:62vh; } }
 /* narrow: the figure and what is on him keep their pair and the wardrobe takes the row below */
 @media(max-width:1100px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(220px,.9fr) minmax(280px,1fr); } .iv-with-preview .iv-character { order:1; } .iv-with-preview .iv-fig { order:2; } .iv-with-preview .iv-hold { order:3; grid-column:1/-1; } }
 @media(max-width:650px) { .iv-armory.iv-with-preview { grid-template-columns:minmax(0,1fr); } .iv-character-stage { min-height:400px; } .iv-character-stage .iv-avatar { width:190px; } }
