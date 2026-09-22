@@ -4584,27 +4584,69 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   /* the moods wear their medallions' own hues, sampled from the drawings; the tarot's resonance is one lilac, its only colour */
   --mood-1: #E07A3C; --mood-2: #D9A441; --mood-3: #E6D8AE; --mood-4: #9CC85F; --mood-5: #63DDD3;
   --astral: #A896D6;
-  display: grid; gap: var(--s5); padding: var(--s4) 0 var(--s7); }
+  display: grid; gap: var(--s5); padding: var(--s5) 0 var(--s7); }
 
-/* the head: the week, and the way to the weeks either side */
-.ch-head { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: var(--s3); text-align: center; width: 100%; max-width: 640px; margin: 0 auto; }
-.ch-h { font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment); margin: 0; }
-.ch-range { font-family: var(--f-display); font-size: 0.875rem; letter-spacing: 0.1em; color: var(--dust); margin: var(--s1) 0 0; }
+/* the head is the week plate's rim: the Chronicle's notch drawn wide enough to hold the week and its arrows,
+   so the page starts where the Diary's plates start. The plaque already says Chronicle; the rim says the week. */
+.ch-plate.ch-week { padding-top: 54px; }
+.ch-rim { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); display: flex; height: 34px; z-index: 2; }
+.ch-rim-cap { width: 44px; height: 34px; flex: none; pointer-events: none; }
+.ch-rim-cap svg { display: block; width: 100%; height: 100%; }
+.ch-rim-cap.r { transform: scaleX(-1); }
+/* the middle is the notch's floor: its fill starts under the plate's own edge, so the edge runs unbroken over it */
+.ch-rim-mid { display: flex; align-items: center; gap: var(--s2); height: 34px; white-space: nowrap;
+  border-bottom: 1px solid rgba(232,176,84,0.6); background: linear-gradient(#17130F, #17130F) 0 1px / 100% calc(100% - 1px) no-repeat; }
+.ch-pt.ch-wt { margin: 0; font-size: 0.8125rem; letter-spacing: 0.14em; }
+.ch-wt-s { display: none; }
 .ch-sofar { color: var(--ash); letter-spacing: 0.06em; text-transform: none; font-family: var(--f-mono); font-size: 0.75rem; white-space: nowrap; }
-.ch-sofar::before { content: "\00a0\00b7\00a0"; }
 .ch-step { width: 44px; height: 44px; display: inline-grid; place-items: center; border: 1px solid var(--mortar-2); border-radius: var(--r-sm);
   background: var(--stone-2); color: var(--gold); font-size: 1.25rem; line-height: 1; cursor: pointer; }
 .ch-step:disabled { opacity: 0.35; cursor: default; }
-.ch-today { min-height: 44px; margin-top: var(--s1); padding: 0 var(--s3); background: none; border: 0; color: var(--gold); font-family: var(--f-display);
+/* bare in the rim, and 44 × 44 to the finger: the extra width reaches out over the caps, which let it through */
+.ch-rim .ch-step { position: relative; border: 0; background: none; }
+.ch-rim .ch-step:first-child { margin-left: -16px; padding-left: 16px; }
+.ch-rim .ch-step:last-child { margin-right: -16px; padding-right: 16px; }
+@media (hover: hover) { .ch-rim .ch-step:not(:disabled):hover { color: var(--gold-2); } }
+.ch-today { min-height: 44px; margin-block: -12px; padding: 0 var(--s2); background: none; border: 0; color: var(--gold); font-family: var(--f-display);
   font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
 .ch-today:hover { color: var(--gold-2); }
 
-/* the week's intention: last week's third line, brought forward */
-.ch-intent { display: grid; justify-items: center; gap: var(--s1); text-align: center; }
+/* the week's intention: last week's third line, the first line inside the plate. The sprigs reach 46px into
+   the plate's top corners, so the line keeps 48px clear of each side */
+.ch-intent { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; column-gap: var(--s3); row-gap: 2px;
+  margin: 0 0 var(--s5); padding-inline: 48px; text-align: center; }
 .ch-intent-l, .ch-sh, .ch-rl, .ch-rll { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ash); margin: 0; }
-.ch-intent-t { font-family: var(--f-read); font-style: italic; font-size: 1.25rem; line-height: 1.45; color: var(--parchment); margin: 0; max-width: 60ch; }
-.ch-intent-from { min-height: 44px; background: none; border: 0; padding: 0 var(--s2); color: var(--ash); font-family: var(--f-mono); font-size: 0.6875rem; cursor: pointer; }
+.ch-intent-t { font-family: var(--f-read); font-style: italic; font-size: 1.0625rem; line-height: 1.45; color: var(--parchment); }
+.ch-intent-from { min-height: 44px; margin-block: -12px; background: none; border: 0; padding: 0 var(--s1); color: var(--ash); font-family: var(--f-mono); font-size: 0.6875rem; white-space: nowrap; cursor: pointer; }
 .ch-intent-from:hover { color: var(--gold); }
+
+@media (max-width: 700px) {
+  .ch-plate.ch-week { padding-top: 62px; }
+  /* the phone's plate has no corner to spare: the sprigs sat on the head, the hand and the marks */
+  .ch-week > .orn { display: none; }
+  .ch-wt-l { display: none; }
+  .ch-wt-s { display: inline; }
+  /* a plaque of two lines: the week, and under it so far or This week — on one line a past week that
+     crosses a month ran 10px past the plate at 375 */
+  .ch-rim, .ch-rim-cap, .ch-rim-mid { height: 48px; }
+  .ch-rim-cap { width: 26px; }
+  .ch-rim-mid { display: grid; grid-template-columns: auto auto auto; grid-template-rows: auto auto; align-content: center; justify-items: center; column-gap: var(--s1); }
+  .ch-rim .ch-step { grid-row: 1 / 3; }
+  .ch-rim .ch-step:first-child { grid-column: 1; }
+  .ch-rim .ch-step:last-child { grid-column: 3; }
+  .ch-rim .ch-wt { grid-column: 2; grid-row: 1; }
+  .ch-rim .ch-sofar, .ch-rim .ch-today { grid-column: 2; grid-row: 2; line-height: 1.3; }
+  /* This week is 44px to the finger by reaching down past the plaque, away from the week above it;
+     a past week's plate leaves the room for that below the rim */
+  .ch-rim .ch-today { position: relative; min-height: 0; margin-block: 0; padding: 0 var(--s2); font-size: 0.6875rem; }
+  .ch-rim .ch-today::after { content: ""; position: absolute; inset: -8px -8px -22px; }
+  .ch-plate.ch-week:has(.ch-rim .ch-today) { padding-top: 82px; }
+  .ch-pt.ch-wt { font-size: 0.75rem; letter-spacing: 0.1em; line-height: 1.35; }
+  /* the intention: its label and where it came from on one small line, the line itself beneath */
+  .ch-intent { padding-inline: 0; row-gap: 0; }
+  .ch-intent-t { order: 3; flex-basis: 100%; font-size: 1rem; }
+}
+@media (max-width: 360px) { .ch-wt-y { display: none; } }
 
 /* the plates: the Diary's engraved frame, one radius family */
 .ch-plate { position: relative; border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 40px 32px 28px; overflow: visible;
@@ -4793,10 +4835,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 }
 @media (max-width: 700px) {
   .ch { padding-top: var(--s2); }
-  .ch-h { font-size: 1.125rem; }
-  .ch-range { font-size: 0.8125rem; }
-  .ch-sofar { display: block; margin-top: 2px; }
-  .ch-sofar::before { content: none; }
   .ch-plate { padding: 30px 14px 20px; }
   .ch-grid { display: none; }
   .ch-hand, .ch-fday { display: block; }
@@ -4807,8 +4845,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 }
 @media (max-width: 360px) {
   .ch-fan { --cw: 136px; --chh: 227px; }
-  .ch-h { font-size: 1rem; letter-spacing: 0.1em; }
-  .ch-range { font-size: 0.75rem; }
   /* the habit grid: a fixed layout so the table cannot outgrow the plate; the name column wraps; the day labels sit at the 9px floor */
   .ch-hab { table-layout: fixed; }
   .ch-hab thead th:first-child { width: 31%; }
@@ -4819,138 +4855,32 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 @media (prefers-reduced-motion: reduce) {
   .ch-fcard, .ch-rrow, .ch-rline, .ch-card.has-read, .ch-read { transition: none; }
 }
+
+/* the mark's popover: the field and what was written there */
+.ch-mk { position: relative; }
+.ch-r6 { position: relative; z-index: 1; }
+.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
+.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
+  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
+  display: none; pointer-events: none; }
+.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
+.ch-tip { max-width: min(220px, 72vw); }
+.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
+/* the record plate: the habit grid never outgrows its column */
+.ch-rec { gap: var(--s6); }
+.ch-hab { table-layout: fixed; }
+.ch-hab thead th:first-child { width: 30%; }
+.ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
+.ch-hab thead th:last-child { width: 2.6ch; }
+.ch-hab td { width: auto; }
+.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
+
+/* an unwritten mark keeps its popover quiet: the heading in ash, not gold, so written and unwritten read apart at a glance */
+.ch-mk:not(.is-on) .ch-tip b { color: var(--ash); }
+.ch-mk:not(.is-on) .ch-tip { color: var(--dust); }
 /* ===== /chronicle:css ===== */
-
-/* the mark's popover: the field and what was written there */
-.ch-mk { position: relative; }
-.ch-r6 { position: relative; z-index: 1; }
-.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
-.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
-  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
-  display: none; pointer-events: none; }
-.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
-.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
-.ch-tip { max-width: min(220px, 72vw); }
-.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
-/* the record plate: the habit grid never outgrows its column */
-.ch-rec { gap: var(--s6); }
-.ch-hab { table-layout: fixed; }
-.ch-hab thead th:first-child { width: 30%; }
-.ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
-.ch-hab thead th:last-child { width: 2.6ch; }
-.ch-hab td { width: auto; }
-.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
-
-/* an unwritten mark keeps its popover quiet: the heading in ash, not gold, so written and unwritten read apart at a glance */
-.ch-mk:not(.is-on) .ch-tip b { color: var(--ash); }
-.ch-mk:not(.is-on) .ch-tip { color: var(--dust); }
-
-/* the mark's popover: the field and what was written there */
-.ch-mk { position: relative; }
-.ch-r6 { position: relative; z-index: 1; }
-.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
-.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
-  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
-  display: none; pointer-events: none; }
-.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
-.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
-.ch-tip { max-width: min(220px, 72vw); }
-.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
-/* the record plate: the habit grid never outgrows its column */
-.ch-rec { gap: var(--s6); }
-.ch-hab { table-layout: fixed; }
-.ch-hab thead th:first-child { width: 30%; }
-.ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
-.ch-hab thead th:last-child { width: 2.6ch; }
-.ch-hab td { width: auto; }
-.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
-
-/* an unwritten mark keeps its popover quiet: the heading in ash, not gold, so written and unwritten read apart at a glance */
-.ch-mk:not(.is-on) .ch-tip b { color: var(--ash); }
-.ch-mk:not(.is-on) .ch-tip { color: var(--dust); }
-
-/* the mark's popover: the field and what was written there */
-.ch-mk { position: relative; }
-.ch-r6 { position: relative; z-index: 1; }
-.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
-.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
-  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
-  display: none; pointer-events: none; }
-.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
-.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
-.ch-tip { max-width: min(220px, 72vw); }
-.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
-/* the record plate: the habit grid never outgrows its column */
-.ch-rec { gap: var(--s6); }
-.ch-hab { table-layout: fixed; }
-.ch-hab thead th:first-child { width: 30%; }
-.ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
-.ch-hab thead th:last-child { width: 2.6ch; }
-.ch-hab td { width: auto; }
-.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
-
-/* the mark's popover: the field and what was written there */
-.ch-mk { position: relative; }
-.ch-r6 { position: relative; z-index: 1; }
-.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
-.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
-  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
-  display: none; pointer-events: none; }
-.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
-.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
-.ch-tip { max-width: min(220px, 72vw); }
-.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
-/* the record plate: the habit grid never outgrows its column */
-.ch-rec { gap: var(--s6); }
-.ch-hab { table-layout: fixed; }
-.ch-hab thead th:first-child { width: 30%; }
-.ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
-.ch-hab thead th:last-child { width: 2.6ch; }
-.ch-hab td { width: auto; }
-.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
-
-/* the mark's popover: the field and what was written there */
-.ch-mk { position: relative; }
-.ch-r6 { position: relative; z-index: 1; }
-.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
-.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
-  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
-  display: none; pointer-events: none; }
-.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
-.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
-.ch-tip { max-width: min(220px, 72vw); }
-.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
-/* the record plate: the habit grid never outgrows its column */
-.ch-rec { gap: var(--s6); }
-.ch-hab { table-layout: fixed; }
-.ch-hab thead th:first-child { width: 32%; }
-.ch-hab thead th:last-child { width: 2.6ch; }
-.ch-hab td { width: auto; }
-.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
-
-/* the mark's popover: the field and what was written there */
-.ch-mk { position: relative; }
-.ch-r6 { position: relative; z-index: 1; }
-.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
-.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
-  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
-  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
-  opacity: 0; pointer-events: none; transition: opacity var(--t-fast) var(--e-out); }
-.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
-.ch-mk:hover .ch-tip, .ch-mk:focus-visible .ch-tip { opacity: 1; }
-.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
-/* the record plate: the habit grid never outgrows its column */
-.ch-rec { gap: var(--s6); }
-.ch-hab { table-layout: fixed; }
-.ch-hab thead th:first-child { width: 32%; }
-.ch-hab thead th:last-child { width: 2.6ch; }
-.ch-hab td { width: auto; }
-.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
 </style>
 <style>
   /* ——— namespace switcher ——— */
@@ -19397,22 +19327,30 @@ function chMarksHTML(e, day) {
 }
 const chDayShort = d => d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3);
 
+/* the head is the week plate's rim (DECISIONS.md, 22 Sep, the owner's pick of three): the week and the way to the
+   weeks either side, cut into the plate's top edge in the Chronicle's notch drawn wide enough to hold them.
+   The plaque already says Chronicle, so the plate says the week. */
+const chRangeShort = mon => { const e = addDays(mon, 6), m = d => MONTHS[d.getMonth()].slice(0, 3); return m(mon) + " " + mon.getDate() + " – " + (e.getMonth() === mon.getMonth() ? "" : m(e) + " ") + e.getDate(); };
+/* one cap, mirrored for the right; it stretches to the rim's height on the phone, and the stroke stays a hairline */
+const CH_RIM_CAP = '<svg viewBox="0 0 44 34" preserveAspectRatio="none"><path d="M0 0.5C22 0.5 24 33.5 44 33.5V0.5Z" fill="#17130F"/><path d="M0 0.5C22 0.5 24 33.5 44 33.5" fill="none" stroke="rgba(232,176,84,0.6)" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>';
 function chHeadHTML(F, isThis, canLater) {
-  return '<header class="ch-head">' +
-    '<button type="button" class="ch-step" data-ch="week" data-d="-1" aria-label="Earlier week">‹</button>' +
-    '<div class="ch-title"><h1 class="ch-h">The Chronicle</h1><p class="ch-range">' + esc(weekRange(F.mon)) +
-      (isThis ? '<span class="ch-sofar">so far</span>' : "") + "</p>" +
-      (isThis ? "" : '<button type="button" class="ch-today" data-ch="thisweek">This week</button>') + "</div>" +
-    '<button type="button" class="ch-step" data-ch="week" data-d="1" aria-label="Later week"' + (canLater ? "" : " disabled") + ">›</button></header>";
+  const step = (d, can) => '<button type="button" class="ch-step" data-ch="week" data-d="' + d + '" aria-label="' + (d < 0 ? "Earlier week" : "Later week") + '"' + (can ? "" : " disabled") + ">" + (d < 0 ? "‹" : "›") + "</button>";
+  /* the phone takes the short month, the smallest phone drops the year; only the displayed form is ever read */
+  const title = '<h2 class="ch-pt ch-wt"><span class="ch-wt-l">' + esc(weekRange(F.mon)) + '</span><span class="ch-wt-s">' +
+    esc(chRangeShort(F.mon)) + '<span class="ch-wt-y">, ' + addDays(F.mon, 6).getFullYear() + "</span></span></h2>";
+  const state = isThis ? '<span class="ch-sofar">so far</span>' : '<button type="button" class="ch-today" data-ch="thisweek">This week</button>';
+  return '<header class="ch-rim"><span class="ch-rim-cap l" aria-hidden="true">' + CH_RIM_CAP + '</span><span class="ch-rim-mid">' +
+    step(-1, true) + title + state + step(1, canLater) + '</span><span class="ch-rim-cap r" aria-hidden="true">' + CH_RIM_CAP + "</span></header>";
 }
-/* last week's third line, brought forward; nothing stands here when there is none */
+/* last week's third line, brought forward: the first line inside the plate; nothing stands here when there is none */
 function chIntentHTML(F) {
   if (!F.prev || !F.prev.next) return "";
-  const pm = dyMondayOfKey(F.prevWk);
-  return '<section class="ch-intent" aria-label="The week’s intention"><p class="ch-intent-l">The week’s intention</p>' +
-    '<p class="ch-intent-t">' + esc(F.prev.next) + "</p>" +
-    '<button type="button" class="ch-intent-from" data-ch="week" data-d="-1">written at the end of ' + esc(pm ? weekRange(pm) : "the week before") + "</button></section>";
+  const pm = dyMondayOfKey(F.prevWk), from = pm ? weekRange(pm) : "the week before";
+  return '<p class="ch-intent"><span class="ch-intent-l">The week’s intention</span><span class="ch-intent-t">' + esc(F.prev.next) + "</span>" +
+    '<button type="button" class="ch-intent-from" data-ch="week" data-d="-1" aria-label="Written at the end of ' + esc(from) + '">from ' + esc(pm ? chRangeShort(pm) : "last week") + "</button></p>";
 }
+/* the sprigs without dyFrame's notch: the rim takes the notch's place */
+const chSprigs = ps => ps.map(p => DY_ORN.sprig.replace('class="orn"', 'class="orn ' + p + '"')).join("");
 /* the reading, over the card on hover or focus (a tap on the front card, on the phone): the keywords, then the
    meaning — the reversed text for a reversed card. The app's own hand-written readings, nothing generated. */
 function chReadHTML(x) {
@@ -19575,8 +19513,9 @@ function renderChronicle() {
   if (!chWeek) chWeek = thisMon;
   const wk = weekKeyOf(chWeek), F = chFacts(wk), isThis = weekKeyOf(thisMon) === wk;
   if (chFront == null || chFront < 0 || chFront > 6) chFront = isThis ? dyDow(dayNow()) : 0;
-  el.innerHTML = '<div class="ch">' + chHeadHTML(F, isThis, chWeek < thisMon) + chIntentHTML(F) +
-    '<section class="ch-plate ch-week" aria-label="The seven days">' + dyFrame({ sprigs: ["tl", "tr"], top: "notch" }) + chGridHTML(F) + chHandHTML(F) + "</section>" +
+  el.innerHTML = '<div class="ch">' +
+    '<section class="ch-plate ch-week" aria-label="The seven days">' + chSprigs(["tl", "tr"]) + chHeadHTML(F, isThis, chWeek < thisMon) + chIntentHTML(F) +
+      chGridHTML(F) + chHandHTML(F) + "</section>" +
     '<div class="ch-low">' + chRecordHTML(F) + chReflectHTML(F, wk) + "</div></div>";
   el.querySelectorAll(".ch-rline").forEach(chGrow);
 }
