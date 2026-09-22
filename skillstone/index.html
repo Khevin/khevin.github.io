@@ -4342,12 +4342,14 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   font: 500 .8125rem var(--f-mono); font-variant-numeric: tabular-nums;
 }
 .gm-view-list { display: block; }
-.gm-view-list .gm-card { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: var(--s3); min-height: 84px; padding: 8px 0; border-bottom: 1px solid var(--mortar); animation: none; }
+/* the card's content is one button (see "the card is the target"), so the row grid goes on
+   the button — on the card it would put the whole button in the cover column */
+.gm-view-list .gm-card { min-height: 84px; padding: 8px 0; border-bottom: 1px solid var(--mortar); animation: none; }
+.gm-view-list .gm-open { display: grid; grid-template-columns: 54px minmax(0, 1fr); align-items: center; gap: var(--s3); }
 .gm-view-list .gm-cover { width: 54px; height: 68px; aspect-ratio: auto; }
 .gm-view-list .gm-spine { inset: 3px; padding: 2px; font-size: .5rem; }
 .gm-view-list .gm-badge { top: auto; right: 2px; bottom: 2px; padding: 1px 2px; font-size: .45rem; }
 .gm-view-list .gm-card-title { margin-top: 0; }
-.gm-view-list .gm-card-actions { margin-top: 0; align-items: center; }
 .gm-view-list .gm-tags { margin-top: 5px; }
 .gm-empty { padding: var(--s7) var(--s4); border: 1px dashed var(--mortar-2); text-align: center; color: var(--dust); }
 .gm-empty strong { display: block; font: 700 1.125rem var(--f-display); color: var(--parchment); margin-bottom: var(--s2); }
@@ -4394,7 +4396,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .gm-platform-help { min-height: 1.25em; color: var(--ash); font-size: .75rem; }
 @keyframes gm-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 650px) { .gm { padding: var(--s4) var(--s2) var(--s7); } .gm-head { align-items: start; flex-direction: column; } .gm-add { align-self: stretch; justify-content: center; } .gm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s2); } .game-dlg .bk-row { grid-template-columns: 1fr; } }
-@media (max-width: 650px) { .gm-view-compact { grid-template-columns: repeat(auto-fill, 96px); } .gm-view-list { display: block; } .gm-view-list .gm-card { grid-template-columns: 48px minmax(0, 1fr); gap: var(--s2); } .gm-view-list .gm-cover { width: 48px; height: 64px; } .gm-view-list .gm-card-actions { grid-column: 2; margin-top: -4px; } .gm-view-switch { width: 100%; justify-content: space-between; } .gm-view-switch button { flex: 1; } }
+@media (max-width: 650px) { .gm-view-compact { grid-template-columns: repeat(auto-fill, 96px); } .gm-view-list { display: block; } .gm-view-list .gm-open { grid-template-columns: 48px minmax(0, 1fr); gap: var(--s2); } .gm-view-list .gm-cover { width: 48px; height: 64px; } .gm-view-switch { width: 100%; justify-content: space-between; } .gm-view-switch button { flex: 1; } }
 /* ---------- the shelf beside the plate ----------
    The shape Skills and Proficiency already use, for the reason DESIGN.md gives: the player
    never learns a second way to read a second menu. With nothing open the rail is the whole
