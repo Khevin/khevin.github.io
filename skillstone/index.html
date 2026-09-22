@@ -5112,11 +5112,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     border: 1px solid rgba(232,176,84,0.55); border-radius: 12px;
     background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); }
   .dy-mornf::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
-  .dy-mornf .orn-dawn { width: 240px; height: 76px; top: -33px; color: var(--gold); }
-  .dy-mornf .orn-dawn-corner { color: var(--gold); }
   .dy-mornh { grid-column: 1 / -1; grid-row: 3; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding-top: calc(var(--s5) + 46px); }
-  .dy-mornh .dy-ct { display: flex; align-items: center; gap: var(--s4); }
-  .dy-mornstar { width: 9px; height: 12px; flex: none; fill: var(--gold); }
   .dy-bodyc, .dy-ritc { grid-row: 4; z-index: 1; border: 0; border-radius: 0; background: none; }
   .dy-bodyc::before, .dy-ritc::before { content: none; }
   .dy-bodyc > .orn-top, .dy-ritc > .orn-top { display: none; }
@@ -20388,7 +20384,7 @@ function bdFigureSVG(x) {
    more under cloud, after Samer Hattar of the NIMH); the water's goal comes from the weight; the two supplements
    and the bathroom's four steps are one checklist each, Brush teeth last ---- */
 const RT_DEFAULT = [
-  { id: "rt-sun", name: "Sunlight", note: "15 min outside · 30 if cloudy", icon: "sun", kind: "check" },
+  { id: "rt-sun", name: "Sunlight", note: "15 min · 30 if cloudy", icon: "sun", kind: "check" },
   { id: "rt-water", name: "Hydration", note: "Water on waking", icon: "drop", kind: "ml", goal: "auto" },
   { id: "rt-supp", name: "Supplements", note: "With breakfast", icon: "pill", kind: "list",
     steps: [{ id: "algae", name: "Algae" }, { id: "pills", name: "Morning pills" }] },
@@ -20406,7 +20402,8 @@ function rtDefaults(habits, teeth) {
   return RT_DEFAULT.map(r => ({ ...r, habit: "", ...(r.steps ? { steps: r.steps.map(s => ({ ...s, habit: s.id === "teeth" && t ? String(t) : "" })) } : {}) }));
 }
 /* the first list (22 Sep 2026) was seven flat rituals. A board still holding exactly those seven moves to the
-   grouped four: the Journal link rides along to its step, and every morning's ticks follow their rituals in */
+   grouped four: a name the owner gave rides along to its ritual or step, so does the Journal link, and every
+   morning's ticks follow their rituals in */
 const RT_V1 = { "rt-screen": ["rt-bath:screen"], "rt-skin": ["rt-bath:cleanse", "rt-bath:moist"], "rt-teeth": ["rt-bath:teeth"],
   "rt-pills": ["rt-supp:pills"], "rt-algae": ["rt-supp:algae"] };
 function rtMigrate(b) {
@@ -20418,7 +20415,10 @@ function rtMigrate(b) {
     const m = e && typeof e === "object" && e[f]; if (!m || typeof m !== "object") return;
     Object.keys(RT_V1).forEach(k => { if (m[k] === undefined) return; RT_V1[k].forEach(n => { if (m[n] === undefined) m[n] = m[k]; }); delete m[k]; });
   }));
-  return rtDefaults(b.habits, teeth && teeth.habit);
+  const next = rtDefaults(b.habits, teeth && teeth.habit), nameOf = id => { const r = l.find(x => x.id === id); return r ? String(r.name || "").trim() : ""; };
+  const v1 = { algae: "rt-algae", pills: "rt-pills", screen: "rt-screen", teeth: "rt-teeth" };
+  next.forEach(r => { if (r.id === "rt-sun" || r.id === "rt-water") r.name = nameOf(r.id) || r.name; (r.steps || []).forEach(x => { if (v1[x.id]) x.name = nameOf(v1[x.id]) || x.name; }); });
+  return next;
 }
 /* an id stays word characters, so a step's key (ritual:step) reads back unambiguously */
 const rtId = (v, i, max) => String(v || "").replace(/[^\w-]/g, "").slice(0, max) || i;
@@ -20659,31 +20659,9 @@ function bdPlateHTML() {
 /* the panel, as five children of the Diary's plate, so the phone's steps can show them one step at a time: the
    laptop's frame and its title (decoration and a heading, for the laptop alone), the body readings (step IV), the
    rituals and the foot with Save morning (step V) */
-/* A still sunrise, separate from the day card's turning sun. Both rim lines rise around it. */
-const RT_DAWN = '<svg class="orn-top orn-dawn" viewBox="0 0 240 76" aria-hidden="true" focusable="false">' +
-  '<path d="M0 33C64 33 77 1 120 1S176 33 240 33V56H0Z" fill="#17130F"/>' +
-  '<g fill="none" stroke="currentColor" stroke-width="1"><path d="M0 33C64 33 77 1 120 1S176 33 240 33" opacity=".6"/>' +
-  '<path d="M0 43C64 43 80 10 120 10S176 43 240 43" opacity=".35"/></g>' +
-  '<g transform="translate(120 55)" fill="currentColor">' +
-  Array.from({ length: 17 }, (_, i) => '<path d="M-1.2 -12L0 -' + (i % 2 ? 23 : i === 8 ? 38 : 31) +
-    'L1.2 -12Z" transform="rotate(' + ((i - 8) * 10.5) + ')" opacity="' + (i % 2 ? '.7' : '.95') + '"/>').join("") +
-  '<path d="M-11 0A11 11 0 0 1 11 0Z"/>' +
-  '<path d="M-31 1H31M-21 4H21M-10 7H10" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></g></svg>';
-const RT_TITLE_STAR = '<svg class="dy-mornstar" viewBox="0 0 10 14" aria-hidden="true" focusable="false"><path d="M5 0L6.3 5.5L10 7L6.3 8.5L5 14L3.7 8.5L0 7L3.7 5.5Z"/></svg>';
-/* Etched glints of dawn: a slender arc and three lights, mirrored at the other corner. */
-const rtDawnCorner = side => '<svg class="orn orn-dawn-corner ' + side + '" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
-  '<g fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round">' +
-  '<path d="M9 58C13 33 33 13 58 9" opacity=".38"/>' +
-  '<path d="M15 57C19 38 38 19 57 15" opacity=".18"/>' +
-  '<path d="M19 19L23 23M33 33L37 37M19 37L23 33M33 23L37 19" opacity=".7"/></g>' +
-  '<g fill="currentColor"><path d="M28 12C29.6 25.1 30.9 26.4 44 28C30.9 29.6 29.6 30.9 28 44C26.4 30.9 25.1 29.6 12 28C25.1 26.4 26.4 25.1 28 12Z"/>' +
-  '<path d="M51 5L52.4 10.6L58 12L52.4 13.4L51 19L49.6 13.4L44 12L49.6 10.6Z" opacity=".85"/>' +
-  '<path d="M12 44L13.2 48.8L18 50L13.2 51.2L12 56L10.8 51.2L6 50L10.8 48.8Z" opacity=".75"/>' +
-  '<circle cx="39" cy="10" r="1" opacity=".6"/><circle cx="10" cy="39" r="1" opacity=".6"/>' +
-  '<circle cx="43" cy="43" r="1.2" opacity=".45"/><circle cx="55" cy="27" r=".8" opacity=".5"/></g></svg>';
 const bdPlate = () =>
-  '<div class="dy-mornf" aria-hidden="true">' + rtDawnCorner("tl") + rtDawnCorner("tr") + RT_DAWN + "</div>" +
-  '<div class="dy-mornh"><h2 class="dy-ct">' + RT_TITLE_STAR + 'Morning rituals' + RT_TITLE_STAR + '</h2>' + DY_ORN.rule + "</div>" +
+  '<div class="dy-mornf" aria-hidden="true">' + dyFrame({ sprigs: ["tl", "tr"], top: "sun" }) + "</div>" +
+  '<div class="dy-mornh"><h2 class="dy-ct">Morning rituals</h2>' + DY_ORN.rule + "</div>" +
   '<section class="dy-card dy-bodyc" data-pane="4" aria-label="Body readings">' + dyFrame({ top: "notch" }) + bdPlateHTML() + "</section>" +
   '<section class="dy-card dy-ritc" data-pane="5" aria-label="Morning rituals">' + dyFrame({ top: "notch" }) + rtPlateHTML() + "</section>" +
   '<div class="dy-save" data-pane="5">' + rtSaveHTML() + "</div>";
