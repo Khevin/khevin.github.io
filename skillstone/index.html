@@ -4629,6 +4629,16 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-card { position: relative; margin: 0; width: 100%; max-width: 132px; aspect-ratio: 3 / 5; border-radius: 8px; overflow: hidden; background: var(--socket);
   box-shadow: 0 14px 30px rgba(0,0,0,0.55); }
 .ch-card img, .ch-card svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* the reading over the card: hover or focus grows the card and darkens it under the words; on the phone a tap on the front card */
+.ch-card.has-read { cursor: help; transition: transform var(--t-base) var(--e-out), box-shadow var(--t-base) var(--e-out); }
+.ch-r2:hover, .ch-r2:focus-within { z-index: 6; }
+.ch-card.has-read:hover, .ch-card.has-read:focus-within { transform: scale(1.4); z-index: 5; box-shadow: 0 24px 50px rgba(0,0,0,0.75); outline: none; }
+.ch-read { position: absolute; inset: 0; margin: 0; padding: 10px 9px; display: flex; flex-direction: column; justify-content: center; text-align: center; overflow: hidden;
+  background: rgba(23,19,16,0.9); color: var(--parchment); opacity: 0; pointer-events: none; transition: opacity var(--t-base) var(--e-out); }
+.ch-card:hover .ch-read, .ch-card:focus-within .ch-read, .ch-fcard.is-read .ch-read { opacity: 1; }
+.ch-rkw { margin: 0 0 6px; font-family: var(--f-display); font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); line-height: 1.4; }
+.ch-rtext { margin: 0; font-family: var(--f-read); font-style: italic; font-size: 0.625rem; line-height: 1.4; color: var(--parchment); }
+.ch-fcard .ch-rtext { font-size: 0.6875rem; }
 .ch-card.is-rev img { transform: rotate(180deg); }
 .ch-card.ch-back.is-past, .ch-card.ch-back.is-fut { opacity: 0.45; }
 .ch-cslot { height: 20px; margin: var(--s2) 0 0; text-align: center; }
@@ -4659,22 +4669,21 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-feel:empty { display: none; }
 .ch-r6 { grid-row: 6; padding-top: var(--s3); }
 
-/* Readable brass objects, not tiny glyphs inside filled squares. The check distinguishes
-   recorded entries by shape as well as brightness; unrecorded emblems remain legible. */
-.ch-marks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); justify-items: center; align-items: center; gap: var(--s1); max-width: 140px; margin-inline: auto; }
-.ch-mk { position: relative; display: inline-grid; place-items: center; width: 32px; max-width: 100%; aspect-ratio: 1; flex: none; vertical-align: middle; }
+/* Small brass emblems in a row; colour alone says which were written — a written mark is lit,
+   an unwritten one is dimmed brass. The logbook is the day's page, so it stands 1.6× the
+   three small marks, as it does on the Diary. */
+.ch-marks { display: flex; justify-content: center; align-items: center; gap: var(--s2); }
+.ch-mk { display: inline-grid; place-items: center; --mk: 16px; width: var(--mk); max-width: 100%; aspect-ratio: 1; flex: none; vertical-align: middle; }
+.ch-mk-page { --mk: 26px; }
 .ch-mk > img { display: block; width: 100%; height: 100%; opacity: .5; filter: grayscale(.85) brightness(.8); }
 .ch-mk.is-on > img { opacity: 1; filter: none; }
-.ch-mk-check { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; }
-.ch-mk-check circle { fill: var(--gold); stroke: var(--cave); stroke-width: 1; }
-.ch-mk-check path { fill: none; stroke: var(--cave); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .ch-r6 { padding-inline: var(--s1); }
 .ch-wfoot { display: flex; justify-content: space-between; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-top: var(--s5); padding-top: var(--s3); border-top: 1px solid rgba(62,53,39,0.7); }
 .ch-legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: 0; }
 .ch-lg { display: inline-flex; align-items: center; gap: var(--s2); font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
-.ch-lg .ch-mk { width: 28px; }
+.ch-lg .ch-mk { --mk: 14px; }
+.ch-lg .ch-mk-page { --mk: 22px; }
 .ch-lg .ch-mk > img { opacity: 1; filter: none; }
-.ch-lg .ch-mk-check { display: none; }
 .ch-wcount { margin: 0; font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust); font-variant-numeric: tabular-nums; }
 
 /* the lower zone: the record and the reflection */
@@ -4774,9 +4783,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-fmarks { grid-column: 1 / -1; grid-row: 4; width: 100%; border-collapse: collapse; margin-top: var(--s4); }
 .ch-fmarks th { text-align: left; font-family: var(--f-ui); font-weight: 400; font-size: 0.8125rem; color: var(--dust); padding: var(--s1) var(--s2) var(--s1) 0; white-space: nowrap; }
 .ch-fmarks td { text-align: center; padding: var(--s1) 0; }
-.ch-fmarks .ch-mk { vertical-align: middle; }
-.ch-fmarks .ch-mk { width: 24px; }
-.ch-fmarks .ch-mk-check { width: 9px; height: 9px; }
+.ch-fmarks .ch-mk { vertical-align: middle; --mk: 12px; }
+.ch-fmarks .ch-mk-page { --mk: 19px; }
 
 .ch-step:focus-visible, .ch-link:focus-visible, .ch-fcard:focus-visible, .ch-hand:focus-visible, .ch-today:focus-visible, .ch-intent-from:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
@@ -4785,8 +4793,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ch-low { grid-template-columns: minmax(0, 1fr); }
 }
 @media (min-width: 701px) and (max-width: 1100px) {
-  .ch-marks { grid-template-columns: repeat(2, 28px); justify-content: center; gap: var(--s1); }
-  .ch-marks .ch-mk { width: 28px; }
+  .ch-marks { gap: var(--s1); }
 }
 @media (max-width: 700px) {
   .ch { padding-top: var(--s2); }
@@ -4815,7 +4822,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ch-hab td { width: auto; height: 34px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ch-fcard, .ch-rrow, .ch-rline { transition: none; }
+  .ch-fcard, .ch-rrow, .ch-rline, .ch-card.has-read, .ch-read { transition: none; }
 }
 /* ===== /chronicle:css ===== */
 </style>
@@ -19249,8 +19256,7 @@ const chMark = (k, on, title) => {
   const label = (title || CH_MARK_L[k]).replace(/: written$/, "") + (on === null ? "" : on ? ": recorded" : ": not recorded");
   return '<span class="ch-mk ch-mk-' + k + (on ? " is-on" : "") + '"' +
     (on === null ? ' aria-hidden="true"' : ' role="img" aria-label="' + esc(label) + '"') + ' title="' + esc(label) + '">' +
-    '<img src="' + CH_MARK[k] + '" alt="" width="32" height="32" decoding="async">' +
-    (on ? '<svg class="ch-mk-check" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5.5"/><path d="m3.3 6 1.8 1.8 3.7-3.7"/></svg>' : "") + "</span>";
+    '<img src="' + CH_MARK[k] + '" alt="" width="16" height="16" decoding="async"></span>';
 };
 function chMarksHTML(e) {
   const on = k => !!(e && e[k]);
@@ -19274,8 +19280,14 @@ function chIntentHTML(F) {
     '<p class="ch-intent-t">' + esc(F.prev.next) + "</p>" +
     '<button type="button" class="ch-intent-from" data-ch="week" data-d="-1">written at the end of ' + esc(pm ? weekRange(pm) : "the week before") + "</button></section>";
 }
+/* the reading, over the card on hover or focus (a tap on the front card, on the phone): the keywords, then the
+   meaning — the reversed text for a reversed card. The app's own hand-written readings, nothing generated. */
+function chReadHTML(x) {
+  const kw = x.rec.r ? x.card.rkw : x.card.kw, text = x.rec.r ? x.card.rev : x.card.up;
+  return '<figcaption class="ch-read"><p class="ch-rkw">' + (kw || []).map(esc).join(" · ") + '</p><p class="ch-rtext">' + esc(text || "") + "</p></figcaption>";
+}
 function chCardHTML(x) {
-  if (x.card) return '<figure class="ch-card' + (x.rec.r ? " is-rev" : "") + '"><img src="' + tarImg(x.card) + '" alt="' + esc(x.card.n) + (x.rec.r ? ", reversed" : "") + '" width="132" height="220" loading="lazy"></figure>';
+  if (x.card) return '<figure class="ch-card has-read' + (x.rec.r ? " is-rev" : "") + '" tabindex="0"><img src="' + tarImg(x.card) + '" alt="' + esc(x.card.n) + (x.rec.r ? ", reversed" : "") + '" width="132" height="220" loading="lazy">' + chReadHTML(x) + "</figure>";
   return '<div class="ch-card ch-back' + (x.fut ? " is-fut" : x.today ? "" : " is-past") + '" role="img" aria-label="' + (x.fut ? "Not yet come" : "Not turned") + '">' + tarBackSVG() + "</div>";
 }
 /* the mood strip: five rungs at equal pitch, straight segments between neighbouring days that both have a mood.
@@ -19342,7 +19354,7 @@ function chHandHTML(F) {
     const lab = DOW_LONG[x.i] + " " + chDayShort(x.d) + (x.card ? ", " + x.card.n + (x.rec.r ? ", reversed" : "") : x.fut ? ", not yet come" : ", not turned");
     h += '<button type="button" class="ch-fcard' + (x.i === f ? " is-front" : x.i < f ? " is-before" : " is-after") + (x.card && x.rec.r ? " is-rev" : "") +
       (x.card ? "" : " ch-back") + (x.fut ? " is-fut" : "") + '" data-ch="card" data-i="' + x.i + '" style="--i:' + x.i + ";--z:" + z + '" aria-label="' + esc(lab) + '" aria-pressed="' + (x.i === f) + '">' +
-      (x.card ? '<img src="' + tarImg(x.card) + '" alt="" width="150" height="250" loading="lazy">' : tarBackSVG()) +
+      (x.card ? '<img src="' + tarImg(x.card) + '" alt="" width="150" height="250" loading="lazy">' + chReadHTML(x) : tarBackSVG()) +
       '<span class="ch-cnum" aria-hidden="true">' + x.d.getDate() + "</span></button>";
   });
   return h + "</div></div>" + chFrontDayHTML(F.days[f]) + chFstripHTML(F);
@@ -19459,7 +19471,7 @@ function chSetFront(i) {
     if (a === "week") { chWeek = addDays(chWeek || mondayOf(dayNow()), Number(b.dataset.d) * 7); chFront = null; renderChronicle(); }
     else if (a === "thisweek") { chWeek = mondayOf(dayNow()); chFront = null; renderChronicle(); }
     else if (a === "front") chSetFront((chFront || 0) + Number(b.dataset.d));
-    else if (a === "card") chSetFront(Number(b.dataset.i));
+    else if (a === "card") { if (b.classList.contains("is-front")) b.classList.toggle("is-read"); else chSetFront(Number(b.dataset.i)); }
     else if (a === "journal") { j3Week = new Date(chWeek || mondayOf(dayNow())); setView("journal"); }
     else if (a === "skill") { select({ t: "s", id: b.dataset.id }); setView("skills"); }
     else if (a === "quest") { qSel = b.dataset.id; setView("camp"); }
