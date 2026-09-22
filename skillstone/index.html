@@ -3924,27 +3924,38 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
 .dy-pday { grid-column: 1 / -1; margin: 0 0 var(--s2); text-align: center; text-wrap: balance; font-family: var(--f-display); font-weight: 700;
   font-size: 0.6875rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bronze); }
 @media (max-width: 700px) {
-  /* The masthead. The plate could not hold portrait, name and four crests at this width — the
-     name was printing underneath CHA — and stretching the plate taller distorts the owner's
-     drawing. So the crests step off it onto a row of their own, the gear sits at the plate's
-     end, and the plaque takes the third row. The name bar keeps its plate. */
-  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s2); row-gap: var(--s2); align-items: center; }
-  .namebar { display: contents; }
-  .hero { grid-column: 1; grid-row: 1; align-items: center; gap: var(--s3); min-height: 84px; padding: 0 var(--s5);
-    background: url("assets/gears/bar-name-cut.webp") 50% 50% / 100% 100% no-repeat; }
+  /* The masthead, as the laptop draws it, wrapped onto two rows: the name bar carries the portrait,
+     the name and the four crests; the plaque and the gear share the row beneath, in the laptop's
+     order. The crests stepped off the plate on 21 Sep because the gear shared its row and left it
+     283px; beside the plaque instead, the gear leaves the plate the whole row (343 at 375), and the
+     crests go back where the owner drew them, at their own sizes. */
+  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s3); row-gap: var(--s2); align-items: center; }
+  .namebar { grid-column: 1 / -1; grid-row: 1; min-height: 84px; gap: 10px; padding: 0 20px 0 22px; }
+  .hero { align-items: center; gap: var(--s2); }
   .portrait { width: 48px; height: 62px; }
-  .hero-name { font-size: 1.125rem; }
-  .tools { grid-column: 2; grid-row: 1; width: auto; }
-  .crests { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: 0; padding: 2px var(--s2); overflow: visible;
-    border-top: 1px solid var(--mortar); border-bottom: 1px solid var(--mortar); }
-  .crest { min-width: 0; flex: 1 1 0; min-height: 44px; }
-  .crest-rule { margin: 4px 0; }
-  .tabs { grid-column: 1 / -1; grid-row: 3; margin: 0; align-self: stretch; max-width: 100%; }
+  /* The name and the sign keep 44px for the finger without taking it from the layout (the name's box
+     reaches up into the plate, the sign's down), so the pair sits on the portrait's middle. Both had
+     min-height 44 on touch, which made the column 88px and lifted the name to the plate's edge. A name
+     or a sign too long for the column ends in an ellipsis instead of running under the crests. */
+  .hero-name { display: block; min-height: 0; max-width: 100%; font-size: 1.125rem; padding-top: 21px; margin-top: -21px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hero .class-pick { position: relative; min-width: 0; min-height: 0; max-width: 100%; padding: 0 var(--s1); }
+  .hero .class-pick::after { content: ""; position: absolute; inset: 0 0 -14px; }
+  .sign-pick .sp-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .crests { gap: 10px; overflow: visible; }
+  .crest { min-width: 0; padding: 0; }
+  /* renaming: the field takes the crests' room while it is open, and fits what is left */
+  .namebar:has(.hero-name-input) .crests { display: none; }
+  .hero:has(.hero-name-input) .hero-main { flex: 1 1 auto; }
+  .hero-main form { min-width: 0; width: 100%; }
+  .hero-name-input { min-width: 0; width: 100%; font-size: 1.125rem; }
+  .tools { grid-column: 2; grid-row: 2; width: auto; }
+  .tabs { grid-column: 1; grid-row: 2; margin: 0; align-self: stretch; max-width: 100%; }
   .tab { font-size: 0.75rem; letter-spacing: 0.05em; padding: var(--s2) 7px; }
   /* the plaque scrolls; a fade at whichever end has more says so. Grid items of the masthead, laid
      over the plaque's cell just inside its finials — a sticky child of the scroll row itself does
      not paint over the leather. */
-  .masthead::before, .masthead::after { content: ""; grid-row: 3; grid-column: 1 / -1; align-self: center; width: 34px; height: 44px;
+  .masthead::before, .masthead::after { content: ""; grid-row: 2; grid-column: 1; align-self: center; width: 34px; height: 44px;
     margin: 0 30px; position: relative; z-index: 1; pointer-events: none; opacity: 0; transition: opacity var(--t-fast) var(--e-out); }
   .masthead::before { justify-self: start; background: linear-gradient(90deg, rgba(20,14,10,0.95), rgba(20,14,10,0)); }
   .masthead::after  { justify-self: end; background: linear-gradient(270deg, rgba(20,14,10,0.95), rgba(20,14,10,0)); }
@@ -3980,6 +3991,12 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .dy2[data-pane="3"] > [data-pane]:not([data-pane="3"]), .dy2[data-pane="1"] .dy-pday { display: none; }
   .dy2, .dy2 *:not(input) { touch-action: pan-y pinch-zoom; }
   .dy2.is-drag { -webkit-user-select: none; user-select: none; }
+  /* Step II is the page: the logbook reaches the foot of the screen, so a screen holds as many lines
+     as it can, and it grows past that with the writing, the page scrolling rather than the card.
+     Its top (--dy-top) is measured by the Diary's script, since the masthead above it is not the
+     Diary's to know. */
+  .dy2 .dy-log { min-height: calc(100vh - var(--dy-top, 0px) - var(--s4)); min-height: calc(100svh - var(--dy-top, 0px) - var(--s4)); }
+  .dy2 .dy-log .dy-body { max-height: none; }
 
   /* Settings: five card backs across, the labels no longer breaking mid-word */
   .cfg-back .cb { width: 48px; height: 80px; }
@@ -3998,6 +4015,11 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
 @media (max-width: 360px) {
   .dy-moodc .dy-medal-img, .dy-moodc .dy-medal-img img { width: 38px; height: 38px; }
   .dy-moodc .dy-medal-w { font-size: 0.5rem; }
+  /* the name bar at 320: the plate's ends and the crests a little closer, the name a size down (its
+     box still 44px to the finger) */
+  .namebar { padding: 0 16px 0 18px; gap: var(--s2); }
+  .hero-name { font-size: 1rem; padding-top: 23px; margin-top: -23px; }
+  .crests { gap: 8px; }
   /* a skill's name at display size was the one thing wider than a 320px sheet */
   #detail .d-name { font-size: 1.5rem; overflow-wrap: anywhere; min-width: 0; }
   #detail .name-row, #detail .d-head-main { min-width: 0; }
@@ -15453,6 +15475,7 @@ function dyGoPane(n, from) {
     out.forEach(p => { p.getAnimations().forEach(x => x.cancel()); p.style.transform = ""; p.style.opacity = ""; });
     plate.querySelectorAll(".dy-pstep").forEach(s => { if (+s.dataset.n === n) s.setAttribute("aria-current", "step"); else s.removeAttribute("aria-current"); });
     const inn = dyPanesOf(plate, n);
+    dyFit();                                                                 /* before the fields: the logbook's height depends on it */
     inn.forEach(p => p.querySelectorAll(dyGrowSel()).forEach(dyAutosize));   /* hidden until now, they had nothing to measure */
     const row = plate.querySelector(".dy-path"), top = row ? row.getBoundingClientRect().top : 0;
     if (top < 0) window.scrollBy(0, top - 12);                               /* a new step starts at its row, not halfway down the last one */
@@ -15465,6 +15488,13 @@ function dyGoPane(n, from) {
     { duration: 130, easing: "cubic-bezier(0.5, 0, 0.75, 0)", fill: "forwards" }));
   dyPaneEnd = swap;
   run[0].finished.then(() => { if (dyPaneEnd === swap) swap(); }, () => {});
+}
+/* On the phone the logbook reaches the foot of the screen (the rule is in the phone block); what the
+   rule needs from here is where its card starts on the page */
+function dyFit() {
+  const plate = document.querySelector("#viewDiary .dy2"), log = plate && plate.querySelector(".dy-log");
+  if (!log || !log.getClientRects().length) return;
+  plate.style.setProperty("--dy-top", Math.round(log.getBoundingClientRect().top + window.scrollY) + "px");
 }
 /* a drag that did not carry: the step comes back to rest */
 function dySettle(panes, from) {
@@ -15490,6 +15520,7 @@ function renderDiary() {
     '<section class="dy-card dy-vowc" data-pane="3" aria-label="Today">' + dyFrame({ top: "crest" }) +
       '<div class="dy-body dy-body-c">' + dyVowHTML(b, wk, dow) + "</div></section>" +
     "</div>";
+  dyFit();
   el.querySelectorAll(dyGrowSel()).forEach(dyAutosize);
   const dayCard = el.querySelector(".dy-day");                       /* the listeners die with the nodes on the next render */
   if (dayCard) { dayCard.addEventListener("pointerenter", () => sunHeat(1)); dayCard.addEventListener("pointerleave", () => sunHeat(0)); }
@@ -15503,11 +15534,13 @@ const dyGrowSel = scope => DY_GROW.map(c => (scope ? scope + " " : "") + c).join
 /* a field that is not drawn (a step the phone is not showing) has no height to measure: it would read 0 */
 function dyAutosize(ta) { if (!ta || !ta.getClientRects().length) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
 /* a height measured at one width is wrong at another: re-measure whenever the view’s column
-   changes width — a rotation, a resize, or a tab that first laid out at zero width */
+   changes width — a rotation, a resize, or a tab that first laid out at zero width. The masthead
+   is watched too, because on the phone the logbook's reach depends on where the masthead ends. */
+const dyRefit = () => { dyFit(); document.querySelectorAll(dyGrowSel("#viewDiary")).forEach(dyAutosize); };
 if (window.ResizeObserver) {
-  const dyRO = new ResizeObserver(() => document.querySelectorAll(dyGrowSel("#viewDiary")).forEach(dyAutosize));
-  const dyView = $("#viewDiary"); if (dyView) dyRO.observe(dyView);
-} else window.addEventListener("resize", () => document.querySelectorAll(dyGrowSel("#viewDiary")).forEach(dyAutosize));
+  const dyRO = new ResizeObserver(dyRefit);
+  [$("#viewDiary"), $(".masthead")].forEach(n => { if (n) dyRO.observe(n); });
+} else window.addEventListener("resize", dyRefit);
 /* while typing: the page grows and the rule fills; a line grows and seals. Nothing is saved
    until the field commits. */
 function dyLive(t) {
@@ -17433,11 +17466,11 @@ function renderHero() {
         ${(() => { const sun = astroSun(hero.birth); return sun
           ? `<button type="button" class="class-pick sign-pick" data-action="astro-open"
                aria-label="Sun in ${sun}. Open the chart.">
-               <span class="sig" aria-hidden="true">${asig(sun, 18)}</span>${sun}
+               <span class="sig" aria-hidden="true">${asig(sun, 18)}</span><span class="sp-n">${sun}</span>
              </button>`
           : `<button type="button" class="class-pick sign-pick is-unset" data-action="astro-open"
                aria-label="No birth set. Open the chart to set it.">
-               <span class="sig" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></span>Sign
+               <span class="sig" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></span><span class="sp-n">Sign</span>
              </button>`; })()}
       </span>
     </div>`;
