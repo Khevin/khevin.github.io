@@ -4734,6 +4734,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 2.2rem auto; gap: var(--s3); align-items: center; width: 100%; min-height: 44px; padding: var(--s1) var(--s1);
   background: none; border: 0; border-top: 1px solid rgba(62,53,39,0.7); color: var(--parchment); font: inherit; text-align: left; cursor: pointer; }
 .ch-row:hover .ch-rt { color: var(--gold-2); }
+/* the heading's rule already closes the top; the first row does not draw a second one under it */
+.ch-rows li:first-child .ch-row { border-top: 0; }
 .ch-rk { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
 .ch-rt { color: var(--dust); font-size: 0.875rem; overflow-wrap: anywhere; }
 .ch-rday { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); text-align: right; }
