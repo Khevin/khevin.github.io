@@ -189,6 +189,43 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
   color: var(--parchment);
 }
 #classPop:popover-open { display: flex; flex-direction: column; gap: var(--s2); }
+/* the phone's profile menu: the class picker's floating grammar, two rows a finger tall */
+.hero-menu {
+  position: fixed; inset: auto; margin: 0;
+  width: 200px; padding: var(--s1);
+  background: var(--stone-2);
+  border: 1px solid var(--mortar-2);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-float);
+  color: var(--parchment);
+}
+.hero-menu:popover-open { display: flex; flex-direction: column; gap: 2px; }
+.hm-item {
+  appearance: none; display: flex; align-items: center;
+  min-height: 44px; padding: 0 var(--s3);
+  background: none; border: 0; border-radius: var(--r-sm);
+  color: var(--parchment); font-family: var(--f-ui); font-size: 0.9375rem; text-align: left;
+  cursor: pointer;
+}
+@media (hover: hover) { .hm-item:hover { background: var(--stone-3); } }
+.hm-item:active { background: var(--stone-3); }
+.hm-item:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+/* Profile: the portrait with its two actions beside it, then the name. The file input is only
+   hidden from sight: a phone browser may refuse to open a picker for one that is display:none. */
+.hp-face { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--s4); position: relative; }
+.hp-portrait {
+  width: 88px; height: 112px; overflow: hidden;
+  display: grid; place-items: center;
+  background: var(--stone-3); color: var(--ash);
+  border: 1px solid var(--mortar); border-radius: var(--r-md);
+  box-shadow: inset 0 1px 0 var(--bevel);
+}
+.hp-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hp-portrait .g { width: 36px; height: 36px; }
+.hp-acts { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s2); min-width: 0; }
+.hp-file { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.hero-dlg .btn { min-height: 44px; }
+.hero-dlg .bk-l input { min-height: 44px; font-size: 1rem; }   /* 16px: a phone zooms into anything smaller */
 .cls-list { list-style: none; display: flex; flex-direction: column; max-height: 300px; overflow-y: auto;
   scrollbar-width: thin; scrollbar-color: var(--mortar-2) transparent; }
 /* the same options, laid in a wrapping row where Settings has the width for it */
@@ -3928,11 +3965,17 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
      the name and the four crests; the plaque and the gear share the row beneath, in the laptop's
      order. The crests stepped off the plate on 21 Sep because the gear shared its row and left it
      283px; beside the plaque instead, the gear leaves the plate the whole row (343 at 375), and the
-     crests go back where the owner drew them, at their own sizes. */
-  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s3); row-gap: var(--s2); align-items: center; }
-  .namebar { grid-column: 1 / -1; grid-row: 1; min-height: 84px; gap: 10px; padding: 0 20px 0 22px; }
+     crests go back where the owner drew them, at their own sizes.
+     Then, by his mock, closer to the top, shorter and wider: 12px above the plate (not less: the name's
+     44px reaches up into it), the plate down to 72px (the portrait 44 × 56, the 44px floor), and the
+     masthead 8px further out on each side than the pages under it, the plaque's finials nearly at the
+     glass. */
+  .wrap { padding-top: var(--s3); }
+  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s3); row-gap: var(--s1); align-items: center;
+    margin: 0 calc(-1 * var(--s2)) var(--s3); padding-bottom: 0; }
+  .namebar { grid-column: 1 / -1; grid-row: 1; min-height: 72px; gap: 10px; padding: 0 20px 0 22px; }
   .hero { align-items: center; gap: var(--s2); }
-  .portrait { width: 48px; height: 62px; }
+  .portrait { width: 44px; height: 56px; }
   /* The name and the sign keep 44px for the finger without taking it from the layout (the name's box
      reaches up into the plate, the sign's down), so the pair sits on the portrait's middle. Both had
      min-height 44 on touch, which made the column 88px and lifted the name to the plate's edge. A name
@@ -3950,13 +3993,22 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .hero-main form { min-width: 0; width: 100%; }
   .hero-name-input { min-width: 0; width: 100%; font-size: 1.125rem; }
   .tools { grid-column: 2; grid-row: 2; width: auto; }
-  .tabs { grid-column: 1; grid-row: 2; margin: 0; align-self: stretch; max-width: 100%; }
+  /* the plaque a little slimmer: its rules and finials drawn at three quarters (6 and 22px, the same
+     scale both ways), the tabs still 44px to the finger */
+  .tabs { grid-column: 1; grid-row: 2; margin: 0; align-self: stretch; max-width: 100%;
+    border-width: 6px 22px; border-image-width: 6px 22px; padding: 1px 8px 4px; }
   .tab { font-size: 0.75rem; letter-spacing: 0.05em; padding: var(--s2) 7px; }
+  /* Settings lives in the profile menu, so the gear goes and the plaque takes the row. Only where the
+     menu can open: without the Popover API the portrait keeps the laptop's controls and the gear stays. */
+  @supports selector(:popover-open) {
+    .tools { display: none; }
+    .tabs, .masthead::before, .masthead::after { grid-column: 1 / -1; }
+  }
   /* the plaque scrolls; a fade at whichever end has more says so. Grid items of the masthead, laid
      over the plaque's cell just inside its finials — a sticky child of the scroll row itself does
      not paint over the leather. */
   .masthead::before, .masthead::after { content: ""; grid-row: 2; grid-column: 1; align-self: center; width: 34px; height: 44px;
-    margin: 0 30px; position: relative; z-index: 1; pointer-events: none; opacity: 0; transition: opacity var(--t-fast) var(--e-out); }
+    margin: 0 22px; position: relative; z-index: 1; pointer-events: none; opacity: 0; transition: opacity var(--t-fast) var(--e-out); }
   .masthead::before { justify-self: start; background: linear-gradient(90deg, rgba(20,14,10,0.95), rgba(20,14,10,0)); }
   .masthead::after  { justify-self: end; background: linear-gradient(270deg, rgba(20,14,10,0.95), rgba(20,14,10,0)); }
   .masthead.more-l::before, .masthead.more-r::after { opacity: 1; }
@@ -5109,6 +5161,27 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   <div class="wp-weeks" id="wpWeeks" role="group" aria-label="Weeks"></div>
   <div class="wp-foot"><button type="button" class="j3-btn" data-j3="wk-today">This week</button></div>
 </div>
+<!-- the phone's way to who you are and to the settings: the portrait and the name open it -->
+<div id="heroMenu" class="hero-menu" popover role="menu" aria-label="Profile and settings">
+  <button type="button" role="menuitem" class="hm-item" data-action="hero-profile">Profile</button>
+  <button type="button" role="menuitem" class="hm-item" data-action="hero-settings">Settings</button>
+</div>
+<dialog id="heroDlg" class="bk-dlg dlg-sm hero-dlg" aria-labelledby="heroDlgTitle">
+  <form method="dialog" data-form="hero-profile">
+    <div class="bk-top"><h2 class="bk-h" id="heroDlgTitle">Profile</h2><button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="hp-face">
+      <div class="hp-portrait" id="hpPortrait" aria-hidden="true"></div>
+      <div class="hp-acts">
+        <button type="button" class="btn btn-ghost btn-sm" data-action="hp-pick" id="hpPick">Add a portrait</button>
+        <button type="button" class="btn btn-danger btn-sm" data-action="hp-remove" id="hpRemove" hidden>Remove portrait</button>
+      </div>
+      <input type="file" id="hpFile" class="hp-file" accept="image/*" tabindex="-1" aria-hidden="true">
+    </div>
+    <label class="bk-l">Name<input type="text" id="hpName" maxlength="32" autocomplete="off" spellcheck="false"></label>
+    <p class="bk-p hp-note" id="hpNote" aria-live="polite"></p>
+    <div class="bk-foot"><button type="submit" class="btn btn-primary btn-sm">Done</button></div>
+  </form>
+</dialog>
 <div id="classPop" popover>
   <ul class="cls-list" id="clsList" aria-label="Choose a class"></ul>
   <form class="cls-custom" data-form="customclass">
@@ -17439,23 +17512,28 @@ document.addEventListener("change", e => { const r = e.target; if (r && r.datase
 document.addEventListener("click", e => { const d = $("#cfgDlg"); if (d && d.open && e.target === d) settingsClose(); });
 function renderHero() {
   renderMoodSwitch();
-  const hero = state.hero;
+  const hero = state.hero, menu = heroMenuMode();
   const sig = [hero.name, hero.cls, hero.clsName, heroNaming,
-               hero.portrait ? hero.portrait.length : 0, JSON.stringify(hero.birth || null)].join("\u0000");
+               hero.portrait ? hero.portrait.length : 0, JSON.stringify(hero.birth || null), menu].join("\u0000");
   if (sig === heroSig) return;
   heroSig = sig;
+  /* On the phone the portrait and the name open the profile menu (Profile, Settings), and the
+     portrait and the name are changed only in Profile; the laptop keeps them where they were. */
+  const opens = ' popovertarget="heroMenu" aria-haspopup="menu"';
   $("#hero").innerHTML = `
-    <button type="button" class="portrait" data-action="portrait"
-      aria-label="${hero.portrait ? "Replace or remove the portrait" : "Add a portrait"}">
+    <button type="button" class="portrait"${menu ? opens + ' aria-label="Profile and settings"' : ` data-action="portrait"
+      aria-label="${hero.portrait ? "Replace or remove the portrait" : "Add a portrait"}"`}>
       ${hero.portrait ? `<img src="${hero.portrait}" alt="">` : PORTRAIT_PLACEHOLDER}
     </button>
     <div class="hero-main">
-      ${heroNaming ? `
+      ${heroNaming && !menu ? `
       <form data-form="heroname" style="display:flex;gap:var(--s2);align-items:center">
         <input type="text" class="hero-name-input" id="heroNameInput" maxlength="32"
           value="${esc(hero.name)}" aria-label="Character name">
         <button type="submit" class="btn btn-ghost btn-sm">Save</button>
-      </form>` : `
+      </form>` : menu ? `
+      <button type="button" class="hero-name"${opens}
+        aria-label="${esc(hero.name)}, profile and settings">${esc(hero.name)}</button>` : `
       <button type="button" class="hero-name" data-action="heroname-open"
         aria-label="Rename this character">${esc(hero.name)}</button>`}
       <span class="hero-class">
@@ -17470,7 +17548,48 @@ function renderHero() {
              </button>`; })()}
       </span>
     </div>`;
+  heroDlgPaint();
 }
+/* ---------- the profile menu and Profile (the phone) ----------
+   The phone's masthead has no gear and no direct edits: the portrait and the name open a menu of
+   two, Profile and Settings, in the class picker's floating grammar. Without the Popover API the
+   phone keeps the laptop's controls and the gear (the CSS checks the same thing). */
+const HERO_PHONE = window.matchMedia("(max-width: 700px)");
+const heroMenuMode = () => HERO_PHONE.matches && "showPopover" in HTMLElement.prototype;
+HERO_PHONE.addEventListener("change", () => { heroSig = null; renderHero(); heroMenuClose(); });
+function heroMenuClose() { const p = $("#heroMenu"); if (p && p.matches && p.matches(":popover-open")) p.hidePopover(); }
+function bindHeroMenu() {
+  const pop = $("#heroMenu"); if (!pop || !pop.showPopover) return;
+  /* it hangs under the portrait whichever of the two opened it; the first row takes the focus */
+  bindPop(pop, () => $("#hero .portrait"), 200, "left", () => { const f = pop.querySelector(".hm-item"); if (f) f.focus({ preventScroll: true }); });
+  pop.addEventListener("keydown", e => {
+    const items = [...pop.querySelectorAll(".hm-item")], i = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); }
+    else if (e.key === "Home" || e.key === "End") { e.preventDefault(); items[e.key === "Home" ? 0 : items.length - 1].focus(); }
+  });
+}
+function heroDlgOpen() { const d = $("#heroDlg"); if (!d) return; heroDlgPaint(true); if (!d.open) d.showModal(); }
+/* Profile shows the hero as it is now: a new portrait, a removal or an undo repaints it */
+function heroDlgPaint(fresh) {
+  const d = $("#heroDlg"); if (!d || !(d.open || fresh)) return;
+  const h = state.hero, n = $("#hpName");
+  $("#hpPortrait").innerHTML = h.portrait ? '<img src="' + h.portrait + '" alt="">' : PORTRAIT_PLACEHOLDER;
+  $("#hpPick").textContent = h.portrait ? "Change portrait" : "Add a portrait";
+  $("#hpRemove").hidden = !h.portrait;
+  if (fresh || document.activeElement !== n) n.value = h.name;
+  if (fresh) $("#hpNote").textContent = "";
+}
+/* the name commits on change, like every field in the app; an empty one keeps the name it had */
+function heroNameCommit() {
+  const n = $("#hpName"); if (!n) return;
+  const v = n.value.trim().slice(0, 32);
+  if (!v) { n.value = state.hero.name; $("#hpNote").textContent = "A character needs a name, so it is still " + state.hero.name + ". Type another to change it."; return; }
+  $("#hpNote").textContent = "";
+  if (v === state.hero.name) return;
+  state.hero.name = v; heroSig = null; save(); renderHero();
+}
+document.addEventListener("change", e => { if (e.target && e.target.id === "hpName") heroNameCommit(); });
+document.addEventListener("input", e => { if (e.target && e.target.id === "hpName") $("#hpNote").textContent = ""; });   /* typing again answers the note */
 function classOptsHTML() {
   return CLASSES.map(c => `
     <li><button type="button" class="cls-opt" data-action="setclass" data-cls="${c.k}"
@@ -17550,6 +17669,11 @@ function portraitAction() {
     return;
   }
   portraitArmed = false;
+  removePortrait();
+}
+/* one way to take the portrait off: the laptop's second click, and Profile's Remove */
+function removePortrait() {
+  if (!state.hero.portrait) return;
   takeSnapshot();
   state.hero.portrait = null;
   heroSig = null;
@@ -18918,6 +19042,10 @@ function undo() {
 }
 function showToast(msg, withUndo, isErr) {
   const t = $("#toast");
+  /* a toast raised while a modal dialog is open would sit under its backdrop, unseen and out of
+     reach: it goes into the topmost open dialog, and back to the page when that dialog closes */
+  const host = [...document.querySelectorAll("dialog[open]")].pop() || document.body;
+  if (t.parentElement !== host) host.appendChild(t);
   t.classList.toggle("err", !!isErr);
   t.innerHTML = `<span>${esc(msg)}</span>` + (withUndo ? `<button type="button" class="btn btn-ghost btn-sm" data-action="undo">Undo</button>` : "");
   t.classList.add("show");
@@ -18925,6 +19053,7 @@ function showToast(msg, withUndo, isErr) {
   toastTimer = setTimeout(hideToast, 6000);
 }
 function hideToast() { $("#toast").classList.remove("show"); }
+document.addEventListener("close", e => { const t = $("#toast"); if (t && e.target.contains && e.target.contains(t)) document.body.appendChild(t); }, true);
 
 /* ---------- export / import / reset ---------- */
 /* ---------- emoji picker ---------- */
@@ -19200,6 +19329,11 @@ document.addEventListener("click", e => {
     case "cloud-code":  cloudCode(); break;
     case "addskill":    select("__add"); break;
     case "portrait":    portraitAction(); break;
+    /* the phone's profile menu: each row closes it before its dialog opens */
+    case "hero-profile":  heroMenuClose(); heroDlgOpen(); break;
+    case "hero-settings": heroMenuClose(); settingsOpen(); break;
+    case "hp-pick":     { const f = $("#hpFile"); if (f) f.click(); break; }
+    case "hp-remove":   removePortrait(); break;
     case "heroname-open": heroNaming = true; heroSig = null; renderHero();
                         { const i = $("#heroNameInput"); if (i) { i.focus(); i.select(); } } break;
     case "setclass":    setClass(act.dataset.cls); break;
@@ -19219,7 +19353,7 @@ document.addEventListener("change", e => {
     const s = selSkill();
     if (s) toggleGoal(s, +e.target.dataset.goal, e.target.checked);
   }
-  if (e.target.id === "portraitFile" && e.target.files[0]) {
+  if ((e.target.id === "portraitFile" || e.target.id === "hpFile") && e.target.files[0]) {
     loadPortrait(e.target.files[0]);
     e.target.value = "";
   }
@@ -19350,6 +19484,7 @@ document.addEventListener("submit", e => {
   if (f.dataset.form === "game-account") { gameAccountSave(f); return; }
   if (f.dataset.form === "quest-save") { qQuestDlgSave(); return; }
   if (f.dataset.form === "birth-save") { birthDlgSave(); return; }
+  if (f.dataset.form === "hero-profile") { heroNameCommit(); const d = $("#heroDlg"); if (d) d.close(); return; }
   if (f.dataset.form === "del-quest") {
     const id = delFor, q = qlogById(id);
     const dlg = $("#delDlg"); if (dlg) dlg.close();
@@ -19789,6 +19924,7 @@ try { const v = localStorage.getItem("skillstone-view"); if (v) view = v; } catc
 setView(view);
 bindEmojiPicker();
 bindClassPicker();
+bindHeroMenu();
 bindLadder();
 bindCptDialog();
 bindPop($("#weekPop"), () => weekPickBtn, 292, "left", renderWeekPick);
