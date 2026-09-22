@@ -4835,6 +4835,27 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 /* the record plate: the habit grid never outgrows its column */
 .ch-rec { gap: var(--s6); }
 .ch-hab { table-layout: fixed; }
+.ch-hab thead th:first-child { width: 30%; }
+.ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
+.ch-hab thead th:last-child { width: 2.6ch; }
+.ch-hab td { width: auto; }
+.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
+
+/* the mark's popover: the field and what was written there */
+.ch-mk { position: relative; }
+.ch-r6 { position: relative; z-index: 1; }
+.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
+.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
+  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
+  display: none; pointer-events: none; }
+.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
+.ch-tip { max-width: min(220px, 72vw); }
+.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
+/* the record plate: the habit grid never outgrows its column */
+.ch-rec { gap: var(--s6); }
+.ch-hab { table-layout: fixed; }
 .ch-hab thead th:first-child { width: 32%; }
 .ch-hab thead th:last-child { width: 2.6ch; }
 .ch-hab td { width: auto; }
