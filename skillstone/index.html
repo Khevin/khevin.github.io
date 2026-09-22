@@ -4575,6 +4575,209 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .gm-pane { transition: none; }
   .gm-pane .gm-plate { transition: none; opacity: 1; }
 }
+/* ===== chronicle:css =====
+   The Chronicle — the week closes. PRODUCT.md § The Chronicle (22 Sep 2026); DESIGN.md § The Chronicle.
+   Installed by .chronicle/splice.mjs between these markers; edit there and re-run. */
+.ch { --f-read: 'Lora', Georgia, serif; --paper: #F3EAD6; --u: 12px; --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.12  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  display: grid; gap: var(--s5); padding: var(--s4) 0 var(--s7); }
+
+/* the head: the week, and the way to the weeks either side */
+.ch-head { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: var(--s3); text-align: center; width: 100%; max-width: 640px; margin: 0 auto; }
+.ch-h { font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment); margin: 0; }
+.ch-range { font-family: var(--f-display); font-size: 0.875rem; letter-spacing: 0.1em; color: var(--dust); margin: var(--s1) 0 0; }
+.ch-sofar { color: var(--ash); letter-spacing: 0.06em; text-transform: none; font-family: var(--f-mono); font-size: 0.75rem; white-space: nowrap; }
+.ch-sofar::before { content: "\00a0\00b7\00a0"; }
+.ch-step { width: 44px; height: 44px; display: inline-grid; place-items: center; border: 1px solid var(--mortar-2); border-radius: var(--r-sm);
+  background: var(--stone-2); color: var(--gold); font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.ch-step:disabled { opacity: 0.35; cursor: default; }
+.ch-today { min-height: 44px; margin-top: var(--s1); padding: 0 var(--s3); background: none; border: 0; color: var(--gold); font-family: var(--f-display);
+  font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+.ch-today:hover { color: var(--gold-2); }
+
+/* the week's intention: last week's third line, brought forward */
+.ch-intent { display: grid; justify-items: center; gap: var(--s1); text-align: center; }
+.ch-intent-l, .ch-sh, .ch-rl, .ch-rll { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ash); margin: 0; }
+.ch-intent-t { font-family: var(--f-read); font-style: italic; font-size: 1.25rem; line-height: 1.45; color: var(--parchment); margin: 0; max-width: 60ch; }
+.ch-intent-from { min-height: 44px; background: none; border: 0; padding: 0 var(--s2); color: var(--ash); font-family: var(--f-mono); font-size: 0.6875rem; cursor: pointer; }
+.ch-intent-from:hover { color: var(--gold); }
+
+/* the plates: the Diary's engraved frame, one radius family */
+.ch-plate { position: relative; border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 40px 32px 28px; overflow: visible;
+  background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%);
+  background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); }
+.ch-plate::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
+.ch-pt { font-family: var(--f-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--parchment); margin: 0 0 var(--s4); }
+.ch-sh { display: flex; align-items: center; gap: var(--s3); margin: var(--s4) 0 var(--s2); }
+.ch-sh::after { content: ""; height: 1px; background: var(--mortar); flex: 1; }
+
+/* the seven days: one grid, five rows, a gutter for the rungs */
+.ch-grid { display: grid; grid-template-columns: 3rem repeat(7, minmax(0, 1fr)); grid-template-rows: auto auto 100px auto auto; column-gap: 0; }
+.ch-sep { grid-row: 1 / 6; width: 0; justify-self: start; border-left: 1px solid rgba(62,53,39,0.7); }
+.ch-dcell { padding: 0 var(--s2); min-width: 0; }
+.ch-r1 { grid-row: 1; text-align: center; padding-bottom: var(--s3); }
+.ch-dow { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment); margin: 0; }
+.ch-r1.is-fut .ch-dow { color: var(--ash); }
+.ch-r1.is-today .ch-dow { color: var(--gold); }
+.ch-date { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--dust); margin: 2px 0 0; font-variant-numeric: tabular-nums; }
+.ch-r2 { grid-row: 2; display: grid; justify-items: center; padding-top: var(--s2); }
+.ch-card { position: relative; margin: 0; width: 100%; max-width: 132px; aspect-ratio: 3 / 5; border-radius: 8px; overflow: hidden; background: var(--socket);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.55); }
+.ch-card img, .ch-card svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ch-card.is-rev img { transform: rotate(180deg); }
+.ch-card.ch-back.is-past, .ch-card.ch-back.is-fut { opacity: 0.45; }
+.ch-cslot { height: 20px; margin: var(--s2) 0 0; text-align: center; }
+.ch-cslot .tar-rev-l { margin: 0; }
+.ch-r3 { grid-row: 3; }
+.ch-rungs { position: relative; height: 100px; grid-column: 1; }
+.ch-rungs span { position: absolute; right: var(--s2); top: calc(var(--y) * 1%); transform: translateY(-50%); font-family: var(--f-mono); font-size: 0.625rem; color: var(--ash); white-space: nowrap; }
+.ch-mline { grid-row: 3; grid-column: 2 / 9; width: 100%; height: 100px; display: block; }
+.ch-rung { stroke: rgba(82,70,47,0.9); stroke-width: 1; stroke-dasharray: 2 5; }
+.ch-seg { stroke: var(--gold); stroke-width: 1.5; }
+.ch-mcell { position: relative; height: 100px; }
+.ch-mdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 2px #17130F; }
+.ch-mdash { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--ash); font-family: var(--f-mono); }
+.ch-r4 { grid-row: 4; margin: var(--s1) 0 0; text-align: center; font-family: var(--f-ui); font-size: 0.8125rem; color: var(--ash); }
+.ch-mword.is-set { color: var(--parchment); }
+.ch-r5 { grid-row: 5; padding-top: var(--s3); }
+
+/* the diary marks: a page (1½u × 2u) and three squares (1u), half a unit apart; a filled mark is a written field */
+.ch-marks { display: flex; justify-content: center; align-items: center; gap: calc(var(--u) / 2); }
+.ch-mk { display: inline-grid; place-items: center; width: var(--u); height: var(--u); border: 1px solid var(--mortar-2); border-radius: 2px; color: var(--mortar-2); flex: none; }
+.ch-mk-page { width: calc(var(--u) * 1.5); height: calc(var(--u) * 2); }
+.ch-mk svg { width: 70%; height: 70%; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ch-mk-page svg { width: 80%; height: 82%; }
+.ch-mk.is-on { background: var(--gold); border-color: var(--gold); color: var(--cave); }
+.ch-wfoot { display: flex; justify-content: space-between; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-top: var(--s5); padding-top: var(--s3); border-top: 1px solid rgba(62,53,39,0.7); }
+.ch-legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: 0; }
+.ch-lg { display: inline-flex; align-items: center; gap: var(--s2); font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
+.ch-wcount { margin: 0; font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust); font-variant-numeric: tabular-nums; }
+
+/* the lower zone: the record and the reflection */
+.ch-low { display: grid; grid-template-columns: minmax(0, 62fr) minmax(0, 38fr); gap: var(--s5); align-items: start; }
+.ch-rec { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
+.ch-col { min-width: 0; }
+.ch-link { min-height: 44px; display: inline-flex; align-items: center; gap: var(--s2); background: none; border: 0; padding: 0 var(--s1); color: var(--parchment);
+  font-family: var(--f-ui); font-size: 0.9375rem; text-align: left; cursor: pointer; }
+.ch-link:hover { color: var(--gold-2); }
+.ch-link.is-quiet { color: var(--dust); }
+.ch-link-sm { font-size: 0.8125rem; color: var(--dust); white-space: nowrap; }
+.ch-chev { color: var(--gold); }
+.ch-nums { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); margin: var(--s2) 0 var(--s3); font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust); font-variant-numeric: tabular-nums; }
+.ch-nums.is-empty { color: var(--ash); }
+.ch-rows { list-style: none; margin: 0; padding: 0; }
+.ch-rows li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--s3); align-items: center; padding: var(--s2) 0; border-top: 1px solid rgba(62,53,39,0.7); }
+.ch-rk { font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.08em; color: var(--gold); white-space: nowrap; }
+.ch-rt { color: var(--dust); font-size: 0.875rem; overflow-wrap: anywhere; }
+.ch-hours { list-style: none; margin: var(--s2) 0 0; padding: 0; }
+.ch-hours li { display: flex; justify-content: space-between; gap: var(--s3); padding: 3px 0; font-size: 0.875rem; color: var(--dust); }
+.ch-mono { font-family: var(--f-mono); color: var(--parchment); font-variant-numeric: tabular-nums; }
+.ch-quiet { margin: var(--s2) 0; color: var(--ash); font-size: 0.875rem; }
+.ch-hab { width: 100%; border-collapse: collapse; }
+.ch-hab th { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); padding: var(--s1); text-align: center; }
+.ch-hab tbody th { text-align: left; font-family: var(--f-ui); font-weight: 400; font-size: 0.875rem; letter-spacing: 0; text-transform: none; color: var(--parchment); padding-right: var(--s3); }
+.ch-hab td { width: 32px; height: 34px; text-align: center; vertical-align: middle; border-top: 1px solid rgba(62,53,39,0.7); }
+.ch-hab tbody th { border-top: 1px solid rgba(62,53,39,0.7); }
+.ch-hab td.off { background: rgba(0,0,0,0.18); }
+.ch-hab td svg, .ch-hleg svg { width: 14px; height: 14px; display: inline-block; vertical-align: middle; }
+.ch-hab .partial, .ch-hleg .partial { color: var(--bronze); }
+.ch-hab .expected, .ch-hleg .expected { color: var(--gold); }
+.ch-hab .excellent, .ch-hleg .excellent { color: var(--gold-2); }
+.ch-hleg { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: var(--s3) 0 0; }
+.ch-hleg span { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
+.ch-hsq { display: inline-block; width: 12px; height: 12px; border: 1px solid var(--mortar-2); border-radius: 2px; }
+
+/* the reflection: three lines in his hand, on paper; the rule seals when a line commits */
+.ch-ref { display: grid; gap: var(--s4); }
+.ch-rrow { background: var(--paper); background-image: var(--paper-grain), linear-gradient(var(--paper), var(--paper)); border-radius: var(--r-sm);
+  padding: var(--s3) var(--s4) var(--s2); border-bottom: 2px solid rgba(166,123,46,0.25); transition: border-color var(--t-settle) var(--e-out); }
+.ch-rrow.is-set { border-bottom-color: var(--bronze); }
+.ch-rrow:focus-within { border-bottom-color: var(--gold); }
+.ch-rl, .ch-rll { display: block; color: #6B5940; }
+.ch-rl { margin-bottom: var(--s1); }
+.ch-rline { display: block; width: 100%; box-sizing: border-box; min-height: 44px; margin: 0; padding: var(--s1) 0; background: none; border: 0; resize: none; overflow: hidden;
+  font-family: var(--f-read); font-style: italic; font-size: 1.0625rem; line-height: 1.55; color: #3B3022; transition: color var(--t-settle) var(--e-out); }
+.ch-rline:focus { outline: none; color: #1E1710; }
+.ch-rlink { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s2); padding-top: var(--s2); border-top: 1px dashed rgba(107,89,64,0.35); }
+.ch-pick { flex: 1; min-height: 44px; min-width: 0; appearance: none; background: none; border: 0; padding: 0; color: #2A2118; font-family: var(--f-read); font-style: italic; font-size: 0.9375rem; cursor: pointer; }
+.ch-pick.is-none { color: #8C7A5E; }
+.ch-pick option { background: var(--stone-2); color: var(--parchment); font-style: normal; }
+
+/* the phone: a fanned hand of the seven cards, the front card's morning beneath, the moods as dots */
+.ch-hand, .ch-fday, .ch-fstrip { display: none; }
+.ch-hand { position: relative; outline: none; padding-top: 12px; }
+.ch-fan { --cw: 150px; --chh: 250px; --sl: calc((100% - var(--cw)) / 6); position: relative; height: calc(var(--chh) + 12px); }
+.ch-fcard { position: absolute; top: 12px; left: calc(var(--i) * var(--sl)); width: var(--cw); height: var(--chh); margin: 0; padding: 0; border: 0; background: var(--socket);
+  border-radius: 8px; overflow: hidden; box-shadow: -6px 10px 24px rgba(0,0,0,0.55); z-index: var(--z); cursor: pointer; transition: transform var(--t-base) var(--e-out); }
+.ch-fcard.is-front { transform: translateY(-12px); box-shadow: 0 18px 40px rgba(0,0,0,0.7); }
+.ch-fcard img, .ch-fcard svg { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.ch-fcard.is-rev img { transform: rotate(180deg); }
+.ch-fcard.is-fut { opacity: 0.55; }
+.ch-cnum { position: absolute; top: 6px; left: 6px; font-family: var(--f-mono); font-size: 10px; line-height: 1; padding: 3px 4px; border-radius: 3px;
+  background: rgba(23,19,16,0.85); color: var(--gold); font-variant-numeric: tabular-nums; }
+.ch-fcard.is-after .ch-cnum { left: auto; right: 6px; }
+.ch-fday { margin-top: var(--s4); }
+.ch-fnav { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: var(--s2); }
+.ch-fdate { margin: 0; text-align: center; font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--parchment); }
+.ch-fat { font-family: var(--f-mono); letter-spacing: 0; text-transform: none; color: var(--ash); }
+.ch-frev { text-align: center; margin: var(--s2) 0 0; }
+.ch-ffirst { margin: var(--s3) 0 0; font-family: var(--f-read); font-size: 0.9375rem; line-height: 1.6; color: var(--dust); }
+.ch-ffirst.is-empty { min-height: 22px; border-bottom: 1px dashed rgba(232,176,84,0.25); }
+.ch-fmood { margin: var(--s3) 0 0; text-align: center; font-family: var(--f-ui); font-size: 0.9375rem; color: var(--ash); }
+.ch-fmood.is-set { color: var(--gold); }
+.ch-fthree { list-style: none; margin: var(--s3) 0; padding: 0; display: grid; gap: var(--s2); }
+.ch-fthree li { min-height: 26px; padding: 2px 0 6px; font-family: var(--f-read); font-style: italic; font-size: 0.9375rem; line-height: 1.5; color: var(--dust); border-bottom: 1px solid rgba(232,176,84,0.45); }
+.ch-fthree li.is-empty { border-bottom: 1px dashed rgba(232,176,84,0.25); }
+/* under the hand: the mood strip at phone width, the day initials, the diary marks as labelled rows */
+.ch-fstrip { grid-template-columns: 2.6rem minmax(0, 1fr); align-items: start; margin-top: var(--s5); }
+.ch-fstrip .ch-rungs { grid-column: 1; grid-row: 1; }
+.ch-fs-plot { grid-column: 2; grid-row: 1; position: relative; height: 100px; }
+.ch-fs-plot .ch-mline { position: absolute; inset: 0; height: 100px; }
+.ch-fs-dots { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.ch-fs-dows { grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; margin-top: var(--s1);
+  font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--ash); }
+.ch-fs-dows .is-front { color: var(--gold); }
+.ch-fmarks { grid-column: 1 / -1; grid-row: 3; width: 100%; border-collapse: collapse; margin-top: var(--s4); }
+.ch-fmarks th { text-align: left; font-family: var(--f-ui); font-weight: 400; font-size: 0.8125rem; color: var(--dust); padding: var(--s1) var(--s2) var(--s1) 0; white-space: nowrap; }
+.ch-fmarks td { text-align: center; padding: var(--s1) 0; }
+.ch-fmarks .ch-mk { vertical-align: middle; }
+.ch-fmarks .ch-mk-page { width: var(--u); height: calc(var(--u) * 1.4); }
+
+.ch-step:focus-visible, .ch-link:focus-visible, .ch-fcard:focus-visible, .ch-hand:focus-visible, .ch-today:focus-visible, .ch-intent-from:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+@media (max-width: 1100px) {
+  .ch-rec { grid-template-columns: minmax(0, 1fr); }
+  .ch-low { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .ch { padding-top: var(--s2); }
+  .ch-h { font-size: 1.125rem; }
+  .ch-range { font-size: 0.8125rem; }
+  .ch-sofar { display: block; margin-top: 2px; }
+  .ch-sofar::before { content: none; }
+  .ch-plate { padding: 30px 14px 20px; }
+  .ch-grid, .ch-legend { display: none; }
+  .ch-hand, .ch-fday { display: block; }
+  .ch-fstrip { display: grid; }
+  .ch-wfoot { justify-content: flex-end; }
+  .ch-hab td { width: 30px; height: 36px; }
+  .ch-rows li { grid-template-columns: auto minmax(0, 1fr); }
+  .ch-rows li .ch-link-sm { grid-column: 1 / -1; justify-self: start; }
+}
+@media (max-width: 360px) {
+  .ch-fan { --cw: 136px; --chh: 227px; }
+  .ch-h { font-size: 1rem; letter-spacing: 0.1em; }
+  .ch-range { font-size: 0.75rem; }
+  /* the habit grid: a fixed layout so the table cannot outgrow the plate; the name column wraps; the day labels sit at the 9px floor */
+  .ch-hab { table-layout: fixed; }
+  .ch-hab thead th:first-child { width: 31%; }
+  .ch-hab th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 0; }
+  .ch-hab tbody th { font-size: 0.8125rem; letter-spacing: 0; white-space: normal; overflow-wrap: anywhere; padding-right: var(--s1); }
+  .ch-hab td { width: auto; height: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ch-fcard, .ch-rrow, .ch-rline { transition: none; }
+}
+/* ===== /chronicle:css ===== */
 </style>
 <style>
   /* ——— namespace switcher ——— */
@@ -4681,6 +4884,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     <nav class="tabs" role="tablist" aria-label="Sections">
       <button type="button" class="tab" role="tab" id="tabDiary" data-view="diary"
         aria-selected="false" aria-controls="viewDiary" tabindex="-1">Diary</button>
+      <button type="button" class="tab" role="tab" id="tabChronicle" data-view="chronicle"
+        aria-selected="false" aria-controls="viewChronicle" tabindex="-1">Chronicle</button>
       <button type="button" class="tab" role="tab" id="tabJournal" data-view="journal"
         aria-selected="true" aria-controls="viewJournal">Journal</button>
       <button type="button" class="tab" role="tab" id="tabCamp" data-view="camp"
@@ -4689,8 +4894,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
         aria-selected="false" aria-controls="viewSkills" tabindex="-1">Skills</button>
       <button type="button" class="tab" role="tab" id="tabInv" data-view="inv"
         aria-selected="false" aria-controls="viewInv" tabindex="-1">Inventory</button>
-      <button type="button" class="tab" role="tab" id="tabSpells" data-view="spells"
-        aria-selected="false" aria-controls="viewSpells" tabindex="-1">Spells</button>
     </nav>
 
     <div class="tools">
@@ -4728,12 +4931,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   <div id="viewJournal" role="tabpanel" aria-labelledby="tabJournal" hidden></div>
   <div id="viewCamp" role="tabpanel" aria-labelledby="tabCamp" hidden></div>
   <div id="viewTarot" role="tabpanel" aria-label="Tarot" hidden></div>
-  <div id="viewSpells" role="tabpanel" aria-labelledby="tabSpells" hidden>
-    <section class="tab-blank">
-      <img src="assets/quests/spare-lotus-moon.png" alt="" width="256" height="256" loading="lazy">
-      <p>Not built yet</p>
-    </section>
-  </div>
+  <div id="viewChronicle" role="tabpanel" aria-labelledby="tabChronicle" hidden></div>
   <div id="viewInv" role="tabpanel" aria-labelledby="tabInv" hidden>
     <div class="iv-hall">
       <section class="iv-panel" aria-label="Inventory">
@@ -8650,6 +8848,8 @@ function normaliseBook(b) {
   b.bucket    = Array.isArray(b.bucket) ? b.bucket : [];
   b.days      = (b.days && typeof b.days === "object") ? b.days : {};
   b.titles    = (b.titles && typeof b.titles === "object") ? b.titles : {};
+  /* close[weekKey] = { well, way, next, quest, at } — the Chronicle's three lines; bounded below, as the diary is */
+  b.close     = (b.close && typeof b.close === "object") ? b.close : {};
   /* diary[weekKey][dow] = { page, three: [a, b, c], at } — the morning. The first shape was
      one string per day; it becomes { page } here, on every load, losing nothing. */
   b.diary     = (b.diary && typeof b.diary === "object") ? b.diary : {};
@@ -8662,6 +8862,7 @@ function normaliseBook(b) {
     });
     if (!Object.keys(w).length) delete b.diary[wk];
   });
+  Object.keys(b.close).forEach(wk => { const e = chSan(b.close[wk]); if (e) b.close[wk] = e; else delete b.close[wk]; });
   b.habits.forEach(x => {
     x.id = x.id || uid();
     x.name = String(x.name || "").slice(0, 80);
@@ -8709,12 +8910,12 @@ function markSVG(m) {
 
 /* Journal 1 was removed in v4. The helpers above it - normaliseBook, book(), markSVG,
    isSched, schedLabel, schedTitle - stay: the journal is built on them. */
-const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro", spells: "viewSpells", inv: "viewInv" };
+const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", tarot: "viewTarot", diary: "viewDiary", astro: "viewAstro", chronicle: "viewChronicle", inv: "viewInv" };
 /* Two pages have no tab, for the same reason: they are reached from where they belong.
    Astrology hangs off the sun sign on the hero card; the tarot hangs off the day's card in
    the diary, which is how a reading is actually come by — because it is the morning, not
    because you went looking for a page. */
-const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", diary: "tabDiary", spells: "tabSpells", inv: "tabInv" };
+const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", diary: "tabDiary", chronicle: "tabChronicle", inv: "tabInv" };
 /* which half of the Skills sheet is open. It outlives the session the way the view does,
    because coming back to the tab you left is worth more than a fixed starting point. */
 /* Each half names the groups it shows and how they are scored: a ladder half climbs 0-10 by
@@ -8790,6 +8991,8 @@ function setView(v) {
   /* the library was a tab of its own until it became a shelf of the inventory; a view saved
      under the old name still lands on the shelf it meant */
   if (v === "tomes") { invSub = "tomes"; v = "inv"; }
+  /* Spells was never built; its slot on the plaque became the Chronicle on 22 Sep 2026 */
+  if (v === "spells") v = "chronicle";
   view = VIEWS[v] ? v : "journal";
   Object.keys(VIEWS).forEach(k => {
     const p = $("#" + VIEWS[k]); if (p) p.hidden = k !== view;
@@ -8805,6 +9008,7 @@ function setView(v) {
   skySet(skyHere(view));
   if (view === "astro") renderAstro();
   if (view === "diary") renderDiary();
+  if (view === "chronicle") renderChronicle();
   if (view === "skills") { renderSubs(); setSub(skSub); }
 }
 
@@ -18883,6 +19087,324 @@ document.addEventListener("keydown", e => {
   if (f && e.target.tagName === "INPUT") { e.preventDefault(); f.requestSubmit(); }
 });
 
+/* ===== chronicle:js =====
+   The Chronicle — the week closes. PRODUCT.md § The Chronicle (22 Sep 2026).
+   Installed by .chronicle/splice.mjs between these markers, before the boot block; edit there and re-run.
+
+   Everything on the page is derived from records that already exist — the diary, the habit marks,
+   the tarot, the sessions, the quest receipts and step ticks, the journal — except the three lines
+   in his hand, which live in book.close[weekKey] = { well, way, next, quest, at }. */
+
+const CH_LINE_MAX = 600;
+let chWeek = null;      /* the Monday of the week on the page; null until the first render */
+let chFront = null;     /* the phone hand: the day in front, 0..6; null picks today or Monday */
+
+/* one week's reflection, sanitised — the Diary's dySan, for three longer lines and a quest id */
+function chSan(v) {
+  if (!v || typeof v !== "object") return null;
+  const line = t => String(t || "").replace(/\s*[\r\n]+\s*/g, " ").trim().slice(0, CH_LINE_MAX);
+  const e = {}, well = line(v.well), way = line(v.way), next = line(v.next), quest = String(v.quest || "").slice(0, 80);
+  if (well) e.well = well;
+  if (way) e.way = way;
+  if (next) e.next = next;
+  if (quest) e.quest = quest;
+  if (!e.well && !e.way && !e.next && !e.quest) return null;
+  if (typeof v.at === "number" && isFinite(v.at)) e.at = v.at;
+  return e;
+}
+/* one commit path, the Diary's: read, change, sanitise, save; never a re-render that steals focus */
+function chCommit(wk, mutate) {
+  const b = book();
+  b.close = (b.close && typeof b.close === "object") ? b.close : {};
+  const cur = chSan(b.close[wk]) || {}, had = !!b.close[wk];
+  mutate(cur);
+  const next = chSan(cur);
+  if (next) { if (cur.at) next.at = cur.at; else if (!had) next.at = Date.now(); b.close[wk] = next; }
+  else delete b.close[wk];
+  save();
+  return next;
+}
+
+/* the week's window for timestamped records: Monday 05:00 to the next Monday 05:00, because the day turns at five */
+function chWin(mon) {
+  const a = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate(), DAY_TURNS_AT, 0, 0, 0);
+  return [a.getTime(), addDays(a, 7).getTime()];
+}
+const chDur = mins => { mins = Math.round(Number(mins) || 0); const h = Math.floor(mins / 60), m = mins % 60; return h ? h + "h" + (m ? " " + m + "m" : "") : m + "m"; };
+const chN = (n, one, many) => n + " " + (n === 1 ? one : many);
+
+/* everything the page shows, from the records that exist */
+function chFacts(wk) {
+  const b = book(), mon = dyMondayOfKey(wk) || mondayOf(dayNow());
+  const [start, end] = chWin(mon), inWin = ts => typeof ts === "number" && ts >= start && ts < end;
+  const tKey = tarKey(dayNow());
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(mon, i), key = tarKey(d);
+    const rec = (state.tarot && state.tarot.days && state.tarot.days[key]) || null;
+    const card = rec && TAROT[rec.c] ? TAROT[rec.c] : null;
+    days.push({ i, d, key, e: dyGet(b, wk, i), rec: card ? rec : null, card, today: key === tKey, fut: key > tKey });
+  }
+  const mornings = days.filter(x => x.e).length;
+  const shorts = days.reduce((n, x) => n + (x.e ? ["one", "thanks", "book"].filter(k => x.e[k]).length : 0), 0);
+  const checks = b.checks[wk] || {};
+  const habits = b.habits.map(hb => {
+    const row = checks[hb.id] || {};
+    return { hb, marks: [0, 1, 2, 3, 4, 5, 6].map(d => row[d] || "none"),
+             sched: [0, 1, 2, 3, 4, 5, 6].map(d => hb.schedule.type === "count" || isSched(hb, d)) };
+  });
+  const notesN = (b.notes[wk] || []).length;
+  const crossed = b.bucket.filter(x => x.done && x.doneWk === wk).length;
+  const open = b.bucket.filter(x => !x.done).length;
+  const Q = quests(), done = Q.done || {}, obj = Q.obj || {};
+  /* a receipt carried across from before the app has ts 0 and lands in no week */
+  const questsDone = Object.keys(done).filter(id => done[id] && inWin(done[id].ts))
+    .map(id => { const q = qRecById(id); return { id, title: (q && q.title) || id, ts: done[id].ts }; })
+    .sort((a, c) => a.ts - c.ts);
+  /* a tick is a timestamp; a tick from before ticks carried one is `true`, and is not counted */
+  let steps = 0;
+  Object.keys(obj).forEach(id => { const o = obj[id]; if (o && typeof o === "object") Object.keys(o).forEach(k => { if (inWin(o[k])) steps++; }); });
+  const ses = sessions().filter(x => inWin(x.ts));
+  const mins = ses.reduce((n, x) => n + (Number(x.mins) || 0), 0);
+  const bySkill = {};
+  ses.forEach(x => { bySkill[x.sid] = (bySkill[x.sid] || 0) + (Number(x.mins) || 0); });
+  const hours = Object.keys(bySkill).map(sid => { const s = state.skills.find(z => z.id === sid); return { sid, name: s ? s.name : "—", mins: bySkill[sid] }; })
+    .sort((a, c) => c.mins - a.mins);
+  /* what changed: a tier crossed (the prof line names the tier), a rung moved, a book finished, an attribute moved.
+     A rung the owner moved carries `from`; a one-time data lift (polishV41) journals a level without it, and a lift
+     is not a week's work — on a fresh board it would list every skill on the sheet. */
+  const prog = (state.journal || []).filter(j => inWin(j.ts) &&
+      ((j.kind === "prof" && String(j.text).indexOf("—") > -1) || (j.kind === "level" && typeof j.from === "number") || j.kind === "book" || j.kind === "attr"))
+    .map(j => ({ ts: j.ts, sid: j.sid, kind: j.kind, text: j.text, name: ((state.skills.find(z => z.id === j.sid) || {}).name) || "" }));
+  const close = (b.close && b.close[wk]) || {};
+  const prevWk = weekKeyOf(addDays(mon, -7)), prev = (b.close && b.close[prevWk]) || null;
+  return { wk, mon, days, mornings, shorts, habits, notesN, crossed, open, questsDone, steps, mins, hours, prog, close, prevWk, prev };
+}
+
+/* the diary marks, in the crest hand: a page for the logbook; a book, a numeral and a laurel for the three short fields */
+const CH_MARK = {
+  page:   '<svg viewBox="0 0 24 32" aria-hidden="true"><path d="M4 2h11l5 5v23H4z"/><path d="M15 2v5h5"/></svg>',
+  book:   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5c3-1.6 6-1.6 9 0v13c-3-1.6-6-1.6-9 0zM12 5.5c3-1.6 6-1.6 9 0v13c-3-1.6-6-1.6-9 0"/></svg>',
+  one:    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8l4-3v14M8 19h10"/></svg>',
+  thanks: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20c-4.5-4-5.5-9.5-2-14.5 4.5 3.5 5.5 9 2 14.5zM12 20l5.5-6.5"/></svg>'
+};
+const CH_MARK_L = { page: "Logbook", book: "Reading", one: "#1 today", thanks: "Grateful for" };
+const chMark = (k, on, title) => '<span class="ch-mk ch-mk-' + k + (on ? " is-on" : "") + '"' + (title ? ' title="' + esc(title) + '"' : "") + ">" + CH_MARK[k] + "</span>";
+function chMarksHTML(e) {
+  const on = k => !!(e && e[k]);
+  return '<div class="ch-marks">' + ["page", "book", "one", "thanks"].map(k => chMark(k, on(k), CH_MARK_L[k] + (on(k) ? ": written" : ""))).join("") + "</div>";
+}
+const chDayShort = d => d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3);
+
+function chHeadHTML(F, isThis, canLater) {
+  return '<header class="ch-head">' +
+    '<button type="button" class="ch-step" data-ch="week" data-d="-1" aria-label="Earlier week">‹</button>' +
+    '<div class="ch-title"><h1 class="ch-h">The Chronicle</h1><p class="ch-range">' + esc(weekRange(F.mon)) +
+      (isThis ? '<span class="ch-sofar">so far</span>' : "") + "</p>" +
+      (isThis ? "" : '<button type="button" class="ch-today" data-ch="thisweek">This week</button>') + "</div>" +
+    '<button type="button" class="ch-step" data-ch="week" data-d="1" aria-label="Later week"' + (canLater ? "" : " disabled") + ">›</button></header>";
+}
+/* last week's third line, brought forward; nothing stands here when there is none */
+function chIntentHTML(F) {
+  if (!F.prev || !F.prev.next) return "";
+  const pm = dyMondayOfKey(F.prevWk);
+  return '<section class="ch-intent" aria-label="The week’s intention"><p class="ch-intent-l">The week’s intention</p>' +
+    '<p class="ch-intent-t">' + esc(F.prev.next) + "</p>" +
+    '<button type="button" class="ch-intent-from" data-ch="week" data-d="-1">written at the end of ' + esc(pm ? weekRange(pm) : "the week before") + "</button></section>";
+}
+function chCardHTML(x) {
+  if (x.card) return '<figure class="ch-card' + (x.rec.r ? " is-rev" : "") + '"><img src="' + tarImg(x.card) + '" alt="' + esc(x.card.n) + (x.rec.r ? ", reversed" : "") + '" width="132" height="220" loading="lazy"></figure>';
+  return '<div class="ch-card ch-back' + (x.fut ? " is-fut" : x.today ? "" : " is-past") + '" role="img" aria-label="' + (x.fut ? "Not yet come" : "Not turned") + '">' + tarBackSVG() + "</div>";
+}
+/* the mood strip: five rungs at equal pitch, straight segments between neighbouring days that both have a mood */
+function chMoodSVG(F) {
+  const moods = F.days.map(x => (x.e && x.e.mood) || 0), y = m => 110 - m * 20;
+  let p = '<svg class="ch-mline ch-r3" viewBox="0 0 700 100" preserveAspectRatio="none" aria-hidden="true">';
+  for (let i = 0; i < 5; i++) p += '<line x1="0" x2="700" y1="' + (10 + i * 20) + '" y2="' + (10 + i * 20) + '" class="ch-rung" vector-effect="non-scaling-stroke"/>';
+  for (let i = 0; i < 6; i++) if (moods[i] && moods[i + 1])
+    p += '<line x1="' + (i * 100 + 50) + '" y1="' + y(moods[i]) + '" x2="' + (i * 100 + 150) + '" y2="' + y(moods[i + 1]) + '" class="ch-seg" vector-effect="non-scaling-stroke"/>';
+  return p + "</svg>";
+}
+/* the laptop plate: one grid, five rows, a gutter for the rungs, a hairline between days */
+function chGridHTML(F) {
+  const col = i => ' style="grid-column:' + (i + 2) + '"';
+  let h = '<div class="ch-grid">';
+  for (let i = 1; i < 7; i++) h += '<span class="ch-sep" aria-hidden="true" style="grid-column:' + (i + 2) + '"></span>';
+  F.days.forEach(x => { h += '<div class="ch-dcell ch-r1' + (x.today ? " is-today" : "") + (x.fut ? " is-fut" : "") + '"' + col(x.i) + '><p class="ch-dow">' + DOW_LONG[x.i] + '</p><p class="ch-date">' + chDayShort(x.d) + "</p></div>"; });
+  F.days.forEach(x => { h += '<div class="ch-dcell ch-r2"' + col(x.i) + ">" + chCardHTML(x) + '<p class="ch-cslot">' + (x.rec && x.rec.r ? '<span class="tar-rev-l">Reversed</span>' : "") + "</p></div>"; });
+  h += '<div class="ch-rungs ch-r3" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>";
+  h += chMoodSVG(F);
+  F.days.forEach(x => { const m = x.e && x.e.mood; h += '<div class="ch-dcell ch-r3 ch-mcell"' + col(x.i) + ">" + (m ? '<span class="ch-mdot" style="--y:' + (110 - m * 20) + '"></span>' : '<span class="ch-mdash">–</span>') + "</div>"; });
+  F.days.forEach(x => { const m = x.e && x.e.mood; h += '<p class="ch-dcell ch-r4 ch-mword' + (m ? " is-set" : "") + '"' + col(x.i) + ">" + (m ? DY_MOODS[m - 1] : "–") + "</p>"; });
+  F.days.forEach(x => { h += '<div class="ch-dcell ch-r5"' + col(x.i) + ">" + chMarksHTML(x.e) + "</div>"; });
+  return h + "</div>";
+}
+function chFootHTML(F) {
+  const leg = ["page", "book", "one", "thanks"].map(k => '<span class="ch-lg">' + chMark(k, false) + " " + CH_MARK_L[k] + "</span>").join("");
+  const parts = [];
+  if (F.mornings) parts.push(chN(F.mornings, "morning", "mornings") + " written");
+  if (F.shorts) parts.push(F.shorts + " short " + (F.shorts === 1 ? "entry" : "entries"));
+  return '<footer class="ch-wfoot"><p class="ch-legend">' + leg + '</p><p class="ch-wcount">' + esc(parts.join(" · ")) + "</p></footer>";
+}
+
+/* the phone: the hand. Earlier days show a left edge, later days a right edge; the front card is lifted and readable */
+function chHandHTML(F) {
+  const f = chFront;
+  let h = '<div class="ch-hand" tabindex="0" role="group" aria-label="The week’s seven cards. Arrow keys bring a day forward."><div class="ch-fan">';
+  F.days.forEach(x => {
+    const z = x.i < f ? x.i + 1 : x.i === f ? 20 : 20 - (x.i - f);
+    const lab = DOW_LONG[x.i] + " " + chDayShort(x.d) + (x.card ? ", " + x.card.n + (x.rec.r ? ", reversed" : "") : x.fut ? ", not yet come" : ", not turned");
+    h += '<button type="button" class="ch-fcard' + (x.i === f ? " is-front" : x.i < f ? " is-before" : " is-after") + (x.card && x.rec.r ? " is-rev" : "") +
+      (x.card ? "" : " ch-back") + (x.fut ? " is-fut" : "") + '" data-ch="card" data-i="' + x.i + '" style="--i:' + x.i + ";--z:" + z + '" aria-label="' + esc(lab) + '" aria-pressed="' + (x.i === f) + '">' +
+      (x.card ? '<img src="' + tarImg(x.card) + '" alt="" width="150" height="250" loading="lazy">' : tarBackSVG()) +
+      '<span class="ch-cnum" aria-hidden="true">' + x.d.getDate() + "</span></button>";
+  });
+  return h + "</div></div>" + chFrontDayHTML(F.days[f]) + chFstripHTML(F);
+}
+/* the front card's morning: weekday · date · time of the first word, the first words, the mood, the three lines, the marks.
+   An unwritten morning shows its places. */
+function chFrontDayHTML(x) {
+  const e = x.e, words = e && e.page ? e.page.trim().split(/\s+/) : [];
+  const first = words.slice(0, 16).join(" ") + (words.length > 16 ? "…" : "");
+  const at = e && e.at ? (when(e.at).split(" · ")[1] || "") : "";
+  let h = '<div class="ch-fday"><div class="ch-fnav">' +
+    '<button type="button" class="ch-step" data-ch="front" data-d="-1" aria-label="Earlier day"' + (x.i === 0 ? " disabled" : "") + ">‹</button>" +
+    '<p class="ch-fdate">' + DOW_LONG[x.i] + " · " + chDayShort(x.d) + (at ? '<span class="ch-fat"> · ' + esc(at) + "</span>" : "") + "</p>" +
+    '<button type="button" class="ch-step" data-ch="front" data-d="1" aria-label="Later day"' + (x.i === 6 ? " disabled" : "") + ">›</button></div>";
+  if (x.card && x.rec.r) h += '<p class="tar-rev-l ch-frev">Reversed</p>';
+  h += first ? '<p class="ch-ffirst">' + esc(first) + "</p>" : '<p class="ch-ffirst is-empty"></p>';
+  h += '<p class="ch-fmood' + (e && e.mood ? " is-set" : "") + '">' + (e && e.mood ? DY_MOODS[e.mood - 1] : "–") + "</p>";
+  h += '<ol class="ch-fthree">' + [0, 1, 2].map(i => { const t = e && e.three && e.three[i]; return '<li class="' + (t ? "is-set" : "is-empty") + '">' + (t ? esc(t) : "") + "</li>"; }).join("") + "</ol>";
+  return h + "</div>";
+}
+/* under the hand: the same mood strip at phone width, the day initials, and the diary marks as four
+   labelled rows across the seven days — the row label teaches the mark once (Kare, DECISIONS.md D4) */
+function chFstripHTML(F) {
+  const lab = "Moods: " + F.days.map(x => DOW_SHORT[x.i] + " " + (x.e && x.e.mood ? DY_MOODS[x.e.mood - 1] : "none")).join(", ");
+  return '<div class="ch-fstrip">' +
+    '<div class="ch-rungs" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>" +
+    '<div class="ch-fs-plot" role="img" aria-label="' + esc(lab) + '">' + chMoodSVG(F) + '<div class="ch-fs-dots">' +
+      F.days.map(x => { const m = x.e && x.e.mood; return '<div class="ch-mcell">' + (m ? '<span class="ch-mdot" style="--y:' + (110 - m * 20) + '"></span>' : '<span class="ch-mdash">–</span>') + "</div>"; }).join("") +
+    "</div></div>" +
+    '<div class="ch-fs-dows" aria-hidden="true">' + F.days.map(x => "<span" + (x.i === chFront ? ' class="is-front"' : "") + ">" + DOW_SHORT[x.i][0] + "</span>").join("") + "</div>" +
+    '<table class="ch-fmarks"><tbody>' + ["page", "book", "one", "thanks"].map(k => '<tr><th scope="row">' + CH_MARK_L[k] + "</th>" +
+      F.days.map(x => "<td>" + chMark(k, !!(x.e && x.e[k]), DOW_LONG[x.i] + " · " + CH_MARK_L[k] + (x.e && x.e[k] ? ": written" : "")) + "</td>").join("") + "</tr>").join("") +
+    "</tbody></table></div>";
+}
+
+/* the week's record: the Journal as numbers that open the book, progress as numbers and rows, the habit grid */
+function chRecordHTML(F) {
+  const jparts = [];
+  if (F.notesN) jparts.push(chN(F.notesN, "note", "notes"));
+  if (F.crossed) jparts.push(F.crossed + " crossed off");
+  if (F.open) jparts.push(F.open + " in the bucket");
+  const pparts = [];
+  if (F.questsDone.length) pparts.push(chN(F.questsDone.length, "quest completed", "quests completed"));
+  if (F.steps) pparts.push(chN(F.steps, "step ticked", "steps ticked"));
+  if (F.mins) pparts.push(chDur(F.mins) + " practice");
+  let rows = "";
+  F.questsDone.forEach(q => { rows += '<li><span class="ch-rk">Quest</span><span class="ch-rt">' + esc(q.title) + '</span><button type="button" class="ch-link ch-link-sm" data-ch="quest" data-id="' + esc(q.id) + '">View in Quests <span class="ch-chev">›</span></button></li>'; });
+  F.prog.forEach(j => { rows += '<li><span class="ch-rk">' + esc(j.name || (j.kind === "book" ? "Book" : j.kind === "attr" ? "Attribute" : "")) + '</span><span class="ch-rt">' + esc(j.text) + "</span>" +
+    (j.sid ? '<button type="button" class="ch-link ch-link-sm" data-ch="skill" data-id="' + esc(j.sid) + '">View in Skills <span class="ch-chev">›</span></button>' : "<span></span>") + "</li>"; });
+  const hours = F.hours.map(x => "<li><span>" + esc(x.name) + '</span><span class="ch-mono">' + chDur(x.mins) + "</span></li>").join("");
+  const hab = F.habits.length
+    ? '<table class="ch-hab"><thead><tr><th scope="col"><span class="sr-only">Habit</span></th>' + DOW_SHORT.map(d => '<th scope="col">' + d + "</th>").join("") + "</tr></thead><tbody>" +
+      F.habits.map(r => '<tr><th scope="row">' + esc(r.hb.name) + "</th>" +
+        r.marks.map((m, d) => '<td class="' + (r.sched[d] ? "" : "off") + '"' + (m === "none" ? "" : ' title="' + esc(DOW_LONG[d] + ": " + m) + '"') + ">" + markSVG(m) + "</td>").join("") + "</tr>").join("") +
+      "</tbody></table>" +
+      '<p class="ch-hleg"><span><i class="ch-hsq"></i>Unmarked</span><span>' + markSVG("partial") + "Partial</span><span>" + markSVG("expected") + "Done</span><span>" + markSVG("excellent") + "Excellent</span></p>"
+    : '<p class="ch-quiet">No habits on the board.</p>';
+  return '<section class="ch-plate ch-record" aria-label="The week’s record">' + dyFrame({ top: "notch" }) +
+    '<h2 class="ch-pt">The week’s record</h2><div class="ch-rec"><div class="ch-col">' +
+    '<h3 class="ch-sh">Journal</h3>' +
+    (jparts.length ? '<button type="button" class="ch-link" data-ch="journal">' + esc(jparts.join(" · ")) + ' <span class="ch-chev">›</span></button>'
+                   : '<button type="button" class="ch-link is-quiet" data-ch="journal">Open the week <span class="ch-chev">›</span></button>') +
+    '<h3 class="ch-sh">Progress &amp; practice</h3>' +
+    (pparts.length ? '<p class="ch-nums">' + pparts.map(p => "<span>" + esc(p) + "</span>").join("") + "</p>" : '<p class="ch-nums is-empty">–</p>') +
+    (rows ? '<ul class="ch-rows">' + rows + "</ul>" : "") + (hours ? '<ul class="ch-hours">' + hours + "</ul>" : "") +
+    '</div><div class="ch-col"><h3 class="ch-sh">Habits</h3>' + hab + "</div></div></section>";
+}
+
+/* the reflection: three lines in his hand; the third may point at one active quest. No button anywhere. */
+function chReflectHTML(F, wk) {
+  const c = F.close, act = ((quests().active) || []).map(id => ({ id, title: ((qRecById(id) || {}).title) || id }));
+  if (c.quest && !act.some(a => a.id === c.quest)) act.push({ id: c.quest, title: ((qRecById(c.quest) || {}).title) || c.quest });
+  const row = (k, label, extra) => '<div class="ch-rrow' + (c[k] ? " is-set" : "") + '"><label class="ch-rl" for="ch-' + k + '">' + label + "</label>" +
+    '<textarea id="ch-' + k + '" class="ch-rline" rows="2" data-ch="line" data-k="' + k + '" data-wk="' + wk + '" maxlength="' + CH_LINE_MAX + '">' + esc(c[k] || "") + "</textarea>" + (extra || "") + "</div>";
+  const pick = act.length
+    ? '<div class="ch-rlink"><label class="ch-rll" for="ch-quest">Linked quest</label><select id="ch-quest" class="ch-pick' + (c.quest ? "" : " is-none") + '" data-ch="quest" data-wk="' + wk + '">' +
+      '<option value="">–</option>' + act.map(a => '<option value="' + esc(a.id) + '"' + (a.id === c.quest ? " selected" : "") + ">" + esc(a.title) + "</option>").join("") + "</select></div>"
+    : "";
+  return '<section class="ch-plate ch-reflect" aria-label="Your reflection">' + dyFrame({ top: "notch" }) + '<h2 class="ch-pt">Your reflection</h2><div class="ch-ref">' +
+    row("well", "What went well") + row("way", "What got in the way") + row("next", "What next week is for", pick) + "</div></section>";
+}
+
+function chGrow(t) { t.style.height = "auto"; t.style.height = t.scrollHeight + "px"; }
+function renderChronicle() {
+  const el = $("#viewChronicle"); if (!el) return;
+  const thisMon = mondayOf(dayNow());
+  if (!chWeek) chWeek = thisMon;
+  const wk = weekKeyOf(chWeek), F = chFacts(wk), isThis = weekKeyOf(thisMon) === wk;
+  if (chFront == null || chFront < 0 || chFront > 6) chFront = isThis ? dyDow(dayNow()) : 0;
+  el.innerHTML = '<div class="ch">' + chHeadHTML(F, isThis, chWeek < thisMon) + chIntentHTML(F) +
+    '<section class="ch-plate ch-week" aria-label="The seven days">' + dyFrame({ sprigs: ["tl", "tr"], top: "notch" }) + chGridHTML(F) + chHandHTML(F) + chFootHTML(F) + "</section>" +
+    '<div class="ch-low">' + chRecordHTML(F) + chReflectHTML(F, wk) + "</div></div>";
+  el.querySelectorAll(".ch-rline").forEach(chGrow);
+}
+/* bring a day to the front of the hand; keep the keyboard where it was */
+function chSetFront(i) {
+  chFront = Math.max(0, Math.min(6, i));
+  const had = document.activeElement && document.activeElement.closest && document.activeElement.closest(".ch-hand");
+  renderChronicle();
+  if (had) { const h = document.querySelector("#viewChronicle .ch-hand"); if (h) h.focus({ preventScroll: true }); }
+}
+(() => {
+  const el = $("#viewChronicle"); if (!el) return;
+  let swipe = null, swiped = 0;
+  /* a swipe on the hand is not a tap on a card: swallow the click that follows it */
+  el.addEventListener("click", ev => { if (Date.now() - swiped < 400 && ev.target.closest(".ch-fcard")) { ev.stopImmediatePropagation(); ev.preventDefault(); } }, true);
+  el.addEventListener("click", ev => {
+    const b = ev.target.closest("[data-ch]"); if (!b || !el.contains(b) || b.tagName === "TEXTAREA" || b.tagName === "SELECT") return;
+    const a = b.dataset.ch;
+    if (a === "week") { chWeek = addDays(chWeek || mondayOf(dayNow()), Number(b.dataset.d) * 7); chFront = null; renderChronicle(); }
+    else if (a === "thisweek") { chWeek = mondayOf(dayNow()); chFront = null; renderChronicle(); }
+    else if (a === "front") chSetFront((chFront || 0) + Number(b.dataset.d));
+    else if (a === "card") chSetFront(Number(b.dataset.i));
+    else if (a === "journal") { j3Week = new Date(chWeek || mondayOf(dayNow())); setView("journal"); }
+    else if (a === "skill") { select({ t: "s", id: b.dataset.id }); setView("skills"); }
+    else if (a === "quest") { qSel = b.dataset.id; setView("camp"); }
+  });
+  el.addEventListener("change", ev => {
+    const t = ev.target; if (!t.dataset || !t.dataset.wk) return;
+    if (t.dataset.ch === "line") {
+      const k = t.dataset.k, next = chCommit(t.dataset.wk, cur => { cur[k] = t.value; });
+      const row = t.closest(".ch-rrow"); if (row) row.classList.toggle("is-set", !!(next && next[k]));
+    }
+    if (t.dataset.ch === "quest") { chCommit(t.dataset.wk, cur => { cur.quest = t.value; }); t.classList.toggle("is-none", !t.value); }
+  });
+  el.addEventListener("input", ev => { if (ev.target.classList && ev.target.classList.contains("ch-rline")) chGrow(ev.target); });
+  el.addEventListener("keydown", ev => {
+    const t = ev.target;
+    if (t.classList && t.classList.contains("ch-rline") && ev.key === "Enter") {
+      /* a line is one thought: Enter moves to the next line, and off the third */
+      ev.preventDefault();
+      const lines = [...el.querySelectorAll(".ch-rline")], i = lines.indexOf(t);
+      if (i > -1 && lines[i + 1]) lines[i + 1].focus(); else t.blur();
+      return;
+    }
+    if (t.classList && t.classList.contains("ch-hand")) {
+      if (ev.key === "ArrowRight") { ev.preventDefault(); chSetFront((chFront || 0) + 1); }
+      if (ev.key === "ArrowLeft") { ev.preventDefault(); chSetFront((chFront || 0) - 1); }
+    }
+  });
+  el.addEventListener("pointerdown", ev => { swipe = ev.target.closest(".ch-hand") ? { x: ev.clientX, y: ev.clientY } : null; });
+  el.addEventListener("pointerup", ev => {
+    if (!swipe) return;
+    const dx = ev.clientX - swipe.x, dy = ev.clientY - swipe.y; swipe = null;
+    if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy) * 1.5) { swiped = Date.now(); chSetFront((chFront || 0) + (dx < 0 ? 1 : -1)); }
+  });
+})();
+/* ===== /chronicle:js ===== */
 /* ---------- boot ---------- */
 sanitize(state);
 runPolish(state);
@@ -18904,7 +19426,7 @@ renderGrid();
 renderDetail(false);
 bindTooltip();
 bindKeys();
-try { const v = localStorage.getItem("skillstone-view"); if (VIEWS[v]) view = v; } catch (e) {}
+try { const v = localStorage.getItem("skillstone-view"); if (v) view = v; } catch (e) {}   /* setView aliases old names and falls back to journal */
 setView(view);
 bindEmojiPicker();
 bindClassPicker();
