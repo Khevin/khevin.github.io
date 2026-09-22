@@ -5043,7 +5043,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .rt-count { margin: 0; font-family: var(--f-read); font-size: 0.9375rem; color: var(--dust); }
 /* one bead per ritual, filled as each is done: the count said as a length, never a ring */
 .rt-bar { display: flex; gap: 6px; flex: 0 1 300px; min-width: 120px; }
-.rt-bar i { flex: 1; height: 8px; border-radius: 4px; border: 1px solid rgba(232,176,84,0.35); transition: background var(--t-settle) var(--e-out); }
+.rt-bar i { flex: 1; height: 8px; border-radius: 4px; border: 1px solid rgba(232,176,84,0.35); transition: background var(--t-settle) var(--e-out);
+  background: linear-gradient(to right, var(--gold) calc(var(--fill, 0) * 100%), transparent 0); }
 .rt-bar i.is-on { background: var(--gold); border-color: var(--gold); }
 .rt-list { list-style: none; margin: 0; padding: 0; }
 .rt-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto auto; grid-template-areas: "ico txt ml tick"; align-items: center; column-gap: var(--s4);
@@ -5078,6 +5079,20 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .rt-tick:focus-visible, .rt-step:focus-visible, .rt-glass:focus-visible, .bd-link:focus-visible, .bd-edit:focus-visible, .bd-now:focus-visible, .rt-cust:focus-visible {
   outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 @media (prefers-reduced-motion: reduce) { .rt-bar i, .rt-circle, .bd-link .rt-g { transition: none; } }
+/* a checklist: its circle fills from the foot as its steps are done (a length, as the beads are, never a ring), and
+   its steps sit under the name, each a tick of its own with the circle before the word */
+.rt-circle.is-part { border-color: var(--gold); background: linear-gradient(to top, var(--gold) calc(var(--fill, 0) * 100%), transparent 0); }
+.rt-row.is-list { grid-template-areas: "ico txt txt tick" ". steps steps steps"; padding-bottom: var(--s1); }
+.rt-steps { grid-area: steps; list-style: none; margin: -2px 0 0; padding: 0; }
+.rt-sub { display: flex; align-items: center; gap: var(--s3); width: 100%; min-height: 40px; padding: 0; background: none; border: 0;
+  color: var(--dust); font-family: var(--f-read); font-size: 0.9375rem; text-align: left; cursor: pointer; }
+.rt-sub .rt-circle { width: 20px; height: 20px; }
+.rt-sub .rt-circle .rt-g { width: 13px; height: 13px; }
+.rt-sub.is-done { color: var(--parchment); }
+.rt-sub.is-done .rt-circle { background: var(--gold); border-color: var(--gold); }
+.rt-sub .rt-time { margin-left: auto; padding-right: var(--s1); }
+@media (hover: hover) { .rt-sub:hover { color: var(--parchment); } .rt-sub:hover .rt-circle { border-color: var(--gold); } }
+.rt-sub:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 
 /* ---- the foot: Save morning in the middle, Customize rituals to its left ---- */
 .dy-save { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--s3); }
@@ -5097,7 +5112,11 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     border: 1px solid rgba(232,176,84,0.55); border-radius: 12px;
     background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); }
   .dy-mornf::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
+  .dy-mornf .orn-dawn { width: 240px; height: 76px; top: -33px; color: var(--gold); }
+  .dy-mornf .orn-dawn-corner { color: var(--gold); }
   .dy-mornh { grid-column: 1 / -1; grid-row: 3; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding-top: calc(var(--s5) + 46px); }
+  .dy-mornh .dy-ct { display: flex; align-items: center; gap: var(--s4); }
+  .dy-mornstar { width: 9px; height: 12px; flex: none; fill: var(--gold); }
   .dy-bodyc, .dy-ritc { grid-row: 4; z-index: 1; border: 0; border-radius: 0; background: none; }
   .dy-bodyc::before, .dy-ritc::before { content: none; }
   .dy-bodyc > .orn-top, .dy-ritc > .orn-top { display: none; }
@@ -5132,6 +5151,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .rt-row { grid-template-columns: 26px minmax(0, 1fr) auto; grid-template-areas: "ico txt tick"; column-gap: var(--s3); }
   /* the water's line runs the row's width: the minus under the drop, the glass under the tick; the narrowest phone sends the glass down a line */
   .rt-row.is-ml { grid-template-areas: "ico txt tick" "ml ml ml"; row-gap: 2px; padding-bottom: var(--s2); }
+  .rt-row.is-list { grid-template-areas: "ico txt tick" ". steps steps"; }
+  .rt-sub { min-height: 44px; }
   .rt-ml { justify-self: stretch; flex-wrap: wrap; row-gap: var(--s1); margin-left: -7px; }
   .rt-step { width: 40px; }
   .rt-mlv { min-width: 0; padding: 7px 8px; }
@@ -5228,6 +5249,20 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 @media (hover: hover) { .rc-b:not(:disabled):hover { color: var(--gold-2); } .rc-x:hover { color: var(--ember); } }
 .rc-b:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-sm); }
 .rc-add { align-self: flex-start; width: auto; }
+.rc-row.is-ml { grid-template-areas: "ico name note acts" ". icon kind hab" ". goal goal goal"; }
+.rc-row.is-list { grid-template-areas: "ico name note acts" ". icon kind ." ". steps steps steps"; }
+.rc-goal { grid-area: goal; }
+.rc-hint { font-family: var(--f-read); font-size: 0.8125rem; line-height: 1.4; color: var(--ash); }
+.rc-steps { grid-area: steps; display: grid; gap: var(--s2); }
+.rc-slist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.rc-srow { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: var(--s2); align-items: center; }
+.rc-srow .rc-acts { grid-area: auto; }   /* the row's named area is not the step's */
+.rc-sadd { justify-self: start; display: inline-flex; align-items: center; gap: var(--s2); min-height: 44px; padding: 0 var(--s1); background: none; border: 0;
+  color: var(--gold); font-family: var(--f-ui); font-size: 0.9375rem; cursor: pointer; }
+.rc-sadd .rt-g { width: 16px; height: 16px; }
+.rc-sadd:disabled { opacity: 0.4; cursor: default; }
+@media (hover: hover) { .rc-sadd:not(:disabled):hover { color: var(--gold-2); } }
+.rc-sadd:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 @media (max-width: 700px) {
   .bd-dlg { width: 96vw; }
   .wi-body { padding: 36px 20px var(--s3); gap: var(--s3); }
@@ -5247,6 +5282,11 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   /* the phone's ritual: the glyph beside its name, the note under both, then two even pairs; the columns are the same twice over, so the halves match */
   .rc-row { grid-template-columns: 24px minmax(0, 1fr) 24px minmax(0, 1fr); grid-template-areas: "ico name name name" "note note note note" "icon icon kind kind" "hab hab acts acts"; }
   .rc-acts { justify-content: flex-end; }
+  .rc-row.is-ml { grid-template-areas: "ico name name name" "note note note note" "icon icon kind kind" "hab hab acts acts" "goal goal goal goal"; }
+  .rc-row.is-list { grid-template-areas: "ico name name name" "note note note note" "icon icon kind kind" ". . acts acts" "steps steps steps steps"; }
+  /* a step on the phone: its name beside its moves, the habit under both */
+  .rc-srow { grid-template-columns: minmax(0, 1fr) auto; }
+  .rc-srow select { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (prefers-reduced-motion: reduce) { .wi-more > summary .rt-g, .wi input, .wi select { transition: none; } }
 /* ===== /body:css ===== */
@@ -9346,7 +9386,7 @@ function normaliseBook(b) {
   /* body = [{ id, at, src, kg, fat, … }] — the Diary's weigh-ins, from the scale or by hand (.body/body.js) */
   b.body      = bdNormalise(b.body);
   /* rituals = the morning's list; morning[weekKey][dow] = { done, ml, at, hab }: what one morning did (.body/body.js) */
-  b.rituals   = rtSanList(b.rituals, b.habits);
+  b.rituals   = rtSanList(rtMigrate(b), b.habits);
   b.morning   = rtSanMorning(b.morning);
   /* diary[weekKey][dow] = { page, three: [a, b, c], at } — the morning. The first shape was
      one string per day; it becomes { page } here, on every load, losing nothing. */
@@ -20199,10 +20239,11 @@ function chSetFront(i) {
 
    book.body    = [{ id, at, src: "fd" | "hand", ed?, del?, kg, fat, … }] — oldest first. A scale row the owner
                   edits carries ed and is never overwritten by the next sync; a deleted one stays as { id, del }.
-   book.rituals = [{ id, name, note, icon, kind: "check" | "ml", habit }] — the list, in its order; habit is a
-                  Journal habit the ritual marks when it is done.
-   book.morning[weekKey][dow] = { done: { ritualId: ts }, ml, at, hab: { ritualId: 1 } } — one morning: what was
-                  done and when, the water, when the morning was saved, and which habit marks a ritual set. */
+   book.rituals = [{ id, name, note, icon, kind: "check" | "ml" | "list", habit, goal?, steps? }] — the list, in its
+                  order; habit is a Journal habit a tick marks; goal ("auto", a number of ml, or "") is the water's;
+                  steps = [{ id, name, habit }] are a checklist's.
+   book.morning[weekKey][dow] = { done: { key: ts }, ml, at, hab: { key: 1 } } — one morning: what was done and when
+                  (key: a ritual's id, or ritual:step), the water, when it was saved, which habit marks it set. */
 
 /* ---- the glyphs: one hand, a 24 grid, one stroke weight, round caps ---- */
 const RT_ICO = (() => {
@@ -20215,6 +20256,7 @@ const RT_ICO = (() => {
     pill: s('<path d="M10.1 4.9a4.4 4.4 0 0 1 6.2 0l2.8 2.8a4.4 4.4 0 0 1 0 6.2l-5.2 5.2a4.4 4.4 0 0 1-6.2 0l-2.8-2.8a4.4 4.4 0 0 1 0-6.2l5.2-5.2z"/><path d="M7.5 7.5l9 9"/>'),
     sprout: s('<path d="M12 21v-8.5"/><path d="M12 12.5c0-4.2-2.8-7-7.3-7 0 4.2 2.8 7 7.3 7z"/><path d="M12 15c0-3.6 2.4-6 6.3-6 0 3.6-2.4 6-6.3 6z"/>'),
     tooth: s('<path d="M7.6 3.8c-2.4 0-3.9 1.9-3.9 4.4 0 2.1.9 3.6 1.6 5.2.8 1.8.9 3.9 1.4 5.8.3 1.2.8 1.8 1.5 1.8.9 0 1.2-.9 1.5-2.2.3-1.4.6-3.3 2.3-3.3s2 1.9 2.3 3.3c.3 1.3.6 2.2 1.5 2.2.7 0 1.2-.6 1.5-1.8.5-1.9.6-4 1.4-5.8.7-1.6 1.6-3.1 1.6-5.2 0-2.5-1.5-4.4-3.9-4.4-1.8 0-2.8 1-4.4 1s-2.6-1-4.4-1z"/>'),
+    basin: s('<path d="M3.5 12h17"/><path d="M5 12c.5 3.6 3.3 6 7 6s6.5-2.4 7-6"/><path d="M12 18v2.5M9.5 20.5h5"/><path d="M8.5 12V8a3 3 0 0 1 6 0v.8"/>'),
     star: s('<path d="M12 3.5l2.1 5.4 5.4 2.1-5.4 2.1L12 18.5l-2.1-5.4L4.5 11l5.4-2.1L12 3.5z"/>'),
     gear: s('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
     pencil: s('<path d="M15.5 4.5l4 4L8.5 19.5H4.5v-4L15.5 4.5z"/><path d="M13 7l4 4"/>'),
@@ -20231,7 +20273,7 @@ const RT_ICO = (() => {
   };
 })();
 /* the glyphs a ritual may wear, in the order Customize rituals offers them */
-const RT_ICONS = [["sun", "Sun"], ["drop", "Water"], ["shield", "Shield"], ["leaf", "Leaf"], ["pill", "Pill"], ["sprout", "Sprout"], ["tooth", "Tooth"], ["star", "Star"]];
+const RT_ICONS = [["sun", "Sun"], ["drop", "Water"], ["shield", "Shield"], ["leaf", "Leaf"], ["pill", "Pill"], ["sprout", "Sprout"], ["tooth", "Tooth"], ["basin", "Basin"], ["star", "Star"]];
 const rtHm = at => { const d = new Date(at); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 
 /* ---- the readings: the core five first, the rest on request. Units as the scale reports them ---- */
@@ -20340,29 +20382,70 @@ function bdFigureSVG(x) {
     '<path class="bd-body" d="' + BD_FIG_D + '" vector-effect="non-scaling-stroke"/>' + spots + "</svg>";
 }
 
-/* ---- the rituals: the owner's seven by default, to rename, reorder, add to and remove ---- */
+/* ---- the rituals: the owner's four by default, to rename, reorder, add to and remove. A ritual is one tick (check),
+   water toward a goal (ml), or a checklist (list) whose steps are ticks of their own. The owner's notes of 22 Sep
+   2026 set them: Sunlight's fifteen minutes stand in its note (10 to 15 minutes outside on a clear morning, 30 or
+   more under cloud, after Samer Hattar of the NIMH); the water's goal comes from the weight; the two supplements
+   and the bathroom's four steps are one checklist each, Brush teeth last ---- */
 const RT_DEFAULT = [
-  { id: "rt-sun", name: "Sunlight", note: "Time outdoors", icon: "sun", kind: "check" },
-  { id: "rt-water", name: "Hydration", note: "Water on waking", icon: "drop", kind: "ml" },
-  { id: "rt-screen", name: "Sunscreen", note: "Apply protection", icon: "shield", kind: "check" },
-  { id: "rt-skin", name: "Skin care", note: "Cleanse and care", icon: "leaf", kind: "check" },
-  { id: "rt-pills", name: "Morning pills", note: "With breakfast", icon: "pill", kind: "check" },
-  { id: "rt-algae", name: "Algae", note: "Daily supplement", icon: "sprout", kind: "check" },
-  { id: "rt-teeth", name: "Brush teeth", note: "Oral hygiene", icon: "tooth", kind: "check" }
+  { id: "rt-sun", name: "Sunlight", note: "15 min outside · 30 if cloudy", icon: "sun", kind: "check" },
+  { id: "rt-water", name: "Hydration", note: "Water on waking", icon: "drop", kind: "ml", goal: "auto" },
+  { id: "rt-supp", name: "Supplements", note: "With breakfast", icon: "pill", kind: "list",
+    steps: [{ id: "algae", name: "Algae" }, { id: "pills", name: "Morning pills" }] },
+  { id: "rt-bath", name: "Bathroom routine", note: "", icon: "basin", kind: "list",
+    steps: [{ id: "cleanse", name: "Cleanse" }, { id: "moist", name: "Moisturize" }, { id: "screen", name: "Sunscreen" }, { id: "teeth", name: "Brush teeth" }] }
 ];
 const RT_ML_STEP = 50, RT_GLASS = 250, RT_ML_MAX = 10000;
-/* the list, sanitised. Never set: the seven, and Brush teeth marks the Journal's teeth habit when the board keeps one, so a
-   brushed morning is one tap and not two. Set, even to nothing: the owner's, as it was left. */
+/* the water's goal from the weight: 35 ml per kg a day, the top of the usual 30 to 35 (EFSA's adequate intake is a
+   flat 2.0 L for women and 2.5 L for men, food included), and the morning takes a quarter, down to the 50 */
+const RT_ML_PER_KG = 35, RT_MORNING_SHARE = 0.25, RT_GOAL_BARE = 500;
+/* the defaults, with Brush teeth marking the Journal's teeth habit when the board keeps one, so a brushed morning
+   is one tap and not two */
+function rtDefaults(habits, teeth) {
+  const t = teeth || ((habits || []).find(h => h && /dente|teeth|tooth/i.test(String(h.name || ""))) || {}).id;
+  return RT_DEFAULT.map(r => ({ ...r, habit: "", ...(r.steps ? { steps: r.steps.map(s => ({ ...s, habit: s.id === "teeth" && t ? String(t) : "" })) } : {}) }));
+}
+/* the first list (22 Sep 2026) was seven flat rituals. A board still holding exactly those seven moves to the
+   grouped four: the Journal link rides along to its step, and every morning's ticks follow their rituals in */
+const RT_V1 = { "rt-screen": ["rt-bath:screen"], "rt-skin": ["rt-bath:cleanse", "rt-bath:moist"], "rt-teeth": ["rt-bath:teeth"],
+  "rt-pills": ["rt-supp:pills"], "rt-algae": ["rt-supp:algae"] };
+function rtMigrate(b) {
+  const l = b.rituals, ids = ["rt-sun", "rt-water", ...Object.keys(RT_V1)];
+  if (!Array.isArray(l) || l.length !== ids.length || !ids.every(id => l.some(r => r && r.id === id))) return l;
+  const teeth = l.find(r => r.id === "rt-teeth");
+  const days = Object.values(b.morning && typeof b.morning === "object" ? b.morning : {}).flatMap(w => w && typeof w === "object" ? Object.values(w) : []);
+  days.forEach(e => ["done", "hab"].forEach(f => {
+    const m = e && typeof e === "object" && e[f]; if (!m || typeof m !== "object") return;
+    Object.keys(RT_V1).forEach(k => { if (m[k] === undefined) return; RT_V1[k].forEach(n => { if (m[n] === undefined) m[n] = m[k]; }); delete m[k]; });
+  }));
+  return rtDefaults(b.habits, teeth && teeth.habit);
+}
+/* an id stays word characters, so a step's key (ritual:step) reads back unambiguously */
+const rtId = (v, i, max) => String(v || "").replace(/[^\w-]/g, "").slice(0, max) || i;
+function rtSanSteps(steps) {
+  const seen = new Set();
+  return (Array.isArray(steps) ? steps : []).filter(s => s && typeof s === "object").map((s, i) => {
+    let id = rtId(s.id, "s" + i, 16); while (seen.has(id)) id += "x"; seen.add(id);
+    return { id, name: String(s.name || "").trim().slice(0, 40) || "Step", habit: String(s.habit || "").slice(0, 40) };
+  }).slice(0, 12);
+}
+/* the list, sanitised. Never set: the defaults. Set, even to nothing: the owner's, as it was left. A checklist left
+   without steps is a tick; water with no goal said is water from the weight */
 function rtSanList(list, habits) {
-  if (!Array.isArray(list)) {
-    const teeth = (habits || []).find(h => h && /dente|teeth|tooth/i.test(String(h.name || "")));
-    return RT_DEFAULT.map(r => ({ ...r, habit: r.id === "rt-teeth" && teeth && teeth.id ? String(teeth.id) : "" }));
-  }
+  if (!Array.isArray(list)) return rtDefaults(habits);
   const seen = new Set();
   return list.filter(r => r && typeof r === "object").map((r, i) => {
-    let id = String(r.id || "rt-" + i).slice(0, 40); while (seen.has(id)) id += "x"; seen.add(id);
-    return { id, name: String(r.name || "").trim().slice(0, 40) || "Ritual", note: String(r.note || "").trim().slice(0, 60),
-      icon: RT_ICONS.some(([k]) => k === r.icon) ? r.icon : "star", kind: r.kind === "ml" ? "ml" : "check", habit: String(r.habit || "").slice(0, 40) };
+    let id = rtId(r.id, "rt-" + i, 24); while (seen.has(id)) id += "x"; seen.add(id);
+    const steps = r.kind === "list" ? rtSanSteps(r.steps) : [];
+    const kind = r.kind === "list" ? (steps.length ? "list" : "check") : r.kind === "ml" ? "ml" : "check";
+    const o = { id, name: String(r.name || "").trim().slice(0, 40) || "Ritual", note: String(r.note || "").trim().slice(0, 60),
+      icon: RT_ICONS.some(([k]) => k === r.icon) ? r.icon : "star", kind, habit: kind === "list" ? "" : String(r.habit || "").slice(0, 40) };
+    if (kind === "list") o.steps = steps;
+    if (kind === "ml") {
+      const g = Math.round(Number(r.goal) / RT_ML_STEP) * RT_ML_STEP;
+      o.goal = r.goal === undefined || r.goal === "auto" ? "auto" : g >= RT_ML_STEP && g <= RT_ML_MAX ? g : "";
+    }
+    return o;
   }).slice(0, 20);
 }
 function rtSanDay(v) {
@@ -20370,7 +20453,7 @@ function rtSanDay(v) {
   const e = {};
   if (v.done && typeof v.done === "object") {
     const done = {};
-    Object.keys(v.done).slice(0, 40).forEach(k => { const t = Number(v.done[k]); if (isFinite(t) && t > 0) done[String(k).slice(0, 40)] = t; });
+    Object.keys(v.done).slice(0, 80).forEach(k => { const t = Number(v.done[k]); if (isFinite(t) && t > 0) done[String(k).slice(0, 48)] = t; });
     if (Object.keys(done).length) e.done = done;
   }
   const ml = Math.round(Number(v.ml));
@@ -20378,7 +20461,7 @@ function rtSanDay(v) {
   const at = Number(v.at);
   if (isFinite(at) && at > 0) e.at = at;
   if (v.hab && typeof v.hab === "object") {
-    const h = {}; Object.keys(v.hab).forEach(k => { if (v.hab[k]) h[String(k).slice(0, 40)] = 1; });
+    const h = {}; Object.keys(v.hab).forEach(k => { if (v.hab[k]) h[String(k).slice(0, 48)] = 1; });
     if (Object.keys(h).length) e.hab = h;
   }
   return Object.keys(e).length ? e : null;
@@ -20393,9 +20476,30 @@ function rtSanMorning(m) {
   return out;
 }
 const rtGet = (b, wk, dow) => ((b.morning || {})[wk] || {})[dow] || {};
-/* the fifth step lights when anything of the morning was done: a ritual ticked or water logged */
+/* the fifth step lights when anything of the morning was done: a ritual or a step ticked, or water logged */
 function rtTended(sel) { const e = rtGet(book(), weekKeyOf(sel), dyDow(sel)); return !!((e.done && Object.keys(e.done).length) || e.ml); }
 const rtSel = () => { const sel = dyDay(); return { sel, wk: weekKeyOf(sel), dow: dyDow(sel) }; };
+/* a tick's key in the morning: the ritual's id, or ritual:step for a step of a checklist */
+const rtKey = (r, s) => s ? r.id + ":" + s.id : r.id;
+const rtStepsDone = (r, e) => (r.steps || []).filter(s => e.done && e.done[rtKey(r, s)]).length;
+/* the weight the water's goal is drawn from: the weigh-in of the morning on show, or the last one before it */
+function rtKgFor(sel) {
+  const end = addDays(sel, 1).getTime() + DAY_TURNS_AT * 3600000, rows = bdRows().filter(x => x.at < end);
+  return rows.length ? rows[rows.length - 1].kg : 0;
+}
+function rtGoal(r, sel) {
+  if (r.kind !== "ml" || !r.goal) return 0;
+  if (r.goal !== "auto") return Number(r.goal) || 0;
+  const kg = rtKgFor(sel);
+  return kg ? Math.max(RT_ML_STEP * 5, Math.floor(kg * RT_ML_PER_KG * RT_MORNING_SHARE / RT_ML_STEP) * RT_ML_STEP) : RT_GOAL_BARE;
+}
+/* how far a ritual got, 0 to 1: its steps, or its water toward the goal; a ticked ritual is whole */
+function rtFill(r, e, sel) {
+  if (r.kind === "list") return r.steps.length ? rtStepsDone(r, e) / r.steps.length : 0;
+  if (e.done && e.done[r.id]) return 1;
+  const g = rtGoal(r, sel);
+  return g ? Math.min(1, (e.ml || 0) / g) : 0;
+}
 /* one commit path, the Diary's: read, change, sanitise, save; a morning with nothing left in it is pruned */
 function rtCommit(wk, dow, fn) {
   const b = book();
@@ -20408,33 +20512,44 @@ function rtCommit(wk, dow, fn) {
   save();
   return next;
 }
-/* a ritual that marks a habit sets the Journal's own mark (Done) when the habit is unmarked that day, and takes back
-   only a mark it set itself: a Partial or Excellent the owner chose stays */
-function rtHabit(b, r, e, wk, dow, on) {
-  if (!r.habit || !b.habits.some(h => String(h.id) === r.habit)) return;
+/* a ritual or a step that marks a habit sets the Journal's own mark (Done) when the habit is unmarked that day, and
+   takes back only a mark it set itself: a Partial or Excellent the owner chose stays */
+function rtHabit(b, o, key, e, wk, dow, on) {
+  if (!o.habit || !b.habits.some(h => String(h.id) === o.habit)) return;
   b.checks[wk] = b.checks[wk] || {};
-  const row = b.checks[wk][r.habit] = b.checks[wk][r.habit] || {};
+  const row = b.checks[wk][o.habit] = b.checks[wk][o.habit] || {};
   e.hab = e.hab || {};
-  if (on && (!row[dow] || row[dow] === "none")) { row[dow] = "expected"; e.hab[r.id] = 1; }
-  else if (!on && e.hab[r.id]) { if (row[dow] === "expected") delete row[dow]; delete e.hab[r.id]; }
+  if (on && (!row[dow] || row[dow] === "none")) { row[dow] = "expected"; e.hab[key] = 1; }
+  else if (!on && e.hab[key]) { if (row[dow] === "expected") delete row[dow]; delete e.hab[key]; }
 }
-function rtToggle(id) {
-  const { wk, dow } = rtSel(), r = book().rituals.find(x => x.id === id); if (!r) return;
-  rtCommit(wk, dow, (e, b) => {
-    e.done = e.done || {};
-    const on = !e.done[id];
-    if (on) e.done[id] = Date.now(); else delete e.done[id];
-    rtHabit(b, r, e, wk, dow, on);
-  });
+/* one mark: the tick, its time, and the habit it carries; a mark already so is left alone */
+function rtMark(b, e, r, s, wk, dow, on, at) {
+  const k = rtKey(r, s); e.done = e.done || {};
+  if (on === !!e.done[k]) return;
+  if (on) e.done[k] = at || Date.now(); else delete e.done[k];
+  rtHabit(b, s || r, k, e, wk, dow, on);
+}
+const rtFind = (id, sid) => { const r = book().rituals.find(x => x.id === id), s = r && sid ? (r.steps || []).find(x => x.id === sid) : null; return r && (!sid || s) ? { r, s } : null; };
+function rtToggle(id, sid) {
+  const f = rtFind(id, sid), { wk, dow } = rtSel(); if (!f) return;
+  rtCommit(wk, dow, (e, b) => rtMark(b, e, f.r, f.s, wk, dow, !(e.done && e.done[rtKey(f.r, f.s)])));
   rtRepaint();
 }
-/* water in steps of 50 ml and a glass of 250; the first water of the morning marks the ritual, the rest is the count */
+/* a checklist's own circle: every step at once, on while any is left, off once all are done */
+function rtToggleAll(id) {
+  const f = rtFind(id), { wk, dow } = rtSel(); if (!f || f.r.kind !== "list") return;
+  rtCommit(wk, dow, (e, b) => { const on = rtStepsDone(f.r, e) < f.r.steps.length, at = Date.now(); f.r.steps.forEach(s => rtMark(b, e, f.r, s, wk, dow, on, at)); });
+  rtRepaint();
+}
+/* water in steps of 50 ml and a glass of 250. With a goal the ritual ticks itself when the goal is reached; with
+   none, at the first water. Water taken back never unticks it: the tick is the owner's */
 function rtWater(id, d) {
-  const { wk, dow } = rtSel(), r = book().rituals.find(x => x.id === id); if (!r) return;
+  const f = rtFind(id), { sel, wk, dow } = rtSel(); if (!f) return;
+  const g = rtGoal(f.r, sel);
   rtCommit(wk, dow, (e, b) => {
     const was = e.ml || 0;
     e.ml = Math.max(0, Math.min(RT_ML_MAX, was + d));
-    if (!was && e.ml > 0 && !(e.done && e.done[id])) { e.done = e.done || {}; e.done[id] = Date.now(); rtHabit(b, r, e, wk, dow, true); }
+    if (g ? was < g && e.ml >= g : !was && e.ml > 0) rtMark(b, e, f.r, null, wk, dow, true);
   });
   rtRepaint();
 }
@@ -20450,30 +20565,52 @@ function rtSaveMorning() {
 }
 
 /* ---- the panel ---- */
-function rtRowHTML(r, e) {
-  const on = !!(e.done && e.done[r.id]), t = on ? rtHm(e.done[r.id]) : "";
-  const note = r.kind === "ml" ? (e.ml ? e.ml + " ml logged" : (r.note || "Water")) : r.note;
+const rtWaterNote = (ml, g, note) => !g ? (ml ? ml + " ml logged" : note || "Water")
+  : !ml ? "Goal " + g + " ml" : ml > g ? ml + " ml · goal " + g : ml + " of " + g + " ml";
+/* the circle and its word: the same tick for a ritual and for a checklist, which fills from the foot as its
+   steps are done (a length, as the beads are, never a ring) */
+function rtTickHTML(r, act, pressed, state, label, fill, t) {
+  return '<button type="button" class="rt-tick" data-rt="' + act + '" data-id="' + esc(r.id) + '" aria-pressed="' + pressed + '" aria-label="' + esc(label) + '">' +
+    '<span class="rt-circle' + (fill > 0 && fill < 1 ? " is-part" : "") + '"' + (fill > 0 && fill < 1 ? ' style="--fill:' + fill.toFixed(3) + '"' : "") + ">" +
+    (fill >= 1 ? RT_ICO.check : "") + '</span><span class="rt-state">' + state + "</span>" + (t ? '<span class="rt-time">' + t + "</span>" : "") + "</button>";
+}
+function rtRowHTML(r, e, sel) {
+  const head = '<span class="rt-ico">' + (RT_ICO[r.icon] || RT_ICO.star) + "</span>";
+  const txt = note => '<span class="rt-txt"><span class="rt-name">' + esc(r.name) + "</span>" + (note ? '<span class="rt-note">' + esc(note) + "</span>" : "") + "</span>";
+  if (r.kind === "list") {
+    const n = rtStepsDone(r, e), m = r.steps.length, all = n === m;
+    const t = all ? rtHm(Math.max(...r.steps.map(s => e.done[rtKey(r, s)]))) : "";
+    const tick = rtTickHTML(r, "all", all ? "true" : n ? "mixed" : "false", all ? "Done" : n ? n + " of " + m : "Mark all",
+      all ? "Done: " + r.name + ", at " + t : n ? n + " of " + m + " done: " + r.name + ". Mark all done" : "Mark all done: " + r.name, n / m, t);
+    const steps = r.steps.map(s => {
+      const k = rtKey(r, s), on = !!(e.done && e.done[k]);
+      return '<li><button type="button" class="rt-sub' + (on ? " is-done" : "") + '" data-rt="tick" data-id="' + esc(r.id) + '" data-s="' + esc(s.id) + '" aria-pressed="' + on + '">' +
+        '<span class="rt-circle">' + (on ? RT_ICO.check : "") + '</span><span class="rt-sname">' + esc(s.name) + "</span>" +
+        (on ? '<span class="rt-time">' + rtHm(e.done[k]) + "</span>" : "") + "</button></li>";
+    }).join("");
+    return '<li class="rt-row is-list' + (all ? " is-done" : "") + '">' + head + txt(r.note) + tick + '<ul class="rt-steps" aria-label="' + esc(r.name) + '">' + steps + "</ul></li>";
+  }
+  const on = !!(e.done && e.done[r.id]), t = on ? rtHm(e.done[r.id]) : "", g = rtGoal(r, sel);
   const water = r.kind !== "ml" ? "" : '<span class="rt-ml">' +
     '<button type="button" class="rt-step" data-rt="water" data-id="' + esc(r.id) + '" data-d="-' + RT_ML_STEP + '" aria-label="' + RT_ML_STEP + ' ml less"' + (e.ml ? "" : " disabled") + ">" + RT_ICO.minus + "</button>" +
     '<output class="rt-mlv">' + (e.ml || 0) + " ml</output>" +
     '<button type="button" class="rt-step" data-rt="water" data-id="' + esc(r.id) + '" data-d="' + RT_ML_STEP + '" aria-label="' + RT_ML_STEP + ' ml more">' + RT_ICO.plus + "</button>" +
     '<button type="button" class="rt-glass" data-rt="water" data-id="' + esc(r.id) + '" data-d="' + RT_GLASS + '" title="A glass">+' + RT_GLASS + " ml</button></span>";
-  return '<li class="rt-row' + (on ? " is-done" : "") + (r.kind === "ml" ? " is-ml" : "") + '">' +
-    '<span class="rt-ico">' + (RT_ICO[r.icon] || RT_ICO.star) + "</span>" +
-    '<span class="rt-txt"><span class="rt-name">' + esc(r.name) + "</span>" + (note ? '<span class="rt-note">' + esc(note) + "</span>" : "") + "</span>" + water +
-    '<button type="button" class="rt-tick" data-rt="tick" data-id="' + esc(r.id) + '" aria-pressed="' + on + '" aria-label="' + (on ? "Done: " : "Mark done: ") + esc(r.name) + (on ? ", at " + t : "") + '">' +
-      '<span class="rt-circle">' + (on ? RT_ICO.check : "") + '</span><span class="rt-state">' + (on ? "Done" : "Mark done") + "</span>" +
-      (on ? '<span class="rt-time">' + t + "</span>" : "") + "</button></li>";
+  return '<li class="rt-row' + (on ? " is-done" : "") + (r.kind === "ml" ? " is-ml" : "") + '">' + head + txt(r.kind === "ml" ? rtWaterNote(e.ml || 0, g, r.note) : r.note) + water +
+    rtTickHTML(r, "tick", on, on ? "Done" : "Mark done", (on ? "Done: " : "Mark done: ") + r.name + (on ? ", at " + t : ""), on ? 1 : 0, t) + "</li>";
 }
+/* the count, and the beads: one per ritual, each filled as far as its ritual got */
 function rtPlateHTML() {
-  const b = book(), { wk, dow } = rtSel(), e = rtGet(b, wk, dow), list = b.rituals;
-  const n = list.filter(r => e.done && e.done[r.id]).length;
+  const b = book(), { sel, wk, dow } = rtSel(), e = rtGet(b, wk, dow), list = b.rituals;
+  const fills = list.map(r => rtFill(r, e, sel)), n = fills.filter(f => f >= 1).length;
   return '<h2 class="dy-ct rt-t"><span class="rt-t-l">Your morning</span><span class="rt-t-s">Morning rituals</span></h2>' +
     '<div class="rt"><div class="rt-head"><p class="rt-count">' + (list.length ? n + " of " + list.length + " complete" : "No rituals yet") + "</p>" +
-    (list.length ? '<span class="rt-bar" role="img" aria-label="' + n + " of " + list.length + ' rituals done">' + list.map(r => '<i class="' + (e.done && e.done[r.id] ? "is-on" : "") + '"></i>').join("") + "</span>" : "") + "</div>" +
-    (list.length ? '<ul class="rt-list">' + list.map(r => rtRowHTML(r, e)).join("") + "</ul>"
+    (list.length ? '<span class="rt-bar" role="img" aria-label="' + n + " of " + list.length + ' rituals done">' +
+      fills.map(f => "<i" + (f >= 1 ? ' class="is-on"' : f > 0 ? ' style="--fill:' + f.toFixed(3) + '"' : "") + "></i>").join("") + "</span>" : "") + "</div>" +
+    (list.length ? '<ul class="rt-list">' + list.map(r => rtRowHTML(r, e, sel)).join("") + "</ul>"
                  : '<p class="rt-empty">Customize rituals adds the small things your mornings are made of.</p>') + "</div>";
 }
+
 function rtSaveHTML() {
   const { wk, dow } = rtSel(), e = rtGet(book(), wk, dow), at = e.at ? rtHm(e.at) : "";
   return '<button type="button" class="rt-cust" data-rt="custom">' + RT_ICO.gear + "<span>Customize rituals</span></button>" +
@@ -20522,9 +20659,31 @@ function bdPlateHTML() {
 /* the panel, as five children of the Diary's plate, so the phone's steps can show them one step at a time: the
    laptop's frame and its title (decoration and a heading, for the laptop alone), the body readings (step IV), the
    rituals and the foot with Save morning (step V) */
+/* A still sunrise, separate from the day card's turning sun. Both rim lines rise around it. */
+const RT_DAWN = '<svg class="orn-top orn-dawn" viewBox="0 0 240 76" aria-hidden="true" focusable="false">' +
+  '<path d="M0 33C64 33 77 1 120 1S176 33 240 33V56H0Z" fill="#17130F"/>' +
+  '<g fill="none" stroke="currentColor" stroke-width="1"><path d="M0 33C64 33 77 1 120 1S176 33 240 33" opacity=".6"/>' +
+  '<path d="M0 43C64 43 80 10 120 10S176 43 240 43" opacity=".35"/></g>' +
+  '<g transform="translate(120 55)" fill="currentColor">' +
+  Array.from({ length: 17 }, (_, i) => '<path d="M-1.2 -12L0 -' + (i % 2 ? 23 : i === 8 ? 38 : 31) +
+    'L1.2 -12Z" transform="rotate(' + ((i - 8) * 10.5) + ')" opacity="' + (i % 2 ? '.7' : '.95') + '"/>').join("") +
+  '<path d="M-11 0A11 11 0 0 1 11 0Z"/>' +
+  '<path d="M-31 1H31M-21 4H21M-10 7H10" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></g></svg>';
+const RT_TITLE_STAR = '<svg class="dy-mornstar" viewBox="0 0 10 14" aria-hidden="true" focusable="false"><path d="M5 0L6.3 5.5L10 7L6.3 8.5L5 14L3.7 8.5L0 7L3.7 5.5Z"/></svg>';
+/* Etched glints of dawn: a slender arc and three lights, mirrored at the other corner. */
+const rtDawnCorner = side => '<svg class="orn orn-dawn-corner ' + side + '" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
+  '<g fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round">' +
+  '<path d="M9 58C13 33 33 13 58 9" opacity=".38"/>' +
+  '<path d="M15 57C19 38 38 19 57 15" opacity=".18"/>' +
+  '<path d="M19 19L23 23M33 33L37 37M19 37L23 33M33 23L37 19" opacity=".7"/></g>' +
+  '<g fill="currentColor"><path d="M28 12C29.6 25.1 30.9 26.4 44 28C30.9 29.6 29.6 30.9 28 44C26.4 30.9 25.1 29.6 12 28C25.1 26.4 26.4 25.1 28 12Z"/>' +
+  '<path d="M51 5L52.4 10.6L58 12L52.4 13.4L51 19L49.6 13.4L44 12L49.6 10.6Z" opacity=".85"/>' +
+  '<path d="M12 44L13.2 48.8L18 50L13.2 51.2L12 56L10.8 51.2L6 50L10.8 48.8Z" opacity=".75"/>' +
+  '<circle cx="39" cy="10" r="1" opacity=".6"/><circle cx="10" cy="39" r="1" opacity=".6"/>' +
+  '<circle cx="43" cy="43" r="1.2" opacity=".45"/><circle cx="55" cy="27" r=".8" opacity=".5"/></g></svg>';
 const bdPlate = () =>
-  '<div class="dy-mornf" aria-hidden="true">' + dyFrame({ sprigs: ["tl", "tr"], top: "sun" }) + "</div>" +
-  '<div class="dy-mornh"><h2 class="dy-ct">Morning rituals</h2>' + DY_ORN.rule + "</div>" +
+  '<div class="dy-mornf" aria-hidden="true">' + rtDawnCorner("tl") + rtDawnCorner("tr") + RT_DAWN + "</div>" +
+  '<div class="dy-mornh"><h2 class="dy-ct">' + RT_TITLE_STAR + 'Morning rituals' + RT_TITLE_STAR + '</h2>' + DY_ORN.rule + "</div>" +
   '<section class="dy-card dy-bodyc" data-pane="4" aria-label="Body readings">' + dyFrame({ top: "notch" }) + bdPlateHTML() + "</section>" +
   '<section class="dy-card dy-ritc" data-pane="5" aria-label="Morning rituals">' + dyFrame({ top: "notch" }) + rtPlateHTML() + "</section>" +
   '<div class="dy-save" data-pane="5">' + rtSaveHTML() + "</div>";
@@ -20536,12 +20695,12 @@ function bdRepaint() {
 function rtRepaint() {
   const c = document.querySelector("#viewDiary .dy-ritc"), s = document.querySelector("#viewDiary .dy-save");
   /* keep the keyboard where it was: a repaint replaces the row it was on */
-  const a = document.activeElement, key = a && a.closest && a.closest(".dy-ritc, .dy-save") ? [a.dataset.rt, a.dataset.id, a.dataset.d].join("|") : null;
+  const a = document.activeElement, key = a && a.closest && a.closest(".dy-ritc, .dy-save") ? [a.dataset.rt, a.dataset.id, a.dataset.d, a.dataset.s].join("|") : null;
   if (c) c.innerHTML = dyFrame({ top: "notch" }) + rtPlateHTML();
   if (s) s.innerHTML = rtSaveHTML();
   if (key) {
-    const [rt, id, d] = key.split("|");
-    let el = [...document.querySelectorAll("#viewDiary [data-rt]")].find(x => x.dataset.rt === rt && (x.dataset.id || "") === id && (x.dataset.d || "") === d);
+    const [rt, id, d, st] = key.split("|");
+    let el = [...document.querySelectorAll("#viewDiary [data-rt]")].find(x => x.dataset.rt === rt && (x.dataset.id || "") === id && (x.dataset.d || "") === d && (x.dataset.s || "") === st);
     /* the minus that emptied the glass is disabled now: the keyboard moves to the step beside it */
     if (el && el.disabled) el = el.parentElement.querySelector(".rt-step:not(:disabled)");
     if (el) el.focus({ preventScroll: true });
@@ -20678,29 +20837,57 @@ function bdDelete(id) {
   showToast("Weigh-in deleted.");
 }
 
-/* Customize rituals: the list in its order, each one's name, note, glyph, kind and the habit it marks. The changes
-   stay in the dialog until Save rituals; a morning already ticked keeps its ticks for rituals that remain. */
+/* Customize rituals: the list in its order, each one's name, note, glyph and kind; a tick or water may mark a habit,
+   water has its goal, a checklist its steps, each step with a habit of its own. The changes stay in the dialog until
+   Save rituals; a morning already ticked keeps its ticks for rituals and steps that remain. */
 let rtDraft = null;
+const RT_GOALS = [250, 500, 750, 1000, 1250, 1500];
+const rtDraftOf = list => list.map(r => ({ ...r, steps: (r.steps || []).map(s => ({ ...s })) }));
+function rtHabitSel(habits, cur, attrs) {
+  return "<select " + attrs + '><option value="">No habit</option>' +
+    habits.map(h => '<option value="' + esc(String(h.id)) + '"' + (String(h.id) === cur ? " selected" : "") + ">" + esc(h.name) + "</option>").join("") + "</select>";
+}
+/* the goal, as a choice and not a number to type: from the weight (saying what that comes to today), a set amount,
+   or none */
+function rtGoalSel(r, i) {
+  const { sel } = rtSel(), kg = rtKgFor(sel), auto = rtGoal({ kind: "ml", goal: "auto" }, sel);
+  const set = RT_GOALS.concat(typeof r.goal === "number" && !RT_GOALS.includes(r.goal) ? [r.goal] : []).sort((a, b) => a - b);
+  const o = (v, l) => '<option value="' + v + '"' + (String(r.goal) === String(v) ? " selected" : "") + ">" + l + "</option>";
+  return '<label class="wi-f rc-sel rc-goal"><span class="wi-l">Goal</span><select data-rc="goal" data-i="' + i + '">' +
+    o("auto", "From your weight · " + auto + " ml") + set.map(v => o(v, v.toLocaleString("en") + " ml")).join("") + o("", "No goal, just count") + "</select>" +
+    '<span class="rc-hint">' + (kg ? "35 ml per kg a day at " + bdFmt(BD_F.kg, kg) + " kg; the morning takes a quarter." : "No weigh-in yet, so 500 ml until there is one.") + "</span></label>";
+}
+function rtStepsEditHTML(r, i, habits) {
+  const m = r.steps.length;
+  return '<div class="rc-steps"><span class="wi-l">Steps, in order</span><ol class="rc-slist">' + r.steps.map((s, j) =>
+    '<li class="rc-srow"><input type="text" data-rc="sname" data-i="' + i + '" data-s="' + j + '" maxlength="40" required value="' + esc(s.name) + '" aria-label="Step ' + (j + 1) + ' of ' + esc(r.name || "this ritual") + '">' +
+      rtHabitSel(habits, s.habit, 'data-rc="shabit" data-i="' + i + '" data-s="' + j + '" aria-label="Step ' + (j + 1) + ' also marks"') +
+      '<span class="rc-acts"><button type="button" class="rc-b" data-rc="sup" data-i="' + i + '" data-s="' + j + '" aria-label="Move ' + esc(s.name || "the step") + ' up"' + (j ? "" : " disabled") + ">" + RT_ICO.up + "</button>" +
+      '<button type="button" class="rc-b" data-rc="sdown" data-i="' + i + '" data-s="' + j + '" aria-label="Move ' + esc(s.name || "the step") + ' down"' + (j < m - 1 ? "" : " disabled") + ">" + RT_ICO.down + "</button>" +
+      '<button type="button" class="rc-b rc-x" data-rc="sremove" data-i="' + i + '" data-s="' + j + '" aria-label="Remove ' + esc(s.name || "the step") + '">' + RT_ICO.close + "</button></span></li>").join("") + "</ol>" +
+    '<button type="button" class="rc-sadd" data-rc="sadd" data-i="' + i + '"' + (m >= 12 ? " disabled" : "") + ">" + RT_ICO.plus + "<span>Add a step</span></button></div>";
+}
 function rtCustomHTML() {
-  if (!rtDraft) rtDraft = book().rituals.map(r => ({ ...r }));
+  if (!rtDraft) rtDraft = rtDraftOf(book().rituals);
   const habits = book().habits, n = rtDraft.length;
-  const row = (r, i) => '<li class="rc-row" data-i="' + i + '">' +
+  const kinds = [["check", "Tick"], ["ml", "Water (ml)"], ["list", "Checklist"]];
+  const row = (r, i) => '<li class="rc-row' + (r.kind === "list" ? " is-list" : r.kind === "ml" ? " is-ml" : "") + '" data-i="' + i + '">' +
     '<span class="rc-ico">' + (RT_ICO[r.icon] || RT_ICO.star) + "</span>" +
     '<label class="wi-f rc-name"><span class="wi-l">Name</span><input type="text" data-rc="name" data-i="' + i + '" maxlength="40" required value="' + esc(r.name) + '"></label>' +
     '<label class="wi-f rc-note"><span class="wi-l">Note</span><input type="text" data-rc="note" data-i="' + i + '" maxlength="60" value="' + esc(r.note) + '" placeholder="Shown under the name"></label>' +
     '<label class="wi-f rc-sel rc-icon"><span class="wi-l">Glyph</span><select data-rc="icon" data-i="' + i + '">' + RT_ICONS.map(([k, l]) => '<option value="' + k + '"' + (k === r.icon ? " selected" : "") + ">" + l + "</option>").join("") + "</select></label>" +
-    '<label class="wi-f rc-sel rc-kind"><span class="wi-l">Kind</span><select data-rc="kind" data-i="' + i + '"><option value="check"' + (r.kind === "check" ? " selected" : "") + '>Tick</option><option value="ml"' + (r.kind === "ml" ? " selected" : "") + ">Water (ml)</option></select></label>" +
-    '<label class="wi-f rc-sel rc-hab"><span class="wi-l">Also marks</span><select data-rc="habit" data-i="' + i + '"><option value="">No habit</option>' +
-      habits.map(h => '<option value="' + esc(String(h.id)) + '"' + (String(h.id) === r.habit ? " selected" : "") + ">" + esc(h.name) + "</option>").join("") + "</select></label>" +
+    '<label class="wi-f rc-sel rc-kind"><span class="wi-l">Kind</span><select data-rc="kind" data-i="' + i + '">' + kinds.map(([k, l]) => '<option value="' + k + '"' + (r.kind === k ? " selected" : "") + ">" + l + "</option>").join("") + "</select></label>" +
+    (r.kind === "list" ? "" : '<label class="wi-f rc-sel rc-hab"><span class="wi-l">Also marks</span>' + rtHabitSel(habits, r.habit, 'data-rc="habit" data-i="' + i + '"') + "</label>") +
     '<span class="rc-acts"><button type="button" class="rc-b" data-rc="up" data-i="' + i + '" aria-label="Move ' + esc(r.name) + ' up"' + (i ? "" : " disabled") + ">" + RT_ICO.up + "</button>" +
       '<button type="button" class="rc-b" data-rc="down" data-i="' + i + '" aria-label="Move ' + esc(r.name) + ' down"' + (i < n - 1 ? "" : " disabled") + ">" + RT_ICO.down + "</button>" +
-      '<button type="button" class="rc-b rc-x" data-rc="remove" data-i="' + i + '" aria-label="Remove ' + esc(r.name) + '">' + RT_ICO.close + "</button></span></li>";
+      '<button type="button" class="rc-b rc-x" data-rc="remove" data-i="' + i + '" aria-label="Remove ' + esc(r.name) + '">' + RT_ICO.close + "</button></span>" +
+    (r.kind === "ml" ? rtGoalSel(r, i) : "") + (r.kind === "list" ? rtStepsEditHTML(r, i, habits) : "") + "</li>";
   return '<form method="dialog" class="wi rc" data-rc-form="1">' + wiFrame() + '<div class="wi-body">' +
     '<div class="wi-top"><div class="wi-head"><p class="wi-h" id="bodyDlgTitle">Customize rituals</p>' +
       '<p class="wi-sub">The small things your mornings are made of, in the order you do them.</p></div>' + BD_X + "</div>" + WI_RULE +
     (n ? '<ol class="rc-list">' + rtDraft.map(row).join("") + "</ol>" : '<p class="rt-empty">No rituals. Add the first one below.</p>') +
     '<button type="button" class="bd-edit rc-add" data-rc="add"' + (n >= 20 ? " disabled" : "") + ">" + RT_ICO.plus + "<span>Add a ritual</span></button></div>" +
-    wiEnd('<p class="wi-note">A ritual that marks a habit ticks it in the Journal too.</p>' +
+    wiEnd('<p class="wi-note">A ritual or a step that marks a habit ticks it in the Journal too.</p>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-dlg-close>Cancel</button><button type="submit" class="btn btn-primary btn-sm">Save rituals</button>') + "</form>";
 }
 function rtCustomRedraw(focusSel) {
@@ -20712,7 +20899,7 @@ function rtCustomRedraw(focusSel) {
 function rtCustomSave(form) {
   if (!form.reportValidity()) return;
   const b = book();
-  b.rituals = rtSanList(rtDraft.map(r => ({ ...r, name: r.name.trim() })), b.habits);
+  b.rituals = rtSanList(rtDraft.map(r => ({ ...r, name: r.name.trim(), steps: r.steps.map(s => ({ ...s, name: s.name.trim() })) })), b.habits);
   rtDraft = null;
   save();
   bdDlg().close();
@@ -20725,19 +20912,27 @@ document.addEventListener("click", ev => {
   const t = ev.target.closest && ev.target.closest("[data-bd], [data-rt], [data-rc]"); if (!t) return;
   if (t.dataset.rt) {
     const a = t.dataset.rt;
-    if (a === "tick") rtToggle(t.dataset.id);
+    if (a === "tick") rtToggle(t.dataset.id, t.dataset.s);
+    else if (a === "all") rtToggleAll(t.dataset.id);
     else if (a === "water") rtWater(t.dataset.id, Number(t.dataset.d) || 0);
     else if (a === "save") rtSaveMorning();
     else if (a === "custom") { rtDraft = null; bdOpen("rituals"); }
     return;
   }
   if (t.dataset.rc) {
-    const a = t.dataset.rc, i = Number(t.dataset.i);
+    const a = t.dataset.rc, i = Number(t.dataset.i), j = Number(t.dataset.s), r = rtDraft && rtDraft[i];
     if (!rtDraft) return;
-    if (a === "up" && i > 0) { [rtDraft[i - 1], rtDraft[i]] = [rtDraft[i], rtDraft[i - 1]]; rtCustomRedraw('[data-rc="up"][data-i="' + (i - 1) + '"]:not(:disabled), [data-rc="down"][data-i="' + (i - 1) + '"]'); }
-    else if (a === "down" && i < rtDraft.length - 1) { [rtDraft[i + 1], rtDraft[i]] = [rtDraft[i], rtDraft[i + 1]]; rtCustomRedraw('[data-rc="down"][data-i="' + (i + 1) + '"]:not(:disabled), [data-rc="up"][data-i="' + (i + 1) + '"]'); }
+    const at = (rc, k, s) => '[data-rc="' + rc + '"][data-i="' + k + '"]' + (s === undefined ? "" : '[data-s="' + s + '"]');
+    if (a === "up" && i > 0) { [rtDraft[i - 1], rtDraft[i]] = [rtDraft[i], rtDraft[i - 1]]; rtCustomRedraw(at("up", i - 1) + ":not(:disabled), " + at("down", i - 1)); }
+    else if (a === "down" && i < rtDraft.length - 1) { [rtDraft[i + 1], rtDraft[i]] = [rtDraft[i], rtDraft[i + 1]]; rtCustomRedraw(at("down", i + 1) + ":not(:disabled), " + at("up", i + 1)); }
     else if (a === "remove") { rtDraft.splice(i, 1); rtCustomRedraw('[data-rc="add"]'); }
-    else if (a === "add" && rtDraft.length < 20) { rtDraft.push({ id: "rt-" + uid(), name: "", note: "", icon: "star", kind: "check", habit: "" }); rtCustomRedraw('[data-rc="name"][data-i="' + (rtDraft.length - 1) + '"]'); }
+    else if (a === "add" && rtDraft.length < 20) { rtDraft.push({ id: "rt-" + uid(), name: "", note: "", icon: "star", kind: "check", habit: "", steps: [] }); rtCustomRedraw(at("name", rtDraft.length - 1)); }
+    /* a checklist's steps: added, removed and moved as the rituals are */
+    else if (!r) return;
+    else if (a === "sadd" && r.steps.length < 12) { r.steps.push({ id: "s" + uid(), name: "", habit: "" }); rtCustomRedraw(at("sname", i, r.steps.length - 1)); }
+    else if (a === "sremove") { r.steps.splice(j, 1); if (!r.steps.length) r.kind = "check"; rtCustomRedraw(r.steps.length ? at("sadd", i) : at("kind", i)); }
+    else if (a === "sup" && j > 0) { [r.steps[j - 1], r.steps[j]] = [r.steps[j], r.steps[j - 1]]; rtCustomRedraw(at("sup", i, j - 1) + ":not(:disabled), " + at("sdown", i, j - 1)); }
+    else if (a === "sdown" && j < r.steps.length - 1) { [r.steps[j + 1], r.steps[j]] = [r.steps[j], r.steps[j + 1]]; rtCustomRedraw(at("sdown", i, j + 1) + ":not(:disabled), " + at("sup", i, j + 1)); }
     return;
   }
   const a = t.dataset.bd, rows = bdRows();
@@ -20749,17 +20944,29 @@ document.addEventListener("click", ev => {
   /* a delete asks once more on the same button, in the app's own armed state, then goes */
   else if (a === "del") { if (t.classList.contains("armed")) bdDelete(t.dataset.id); else { t.classList.add("armed"); t.textContent = "Delete — tap again"; } }
 });
-/* the draft follows every keystroke in Customize rituals, so a reorder never loses what was typed */
+/* the draft follows every keystroke and every choice in Customize rituals, so a reorder never loses what was typed */
+function rtDraftSet(el) {
+  const rc = el.dataset && el.dataset.rc, r = rc && rtDraft && rtDraft[Number(el.dataset.i)]; if (!r) return null;
+  const s = el.dataset.s !== undefined ? r.steps[Number(el.dataset.s)] : null;
+  if (rc === "sname" || rc === "shabit") { if (s) s[rc === "sname" ? "name" : "habit"] = el.value; }
+  else if (["name", "note", "icon", "kind", "habit", "goal"].includes(rc)) r[rc] = el.value;
+  return r;
+}
 document.addEventListener("input", ev => {
   const i = ev.target;
   if (i.matches && i.matches("#bodyDlg input[data-min]")) i.setCustomValidity("");   /* a range message clears as the field changes */
-  if (i.dataset && i.dataset.rc && rtDraft && rtDraft[Number(i.dataset.i)]) rtDraft[Number(i.dataset.i)][i.dataset.rc] = i.value;
+  if (i.tagName === "INPUT") rtDraftSet(i);
 });
 document.addEventListener("change", ev => {
-  const i = ev.target;
-  if (!(i.dataset && i.dataset.rc && rtDraft && rtDraft[Number(i.dataset.i)])) return;
-  rtDraft[Number(i.dataset.i)][i.dataset.rc] = i.value;
+  const i = ev.target, r = rtDraftSet(i); if (!r) return;
   if (i.dataset.rc === "icon") { const ico = i.closest(".rc-row") && i.closest(".rc-row").querySelector(".rc-ico"); if (ico) ico.innerHTML = RT_ICO[i.value] || RT_ICO.star; }
+  /* a new kind brings its own fields: a checklist starts with one step to name, water with the goal from the weight */
+  if (i.dataset.rc === "kind") {
+    if (r.kind === "list" && !r.steps.length) r.steps.push({ id: "s" + uid(), name: "", habit: "" });
+    if (r.kind === "ml" && r.goal === undefined) r.goal = "auto";
+    const k = i.dataset.i;
+    rtCustomRedraw(r.kind === "list" ? '[data-rc="sname"][data-i="' + k + '"][data-s="0"]' : '[data-rc="kind"][data-i="' + k + '"]');
+  }
 });
 document.addEventListener("submit", ev => {
   const f = ev.target; if (!f.matches) return;
