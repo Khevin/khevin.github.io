@@ -4839,13 +4839,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-fat { font-family: var(--f-mono); letter-spacing: 0; text-transform: none; color: var(--ash); }
 .ch-frev { text-align: center; margin: var(--s2) 0 0; }
 .ch-ffirst { margin: var(--s3) 0 0; font-family: var(--f-read); font-size: 0.9375rem; line-height: 1.6; color: var(--dust); }
-.ch-ffirst.is-empty { min-height: 22px; border-bottom: 1px dashed rgba(232,176,84,0.25); }
 .ch-fmood { margin: var(--s3) 0 0; text-align: center; font-family: var(--f-ui); font-size: 0.9375rem; color: var(--ash); }
 .ch-fmood.is-set { color: var(--gold); }
 .ch-ffeel { font-size: 0.8125rem; margin-top: var(--s1); }
-.ch-fthree { list-style: none; margin: var(--s3) 0; padding: 0; display: grid; gap: var(--s2); }
-.ch-fthree li { min-height: 26px; padding: 2px 0 6px; font-family: var(--f-read); font-style: italic; font-size: 0.9375rem; line-height: 1.5; color: var(--dust); border-bottom: 1px solid rgba(232,176,84,0.45); }
-.ch-fthree li.is-empty { border-bottom: 1px dashed rgba(232,176,84,0.25); }
 /* under the hand: the mood strip at phone width, the day initials, the diary marks as labelled rows */
 .ch-fstrip { grid-template-columns: minmax(0, 1fr); align-items: start; margin-top: var(--s5); }
 .ch-fs-plot { grid-column: 1; grid-row: 1; position: relative; height: 100px; }
@@ -19607,8 +19603,11 @@ function chHandHTML(F) {
   });
   return h + "</div></div>" + chFrontDayHTML(F.days[f]) + chFstripHTML(F);
 }
-/* the front card's morning: weekday · date · time of the first word, the first words, the mood, the three lines, the marks.
-   An unwritten morning shows its places. */
+/* the front card's morning: weekday · date · time of the first word, the first words, the mood, the marks.
+   Only what was written is drawn. An unwritten morning's dashed places and the Diary's old three lines
+   (which the Diary stopped asking for when the morning's three took their card) read on the phone as
+   extra rungs stacked on the strip's own; the strip and the marks beneath already say what was written,
+   and the laptop never drew either. */
 function chFrontDayHTML(x) {
   const e = x.e, words = e && e.page ? e.page.trim().split(/\s+/) : [];
   const first = words.slice(0, 16).join(" ") + (words.length > 16 ? "…" : "");
@@ -19619,11 +19618,10 @@ function chFrontDayHTML(x) {
     '<button type="button" class="ch-step" data-ch="front" data-d="1" aria-label="Later day"' + (x.i === 6 ? " disabled" : "") + ">›</button></div>";
   if (x.card) h += '<p class="ch-fcname">' + esc(x.card.n) + "</p>";
   if (x.card && x.rec.r) h += '<p class="tar-rev-l ch-frev">Reversed</p>';
-  h += first ? '<p class="ch-ffirst">' + esc(first) + "</p>" : '<p class="ch-ffirst is-empty"></p>';
-  h += '<p class="ch-fmood' + (e && e.mood ? " is-set m" + e.mood : "") + '">' + (e && e.mood ? DY_MOODS[e.mood - 1] : "") + "</p>";
+  if (first) h += '<p class="ch-ffirst">' + esc(first) + "</p>";
+  if (e && e.mood) h += '<p class="ch-fmood is-set m' + e.mood + '">' + DY_MOODS[e.mood - 1] + "</p>";
   const feel = chFeelings(x);
   if (feel) h += '<p class="ch-feel ch-ffeel">' + feel + "</p>";
-  h += '<ol class="ch-fthree">' + [0, 1, 2].map(i => { const t = e && e.three && e.three[i]; return '<li class="' + (t ? "is-set" : "is-empty") + '">' + (t ? esc(t) : "") + "</li>"; }).join("") + "</ol>";
   return h + "</div>";
 }
 /* under the hand: the same mood strip at phone width, the day initials, and the diary marks as four
