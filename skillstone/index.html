@@ -4641,7 +4641,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-fcard .ch-rtext { font-size: 0.625rem; } .ch-fcard .ch-rkw { font-size: 0.5625rem; }
 .ch-card.is-rev img { transform: rotate(180deg); }
 .ch-card.ch-back.is-past, .ch-card.ch-back.is-fut { opacity: 0.45; }
-.ch-cslot { height: 20px; margin: var(--s2) 0 0; text-align: center; }
+.ch-cslot { min-height: 20px; margin: var(--s2) 0 0; text-align: center; display: grid; gap: 2px; }
+.ch-cname { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--parchment); line-height: 1.3; }
+.ch-fcname { margin: var(--s2) 0 0; text-align: center; font-family: var(--f-display); font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.08em; color: var(--parchment); }
 .ch-cslot .tar-rev-l { margin: 0; }
 .ch-r3 { grid-row: 3; }
 .ch-rungs { position: relative; height: 100px; grid-column: 1; }
@@ -4678,13 +4680,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-mk > img { display: block; width: 100%; height: 100%; opacity: .5; filter: grayscale(.85) brightness(.8); }
 .ch-mk.is-on > img { opacity: 1; filter: none; }
 .ch-r6 { padding-inline: var(--s1); }
-.ch-wfoot { display: flex; justify-content: space-between; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-top: var(--s5); padding-top: var(--s3); border-top: 1px solid rgba(62,53,39,0.7); }
-.ch-legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: 0; }
-.ch-lg { display: inline-flex; align-items: center; gap: var(--s2); font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
-.ch-lg .ch-mk { --mk: 14px; }
-.ch-lg .ch-mk-page { --mk: 22px; }
-.ch-lg .ch-mk > img { opacity: 1; filter: none; }
-.ch-wcount { margin: 0; font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust); font-variant-numeric: tabular-nums; }
 
 /* the lower zone: the record and the reflection */
 .ch-low { display: grid; grid-template-columns: minmax(0, 62fr) minmax(0, 38fr); gap: var(--s5); align-items: start; }
@@ -4802,10 +4797,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ch-sofar { display: block; margin-top: 2px; }
   .ch-sofar::before { content: none; }
   .ch-plate { padding: 30px 14px 20px; }
-  .ch-grid, .ch-legend { display: none; }
+  .ch-grid { display: none; }
   .ch-hand, .ch-fday { display: block; }
   .ch-fstrip { display: grid; }
-  .ch-wfoot { justify-content: flex-end; }
   .ch-hab td { width: 30px; height: 36px; }
   .ch-row { grid-template-columns: 4rem minmax(0, 1fr) 2rem; }
   .ch-row .ch-chev { display: none; }
@@ -4825,6 +4819,45 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ch-fcard, .ch-rrow, .ch-rline, .ch-card.has-read, .ch-read { transition: none; }
 }
 /* ===== /chronicle:css ===== */
+
+/* the mark's popover: the field and what was written there */
+.ch-mk { position: relative; }
+.ch-r6 { position: relative; z-index: 1; }
+.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
+.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
+  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
+  display: none; pointer-events: none; }
+.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
+.ch-tip { max-width: min(220px, 72vw); }
+.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
+/* the record plate: the habit grid never outgrows its column */
+.ch-rec { gap: var(--s6); }
+.ch-hab { table-layout: fixed; }
+.ch-hab thead th:first-child { width: 32%; }
+.ch-hab thead th:last-child { width: 2.6ch; }
+.ch-hab td { width: auto; }
+.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
+
+/* the mark's popover: the field and what was written there */
+.ch-mk { position: relative; }
+.ch-r6 { position: relative; z-index: 1; }
+.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
+.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
+  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
+  opacity: 0; pointer-events: none; transition: opacity var(--t-fast) var(--e-out); }
+.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+.ch-mk:hover .ch-tip, .ch-mk:focus-visible .ch-tip { opacity: 1; }
+.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
+/* the record plate: the habit grid never outgrows its column */
+.ch-rec { gap: var(--s6); }
+.ch-hab { table-layout: fixed; }
+.ch-hab thead th:first-child { width: 32%; }
+.ch-hab thead th:last-child { width: 2.6ch; }
+.ch-hab td { width: auto; }
+.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
 </style>
 <style>
   /* ——— namespace switcher ——— */
@@ -19252,15 +19285,22 @@ const CH_MARK = {
   thanks: "assets/chronicle/gratitude.svg"
 };
 const CH_MARK_L = { page: "Logbook", book: "Reading", one: "#1 today", thanks: "Grateful for" };
-const chMark = (k, on, title) => {
-  const label = (title || CH_MARK_L[k]).replace(/: written$/, "") + (on === null ? "" : on ? ": recorded" : ": not recorded");
-  return '<span class="ch-mk ch-mk-' + k + (on ? " is-on" : "") + '"' +
-    (on === null ? ' aria-hidden="true"' : ' role="img" aria-label="' + esc(label) + '"') + ' title="' + esc(label) + '">' +
-    '<img src="' + CH_MARK[k] + '" alt="" width="16" height="16" decoding="async"></span>';
+/* a mark is a small popover: the field's name and what was written there, or that nothing was */
+function chMarkValue(k, e) {
+  if (!e || !e[k]) return "";
+  if (k === "page") { const w = String(e.page).trim().split(/\s+/); return w.slice(0, 14).join(" ") + (w.length > 14 ? "\u2026" : "") + " \u00b7 " + chN(w.length, "word", "words"); }
+  if (k === "book") { const r = allBooks().map(bookView).find(x => x.id === e.book); return r ? r.title : e.book; }
+  return String(e[k]);
+}
+const chMark = (k, on, value, day) => {
+  const head = (day ? day + " \u00b7 " : "") + CH_MARK_L[k], body = on ? value : "Not written";
+  return '<span class="ch-mk ch-mk-' + k + (on ? " is-on" : "") + '" tabindex="0" role="img" aria-label="' + esc(head + ": " + body) + '">' +
+    '<img src="' + CH_MARK[k] + '" alt="" width="16" height="16" decoding="async">' +
+    '<span class="ch-tip" role="tooltip"><b>' + esc(head) + "</b>" + esc(body) + "</span></span>";
 };
-function chMarksHTML(e) {
+function chMarksHTML(e, day) {
   const on = k => !!(e && e[k]);
-  return '<div class="ch-marks">' + ["page", "book", "one", "thanks"].map(k => chMark(k, on(k), CH_MARK_L[k] + (on(k) ? ": written" : ""))).join("") + "</div>";
+  return '<div class="ch-marks">' + ["page", "book", "one", "thanks"].map(k => chMark(k, on(k), chMarkValue(k, e), day)).join("") + "</div>";
 }
 const chDayShort = d => d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3);
 
@@ -19327,22 +19367,15 @@ function chGridHTML(F) {
   let h = '<div class="ch-grid">';
   for (let i = 1; i < 7; i++) h += '<span class="ch-sep" aria-hidden="true" style="grid-column:' + (i + 2) + '"></span>';
   F.days.forEach(x => { h += '<div class="ch-dcell ch-r1' + (x.today ? " is-today" : "") + (x.fut ? " is-fut" : "") + '"' + col(x.i) + '><p class="ch-dow">' + DOW_LONG[x.i] + '</p><p class="ch-date">' + chDayShort(x.d) + "</p></div>"; });
-  F.days.forEach(x => { h += '<div class="ch-dcell ch-r2"' + col(x.i) + ">" + chCardHTML(x) + '<p class="ch-cslot">' + (x.rec && x.rec.r ? '<span class="tar-rev-l">Reversed</span>' : "") + "</p></div>"; });
+  F.days.forEach(x => { h += '<div class="ch-dcell ch-r2"' + col(x.i) + ">" + chCardHTML(x) + '<p class="ch-cslot">' + (x.card ? '<span class="ch-cname">' + esc(x.card.n) + "</span>" : "") + (x.rec && x.rec.r ? '<span class="tar-rev-l">Reversed</span>' : "") + "</p></div>"; });
   h += '<div class="ch-rungs ch-r3" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>";
   h += '<div class="ch-strip-sr" role="img" aria-label="' + esc(chStripLabel(F)) + '"></div>' + chMoodSVG(F);
   F.days.forEach(x => { h += '<div class="ch-dcell ch-r3 ch-mcell"' + col(x.i) + ">" + chStripCell(x) + "</div>"; });
   h += '<div class="ch-rungs ch-rungs-r ch-r3" aria-hidden="true"><span style="--y:10">with me</span><span style="--y:90">against me</span></div>';
   F.days.forEach(x => { const m = x.e && x.e.mood; h += '<p class="ch-dcell ch-r4 ch-mword' + (m ? " is-set m" + m : "") + '"' + col(x.i) + ">" + (m ? DY_MOODS[m - 1] : "–") + "</p>"; });
   F.days.forEach(x => { h += '<p class="ch-dcell ch-r5 ch-feel"' + col(x.i) + ">" + chFeelings(x) + "</p>"; });
-  F.days.forEach(x => { h += '<div class="ch-dcell ch-r6"' + col(x.i) + ">" + chMarksHTML(x.e) + "</div>"; });
+  F.days.forEach(x => { h += '<div class="ch-dcell ch-r6"' + col(x.i) + ">" + chMarksHTML(x.e, DOW_LONG[x.i]) + "</div>"; });
   return h + "</div>";
-}
-function chFootHTML(F) {
-  const leg = ["page", "book", "one", "thanks"].map(k => '<span class="ch-lg">' + chMark(k, null) + " " + CH_MARK_L[k] + "</span>").join("");
-  const parts = [];
-  if (F.mornings) parts.push(chN(F.mornings, "morning", "mornings") + " written");
-  if (F.shorts) parts.push(F.shorts + " short " + (F.shorts === 1 ? "entry" : "entries"));
-  return '<footer class="ch-wfoot"><p class="ch-legend">' + leg + '</p><p class="ch-wcount">' + esc(parts.join(" · ")) + "</p></footer>";
 }
 
 /* the phone: the hand. Earlier days show a left edge, later days a right edge; the front card is lifted and readable */
@@ -19369,6 +19402,7 @@ function chFrontDayHTML(x) {
     '<button type="button" class="ch-step" data-ch="front" data-d="-1" aria-label="Earlier day"' + (x.i === 0 ? " disabled" : "") + ">‹</button>" +
     '<p class="ch-fdate">' + DOW_LONG[x.i] + " · " + chDayShort(x.d) + (at ? '<span class="ch-fat"> · ' + esc(at) + "</span>" : "") + "</p>" +
     '<button type="button" class="ch-step" data-ch="front" data-d="1" aria-label="Later day"' + (x.i === 6 ? " disabled" : "") + ">›</button></div>";
+  if (x.card) h += '<p class="ch-fcname">' + esc(x.card.n) + "</p>";
   if (x.card && x.rec.r) h += '<p class="tar-rev-l ch-frev">Reversed</p>';
   h += first ? '<p class="ch-ffirst">' + esc(first) + "</p>" : '<p class="ch-ffirst is-empty"></p>';
   h += '<p class="ch-fmood' + (e && e.mood ? " is-set m" + e.mood : "") + '">' + (e && e.mood ? DY_MOODS[e.mood - 1] : "–") + "</p>";
@@ -19389,7 +19423,7 @@ function chFstripHTML(F) {
     '<div class="ch-fs-dows" aria-hidden="true">' + F.days.map(x => "<span" + (x.i === chFront ? ' class="is-front"' : "") + ">" + DOW_SHORT[x.i][0] + "</span>").join("") + "</div>" +
     (any ? '<p class="ch-fs-cap" aria-hidden="true">in lilac, how the reading sat — against me → with me</p>' : "") +
     '<table class="ch-fmarks"><tbody>' + ["page", "book", "one", "thanks"].map(k => '<tr><th scope="row">' + CH_MARK_L[k] + "</th>" +
-      F.days.map(x => "<td>" + chMark(k, !!(x.e && x.e[k]), DOW_LONG[x.i] + " · " + CH_MARK_L[k] + (x.e && x.e[k] ? ": written" : "")) + "</td>").join("") + "</tr>").join("") +
+      F.days.map(x => "<td>" + chMark(k, !!(x.e && x.e[k]), chMarkValue(k, x.e), DOW_LONG[x.i]) + "</td>").join("") + "</tr>").join("") +
     "</tbody></table></div>";
 }
 
@@ -19449,7 +19483,7 @@ function renderChronicle() {
   const wk = weekKeyOf(chWeek), F = chFacts(wk), isThis = weekKeyOf(thisMon) === wk;
   if (chFront == null || chFront < 0 || chFront > 6) chFront = isThis ? dyDow(dayNow()) : 0;
   el.innerHTML = '<div class="ch">' + chHeadHTML(F, isThis, chWeek < thisMon) + chIntentHTML(F) +
-    '<section class="ch-plate ch-week" aria-label="The seven days">' + dyFrame({ sprigs: ["tl", "tr"], top: "notch" }) + chGridHTML(F) + chHandHTML(F) + chFootHTML(F) + "</section>" +
+    '<section class="ch-plate ch-week" aria-label="The seven days">' + dyFrame({ sprigs: ["tl", "tr"], top: "notch" }) + chGridHTML(F) + chHandHTML(F) + "</section>" +
     '<div class="ch-low">' + chRecordHTML(F) + chReflectHTML(F, wk) + "</div></div>";
   el.querySelectorAll(".ch-rline").forEach(chGrow);
 }
