@@ -4825,16 +4825,15 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-fthree li { min-height: 26px; padding: 2px 0 6px; font-family: var(--f-read); font-style: italic; font-size: 0.9375rem; line-height: 1.5; color: var(--dust); border-bottom: 1px solid rgba(232,176,84,0.45); }
 .ch-fthree li.is-empty { border-bottom: 1px dashed rgba(232,176,84,0.25); }
 /* under the hand: the mood strip at phone width, the day initials, the diary marks as labelled rows */
-.ch-fstrip { grid-template-columns: 2.6rem minmax(0, 1fr); align-items: start; margin-top: var(--s5); }
-.ch-fstrip .ch-rungs { grid-column: 1; grid-row: 1; }
-.ch-fs-plot { grid-column: 2; grid-row: 1; position: relative; height: 100px; }
+.ch-fstrip { grid-template-columns: minmax(0, 1fr); align-items: start; margin-top: var(--s5); }
+.ch-fs-plot { grid-column: 1; grid-row: 1; position: relative; height: 100px; }
 .ch-fs-plot .ch-mline { position: absolute; inset: 0; height: 100px; }
 .ch-fs-dots { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
-.ch-fs-dows { grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; margin-top: var(--s1);
+.ch-fs-dows { grid-column: 1; grid-row: 2; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; margin-top: var(--s1);
   font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--ash); }
 .ch-fs-dows .is-front { color: var(--gold); }
 /* the marks under the letters: the same seven columns, the logbook first and larger, as on the laptop */
-.ch-fs-marks { grid-column: 2; grid-row: 3; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin-top: var(--s3); }
+.ch-fs-marks { grid-column: 1; grid-row: 3; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin-top: var(--s3); }
 .ch-fs-mday { display: flex; flex-direction: column; align-items: center; gap: var(--s2); }
 .ch-fs-marks .ch-mk { --mk: 14px; }
 .ch-fs-marks .ch-mk-page { --mk: 20px; }
@@ -19598,7 +19597,7 @@ function chFrontDayHTML(x) {
    labelled rows across the seven days — the row label teaches the mark once (Kare, DECISIONS.md D4) */
 function chFstripHTML(F) {
   return '<div class="ch-fstrip">' +
-    '<div class="ch-rungs" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>" +
+    /* no rung names on the phone: the strip takes the plate's whole width, and the front card names its mood */
     '<div class="ch-fs-plot" role="img" aria-label="' + esc(chStripLabel(F)) + '">' + chMoodSVG(F) + '<div class="ch-fs-dots">' +
       F.days.map(x => '<div class="ch-mcell">' + chStripCell(x) + "</div>").join("") +
     "</div></div>" +
