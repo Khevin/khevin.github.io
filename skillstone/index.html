@@ -4725,16 +4725,18 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 
 /* the reflection: three lines in his hand, on paper; the rule seals when a line commits */
 .ch-ref { display: grid; gap: var(--s4); }
-.ch-rrow { background: var(--paper); background-image: var(--paper-grain), linear-gradient(var(--paper), var(--paper)); border-radius: var(--r-sm);
-  padding: var(--s3) var(--s4) var(--s2); border-bottom: 2px solid rgba(166,123,46,0.25); transition: border-color var(--t-settle) var(--e-out); }
-.ch-rrow.is-set { border-bottom-color: var(--bronze); }
-.ch-rrow:focus-within { border-bottom-color: var(--gold); }
-.ch-rl, .ch-rll { display: block; color: #6B5940; }
-.ch-rl { margin-bottom: var(--s1); }
-.ch-rline { display: block; width: 100%; box-sizing: border-box; min-height: 44px; margin: 0; padding: var(--s1) 0; background: none; border: 0; resize: none; overflow: hidden;
-  font-family: var(--f-read); font-style: italic; font-size: 1.0625rem; line-height: 1.55; color: #3B3022; transition: color var(--t-settle) var(--e-out); }
-.ch-rline:focus { outline: none; color: #1E1710; }
-.ch-rlink { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s2); padding-top: var(--s2); border-top: 1px dashed rgba(107,89,64,0.35); }
+/* the question stands on the stone above its sheet, in the plate title's parchment; only the
+   line itself is paper. The rule under the sheet seals when the line commits. */
+.ch-rrow { display: grid; gap: var(--s2); }
+.ch-rl { display: block; color: var(--parchment); }
+.ch-rll { display: block; color: #6B5940; }
+.ch-rline { display: block; width: 100%; box-sizing: border-box; min-height: 56px; margin: 0; padding: var(--s3) var(--s4); resize: none; overflow: hidden;
+  background: var(--paper); background-image: var(--paper-grain), linear-gradient(var(--paper), var(--paper)); border: 0; border-radius: var(--r-sm);
+  border-bottom: 2px solid rgba(166,123,46,0.25);
+  font-family: var(--f-read); font-style: italic; font-size: 1.0625rem; line-height: 1.55; color: #3B3022; transition: color var(--t-settle) var(--e-out), border-color var(--t-settle) var(--e-out); }
+.ch-rrow.is-set .ch-rline { border-bottom-color: var(--bronze); }
+.ch-rline:focus { outline: none; color: #1E1710; border-bottom-color: var(--gold); }
+.ch-rlink { display: flex; align-items: center; gap: var(--s3); margin-top: calc(-1 * var(--s2) + 2px); padding: var(--s2) var(--s4); background: var(--paper); background-image: var(--paper-grain), linear-gradient(var(--paper), var(--paper)); border-radius: 0 0 var(--r-sm) var(--r-sm); border-top: 1px dashed rgba(107,89,64,0.35); }
 .ch-pick { flex: 1; min-height: 44px; min-width: 0; appearance: none; background: none; border: 0; padding: 0; color: #2A2118; font-family: var(--f-read); font-style: italic; font-size: 0.9375rem; cursor: pointer; }
 .ch-pick.is-none { color: #8C7A5E; }
 .ch-pick option { background: var(--stone-2); color: var(--parchment); font-style: normal; }
@@ -4819,6 +4821,27 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ch-fcard, .ch-rrow, .ch-rline, .ch-card.has-read, .ch-read { transition: none; }
 }
 /* ===== /chronicle:css ===== */
+
+/* the mark's popover: the field and what was written there */
+.ch-mk { position: relative; }
+.ch-r6 { position: relative; z-index: 1; }
+.ch-r6:hover, .ch-r6:focus-within { z-index: 7; }
+.ch-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 220px; padding: 6px 10px; z-index: 8;
+  background: rgba(23,19,16,0.96); border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm); box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+  color: var(--parchment); font-family: var(--f-read); font-style: italic; font-size: 0.75rem; line-height: 1.4; text-align: center; white-space: normal;
+  display: none; pointer-events: none; }
+.ch-tip b { display: block; font-family: var(--f-display); font-style: normal; font-weight: 700; font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+.ch-mk:hover .ch-tip, .ch-mk:focus .ch-tip { display: block; }
+.ch-tip { max-width: min(220px, 72vw); }
+.ch-mk:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 50%; }
+/* the record plate: the habit grid never outgrows its column */
+.ch-rec { gap: var(--s6); }
+.ch-hab { table-layout: fixed; }
+.ch-hab thead th:first-child { width: 30%; }
+.ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
+.ch-hab thead th:last-child { width: 2.6ch; }
+.ch-hab td { width: auto; }
+.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
 
 /* the mark's popover: the field and what was written there */
 .ch-mk { position: relative; }
