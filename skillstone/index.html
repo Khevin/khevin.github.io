@@ -5015,6 +5015,21 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-sync { margin: 0; min-height: 0; text-align: center; font-family: var(--f-mono); font-size: 0.625rem; line-height: 1.4; color: var(--ash); }
 .bd-sync:empty { display: none; }
 
+/* the figure: one gold hairline for the body, the readings in the plate's faces, leaders at half strength */
+.bd-fig { display: block; width: 100%; max-width: 360px; height: auto; margin: var(--s2) auto 0; overflow: visible; }
+.bd-body { fill: rgba(232,176,84,0.04); stroke: var(--gold); stroke-width: 1.25; stroke-linejoin: round; }
+.bd-lead-l { fill: none; stroke: rgba(232,176,84,0.5); stroke-width: 1; }
+.bd-dot { fill: var(--gold); }
+.bd-sl { font-family: var(--f-display); font-weight: 700; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--ash); }
+.bd-sv { font-family: var(--f-mono); font-size: 15px; fill: var(--parchment); font-variant-numeric: tabular-nums; }
+.bd-su { font-size: 10px; fill: var(--ash); }
+/* the list is the laptop band's; the figure is the phone's and the dialog's */
+.dy-bodyc .bd-core { display: none; }
+.bd-now { min-height: 44px; margin-block: -12px; padding: 0 var(--s1); background: none; border: 0; color: var(--gold); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+@media (hover: hover) { .bd-now:hover { color: var(--gold-2); } }
+.bd-now:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.bd-allfig { margin: 0 auto; width: 100%; max-width: 340px; }
+
 /* the dialogs */
 .bd-at { display: block; margin-top: 2px; font-family: var(--f-mono); font-weight: 400; font-size: 0.6875rem; color: var(--ash); }
 .bd-nav { display: flex; justify-content: space-between; }
@@ -5047,7 +5062,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .dy-bodyc .bd-when { text-align: left; }
   /* the trend gives way first when the band is narrow */
   .dy-bodyc .bd-trend { flex: 1 1 0; min-width: 40px; max-width: 220px; height: 44px; margin: 0; }
-  .dy-bodyc .bd-core { flex: none; grid-auto-flow: column; column-gap: var(--s3); }
+  .dy-bodyc .bd-fig { display: none; }
+  .dy-bodyc .bd-core { display: grid; flex: none; grid-auto-flow: column; column-gap: var(--s3); }
   .dy-bodyc .bd-core > div { flex-direction: column; align-items: flex-start; gap: 2px; padding: 0; border: 0; }
   .dy-bodyc .bd-acts { flex: none; flex-direction: column; align-items: flex-end; margin: 0 0 0 auto; gap: 0; }
   .dy-bodyc .bd-link { white-space: nowrap; }
@@ -20081,7 +20097,58 @@ function bdTrendSVG(rows) {
     '<polyline points="' + pts + '" fill="none" vector-effect="non-scaling-stroke"/></svg>';
 }
 
+/* ---- the figure: a silhouette in the crest hand, one gold hairline, the readings placed where they live ----
+   Half the outline is placed by hand (x from the midline), mirrored, and smoothed through its points; the
+   head is its own circle. Muscle sits at the arm, visceral fat at the belly, body fat at the hip, water in
+   the thigh, bone at the shin. */
+const BD_HALF = [[5,33],[7,40],[16,45],[26,48],[31,54],[33,66],[35,84],[37,100],[38,116],[38,130],[39,141],[36,149],[32,146],
+  [31,134],[29,118],[27,100],[25,84],[22,68],[21,86],[18,104],[21,122],[23,138],[22,160],[19,184],[17,204],[16,222],[13,242],
+  [16,252],[11,256],[6,253],[6,240],[7,222],[7,204],[6,184],[3,164],[0,150]];
+function bdSmooth(p) {
+  /* closed Catmull-Rom through the points, as cubic Béziers */
+  const n = p.length; let d = "M" + p[0][0].toFixed(1) + " " + p[0][1].toFixed(1);
+  for (let i = 0; i < n; i++) {
+    const p0 = p[(i - 1 + n) % n], p1 = p[i], p2 = p[(i + 1) % n], p3 = p[(i + 2) % n];
+    d += "C" + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + " " + (p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) + " " +
+      (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + " " + (p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) + " " + p2[0].toFixed(1) + " " + p2[1].toFixed(1);
+  }
+  return d + "Z";
+}
+const BD_CX = 160;
+const BD_FIG_D = bdSmooth(BD_HALF.map(([x, y]) => [BD_CX + x, y]).concat(BD_HALF.slice(0, -1).reverse().map(([x, y]) => [BD_CX - x, y])));
+/* where each reading points: [key, anchor x, anchor y, side, label y] */
+/* every leader reaches its spot without crossing an arm: the arm itself, and below the hands (y > 156) for the rest */
+const BD_SPOTS = [["mus", BD_CX - 34, 90, "l", 76], ["water", BD_CX - 15, 190, "l", 150], ["bone", BD_CX - 13, 228, "l", 224],
+  ["visc", BD_CX + 9, 144, "r", 160], ["fat", BD_CX + 21, 180, "r", 206]];
+function bdFigureSVG(x) {
+  const spots = BD_SPOTS.map(([k, ax, ay, side, ly]) => {
+    const f = BD_F[k], v = x ? x[k] : undefined, tx = side === "l" ? 14 : 306, ex = side === "l" ? 96 : 224, anchor = side === "l" ? "start" : "end";
+    return '<g class="bd-spot"><path class="bd-lead-l" d="M' + ex + " " + (ly + 4) + "L" + (ax + (side === "l" ? -4 : 4)) + " " + ay + '" vector-effect="non-scaling-stroke"/>' +
+      '<circle class="bd-dot" cx="' + ax + '" cy="' + ay + '" r="2.5"/>' +
+      '<text class="bd-sl" x="' + tx + '" y="' + (ly - 8) + '" text-anchor="' + anchor + '">' + f.l + "</text>" +
+      '<text class="bd-sv" x="' + tx + '" y="' + (ly + 9) + '" text-anchor="' + anchor + '">' + bdFmt(f, v) + (v !== undefined && f.u ? '<tspan class="bd-su"> ' + f.u + "</tspan>" : "") + "</text></g>";
+  }).join("");
+  const said = x ? BD_SPOTS.map(([k]) => BD_F[k].l + " " + bdFmt(BD_F[k], x[k]) + (x[k] !== undefined && BD_F[k].u ? " " + BD_F[k].u : "")).join(", ") : "";
+  return '<svg class="bd-fig" viewBox="0 0 320 268" role="img" aria-label="' + esc(said) + '">' +
+    '<circle class="bd-body" cx="' + BD_CX + '" cy="18" r="13" vector-effect="non-scaling-stroke"/>' +
+    '<path class="bd-body" d="' + BD_FIG_D + '" vector-effect="non-scaling-stroke"/>' + spots + "</svg>";
+}
+
+/* ---- the plate ---- */
 let bdSyncing = false, bdNote = "";
+const BD_OK_KEY = "skillstone-fitdays-ok", BD_NOT_OWNER_KEY = "skillstone-fitdays-not-owner";
+const bdStore = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); } catch (e) {} };
+const bdRead = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+/* the status line: while signed in, when the scale last answered and the way to ask it now; an account the
+   function refused sees none of it */
+function bdStatusHTML() {
+  if (bdSyncing) return '<p class="bd-sync" aria-live="polite">Syncing with Fitdays…</p>';
+  const me = auth && String(auth.user && auth.user.id);
+  if (!auth || bdRead(BD_NOT_OWNER_KEY) === me) return bdNote ? '<p class="bd-sync" aria-live="polite">' + esc(bdNote) + "</p>" : "";
+  const ok = Number(bdRead(BD_OK_KEY)) || 0;
+  const said = bdNote || (ok ? "Synced with Fitdays " + bdAgo(ok) : "Not synced with Fitdays yet");
+  return '<p class="bd-sync" aria-live="polite">' + esc(said) + ' <button type="button" class="bd-now" data-bd="sync">Sync now</button></p>';
+}
 function bdPlateHTML() {
   const rows = bdRows(), last = rows[rows.length - 1], prev = rows[rows.length - 2];
   let h = '<h2 class="dy-ct bd-t">Body</h2>' + '<div class="bd">';
@@ -20093,12 +20160,13 @@ function bdPlateHTML() {
       (dk ? '<span class="bd-dk">' + (dk > 0 ? "+" : "−") + bdFmt(BD_F.kg, Math.abs(dk)) + "</span>" : "") + "</p>" +
       '<p class="bd-when">' + esc(bdDate(last.at)) + " · " + bdAgo(last.at) + (last.src === "fd" && !last.ed ? " · Fitdays" : "") + "</p></div>" +
       bdTrendSVG(rows) +
+      /* the phone draws the figure; the laptop's band keeps the list */
+      bdFigureSVG(last) +
       '<dl class="bd-core">' + BD_FIELDS.filter(f => f.core && f.k !== "kg").map(f =>
         "<div><dt>" + f.l + "</dt><dd>" + bdFmt(f, last[f.k]) + (last[f.k] !== undefined && f.u ? '<span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl>";
   }
   h += '<div class="bd-acts">' + (last ? '<button type="button" class="bd-link" data-bd="all">See all readings</button>' : "") +
-    '<button type="button" class="bd-link" data-bd="add">Add a weigh-in</button></div>' +
-    '<p class="bd-sync" aria-live="polite">' + esc(bdSyncing ? "Syncing with Fitdays…" : bdNote) + "</p></div>";
+    '<button type="button" class="bd-link" data-bd="add">Add a weigh-in</button></div>' + bdStatusHTML() + "</div>";
   return h;
 }
 const bdPlate = () => '<section class="dy-card dy-bodyc" data-pane="4" aria-label="Body">' + dyFrame({ top: "notch" }) + bdPlateHTML() + "</section>";
@@ -20108,35 +20176,37 @@ function bdRepaint() {
   if (typeof dyPaneMark === "function") dyPaneMark(3, bdRows().length > 0);
 }
 
-/* ---- the sync: the owner's scale, at most every six hours, while he is signed in ---- */
+/* ---- the sync: the owner's scale, at most every six hours while he is signed in, or now when he asks ---- */
 async function bdSync(force) {
   if (bdSyncing || !auth) return;
-  let last = 0; try { last = Number(localStorage.getItem(BD_SYNC_KEY)) || 0; } catch (e) {}
+  const me = String(auth.user && auth.user.id);
+  if (!force && bdRead(BD_NOT_OWNER_KEY) === me) return;
+  const last = Number(bdRead(BD_SYNC_KEY)) || 0;
   if (!force && Date.now() - last < BD_SYNC_EVERY) return;
-  bdSyncing = true; bdRepaint();
+  bdSyncing = true; bdNote = ""; bdRepaint();
   try {
-    if (!(await authRefreshIfNeeded())) throw new Error("Your sign-in expired.");
+    if (!(await authRefreshIfNeeded())) throw new Error("Your Skillstone sign-in expired.");
     const newest = book().body.filter(x => x.src === "fd").reduce((m, x) => Math.max(m, x.at || 0), 0);
     const url = ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + "/functions/v1/fitdays";
     const r = await fetch(url, { method: "POST", headers: { apikey: authKey(), Authorization: "Bearer " + auth.access_token,
       "Content-Type": "application/json" }, body: JSON.stringify({ since: newest }) });
     const data = await r.json().catch(() => ({}));
-    /* not the owner: nothing to say, and nothing to ask again for a day. Not configured yet: ask again in ten minutes */
-    if (r.status === 403 || r.status === 503) {
-      try { localStorage.setItem(BD_SYNC_KEY, String(Date.now() - BD_SYNC_EVERY + (r.status === 403 ? 24 * 3600000 : 600000))); } catch (e) {}
-      bdNote = ""; return;
-    }
-    if (!r.ok) throw new Error(data.error || "Fitdays returned " + r.status);
+    bdStore(BD_SYNC_KEY, Date.now());
+    /* not the owner: the plate stops offering the sync to this account; asked for, it says why */
+    if (r.status === 403) { bdStore(BD_NOT_OWNER_KEY, me); bdNote = force ? (data.error || "The scale answers only the board's owner.") : ""; return; }
+    if (r.status === 503) { bdStore(BD_SYNC_KEY, Date.now() - BD_SYNC_EVERY + 600000); bdNote = "The Fitdays sync is not set up on the server yet."; return; }
+    if (!r.ok) throw new Error(data.error || "Fitdays returned " + r.status + ".");
+    bdStore(BD_NOT_OWNER_KEY, null);
     const got = (Array.isArray(data.rows) ? data.rows : []).map(x => bdSan({ ...x, src: "fd" })).filter(Boolean);
     let added = 0;
     const b = book(), byId = new Map(b.body.map(x => [x.id, x]));
     got.forEach(x => { const had = byId.get(x.id); if (had && (had.ed || had.del)) return; if (!had) added++; byId.set(x.id, x); });
     b.body = bdNormalise([...byId.values()]);
     save();
-    try { localStorage.setItem(BD_SYNC_KEY, String(Date.now())); } catch (e) {}
-    bdNote = added ? "Fitdays sent " + added + (added === 1 ? " new weigh-in." : " new weigh-ins.") : "";
+    bdStore(BD_OK_KEY, Date.now());
+    bdNote = added ? "Fitdays sent " + added + (added === 1 ? " new weigh-in." : " new weigh-ins.") : (force ? "Up to date with Fitdays." : "");
   } catch (e) {
-    bdNote = "Fitdays sync did not work: " + (e && e.message ? e.message : e) + " Weigh-ins can still be added by hand.";
+    bdNote = "The Fitdays sync did not work: " + (e && e.message ? e.message : e) + " Weigh-ins can still be added by hand.";
   } finally { bdSyncing = false; bdRepaint(); }
 }
 
@@ -20156,7 +20226,7 @@ function bdAllHTML() {
     '<span class="bd-at">' + new Date(x.at).toTimeString().slice(0, 5) + (x.src === "fd" ? (x.ed ? " · Fitdays, edited" : " · Fitdays") : " · by hand") + "</span></p>" + BD_X + "</div>" +
     '<div class="bd-nav"><button type="button" class="btn btn-ghost btn-sm" data-bd="older"' + (i > 0 ? "" : " disabled") + ">‹ Earlier</button>" +
     '<button type="button" class="btn btn-ghost btn-sm" data-bd="newer"' + (i < rows.length - 1 ? "" : " disabled") + ">Later ›</button></div>" +
-    '<dl class="bd-grid">' + BD_FIELDS.map(f => '<div class="' + (f.core ? "is-core" : "") + '"><dt>' + f.l + "</dt><dd>" + bdFmt(f, x[f.k]) +
+    '<div class="bd-allfig">' + bdFigureSVG(x) + "</div>" + '<dl class="bd-grid">' + BD_FIELDS.map(f => '<div class="' + (f.core ? "is-core" : "") + '"><dt>' + f.l + "</dt><dd>" + bdFmt(f, x[f.k]) +
       (x[f.k] !== undefined && f.u ? ' <span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl>" +
     '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-bd="edit" data-id="' + esc(x.id) + '">Edit this weigh-in</button>' +
     '<button type="button" class="btn btn-primary btn-sm" data-dlg-close>Done</button></div></form>';
@@ -20212,7 +20282,8 @@ function bdDelete(id) {
 document.addEventListener("click", ev => {
   const t = ev.target.closest && ev.target.closest("[data-bd]"); if (!t) return;
   const a = t.dataset.bd, rows = bdRows();
-  if (a === "add") { bdEditId = null; bdOpen("form"); }
+  if (a === "sync") bdSync(true);
+  else if (a === "add") { bdEditId = null; bdOpen("form"); }
   else if (a === "all") { bdView = (rows[rows.length - 1] || {}).id; bdOpen("all"); }
   else if (a === "older" || a === "newer") { const i = rows.findIndex(r => r.id === bdView); const n = rows[i + (a === "older" ? -1 : 1)]; if (n) { bdView = n.id; bdOpen("all"); } }
   else if (a === "edit") { bdEditId = t.dataset.id; bdOpen("form"); }
