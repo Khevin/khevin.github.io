@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+<defs>
+<linearGradient id="rim" x1="8" y1="3" x2="38" y2="46" gradientUnits="userSpaceOnUse"><stop stop-color="#f2d795"/><stop offset=".35" stop-color="#ae7c39"/><stop offset=".62" stop-color="#51341d"/><stop offset="1" stop-color="#c59650"/></linearGradient>
+<radialGradient id="well" cx=".35" cy=".25" r=".8"><stop stop-color="#443728"/><stop offset="1" stop-color="#17130f"/></radialGradient>
+<linearGradient id="gold" x1="14" y1="8" x2="34" y2="38" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0bd"/><stop offset=".45" stop-color="#dbac60"/><stop offset="1" stop-color="#98662f"/></linearGradient>
+<linearGradient id="paper" x1="13" y1="12" x2="30" y2="39" gradientUnits="userSpaceOnUse"><stop stop-color="#f7e7b8"/><stop offset=".6" stop-color="#d0ad70"/><stop offset="1" stop-color="#ae8146"/></linearGradient>
+</defs>
+<circle cx="24" cy="25" r="22" fill="#0f0c09" fill-opacity=".7"/>
+<circle cx="24" cy="23.5" r="21.5" fill="url(#well)" stroke="url(#rim)" stroke-width="1.7"/>
+<circle cx="24" cy="23.5" r="18.9" stroke="#e9c77e" stroke-opacity=".22" stroke-width=".65"/>
+<path d="M25 26C23 23 16 19 16 14c0-6 7-7 10-2 3-5 10-4 10 2 0 5-8 10-11 12Z" fill="url(#gold)" stroke="#4d301c" stroke-width="1.4"/><path d="m8 31 7-6 7 2h7q4 0 3 4l5-3q5-2 5 2L30 39H18l-6 3-5-10z" fill="url(#paper)" stroke="#53341e" stroke-width="1.4" stroke-linejoin="round"/><path d="m17 31 7 2h6m-18-5 6 11" fill="none" stroke="#956b38" stroke-width="1.4" stroke-linecap="round"/>
+</svg>
+

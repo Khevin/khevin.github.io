@@ -4642,6 +4642,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-rung { stroke: rgba(82,70,47,0.9); stroke-width: 1; stroke-dasharray: 2 5; }
 .ch-seg { stroke: var(--gold); stroke-width: 1.5; }
 .ch-res { stroke: var(--astral); stroke-width: 1.25; opacity: 0.7; }
+.ch-seg.is-gap, .ch-res.is-gap { stroke-dasharray: 4 5; opacity: 0.6; }
 .ch-mcell { position: relative; height: 100px; }
 .ch-mdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
   box-shadow: 0 0 0 2px #17130F, 0 6px 14px rgba(0,0,0,0.5); }
@@ -4658,16 +4659,22 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-feel:empty { display: none; }
 .ch-r6 { grid-row: 6; padding-top: var(--s3); }
 
-/* the diary marks: a page (1½u × 2u) and three squares (1u), half a unit apart; a filled mark is a written field */
-.ch-marks { display: flex; justify-content: center; align-items: center; gap: calc(var(--u) / 2); }
-.ch-mk { display: inline-grid; place-items: center; width: var(--u); height: var(--u); border: 1px solid var(--mortar-2); border-radius: 2px; color: var(--mortar-2); flex: none; }
-.ch-mk-page { width: calc(var(--u) * 1.5); height: calc(var(--u) * 2); }
-.ch-mk svg { width: 70%; height: 70%; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.ch-mk-page svg { width: 80%; height: 82%; }
-.ch-mk.is-on { background: var(--gold); border-color: var(--gold); color: var(--cave); }
+/* Readable brass objects, not tiny glyphs inside filled squares. The check distinguishes
+   recorded entries by shape as well as brightness; unrecorded emblems remain legible. */
+.ch-marks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); justify-items: center; align-items: center; gap: var(--s1); max-width: 140px; margin-inline: auto; }
+.ch-mk { position: relative; display: inline-grid; place-items: center; width: 32px; max-width: 100%; aspect-ratio: 1; flex: none; vertical-align: middle; }
+.ch-mk > img { display: block; width: 100%; height: 100%; opacity: .5; filter: grayscale(.85) brightness(.8); }
+.ch-mk.is-on > img { opacity: 1; filter: none; }
+.ch-mk-check { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; }
+.ch-mk-check circle { fill: var(--gold); stroke: var(--cave); stroke-width: 1; }
+.ch-mk-check path { fill: none; stroke: var(--cave); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.ch-r6 { padding-inline: var(--s1); }
 .ch-wfoot { display: flex; justify-content: space-between; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-top: var(--s5); padding-top: var(--s3); border-top: 1px solid rgba(62,53,39,0.7); }
 .ch-legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: 0; }
 .ch-lg { display: inline-flex; align-items: center; gap: var(--s2); font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
+.ch-lg .ch-mk { width: 28px; }
+.ch-lg .ch-mk > img { opacity: 1; filter: none; }
+.ch-lg .ch-mk-check { display: none; }
 .ch-wcount { margin: 0; font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust); font-variant-numeric: tabular-nums; }
 
 /* the lower zone: the record and the reflection */
@@ -4682,12 +4689,20 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-chev { color: var(--gold); }
 .ch-nums { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); margin: var(--s2) 0 var(--s3); font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust); font-variant-numeric: tabular-nums; }
 .ch-nums.is-empty { color: var(--ash); }
+/* the ledger of done things: each row is a button, the way to where the thing lives */
 .ch-rows { list-style: none; margin: 0; padding: 0; }
-.ch-rows li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--s3); align-items: center; padding: var(--s2) 0; border-top: 1px solid rgba(62,53,39,0.7); }
-.ch-rk { font-family: var(--f-display); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.08em; color: var(--gold); white-space: nowrap; }
+.ch-rows li { display: block; }
+.ch-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 2.2rem auto; gap: var(--s3); align-items: center; width: 100%; min-height: 44px; padding: var(--s1) var(--s1);
+  background: none; border: 0; border-top: 1px solid rgba(62,53,39,0.7); color: var(--parchment); font: inherit; text-align: left; cursor: pointer; }
+.ch-row:hover .ch-rt { color: var(--gold-2); }
+.ch-rk { font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
 .ch-rt { color: var(--dust); font-size: 0.875rem; overflow-wrap: anywhere; }
-.ch-hours { list-style: none; margin: var(--s2) 0 0; padding: 0; }
-.ch-hours li { display: flex; justify-content: space-between; gap: var(--s3); padding: 3px 0; font-size: 0.875rem; color: var(--dust); }
+.ch-rday { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); text-align: right; }
+.ch-hcount { font-family: var(--f-mono); font-size: 0.75rem; color: var(--dust); text-align: right; width: 2.4ch; font-variant-numeric: tabular-nums; }
+.ch-htot th, .ch-htot td { font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--ash); text-transform: none; border-top: 1px solid var(--mortar-2); padding: var(--s1); font-weight: 400; }
+.ch-htot td { text-align: center; height: 28px; }
+.ch-rfoot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s2) var(--s5); margin-top: var(--s5); padding-top: var(--s3); border-top: 1px solid rgba(62,53,39,0.7); }
+.ch-prac { margin: 0; font-family: var(--f-mono); font-size: 0.8125rem; color: var(--dust); font-variant-numeric: tabular-nums; }
 .ch-mono { font-family: var(--f-mono); color: var(--parchment); font-variant-numeric: tabular-nums; }
 .ch-quiet { margin: var(--s2) 0; color: var(--ash); font-size: 0.875rem; }
 .ch-hab { width: 100%; border-collapse: collapse; }
@@ -4760,13 +4775,18 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-fmarks th { text-align: left; font-family: var(--f-ui); font-weight: 400; font-size: 0.8125rem; color: var(--dust); padding: var(--s1) var(--s2) var(--s1) 0; white-space: nowrap; }
 .ch-fmarks td { text-align: center; padding: var(--s1) 0; }
 .ch-fmarks .ch-mk { vertical-align: middle; }
-.ch-fmarks .ch-mk-page { width: var(--u); height: calc(var(--u) * 1.4); }
+.ch-fmarks .ch-mk { width: 24px; }
+.ch-fmarks .ch-mk-check { width: 9px; height: 9px; }
 
 .ch-step:focus-visible, .ch-link:focus-visible, .ch-fcard:focus-visible, .ch-hand:focus-visible, .ch-today:focus-visible, .ch-intent-from:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 @media (max-width: 1100px) {
   .ch-rec { grid-template-columns: minmax(0, 1fr); }
   .ch-low { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .ch-marks { grid-template-columns: repeat(2, 28px); justify-content: center; gap: var(--s1); }
+  .ch-marks .ch-mk { width: 28px; }
 }
 @media (max-width: 700px) {
   .ch { padding-top: var(--s2); }
@@ -4780,8 +4800,8 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ch-fstrip { display: grid; }
   .ch-wfoot { justify-content: flex-end; }
   .ch-hab td { width: 30px; height: 36px; }
-  .ch-rows li { grid-template-columns: auto minmax(0, 1fr); }
-  .ch-rows li .ch-link-sm { grid-column: 1 / -1; justify-self: start; }
+  .ch-row { grid-template-columns: 4rem minmax(0, 1fr) 2rem; }
+  .ch-row .ch-chev { display: none; }
 }
 @media (max-width: 360px) {
   .ch-fan { --cw: 136px; --chh: 227px; }
@@ -19196,20 +19216,42 @@ function chFacts(wk) {
   const prog = (state.journal || []).filter(j => inWin(j.ts) &&
       ((j.kind === "prof" && String(j.text).indexOf("—") > -1) || (j.kind === "level" && typeof j.from === "number") || j.kind === "book" || j.kind === "attr"))
     .map(j => ({ ts: j.ts, sid: j.sid, kind: j.kind, text: j.text, name: ((state.skills.find(z => z.id === j.sid) || {}).name) || "" }));
+  /* the ledger of done things (DECISIONS.md, option A): everything finished this week, by day where the record
+     knows the day — a quest claimed, a step ticked, a day entry or a note crossed off, a bucket item crossed, a
+     book finished, a tier crossed, a rung moved. Each row is the way to where it lives. */
+  const dowOf = ts => dyDow(new Date(ts - DAY_TURNS_AT * 3600000));
+  const ledger = [];
+  questsDone.forEach(q => ledger.push({ kind: "Quest", text: q.title, day: dowOf(q.ts), ts: q.ts, go: "quest", id: q.id }));
+  Object.keys(obj).forEach(id => { const o = obj[id]; if (!o || typeof o !== "object") return;
+    Object.keys(o).forEach(k => { if (!inWin(o[k])) return; const x = qRecById(id), st = x ? (qSteps(x).find(z => z.id === k) || {}) : {};
+      ledger.push({ kind: "Step", text: (st.title || "a step") + (x ? " · " + x.title : ""), day: dowOf(o[k]), ts: o[k], go: "quest", id }); }); });
+  const dayEntries = b.days[wk] || {};
+  Object.keys(dayEntries).forEach(d => (Array.isArray(dayEntries[d]) ? dayEntries[d] : []).forEach(t => { if (t.done) ledger.push({ kind: "Task", text: t.text, day: +d, ts: 0, go: "journal", id: "" }); }));
+  (b.notes[wk] || []).forEach(n => { if (n.done) ledger.push({ kind: "Note", text: n.text, day: null, ts: 0, go: "journal", id: "" }); });
+  b.bucket.forEach(x => { if (x.done && x.doneWk === wk) ledger.push({ kind: "Bucket", text: x.text, day: null, ts: 0, go: "journal", id: "" }); });
+  prog.forEach(j => ledger.push({ kind: j.kind === "book" ? "Book" : j.kind === "prof" ? "Tier" : j.kind === "attr" ? "Attribute" : "Rung", text: j.text, day: dowOf(j.ts), ts: j.ts, go: j.sid ? "skill" : "", id: j.sid || "" }));
+  ledger.sort((a, c) => ((a.day === null) - (c.day === null)) || (a.day - c.day) || (a.ts - c.ts));
   const close = (b.close && b.close[wk]) || {};
   const prevWk = weekKeyOf(addDays(mon, -7)), prev = (b.close && b.close[prevWk]) || null;
-  return { wk, mon, days, mornings, shorts, habits, notesN, crossed, open, questsDone, steps, mins, hours, prog, close, prevWk, prev };
+  return { wk, mon, days, mornings, shorts, habits, notesN, crossed, open, questsDone, steps, mins, hours, prog, ledger, close, prevWk, prev };
 }
 
-/* the diary marks, in the crest hand: a page for the logbook; a book, a numeral and a laurel for the three short fields */
+/* Four brass emblems share the mood medallions' material. Standalone SVG artwork stays
+   crisp in the day strip, legend and mobile table; each mark names its recorded state. */
 const CH_MARK = {
-  page:   '<svg viewBox="0 0 24 32" aria-hidden="true"><path d="M4 2h11l5 5v23H4z"/><path d="M15 2v5h5"/></svg>',
-  book:   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5c3-1.6 6-1.6 9 0v13c-3-1.6-6-1.6-9 0zM12 5.5c3-1.6 6-1.6 9 0v13c-3-1.6-6-1.6-9 0"/></svg>',
-  one:    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8l4-3v14M8 19h10"/></svg>',
-  thanks: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20c-4.5-4-5.5-9.5-2-14.5 4.5 3.5 5.5 9 2 14.5zM12 20l5.5-6.5"/></svg>'
+  page: "assets/chronicle/logbook.svg",
+  book: "assets/chronicle/reading.svg",
+  one: "assets/chronicle/priority.svg",
+  thanks: "assets/chronicle/gratitude.svg"
 };
 const CH_MARK_L = { page: "Logbook", book: "Reading", one: "#1 today", thanks: "Grateful for" };
-const chMark = (k, on, title) => '<span class="ch-mk ch-mk-' + k + (on ? " is-on" : "") + '"' + (title ? ' title="' + esc(title) + '"' : "") + ">" + CH_MARK[k] + "</span>";
+const chMark = (k, on, title) => {
+  const label = (title || CH_MARK_L[k]).replace(/: written$/, "") + (on === null ? "" : on ? ": recorded" : ": not recorded");
+  return '<span class="ch-mk ch-mk-' + k + (on ? " is-on" : "") + '"' +
+    (on === null ? ' aria-hidden="true"' : ' role="img" aria-label="' + esc(label) + '"') + ' title="' + esc(label) + '">' +
+    '<img src="' + CH_MARK[k] + '" alt="" width="32" height="32" decoding="async">' +
+    (on ? '<svg class="ch-mk-check" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5.5"/><path d="m3.3 6 1.8 1.8 3.7-3.7"/></svg>' : "") + "</span>";
+};
 function chMarksHTML(e) {
   const on = k => !!(e && e[k]);
   return '<div class="ch-marks">' + ["page", "book", "one", "thanks"].map(k => chMark(k, on(k), CH_MARK_L[k] + (on(k) ? ": written" : ""))).join("") + "</div>";
@@ -19244,10 +19286,17 @@ function chMoodSVG(F) {
   const moods = F.days.map(x => (x.e && x.e.mood) || 0), vals = F.days.map(chRes);
   let p = '<svg class="ch-mline ch-r3" viewBox="0 0 700 100" preserveAspectRatio="none" aria-hidden="true">';
   for (let i = 0; i < 5; i++) p += '<line x1="0" x2="700" y1="' + (10 + i * 20) + '" y2="' + (10 + i * 20) + '" class="ch-rung" vector-effect="non-scaling-stroke"/>';
-  for (let i = 0; i < 6; i++) if (vals[i] !== null && vals[i + 1] !== null)
-    p += '<line x1="' + (i * 100 + 50) + '" y1="' + chResY(vals[i]) + '" x2="' + (i * 100 + 150) + '" y2="' + chResY(vals[i + 1]) + '" class="ch-res" vector-effect="non-scaling-stroke"/>';
-  for (let i = 0; i < 6; i++) if (moods[i] && moods[i + 1])
-    p += '<line x1="' + (i * 100 + 50) + '" y1="' + chMoodY(moods[i]) + '" x2="' + (i * 100 + 150) + '" y2="' + chMoodY(moods[i + 1]) + '" class="ch-seg" vector-effect="non-scaling-stroke"/>';
+  /* consecutive entries are joined: solid between neighbouring days, dashed across the days that have no entry —
+     the dash says the line is bridging, not measuring (the owner's call, 22 Sep) */
+  const join = (ys, cls) => {
+    const idx = ys.map((y, i) => y === null ? -1 : i).filter(i => i > -1);
+    for (let k = 1; k < idx.length; k++) {
+      const a = idx[k - 1], b = idx[k];
+      p += '<line x1="' + (a * 100 + 50) + '" y1="' + ys[a] + '" x2="' + (b * 100 + 50) + '" y2="' + ys[b] + '" class="' + cls + (b - a > 1 ? " is-gap" : "") + '" vector-effect="non-scaling-stroke"/>';
+    }
+  };
+  join(vals.map(v => v === null ? null : chResY(v)), "ch-res");
+  join(moods.map(m => m ? chMoodY(m) : null), "ch-seg");
   return p + "</svg>";
 }
 /* one day's marks on the strip: the mood's own medallion at its rung, the reading's lilac point behind it, a dash for no mood */
@@ -19277,7 +19326,7 @@ function chGridHTML(F) {
   return h + "</div>";
 }
 function chFootHTML(F) {
-  const leg = ["page", "book", "one", "thanks"].map(k => '<span class="ch-lg">' + chMark(k, false) + " " + CH_MARK_L[k] + "</span>").join("");
+  const leg = ["page", "book", "one", "thanks"].map(k => '<span class="ch-lg">' + chMark(k, null) + " " + CH_MARK_L[k] + "</span>").join("");
   const parts = [];
   if (F.mornings) parts.push(chN(F.mornings, "morning", "mornings") + " written");
   if (F.shorts) parts.push(F.shorts + " short " + (F.shorts === 1 ? "entry" : "entries"));
@@ -19332,37 +19381,38 @@ function chFstripHTML(F) {
     "</tbody></table></div>";
 }
 
-/* the week's record: the Journal as numbers that open the book, progress as numbers and rows, the habit grid */
+/* the week's record (DECISIONS.md, option A): the ledger of done things, the habit grid with the Journal's own
+   Marked row and a count at each habit's end, and practice as one line at the foot beside the way to the Journal */
+const CH_LEDGER_CAP = 14;
 function chRecordHTML(F) {
-  const jparts = [];
-  if (F.notesN) jparts.push(chN(F.notesN, "note", "notes"));
-  if (F.crossed) jparts.push(F.crossed + " crossed off");
-  if (F.open) jparts.push(F.open + " in the bucket");
-  const pparts = [];
-  if (F.questsDone.length) pparts.push(chN(F.questsDone.length, "quest completed", "quests completed"));
-  if (F.steps) pparts.push(chN(F.steps, "step ticked", "steps ticked"));
-  if (F.mins) pparts.push(chDur(F.mins) + " practice");
-  let rows = "";
-  F.questsDone.forEach(q => { rows += '<li><span class="ch-rk">Quest</span><span class="ch-rt">' + esc(q.title) + '</span><button type="button" class="ch-link ch-link-sm" data-ch="quest" data-id="' + esc(q.id) + '">View in Quests <span class="ch-chev">›</span></button></li>'; });
-  F.prog.forEach(j => { rows += '<li><span class="ch-rk">' + esc(j.name || (j.kind === "book" ? "Book" : j.kind === "attr" ? "Attribute" : "")) + '</span><span class="ch-rt">' + esc(j.text) + "</span>" +
-    (j.sid ? '<button type="button" class="ch-link ch-link-sm" data-ch="skill" data-id="' + esc(j.sid) + '">View in Skills <span class="ch-chev">›</span></button>' : "<span></span>") + "</li>"; });
-  const hours = F.hours.map(x => "<li><span>" + esc(x.name) + '</span><span class="ch-mono">' + chDur(x.mins) + "</span></li>").join("");
+  const rows = F.ledger.slice(0, CH_LEDGER_CAP), more = F.ledger.length - rows.length;
+  const row = r => '<li><button type="button" class="ch-row"' + (r.go ? ' data-ch="' + r.go + '"' : "") + (r.id ? ' data-id="' + esc(r.id) + '"' : "") + ">" +
+    '<span class="ch-rk">' + r.kind + '</span><span class="ch-rt">' + esc(r.text) + '</span><span class="ch-rday">' + (r.day === null ? "" : DOW_SHORT[r.day]) + '</span><span class="ch-chev">›</span></button></li>';
+  const ledger = rows.length
+    ? '<ul class="ch-rows">' + rows.map(row).join("") + "</ul>" +
+      (more ? '<button type="button" class="ch-link is-quiet" data-ch="journal">and ' + more + ' more in the Journal <span class="ch-chev">›</span></button>' : "")
+    : '<p class="ch-nums is-empty">–</p>';
+  const perDay = [0, 1, 2, 3, 4, 5, 6].map(d => F.habits.filter(r => r.marks[d] !== "none").length);
   const hab = F.habits.length
-    ? '<table class="ch-hab"><thead><tr><th scope="col"><span class="sr-only">Habit</span></th>' + DOW_SHORT.map(d => '<th scope="col">' + d + "</th>").join("") + "</tr></thead><tbody>" +
+    ? '<table class="ch-hab"><thead><tr><th scope="col"><span class="sr-only">Habit</span></th>' + DOW_SHORT.map(d => '<th scope="col">' + d + "</th>").join("") + '<th scope="col"><span class="sr-only">Marks</span></th></tr></thead><tbody>' +
       F.habits.map(r => '<tr><th scope="row">' + esc(r.hb.name) + "</th>" +
-        r.marks.map((m, d) => '<td class="' + (r.sched[d] ? "" : "off") + '"' + (m === "none" ? "" : ' title="' + esc(DOW_LONG[d] + ": " + m) + '"') + ">" + markSVG(m) + "</td>").join("") + "</tr>").join("") +
+        r.marks.map((m, d) => '<td class="' + (r.sched[d] ? "" : "off") + '"' + (m === "none" ? "" : ' title="' + esc(DOW_LONG[d] + ": " + m) + '"') + ">" + markSVG(m) + "</td>").join("") +
+        '<td class="ch-hcount">' + (r.marks.filter(m => m !== "none").length || "·") + "</td></tr>").join("") +
+      '<tr class="ch-htot"><th scope="row">Marked</th>' + perDay.map(n => "<td>" + (n || "·") + "</td>").join("") + "<td></td></tr>" +
       "</tbody></table>" +
       '<p class="ch-hleg"><span><i class="ch-hsq"></i>Unmarked</span><span>' + markSVG("partial") + "Partial</span><span>" + markSVG("expected") + "Done</span><span>" + markSVG("excellent") + "Excellent</span></p>"
     : '<p class="ch-quiet">No habits on the board.</p>';
+  const jparts = [];
+  if (F.notesN) jparts.push(chN(F.notesN, "note", "notes"));
+  if (F.open) jparts.push(F.open + " in the bucket");
+  const prac = F.mins ? '<p class="ch-prac">' + chDur(F.mins) + " practice" + F.hours.map(x => " · " + esc(x.name) + " " + chDur(x.mins)).join("") + "</p>" : "";
   return '<section class="ch-plate ch-record" aria-label="The week’s record">' + dyFrame({ top: "notch" }) +
     '<h2 class="ch-pt">The week’s record</h2><div class="ch-rec"><div class="ch-col">' +
-    '<h3 class="ch-sh">Journal</h3>' +
-    (jparts.length ? '<button type="button" class="ch-link" data-ch="journal">' + esc(jparts.join(" · ")) + ' <span class="ch-chev">›</span></button>'
-                   : '<button type="button" class="ch-link is-quiet" data-ch="journal">Open the week <span class="ch-chev">›</span></button>') +
-    '<h3 class="ch-sh">Progress &amp; practice</h3>' +
-    (pparts.length ? '<p class="ch-nums">' + pparts.map(p => "<span>" + esc(p) + "</span>").join("") + "</p>" : '<p class="ch-nums is-empty">–</p>') +
-    (rows ? '<ul class="ch-rows">' + rows + "</ul>" : "") + (hours ? '<ul class="ch-hours">' + hours + "</ul>" : "") +
-    '</div><div class="ch-col"><h3 class="ch-sh">Habits</h3>' + hab + "</div></div></section>";
+    '<h3 class="ch-sh">Done this week</h3>' + ledger +
+    '</div><div class="ch-col"><h3 class="ch-sh">Habits</h3>' + hab + "</div></div>" +
+    '<footer class="ch-rfoot">' + prac +
+    '<button type="button" class="ch-link' + (jparts.length ? "" : " is-quiet") + '" data-ch="journal">' + esc(jparts.length ? jparts.join(" · ") + " · open the week" : "Open the week in the Journal") + ' <span class="ch-chev">›</span></button>' +
+    "</footer></section>";
 }
 
 /* the reflection: three lines in his hand; the third may point at one active quest. No button anywhere. */
