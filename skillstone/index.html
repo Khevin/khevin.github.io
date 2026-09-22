@@ -4049,10 +4049,10 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
      Horizontal drags belong to the plate; pan-y is set on every element in it because touch-action
      stops counting at the nearest scroller. A text input keeps auto, for panning its own line. */
   #viewDiary { margin: 0 calc(-1 * var(--s4)); padding: 0 var(--s4); overflow-x: clip; }
-  .dy2 > .dy-path { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: var(--s4); }
+  .dy2 > .dy-path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-bottom: var(--s4); }
   .dy2[data-pane="1"] > [data-pane]:not([data-pane="1"]), .dy2[data-pane="2"] > [data-pane]:not([data-pane="2"]),
   .dy2[data-pane="3"] > [data-pane]:not([data-pane="3"]), .dy2[data-pane="4"] > [data-pane]:not([data-pane="4"]),
-  .dy2[data-pane="1"] .dy-pday { display: none; }
+  .dy2[data-pane="5"] > [data-pane]:not([data-pane="5"]), .dy2[data-pane="1"] .dy-pday { display: none; }
   .dy2, .dy2 *:not(input) { touch-action: pan-y pinch-zoom; }
   .dy2.is-drag { -webkit-user-select: none; user-select: none; }
   /* Step II is the page: the logbook reaches the foot of the screen, so a screen holds as many lines
@@ -4986,34 +4986,46 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-mk:not(.is-on) .ch-tip { color: var(--dust); }
 /* ===== /chronicle:css ===== */
 /* ===== body:css =====
-   The body plate on the Diary (DECISIONS.md, 22 Sep 2026). Installed by .body/splice.mjs between these
-   markers; edit there and re-run. The Diary's own grid is overridden here, so the plate's placement
-   lives with the plate. */
-.dy-bodyc { padding: 36px 28px 22px; }
-/* not a scroller: the Diary's swipe leaves a gesture that starts in one alone, and on the phone the browser then took the
-   sideways drag as Back. The plate grows with what it holds instead. */
+   The Diary's morning panel (DECISIONS.md, 22 Sep 2026): body readings and the morning's rituals. Installed by
+   .body/splice.mjs between these markers; edit there and re-run. The Diary's own grid is extended here, so the
+   panel's placement lives with the panel. */
+
+/* ---- the body readings ---- */
+.dy-bodyc, .dy-ritc { padding: 36px 28px 24px; }
 .bd { flex: 1 1 auto; width: 100%; display: flex; flex-direction: column; gap: var(--s2); }
-/* the weight leads, measured in the mono face; the change since the last weigh-in beside it, unsigned by colour */
+.bd-cap { margin: 0; text-align: center; font-family: var(--f-read); font-size: 0.875rem; color: var(--dust); }
+.bd-lead { display: grid; gap: 2px; }
+/* the weight leads, in the measured face */
 .bd-kg { margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 6px; font-family: var(--f-mono); color: var(--parchment); font-variant-numeric: tabular-nums; }
-.bd-n { font-size: 2rem; line-height: 1.1; }
-.bd-u { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ash); margin-left: 2px; }
-.bd-dk { font-size: 0.8125rem; color: var(--dust); margin-left: var(--s2); }
-.bd-when { margin: 0; text-align: center; font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); }
-.bd-trend { display: block; width: 100%; height: 40px; margin: var(--s1) 0; }
+.bd-n { font-size: 2.25rem; line-height: 1.1; }
+.bd-u { font-family: var(--f-mono); font-size: 0.8125rem; color: var(--ash); margin-left: 2px; }
+.bd-kgl { margin: 0; display: flex; justify-content: center; gap: var(--s3); font-family: var(--f-ui); font-size: 0.875rem; color: var(--dust); }
+.bd-prev { color: var(--ash); }
+.bd-trend { display: block; width: 100%; height: 48px; margin: var(--s2) 0; }
 .bd-trend polyline { stroke: var(--gold); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
-.bd-core { margin: 0; display: grid; }
-.bd-core > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); padding: 6px 0; border-bottom: 1px solid rgba(232,176,84,0.22); }
-.bd-core > div:last-child { border-bottom: 0; }
-.bd-core dt { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
-.bd-core dd { margin: 0; font-family: var(--f-mono); font-size: 0.875rem; color: var(--parchment); font-variant-numeric: tabular-nums; }
-.bd-empty { margin: auto 0 0; text-align: center; color: var(--ash); font-size: 0.875rem; }
-.bd-acts { margin-top: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--s4); }
-.bd-link { min-height: 44px; padding: 0 var(--s1); background: none; border: 0; color: var(--gold); font-family: var(--f-display); font-weight: 700;
-  font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
-@media (hover: hover) { .bd-link:hover { color: var(--gold-2); } }
-.bd-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
-.bd-sync { margin: 0; min-height: 0; text-align: center; font-family: var(--f-mono); font-size: 0.625rem; line-height: 1.4; color: var(--ash); }
-.bd-sync:empty { display: none; }
+/* the list is the laptop column's; the figure is the phone's, the stack's and the dialog's */
+.bd-core { display: none; margin: var(--s1) 0 0; }
+.bd-core > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); padding: 11px 0; border-top: 1px solid rgba(232,176,84,0.2); }
+.bd-core > div:last-child { border-bottom: 1px solid rgba(232,176,84,0.2); }
+.bd-core dt { font-family: var(--f-ui); font-size: 0.9375rem; color: var(--parchment); }
+.bd-core dd { margin: 0; font-family: var(--f-mono); font-size: 0.9375rem; color: var(--parchment); font-variant-numeric: tabular-nums; }
+.bd-core .bd-u { font-size: 0.75rem; }
+.bd-empty { margin: var(--s4) 0; text-align: center; color: var(--ash); font-size: 0.9375rem; }
+.bd-acts { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin-top: var(--s3); }
+.bd-link { display: inline-flex; align-items: center; gap: var(--s2); min-height: 44px; padding: 0 var(--s1); background: none; border: 0; color: var(--gold);
+  font-family: var(--f-ui); font-size: 0.9375rem; cursor: pointer; }
+.bd-link .rt-g { width: 16px; height: 16px; transition: transform var(--t-fast) var(--e-out); }
+@media (hover: hover) { .bd-link:hover { color: var(--gold-2); } .bd-link:hover .rt-g { transform: translateX(3px); } }
+/* the one way to write a reading by hand: an outlined plate, so the sync stays the ordinary way in */
+.bd-edit { display: inline-flex; align-items: center; justify-content: center; gap: var(--s2); width: 100%; max-width: 360px; min-height: 44px; padding: 0 var(--s4);
+  background: none; border: 1px solid rgba(232,176,84,0.55); border-radius: var(--r-sm); color: var(--parchment); font-family: var(--f-ui); font-size: 0.9375rem; cursor: pointer;
+  transition: border-color var(--t-fast) var(--e-out), color var(--t-fast) var(--e-out); }
+.bd-edit .rt-g { width: 17px; height: 17px; color: var(--gold); }
+@media (hover: hover) { .bd-edit:hover:not(:disabled) { border-color: var(--gold); color: var(--gold-2); } }
+.bd-edit:disabled { opacity: 0.4; cursor: default; }
+.bd-sync { margin: var(--s2) 0 0; text-align: center; font-family: var(--f-mono); font-size: 0.6875rem; line-height: 1.5; color: var(--ash); }
+.bd-now { min-height: 44px; margin-block: -14px; padding: 0 var(--s1); background: none; border: 0; color: var(--gold); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+@media (hover: hover) { .bd-now:hover { color: var(--gold-2); } }
 
 /* the figure: one gold hairline for the body, the readings in the plate's faces, leaders at half strength */
 .bd-fig { display: block; width: 100%; max-width: 360px; height: auto; margin: var(--s2) auto 0; overflow: visible; }
@@ -5023,66 +5035,220 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-sl { font-family: var(--f-display); font-weight: 700; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--ash); }
 .bd-sv { font-family: var(--f-mono); font-size: 15px; fill: var(--parchment); font-variant-numeric: tabular-nums; }
 .bd-su { font-size: 10px; fill: var(--ash); }
-/* the list is the laptop band's; the figure is the phone's and the dialog's */
-.dy-bodyc .bd-core { display: none; }
-.bd-now { min-height: 44px; margin-block: -12px; padding: 0 var(--s1); background: none; border: 0; color: var(--gold); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-@media (hover: hover) { .bd-now:hover { color: var(--gold-2); } }
-.bd-now:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
-.bd-allfig { margin: 0 auto; width: 100%; max-width: 340px; }
 
-/* the dialogs */
-.bd-at { display: block; margin-top: 2px; font-family: var(--f-mono); font-weight: 400; font-size: 0.6875rem; color: var(--ash); }
-.bd-nav { display: flex; justify-content: space-between; }
-.bd-grid { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s5); }
-.bd-grid > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); padding: 7px 0; border-bottom: 1px solid var(--mortar); }
-.bd-grid dt { font-size: 0.8125rem; color: var(--dust); }
-.bd-grid .is-core dt { color: var(--parchment); }
-.bd-grid dd { margin: 0; font-family: var(--f-mono); font-size: 0.875rem; color: var(--parchment); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bd-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
-.bd-more summary { cursor: pointer; font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); min-height: 44px; display: flex; align-items: center; }
-.bd-more[open] summary { margin-bottom: var(--s2); }
-.bd-dlg .bk-foot { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s2); }
-.bd-dlg .btn-danger { margin-right: auto; }
+/* ---- the rituals ---- */
+.rt-t-s { display: none; }
+.rt { display: flex; flex-direction: column; gap: var(--s2); width: 100%; }
+.rt-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s2) var(--s5); margin-bottom: var(--s1); }
+.rt-count { margin: 0; font-family: var(--f-read); font-size: 0.9375rem; color: var(--dust); }
+/* one bead per ritual, filled as each is done: the count said as a length, never a ring */
+.rt-bar { display: flex; gap: 6px; flex: 0 1 300px; min-width: 120px; }
+.rt-bar i { flex: 1; height: 8px; border-radius: 4px; border: 1px solid rgba(232,176,84,0.35); transition: background var(--t-settle) var(--e-out); }
+.rt-bar i.is-on { background: var(--gold); border-color: var(--gold); }
+.rt-list { list-style: none; margin: 0; padding: 0; }
+.rt-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto auto; grid-template-areas: "ico txt ml tick"; align-items: center; column-gap: var(--s4);
+  min-height: 58px; padding: var(--s1) 0; border-top: 1px solid rgba(232,176,84,0.18); }
+.rt-row:last-child { border-bottom: 1px solid rgba(232,176,84,0.18); }
+.rt-ico { grid-area: ico; width: 26px; height: 26px; color: var(--gold); }
+.rt-ico .rt-g, .rc-ico .rt-g { display: block; width: 100%; height: 100%; }
+.rt-txt { grid-area: txt; display: grid; min-width: 0; }
+.rt-name { font-family: var(--f-read); font-size: 1rem; line-height: 1.35; color: var(--parchment); }
+.rt-note { font-family: var(--f-read); font-size: 0.8125rem; line-height: 1.35; color: var(--ash); }
+.rt-ml { grid-area: ml; display: flex; align-items: center; gap: var(--s1); }
+.rt-step { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; background: none; border: 0; color: var(--gold); cursor: pointer; }
+.rt-step .rt-g { width: 28px; height: 28px; padding: 6px; border: 1px solid rgba(232,176,84,0.45); border-radius: 50%; }
+.rt-step:disabled { opacity: 0.35; cursor: default; }
+.rt-mlv { min-width: 76px; padding: 7px 10px; text-align: center; border: 1px solid var(--mortar-2); border-radius: var(--r-sm); background: var(--socket);
+  font-family: var(--f-mono); font-size: 0.9375rem; color: var(--parchment); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rt-glass { position: relative; height: 34px; margin-left: var(--s2); padding: 0 var(--s3); background: none; border: 1px solid rgba(232,176,84,0.45); border-radius: var(--r-sm);
+  color: var(--parchment); font-family: var(--f-mono); font-size: 0.8125rem; white-space: nowrap; cursor: pointer; }
+.rt-glass::after { content: ""; position: absolute; inset: -5px 0; }   /* 44px to the finger */
+@media (hover: hover) { .rt-step:not(:disabled):hover .rt-g, .rt-glass:hover { border-color: var(--gold); } }
+/* the tick: a circle and its word; the row is done when the circle is gold */
+.rt-tick { grid-area: tick; display: inline-flex; align-items: center; gap: var(--s2); min-width: 118px; min-height: 44px; padding: 0 var(--s1);
+  background: none; border: 0; color: var(--dust); font-family: var(--f-ui); font-size: 0.875rem; text-align: left; cursor: pointer; }
+.rt-circle { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border: 1.5px solid rgba(232,176,84,0.6); border-radius: 50%; color: #1A1408;
+  transition: background var(--t-settle) var(--e-out), border-color var(--t-settle) var(--e-out); }
+.rt-circle .rt-g { width: 16px; height: 16px; stroke-width: 2.4; }
+.rt-row.is-done .rt-circle { background: var(--gold); border-color: var(--gold); }
+.rt-row.is-done .rt-state { color: var(--parchment); }
+.rt-time { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); }
+@media (hover: hover) { .rt-tick:hover .rt-circle { border-color: var(--gold); } .rt-tick:hover .rt-state { color: var(--parchment); } }
+.rt-empty { margin: var(--s4) 0; text-align: center; font-family: var(--f-read); font-size: 0.9375rem; color: var(--ash); }
+.rt-tick:focus-visible, .rt-step:focus-visible, .rt-glass:focus-visible, .bd-link:focus-visible, .bd-edit:focus-visible, .bd-now:focus-visible, .rt-cust:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+@media (prefers-reduced-motion: reduce) { .rt-bar i, .rt-circle, .bd-link .rt-g { transition: none; } }
 
-/* The laptop: a band under the logbook, across the logbook's two columns. The logbook gives the band its
-   height; How I feel and the morning's three keep their widths, which their medallions need (the five of
-   How I feel want 330px; a fourth column cut them). The band reads left to right: the weight and when,
-   the trend, the other four, the ways in. Its title is for the phone and the screen reader. */
+/* ---- the foot: Save morning in the middle, Customize rituals to its left ---- */
+.dy-save { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--s3); }
+.rt-cust { justify-self: start; display: inline-flex; align-items: center; gap: var(--s2); min-height: 44px; padding: 0 var(--s1); background: none; border: 0;
+  color: var(--dust); font-family: var(--f-ui); font-size: 0.9375rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.rt-cust .rt-g { width: 18px; height: 18px; color: var(--gold); }
+@media (hover: hover) { .rt-cust:hover { color: var(--parchment); } }
+.rt-save { grid-column: 2; height: 48px; padding: 0 var(--s6); font-size: 0.8125rem; letter-spacing: 0.1em; }
+.rt-save .rt-g { width: 19px; height: 19px; stroke-width: 1.7; }
+
+/* ---- the laptop: the bento keeps the screen it had, and the panel follows below the fold on the page's own columns:
+   the body readings under the day, the rituals under the logbook, the rule between them in the gap between those */
 @media (min-width: 1000px) {
-  /* the lower row keeps the third of the page it had; the band's height comes out of the logbook alone */
-  .dy2 { grid-template-rows: minmax(0, 1fr) auto calc((100% - var(--s5)) / 3); }
-  .dy-day { grid-row: 1 / 4; }
-  .dy-bodyc { grid-column: 2 / 4; grid-row: 2; padding: 18px 28px 16px; }
-  .dy-moodc { grid-column: 2; grid-row: 3; }
-  .dy-vowc { grid-column: 3; grid-row: 3; }
-  .dy-bodyc .bd-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .dy-bodyc .bd { flex-direction: row; align-items: center; gap: var(--s4); min-width: 0; }
-  .dy-bodyc .bd-lead { flex: none; }
-  .dy-bodyc .bd-kg { justify-content: flex-start; }
-  .dy-bodyc .bd-when { text-align: left; }
-  /* the trend gives way first when the band is narrow */
-  .dy-bodyc .bd-trend { flex: 1 1 0; min-width: 40px; max-width: 220px; height: 44px; margin: 0; }
-  .dy-bodyc .bd-fig { display: none; }
-  .dy-bodyc .bd-core { display: grid; flex: none; grid-auto-flow: column; column-gap: var(--s3); }
-  .dy-bodyc .bd-core > div { flex-direction: column; align-items: flex-start; gap: 2px; padding: 0; border: 0; }
-  .dy-bodyc .bd-acts { flex: none; flex-direction: column; align-items: flex-end; margin: 0 0 0 auto; gap: 0; }
-  .dy-bodyc .bd-link { white-space: nowrap; }
-  .dy-bodyc .bd-link { min-height: 32px; }
-  .dy-bodyc .bd-sync { position: absolute; left: 28px; right: 28px; bottom: 4px; text-align: left; }
-  .dy-bodyc .bd-empty { margin: 0; }
+  .dy2 { --dy-bento: max(720px, calc(100dvh - 150px)); height: auto; min-height: 0;
+    grid-template-rows: calc((var(--dy-bento) - 80px) * 2 / 3) calc((var(--dy-bento) - 80px) / 3) auto auto auto; }
+  .dy-mornf { grid-column: 1 / -1; grid-row: 3 / 6; position: relative; margin-top: var(--s5);
+    border: 1px solid rgba(232,176,84,0.55); border-radius: 12px;
+    background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); }
+  .dy-mornf::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
+  .dy-mornh { grid-column: 1 / -1; grid-row: 3; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding-top: calc(var(--s5) + 46px); }
+  .dy-bodyc, .dy-ritc { grid-row: 4; z-index: 1; border: 0; border-radius: 0; background: none; }
+  .dy-bodyc::before, .dy-ritc::before { content: none; }
+  .dy-bodyc > .orn-top, .dy-ritc > .orn-top { display: none; }
+  .dy-bodyc { grid-column: 1; padding: 0 var(--s3) 0 44px; }
+  .dy-ritc { grid-column: 2 / 4; padding: 0 44px 0 var(--s3); }
+  .dy-ritc::after { content: ""; position: absolute; left: calc(-1 * var(--s5) / 2); top: 4px; bottom: 4px; border-left: 1px solid rgba(232,176,84,0.28); }
+  .dy-save { grid-column: 1 / -1; grid-row: 5; z-index: 1; margin: 0 44px; padding: var(--s4) 0 40px; border-top: 1px solid rgba(232,176,84,0.22); }
+  /* inside the panel the halves are headed in gold, left, small; the panel's own title is the plate's */
+  .dy-bodyc .bd-t, .dy-ritc .rt-t { margin: 0; text-align: left; font-size: 0.8125rem; letter-spacing: 0.16em; color: var(--gold); }
+  .dy-bodyc .bd-cap, .dy-bodyc .bd-kgl { text-align: left; justify-content: space-between; }
+  .dy-bodyc .bd-kg { justify-content: flex-start; margin-top: var(--s2); }
+  .dy-bodyc .bd-trend, .dy-bodyc .bd-fig { display: none; }
+  .dy-bodyc .bd-core { display: grid; }
+  .dy-bodyc .bd-acts { align-items: stretch; }
+  .dy-bodyc .bd-link { align-self: flex-start; }
+  .dy-bodyc .bd-edit { max-width: none; }
+  .dy-bodyc .bd-sync { text-align: left; }
+  .dy-ritc .rt-t { margin-bottom: 2px; }
 }
-/* a narrower laptop (the band is 640px at 1024): the trend goes, and the ways in take a second line of the band */
-@media (min-width: 1000px) and (max-width: 1279px) {
-  .dy-bodyc .bd { flex-wrap: wrap; row-gap: 0; }
-  .dy-bodyc .bd-trend { display: none; }
-  .dy-bodyc .bd-acts { flex-basis: 100%; flex-direction: row; justify-content: flex-end; gap: 0 var(--s4); margin: 0; }
+/* below the laptop the frame and its title go: each half is a plate of its own, as every card of the stack is */
+@media (max-width: 999px) {
+  .dy-mornf, .dy-mornh { display: none; }
+  .rt-t-l { display: none; } .rt-t-s { display: inline; }
+  .rt-head { justify-content: center; text-align: center; }
+  .dy-save { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: var(--s1); }
+  .rt-save { grid-column: 1; order: -1; width: 100%; max-width: 360px; }
+  .rt-cust { justify-self: center; }
 }
-/* on the phone the Body step reaches the foot of the screen, as the logbook does (--dy-top is the Diary's own
-   measure): a short plate left bare page below it, where a sideways drag missed the Diary's swipe and the
-   browser took it as Back */
-@media (max-width: 700px) { .dy2 .bd-acts { margin-top: var(--s3); } .dy2 .dy-bodyc { min-height: calc(100vh - var(--dy-top, 0px) - var(--s4)); min-height: calc(100svh - var(--dy-top, 0px) - var(--s4)); } }
-/* four steps share the phone row: under 360px each is 64px, and HOW I FEEL needs the 9px floor and tighter tracking to fit */
-@media (max-width: 360px) { .dy-plab { font-size: 0.5625rem; letter-spacing: 0.05em; } }
+@media (max-width: 700px) {
+  .dy-bodyc, .dy-ritc { padding: 32px 18px 20px; }
+  /* the phone's row: the name beside its tick, and the water's steps on a line of their own */
+  .rt-row { grid-template-columns: 26px minmax(0, 1fr) auto; grid-template-areas: "ico txt tick"; column-gap: var(--s3); }
+  /* the water's line runs the row's width: the minus under the drop, the glass under the tick; the narrowest phone sends the glass down a line */
+  .rt-row.is-ml { grid-template-areas: "ico txt tick" "ml ml ml"; row-gap: 2px; padding-bottom: var(--s2); }
+  .rt-ml { justify-self: stretch; flex-wrap: wrap; row-gap: var(--s1); margin-left: -7px; }
+  .rt-step { width: 40px; }
+  .rt-mlv { min-width: 0; padding: 7px 8px; }
+  .rt-glass { margin-left: auto; padding: 0 10px; }
+  .rt-tick { min-width: 0; }
+  .rt-time { display: none; }
+  .dy-save { padding: var(--s1) 0 var(--s4); }
+  /* the Body step reaches the foot of the screen, as the logbook does (--dy-top is the Diary's own measure) */
+  .dy2 .dy-bodyc { min-height: calc(100vh - var(--dy-top, 0px) - var(--s4)); min-height: calc(100svh - var(--dy-top, 0px) - var(--s4)); }
+}
+/* five steps share the phone's row: every label at the 9px floor, and only a label of two words breaks, under its numeral */
+@media (max-width: 400px) {
+  .dy-plab { font-size: 0.5625rem; letter-spacing: 0.05em; white-space: normal; text-wrap: balance; text-align: center; max-width: 100%; }
+}
+@media (max-width: 340px) { .dy-plab { letter-spacing: 0.02em; } }
+/* the narrowest phones keep the circle and give the name the width; the word stays in the button's name */
+@media (max-width: 360px) { .rt-state { display: none; } .rt-tick { min-width: 44px; justify-content: center; } }
+
+/* ---- the dialogs: the Diary's plate made a dialog. The frame and its ornaments stay put; the body scrolls ---- */
+/* the dialog hangs off <body>, outside the Diary that sets the reading face, so it sets its own */
+.bd-dlg { --f-read: 'Lora', Georgia, serif; width: min(820px, 94vw); max-height: none; overflow: visible; }
+.bd-dlg form.wi { position: relative; display: flex; flex-direction: column; max-height: 90vh; padding: 0; overflow: visible; gap: 0;
+  border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.65);
+  background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); }
+.bd-dlg form.wi::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(232,176,84,0.35); border-radius: 7px; pointer-events: none; }
+/* what scrolls fades before it reaches the notch or the foot; at rest the fades lie over padding only */
+.wi-body { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--s4);
+  padding: 44px 48px var(--s4); scrollbar-width: thin; scrollbar-color: rgba(232,176,84,0.25) transparent;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 36px, #000 calc(100% - 12px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 36px, #000 calc(100% - 12px), transparent 100%); }
+.wi-end { position: relative; z-index: 1; flex: none; display: grid; gap: var(--s4); padding: 0 48px 36px; }
+.wi .orn.bl, .wi .orn.br { z-index: 0; opacity: 0.8; }
+.wi-top { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: start; gap: var(--s4); }
+.wi-h { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--parchment); }
+.wi-sub { margin: 6px 0 0; font-family: var(--f-read); font-size: 1rem; color: var(--dust); }
+.wi-hint { margin: 4px 0 0; display: flex; gap: var(--s2); align-items: flex-start; text-align: right; font-family: var(--f-mono); font-size: 0.75rem; line-height: 1.5; color: var(--ash); }
+.wi-hint b { display: block; font-family: var(--f-read); font-weight: 400; font-size: 0.875rem; color: var(--dust); }
+.wi-hint .rt-g { flex: none; order: 2; width: 16px; height: 16px; margin-top: 3px; color: var(--gold); }
+.wi-x { margin: -4px -8px 0 0; }
+.wi-when { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s5); }
+.wi-dt { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--s4); }
+.wi-in { position: relative; display: block; }
+.wi-in .rt-g { position: absolute; z-index: 1; left: 14px; top: 50%; width: 18px; height: 18px; margin-top: -9px; color: var(--gold); pointer-events: none; }
+.wi-l { font-family: var(--f-read); font-size: 0.9375rem; color: var(--dust); }
+.wi input, .wi select { width: 100%; height: 46px; box-sizing: border-box; padding: 0 14px; background: var(--socket); border: 1px solid var(--mortar-2); border-radius: var(--r-sm);
+  color: var(--parchment); font-family: var(--f-mono); font-size: 1.0625rem; font-variant-numeric: tabular-nums; color-scheme: dark;
+  transition: border-color var(--t-fast) var(--e-out), box-shadow var(--t-fast) var(--e-out); }
+.wi select, .wi input[data-rc] { font-family: var(--f-ui); font-size: 0.9375rem; }
+.wi .wi-in input { position: relative; padding-left: 44px; font-family: var(--f-ui); font-size: 1rem; }
+/* the browser's own picker stays; its indicator covers the field, so a tap anywhere on it opens the calendar or the clock */
+.wi .wi-in input::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: auto; height: auto; opacity: 0; cursor: pointer; }
+.wi input:focus, .wi select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+/* a field turns red once it has been answered wrong or a save was tried, never at rest */
+.wi input:user-invalid:not(:focus) { border-color: var(--ember); }
+.wi-rule { display: flex; align-items: center; gap: 12px; }
+.wi-rule span { flex: 1; height: 1px; background: rgba(232,176,84,0.35); }
+.wi-rule svg { width: 10px; height: 10px; fill: var(--gold); }
+.wi-sec { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--s1) var(--s4); margin-bottom: calc(-1 * var(--s1)); }
+.wi-sh { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+.wi-sn { margin: 0; font-family: var(--f-read); font-size: 0.875rem; color: var(--ash); }
+.wi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4) var(--s5); }
+.wi-f { display: grid; gap: 6px; min-width: 0; }
+.wi-more > summary { display: flex; align-items: center; gap: 10px; min-height: 44px; list-style: none; cursor: pointer; width: max-content; }
+.wi-more > summary::-webkit-details-marker { display: none; }
+.wi-more > summary .rt-g { width: 16px; height: 16px; color: var(--gold); transition: transform var(--t-fast) var(--e-out); }
+.wi-more[open] > summary .rt-g { transform: rotate(180deg); }
+.wi-more[open] > summary { margin-bottom: var(--s3); }
+.wi-more > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+.wi-foot { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s3); padding: 0 32px; }   /* clear of the sprigs in the corners */
+/* the note gives way before the buttons do: it wraps inside its own width, and the answer stays on one line */
+.wi-note { flex: 1 1 180px; margin: 0; font-family: var(--f-read); font-style: italic; font-size: 0.875rem; color: var(--ash); }
+.wi-sp { flex: 1; }
+.wi-foot .btn { height: 44px; padding: 0 var(--s5); }
+/* every reading of one weigh-in */
+.bd-nav { display: flex; justify-content: space-between; }
+.bd-allfig { margin: 0 auto; width: 100%; max-width: 340px; }
+.bd-grid { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s6); }
+.bd-grid > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); padding: 8px 0; border-bottom: 1px solid var(--mortar); }
+.bd-grid dt { font-family: var(--f-ui); font-size: 0.9375rem; color: var(--dust); }
+.bd-grid .is-core dt { color: var(--parchment); }
+.bd-grid dd { margin: 0; font-family: var(--f-mono); font-size: 0.9375rem; color: var(--parchment); font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Customize rituals: one row per ritual — its glyph, name and note, then what it is and the habit it marks */
+.rc-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.rc-row { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(0, 1.3fr) auto; grid-template-areas: "ico name note acts" ". icon kind hab";
+  gap: var(--s2) var(--s3); align-items: end; padding: var(--s3) 0; border-top: 1px solid rgba(232,176,84,0.18); }
+.rc-row:last-child { border-bottom: 1px solid rgba(232,176,84,0.18); }
+.rc-ico { grid-area: ico; align-self: end; margin-bottom: 11px; width: 24px; height: 24px; color: var(--gold); }   /* level with the name's field */
+.rc-name { grid-area: name; } .rc-note { grid-area: note; }
+.rc-icon { grid-area: icon; } .rc-kind { grid-area: kind; } .rc-hab { grid-area: hab; }
+.rc-acts { grid-area: acts; display: flex; }
+.rc-b { width: 44px; height: 46px; display: grid; place-items: center; background: none; border: 0; color: var(--dust); cursor: pointer; }
+.rc-b .rt-g { width: 18px; height: 18px; }
+.rc-b:disabled { opacity: 0.3; cursor: default; }
+@media (hover: hover) { .rc-b:not(:disabled):hover { color: var(--gold-2); } .rc-x:hover { color: var(--ember); } }
+.rc-b:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-sm); }
+.rc-add { align-self: flex-start; width: auto; }
+@media (max-width: 700px) {
+  .bd-dlg { width: 96vw; }
+  .wi-body { padding: 36px 20px var(--s3); gap: var(--s3); }
+  .wi-end { gap: var(--s3); padding: 0 20px 24px; }
+  .wi-foot { padding: 0; }
+  .wi-top { grid-template-columns: minmax(0, 1fr) auto; }
+  .wi-hint { grid-column: 1 / -1; grid-row: 2; text-align: left; }
+  .wi-hint .rt-g { order: 0; }
+  .wi-h { font-size: 1.25rem; }
+  .wi-when { grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
+  .wi-dt { grid-template-columns: 48px minmax(0, 1fr); }
+  .wi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
+  .wi .orn.bl, .wi .orn.br { display: none; }
+  .bd-grid { grid-template-columns: minmax(0, 1fr); }
+  .wi-foot { justify-content: flex-end; }
+  .wi-note { flex-basis: 100%; }
+  /* the phone's ritual: the glyph beside its name, the note under both, then two even pairs; the columns are the same twice over, so the halves match */
+  .rc-row { grid-template-columns: 24px minmax(0, 1fr) 24px minmax(0, 1fr); grid-template-areas: "ico name name name" "note note note note" "icon icon kind kind" "hab hab acts acts"; }
+  .rc-acts { justify-content: flex-end; }
+}
+@media (prefers-reduced-motion: reduce) { .wi-more > summary .rt-g, .wi input, .wi select { transition: none; } }
 /* ===== /body:css ===== */
 </style>
 <style>
@@ -9179,6 +9345,9 @@ function normaliseBook(b) {
   b.close     = (b.close && typeof b.close === "object") ? b.close : {};
   /* body = [{ id, at, src, kg, fat, … }] — the Diary's weigh-ins, from the scale or by hand (.body/body.js) */
   b.body      = bdNormalise(b.body);
+  /* rituals = the morning's list; morning[weekKey][dow] = { done, ml, at, hab }: what one morning did (.body/body.js) */
+  b.rituals   = rtSanList(b.rituals, b.habits);
+  b.morning   = rtSanMorning(b.morning);
   /* diary[weekKey][dow] = { page, three: [a, b, c], at } — the morning. The first shape was
      one string per day; it becomes { page } here, on every load, losing nothing. */
   b.diary     = (b.diary && typeof b.diary === "object") ? b.diary : {};
@@ -15618,26 +15787,26 @@ function dyStripHTML(b, sel, today, prev, next) {
    the morning's three. A finger moves between them, or the row of numerals does. Nothing waits
    on anything, so the numerals are a way through rather than a gate; each goes from stone to
    bronze once its step holds something, the grammar the three lines already speak. */
-const DY_PANES = ["Tarot", "Logbook", "How I feel", "Body"], DY_PANE_DONE = ["card turned", "written", "answered", "weighed"];
+const DY_PANES = ["Tarot", "Logbook", "How I feel", "Body", "Rituals"], DY_PANE_DONE = ["card turned", "written", "answered", "weighed", "started"];
 let dyPaneN = 1;                                   /* the step on the phone: 1 until moved, kept while the app is open */
 const dyPhone = () => window.matchMedia("(max-width: 700px)").matches;
 const dyPanesOf = (plate, n) => [...plate.querySelectorAll(':scope > [data-pane="' + n + '"]')];
 /* what each step holds: the card read (a past morning's, drawn), the page, a feeling or any of the three */
 function dyPaneSet(b, sel, isToday) {
   const e = dyGetDate(b, sel) || {}, rec = state.tarot && state.tarot.days ? state.tarot.days[tarKey(sel)] : null;
-  /* the fourth: a weigh-in on this morning's day */
+  /* the fourth: a weigh-in on this morning's day; the fifth: a ritual done or water logged */
   const weighed = bdRows().some(x => dySame(new Date(x.at - DAY_TURNS_AT * 3600000), sel));
-  return [!!(rec && TAROT[rec.c] && (rec.land || !isToday)), !!e.page, !!(e.mood || e.book || e.one || e.thanks), weighed];
+  return [!!(rec && TAROT[rec.c] && (rec.land || !isToday)), !!e.page, !!(e.mood || e.book || e.one || e.thanks), weighed, rtTended(sel)];
 }
 const dyPaneLabel = (i, on) => DY_PANES[i] + ", step " + (i + 1) + " of " + DY_PANES.length + (on ? ", " + DY_PANE_DONE[i] : "");
 function dyPathHTML(sel, isToday, set) {
   /* the date lives on step I; away from today, the other two name the morning they write into */
   const day = isToday ? "" : '<p class="dy-pday">' + DOW_LONG[dyDow(sel)] + " \u00b7 " + sel.getDate() + " " + MONTHS[sel.getMonth()] +
     (sel.getFullYear() === dayNow().getFullYear() ? "" : " " + sel.getFullYear()) + "</p>";
-  return '<div class="dy-path" role="group" aria-label="The morning, in four steps">' + day + DY_PANES.map((w, i) =>
+  return '<div class="dy-path" role="group" aria-label="The morning, in five steps">' + day + DY_PANES.map((w, i) =>
     '<button type="button" class="dy-pstep' + (set[i] ? " is-set" : "") + '" data-dy="goto" data-n="' + (i + 1) + '"' +
     (dyPaneN === i + 1 ? ' aria-current="step"' : "") + ' aria-label="' + dyPaneLabel(i, set[i]) + '">' +
-    '<span class="dy-pnum">' + ["I", "II", "III", "IV"][i] + '</span><span class="dy-plab">' + w + "</span></button>").join("") + "</div>";
+    '<span class="dy-pnum">' + ["I", "II", "III", "IV", "V"][i] + '</span><span class="dy-plab">' + w + "</span></button>").join("") + "</div>";
 }
 /* a commit does not re-render, so a step lights itself */
 function dyPaneMark(i, on) {
@@ -20023,15 +20192,49 @@ function chSetFront(i) {
 })();
 /* ===== /chronicle:js ===== */
 /* ===== body:js =====
-   The body plate on the Diary: bioimpedance weigh-ins, from the Fitdays cloud through the owner-only
-   `fitdays` Supabase function, or typed by hand. DECISIONS.md, 22 Sep 2026.
+   The Diary's morning panel (DECISIONS.md, 22 Sep 2026): the body readings, from the Fitdays cloud through
+   the owner-only `fitdays` Supabase function or typed by hand, and the morning's rituals. On the laptop one
+   plate below the Diary's three cards, on the page's own columns; on the phone steps IV Body and V Rituals.
    Installed by .body/splice.mjs between these markers, before the boot block; edit there and re-run.
 
-   book.body = [{ id, at, src: "fd" | "hand", ed?, del?, kg, fat, visc, mus, water, bmi, sfat, skm,
-   bone, prot, bmr, age, hr, imp }] — oldest first. A scale row the owner edits carries ed and is
-   never overwritten by the next sync; one he deletes stays as { id, del } so the sync does not bring it back. */
+   book.body    = [{ id, at, src: "fd" | "hand", ed?, del?, kg, fat, … }] — oldest first. A scale row the owner
+                  edits carries ed and is never overwritten by the next sync; a deleted one stays as { id, del }.
+   book.rituals = [{ id, name, note, icon, kind: "check" | "ml", habit }] — the list, in its order; habit is a
+                  Journal habit the ritual marks when it is done.
+   book.morning[weekKey][dow] = { done: { ritualId: ts }, ml, at, hab: { ritualId: 1 } } — one morning: what was
+                  done and when, the water, when the morning was saved, and which habit marks a ritual set. */
 
-/* the readings: the core five first, the rest on request. Units as the scale reports them. */
+/* ---- the glyphs: one hand, a 24 grid, one stroke weight, round caps ---- */
+const RT_ICO = (() => {
+  const s = d => '<svg class="rt-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>";
+  return {
+    sun: s('<circle cx="12" cy="12" r="4"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/>'),
+    drop: s('<path d="M12 3.2C8.7 7.5 6.5 10.8 6.5 13.5a5.5 5.5 0 0 0 11 0c0-2.7-2.2-6-5.5-10.3z"/>'),
+    shield: s('<path d="M12 3l7 2.8v5.6c0 4.4-2.9 7.9-7 9.6-4.1-1.7-7-5.2-7-9.6V5.8L12 3z"/><path d="M9.2 12.2l2 2 3.6-3.8"/>'),
+    leaf: s('<path d="M19.5 4.5c-8.5 0-14 4.8-14 10.8 0 2.4 1.7 4.2 4 4.2 6 0 10-6.2 10-15z"/><path d="M5 20.5c2.8-4.6 6.4-8.1 10.5-10.5"/>'),
+    pill: s('<path d="M10.1 4.9a4.4 4.4 0 0 1 6.2 0l2.8 2.8a4.4 4.4 0 0 1 0 6.2l-5.2 5.2a4.4 4.4 0 0 1-6.2 0l-2.8-2.8a4.4 4.4 0 0 1 0-6.2l5.2-5.2z"/><path d="M7.5 7.5l9 9"/>'),
+    sprout: s('<path d="M12 21v-8.5"/><path d="M12 12.5c0-4.2-2.8-7-7.3-7 0 4.2 2.8 7 7.3 7z"/><path d="M12 15c0-3.6 2.4-6 6.3-6 0 3.6-2.4 6-6.3 6z"/>'),
+    tooth: s('<path d="M7.6 3.8c-2.4 0-3.9 1.9-3.9 4.4 0 2.1.9 3.6 1.6 5.2.8 1.8.9 3.9 1.4 5.8.3 1.2.8 1.8 1.5 1.8.9 0 1.2-.9 1.5-2.2.3-1.4.6-3.3 2.3-3.3s2 1.9 2.3 3.3c.3 1.3.6 2.2 1.5 2.2.7 0 1.2-.6 1.5-1.8.5-1.9.6-4 1.4-5.8.7-1.6 1.6-3.1 1.6-5.2 0-2.5-1.5-4.4-3.9-4.4-1.8 0-2.8 1-4.4 1s-2.6-1-4.4-1z"/>'),
+    star: s('<path d="M12 3.5l2.1 5.4 5.4 2.1-5.4 2.1L12 18.5l-2.1-5.4L4.5 11l5.4-2.1L12 3.5z"/>'),
+    gear: s('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+    pencil: s('<path d="M15.5 4.5l4 4L8.5 19.5H4.5v-4L15.5 4.5z"/><path d="M13 7l4 4"/>'),
+    calendar: s('<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),
+    clock: s('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+    info: s('<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>'),
+    check: s('<path d="M6.5 12.5l3.5 3.5 7.5-8"/>'),
+    minus: s('<path d="M6 12h12"/>'),
+    plus: s('<path d="M12 6v12M6 12h12"/>'),
+    up: s('<path d="M6 15l6-6 6 6"/>'),
+    down: s('<path d="M6 9l6 6 6-6"/>'),
+    arrow: s('<path d="M5 12h13M13 7l5 5-5 5"/>'),
+    close: s('<path d="M6 6l12 12M18 6L6 18"/>')
+  };
+})();
+/* the glyphs a ritual may wear, in the order Customize rituals offers them */
+const RT_ICONS = [["sun", "Sun"], ["drop", "Water"], ["shield", "Shield"], ["leaf", "Leaf"], ["pill", "Pill"], ["sprout", "Sprout"], ["tooth", "Tooth"], ["star", "Star"]];
+const rtHm = at => { const d = new Date(at); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
+
+/* ---- the readings: the core five first, the rest on request. Units as the scale reports them ---- */
 const BD_FIELDS = [
   { k: "kg", l: "Weight", u: "kg", d: 2, min: 20, max: 300, core: 1 },
   { k: "fat", l: "Body fat", u: "%", d: 1, min: 2, max: 75, core: 1 },
@@ -20085,6 +20288,9 @@ function bdAgo(at) {
   const months = Math.round(days / 30.44);
   return months < 24 ? months + " months ago" : Math.floor(days / 365.25) + " years ago";
 }
+/* the Diary's day turns at five: a weigh-in at 02:00 belongs to the morning before */
+const bdDayOf = at => { const d = new Date(at - DAY_TURNS_AT * 3600000); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+const bdSrc = x => x.src === "fd" ? (x.ed ? "Fitdays, edited" : "Fitdays") : "by hand";
 
 /* the weight over the last weigh-ins: one line, no axes; the ends are named by the numbers beside it */
 function bdTrendSVG(rows) {
@@ -20116,8 +20322,8 @@ function bdSmooth(p) {
 }
 const BD_CX = 160;
 const BD_FIG_D = bdSmooth(BD_HALF.map(([x, y]) => [BD_CX + x, y]).concat(BD_HALF.slice(0, -1).reverse().map(([x, y]) => [BD_CX - x, y])));
-/* where each reading points: [key, anchor x, anchor y, side, label y] */
-/* every leader reaches its spot without crossing an arm: the arm itself, and below the hands (y > 156) for the rest */
+/* where each reading points: [key, anchor x, anchor y, side, label y]; every leader reaches its spot without
+   crossing an arm — the arm itself, and below the hands (y > 156) for the rest */
 const BD_SPOTS = [["mus", BD_CX - 34, 90, "l", 76], ["water", BD_CX - 15, 190, "l", 150], ["bone", BD_CX - 13, 228, "l", 224],
   ["visc", BD_CX + 9, 144, "r", 160], ["fat", BD_CX + 21, 180, "r", 206]];
 function bdFigureSVG(x) {
@@ -20134,49 +20340,216 @@ function bdFigureSVG(x) {
     '<path class="bd-body" d="' + BD_FIG_D + '" vector-effect="non-scaling-stroke"/>' + spots + "</svg>";
 }
 
-/* ---- the plate ---- */
+/* ---- the rituals: the owner's seven by default, to rename, reorder, add to and remove ---- */
+const RT_DEFAULT = [
+  { id: "rt-sun", name: "Sunlight", note: "Time outdoors", icon: "sun", kind: "check" },
+  { id: "rt-water", name: "Hydration", note: "Water on waking", icon: "drop", kind: "ml" },
+  { id: "rt-screen", name: "Sunscreen", note: "Apply protection", icon: "shield", kind: "check" },
+  { id: "rt-skin", name: "Skin care", note: "Cleanse and care", icon: "leaf", kind: "check" },
+  { id: "rt-pills", name: "Morning pills", note: "With breakfast", icon: "pill", kind: "check" },
+  { id: "rt-algae", name: "Algae", note: "Daily supplement", icon: "sprout", kind: "check" },
+  { id: "rt-teeth", name: "Brush teeth", note: "Oral hygiene", icon: "tooth", kind: "check" }
+];
+const RT_ML_STEP = 50, RT_GLASS = 250, RT_ML_MAX = 10000;
+/* the list, sanitised. Never set: the seven, and Brush teeth marks the Journal's teeth habit when the board keeps one, so a
+   brushed morning is one tap and not two. Set, even to nothing: the owner's, as it was left. */
+function rtSanList(list, habits) {
+  if (!Array.isArray(list)) {
+    const teeth = (habits || []).find(h => h && /dente|teeth|tooth/i.test(String(h.name || "")));
+    return RT_DEFAULT.map(r => ({ ...r, habit: r.id === "rt-teeth" && teeth && teeth.id ? String(teeth.id) : "" }));
+  }
+  const seen = new Set();
+  return list.filter(r => r && typeof r === "object").map((r, i) => {
+    let id = String(r.id || "rt-" + i).slice(0, 40); while (seen.has(id)) id += "x"; seen.add(id);
+    return { id, name: String(r.name || "").trim().slice(0, 40) || "Ritual", note: String(r.note || "").trim().slice(0, 60),
+      icon: RT_ICONS.some(([k]) => k === r.icon) ? r.icon : "star", kind: r.kind === "ml" ? "ml" : "check", habit: String(r.habit || "").slice(0, 40) };
+  }).slice(0, 20);
+}
+function rtSanDay(v) {
+  if (!v || typeof v !== "object") return null;
+  const e = {};
+  if (v.done && typeof v.done === "object") {
+    const done = {};
+    Object.keys(v.done).slice(0, 40).forEach(k => { const t = Number(v.done[k]); if (isFinite(t) && t > 0) done[String(k).slice(0, 40)] = t; });
+    if (Object.keys(done).length) e.done = done;
+  }
+  const ml = Math.round(Number(v.ml));
+  if (isFinite(ml) && ml > 0) e.ml = Math.min(ml, RT_ML_MAX);
+  const at = Number(v.at);
+  if (isFinite(at) && at > 0) e.at = at;
+  if (v.hab && typeof v.hab === "object") {
+    const h = {}; Object.keys(v.hab).forEach(k => { if (v.hab[k]) h[String(k).slice(0, 40)] = 1; });
+    if (Object.keys(h).length) e.hab = h;
+  }
+  return Object.keys(e).length ? e : null;
+}
+function rtSanMorning(m) {
+  const out = {};
+  if (m && typeof m === "object") Object.keys(m).forEach(wk => {
+    const w = m[wk]; if (!w || typeof w !== "object") return;
+    const o = {}; Object.keys(w).forEach(d => { if (!/^[0-6]$/.test(d)) return; const e = rtSanDay(w[d]); if (e) o[d] = e; });
+    if (Object.keys(o).length) out[wk] = o;
+  });
+  return out;
+}
+const rtGet = (b, wk, dow) => ((b.morning || {})[wk] || {})[dow] || {};
+/* the fifth step lights when anything of the morning was done: a ritual ticked or water logged */
+function rtTended(sel) { const e = rtGet(book(), weekKeyOf(sel), dyDow(sel)); return !!((e.done && Object.keys(e.done).length) || e.ml); }
+const rtSel = () => { const sel = dyDay(); return { sel, wk: weekKeyOf(sel), dow: dyDow(sel) }; };
+/* one commit path, the Diary's: read, change, sanitise, save; a morning with nothing left in it is pruned */
+function rtCommit(wk, dow, fn) {
+  const b = book();
+  b.morning = b.morning || {};
+  const cur = rtSanDay((b.morning[wk] || {})[dow]) || {};
+  fn(cur, b);
+  const next = rtSanDay(cur);
+  if (next) (b.morning[wk] = b.morning[wk] || {})[dow] = next;
+  else if (b.morning[wk]) { delete b.morning[wk][dow]; if (!Object.keys(b.morning[wk]).length) delete b.morning[wk]; }
+  save();
+  return next;
+}
+/* a ritual that marks a habit sets the Journal's own mark (Done) when the habit is unmarked that day, and takes back
+   only a mark it set itself: a Partial or Excellent the owner chose stays */
+function rtHabit(b, r, e, wk, dow, on) {
+  if (!r.habit || !b.habits.some(h => String(h.id) === r.habit)) return;
+  b.checks[wk] = b.checks[wk] || {};
+  const row = b.checks[wk][r.habit] = b.checks[wk][r.habit] || {};
+  e.hab = e.hab || {};
+  if (on && (!row[dow] || row[dow] === "none")) { row[dow] = "expected"; e.hab[r.id] = 1; }
+  else if (!on && e.hab[r.id]) { if (row[dow] === "expected") delete row[dow]; delete e.hab[r.id]; }
+}
+function rtToggle(id) {
+  const { wk, dow } = rtSel(), r = book().rituals.find(x => x.id === id); if (!r) return;
+  rtCommit(wk, dow, (e, b) => {
+    e.done = e.done || {};
+    const on = !e.done[id];
+    if (on) e.done[id] = Date.now(); else delete e.done[id];
+    rtHabit(b, r, e, wk, dow, on);
+  });
+  rtRepaint();
+}
+/* water in steps of 50 ml and a glass of 250; the first water of the morning marks the ritual, the rest is the count */
+function rtWater(id, d) {
+  const { wk, dow } = rtSel(), r = book().rituals.find(x => x.id === id); if (!r) return;
+  rtCommit(wk, dow, (e, b) => {
+    const was = e.ml || 0;
+    e.ml = Math.max(0, Math.min(RT_ML_MAX, was + d));
+    if (!was && e.ml > 0 && !(e.done && e.done[id])) { e.done = e.done || {}; e.done[id] = Date.now(); rtHabit(b, r, e, wk, dow, true); }
+  });
+  rtRepaint();
+}
+/* Save morning: everything already saves as it is touched, so this commits whatever is still half-typed on the page
+   and stamps the time the morning was closed; the button says so afterwards */
+function rtSaveMorning() {
+  const a = document.activeElement;
+  if (a && a !== document.body && a.blur) a.blur();
+  const { wk, dow } = rtSel();
+  rtCommit(wk, dow, e => { e.at = Date.now(); });
+  rtRepaint();
+  showToast("Morning saved.");
+}
+
+/* ---- the panel ---- */
+function rtRowHTML(r, e) {
+  const on = !!(e.done && e.done[r.id]), t = on ? rtHm(e.done[r.id]) : "";
+  const note = r.kind === "ml" ? (e.ml ? e.ml + " ml logged" : (r.note || "Water")) : r.note;
+  const water = r.kind !== "ml" ? "" : '<span class="rt-ml">' +
+    '<button type="button" class="rt-step" data-rt="water" data-id="' + esc(r.id) + '" data-d="-' + RT_ML_STEP + '" aria-label="' + RT_ML_STEP + ' ml less"' + (e.ml ? "" : " disabled") + ">" + RT_ICO.minus + "</button>" +
+    '<output class="rt-mlv">' + (e.ml || 0) + " ml</output>" +
+    '<button type="button" class="rt-step" data-rt="water" data-id="' + esc(r.id) + '" data-d="' + RT_ML_STEP + '" aria-label="' + RT_ML_STEP + ' ml more">' + RT_ICO.plus + "</button>" +
+    '<button type="button" class="rt-glass" data-rt="water" data-id="' + esc(r.id) + '" data-d="' + RT_GLASS + '" title="A glass">+' + RT_GLASS + " ml</button></span>";
+  return '<li class="rt-row' + (on ? " is-done" : "") + (r.kind === "ml" ? " is-ml" : "") + '">' +
+    '<span class="rt-ico">' + (RT_ICO[r.icon] || RT_ICO.star) + "</span>" +
+    '<span class="rt-txt"><span class="rt-name">' + esc(r.name) + "</span>" + (note ? '<span class="rt-note">' + esc(note) + "</span>" : "") + "</span>" + water +
+    '<button type="button" class="rt-tick" data-rt="tick" data-id="' + esc(r.id) + '" aria-pressed="' + on + '" aria-label="' + (on ? "Done: " : "Mark done: ") + esc(r.name) + (on ? ", at " + t : "") + '">' +
+      '<span class="rt-circle">' + (on ? RT_ICO.check : "") + '</span><span class="rt-state">' + (on ? "Done" : "Mark done") + "</span>" +
+      (on ? '<span class="rt-time">' + t + "</span>" : "") + "</button></li>";
+}
+function rtPlateHTML() {
+  const b = book(), { wk, dow } = rtSel(), e = rtGet(b, wk, dow), list = b.rituals;
+  const n = list.filter(r => e.done && e.done[r.id]).length;
+  return '<h2 class="dy-ct rt-t"><span class="rt-t-l">Your morning</span><span class="rt-t-s">Morning rituals</span></h2>' +
+    '<div class="rt"><div class="rt-head"><p class="rt-count">' + (list.length ? n + " of " + list.length + " complete" : "No rituals yet") + "</p>" +
+    (list.length ? '<span class="rt-bar" role="img" aria-label="' + n + " of " + list.length + ' rituals done">' + list.map(r => '<i class="' + (e.done && e.done[r.id] ? "is-on" : "") + '"></i>').join("") + "</span>" : "") + "</div>" +
+    (list.length ? '<ul class="rt-list">' + list.map(r => rtRowHTML(r, e)).join("") + "</ul>"
+                 : '<p class="rt-empty">Customize rituals adds the small things your mornings are made of.</p>') + "</div>";
+}
+function rtSaveHTML() {
+  const { wk, dow } = rtSel(), e = rtGet(book(), wk, dow), at = e.at ? rtHm(e.at) : "";
+  return '<button type="button" class="rt-cust" data-rt="custom">' + RT_ICO.gear + "<span>Customize rituals</span></button>" +
+    '<button type="button" class="btn btn-primary rt-save' + (at ? " is-saved" : "") + '" data-rt="save"' + (at ? ' aria-label="Morning saved at ' + at + '. Save it again"' : "") + ">" +
+      (at ? RT_ICO.check : RT_ICO.sun) + "<span>" + (at ? "Morning saved · " + at : "Save morning") + "</span></button>";
+}
+
 let bdSyncing = false, bdNote = "";
 const BD_OK_KEY = "skillstone-fitdays-ok", BD_NOT_OWNER_KEY = "skillstone-fitdays-not-owner";
 const bdStore = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); } catch (e) {} };
 const bdRead = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
-/* the status line: while signed in, when the scale last answered and the way to ask it now; an account the
-   function refused sees none of it */
+/* the source line: while signed in, when the scale last answered and the way to ask it now; an account the function
+   refused sees none of it */
 function bdStatusHTML() {
   if (bdSyncing) return '<p class="bd-sync" aria-live="polite">Syncing with Fitdays…</p>';
   const me = auth && String(auth.user && auth.user.id);
   if (!auth || bdRead(BD_NOT_OWNER_KEY) === me) return bdNote ? '<p class="bd-sync" aria-live="polite">' + esc(bdNote) + "</p>" : "";
   const ok = Number(bdRead(BD_OK_KEY)) || 0;
-  const said = bdNote || (ok ? "Synced with Fitdays " + bdAgo(ok) : "Not synced with Fitdays yet");
+  const said = bdNote || (ok ? "Biomedic scale · synced from Fitdays " + bdAgo(ok) : "Biomedic scale · not synced with Fitdays yet");
   return '<p class="bd-sync" aria-live="polite">' + esc(said) + ' <button type="button" class="bd-now" data-bd="sync">Sync now</button></p>';
 }
+/* the body readings: the weigh-in of the morning on show, or the last one before it */
 function bdPlateHTML() {
-  const rows = bdRows(), last = rows[rows.length - 1], prev = rows[rows.length - 2];
-  let h = '<h2 class="dy-ct bd-t">Body</h2>' + '<div class="bd">';
+  const { sel } = rtSel(), end = addDays(sel, 1).getTime() + DAY_TURNS_AT * 3600000;
+  const rows = bdRows().filter(x => x.at < end), last = rows[rows.length - 1], prev = rows[rows.length - 2];
+  let h = '<h2 class="dy-ct bd-t">Body readings</h2><div class="bd">';
   if (!last) {
     h += '<p class="bd-empty">No weigh-ins yet.</p>';
   } else {
-    const dk = prev ? Math.round((last.kg - prev.kg) * 100) / 100 : null;
-    h += '<div class="bd-lead"><p class="bd-kg"><span class="bd-n">' + bdFmt(BD_F.kg, last.kg) + '</span><span class="bd-u">kg</span>' +
-      (dk ? '<span class="bd-dk">' + (dk > 0 ? "+" : "−") + bdFmt(BD_F.kg, Math.abs(dk)) + "</span>" : "") + "</p>" +
-      '<p class="bd-when">' + esc(bdDate(last.at)) + " · " + bdAgo(last.at) + (last.src === "fd" && !last.ed ? " · Fitdays" : "") + "</p></div>" +
-      bdTrendSVG(rows) +
-      /* the phone draws the figure; the laptop's band keeps the list */
-      bdFigureSVG(last) +
-      '<dl class="bd-core">' + BD_FIELDS.filter(f => f.core && f.k !== "kg").map(f =>
-        "<div><dt>" + f.l + "</dt><dd>" + bdFmt(f, last[f.k]) + (last[f.k] !== undefined && f.u ? '<span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl>";
+    const onDay = dySame(bdDayOf(last.at), sel), isToday = dySame(sel, dayNow());
+    const when = onDay ? (isToday ? "Today" : bdDate(last.at)) + ", " + rtHm(last.at) : bdDate(last.at) + " · " + bdAgo(last.at);
+    h += '<p class="bd-cap">' + esc(when) + " · " + bdSrc(last) + "</p>" +
+      '<div class="bd-lead"><p class="bd-kg"><span class="bd-n">' + bdFmt(BD_F.kg, last.kg) + '</span><span class="bd-u">kg</span></p>' +
+      '<p class="bd-kgl"><span>Weight</span>' + (prev ? '<span class="bd-prev">Previous: ' + bdFmt(BD_F.kg, prev.kg) + " kg</span>" : "") + "</p></div>" +
+      /* the phone and the stack draw the trend and the figure; the laptop's column keeps the list */
+      bdTrendSVG(rows) + bdFigureSVG(last) +
+      '<dl class="bd-core">' + ["fat", "mus", "water", "visc"].map(k => { const f = BD_F[k];
+        return "<div><dt>" + f.l + "</dt><dd>" + bdFmt(f, last[k]) + (last[k] !== undefined && f.u ? '<span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>"; }).join("") + "</dl>";
   }
-  h += '<div class="bd-acts">' + (last ? '<button type="button" class="bd-link" data-bd="all">See all readings</button>' : "") +
-    '<button type="button" class="bd-link" data-bd="add">Add a weigh-in</button></div>' + bdStatusHTML() + "</div>";
+  const edit = last && dySame(bdDayOf(last.at), sel);
+  h += '<div class="bd-acts">' + (last ? '<button type="button" class="bd-link" data-bd="all">View all readings' + RT_ICO.arrow + "</button>" : "") +
+    '<button type="button" class="bd-edit" data-bd="' + (edit ? "edit" : "add") + '"' + (edit ? ' data-id="' + esc(last.id) + '"' : "") + ">" + RT_ICO.pencil +
+    "<span>" + (edit ? "Edit weigh-in" : "Add a weigh-in") + "</span></button></div>" + bdStatusHTML() + "</div>";
   return h;
 }
-const bdPlate = () => '<section class="dy-card dy-bodyc" data-pane="4" aria-label="Body">' + dyFrame({ top: "notch" }) + bdPlateHTML() + "</section>";
+/* the panel, as five children of the Diary's plate, so the phone's steps can show them one step at a time: the
+   laptop's frame and its title (decoration and a heading, for the laptop alone), the body readings (step IV), the
+   rituals and the foot with Save morning (step V) */
+const bdPlate = () =>
+  '<div class="dy-mornf" aria-hidden="true">' + dyFrame({ sprigs: ["tl", "tr"], top: "sun" }) + "</div>" +
+  '<div class="dy-mornh"><h2 class="dy-ct">Morning rituals</h2>' + DY_ORN.rule + "</div>" +
+  '<section class="dy-card dy-bodyc" data-pane="4" aria-label="Body readings">' + dyFrame({ top: "notch" }) + bdPlateHTML() + "</section>" +
+  '<section class="dy-card dy-ritc" data-pane="5" aria-label="Morning rituals">' + dyFrame({ top: "notch" }) + rtPlateHTML() + "</section>" +
+  '<div class="dy-save" data-pane="5">' + rtSaveHTML() + "</div>";
 function bdRepaint() {
   const c = document.querySelector("#viewDiary .dy-bodyc"); if (!c) return;
   c.innerHTML = dyFrame({ top: "notch" }) + bdPlateHTML();
-  if (typeof dyPaneMark === "function") dyPaneMark(3, bdRows().length > 0);
+  if (typeof dyPaneMark === "function") dyPaneMark(3, dyPaneSet(book(), dyDay(), dySame(dyDay(), dayNow()))[3]);
+}
+function rtRepaint() {
+  const c = document.querySelector("#viewDiary .dy-ritc"), s = document.querySelector("#viewDiary .dy-save");
+  /* keep the keyboard where it was: a repaint replaces the row it was on */
+  const a = document.activeElement, key = a && a.closest && a.closest(".dy-ritc, .dy-save") ? [a.dataset.rt, a.dataset.id, a.dataset.d].join("|") : null;
+  if (c) c.innerHTML = dyFrame({ top: "notch" }) + rtPlateHTML();
+  if (s) s.innerHTML = rtSaveHTML();
+  if (key) {
+    const [rt, id, d] = key.split("|");
+    let el = [...document.querySelectorAll("#viewDiary [data-rt]")].find(x => x.dataset.rt === rt && (x.dataset.id || "") === id && (x.dataset.d || "") === d);
+    /* the minus that emptied the glass is disabled now: the keyboard moves to the step beside it */
+    if (el && el.disabled) el = el.parentElement.querySelector(".rt-step:not(:disabled)");
+    if (el) el.focus({ preventScroll: true });
+  }
+  if (typeof dyPaneMark === "function") dyPaneMark(4, dyPaneSet(book(), dyDay(), dySame(dyDay(), dayNow()))[4]);
 }
 
-/* ---- the sync: the owner's scale, at most every six hours while he is signed in, or now when he asks ---- */
+/* ---- the sync: the owner's scale, at most every six hours while the owner is signed in, or now when asked ---- */
 async function bdSync(force) {
   if (bdSyncing || !auth) return;
   const me = String(auth.user && auth.user.id);
@@ -20210,47 +20583,72 @@ async function bdSync(force) {
   } finally { bdSyncing = false; bdRepaint(); }
 }
 
-/* ---- the dialogs: every reading of one weigh-in, and the form that adds or edits one ---- */
+/* ---- the dialogs: the Diary's plate made a dialog — the double frame, the notch, the sprigs at the foot ---- */
 let bdView = null, bdEditId = null;
 function bdDlg() {
   let d = document.getElementById("bodyDlg");
   if (!d) { d = document.createElement("dialog"); d.id = "bodyDlg"; d.className = "bk-dlg bd-dlg"; d.setAttribute("aria-labelledby", "bodyDlgTitle"); document.body.appendChild(d); }
   return d;
 }
-const BD_X = '<button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+const BD_X = '<button type="button" class="bk-x wi-x" data-dlg-close aria-label="Close">' + RT_ICO.close + "</button>";
+const WI_RULE = '<div class="wi-rule" aria-hidden="true"><span></span><svg viewBox="0 0 10 10"><path d="M5 0.5L6.2 3.8L9.5 5L6.2 6.2L5 9.5L3.8 6.2L0.5 5L3.8 3.8Z"/></svg><span></span></div>';
+const wiFrame = () => dyFrame({ top: "notch", sprigs: ["bl", "br"] });
+/* the foot stays put under the scrolling body, so the dialog's answer is always in reach; the sprigs sit either side of it */
+const wiEnd = inner => '<div class="wi-end">' + WI_RULE + '<div class="wi-foot">' + inner + "</div></div>";
 function bdAllHTML() {
   const rows = bdRows(), x = rows.find(r => r.id === bdView) || rows[rows.length - 1];
   if (!x) return "";
   const i = rows.indexOf(x);
-  return '<form method="dialog" class="bd-all" onsubmit="return false"><div class="bk-top"><p class="bk-h" id="bodyDlgTitle">' + esc(bdDate(x.at)) +
-    '<span class="bd-at">' + new Date(x.at).toTimeString().slice(0, 5) + (x.src === "fd" ? (x.ed ? " · Fitdays, edited" : " · Fitdays") : " · by hand") + "</span></p>" + BD_X + "</div>" +
+  return '<form method="dialog" class="wi wi-all" onsubmit="return false">' + wiFrame() + '<div class="wi-body">' +
+    '<div class="wi-top"><div class="wi-head"><p class="wi-h" id="bodyDlgTitle">' + esc(bdDate(x.at)) + '</p><p class="wi-sub">' + rtHm(x.at) + " · " + bdSrc(x) + "</p></div>" + BD_X + "</div>" +
     '<div class="bd-nav"><button type="button" class="btn btn-ghost btn-sm" data-bd="older"' + (i > 0 ? "" : " disabled") + ">‹ Earlier</button>" +
     '<button type="button" class="btn btn-ghost btn-sm" data-bd="newer"' + (i < rows.length - 1 ? "" : " disabled") + ">Later ›</button></div>" +
-    '<div class="bd-allfig">' + bdFigureSVG(x) + "</div>" + '<dl class="bd-grid">' + BD_FIELDS.map(f => '<div class="' + (f.core ? "is-core" : "") + '"><dt>' + f.l + "</dt><dd>" + bdFmt(f, x[f.k]) +
-      (x[f.k] !== undefined && f.u ? ' <span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl>" +
-    '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-bd="edit" data-id="' + esc(x.id) + '">Edit this weigh-in</button>' +
-    '<button type="button" class="btn btn-primary btn-sm" data-dlg-close>Done</button></div></form>';
+    '<div class="bd-allfig">' + bdFigureSVG(x) + "</div>" + WI_RULE +
+    '<dl class="bd-grid">' + BD_FIELDS.map(f => '<div class="' + (f.core ? "is-core" : "") + '"><dt>' + f.l + "</dt><dd>" + bdFmt(f, x[f.k]) +
+      (x[f.k] !== undefined && f.u ? ' <span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl></div>" +
+    wiEnd('<button type="button" class="btn btn-ghost btn-sm" data-bd="add">Add a weigh-in</button><span class="wi-sp"></span>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-bd="edit" data-id="' + esc(x.id) + '">Edit this weigh-in</button>' +
+      '<button type="button" class="btn btn-primary btn-sm" data-dlg-close>Done</button>') + "</form>";
 }
-const bdLocal = at => { const d = new Date(at - new Date(at).getTimezoneOffset() * 60000); return d.toISOString().slice(0, 16); };
+const bdIsoDay = at => { const d = new Date(at); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+/* Add a weigh-in, after the owner's reference: the date and the time apart, the five in front and the nine behind
+   More readings, the last weigh-in in the corner to check against */
 function bdFormHTML() {
-  const x = bdEditId ? bdRows().find(r => r.id === bdEditId) : null;
-  const field = f => '<label class="bk-l">' + f.l + (f.u ? " (" + f.u + ")" : "") + /* text with a decimal keyboard, so 61,4 and 61.4 both read: a number field in an English page refuses the comma a Brazilian keyboard types */
-    '<input type="text" name="' + f.k + '" inputmode="decimal" autocomplete="off" pattern="[0-9]+([.,][0-9]+)?" data-min="' + f.min + '" data-max="' + f.max + '"' + (f.k === "kg" ? " required" : "") + (x && x[f.k] !== undefined ? ' value="' + x[f.k] + '"' : "") + "></label>";
-  return '<form method="dialog" data-bd-form="1"><div class="bk-top"><p class="bk-h" id="bodyDlgTitle">' + (x ? "Edit a weigh-in" : "Add a weigh-in") + "</p>" + BD_X + "</div>" +
-    (x && x.src === "fd" ? '<p class="bk-p">From Fitdays. Once you save your changes, the scale will not overwrite them.</p>' : "") +
-    '<label class="bk-l">When<input type="datetime-local" name="at" required value="' + bdLocal(x ? x.at : Date.now()) + '"></label>' +
-    '<div class="bd-fields">' + BD_FIELDS.filter(f => f.core).map(field).join("") + "</div>" +
-    '<details class="bd-more"' + (x && BD_FIELDS.some(f => !f.core && x[f.k] !== undefined) ? " open" : "") + "><summary>More readings</summary>" +
-    '<div class="bd-fields">' + BD_FIELDS.filter(f => !f.core).map(field).join("") + "</div></details>" +
-    '<div class="bk-foot">' + (x ? '<button type="button" class="btn btn-ghost btn-sm btn-danger" data-bd="del" data-id="' + esc(x.id) + '">Delete</button>' : "") +
-    '<button type="button" class="btn btn-ghost btn-sm" data-dlg-close>Cancel</button>' +
-    '<button type="submit" class="btn btn-primary btn-sm">' + (x ? "Save changes" : "Add weigh-in") + "</button></div></form>";
+  const x = bdEditId ? bdRows().find(r => r.id === bdEditId) : null, rows = bdRows(), last = rows[rows.length - 1];
+  const { sel } = rtSel(), now = new Date();
+  /* a new weigh-in lands on the morning on show, at the time it is now */
+  const at = x ? x.at : new Date(sel.getFullYear(), sel.getMonth(), sel.getDate(), now.getHours(), now.getMinutes()).getTime();
+  const field = f => '<label class="wi-f"><span class="wi-l">' + f.l + (f.u ? " (" + f.u + ")" : "") + "</span>" +
+    /* text with a decimal keyboard, so 61,4 and 61.4 both read: a number field in an English page refuses the comma a Brazilian keyboard types */
+    '<input type="text" name="' + f.k + '" inputmode="decimal" autocomplete="off" pattern="[0-9]+([.,][0-9]+)?" data-min="' + f.min + '" data-max="' + f.max + '"' +
+    (f.k === "kg" ? " required" : "") + (x && x[f.k] !== undefined ? ' value="' + x[f.k] + '"' : "") + "></label>";
+  const hint = !x && last ? '<p class="wi-hint">' + RT_ICO.info + "<span><b>Last weigh-in</b>" + bdFmt(BD_F.kg, last.kg) + " kg" +
+      (last.fat !== undefined ? " · " + bdFmt(BD_F.fat, last.fat) + "%" : "") + (last.water !== undefined ? " · " + bdFmt(BD_F.water, last.water) + "%" : "") + "</span></p>"
+    : !x ? '<p class="wi-hint">' + RT_ICO.info + "<span><b>For example</b>70.5 kg · 18.2% · 56.3%</span></p>" : "";
+  const more = !!(x && BD_FIELDS.some(f => !f.core && x[f.k] !== undefined));
+  return '<form method="dialog" class="wi" data-bd-form="1">' + wiFrame() + '<div class="wi-body">' +
+    '<div class="wi-top"><div class="wi-head"><p class="wi-h" id="bodyDlgTitle">' + (x ? "Edit a weigh-in" : "Add a weigh-in") + "</p>" +
+      '<p class="wi-sub">' + (x && x.src === "fd" ? "From Fitdays. Once you save your changes, the scale will not overwrite them." : "Enter your Biomedic scale readings from Fitdays.") + "</p></div>" +
+      hint + BD_X + "</div>" +
+    '<div class="wi-when"><label class="wi-dt"><span class="wi-l">Date</span><span class="wi-in">' + RT_ICO.calendar +
+      '<input type="date" name="date" required value="' + bdIsoDay(at) + '"></span></label>' +
+      '<label class="wi-dt"><span class="wi-l">Time</span><span class="wi-in">' + RT_ICO.clock + '<input type="time" name="time" required value="' + rtHm(at) + '"></span></label></div>' +
+    WI_RULE +
+    '<div class="wi-sec"><p class="wi-sh">Main readings</p><p class="wi-sn">Weight is required; other readings are optional.</p></div>' +
+    '<div class="wi-grid">' + BD_FIELDS.filter(f => f.core).map(field).join("") + "</div>" + WI_RULE +
+    '<details class="wi-more"' + (more ? " open" : "") + '><summary><span class="wi-sh">More readings</span>' + RT_ICO.down + "</summary>" +
+      '<div class="wi-grid">' + BD_FIELDS.filter(f => !f.core).map(field).join("") + "</div></details></div>" +
+    wiEnd('<p class="wi-note">Readings are recorded as reported by your scale.</p>' +
+      (x ? '<button type="button" class="btn btn-danger btn-sm" data-bd="del" data-id="' + esc(x.id) + '">Delete</button>' : "") +
+      '<button type="button" class="btn btn-ghost btn-sm" data-dlg-close>Cancel</button>' +
+      '<button type="submit" class="btn btn-primary btn-sm">' + (x ? "Save changes" : "Save weigh-in") + "</button>") + "</form>";
 }
 function bdOpen(kind) {
   const d = bdDlg();
-  d.innerHTML = kind === "all" ? bdAllHTML() : bdFormHTML();
+  d.innerHTML = kind === "all" ? bdAllHTML() : kind === "rituals" ? rtCustomHTML() : bdFormHTML();
+  d.setAttribute("aria-labelledby", "bodyDlgTitle");
   if (!d.open) d.showModal();
-  const first = d.querySelector(kind === "all" ? "[data-bd='newer'], .btn-primary" : "input[name='kg']");
+  const first = d.querySelector(kind === "all" ? "[data-bd='newer']:not(:disabled), .btn-primary" : kind === "rituals" ? "input" : "input[name='kg']");
   if (first) first.focus();
 }
 const bdNum = s => Number(String(s || "").trim().replace(",", "."));
@@ -20259,7 +20657,7 @@ function bdSave(form) {
   form.querySelectorAll("input[data-min]").forEach(i => { const s = i.value.trim(), n = bdNum(s), lo = Number(i.dataset.min), hi = Number(i.dataset.max);
     i.setCustomValidity(s && (!isFinite(n) || n < lo || n > hi) ? "Between " + lo + " and " + hi + "." : ""); });
   if (!form.reportValidity()) return;
-  const fd = new FormData(form), at = new Date(String(fd.get("at"))).getTime();
+  const fd = new FormData(form), at = new Date(String(fd.get("date")) + "T" + String(fd.get("time") || "07:00")).getTime();
   const old = bdEditId ? book().body.find(r => r.id === bdEditId) : null;
   const v = { id: old ? old.id : "hand:" + uid(), at, src: old ? old.src : "hand", ed: old && old.src === "fd" ? 1 : 0 };
   BD_FIELDS.forEach(f => { const s = String(fd.get(f.k) || "").trim(); if (s) v[f.k] = bdNum(s); });
@@ -20279,22 +20677,94 @@ function bdDelete(id) {
   bdDlg().close(); bdEditId = null; bdRepaint();
   showToast("Weigh-in deleted.");
 }
+
+/* Customize rituals: the list in its order, each one's name, note, glyph, kind and the habit it marks. The changes
+   stay in the dialog until Save rituals; a morning already ticked keeps its ticks for rituals that remain. */
+let rtDraft = null;
+function rtCustomHTML() {
+  if (!rtDraft) rtDraft = book().rituals.map(r => ({ ...r }));
+  const habits = book().habits, n = rtDraft.length;
+  const row = (r, i) => '<li class="rc-row" data-i="' + i + '">' +
+    '<span class="rc-ico">' + (RT_ICO[r.icon] || RT_ICO.star) + "</span>" +
+    '<label class="wi-f rc-name"><span class="wi-l">Name</span><input type="text" data-rc="name" data-i="' + i + '" maxlength="40" required value="' + esc(r.name) + '"></label>' +
+    '<label class="wi-f rc-note"><span class="wi-l">Note</span><input type="text" data-rc="note" data-i="' + i + '" maxlength="60" value="' + esc(r.note) + '" placeholder="Shown under the name"></label>' +
+    '<label class="wi-f rc-sel rc-icon"><span class="wi-l">Glyph</span><select data-rc="icon" data-i="' + i + '">' + RT_ICONS.map(([k, l]) => '<option value="' + k + '"' + (k === r.icon ? " selected" : "") + ">" + l + "</option>").join("") + "</select></label>" +
+    '<label class="wi-f rc-sel rc-kind"><span class="wi-l">Kind</span><select data-rc="kind" data-i="' + i + '"><option value="check"' + (r.kind === "check" ? " selected" : "") + '>Tick</option><option value="ml"' + (r.kind === "ml" ? " selected" : "") + ">Water (ml)</option></select></label>" +
+    '<label class="wi-f rc-sel rc-hab"><span class="wi-l">Also marks</span><select data-rc="habit" data-i="' + i + '"><option value="">No habit</option>' +
+      habits.map(h => '<option value="' + esc(String(h.id)) + '"' + (String(h.id) === r.habit ? " selected" : "") + ">" + esc(h.name) + "</option>").join("") + "</select></label>" +
+    '<span class="rc-acts"><button type="button" class="rc-b" data-rc="up" data-i="' + i + '" aria-label="Move ' + esc(r.name) + ' up"' + (i ? "" : " disabled") + ">" + RT_ICO.up + "</button>" +
+      '<button type="button" class="rc-b" data-rc="down" data-i="' + i + '" aria-label="Move ' + esc(r.name) + ' down"' + (i < n - 1 ? "" : " disabled") + ">" + RT_ICO.down + "</button>" +
+      '<button type="button" class="rc-b rc-x" data-rc="remove" data-i="' + i + '" aria-label="Remove ' + esc(r.name) + '">' + RT_ICO.close + "</button></span></li>";
+  return '<form method="dialog" class="wi rc" data-rc-form="1">' + wiFrame() + '<div class="wi-body">' +
+    '<div class="wi-top"><div class="wi-head"><p class="wi-h" id="bodyDlgTitle">Customize rituals</p>' +
+      '<p class="wi-sub">The small things your mornings are made of, in the order you do them.</p></div>' + BD_X + "</div>" + WI_RULE +
+    (n ? '<ol class="rc-list">' + rtDraft.map(row).join("") + "</ol>" : '<p class="rt-empty">No rituals. Add the first one below.</p>') +
+    '<button type="button" class="bd-edit rc-add" data-rc="add"' + (n >= 20 ? " disabled" : "") + ">" + RT_ICO.plus + "<span>Add a ritual</span></button></div>" +
+    wiEnd('<p class="wi-note">A ritual that marks a habit ticks it in the Journal too.</p>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-dlg-close>Cancel</button><button type="submit" class="btn btn-primary btn-sm">Save rituals</button>') + "</form>";
+}
+function rtCustomRedraw(focusSel) {
+  const d = bdDlg(), sc = d.querySelector(".wi-body"), y = sc ? sc.scrollTop : 0;
+  d.innerHTML = rtCustomHTML();
+  const s2 = d.querySelector(".wi-body"); if (s2) s2.scrollTop = y;
+  const el = focusSel && d.querySelector(focusSel); if (el) el.focus();
+}
+function rtCustomSave(form) {
+  if (!form.reportValidity()) return;
+  const b = book();
+  b.rituals = rtSanList(rtDraft.map(r => ({ ...r, name: r.name.trim() })), b.habits);
+  rtDraft = null;
+  save();
+  bdDlg().close();
+  rtRepaint();
+  showToast("Rituals saved.");
+}
+
+/* ---- the events ---- */
 document.addEventListener("click", ev => {
-  const t = ev.target.closest && ev.target.closest("[data-bd]"); if (!t) return;
+  const t = ev.target.closest && ev.target.closest("[data-bd], [data-rt], [data-rc]"); if (!t) return;
+  if (t.dataset.rt) {
+    const a = t.dataset.rt;
+    if (a === "tick") rtToggle(t.dataset.id);
+    else if (a === "water") rtWater(t.dataset.id, Number(t.dataset.d) || 0);
+    else if (a === "save") rtSaveMorning();
+    else if (a === "custom") { rtDraft = null; bdOpen("rituals"); }
+    return;
+  }
+  if (t.dataset.rc) {
+    const a = t.dataset.rc, i = Number(t.dataset.i);
+    if (!rtDraft) return;
+    if (a === "up" && i > 0) { [rtDraft[i - 1], rtDraft[i]] = [rtDraft[i], rtDraft[i - 1]]; rtCustomRedraw('[data-rc="up"][data-i="' + (i - 1) + '"]:not(:disabled), [data-rc="down"][data-i="' + (i - 1) + '"]'); }
+    else if (a === "down" && i < rtDraft.length - 1) { [rtDraft[i + 1], rtDraft[i]] = [rtDraft[i], rtDraft[i + 1]]; rtCustomRedraw('[data-rc="down"][data-i="' + (i + 1) + '"]:not(:disabled), [data-rc="up"][data-i="' + (i + 1) + '"]'); }
+    else if (a === "remove") { rtDraft.splice(i, 1); rtCustomRedraw('[data-rc="add"]'); }
+    else if (a === "add" && rtDraft.length < 20) { rtDraft.push({ id: "rt-" + uid(), name: "", note: "", icon: "star", kind: "check", habit: "" }); rtCustomRedraw('[data-rc="name"][data-i="' + (rtDraft.length - 1) + '"]'); }
+    return;
+  }
   const a = t.dataset.bd, rows = bdRows();
   if (a === "sync") bdSync(true);
   else if (a === "add") { bdEditId = null; bdOpen("form"); }
   else if (a === "all") { bdView = (rows[rows.length - 1] || {}).id; bdOpen("all"); }
   else if (a === "older" || a === "newer") { const i = rows.findIndex(r => r.id === bdView); const n = rows[i + (a === "older" ? -1 : 1)]; if (n) { bdView = n.id; bdOpen("all"); } }
   else if (a === "edit") { bdEditId = t.dataset.id; bdOpen("form"); }
-  /* a delete asks once more on the same button, then goes */
-  else if (a === "del") { if (t.dataset.armed) bdDelete(t.dataset.id); else { t.dataset.armed = "1"; t.textContent = "Delete — tap again"; } }
+  /* a delete asks once more on the same button, in the app's own armed state, then goes */
+  else if (a === "del") { if (t.classList.contains("armed")) bdDelete(t.dataset.id); else { t.classList.add("armed"); t.textContent = "Delete — tap again"; } }
 });
-/* a range message clears as soon as the field changes, or the browser would refuse the next submit before bdSave sees it */
-document.addEventListener("input", ev => { const i = ev.target; if (i.matches && i.matches("#bodyDlg input[data-min]")) i.setCustomValidity(""); });
+/* the draft follows every keystroke in Customize rituals, so a reorder never loses what was typed */
+document.addEventListener("input", ev => {
+  const i = ev.target;
+  if (i.matches && i.matches("#bodyDlg input[data-min]")) i.setCustomValidity("");   /* a range message clears as the field changes */
+  if (i.dataset && i.dataset.rc && rtDraft && rtDraft[Number(i.dataset.i)]) rtDraft[Number(i.dataset.i)][i.dataset.rc] = i.value;
+});
+document.addEventListener("change", ev => {
+  const i = ev.target;
+  if (!(i.dataset && i.dataset.rc && rtDraft && rtDraft[Number(i.dataset.i)])) return;
+  rtDraft[Number(i.dataset.i)][i.dataset.rc] = i.value;
+  if (i.dataset.rc === "icon") { const ico = i.closest(".rc-row") && i.closest(".rc-row").querySelector(".rc-ico"); if (ico) ico.innerHTML = RT_ICO[i.value] || RT_ICO.star; }
+});
 document.addEventListener("submit", ev => {
-  const f = ev.target; if (!f.matches || !f.matches("[data-bd-form]")) return;
-  ev.preventDefault(); bdSave(f);
+  const f = ev.target; if (!f.matches) return;
+  if (f.matches("[data-bd-form]")) { ev.preventDefault(); bdSave(f); }
+  else if (f.matches("[data-rc-form]")) { ev.preventDefault(); rtCustomSave(f); }
 });
 /* ===== /body:js ===== */
 /* ---------- boot ---------- */
