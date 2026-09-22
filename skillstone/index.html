@@ -2307,36 +2307,10 @@ li.is-done .qg { color: var(--verdant); }
    round medallion rather than the wide table, and masked so the render's own square ground
    dissolves into the page instead of sitting on it as a tile. */
 /* ---------- the inventory ----------
-   An ARPG panel: the figure between its slots, the wardrobe in a grid beneath, and art around
-   the whole thing. The art is two custom properties and nothing else, so the placeholders here
-   can be swapped for a real painting without touching a rule below them. */
-.iv-hall { position: relative; padding: var(--s2) 0 var(--s7); }
-.iv-art {
-  position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
-  --iv-art-l: url("assets/quests/spare-castle-gate.png");
-  --iv-art-r: url("assets/quests/spare-lotus-moon.png");
-}
-.iv-art i {
-  position: absolute; top: 50%; translate: 0 -50%; width: min(420px, 32vw); aspect-ratio: 1;
-  background-size: contain; background-repeat: no-repeat; background-position: center;
-  opacity: 0.24; filter: sepia(0.35) saturate(0.6);
-}
-.iv-art-l { left: 0; background-image: var(--iv-art-l);
-  -webkit-mask-image: linear-gradient(to right, #000 35%, transparent 95%);
-  mask-image: linear-gradient(to right, #000 35%, transparent 95%); }
-.iv-art-r { right: 0; background-image: var(--iv-art-r);
-  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 95%);
-  mask-image: linear-gradient(to left, #000 35%, transparent 95%); }
-@media (prefers-reduced-motion: no-preference) { .iv-art i { transition: opacity var(--t-slow, 0.4s) ease; } }
-
-.iv-panel {
-  position: relative; z-index: 1;
-  width: min(1060px, 100%); margin: 0 auto; padding: var(--s4) var(--s5) var(--s5);
-  background-image: linear-gradient(rgba(20,17,13,0.87), rgba(20,17,13,0.92)), url("assets/textures/panel.webp");
-  background-repeat: repeat; background-size: auto, 512px 512px;
-  border: 1px solid var(--mortar-2); border-radius: var(--r-lg);
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.55), inset 0 1px 0 rgba(240,231,209,0.06), var(--shadow-float);
-}
+   An ARPG panel: the figure between its slots and the wardrobe beside it, laid on the sheet
+   the way Skills is — no frame, no fill — so the three columns get the whole width. */
+.iv-hall { padding: var(--s2) 0 var(--s7); }
+.iv-panel { width: 100%; margin: 0 auto; }
 /* three shelves in one panel, named in the banner where the panel's own title would be */
 .iv-tabs {
   display: flex; align-items: center; justify-content: center; gap: var(--s6);
@@ -2488,7 +2462,6 @@ li.is-done .qg { color: var(--verdant); }
 
 
 /* Equipment cabinet: inset bronze sockets and a continuous stash, inspired by classic ARPGs. */
-.iv-panel:has(.iv-armory) { width:min(1160px,100%); border-radius:3px; padding:20px 24px 28px; border-color:#615139; box-shadow:inset 0 0 0 4px #171410,inset 0 0 0 5px #393126,0 16px 40px #0007; }
 .iv-armory { display:grid; grid-template-columns:minmax(300px, .85fr) minmax(0,1.15fr); gap:32px; }
 .iv-armory .iv-fig { display:block; min-width:0; padding:0; }
 .iv-armory .iv-hold { padding-left:0; border-left:0; }
@@ -2575,7 +2548,7 @@ li.is-done .qg { color: var(--verdant); }
 .iv-armory .iv-cell-edit { border-radius:2px; }
 @media(hover:hover) { .iv-armory .iv-cell-b:hover,.iv-armory .iv-slot:hover .iv-slot-face { border-color:#b59a67; background-color:#2b2517; } }
 @media(max-width:900px) { .iv-armory { grid-template-columns:minmax(0,1fr); gap:28px; } .iv-armory .iv-fig { width:min(440px,100%); margin:auto; } .iv-armory .iv-rig { width:100%; } }
-@media(max-width:480px) { .iv-panel:has(.iv-armory) { padding:16px 12px 20px; } .iv-armory .iv-rig { padding:12px; gap:6px; grid-template-rows:repeat(5,56px); } .iv-armory .iv-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } .iv-armory .iv-accessories { padding:6px; gap:4px; } .iv-armory .iv-accessories .iv-slot .iv-slot-nm { font-size:8px; } }
+@media(max-width:480px) { .iv-armory .iv-rig { padding:12px; gap:6px; grid-template-rows:repeat(5,56px); } .iv-armory .iv-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } .iv-armory .iv-accessories { padding:6px; gap:4px; } .iv-armory .iv-accessories .iv-slot .iv-slot-nm { font-size:8px; } }
 
 
 /* Jewellery sits beside the body, in the same equipment board. */
@@ -2635,7 +2608,6 @@ li.is-done .qg { color: var(--verdant); }
 
 
 /* The live outfit, equipment sockets, and wardrobe share one desktop view. */
-.iv-panel:has(.iv-with-preview) { width:min(1320px,100%); }
 .iv-armory.iv-with-preview { grid-template-columns:minmax(150px,.52fr) minmax(310px,1fr) minmax(0,1.25fr); gap:24px; }
 .iv-character { min-width:0; }
 .iv-character-stage { min-height:465px; display:grid; place-items:center; background:radial-gradient(ellipse at center,#79633e18,transparent 70%); }
@@ -2835,10 +2807,8 @@ li.is-done .qg { color: var(--verdant); }
   .iv-doll { width: 152px; }
   .iv-grp[data-g="hand-l"], .iv-grp[data-g="hand-r"] { top: 47%; }
   .iv-rig { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, 54px); width: 100%; max-width: 260px; }
-  .iv-panel { padding: var(--s4) var(--s3); }
   .iv-tabs { gap: var(--s4); }
   .gear-top-f { grid-template-columns: 1fr; }
-  .iv-art i { width: 48vw; opacity: 0.1; }
 }
 
 .tab-blank { display: grid; place-items: center; padding: var(--s8) 0 var(--s7); text-align: center; }
@@ -4766,9 +4736,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   </div>
   <div id="viewInv" role="tabpanel" aria-labelledby="tabInv" hidden>
     <div class="iv-hall">
-      <!-- the art around the panel. Placeholders from the set already shipped; swapping in the
-           real painting is three custom properties and nothing else. -->
-      <div class="iv-art" aria-hidden="true"><i class="iv-art-l"></i><i class="iv-art-r"></i></div>
       <section class="iv-panel" aria-label="Inventory">
         <div class="iv-tabs" role="tablist" aria-label="Inventory sections">
           <button type="button" role="tab" id="ivTabGear" data-inv="sub" data-shelf="gear"
