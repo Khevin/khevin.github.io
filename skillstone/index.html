@@ -4709,8 +4709,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-r3 { grid-row: 3; }
 .ch-rungs { position: relative; height: 100px; grid-column: 1; }
 .ch-rungs span { position: absolute; right: var(--s2); top: calc(var(--y) * 1%); transform: translateY(-50%); font-family: var(--f-mono); font-size: 0.625rem; color: var(--ash); white-space: nowrap; }
-.ch-rungs-r { grid-column: 9; }
-.ch-rungs-r span { right: auto; left: var(--s2); color: var(--astral); opacity: 0.8; }
 .ch-mline { grid-row: 3; grid-column: 2 / 9; width: 100%; height: 100px; display: block; }
 .ch-rung { stroke: rgba(82,70,47,0.9); stroke-width: 1; stroke-dasharray: 2 5; }
 .ch-seg { stroke: var(--gold); stroke-width: 1.5; }
@@ -4719,7 +4717,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-mcell { position: relative; height: 100px; }
 .ch-mdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
   box-shadow: 0 0 0 2px #17130F, 0 6px 14px rgba(0,0,0,0.5); }
-.ch-rdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--astral); opacity: 0.85; box-shadow: 0 0 0 1px #17130F; }
+.ch-rdot { position: absolute; left: 50%; top: calc(var(--y) * 1%); width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--astral); opacity: 0.85; box-shadow: 0 0 0 1px #17130F; }
 .ch-r4 { grid-row: 4; margin: var(--s1) 0 0; text-align: center; font-family: var(--f-ui); font-size: 0.8125rem; color: var(--ash); }
 .ch-mword.is-set { color: var(--parchment); }
 .ch .m1.is-set, .ch .ch-fmood.m1 { color: var(--mood-1); } .ch .m2.is-set, .ch .ch-fmood.m2 { color: var(--mood-2); } .ch .m3.is-set, .ch .ch-fmood.m3 { color: var(--mood-3); }
@@ -4777,13 +4775,10 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-hab td { width: 32px; height: 34px; text-align: center; vertical-align: middle; border-top: 1px solid rgba(62,53,39,0.7); }
 .ch-hab tbody th { border-top: 1px solid rgba(62,53,39,0.7); }
 .ch-hab td.off { background: rgba(0,0,0,0.18); }
-.ch-hab td svg, .ch-hleg svg { width: 14px; height: 14px; display: inline-block; vertical-align: middle; }
-.ch-hab .partial, .ch-hleg .partial { color: var(--bronze); }
-.ch-hab .expected, .ch-hleg .expected { color: var(--gold); }
-.ch-hab .excellent, .ch-hleg .excellent { color: var(--gold-2); }
-.ch-hleg { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: var(--s3) 0 0; }
-.ch-hleg span { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-display); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); }
-.ch-hsq { display: inline-block; width: 12px; height: 12px; border: 1px solid var(--mortar-2); border-radius: 2px; }
+.ch-hab td svg { width: 14px; height: 14px; display: inline-block; vertical-align: middle; }
+.ch-hab .partial { color: var(--bronze); }
+.ch-hab .expected { color: var(--gold); }
+.ch-hab .excellent { color: var(--gold-2); }
 
 /* the reflection: three lines in his hand, on paper; the rule seals when a line commits */
 .ch-ref { display: grid; gap: var(--s4); }
@@ -4838,12 +4833,11 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-fs-dows { grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; margin-top: var(--s1);
   font-family: var(--f-display); font-weight: 700; font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--ash); }
 .ch-fs-dows .is-front { color: var(--gold); }
-.ch-fs-cap { grid-column: 1 / -1; grid-row: 3; margin: var(--s2) 0 0; text-align: center; font-family: var(--f-mono); font-size: 0.625rem; color: var(--astral); opacity: 0.8; }
-.ch-fmarks { grid-column: 1 / -1; grid-row: 4; width: 100%; border-collapse: collapse; margin-top: var(--s4); }
-.ch-fmarks th { text-align: left; font-family: var(--f-ui); font-weight: 400; font-size: 0.8125rem; color: var(--dust); padding: var(--s1) var(--s2) var(--s1) 0; white-space: nowrap; }
-.ch-fmarks td { text-align: center; padding: var(--s1) 0; }
-.ch-fmarks .ch-mk { vertical-align: middle; --mk: 12px; }
-.ch-fmarks .ch-mk-page { --mk: 19px; }
+/* the marks under the letters: the same seven columns, the logbook first and larger, as on the laptop */
+.ch-fs-marks { grid-column: 2; grid-row: 3; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin-top: var(--s3); }
+.ch-fs-mday { display: flex; flex-direction: column; align-items: center; gap: var(--s2); }
+.ch-fs-marks .ch-mk { --mk: 14px; }
+.ch-fs-marks .ch-mk-page { --mk: 20px; }
 
 .ch-step:focus-visible, .ch-link:focus-visible, .ch-fcard:focus-visible, .ch-hand:focus-visible, .ch-today:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
@@ -4856,7 +4850,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 }
 @media (max-width: 700px) {
   .ch { padding-top: var(--s2); }
-  .ch-plate { padding: 30px 14px 20px; }
+  .ch-plate { padding: 30px 22px 22px; }
   .ch-grid { display: none; }
   .ch-hand, .ch-fday { display: block; }
   .ch-fstrip { display: grid; }
@@ -4870,7 +4864,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .ch-hab { table-layout: fixed; }
   .ch-hab thead th:first-child { width: 31%; }
   .ch-hab th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 0; }
-  .ch-hab tbody th { font-size: 0.8125rem; letter-spacing: 0; white-space: normal; overflow-wrap: anywhere; padding-right: var(--s1); }
+  .ch-hab tbody th { font-size: 0.8125rem; letter-spacing: 0; padding-right: var(--s1); }
   .ch-hab td { width: auto; height: 34px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4896,7 +4890,13 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-hab thead th { font-size: 0.5625rem; letter-spacing: 0.06em; padding: var(--s1) 1px; }
 .ch-hab thead th:last-child { width: 2.6ch; }
 .ch-hab td { width: auto; }
-.ch-hab tbody th { white-space: normal; overflow-wrap: anywhere; }
+/* a long name ends in an ellipsis on one line; a clipped one opens its full name above it, on hover or tap */
+.ch-hn { position: relative; display: block; }
+.ch-hn-t { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ch-hn .ch-tip { left: 0; transform: none; max-width: min(320px, calc(100vw - 64px)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--f-ui); font-style: normal; font-size: 0.8125rem; text-align: left; }
+.ch-hn.is-cut { cursor: help; }
+.ch-hn.is-cut:hover .ch-tip, .ch-hn.is-cut:focus-visible .ch-tip, .ch-hn.is-open .ch-tip { display: block; }
+.ch-hn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
 
 /* an unwritten mark keeps its popover quiet: the heading in ash, not gold, so written and unwritten read apart at a glance */
 .ch-mk:not(.is-on) .ch-tip b { color: var(--ash); }
@@ -19555,7 +19555,6 @@ function chGridHTML(F) {
   h += '<div class="ch-rungs ch-r3" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>";
   h += '<div class="ch-strip-sr" role="img" aria-label="' + esc(chStripLabel(F)) + '"></div>' + chMoodSVG(F);
   F.days.forEach(x => { h += '<div class="ch-dcell ch-r3 ch-mcell"' + col(x.i) + ">" + chStripCell(x) + "</div>"; });
-  h += '<div class="ch-rungs ch-rungs-r ch-r3" aria-hidden="true"><span style="--y:10">with me</span><span style="--y:90">against me</span></div>';
   F.days.forEach(x => { const m = x.e && x.e.mood; h += '<p class="ch-dcell ch-r4 ch-mword' + (m ? " is-set m" + m : "") + '"' + col(x.i) + ">" + (m ? DY_MOODS[m - 1] : "") + "</p>"; });
   F.days.forEach(x => { h += '<p class="ch-dcell ch-r5 ch-feel"' + col(x.i) + ">" + chFeelings(x) + "</p>"; });
   F.days.forEach(x => { h += '<div class="ch-dcell ch-r6"' + col(x.i) + ">" + chMarksHTML(x.e, DOW_LONG[x.i]) + "</div>"; });
@@ -19598,17 +19597,16 @@ function chFrontDayHTML(x) {
 /* under the hand: the same mood strip at phone width, the day initials, and the diary marks as four
    labelled rows across the seven days — the row label teaches the mark once (Kare, DECISIONS.md D4) */
 function chFstripHTML(F) {
-  const any = F.days.some(x => chRes(x) !== null);
   return '<div class="ch-fstrip">' +
     '<div class="ch-rungs" aria-hidden="true">' + ["Bright", "Good", "Even", "Low", "Rough"].map((w, i) => '<span style="--y:' + (10 + i * 20) + '">' + w + "</span>").join("") + "</div>" +
     '<div class="ch-fs-plot" role="img" aria-label="' + esc(chStripLabel(F)) + '">' + chMoodSVG(F) + '<div class="ch-fs-dots">' +
       F.days.map(x => '<div class="ch-mcell">' + chStripCell(x) + "</div>").join("") +
     "</div></div>" +
     '<div class="ch-fs-dows" aria-hidden="true">' + F.days.map(x => "<span" + (x.i === chFront ? ' class="is-front"' : "") + ">" + DOW_SHORT[x.i][0] + "</span>").join("") + "</div>" +
-    (any ? '<p class="ch-fs-cap" aria-hidden="true">in lilac, how the reading sat — against me → with me</p>' : "") +
-    '<table class="ch-fmarks"><tbody>' + ["page", "book", "one", "thanks"].map(k => '<tr><th scope="row">' + CH_MARK_L[k] + "</th>" +
-      F.days.map(x => "<td>" + chMark(k, !!(x.e && x.e[k]), chMarkValue(k, x.e), DOW_LONG[x.i]) + "</td>").join("") + "</tr>").join("") +
-    "</tbody></table></div>";
+    /* each day's four marks stand in its own column, under its letter; the popover names the field */
+    '<div class="ch-fs-marks">' + F.days.map(x => '<div class="ch-fs-mday">' +
+      ["page", "book", "one", "thanks"].map(k => chMark(k, !!(x.e && x.e[k]), chMarkValue(k, x.e), DOW_LONG[x.i])).join("") + "</div>").join("") +
+    "</div></div>";
 }
 
 /* the week's record (DECISIONS.md, option A): the ledger of done things, the habit grid with the Journal's own
@@ -19625,12 +19623,11 @@ function chRecordHTML(F) {
   const perDay = [0, 1, 2, 3, 4, 5, 6].map(d => F.habits.filter(r => r.marks[d] !== "none").length);
   const hab = F.habits.length
     ? '<table class="ch-hab"><thead><tr><th scope="col"><span class="sr-only">Habit</span></th>' + DOW_SHORT.map(d => '<th scope="col">' + d + "</th>").join("") + '<th scope="col"><span class="sr-only">Marks</span></th></tr></thead><tbody>' +
-      F.habits.map(r => '<tr><th scope="row">' + esc(r.hb.name) + "</th>" +
+      F.habits.map(r => '<tr><th scope="row"><span class="ch-hn"><span class="ch-hn-t">' + esc(r.hb.name) + '</span><span class="ch-tip" role="tooltip">' + esc(r.hb.name) + "</span></span></th>" +
         r.marks.map((m, d) => '<td class="' + (r.sched[d] ? "" : "off") + '"' + (m === "none" ? "" : ' title="' + esc(DOW_LONG[d] + ": " + m) + '"') + ">" + markSVG(m) + "</td>").join("") +
         '<td class="ch-hcount">' + (r.marks.filter(m => m !== "none").length || "·") + "</td></tr>").join("") +
       '<tr class="ch-htot"><th scope="row">Marked</th>' + perDay.map(n => "<td>" + (n || "·") + "</td>").join("") + "<td></td></tr>" +
-      "</tbody></table>" +
-      '<p class="ch-hleg"><span><i class="ch-hsq"></i>Unmarked</span><span>' + markSVG("partial") + "Partial</span><span>" + markSVG("expected") + "Done</span><span>" + markSVG("excellent") + "Excellent</span></p>"
+      "</tbody></table>"
     : '<p class="ch-quiet">No habits on the board.</p>';
   const jparts = [];
   if (F.notesN) jparts.push(chN(F.notesN, "note", "notes"));
@@ -19655,7 +19652,7 @@ function chReflectHTML(F, wk) {
     ? '<div class="ch-rlink"><label class="ch-rll" for="ch-quest">Linked quest</label><select id="ch-quest" class="ch-pick' + (c.quest ? "" : " is-none") + '" data-ch="quest" data-wk="' + wk + '">' +
       '<option value="">–</option>' + act.map(a => '<option value="' + esc(a.id) + '"' + (a.id === c.quest ? " selected" : "") + ">" + esc(a.title) + "</option>").join("") + "</select></div>"
     : "";
-  return '<section class="ch-plate ch-reflect" aria-label="Your reflection">' + dyFrame({ top: "notch" }) + '<h2 class="ch-pt">Your reflection</h2><div class="ch-ref">' +
+  return '<section class="ch-plate ch-reflect" aria-label="Reflect on the week">' + dyFrame({ top: "notch" }) + '<h2 class="ch-pt">Reflect on the week</h2><div class="ch-ref">' +
     row("well", "What went well") + row("way", "What got in the way") + row("next", "What next week is for", pick) + "</div></section>";
 }
 
@@ -19671,7 +19668,14 @@ function renderChronicle() {
       chGridHTML(F) + chHandHTML(F) + "</section>" +
     '<div class="ch-low">' + chRecordHTML(F) + chReflectHTML(F, wk) + "</div></div>";
   el.querySelectorAll(".ch-rline").forEach(chGrow);
+  chCutNames(el);
 }
+/* a habit name that does not fit is marked, and only then takes a tab stop and its popover */
+function chCutNames(el) {
+  el.querySelectorAll(".ch-hn").forEach(n => { const t = n.firstChild, cut = t.scrollWidth > t.clientWidth + 1;
+    n.classList.toggle("is-cut", cut); if (cut) n.setAttribute("tabindex", "0"); else n.removeAttribute("tabindex"); });
+}
+window.addEventListener("resize", () => { const el = $("#viewChronicle"); if (el && !el.hidden) chCutNames(el); });
 /* bring a day to the front of the hand; keep the keyboard where it was */
 function chSetFront(i) {
   chFront = Math.max(0, Math.min(6, i));
@@ -19685,6 +19689,10 @@ function chSetFront(i) {
   /* a swipe on the hand is not a tap on a card: swallow the click that follows it */
   el.addEventListener("click", ev => { if (Date.now() - swiped < 400 && ev.target.closest(".ch-fcard")) { ev.stopImmediatePropagation(); ev.preventDefault(); } }, true);
   el.addEventListener("click", ev => {
+    /* a tap on a clipped habit name opens its full name; any other tap closes it */
+    const hn = ev.target.closest(".ch-hn.is-cut");
+    el.querySelectorAll(".ch-hn.is-open").forEach(x => { if (x !== hn) x.classList.remove("is-open"); });
+    if (hn) { hn.classList.toggle("is-open"); return; }
     const b = ev.target.closest("[data-ch]"); if (!b || !el.contains(b) || b.tagName === "TEXTAREA" || b.tagName === "SELECT") return;
     const a = b.dataset.ch;
     if (a === "week") { chWeek = addDays(chWeek || mondayOf(dayNow()), Number(b.dataset.d) * 7); chFront = null; renderChronicle(); }
