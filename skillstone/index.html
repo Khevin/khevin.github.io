@@ -3990,10 +3990,11 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .hero .class-pick { position: relative; min-width: 0; min-height: 0; max-width: 100%; padding: 0 var(--s1); }
   .hero .class-pick::after { content: ""; position: absolute; inset: -7px 0; }   /* 30 + 7 + 7: the plaque starts too close below for all 14 */
   .sign-pick .sp-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-  /* The crests take what the name leaves, between 112 and 176px, spread edge to edge: a short name
-     gives them the laptop's pitch (about 52px), a long one closes them to 37, and the slack falls
-     between the name and the crests as it does on the laptop. */
-  .crests { flex: 1 1 0; min-width: 112px; max-width: 176px; margin-left: auto; justify-content: space-between; gap: 0; overflow: visible; }
+  /* The crests take what the name leaves, spread edge to edge, and never reach left past the plate's
+     notch: the laptop starts them just right of it (57% of the plate), where the notch's star and CHA's
+     do not touch. The band is the 43.8% the notch leaves less the right end (in the content box's terms,
+     43.8% − 6px): 133px at 375, 157 at 430, the crests 38 to 46px apart; a long name closes them to 112. */
+  .crests { flex: 1 1 0; min-width: 112px; max-width: calc(43.8% - 6px); margin-left: auto; justify-content: space-between; gap: 0; overflow: visible; }
   .crest { flex: none; min-width: 0; padding: 0; }
   /* renaming: the field takes the crests' room while it is open, and fits what is left */
   .namebar:has(.hero-name-input) .crests { display: none; }
@@ -4059,6 +4060,8 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
      Its top (--dy-top) is measured by the Diary's script, since the masthead above it is not the
      Diary's to know. */
   .dy2 .dy-log { min-height: calc(100vh - var(--dy-top, 0px) - var(--s4)); min-height: calc(100svh - var(--dy-top, 0px) - var(--s4)); }
+  /* every step, however short, owns the screen under it (qualified: the stack's own min-height: 0 comes later) */
+  #viewDiary .dy2 { min-height: calc(100vh - var(--dy-plate, 0px)); min-height: calc(100svh - var(--dy-plate, 0px)); }
   .dy2 .dy-log .dy-body { max-height: none; }
 
   /* Settings: five card backs across, the labels no longer breaking mid-word */
@@ -15656,12 +15659,16 @@ function dyGoPane(n, from) {
   dyPaneEnd = swap;
   run[0].finished.then(() => { if (dyPaneEnd === swap) swap(); }, () => {});
 }
-/* On the phone the logbook reaches the foot of the screen (the rule is in the phone block); what the
-   rule needs from here is where its card starts on the page */
+/* On the phone the plate reaches the foot of the screen, so a sideways drag anywhere under the steps is
+   the plate's and not the browser's (bare page there went Back), and the cards that fill the screen
+   (the logbook, the body) fill it from where their step starts. The rules are in the phone block; what
+   they need from here is where the plate starts (--dy-plate) and where the step on show starts
+   (--dy-top), which only the page knows. */
 function dyFit() {
-  const plate = document.querySelector("#viewDiary .dy2"), log = plate && plate.querySelector(".dy-log");
-  if (!log || !log.getClientRects().length) return;
-  plate.style.setProperty("--dy-top", Math.round(log.getBoundingClientRect().top + window.scrollY) + "px");
+  const plate = document.querySelector("#viewDiary .dy2"); if (!plate || !plate.getClientRects().length) return;
+  const y = window.scrollY, card = [...plate.querySelectorAll(":scope > [data-pane]")].find(c => c.getClientRects().length);
+  plate.style.setProperty("--dy-plate", Math.round(plate.getBoundingClientRect().top + y) + "px");
+  if (card) plate.style.setProperty("--dy-top", Math.round(card.getBoundingClientRect().top + y) + "px");
 }
 /* a drag that did not carry: the step comes back to rest */
 function dySettle(panes, from) {
