@@ -7089,6 +7089,8 @@ function sanitize(s) {
               .map(([k, v]) => [String(k), Math.max(0, Math.min(99999, Math.round(Number(v))))]))
           : {},
         /* earned / total, with the stamp of when it was fetched. Null when never asked for. */
+        /* when Steam's genres were folded into the tags; 0 means never asked */
+        genresAt: Math.max(0, Math.round(Number(x.genresAt) || 0)),
         ach: (x.ach && Number(x.ach.total) > 0) ? {
           earned: Math.max(0, Math.min(9999, Math.round(Number(x.ach.earned) || 0))),
           total: Math.max(0, Math.min(9999, Math.round(Number(x.ach.total) || 0))),
@@ -9441,6 +9443,11 @@ function renderGames() {
       '<span class="gm-small">' + esc(a.id) + (a.synced ? ' · synced ' + esc(new Date(a.synced).toLocaleDateString()) : ' · not synced') + '</span></span>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-game="sync" data-id="' + esc(a.id) + '"' + (gameBusy ? ' disabled' : '') + '>' +
       (gameBusy === a.id ? 'Syncing…' : 'Sync') + '</button><button type="button" class="btn btn-ghost btn-sm" data-game="account-remove" data-id="' + esc(a.id) + '">Remove</button></div>').join('') +
+    '<div class="gm-account gm-genres"><span class="gm-avatar">' + gamePlatformMark('Steam') + '</span><span class="gm-account-info"><b>Genres from Steam</b>' +
+      '<span class="gm-small" id="gameGenresLeft">' + gameGenreQueue().length + ' Steam titles still without theirs</span>' +
+      '<span class="gm-small">Added to each title\u2019s tags; what you typed stays.</span></span>' +
+      '<button type="button" class="btn btn-ghost btn-sm" id="gameGenresBtn" data-game="genres"' + (gameGenreRun ? ' disabled' : '') + '>' +
+      (gameGenreRun ? 'Fetching ' + gameGenreRun.done + ' / ' + gameGenreRun.total + '\u2026' : 'Fetch genres') + '</button></div>' +
     '<form class="gm-account-form" data-form="game-account"><input name="label" aria-label="Account label" maxlength="40" placeholder="Account label (e.g. Main)" required>' +
     '<input name="steamid" aria-label="SteamID64" inputmode="numeric" pattern="[0-9]{17}" maxlength="17" placeholder="17-digit SteamID64" required>' +
     '<button type="submit" class="j3-btn">+ Add account</button></form>' +
@@ -9694,7 +9701,7 @@ async function gameSteamSync(id) {
       'Content-Type': 'application/json' }, body: JSON.stringify({ steamid: id }) });
     const result = await r.json(); if (!r.ok) throw new Error(result.error || ('Steam returned ' + r.status));
     if (!Array.isArray(result.games)) throw new Error('Steam sent no readable library. Check game-details visibility.');
-    let added = 0, linked = 0;
+    let added = 0, linked = 0, shared = 0;
     const ok = gameCommit(g => {
       result.games.slice(0, 2000).forEach(raw => {
         const appid = String(raw.appid || ''); if (!/^\d{1,10}$/.test(appid) || !raw.name) return;
@@ -9720,6 +9727,31 @@ async function gameSteamSync(id) {
             ach: null, added: Date.now() }); added++;
         }
       });
+      /* Recently played is the one Steam list that includes Family Sharing titles: a game
+         borrowed from another library never appears among owned games, but its playtime does
+         here for two weeks after each session. The larger figure wins, and a title the shelf
+         cannot match is added like an owned one. */
+      (Array.isArray(result.recent) ? result.recent : []).forEach(raw => {
+        const appid = String(raw.appid || ''); if (!/^\d{1,10}$/.test(appid) || !raw.name) return;
+        const hours = Math.round((Number(raw.playtime) || 0) / 60); if (hours <= 0) return;
+        let it = g.items.find(x => x.steamAppId === appid);
+        if (!it) { const exact = g.items.filter(x => !x.steamAppId && x.name.trim().toLowerCase() === String(raw.name).trim().toLowerCase());
+          if (exact.length === 1) it = exact[0]; }
+        const cover = 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/' + appid + '/library_600x900.jpg';
+        if (it) {
+          if (!it.hoursBy || typeof it.hoursBy !== 'object') it.hoursBy = {};
+          if (hours <= (Number(it.hoursBy[id]) || 0)) return;   /* the owned-games figure already covers it */
+          it.steamAppId = appid; it.hoursBy[id] = hours;
+          if (!it.steamAccounts.includes(id)) it.steamAccounts.push(id);
+          if (!it.platforms.some(p => p.toLowerCase() === 'steam')) it.platforms.push('Steam');
+          if (!it.cover) it.cover = cover;
+          shared++;
+        } else if (g.items.length < 2000) {
+          g.items.push({ id: uid(), name: String(raw.name).slice(0,160), cover, complete: false, wish: false, platforms: ['Steam'],
+            tags: [], release: '', steamAppId: appid, steamAccounts: [id], hours: 0, hoursBy: { [id]: hours }, ach: null, added: Date.now() });
+          added++; shared++;
+        }
+      });
       const account = g.accounts.find(a => a.id === id); if (account) {
         account.synced = Date.now();
         const avatar = String(result.profile?.avatar || '');
@@ -9729,9 +9761,55 @@ async function gameSteamSync(id) {
         }
       }
     });
-    if (ok) showToast('Steam shelf synced: ' + added + ' new, ' + linked + ' matched. Completion marks kept.', true);
+    if (ok) showToast('Steam shelf synced: ' + added + ' new, ' + linked + ' matched' + (shared ? ', ' + shared + ' with recent play' : '') + '. Completion marks kept.', true);
+    if (ok) gameGenresBackfill(true);   /* new titles get their genres without being asked */
   } catch (e) { showToast('Steam sync: ' + e.message, false, true); }
   finally { gameBusy = ''; renderGames(); $('#invGames .gm-steam').open = true; }
+}
+/* Genres from Steam's store, folded into a title's tags. Twenty titles a call and a call every
+   half minute: the store API allows about two hundred requests in five minutes, and a library of
+   several hundred titles must not spend that in one burst. Genres are ADDED to the tags, never
+   replacing what was typed, and a title is asked about once (genresAt) unless its fetch failed. */
+const GAME_GENRE_BATCH = 20, GAME_GENRE_PAUSE = 30000;
+let gameGenreRun = null;          /* { done, total } while a backfill is running */
+const gameGenreQueue = () => games().items.filter(it => it.steamAppId && !it.genresAt);
+function gameGenreButton() {
+  const b = $('#gameGenresBtn'); if (!b) return;
+  b.disabled = !!gameGenreRun;
+  b.textContent = gameGenreRun ? 'Fetching ' + gameGenreRun.done + ' / ' + gameGenreRun.total + '\u2026' : 'Fetch genres';
+  const n = $('#gameGenresLeft'); if (n) n.textContent = gameGenreQueue().length + ' Steam titles still without theirs';
+}
+async function gameGenresBackfill(quiet) {
+  if (gameGenreRun) return;
+  if (!auth) { if (!quiet) showToast('Sign in to Skillstone before fetching genres.', false, true); return; }
+  const queue = gameGenreQueue();
+  if (!queue.length) { if (!quiet) showToast('Every Steam title on the shelf has its genres.'); return; }
+  gameGenreRun = { done: 0, total: queue.length }; gameGenreButton();
+  let tagged = 0;
+  try {
+    for (let i = 0; i < queue.length; i += GAME_GENRE_BATCH) {
+      if (i) await new Promise(r => setTimeout(r, GAME_GENRE_PAUSE));
+      if (!(await authRefreshIfNeeded())) throw new Error('Your sign-in expired. Sign in again.');
+      const batch = queue.slice(i, i + GAME_GENRE_BATCH);
+      const url = ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + '/functions/v1/steam-games';
+      const r = await fetch(url, { method: 'POST', headers: { apikey: authKey(), Authorization: 'Bearer ' + auth.access_token,
+        'Content-Type': 'application/json' }, body: JSON.stringify({ genres: true, appids: batch.map(x => x.steamAppId) }) });
+      const result = await r.json(); if (!r.ok) throw new Error(result.error || ('Steam returned ' + r.status));
+      if (!result.genres || typeof result.genres !== 'object') throw new Error('the server function needs redeploying before it can fetch genres.');
+      gameSaveQuiet(g => {
+        batch.forEach(q => {
+          const it = g.items.find(x => x.id === q.id); if (!it) return;
+          const list = result.genres[q.steamAppId]; if (!Array.isArray(list)) return;   /* failed: asked again next run */
+          list.forEach(t => { if (t && it.tags.length < 16 && !it.tags.some(x => x.toLowerCase() === t.toLowerCase())) { it.tags.push(t); tagged++; } });
+          it.genresAt = Date.now();
+        });
+      });
+      gameGenreRun.done = Math.min(queue.length, i + batch.length); gameGenreButton();
+    }
+    renderGames();
+    if (!quiet || tagged) showToast('Genres from Steam: ' + tagged + ' added across ' + queue.length + ' titles.');
+  } catch (e) { showToast('Genres: ' + e.message, false, true); }
+  finally { gameGenreRun = null; gameGenreButton(); }
 }
 function gameAct(el) {
   const { game: act, id, k } = el.dataset, it = id && gameById(id);
@@ -9778,6 +9856,7 @@ function gameAct(el) {
       const name = gameEdit.name, removeId = gameEdit.id;
       if (gameCommit(g => { g.items = g.items.filter(x => x.id !== removeId); })) { gameDlgClose(); showToast('“' + name + '” removed.', true); }
     } break;
+    case 'genres': gameGenresBackfill(false); break;
     case 'account-remove': {
       const account = games().accounts.find(a => a.id === id);
       if (account && confirm('Remove “' + account.label + '” from connected accounts? Imported games stay on the shelf.')) {
