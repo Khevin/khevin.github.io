@@ -3974,7 +3974,12 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s3); row-gap: var(--s1); align-items: center;
     margin: 0 calc(-1 * var(--s2)) var(--s3); padding-bottom: 0; }
   .namebar { grid-column: 1 / -1; grid-row: 1; min-height: 72px; gap: 10px; padding: 0 20px 0 22px; }
-  .hero { align-items: center; gap: var(--s2); }
+  .hero { flex: 0 1 auto; align-items: center; gap: var(--s3); }
+  /* The name block rides the crests' band, as on the laptop: the name's ink level with the crests'
+     icons, the sign's a hair above their numerals (the laptop's 27 · 27 and 78 · 80, measured). Centred
+     on the portrait it sat 5px above the icons and 10px above the numerals. */
+  .hero-main { position: relative; top: 6px; }
+  .hero-class { margin-top: 2px; }
   .portrait { width: 44px; height: 56px; }
   /* The name and the sign keep 44px for the finger without taking it from the layout (the name's box
      reaches up into the plate, the sign's down), so the pair sits on the portrait's middle. Both had
@@ -3983,10 +3988,13 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .hero-name { display: block; min-height: 0; max-width: 100%; font-size: 1.125rem; padding-top: 21px; margin-top: -21px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hero .class-pick { position: relative; min-width: 0; min-height: 0; max-width: 100%; padding: 0 var(--s1); }
-  .hero .class-pick::after { content: ""; position: absolute; inset: 0 0 -14px; }
+  .hero .class-pick::after { content: ""; position: absolute; inset: -7px 0; }   /* 30 + 7 + 7: the plaque starts too close below for all 14 */
   .sign-pick .sp-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-  .crests { gap: 10px; overflow: visible; }
-  .crest { min-width: 0; padding: 0; }
+  /* The crests take what the name leaves, between 112 and 176px, spread edge to edge: a short name
+     gives them the laptop's pitch (about 52px), a long one closes them to 37, and the slack falls
+     between the name and the crests as it does on the laptop. */
+  .crests { flex: 1 1 0; min-width: 112px; max-width: 176px; margin-left: auto; justify-content: space-between; gap: 0; overflow: visible; }
+  .crest { flex: none; min-width: 0; padding: 0; }
   /* renaming: the field takes the crests' room while it is open, and fits what is left */
   .namebar:has(.hero-name-input) .crests { display: none; }
   .hero:has(.hero-name-input) .hero-main { flex: 1 1 auto; }
@@ -4000,9 +4008,11 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .tab { font-size: 0.75rem; letter-spacing: 0.05em; padding: var(--s2) 7px; }
   /* Settings lives in the profile menu, so the gear goes and the plaque takes the row. Only where the
      menu can open: without the Popover API the portrait keeps the laptop's controls and the gear stays. */
+  /* One column, not the gear's column left empty: an empty track keeps its 12px gap, and the plaque's
+     fades, placed in the first column, stopped that far short of the right finial. */
   @supports selector(:popover-open) {
+    .masthead { grid-template-columns: minmax(0, 1fr); }
     .tools { display: none; }
-    .tabs, .masthead::before, .masthead::after { grid-column: 1 / -1; }
   }
   /* the plaque scrolls; a fade at whichever end has more says so. Grid items of the masthead, laid
      over the plaque's cell just inside its finials — a sticky child of the scroll row itself does
@@ -4038,9 +4048,10 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
      Horizontal drags belong to the plate; pan-y is set on every element in it because touch-action
      stops counting at the nearest scroller. A text input keeps auto, for panning its own line. */
   #viewDiary { margin: 0 calc(-1 * var(--s4)); padding: 0 var(--s4); overflow-x: clip; }
-  .dy2 > .dy-path { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: var(--s4); }
+  .dy2 > .dy-path { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: var(--s4); }
   .dy2[data-pane="1"] > [data-pane]:not([data-pane="1"]), .dy2[data-pane="2"] > [data-pane]:not([data-pane="2"]),
-  .dy2[data-pane="3"] > [data-pane]:not([data-pane="3"]), .dy2[data-pane="1"] .dy-pday { display: none; }
+  .dy2[data-pane="3"] > [data-pane]:not([data-pane="3"]), .dy2[data-pane="4"] > [data-pane]:not([data-pane="4"]),
+  .dy2[data-pane="1"] .dy-pday { display: none; }
   .dy2, .dy2 *:not(input) { touch-action: pan-y pinch-zoom; }
   .dy2.is-drag { -webkit-user-select: none; user-select: none; }
   /* Step II is the page: the logbook reaches the foot of the screen, so a screen holds as many lines
@@ -4071,7 +4082,7 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
      box still 44px to the finger) */
   .namebar { padding: 0 16px 0 18px; gap: var(--s2); }
   .hero-name { font-size: 1rem; padding-top: 23px; margin-top: -23px; }
-  .crests { gap: 8px; }
+  .crests { min-width: 96px; }
   /* a skill's name at display size was the one thing wider than a 320px sheet */
   #detail .d-name { font-size: 1.5rem; overflow-wrap: anywhere; min-width: 0; }
   #detail .name-row, #detail .d-head-main { min-width: 0; }
@@ -4971,6 +4982,89 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-mk:not(.is-on) .ch-tip b { color: var(--ash); }
 .ch-mk:not(.is-on) .ch-tip { color: var(--dust); }
 /* ===== /chronicle:css ===== */
+/* ===== body:css =====
+   The body plate on the Diary (DECISIONS.md, 22 Sep 2026). Installed by .body/splice.mjs between these
+   markers; edit there and re-run. The Diary's own grid is overridden here, so the plate's placement
+   lives with the plate. */
+.dy-bodyc { padding: 36px 28px 22px; }
+/* not a scroller: the Diary's swipe leaves a gesture that starts in one alone, and on the phone the browser then took the
+   sideways drag as Back. The plate grows with what it holds instead. */
+.bd { flex: 1 1 auto; width: 100%; display: flex; flex-direction: column; gap: var(--s2); }
+/* the weight leads, measured in the mono face; the change since the last weigh-in beside it, unsigned by colour */
+.bd-kg { margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 6px; font-family: var(--f-mono); color: var(--parchment); font-variant-numeric: tabular-nums; }
+.bd-n { font-size: 2rem; line-height: 1.1; }
+.bd-u { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ash); margin-left: 2px; }
+.bd-dk { font-size: 0.8125rem; color: var(--dust); margin-left: var(--s2); }
+.bd-when { margin: 0; text-align: center; font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); }
+.bd-trend { display: block; width: 100%; height: 40px; margin: var(--s1) 0; }
+.bd-trend polyline { stroke: var(--gold); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.bd-core { margin: 0; display: grid; }
+.bd-core > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); padding: 6px 0; border-bottom: 1px solid rgba(232,176,84,0.22); }
+.bd-core > div:last-child { border-bottom: 0; }
+.bd-core dt { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+.bd-core dd { margin: 0; font-family: var(--f-mono); font-size: 0.875rem; color: var(--parchment); font-variant-numeric: tabular-nums; }
+.bd-empty { margin: auto 0 0; text-align: center; color: var(--ash); font-size: 0.875rem; }
+.bd-acts { margin-top: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--s4); }
+.bd-link { min-height: 44px; padding: 0 var(--s1); background: none; border: 0; color: var(--gold); font-family: var(--f-display); font-weight: 700;
+  font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+@media (hover: hover) { .bd-link:hover { color: var(--gold-2); } }
+.bd-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.bd-sync { margin: 0; min-height: 0; text-align: center; font-family: var(--f-mono); font-size: 0.625rem; line-height: 1.4; color: var(--ash); }
+.bd-sync:empty { display: none; }
+
+/* the dialogs */
+.bd-at { display: block; margin-top: 2px; font-family: var(--f-mono); font-weight: 400; font-size: 0.6875rem; color: var(--ash); }
+.bd-nav { display: flex; justify-content: space-between; }
+.bd-grid { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s5); }
+.bd-grid > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); padding: 7px 0; border-bottom: 1px solid var(--mortar); }
+.bd-grid dt { font-size: 0.8125rem; color: var(--dust); }
+.bd-grid .is-core dt { color: var(--parchment); }
+.bd-grid dd { margin: 0; font-family: var(--f-mono); font-size: 0.875rem; color: var(--parchment); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bd-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
+.bd-more summary { cursor: pointer; font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); min-height: 44px; display: flex; align-items: center; }
+.bd-more[open] summary { margin-bottom: var(--s2); }
+.bd-dlg .bk-foot { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s2); }
+.bd-dlg .btn-danger { margin-right: auto; }
+
+/* The laptop: a band under the logbook, across the logbook's two columns. The logbook gives the band its
+   height; How I feel and the morning's three keep their widths, which their medallions need (the five of
+   How I feel want 330px; a fourth column cut them). The band reads left to right: the weight and when,
+   the trend, the other four, the ways in. Its title is for the phone and the screen reader. */
+@media (min-width: 1000px) {
+  /* the lower row keeps the third of the page it had; the band's height comes out of the logbook alone */
+  .dy2 { grid-template-rows: minmax(0, 1fr) auto calc((100% - var(--s5)) / 3); }
+  .dy-day { grid-row: 1 / 4; }
+  .dy-bodyc { grid-column: 2 / 4; grid-row: 2; padding: 18px 28px 16px; }
+  .dy-moodc { grid-column: 2; grid-row: 3; }
+  .dy-vowc { grid-column: 3; grid-row: 3; }
+  .dy-bodyc .bd-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .dy-bodyc .bd { flex-direction: row; align-items: center; gap: var(--s4); min-width: 0; }
+  .dy-bodyc .bd-lead { flex: none; }
+  .dy-bodyc .bd-kg { justify-content: flex-start; }
+  .dy-bodyc .bd-when { text-align: left; }
+  /* the trend gives way first when the band is narrow */
+  .dy-bodyc .bd-trend { flex: 1 1 0; min-width: 40px; max-width: 220px; height: 44px; margin: 0; }
+  .dy-bodyc .bd-core { flex: none; grid-auto-flow: column; column-gap: var(--s3); }
+  .dy-bodyc .bd-core > div { flex-direction: column; align-items: flex-start; gap: 2px; padding: 0; border: 0; }
+  .dy-bodyc .bd-acts { flex: none; flex-direction: column; align-items: flex-end; margin: 0 0 0 auto; gap: 0; }
+  .dy-bodyc .bd-link { white-space: nowrap; }
+  .dy-bodyc .bd-link { min-height: 32px; }
+  .dy-bodyc .bd-sync { position: absolute; left: 28px; right: 28px; bottom: 4px; text-align: left; }
+  .dy-bodyc .bd-empty { margin: 0; }
+}
+/* a narrower laptop (the band is 640px at 1024): the trend goes, and the ways in take a second line of the band */
+@media (min-width: 1000px) and (max-width: 1279px) {
+  .dy-bodyc .bd { flex-wrap: wrap; row-gap: 0; }
+  .dy-bodyc .bd-trend { display: none; }
+  .dy-bodyc .bd-acts { flex-basis: 100%; flex-direction: row; justify-content: flex-end; gap: 0 var(--s4); margin: 0; }
+}
+/* on the phone the Body step reaches the foot of the screen, as the logbook does (--dy-top is the Diary's own
+   measure): a short plate left bare page below it, where a sideways drag missed the Diary's swipe and the
+   browser took it as Back */
+@media (max-width: 700px) { .dy2 .bd-acts { margin-top: var(--s3); } .dy2 .dy-bodyc { min-height: calc(100vh - var(--dy-top, 0px) - var(--s4)); min-height: calc(100svh - var(--dy-top, 0px) - var(--s4)); } }
+/* four steps share the phone row: under 360px each is 64px, and HOW I FEEL needs the 9px floor and tighter tracking to fit */
+@media (max-width: 360px) { .dy-plab { font-size: 0.5625rem; letter-spacing: 0.05em; } }
+/* ===== /body:css ===== */
 </style>
 <style>
   /* ——— namespace switcher ——— */
@@ -9064,6 +9158,8 @@ function normaliseBook(b) {
   b.titles    = (b.titles && typeof b.titles === "object") ? b.titles : {};
   /* close[weekKey] = { well, way, next, quest, at } — the Chronicle's three lines; bounded below, as the diary is */
   b.close     = (b.close && typeof b.close === "object") ? b.close : {};
+  /* body = [{ id, at, src, kg, fat, … }] — the Diary's weigh-ins, from the scale or by hand (.body/body.js) */
+  b.body      = bdNormalise(b.body);
   /* diary[weekKey][dow] = { page, three: [a, b, c], at } — the morning. The first shape was
      one string per day; it becomes { page } here, on every load, losing nothing. */
   b.diary     = (b.diary && typeof b.diary === "object") ? b.diary : {};
@@ -15503,24 +15599,26 @@ function dyStripHTML(b, sel, today, prev, next) {
    the morning's three. A finger moves between them, or the row of numerals does. Nothing waits
    on anything, so the numerals are a way through rather than a gate; each goes from stone to
    bronze once its step holds something, the grammar the three lines already speak. */
-const DY_PANES = ["Tarot", "Logbook", "How I feel"], DY_PANE_DONE = ["card turned", "written", "answered"];
+const DY_PANES = ["Tarot", "Logbook", "How I feel", "Body"], DY_PANE_DONE = ["card turned", "written", "answered", "weighed"];
 let dyPaneN = 1;                                   /* the step on the phone: 1 until moved, kept while the app is open */
 const dyPhone = () => window.matchMedia("(max-width: 700px)").matches;
 const dyPanesOf = (plate, n) => [...plate.querySelectorAll(':scope > [data-pane="' + n + '"]')];
 /* what each step holds: the card read (a past morning's, drawn), the page, a feeling or any of the three */
 function dyPaneSet(b, sel, isToday) {
   const e = dyGetDate(b, sel) || {}, rec = state.tarot && state.tarot.days ? state.tarot.days[tarKey(sel)] : null;
-  return [!!(rec && TAROT[rec.c] && (rec.land || !isToday)), !!e.page, !!(e.mood || e.book || e.one || e.thanks)];
+  /* the fourth: a weigh-in on this morning's day */
+  const weighed = bdRows().some(x => dySame(new Date(x.at - DAY_TURNS_AT * 3600000), sel));
+  return [!!(rec && TAROT[rec.c] && (rec.land || !isToday)), !!e.page, !!(e.mood || e.book || e.one || e.thanks), weighed];
 }
-const dyPaneLabel = (i, on) => DY_PANES[i] + ", step " + (i + 1) + " of 3" + (on ? ", " + DY_PANE_DONE[i] : "");
+const dyPaneLabel = (i, on) => DY_PANES[i] + ", step " + (i + 1) + " of " + DY_PANES.length + (on ? ", " + DY_PANE_DONE[i] : "");
 function dyPathHTML(sel, isToday, set) {
   /* the date lives on step I; away from today, the other two name the morning they write into */
   const day = isToday ? "" : '<p class="dy-pday">' + DOW_LONG[dyDow(sel)] + " \u00b7 " + sel.getDate() + " " + MONTHS[sel.getMonth()] +
     (sel.getFullYear() === dayNow().getFullYear() ? "" : " " + sel.getFullYear()) + "</p>";
-  return '<div class="dy-path" role="group" aria-label="The morning, in three steps">' + day + DY_PANES.map((w, i) =>
+  return '<div class="dy-path" role="group" aria-label="The morning, in four steps">' + day + DY_PANES.map((w, i) =>
     '<button type="button" class="dy-pstep' + (set[i] ? " is-set" : "") + '" data-dy="goto" data-n="' + (i + 1) + '"' +
     (dyPaneN === i + 1 ? ' aria-current="step"' : "") + ' aria-label="' + dyPaneLabel(i, set[i]) + '">' +
-    '<span class="dy-pnum">' + ["I", "II", "III"][i] + '</span><span class="dy-plab">' + w + "</span></button>").join("") + "</div>";
+    '<span class="dy-pnum">' + ["I", "II", "III", "IV"][i] + '</span><span class="dy-plab">' + w + "</span></button>").join("") + "</div>";
 }
 /* a commit does not re-render, so a step lights itself */
 function dyPaneMark(i, on) {
@@ -15533,7 +15631,7 @@ let dyPaneEnd = null;
 function dyGoPane(n, from) {
   const plate = document.querySelector("#viewDiary .dy2");
   if (dyPaneEnd) dyPaneEnd();
-  if (!plate || n < 1 || n > 3 || n === dyPaneN) { if (plate && from) dySettle(dyPanesOf(plate, dyPaneN), from); return; }
+  if (!plate || n < 1 || n > DY_PANES.length || n === dyPaneN) { if (plate && from) dySettle(dyPanesOf(plate, dyPaneN), from); return; }
   const dir = n > dyPaneN ? 1 : -1, out = dyPanesOf(plate, dyPaneN), calm = reduced();
   const a = document.activeElement;
   if (a && a.matches && a.matches("textarea, input, select") && out.some(p => p.contains(a))) a.blur();   /* a field on its way out commits first */
@@ -15588,12 +15686,14 @@ function renderDiary() {
     '<section class="dy-card dy-moodc" data-pane="3">' + dyFrame({ sprigs: ["tl", "tr"], top: "moon", sides: "lr" }) + '<h2 class="dy-ct">How I feel</h2>' + DY_ORN.rule + '<div class="dy-body dy-body-c">' + dyMoodHTML(b, wk, dow) + "</div></section>" +
     '<section class="dy-card dy-vowc" data-pane="3" aria-label="Today">' + dyFrame({ top: "crest" }) +
       '<div class="dy-body dy-body-c">' + dyVowHTML(b, wk, dow) + "</div></section>" +
+    bdPlate() +
     "</div>";
   dyFit();
   el.querySelectorAll(dyGrowSel()).forEach(dyAutosize);
   const dayCard = el.querySelector(".dy-day");                       /* the listeners die with the nodes on the next render */
   if (dayCard) { dayCard.addEventListener("pointerenter", () => sunHeat(1)); dayCard.addEventListener("pointerleave", () => sunHeat(0)); }
   dyTilt(el.querySelector(".dy-tcard"));
+  bdSync();
 }
 /* Every field on this card that grows to fit what is in it. One list, because the same
    three classes were written out at three call sites under two different scopes, and the
@@ -15737,7 +15837,7 @@ document.addEventListener("click", e => {
     const dt = ev.timeStamp - g.t;
     if (dt > 0) { g.v = (ev.clientX - g.lx) / dt; g.t = ev.timeStamp; g.lx = ev.clientX; }
     if (reduced()) return;
-    const stop = (dx > 0 && dyPaneN === 1) || (dx < 0 && dyPaneN === 3);
+    const stop = (dx > 0 && dyPaneN === 1) || (dx < 0 && dyPaneN === DY_PANES.length);
     g.x = stop ? dx * 0.3 : dx; g.o = 1 - Math.min(0.5, Math.abs(g.x) / g.w);
     g.panes.forEach(p => { p.style.transform = "translateX(" + g.x.toFixed(1) + "px)"; p.style.opacity = g.o.toFixed(3); });
   });
@@ -15749,7 +15849,7 @@ document.addEventListener("click", e => {
     swiped = Date.now();
     const dx = ev.clientX - s.x0, n = dyPaneN + (dx < 0 ? 1 : -1);
     const v = ev.timeStamp - s.t > 100 ? 0 : s.v;                         /* a finger that stopped before it lifted did not flick */
-    const carry = !cancel && n >= 1 && n <= 3 && (Math.abs(dx) > s.w * 0.25 || (Math.abs(dx) > 40 && Math.abs(v) > 0.4 && (v < 0) === (dx < 0)));
+    const carry = !cancel && n >= 1 && n <= DY_PANES.length && (Math.abs(dx) > s.w * 0.25 || (Math.abs(dx) > 40 && Math.abs(v) > 0.4 && (v < 0) === (dx < 0)));
     if (carry) dyGoPane(n, { x: s.x, o: s.o }); else if (s.x || s.o !== 1) dySettle(s.panes, { x: s.x, o: s.o });
   };
   el.addEventListener("pointerup", ev => end(ev, false));
@@ -15758,7 +15858,7 @@ document.addEventListener("click", e => {
   el.addEventListener("keydown", ev => {
     const s = ev.target.closest && ev.target.closest(".dy-pstep");
     if (!s || (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft")) return;
-    const n = dyPaneN + (ev.key === "ArrowRight" ? 1 : -1); if (n < 1 || n > 3) return;
+    const n = dyPaneN + (ev.key === "ArrowRight" ? 1 : -1); if (n < 1 || n > DY_PANES.length) return;
     ev.preventDefault(); dyGoPane(n);
     const t = el.querySelector('.dy-pstep[data-n="' + n + '"]'); if (t) t.focus();
   });
@@ -19899,6 +19999,226 @@ function chSetFront(i) {
   });
 })();
 /* ===== /chronicle:js ===== */
+/* ===== body:js =====
+   The body plate on the Diary: bioimpedance weigh-ins, from the Fitdays cloud through the owner-only
+   `fitdays` Supabase function, or typed by hand. DECISIONS.md, 22 Sep 2026.
+   Installed by .body/splice.mjs between these markers, before the boot block; edit there and re-run.
+
+   book.body = [{ id, at, src: "fd" | "hand", ed?, del?, kg, fat, visc, mus, water, bmi, sfat, skm,
+   bone, prot, bmr, age, hr, imp }] — oldest first. A scale row the owner edits carries ed and is
+   never overwritten by the next sync; one he deletes stays as { id, del } so the sync does not bring it back. */
+
+/* the readings: the core five first, the rest on request. Units as the scale reports them. */
+const BD_FIELDS = [
+  { k: "kg", l: "Weight", u: "kg", d: 2, min: 20, max: 300, core: 1 },
+  { k: "fat", l: "Body fat", u: "%", d: 1, min: 2, max: 75, core: 1 },
+  { k: "mus", l: "Muscle", u: "%", d: 1, min: 10, max: 95, core: 1 },
+  { k: "visc", l: "Visceral fat", u: "", d: 1, min: 1, max: 60, core: 1 },
+  { k: "water", l: "Body water", u: "%", d: 1, min: 20, max: 85, core: 1 },
+  { k: "bmi", l: "BMI", u: "", d: 1, min: 8, max: 80 },
+  { k: "sfat", l: "Subcutaneous fat", u: "%", d: 1, min: 1, max: 70 },
+  { k: "skm", l: "Skeletal muscle", u: "%", d: 1, min: 10, max: 80 },
+  { k: "bone", l: "Bone mass", u: "kg", d: 2, min: 0.5, max: 10 },
+  { k: "prot", l: "Protein", u: "%", d: 1, min: 5, max: 40 },
+  { k: "bmr", l: "BMR", u: "kcal", d: 0, min: 500, max: 5000 },
+  { k: "age", l: "Body age", u: "yrs", d: 0, min: 10, max: 99 },
+  { k: "hr", l: "Heart rate", u: "bpm", d: 0, min: 30, max: 220 },
+  { k: "imp", l: "Impedance", u: "Ω", d: 1, min: 1, max: 2000 }
+];
+const BD_CAP = 3000;
+const BD_SYNC_EVERY = 6 * 3600000;
+const BD_SYNC_KEY = "skillstone-fitdays-at";
+
+/* one weigh-in, sanitised: a number out of its range is dropped, not clamped — a wrong number is not a reading */
+function bdSan(v) {
+  if (!v || typeof v !== "object") return null;
+  const id = String(v.id || "").slice(0, 80);
+  if (!id) return null;
+  if (v.del) return { id, del: 1 };
+  const at = Number(v.at);
+  if (!isFinite(at) || at <= 0) return null;
+  const e = { id, at, src: v.src === "fd" ? "fd" : "hand" };
+  if (v.ed) e.ed = 1;
+  BD_FIELDS.forEach(f => {
+    const n = Number(v[f.k]);
+    if (v[f.k] !== null && v[f.k] !== "" && isFinite(n) && n >= f.min && n <= f.max) e[f.k] = Math.round(n * 10 ** f.d) / 10 ** f.d;
+  });
+  return e.kg ? e : null;
+}
+function bdNormalise(list) {
+  const seen = new Map();
+  (Array.isArray(list) ? list : []).forEach(x => { const e = bdSan(x); if (e) seen.set(e.id, e); });
+  return [...seen.values()].sort((a, c) => (a.at || 0) - (c.at || 0)).slice(-BD_CAP);
+}
+const bdRows = () => book().body.filter(x => !x.del);
+const bdFmt = (f, n) => n === undefined || n === null ? "—" : n.toLocaleString("en-GB", { minimumFractionDigits: f.d ? 1 : 0, maximumFractionDigits: f.d });
+const BD_F = Object.fromEntries(BD_FIELDS.map(f => [f.k, f]));
+const bdDate = at => { const d = new Date(at); return d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3) + " " + d.getFullYear(); };
+function bdAgo(at) {
+  const days = Math.floor((Date.now() - at) / 86400000);
+  if (days < 1) return "today";
+  if (days < 2) return "yesterday";
+  if (days < 60) return days + " days ago";
+  const months = Math.round(days / 30.44);
+  return months < 24 ? months + " months ago" : Math.floor(days / 365.25) + " years ago";
+}
+
+/* the weight over the last weigh-ins: one line, no axes; the ends are named by the numbers beside it */
+function bdTrendSVG(rows) {
+  const r = rows.slice(-24);
+  if (r.length < 2) return "";
+  const ys = r.map(x => x.kg), lo = Math.min(...ys), hi = Math.max(...ys), span = Math.max(0.5, hi - lo);
+  const pts = r.map((x, i) => (i / (r.length - 1) * 100).toFixed(2) + "," + (4 + (1 - (x.kg - lo) / span) * 32).toFixed(2)).join(" ");
+  return '<svg class="bd-trend" viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label="Weight over the last ' + r.length +
+    " weigh-ins, from " + bdFmt(BD_F.kg, r[0].kg) + " to " + bdFmt(BD_F.kg, r[r.length - 1].kg) + ' kilograms">' +
+    '<polyline points="' + pts + '" fill="none" vector-effect="non-scaling-stroke"/></svg>';
+}
+
+let bdSyncing = false, bdNote = "";
+function bdPlateHTML() {
+  const rows = bdRows(), last = rows[rows.length - 1], prev = rows[rows.length - 2];
+  let h = '<h2 class="dy-ct bd-t">Body</h2>' + '<div class="bd">';
+  if (!last) {
+    h += '<p class="bd-empty">No weigh-ins yet.</p>';
+  } else {
+    const dk = prev ? Math.round((last.kg - prev.kg) * 100) / 100 : null;
+    h += '<div class="bd-lead"><p class="bd-kg"><span class="bd-n">' + bdFmt(BD_F.kg, last.kg) + '</span><span class="bd-u">kg</span>' +
+      (dk ? '<span class="bd-dk">' + (dk > 0 ? "+" : "−") + bdFmt(BD_F.kg, Math.abs(dk)) + "</span>" : "") + "</p>" +
+      '<p class="bd-when">' + esc(bdDate(last.at)) + " · " + bdAgo(last.at) + (last.src === "fd" && !last.ed ? " · Fitdays" : "") + "</p></div>" +
+      bdTrendSVG(rows) +
+      '<dl class="bd-core">' + BD_FIELDS.filter(f => f.core && f.k !== "kg").map(f =>
+        "<div><dt>" + f.l + "</dt><dd>" + bdFmt(f, last[f.k]) + (last[f.k] !== undefined && f.u ? '<span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl>";
+  }
+  h += '<div class="bd-acts">' + (last ? '<button type="button" class="bd-link" data-bd="all">See all readings</button>' : "") +
+    '<button type="button" class="bd-link" data-bd="add">Add a weigh-in</button></div>' +
+    '<p class="bd-sync" aria-live="polite">' + esc(bdSyncing ? "Syncing with Fitdays…" : bdNote) + "</p></div>";
+  return h;
+}
+const bdPlate = () => '<section class="dy-card dy-bodyc" data-pane="4" aria-label="Body">' + dyFrame({ top: "notch" }) + bdPlateHTML() + "</section>";
+function bdRepaint() {
+  const c = document.querySelector("#viewDiary .dy-bodyc"); if (!c) return;
+  c.innerHTML = dyFrame({ top: "notch" }) + bdPlateHTML();
+  if (typeof dyPaneMark === "function") dyPaneMark(3, bdRows().length > 0);
+}
+
+/* ---- the sync: the owner's scale, at most every six hours, while he is signed in ---- */
+async function bdSync(force) {
+  if (bdSyncing || !auth) return;
+  let last = 0; try { last = Number(localStorage.getItem(BD_SYNC_KEY)) || 0; } catch (e) {}
+  if (!force && Date.now() - last < BD_SYNC_EVERY) return;
+  bdSyncing = true; bdRepaint();
+  try {
+    if (!(await authRefreshIfNeeded())) throw new Error("Your sign-in expired.");
+    const newest = book().body.filter(x => x.src === "fd").reduce((m, x) => Math.max(m, x.at || 0), 0);
+    const url = ((authCloudUrlKey && authCloudUrlKey.url) || authUrl()) + "/functions/v1/fitdays";
+    const r = await fetch(url, { method: "POST", headers: { apikey: authKey(), Authorization: "Bearer " + auth.access_token,
+      "Content-Type": "application/json" }, body: JSON.stringify({ since: newest }) });
+    const data = await r.json().catch(() => ({}));
+    /* not the owner: nothing to say, and nothing to ask again for a day. Not configured yet: ask again in ten minutes */
+    if (r.status === 403 || r.status === 503) {
+      try { localStorage.setItem(BD_SYNC_KEY, String(Date.now() - BD_SYNC_EVERY + (r.status === 403 ? 24 * 3600000 : 600000))); } catch (e) {}
+      bdNote = ""; return;
+    }
+    if (!r.ok) throw new Error(data.error || "Fitdays returned " + r.status);
+    const got = (Array.isArray(data.rows) ? data.rows : []).map(x => bdSan({ ...x, src: "fd" })).filter(Boolean);
+    let added = 0;
+    const b = book(), byId = new Map(b.body.map(x => [x.id, x]));
+    got.forEach(x => { const had = byId.get(x.id); if (had && (had.ed || had.del)) return; if (!had) added++; byId.set(x.id, x); });
+    b.body = bdNormalise([...byId.values()]);
+    save();
+    try { localStorage.setItem(BD_SYNC_KEY, String(Date.now())); } catch (e) {}
+    bdNote = added ? "Fitdays sent " + added + (added === 1 ? " new weigh-in." : " new weigh-ins.") : "";
+  } catch (e) {
+    bdNote = "Fitdays sync did not work: " + (e && e.message ? e.message : e) + " Weigh-ins can still be added by hand.";
+  } finally { bdSyncing = false; bdRepaint(); }
+}
+
+/* ---- the dialogs: every reading of one weigh-in, and the form that adds or edits one ---- */
+let bdView = null, bdEditId = null;
+function bdDlg() {
+  let d = document.getElementById("bodyDlg");
+  if (!d) { d = document.createElement("dialog"); d.id = "bodyDlg"; d.className = "bk-dlg bd-dlg"; d.setAttribute("aria-labelledby", "bodyDlgTitle"); document.body.appendChild(d); }
+  return d;
+}
+const BD_X = '<button type="button" class="bk-x" data-dlg-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+function bdAllHTML() {
+  const rows = bdRows(), x = rows.find(r => r.id === bdView) || rows[rows.length - 1];
+  if (!x) return "";
+  const i = rows.indexOf(x);
+  return '<form method="dialog" class="bd-all" onsubmit="return false"><div class="bk-top"><p class="bk-h" id="bodyDlgTitle">' + esc(bdDate(x.at)) +
+    '<span class="bd-at">' + new Date(x.at).toTimeString().slice(0, 5) + (x.src === "fd" ? (x.ed ? " · Fitdays, edited" : " · Fitdays") : " · by hand") + "</span></p>" + BD_X + "</div>" +
+    '<div class="bd-nav"><button type="button" class="btn btn-ghost btn-sm" data-bd="older"' + (i > 0 ? "" : " disabled") + ">‹ Earlier</button>" +
+    '<button type="button" class="btn btn-ghost btn-sm" data-bd="newer"' + (i < rows.length - 1 ? "" : " disabled") + ">Later ›</button></div>" +
+    '<dl class="bd-grid">' + BD_FIELDS.map(f => '<div class="' + (f.core ? "is-core" : "") + '"><dt>' + f.l + "</dt><dd>" + bdFmt(f, x[f.k]) +
+      (x[f.k] !== undefined && f.u ? ' <span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl>" +
+    '<div class="bk-foot"><button type="button" class="btn btn-ghost btn-sm" data-bd="edit" data-id="' + esc(x.id) + '">Edit this weigh-in</button>' +
+    '<button type="button" class="btn btn-primary btn-sm" data-dlg-close>Done</button></div></form>';
+}
+const bdLocal = at => { const d = new Date(at - new Date(at).getTimezoneOffset() * 60000); return d.toISOString().slice(0, 16); };
+function bdFormHTML() {
+  const x = bdEditId ? bdRows().find(r => r.id === bdEditId) : null;
+  const field = f => '<label class="bk-l">' + f.l + (f.u ? " (" + f.u + ")" : "") + /* text with a decimal keyboard, so 61,4 and 61.4 both read: a number field in an English page refuses the comma a Brazilian keyboard types */
+    '<input type="text" name="' + f.k + '" inputmode="decimal" autocomplete="off" pattern="[0-9]+([.,][0-9]+)?" data-min="' + f.min + '" data-max="' + f.max + '"' + (f.k === "kg" ? " required" : "") + (x && x[f.k] !== undefined ? ' value="' + x[f.k] + '"' : "") + "></label>";
+  return '<form method="dialog" data-bd-form="1"><div class="bk-top"><p class="bk-h" id="bodyDlgTitle">' + (x ? "Edit a weigh-in" : "Add a weigh-in") + "</p>" + BD_X + "</div>" +
+    (x && x.src === "fd" ? '<p class="bk-p">From Fitdays. Once you save your changes, the scale will not overwrite them.</p>' : "") +
+    '<label class="bk-l">When<input type="datetime-local" name="at" required value="' + bdLocal(x ? x.at : Date.now()) + '"></label>' +
+    '<div class="bd-fields">' + BD_FIELDS.filter(f => f.core).map(field).join("") + "</div>" +
+    '<details class="bd-more"' + (x && BD_FIELDS.some(f => !f.core && x[f.k] !== undefined) ? " open" : "") + "><summary>More readings</summary>" +
+    '<div class="bd-fields">' + BD_FIELDS.filter(f => !f.core).map(field).join("") + "</div></details>" +
+    '<div class="bk-foot">' + (x ? '<button type="button" class="btn btn-ghost btn-sm btn-danger" data-bd="del" data-id="' + esc(x.id) + '">Delete</button>' : "") +
+    '<button type="button" class="btn btn-ghost btn-sm" data-dlg-close>Cancel</button>' +
+    '<button type="submit" class="btn btn-primary btn-sm">' + (x ? "Save changes" : "Add weigh-in") + "</button></div></form>";
+}
+function bdOpen(kind) {
+  const d = bdDlg();
+  d.innerHTML = kind === "all" ? bdAllHTML() : bdFormHTML();
+  if (!d.open) d.showModal();
+  const first = d.querySelector(kind === "all" ? "[data-bd='newer'], .btn-primary" : "input[name='kg']");
+  if (first) first.focus();
+}
+const bdNum = s => Number(String(s || "").trim().replace(",", "."));
+function bdSave(form) {
+  /* a reading outside what a scale can report says so on its own field, with the range */
+  form.querySelectorAll("input[data-min]").forEach(i => { const s = i.value.trim(), n = bdNum(s), lo = Number(i.dataset.min), hi = Number(i.dataset.max);
+    i.setCustomValidity(s && (!isFinite(n) || n < lo || n > hi) ? "Between " + lo + " and " + hi + "." : ""); });
+  if (!form.reportValidity()) return;
+  const fd = new FormData(form), at = new Date(String(fd.get("at"))).getTime();
+  const old = bdEditId ? book().body.find(r => r.id === bdEditId) : null;
+  const v = { id: old ? old.id : "hand:" + uid(), at, src: old ? old.src : "hand", ed: old && old.src === "fd" ? 1 : 0 };
+  BD_FIELDS.forEach(f => { const s = String(fd.get(f.k) || "").trim(); if (s) v[f.k] = bdNum(s); });
+  const e = bdSan(v);
+  if (!e) { showToast("Add a weight between 20 and 300 kg.", false, true); return; }
+  const b = book();
+  b.body = bdNormalise(b.body.filter(r => r.id !== e.id).concat(e));
+  save();
+  bdDlg().close(); bdEditId = null; bdRepaint();
+  showToast(old ? "Weigh-in saved." : "Weigh-in added.");
+}
+function bdDelete(id) {
+  const b = book(), x = b.body.find(r => r.id === id); if (!x) return;
+  /* a scale row leaves a tombstone, so the next sync does not bring it back; a hand row just goes */
+  b.body = bdNormalise(x.src === "fd" ? b.body.map(r => r.id === id ? { id, del: 1 } : r) : b.body.filter(r => r.id !== id));
+  save();
+  bdDlg().close(); bdEditId = null; bdRepaint();
+  showToast("Weigh-in deleted.");
+}
+document.addEventListener("click", ev => {
+  const t = ev.target.closest && ev.target.closest("[data-bd]"); if (!t) return;
+  const a = t.dataset.bd, rows = bdRows();
+  if (a === "add") { bdEditId = null; bdOpen("form"); }
+  else if (a === "all") { bdView = (rows[rows.length - 1] || {}).id; bdOpen("all"); }
+  else if (a === "older" || a === "newer") { const i = rows.findIndex(r => r.id === bdView); const n = rows[i + (a === "older" ? -1 : 1)]; if (n) { bdView = n.id; bdOpen("all"); } }
+  else if (a === "edit") { bdEditId = t.dataset.id; bdOpen("form"); }
+  /* a delete asks once more on the same button, then goes */
+  else if (a === "del") { if (t.dataset.armed) bdDelete(t.dataset.id); else { t.dataset.armed = "1"; t.textContent = "Delete — tap again"; } }
+});
+/* a range message clears as soon as the field changes, or the browser would refuse the next submit before bdSave sees it */
+document.addEventListener("input", ev => { const i = ev.target; if (i.matches && i.matches("#bodyDlg input[data-min]")) i.setCustomValidity(""); });
+document.addEventListener("submit", ev => {
+  const f = ev.target; if (!f.matches || !f.matches("[data-bd-form]")) return;
+  ev.preventDefault(); bdSave(f);
+});
+/* ===== /body:js ===== */
 /* ---------- boot ---------- */
 sanitize(state);
 runPolish(state);
