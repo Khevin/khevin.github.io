@@ -3901,6 +3901,28 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
 .iv-wip-k { font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); margin: 0; }
 .iv-wip-h { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; line-height: 1.25; color: var(--parchment); margin: 0; }
 .iv-wip-p { font-size: 1rem; line-height: 1.5; color: var(--dust); max-width: 34ch; margin: 0; }
+/* The Diary's way through the morning, drawn only on the phone: three numerals and their names.
+   The numeral is the three lines' own, stone until its step holds something and bronze after; the
+   name is set as the tabs are, the current one gold on the tab's 2px rule; hairlines join the three
+   into one path. */
+.dy-path { display: none; }
+.dy-pstep { position: relative; appearance: none; background: none; border: 0; border-radius: var(--r-sm); cursor: pointer;
+  min-height: 48px; padding: 6px 0 0; display: grid; justify-items: center; align-content: start; gap: 5px; }
+.dy-pnum { font-family: var(--f-display); font-weight: 700; font-size: 0.9375rem; line-height: 1; letter-spacing: 0.06em;
+  color: var(--mortar-2); transition: color var(--t-settle) var(--e-out); }
+.dy-pstep.is-set .dy-pnum { color: var(--bronze); }
+.dy-pstep[aria-current="step"] .dy-pnum { color: var(--gold); }
+.dy-plab { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; line-height: 1.2; letter-spacing: 0.12em; text-transform: uppercase;
+  white-space: nowrap; color: var(--ash); padding-bottom: 6px; border-bottom: 2px solid transparent;
+  transition: color var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out); }
+.dy-pstep[aria-current="step"] .dy-plab { color: var(--gold); border-bottom-color: var(--gold); }
+@media (hover: hover) { .dy-pstep:not([aria-current]):hover .dy-plab { color: var(--parchment); } }
+.dy-pstep:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.dy-pstep + .dy-pstep::before { content: ""; position: absolute; top: 13px; left: calc(-50% + 18px); right: calc(50% + 18px); height: 1px;
+  background: rgba(232,176,84,0.3); pointer-events: none; }
+/* away from today, steps II and III name the morning they write into, in the weekday's hand */
+.dy-pday { grid-column: 1 / -1; margin: 0 0 var(--s2); text-align: center; text-wrap: balance; font-family: var(--f-display); font-weight: 700;
+  font-size: 0.6875rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bronze); }
 @media (max-width: 700px) {
   /* The masthead. The plate could not hold portrait, name and four crests at this width — the
      name was printing underneath CHA — and stretching the plate taller distorts the owner's
@@ -3947,6 +3969,17 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
   .dy-moodc .dy-medal-img, .dy-moodc .dy-medal-img img { width: 48px; height: 48px; }
   .dy-moodc .dy-medal-w { font-size: 0.5625rem; letter-spacing: 0.05em; }
   .dy-moodc .dy-scale { gap: var(--s1); }
+  /* Diary: one step at a time (I the card, II the page, III the feeling and the morning's three),
+     and a finger moves between them; the script sits with the Diary's. The view reaches the screen's
+     edges and clips there, so a step on its way out slides under the edge and never widens the page.
+     Horizontal drags belong to the plate; pan-y is set on every element in it because touch-action
+     stops counting at the nearest scroller. A text input keeps auto, for panning its own line. */
+  #viewDiary { margin: 0 calc(-1 * var(--s4)); padding: 0 var(--s4); overflow-x: clip; }
+  .dy2 > .dy-path { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: var(--s4); }
+  .dy2[data-pane="1"] > [data-pane]:not([data-pane="1"]), .dy2[data-pane="2"] > [data-pane]:not([data-pane="2"]),
+  .dy2[data-pane="3"] > [data-pane]:not([data-pane="3"]), .dy2[data-pane="1"] .dy-pday { display: none; }
+  .dy2, .dy2 *:not(input) { touch-action: pan-y pinch-zoom; }
+  .dy2.is-drag { -webkit-user-select: none; user-select: none; }
 
   /* Settings: five card backs across, the labels no longer breaking mid-word */
   .cfg-back .cb { width: 48px; height: 80px; }
@@ -15375,20 +15408,87 @@ function dyStripHTML(b, sel, today, prev, next) {
   return h + "</div></div>" +
     '<button type="button" class="dy-step" data-dy="step" data-d="1" aria-label="Later morning"' + (next ? "" : " disabled") + ">\u203a</button></div>";
 }
+/* ---- the phone: the morning in three steps ----
+   Under 700px the plate shows one step at a time: I the card, II the page, III the feeling and
+   the morning's three. A finger moves between them, or the row of numerals does. Nothing waits
+   on anything, so the numerals are a way through rather than a gate; each goes from stone to
+   bronze once its step holds something, the grammar the three lines already speak. */
+const DY_PANES = ["Tarot", "Logbook", "How I feel"], DY_PANE_DONE = ["card turned", "written", "answered"];
+let dyPaneN = 1;                                   /* the step on the phone: 1 until moved, kept while the app is open */
+const dyPhone = () => window.matchMedia("(max-width: 700px)").matches;
+const dyPanesOf = (plate, n) => [...plate.querySelectorAll(':scope > [data-pane="' + n + '"]')];
+/* what each step holds: the card read (a past morning's, drawn), the page, a feeling or any of the three */
+function dyPaneSet(b, sel, isToday) {
+  const e = dyGetDate(b, sel) || {}, rec = state.tarot && state.tarot.days ? state.tarot.days[tarKey(sel)] : null;
+  return [!!(rec && TAROT[rec.c] && (rec.land || !isToday)), !!e.page, !!(e.mood || e.book || e.one || e.thanks)];
+}
+const dyPaneLabel = (i, on) => DY_PANES[i] + ", step " + (i + 1) + " of 3" + (on ? ", " + DY_PANE_DONE[i] : "");
+function dyPathHTML(sel, isToday, set) {
+  /* the date lives on step I; away from today, the other two name the morning they write into */
+  const day = isToday ? "" : '<p class="dy-pday">' + DOW_LONG[dyDow(sel)] + " \u00b7 " + sel.getDate() + " " + MONTHS[sel.getMonth()] +
+    (sel.getFullYear() === dayNow().getFullYear() ? "" : " " + sel.getFullYear()) + "</p>";
+  return '<div class="dy-path" role="group" aria-label="The morning, in three steps">' + day + DY_PANES.map((w, i) =>
+    '<button type="button" class="dy-pstep' + (set[i] ? " is-set" : "") + '" data-dy="goto" data-n="' + (i + 1) + '"' +
+    (dyPaneN === i + 1 ? ' aria-current="step"' : "") + ' aria-label="' + dyPaneLabel(i, set[i]) + '">' +
+    '<span class="dy-pnum">' + ["I", "II", "III"][i] + '</span><span class="dy-plab">' + w + "</span></button>").join("") + "</div>";
+}
+/* a commit does not re-render, so a step lights itself */
+function dyPaneMark(i, on) {
+  const s = document.querySelector('#viewDiary .dy-pstep[data-n="' + (i + 1) + '"]'); if (!s) return;
+  s.classList.toggle("is-set", on); s.setAttribute("aria-label", dyPaneLabel(i, on));
+}
+/* Move to step n. A drag hands over where the finger let go, so the step leaves from there
+   instead of jumping back first; whatever was still moving is finished before anything starts. */
+let dyPaneEnd = null;
+function dyGoPane(n, from) {
+  const plate = document.querySelector("#viewDiary .dy2");
+  if (dyPaneEnd) dyPaneEnd();
+  if (!plate || n < 1 || n > 3 || n === dyPaneN) { if (plate && from) dySettle(dyPanesOf(plate, dyPaneN), from); return; }
+  const dir = n > dyPaneN ? 1 : -1, out = dyPanesOf(plate, dyPaneN), calm = reduced();
+  const a = document.activeElement;
+  if (a && a.matches && a.matches("textarea, input, select") && out.some(p => p.contains(a))) a.blur();   /* a field on its way out commits first */
+  const swap = () => {
+    dyPaneEnd = null;
+    if (!plate.isConnected) return;                                          /* re-rendered mid-flight: the new plate already says where it is */
+    dyPaneN = n; plate.dataset.pane = String(n);
+    out.forEach(p => { p.getAnimations().forEach(x => x.cancel()); p.style.transform = ""; p.style.opacity = ""; });
+    plate.querySelectorAll(".dy-pstep").forEach(s => { if (+s.dataset.n === n) s.setAttribute("aria-current", "step"); else s.removeAttribute("aria-current"); });
+    const inn = dyPanesOf(plate, n);
+    inn.forEach(p => p.querySelectorAll(dyGrowSel()).forEach(dyAutosize));   /* hidden until now, they had nothing to measure */
+    const row = plate.querySelector(".dy-path"), top = row ? row.getBoundingClientRect().top : 0;
+    if (top < 0) window.scrollBy(0, top - 12);                               /* a new step starts at its row, not halfway down the last one */
+    if (!calm) inn.forEach(p => p.animate([{ transform: "translateX(" + dir * 48 + "px)", opacity: 0 }, { transform: "none", opacity: 1 }],
+      { duration: 240, easing: "cubic-bezier(0.25, 1, 0.5, 1)" }));
+  };
+  if (!from || calm) { swap(); return; }
+  const w = plate.clientWidth;
+  const run = out.map(p => p.animate([{ transform: "translateX(" + from.x + "px)", opacity: from.o }, { transform: "translateX(" + (-dir * w * 0.5) + "px)", opacity: 0 }],
+    { duration: 130, easing: "cubic-bezier(0.5, 0, 0.75, 0)", fill: "forwards" }));
+  dyPaneEnd = swap;
+  run[0].finished.then(() => { if (dyPaneEnd === swap) swap(); }, () => {});
+}
+/* a drag that did not carry: the step comes back to rest */
+function dySettle(panes, from) {
+  panes.forEach(p => {
+    p.style.transform = ""; p.style.opacity = "";
+    if (!reduced()) p.animate([{ transform: "translateX(" + from.x + "px)", opacity: from.o }, { transform: "none", opacity: 1 }], { duration: 200, easing: "cubic-bezier(0.25, 1, 0.5, 1)" });
+  });
+}
 function renderDiary() {
   const el = $("#viewDiary"); if (!el) return;
   const b = book(), today = dayNow(), sel = dyDay(), isToday = dySame(sel, today);
   const prev = dyNeighbour(b, sel, -1), next = dyNeighbour(b, sel, 1), wk = weekKeyOf(sel), dow = dyDow(sel);
-  el.innerHTML = '<div class="dy2">' +
-    '<section class="dy-card dy-day">' + dyFrame({ sprigs: ["bl", "br"], top: "sun", sides: true }) + '<div class="dy-day-body">' +
+  dyPaneEnd = null;
+  el.innerHTML = '<div class="dy2" data-pane="' + dyPaneN + '">' + dyPathHTML(sel, isToday, dyPaneSet(b, sel, isToday)) +
+    '<section class="dy-card dy-day" data-pane="1">' + dyFrame({ sprigs: ["bl", "br"], top: "sun", sides: true }) + '<div class="dy-day-body">' +
       '<p class="dy-ct dy-date' + (isToday ? " is-today" : "") + '">' + dyDateLong(sel) + "</p>" +
       '<div class="dy-wd"><span class="dy-wdl"></span><span>' + DOW_LONG[dow] + '</span><span class="dy-wdl"></span></div>' +
       dyStripHTML(b, sel, today, prev, next) +
       '<div class="dy-orb">' + DY_ORN.medallion + '<div class="dy-orb-card">' + dyCardHTML(sel, isToday) + "</div></div>" + dyReadHTML(sel, isToday) + "</div>" +
     "</section>" +
-    '<section class="dy-card dy-log">' + dyFrame({ top: "bow", sides: true, roses: true }) + '<h2 class="dy-ct">Logbook</h2>' + DY_ORN.rule + dyPageHTML(b, wk, dow) + "</section>" +
-    '<section class="dy-card dy-moodc">' + dyFrame({ sprigs: ["tl", "tr"], top: "moon", sides: "lr" }) + '<h2 class="dy-ct">How I feel</h2>' + DY_ORN.rule + '<div class="dy-body dy-body-c">' + dyMoodHTML(b, wk, dow) + "</div></section>" +
-    '<section class="dy-card dy-vowc" aria-label="Today">' + dyFrame({ top: "crest" }) +
+    '<section class="dy-card dy-log" data-pane="2">' + dyFrame({ top: "bow", sides: true, roses: true }) + '<h2 class="dy-ct">Logbook</h2>' + DY_ORN.rule + dyPageHTML(b, wk, dow) + "</section>" +
+    '<section class="dy-card dy-moodc" data-pane="3">' + dyFrame({ sprigs: ["tl", "tr"], top: "moon", sides: "lr" }) + '<h2 class="dy-ct">How I feel</h2>' + DY_ORN.rule + '<div class="dy-body dy-body-c">' + dyMoodHTML(b, wk, dow) + "</div></section>" +
+    '<section class="dy-card dy-vowc" data-pane="3" aria-label="Today">' + dyFrame({ top: "crest" }) +
       '<div class="dy-body dy-body-c">' + dyVowHTML(b, wk, dow) + "</div></section>" +
     "</div>";
   el.querySelectorAll(dyGrowSel()).forEach(dyAutosize);
@@ -15401,7 +15501,8 @@ function renderDiary() {
    fourth would have been the one left behind. */
 const DY_GROW = [".dy-page", ".dy-line", ".dy-vta"];
 const dyGrowSel = scope => DY_GROW.map(c => (scope ? scope + " " : "") + c).join(", ");
-function dyAutosize(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+/* a field that is not drawn (a step the phone is not showing) has no height to measure: it would read 0 */
+function dyAutosize(ta) { if (!ta || !ta.getClientRects().length) return; ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
 /* a height measured at one width is wrong at another: re-measure whenever the view’s column
    changes width — a rotation, a resize, or a tab that first laid out at zero width */
 if (window.ResizeObserver) {
@@ -15415,6 +15516,7 @@ function dyLive(t) {
     dyAutosize(t);
     const st = t.closest(".dy-station"), mark = st ? st.querySelector(".dy-mark") : null, words = dyWords(t.value);
     if (mark) { mark.style.setProperty("--fill", Math.min(1, words / DY_MARK).toFixed(3)); mark.querySelector(".dy-count").textContent = words ? words : ""; }
+    dyPaneMark(1, words > 0);
   } else if (t.classList.contains("dy-line")) {
     dyAutosize(t); t.closest(".dy-lrow").classList.toggle("is-set", !!t.value.trim());
   } else if (t.classList.contains("dy-vta")) {
@@ -15434,6 +15536,8 @@ function dyCommit(wk, dow, mutate) {
   save();
   const dot = document.querySelector("#viewDiary .dy-dot.is-sel");
   if (dot) dot.classList.toggle("is-on", !!next);
+  dyPaneMark(1, !!(next && next.page));
+  dyPaneMark(2, !!(next && (next.mood || next.book || next.one || next.thanks)));
   return next;
 }
 /* fields commit on change, like every field in the app */
@@ -15463,6 +15567,7 @@ function dyAct(el) {
     });
     return;
   }
+  if (el.dataset.dy === "goto") { dyGoPane(+el.dataset.n); return; }
   if (el.dataset.dy === "today") { dySel = null; renderDiary(); return; }
   if (el.dataset.dy === "tarot") { setView("tarot"); return; }
   if (el.dataset.dy === "turn") { setView("tarot"); tarTurn(); return; }   /* the deal happens on the Tarot page; Finish brings the diary back */
@@ -15493,9 +15598,70 @@ document.addEventListener("keydown", e => {
 document.addEventListener("focusin",  e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.add("is-writing"); });
 document.addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("dy-page")) document.body.classList.remove("is-writing"); });
 document.addEventListener("click", e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"], [data-dy="mood"], [data-dy="turn"], [data-dy="tarot"], [data-dy="view"]');
+  const t = e.target && e.target.closest && e.target.closest('[data-dy="step"], [data-dy="today"], [data-dy="mood"], [data-dy="turn"], [data-dy="tarot"], [data-dy="view"], [data-dy="goto"]');
   if (t) dyAct(t);
 });
+/* The finger, on the phone. Horizontal drags on the plate are the plate's (touch-action pan-y);
+   vertical ones stay the page's. The step follows the finger one to one, resists at either end,
+   and carries past a quarter of the width or on a flick. A field being written in keeps its own
+   gestures, and a mouse drag over a field is a selection, not a swipe. */
+(() => {
+  const el = $("#viewDiary"); if (!el) return;
+  let g = null, swiped = 0;
+  /* a swipe is not a tap: swallow the click a mouse drag leaves behind */
+  el.addEventListener("click", ev => { if (Date.now() - swiped < 400 && ev.target.closest(".dy2")) { ev.stopImmediatePropagation(); ev.preventDefault(); } }, true);
+  el.addEventListener("pointerdown", ev => {
+    /* a second finger is a pinch, not a swipe: a drag already under way comes back to rest */
+    if (!ev.isPrimary) { const s = g; g = null; if (s && s.on) { s.plate.classList.remove("is-drag"); swiped = Date.now(); dySettle(s.panes, s); } return; }
+    g = null;
+    if (ev.button !== 0 || !dyPhone()) return;
+    const plate = ev.target.closest(".dy2"); if (!plate) return;
+    const f = ev.target.closest("textarea, input, select");
+    if (f && (f === document.activeElement || ev.pointerType === "mouse")) return;
+    g = { plate, id: ev.pointerId, x0: ev.clientX, y0: ev.clientY, on: false, x: 0, o: 1, v: 0, t: ev.timeStamp, lx: ev.clientX };
+  });
+  el.addEventListener("pointermove", ev => {
+    if (!g || ev.pointerId !== g.id) return;
+    const dx = ev.clientX - g.x0, dy = ev.clientY - g.y0;
+    if (!g.on) {
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+      if (Math.abs(dx) <= Math.abs(dy)) { g = null; return; }           /* the page is being scrolled */
+      if (dyPaneEnd) dyPaneEnd();
+      g.on = true; g.w = g.plate.clientWidth || 1; g.panes = dyPanesOf(g.plate, dyPaneN);
+      g.panes.forEach(p => p.getAnimations().forEach(x => x.cancel()));   /* an entrance still running would hide the drag */
+      try { g.plate.setPointerCapture(g.id); } catch (e) {}
+      g.plate.classList.add("is-drag");
+      if (ev.pointerType === "mouse" && window.getSelection) window.getSelection().removeAllRanges();
+    }
+    const dt = ev.timeStamp - g.t;
+    if (dt > 0) { g.v = (ev.clientX - g.lx) / dt; g.t = ev.timeStamp; g.lx = ev.clientX; }
+    if (reduced()) return;
+    const stop = (dx > 0 && dyPaneN === 1) || (dx < 0 && dyPaneN === 3);
+    g.x = stop ? dx * 0.3 : dx; g.o = 1 - Math.min(0.5, Math.abs(g.x) / g.w);
+    g.panes.forEach(p => { p.style.transform = "translateX(" + g.x.toFixed(1) + "px)"; p.style.opacity = g.o.toFixed(3); });
+  });
+  const end = (ev, cancel) => {
+    if (!g || ev.pointerId !== g.id) return;
+    const s = g; g = null;
+    if (!s.on) return;
+    s.plate.classList.remove("is-drag");
+    swiped = Date.now();
+    const dx = ev.clientX - s.x0, n = dyPaneN + (dx < 0 ? 1 : -1);
+    const v = ev.timeStamp - s.t > 100 ? 0 : s.v;                         /* a finger that stopped before it lifted did not flick */
+    const carry = !cancel && n >= 1 && n <= 3 && (Math.abs(dx) > s.w * 0.25 || (Math.abs(dx) > 40 && Math.abs(v) > 0.4 && (v < 0) === (dx < 0)));
+    if (carry) dyGoPane(n, { x: s.x, o: s.o }); else if (s.x || s.o !== 1) dySettle(s.panes, { x: s.x, o: s.o });
+  };
+  el.addEventListener("pointerup", ev => end(ev, false));
+  el.addEventListener("pointercancel", ev => end(ev, true));
+  /* the row is one group to the keyboard too: the arrows walk it */
+  el.addEventListener("keydown", ev => {
+    const s = ev.target.closest && ev.target.closest(".dy-pstep");
+    if (!s || (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft")) return;
+    const n = dyPaneN + (ev.key === "ArrowRight" ? 1 : -1); if (n < 1 || n > 3) return;
+    ev.preventDefault(); dyGoPane(n);
+    const t = el.querySelector('.dy-pstep[data-n="' + n + '"]'); if (t) t.focus();
+  });
+})();
 
 /* ================= astrology — the plate ================= */
 /* Register editorial, layout manuscript grid, lane celestial atlas plate. The chart states;
