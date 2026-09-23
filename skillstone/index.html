@@ -4995,7 +4995,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd { flex: 1 1 auto; width: 100%; display: flex; flex-direction: column; gap: var(--s4); container: bd / inline-size; }
 /* the weigh-in's age, coloured as it grows stale: parchment after 10 days, gold after 30, amber after 90, cinnabar
    after a year. Amber and cinnabar are new to the palette, 7.3:1 and 5.0:1 on the plate */
-.dy2, .bd-dlg { --amber: #EC8B3F; --cinnabar: #E5574A; }
+.dy2, .bd-dlg { --amber: #EC8B3F; --cinnabar: #E5574A; --lapis: #86A9D6; }
 .bd-age { color: var(--dust); }                        /* under ten days: quiet */
 .bd-age[data-age="10"] { color: var(--parchment); }
 .bd-age[data-age="30"] { color: var(--gold); }
@@ -5037,12 +5037,12 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-h::after { content: ""; flex: 1 1 0; height: 1px; background: rgba(232,176,84,0.18); }
 /* the drawings, drawn at the width they are given; their room is kept before they are drawn */
 .bd-comp { min-height: 78px; }
-.bd-trend { min-height: 190px; touch-action: pan-y pinch-zoom; cursor: crosshair; border-radius: var(--r-sm); -webkit-user-select: none; user-select: none; }
+.bd-trend { min-height: 180px; touch-action: pan-y pinch-zoom; cursor: crosshair; border-radius: var(--r-sm); -webkit-user-select: none; user-select: none; }
 .bd-trend.is-few { min-height: 0; cursor: default; }
 .bd-trend:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .bd-few { margin: 0; font-family: var(--f-read); font-size: 0.875rem; color: var(--ash); }
 .bd-svg { display: block; overflow: visible; }
-.bd-svg text { fill: currentColor; }
+.bd-svg text, .bd-svg tspan { fill: currentColor; }
 .bd-bar { fill: var(--gold); }
 .bd-cn, .bd-cl { font-family: var(--f-display); font-weight: 700; font-size: 9px; letter-spacing: 1px; }
 .bd-cn { color: var(--gold); }
@@ -5050,10 +5050,17 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-cp { font-family: var(--f-mono); font-size: 12px; color: var(--parchment); }
 .bd-tk { font-family: var(--f-mono); font-size: 10px; color: var(--ash); }
 .bd-gl { stroke: rgba(232,176,84,0.16); stroke-width: 1; }
-.bd-ok { stroke: var(--verdant); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.7; }
-.bd-mean { fill: none; stroke: var(--gold); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-.bd-dot { fill: var(--dust); opacity: 0.8; }
-.bd-ring { fill: #17130F; stroke: var(--gold-2); stroke-width: 1.5; }
+/* the chart's two series: weight in gold, body fat in lapis (new, 7.6:1 on the plate), cold against warm so neither
+   outshouts the other, and apart for red-green colour blindness. Each axis, line, dot and ring wears its series' colour */
+.bd-svg .kg { color: var(--gold); }
+.bd-svg .fat { color: var(--lapis); }
+.bd-ok { stroke: var(--lapis); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.6; }
+.bd-mean { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.bd-dot { fill: currentColor; opacity: 0.55; }
+.bd-ring { fill: #17130F; stroke: currentColor; stroke-width: 1.5; }
+.bd-svg .bd-ring.kg { color: var(--gold-2); }
+.bd-tagb { fill: #17130F; stroke: rgba(232,176,84,0.3); stroke-width: 1; }
+.bd-svg .bd-tag { color: var(--parchment); }
 .bd-hair { stroke: rgba(246,203,116,0.45); stroke-width: 1; }
 .bd-vok { fill: rgba(232,176,84,0.22); }
 .bd-vhi { fill: rgba(229,87,74,0.14); }
@@ -20557,41 +20564,37 @@ function bdCompSVG(x, W) {
   });
   return '<svg class="bd-svg" width="' + W + '" height="78" viewBox="0 0 ' + W + ' 78" role="img" aria-label="Of ' + bd1(x.kg) + " kg: " + said.join(", ") + '">' + bars + labs + "</svg>";
 }
-const BD_WIN = 90 * 86400000, BD_WEEK = 7 * 86400000, BD_SPAN = { kg: 1, fat: 1 };
-/* a chart's scale: three ticks on round steps around the data, and never less than the scale's own day-to-day wobble
-   (about a kilogram, or a point of fat), so noise is not drawn as a change */
-function bdScale(vals, min) {
-  let lo0 = Math.min(...vals), hi0 = Math.max(...vals);
-  if (hi0 - lo0 < min) { const c = (lo0 + hi0) / 2; lo0 = c - min / 2; hi0 = c + min / 2; }
-  for (const s of [0.2, 0.5, 1, 2, 5, 10, 20]) {
-    let lo = Math.floor(lo0 / s + 1e-9) * s, hi = Math.ceil(hi0 / s - 1e-9) * s;
-    if (Math.round((hi - lo) / s) % 2) { if (lo0 - lo < hi - hi0) lo -= s; else hi += s; }
-    if (Math.round((hi - lo) / s) <= 6) return { lo, hi, d: s < 1 ? 1 : 0 };
+const BD_WIN = 90 * 86400000, BD_WEEK = 7 * 86400000;
+/* the chart's two scales, matched (the owner's pick on the canvas, 23 Sep 2026): a kilogram on the left is as tall as a
+   point of fat on the right, each centred on its own 90 days, so a wiggle the same height is the same size on both.
+   Never less than a kilogram or a point, about the scale's own day-to-day wobble, so noise is not drawn as a change */
+function bdMatched(a, b) {
+  const need = (v, s) => { const lo = Math.floor(Math.min(...v) / s + 1e-9) * s; return { lo, n: Math.max(1, Math.ceil((Math.max(...v) - lo) / s - 1e-9)) }; };
+  for (const s of [0.5, 1, 2, 5, 10]) {
+    const A = need(a, s), B = b.length ? need(b, s) : A;
+    let n = Math.max(A.n, B.n, 2); if (n % 2) n++;
+    if (n <= 6 || s === 10) { const put = P => { const lo = P.lo - Math.floor((n - P.n) / 2) * s; return { lo, hi: lo + n * s }; }; return [put(A), put(B)]; }
   }
-  return { lo: lo0, hi: hi0, d: 1 };
 }
-/* one chart: the weigh-ins as dots and their 7-day mean as the line, broken where they are more than a week apart */
-function bdChartSVG(win, k, top, h, X, W, ok) {
-  const pts = win.filter(r => r[k] !== undefined), gx = W - 39;
-  if (pts.length < 2) return { svg: '<text class="bd-tk" x="0" y="' + (top + h / 2 + 3) + '">Too few readings in these 90 days</text>', Y: null };
-  const sc = bdScale(pts.map(r => r[k]), BD_SPAN[k]), Y = v => top + 4 + (sc.hi - v) / (sc.hi - sc.lo) * (h - 8);
-  const hl = (cls, v) => '<line class="' + cls + '" x1="0" x2="' + gx + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/>';
-  let s = "";
-  [sc.lo, (sc.lo + sc.hi) / 2, sc.hi].forEach(v => { s += hl("bd-gl", v) + '<text class="bd-tk" x="' + W + '" y="' + (Y(v) + 3.5).toFixed(1) + '" text-anchor="end">' + v.toFixed(sc.d) + "</text>"; });
-  if (ok) [ok.lo, ok.hi].forEach(v => { if (v > sc.lo && v < sc.hi) s += hl("bd-ok", v); });
-  let seg = [], prev = -Infinity;
-  const flush = () => { if (seg.length > 1) s += '<polyline class="bd-mean" points="' + seg.join(" ") + '"/>'; seg = []; };
+const bdTick = v => { const r = Math.round(v * 10) / 10; return Number.isInteger(r) ? String(r) : r.toFixed(1); };
+/* one series: its weigh-ins as dots, their 7-day mean as the line, broken where they are more than a week apart */
+function bdSeries(win, k, X, Y) {
+  const pts = win.filter(r => r[k] !== undefined);
+  let seg = [], prev = -Infinity, line = "";
+  const flush = () => { if (seg.length > 1) line += '<polyline class="bd-mean ' + k + '" points="' + seg.join(" ") + '"/>'; seg = []; };
   pts.forEach(r => {
     if (r.at - prev > BD_WEEK) flush(); prev = r.at;
     const w = pts.filter(q => q.at <= r.at && q.at > r.at - BD_WEEK), m = w.reduce((a, q) => a + q[k], 0) / w.length;
     seg.push(X(r.at).toFixed(1) + "," + Y(m).toFixed(1));
   });
   flush();
-  return { svg: s + pts.map(r => '<circle class="bd-dot" cx="' + X(r.at).toFixed(1) + '" cy="' + Y(r[k]).toFixed(1) + '" r="1.8"/>').join(""), Y };
+  return { dots: pts.map(r => '<circle class="bd-dot ' + k + '" cx="' + X(r.at).toFixed(1) + '" cy="' + Y(r[k]).toFixed(1) + '" r="1.7"/>').join(""), line };
 }
 const bdDm = at => { const d = new Date(at); return d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3); };
-/* the two charts over the same 90 days, weight above body fat, with one time axis under both. The healthy band for
-   body fat is named in words, and its edges drawn only where they fall inside the chart */
+/* the chart: weight in gold on the left axis and body fat in lapis on the right, overlaid on one plot whose gridlines
+   both axes share, over the 90 days to the last weigh-in; the dates under it. Above the plot, a row for the weigh-in
+   picked, which says the healthy band for body fat in words while nothing is picked; the band's edges are drawn only
+   where they fall inside the plot */
 function bdTrendDraw(el, W) {
   const scope = el.dataset.scope, s = scope === "dlg" ? bdDlgState() : bdPlateState();
   const few = s.win.length < 2;
@@ -20603,25 +20606,48 @@ function bdTrendDraw(el, W) {
     return;
   }
   el.setAttribute("role", "slider"); el.tabIndex = 0; el.setAttribute("aria-label", "Weigh-ins over 90 days");
-  const X = at => 3 + (at - s.start) / (s.end - s.start) * (W - 45), ok = bdFatOk(s.end);
-  const band = ok ? "healthy " + ok.lo + "–" + ok.hi + " % · " + ok.who : "", wrap = band && 96 + 12 + band.length * 6 > W, fy = wrap ? 113 : 100;
-  const a = bdChartSVG(s.win, "kg", 16, 64, X, W, null), b = bdChartSVG(s.win, "fat", fy + 7, 64, X, W, ok), ax = fy + 86, last = s.win[s.win.length - 1];
+  const GL = 26, GR = 30, PW = W - GL - GR, top = 36, h = 124, bot = top + h, ax = bot + 16;
+  const X = at => GL + (at - s.start) / (s.end - s.start) * PW;
+  const fat = s.win.filter(r => r.fat !== undefined).map(r => r.fat), hasFat = fat.length >= 2;
+  const [K, F] = bdMatched(s.win.map(r => r.kg), hasFat ? fat : []);
+  const Yof = S => v => top + 4 + (S.hi - v) / (S.hi - S.lo) * (h - 8), Yk = Yof(K), Yf = Yof(F);
+  const span = K.hi - K.lo, u = span <= 4 ? 1 : span <= 8 ? 2 : span <= 20 ? 5 : 10, ok = hasFat && bdFatOk(s.end);
+  let g = "";
+  for (let v = Math.ceil(K.lo / u - 1e-9) * u; v <= K.hi + 1e-9; v += u) {
+    const y = Yk(v);
+    g += '<line class="bd-gl" x1="' + GL + '" x2="' + (GL + PW) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/>' +
+      '<text class="bd-tk kg" x="' + (GL - 5) + '" y="' + (y + 3.5).toFixed(1) + '" text-anchor="end">' + bdTick(v) + "</text>" +
+      (hasFat ? '<text class="bd-tk fat" x="' + (GL + PW + 5) + '" y="' + (y + 3.5).toFixed(1) + '">' + bdTick(F.lo + (v - K.lo)) + "</text>" : "");
+  }
+  if (ok) [ok.lo, ok.hi].forEach(v => { if (v > F.lo && v < F.hi) g += '<line class="bd-ok" x1="' + GL + '" x2="' + (GL + PW) + '" y1="' + Yf(v).toFixed(1) + '" y2="' + Yf(v).toFixed(1) + '"/>'; });
+  const a = bdSeries(s.win, "kg", X, Yk), b = hasFat ? bdSeries(s.win, "fat", X, Yf) : { dots: "", line: "" }, last = s.win[s.win.length - 1];
   const yr = new Date(s.end).getFullYear() === new Date().getFullYear() ? "" : " " + new Date(s.end).getFullYear();
   el.innerHTML = '<svg class="bd-svg" width="' + W + '" height="' + (ax + 4) + '" viewBox="0 0 ' + W + " " + (ax + 4) + '" aria-hidden="true" focusable="false">' +
-    '<text class="bd-cl" x="0" y="9">WEIGHT · KG</text>' + a.svg +
-    '<text class="bd-cl" x="0" y="100">BODY FAT · %</text>' + (band ? '<text class="bd-tk" x="' + (wrap ? 0 : W) + '" y="' + (wrap ? 113 : 100) + '"' + (wrap ? "" : ' text-anchor="end"') + ">" + band + "</text>" : "") + b.svg +
-    '<text class="bd-tk" x="0" y="' + ax + '">' + bdDm(s.start) + '</text><text class="bd-tk" x="' + X(s.start + BD_WIN / 2).toFixed(1) + '" y="' + ax + '" text-anchor="middle">' + bdDm(s.start + BD_WIN / 2) + "</text>" +
+    '<text class="bd-cl kg" x="0" y="9">WEIGHT · KG</text>' + (hasFat ? '<text class="bd-cl fat" x="' + W + '" y="9" text-anchor="end">BODY FAT · %</text>' : "") +
+    (ok ? '<text class="bd-tk fat bd-band" x="' + W + '" y="26" text-anchor="end">healthy ' + ok.lo + "–" + ok.hi + " % · " + ok.who + "</text>" : "") +
+    g + a.dots + b.dots + a.line + b.line +
+    '<text class="bd-tk" x="' + GL + '" y="' + ax + '">' + bdDm(s.start) + '</text><text class="bd-tk" x="' + X(s.start + BD_WIN / 2).toFixed(1) + '" y="' + ax + '" text-anchor="middle">' + bdDm(s.start + BD_WIN / 2) + "</text>" +
     '<text class="bd-tk' + (last.at === s.end ? ' bd-age"' + bdAgeMark(last.at) : '"') + ' x="' + X(s.end).toFixed(1) + '" y="' + ax + '" text-anchor="end">' + bdDm(s.end) + yr + "</text>" +
     '<g class="bd-cur"></g></svg>';
-  el._bd = { scope, win: s.win, end: s.end, X, Y: { kg: a.Y, fat: b.Y }, y0: 16, y1: fy + 71 };
+  el._bd = { scope, win: s.win, end: s.end, X, Y: { kg: Yk, fat: hasFat ? Yf : null }, y0: top, y1: bot, GL, PW };
   bdCursor(el);
 }
-/* the weigh-in on show, ringed on both charts; away from the last one a hairline joins the two rings */
+/* the weigh-in on show, ringed on both lines; away from the last one a hairline joins the rings and the row above the
+   plot says its date and its two numbers, in their colours */
 function bdCursor(el) {
   const g = el._bd, cur = el.querySelector(".bd-cur"), x = g && bdShown(g.scope); if (!cur || !x) return;
-  const i = g.win.findIndex(r => r.id === x.id), px = g.X(x.at).toFixed(1);
-  let s = i === g.win.length - 1 ? "" : '<line class="bd-hair" x1="' + px + '" x2="' + px + '" y1="' + g.y0 + '" y2="' + g.y1 + '"/>';
-  ["kg", "fat"].forEach(k => { if (g.Y[k] && x[k] !== undefined) s += '<circle class="bd-ring" cx="' + px + '" cy="' + g.Y[k](x[k]).toFixed(1) + '" r="3.2"/>'; });
+  const i = g.win.findIndex(r => r.id === x.id), px = g.X(x.at), away = i !== g.win.length - 1, band = el.querySelector(".bd-band");
+  let s = "";
+  if (away) {
+    const said = [bdDm(x.at), '<tspan class="kg">' + bd1(x.kg) + " kg</tspan>"].concat(x.fat !== undefined && g.Y.fat ? ['<tspan class="fat">' + bd1(x.fat) + " %</tspan>"] : []);
+    const tw = (bdDm(x.at).length + bd1(x.kg).length + 6 + (said.length > 2 ? bd1(x.fat).length + 5 : 0)) * 6 + 14;
+    const tl = Math.max(g.GL, Math.min(g.GL + g.PW - tw, px - tw / 2));
+    s += '<line class="bd-hair" x1="' + px.toFixed(1) + '" x2="' + px.toFixed(1) + '" y1="' + g.y0 + '" y2="' + g.y1 + '"/>' +
+      '<rect class="bd-tagb" x="' + tl.toFixed(1) + '" y="15" width="' + tw + '" height="16" rx="3"/>' +
+      '<text class="bd-tk bd-tag" x="' + (tl + tw / 2).toFixed(1) + '" y="26.5" text-anchor="middle">' + said.join(" · ") + "</text>";
+  }
+  if (band) band.style.display = away ? "none" : "";
+  ["kg", "fat"].forEach(k => { if (g.Y[k] && x[k] !== undefined) s += '<circle class="bd-ring ' + k + '" cx="' + px.toFixed(1) + '" cy="' + g.Y[k](x[k]).toFixed(1) + '" r="3.2"/>'; });
   cur.innerHTML = s;
   el.setAttribute("aria-valuemin", "1"); el.setAttribute("aria-valuemax", String(g.win.length)); el.setAttribute("aria-valuenow", String(i + 1));
   el.setAttribute("aria-valuetext", bdDate(x.at) + ", " + rtHm(x.at) + ": " + bd1(x.kg) + " kg" + (x.fat !== undefined ? ", " + bd1(x.fat) + " % body fat" : ""));
