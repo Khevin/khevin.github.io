@@ -5072,15 +5072,14 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-vhi { fill: rgba(229,87,74,0.14); }
 .bd-vm { fill: var(--parchment); }
 /* visceral fat, in a line */
-/* visceral fat, a row as a ritual is: its name in the read face, the rating in the measured one, the band after it */
-.bd-visc { margin: 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px var(--s3); }
-.bd-vl, .bd-vv { white-space: nowrap; }
-.bd-vl { font-family: var(--f-read); font-size: 1rem; color: var(--parchment); }
-.bd-vv { font-family: var(--f-read); font-size: 0.8125rem; color: var(--dust); }
-.bd-vv b { font-family: var(--f-mono); font-size: 0.9375rem; font-weight: 400; color: var(--parchment); }
-.bd-vv.is-hi b, .bd-r .is-hi { color: var(--cinnabar); }
+.bd-r .is-hi { color: var(--cinnabar); }
 .bd-empty { margin: var(--s4) 0; text-align: center; color: var(--ash); font-size: 0.9375rem; }
 .bd-acts { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin-top: var(--s4); }
+@container bd (min-width: 300px) {
+  .bd .bd-acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; column-gap: var(--s3); }
+  .bd .bd-acts .bd-link { align-self: center; justify-self: start; justify-items: start; }
+  .bd .bd-acts .bd-edit { max-width: none; }
+}
 /* All readings, and under it what is behind it */
 .bd-link { display: inline-grid; justify-items: center; align-content: center; gap: 1px; min-height: 44px; padding: 2px var(--s1); background: none; border: 0; color: var(--gold);
   font-family: var(--f-ui); font-size: 0.9375rem; cursor: pointer; }
@@ -5107,7 +5106,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 /* one bead per ritual, filled as each is done: the count said as a length, never a ring */
 .rt-bar { display: flex; gap: 6px; flex: 0 1 300px; min-width: 120px; }
 .rt-bar i { flex: 1; height: 8px; border-radius: 4px; border: 1px solid rgba(232,176,84,0.35); transition: background var(--t-settle) var(--e-out);
-  background: linear-gradient(to right, var(--gold) calc(var(--fill, 0) * 100%), transparent 0); }
+  background: linear-gradient(to right, var(--gold) calc(var(--fill, 0) * 100%), transparent 0) border-box no-repeat; }
 .rt-bar i.is-on { background: var(--gold); border-color: var(--gold); }
 .rt-list { list-style: none; margin: 0; padding: 0; }
 .rt-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; grid-template-areas: "ico txt tick"; align-items: center; column-gap: var(--s4);
@@ -5126,8 +5125,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .rt-circle .rt-g { width: 16px; height: 16px; stroke-width: 2.4; }
 .rt-row.is-done .rt-circle { background: var(--gold); border-color: var(--gold); }
 .rt-row.is-done .rt-state { color: var(--parchment); }
-.rt-time { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); }
-.rt-tick .rt-time { margin-left: auto; }
 @media (hover: hover) { .rt-tick:hover .rt-circle { border-color: var(--gold); } .rt-tick:hover .rt-state { color: var(--parchment); } }
 .rt-empty { margin: var(--s4) 0; text-align: center; font-family: var(--f-read); font-size: 0.9375rem; color: var(--ash); }
 .rt-tick:focus-visible, .bd-link:focus-visible, .bd-edit:focus-visible, .bd-now:focus-visible, .rt-cust:focus-visible {
@@ -5135,7 +5132,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 @media (prefers-reduced-motion: reduce) { .rt-bar i, .rt-circle, .bd-link .rt-g { transition: none; } }
 /* a checklist: its circle fills from the foot as its steps are done (a length, as the beads are, never a ring), and
    its steps sit under the name, each a tick of its own with the circle before the word */
-.rt-circle.is-part { border-color: var(--gold); background: linear-gradient(to top, var(--gold) calc(var(--fill, 0) * 100%), transparent 0); }
+.rt-circle.is-part { border-color: var(--gold); background: linear-gradient(to top, var(--gold) calc(var(--fill, 0) * 100%), transparent 0) border-box no-repeat; }
 .rt-row.is-list { grid-template-areas: "ico txt tick" ". steps steps"; padding-bottom: var(--s1); }
 .rt-steps { grid-area: steps; list-style: none; margin: -2px 0 0; padding: 0; }
 .rt-sub { display: flex; align-items: center; gap: var(--s3); width: 100%; min-height: 40px; padding: 0; background: none; border: 0;
@@ -5147,7 +5144,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .rt-snote { font-size: 0.8125rem; line-height: 1.35; color: var(--ash); }
 .rt-sub.is-done { color: var(--parchment); }
 .rt-sub.is-done .rt-circle { background: var(--gold); border-color: var(--gold); }
-.rt-sub .rt-time { margin-left: auto; padding-right: var(--s1); }
 @media (hover: hover) { .rt-sub:hover { color: var(--parchment); } .rt-sub:hover .rt-circle { border-color: var(--gold); } }
 .rt-sub:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 /* the title's stars, wherever the title is; below the laptop the rituals card wears the panel's dawn in place of the
@@ -5193,8 +5189,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .dy-bodyc .bd-t, .dy-ritc .rt-t { margin: 0; text-align: left; font-size: 0.8125rem; letter-spacing: 0.16em; color: var(--gold); }
   /* the column reads from the left, as the rituals beside it do */
   .dy-bodyc .bd-cap { justify-items: start; text-align: left; }
-  .dy-bodyc .bd-head { justify-content: start; }
-  .dy-bodyc .bd-vs { text-align: left; }
   .dy-bodyc .bd-acts { align-items: stretch; }
   .dy-bodyc .bd-link { align-self: flex-start; justify-items: start; padding-left: 0; }   /* the words on the column's edge; the target stays 44px tall */
   .dy-bodyc .bd-edit { max-width: none; }
@@ -5222,7 +5216,6 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .rt-row { grid-template-columns: 26px minmax(0, 1fr) auto; grid-template-areas: "ico txt tick"; column-gap: var(--s3); }
   .rt-sub { min-height: 44px; }
   .rt-tick { min-width: 0; }
-  .rt-time { display: none; }
   .dy-save { padding: var(--s1) 0 var(--s4); }
   /* the Body step reaches the foot of the screen, as the logbook does (--dy-top is the Diary's own measure) */
   .dy2 .dy-bodyc { min-height: calc(100vh - var(--dy-top, 0px) - var(--s4)); min-height: calc(100svh - var(--dy-top, 0px) - var(--s4)); }
@@ -20547,12 +20540,6 @@ function bdCapHTML(x, latest) {
   return '<p class="bd-cap1">Last weighed <span class="bd-age"' + bdAgeMark(x.at) + ">" + esc(bdAgo(x.at)) + '</span></p><p class="bd-cap2">on ' +
     esc(bdDate(x.at)) + " · " + bdSrcLong(x) + "</p>";
 }
-/* visceral fat on the plate is one line: a lean body reads 1, the scale's floor, and a bar would say nothing more */
-function bdViscHTML(x) {
-  const v = x.visc, hi = v !== undefined && v > 12;
-  return '<p class="bd-visc"><span class="bd-vl">Visceral fat</span><span class="bd-vv' + (hi ? " is-hi" : "") + '">' +
-    (v === undefined ? "not measured" : "<b>" + bdVisc(v) + "</b> · " + (hi ? "excess (13+)" : "healthy (1–12)")) + "</span></p>";
-}
 /* the way to the rest, naming what is behind it */
 function bdMoreHTML(x) {
   const named = [["bmr", "BMR"], ["age", "body age"], ["hr", "heart rate"]].filter(([k]) => x[k] !== undefined).map(([, l]) => l);
@@ -20729,7 +20716,7 @@ function bdShowPlate() {
   const root = document.querySelector("#viewDiary .dy-bodyc .bd"), s = bdPlateState(); if (!root || !s.latest) return;
   const x = bdShown("plate"), put = (k, h) => { const e = root.querySelector('[data-slot="' + k + '"]'); if (e) e.innerHTML = h; };
   const back = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.bd === "latest";
-  put("cap", bdCapHTML(x, s.latest)); put("head", bdHeadHTML(x, s.rows)); put("visc", bdViscHTML(x)); put("more", bdMoreHTML(x));
+  put("cap", bdCapHTML(x, s.latest)); put("head", bdHeadHTML(x, s.rows)); put("more", bdMoreHTML(x));
   const c = root.querySelector('[data-draw="comp"]'), t = root.querySelector(".bd-trend");
   if (c) { c.dataset.id = x.id; bdDrawOne(c); }
   if (t) bdCursor(t);
@@ -20975,10 +20962,10 @@ function rtSaveMorning() {
 /* ---- the panel ---- */
 /* the circle and its word: the same tick for a ritual and for a checklist, which fills from the foot as its
    steps are done (a length, as the beads are, never a ring) */
-function rtTickHTML(r, act, pressed, state, label, fill, t) {
+function rtTickHTML(r, act, pressed, state, label, fill) {
   return '<button type="button" class="rt-tick" data-rt="' + act + '" data-id="' + esc(r.id) + '" aria-pressed="' + pressed + '" aria-label="' + esc(label) + '">' +
     '<span class="rt-circle' + (fill > 0 && fill < 1 ? " is-part" : "") + '"' + (fill > 0 && fill < 1 ? ' style="--fill:' + fill.toFixed(3) + '"' : "") + ">" +
-    (fill >= 1 ? RT_ICO.check : "") + '</span><span class="rt-state">' + state + "</span>" + (t ? '<span class="rt-time">' + t + "</span>" : "") + "</button>";
+    (fill >= 1 ? RT_ICO.check : "") + '</span><span class="rt-state">' + state + "</span></button>";
 }
 function rtRowHTML(r, e, sel) {
   const head = '<span class="rt-ico">' + (RT_ICO[r.icon] || RT_ICO.star) + "</span>";
@@ -20987,19 +20974,19 @@ function rtRowHTML(r, e, sel) {
     const n = rtStepsDone(r, e), m = r.steps.length, all = n === m;
     const t = all ? rtHm(Math.max(...r.steps.map(s => e.done[rtKey(r, s)]))) : "";
     const tick = rtTickHTML(r, "all", all ? "true" : n ? "mixed" : "false", all ? "Done" : n ? n + " of " + m : "Mark all",
-      all ? "Done: " + r.name + ", at " + t : n ? n + " of " + m + " done: " + r.name + ". Mark all done" : "Mark all done: " + r.name, n / m, t);
+      all ? "Done: " + r.name + ", at " + t : n ? n + " of " + m + " done: " + r.name + ". Mark all done" : "Mark all done: " + r.name, n / m);
     /* a step: its circle, its name, and the line under the name when it has one */
     const steps = r.steps.map(s => {
       const k = rtKey(r, s), on = !!(e.done && e.done[k]);
       return '<li><button type="button" class="rt-sub' + (on ? " is-done" : "") + '" data-rt="tick" data-id="' + esc(r.id) + '" data-s="' + esc(s.id) + '" aria-pressed="' + on + '">' +
         '<span class="rt-circle">' + (on ? RT_ICO.check : "") + '</span><span class="rt-stxt"><span class="rt-sname">' + esc(s.name) + "</span>" +
-        (s.note ? '<span class="rt-snote">' + esc(s.note) + "</span>" : "") + "</span>" + (on ? '<span class="rt-time">' + rtHm(e.done[k]) + "</span>" : "") + "</button></li>";
+        (s.note ? '<span class="rt-snote">' + esc(s.note) + "</span>" : "") + "</span></button></li>";
     }).join("");
     return '<li class="rt-row is-list' + (all ? " is-done" : "") + '">' + head + txt(r.note) + tick + '<ul class="rt-steps" aria-label="' + esc(r.name) + '">' + steps + "</ul></li>";
   }
   const on = !!(e.done && e.done[r.id]), t = on ? rtHm(e.done[r.id]) : "";
   return '<li class="rt-row' + (on ? " is-done" : "") + '">' + head + txt(r.kind === "amount" ? rtAmountLine(r, sel) : r.note) +
-    rtTickHTML(r, "tick", on, on ? "Done" : "Mark done", (on ? "Done: " : "Mark done: ") + r.name + (on ? ", at " + t : ""), on ? 1 : 0, t) + "</li>";
+    rtTickHTML(r, "tick", on, on ? "Done" : "Mark done", (on ? "Done: " : "Mark done: ") + r.name + (on ? ", at " + t : ""), on ? 1 : 0) + "</li>";
 }
 /* the count, and the beads: one per ritual, each filled as far as its ritual got. On the phone and the stack the card
    carries the laptop panel's title, its stars and its rule */
@@ -21053,8 +21040,7 @@ function bdPlateHTML() {
   if (!x) h += '<p class="bd-empty">No weigh-ins yet.</p>';
   else h += '<div class="bd-cap" data-slot="cap">' + bdCapHTML(x, s.latest) + '</div><div class="bd-blk bd-head" data-slot="head">' + bdHeadHTML(x, s.rows) + "</div>" +
     '<section class="bd-blk bd-sec"><h3 class="bd-h">What it’s made of</h3><div class="bd-comp" data-draw="comp" data-id="' + esc(x.id) + '"></div></section>' +
-    '<section class="bd-blk bd-sec"><h3 class="bd-h">History</h3>' + bdTrendBox("plate") + "</section>" +
-    '<div class="bd-blk bd-last" data-slot="visc">' + bdViscHTML(x) + "</div>";
+    '<section class="bd-blk bd-sec bd-last"><h3 class="bd-h">History</h3>' + bdTrendBox("plate") + "</section>";
   const edit = s.latest && dySame(bdDayOf(s.latest.at), rtSel().sel);
   h += '<div class="bd-acts">' + (x ? '<button type="button" class="bd-link" data-bd="all" data-slot="more">' + bdMoreHTML(x) + "</button>" : "") +
     '<button type="button" class="bd-edit" data-bd="' + (edit ? "edit" : "add") + '"' + (edit ? ' data-id="' + esc(s.latest.id) + '"' : "") + ">" + RT_ICO.pencil +
