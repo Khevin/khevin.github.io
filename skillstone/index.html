@@ -4889,7 +4889,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 /* the phone: a fanned hand of the seven cards, the front card's morning beneath, the moods as dots */
 .ch-hand, .ch-fday, .ch-fstrip { display: none; }
 .ch-hand { position: relative; outline: none; padding-top: 12px; }
-.ch-fan { --cw: 150px; --chh: 250px; --sl: calc((100% - var(--cw)) / 6); position: relative; height: calc(var(--chh) + 12px); }
+.ch-fan { --cw: 150px; --chh: 250px; --sl: calc((100% - var(--cw)) / 6); position: relative; height: calc(var(--chh) + 12px);
+  touch-action: pan-y pinch-zoom; -webkit-user-select: none; user-select: none; }   /* a sideways drag is the hand's, an upright one the page's */
+.ch-fan.is-drag { cursor: grabbing; }
 .ch-fcard { position: absolute; top: 12px; left: calc(var(--i) * var(--sl)); width: var(--cw); height: var(--chh); margin: 0; padding: 0; border: 0; background: var(--socket);
   border-radius: 8px; overflow: hidden; box-shadow: -6px 10px 24px rgba(0,0,0,0.55); z-index: var(--z); cursor: pointer; transition: transform var(--t-base) var(--e-out); }
 .ch-fcard.is-front { transform: translateY(-12px); box-shadow: 0 18px 40px rgba(0,0,0,0.7); }
@@ -20349,6 +20351,23 @@ function chCutNames(el) {
 }
 window.addEventListener("resize", () => { const el = $("#viewChronicle"); if (el && !el.hidden) chCutNames(el); });
 /* bring a day to the front of the hand; keep the keyboard where it was */
+/* the fan brought round to day f in place, while a finger drags it: the same order, lift and z as chHandHTML draws */
+function chFanTo(fan, f) {
+  fan.querySelectorAll(".ch-fcard").forEach(c => {
+    const i = +c.dataset.i;
+    c.classList.toggle("is-front", i === f); c.classList.toggle("is-before", i < f); c.classList.toggle("is-after", i > f);
+    c.classList.remove("is-read");
+    c.style.setProperty("--z", String(i < f ? i + 1 : i === f ? 20 : 20 - (i - f)));
+    c.setAttribute("aria-pressed", String(i === f));
+  });
+  const d = document.querySelectorAll("#viewChronicle .ch-fs-dows span");
+  d.forEach((s, i) => s.classList.toggle("is-front", i === f));
+}
+/* one card per step: the spacing between the cards' left edges, and never less than 36px of finger */
+function chFanStep(fan) {
+  const c = fan.querySelectorAll(".ch-fcard");
+  return c.length > 1 ? Math.max(36, (c[1].offsetLeft - c[0].offsetLeft) * 1.3) : 60;
+}
 function chSetFront(i) {
   chFront = Math.max(0, Math.min(6, i));
   const had = document.activeElement && document.activeElement.closest && document.activeElement.closest(".ch-hand");
@@ -20357,7 +20376,7 @@ function chSetFront(i) {
 }
 (() => {
   const el = $("#viewChronicle"); if (!el) return;
-  let swipe = null, swiped = 0;
+  let drag = null, swiped = 0;
   /* a swipe on the hand is not a tap on a card: swallow the click that follows it */
   el.addEventListener("click", ev => { if (Date.now() - swiped < 400 && ev.target.closest(".ch-fcard")) { ev.stopImmediatePropagation(); ev.preventDefault(); } }, true);
   el.addEventListener("click", ev => {
@@ -20398,12 +20417,38 @@ function chSetFront(i) {
       if (ev.key === "ArrowLeft") { ev.preventDefault(); chSetFront((chFront || 0) - 1); }
     }
   });
-  el.addEventListener("pointerdown", ev => { swipe = ev.target.closest(".ch-hand") ? { x: ev.clientX, y: ev.clientY } : null; });
-  el.addEventListener("pointerup", ev => {
-    if (!swipe) return;
-    const dx = ev.clientX - swipe.x, dy = ev.clientY - swipe.y; swipe = null;
-    if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy) * 1.5) { swiped = Date.now(); chSetFront((chFront || 0) + (dx < 0 ? 1 : -1)); }
+  /* the hand follows the finger, as the Diary's strip of cards does (the owner, 23 Sep 2026): a sideways drag brings
+     a card forward for every card's width it travels, the fan moving in place under the finger; a quick flick moves
+     one; the day settles when the finger lifts. An upright drag is the page's (touch-action: pan-y) */
+  el.addEventListener("pointerdown", ev => {
+    const fan = ev.target.closest(".ch-fan");
+    drag = fan && ev.isPrimary && ev.button === 0 ? { fan, id: ev.pointerId, x0: ev.clientX, y0: ev.clientY, f0: chFront || 0, f: chFront || 0, on: false, t: ev.timeStamp } : null;
   });
+  el.addEventListener("pointermove", ev => {
+    const d = drag; if (!d || ev.pointerId !== d.id) return;
+    const dx = ev.clientX - d.x0, dy = ev.clientY - d.y0;
+    if (!d.on) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      if (Math.abs(dx) <= Math.abs(dy)) { drag = null; return; }                /* the page is being scrolled */
+      d.on = true; d.step = chFanStep(d.fan);
+      try { d.fan.setPointerCapture(d.id); } catch (e) {}
+      d.fan.classList.add("is-drag");
+    }
+    const f = Math.max(0, Math.min(6, d.f0 + Math.round(-dx / d.step)));
+    if (f !== d.f) { d.f = f; chFanTo(d.fan, f); }
+  });
+  const end = (ev, cancel) => {
+    const d = drag; if (!d || ev.pointerId !== d.id) return;
+    drag = null;
+    if (!d.on) return;
+    d.fan.classList.remove("is-drag");
+    swiped = Date.now();
+    const dx = ev.clientX - d.x0, fast = ev.timeStamp - d.t < 250 && Math.abs(dx) > 12;   /* down to up in a quarter second */
+    const f = !cancel && d.f === d.f0 && fast ? Math.max(0, Math.min(6, d.f0 + (dx < 0 ? 1 : -1))) : d.f;
+    chSetFront(f);
+  };
+  el.addEventListener("pointerup", ev => end(ev, false));
+  el.addEventListener("pointercancel", ev => end(ev, true));
 })();
 /* ===== /chronicle:js ===== */
 /* ===== body:js =====
