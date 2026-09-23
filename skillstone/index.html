@@ -5173,8 +5173,12 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .dy-bodyc, .dy-ritc { grid-row: 4; z-index: 1; border: 0; border-radius: 0; background: none; }
   .dy-bodyc::before, .dy-ritc::before { content: none; }
   .dy-bodyc > .orn-top, .dy-ritc > .orn-top { display: none; }
-  .dy-bodyc { grid-column: 1; padding: 0 var(--s3) 0 44px; }
-  .dy-ritc { grid-column: 2 / 4; padding: 0 44px 0 var(--s3); }
+  /* the panel's two halves split its width 40 to 60 (the owner, 23 Sep 2026), apart from the Diary's three columns
+     above: both span the row, one from each end. 136px is the frame's two 44px insets, the two 12px paddings and the
+     24px between the halves, where the rule stands; what is left is shared 40 to 60 */
+  .dy-bodyc, .dy-ritc { grid-column: 1 / -1; }
+  .dy-bodyc { justify-self: start; width: calc(56px + (100% - 136px) * 0.4); padding: 0 var(--s3) 0 44px; }
+  .dy-ritc { justify-self: end; width: calc(56px + (100% - 136px) * 0.6); padding: 0 44px 0 var(--s3); }
   .dy-ritc::after { content: ""; position: absolute; left: calc(-1 * var(--s5) / 2); top: 4px; bottom: 4px; border-left: 1px solid rgba(232,176,84,0.28); }
   .dy-save { grid-column: 1 / -1; grid-row: 5; z-index: 1; margin: 0 44px; padding: var(--s4) 0 40px; border-top: 1px solid rgba(232,176,84,0.22); }
   /* inside the panel the halves are headed in gold, left, small; the panel's own title is the plate's */
