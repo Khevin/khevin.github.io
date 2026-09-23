@@ -4765,7 +4765,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .ch-sh::after { content: ""; height: 1px; background: var(--mortar); flex: 1; }
 
 /* the seven days: one grid, five rows, a gutter for the rungs */
-.ch-grid { display: grid; grid-template-columns: 3rem repeat(7, minmax(0, 1fr)) 3.75rem; grid-template-rows: auto auto 100px auto auto auto; column-gap: 0; }
+.ch-grid { display: grid; grid-template-columns: 3rem repeat(7, minmax(0, 1fr)) 3.75rem; grid-template-rows: auto auto 100px auto auto auto auto auto auto auto; column-gap: 0; }
 .ch-sep { grid-row: 1 / 7; width: 0; justify-self: start; border-left: 1px solid rgba(62,53,39,0.7); }
 .ch-strip-sr { grid-row: 3; grid-column: 2 / 9; }
 .ch-dcell { padding: 0 var(--s2); min-width: 0; }
@@ -4984,6 +4984,39 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 /* an unwritten mark keeps its popover quiet: the heading in ash, not gold, so written and unwritten read apart at a glance */
 .ch-mk:not(.is-on) .ch-tip b { color: var(--ash); }
 .ch-mk:not(.is-on) .ch-tip { color: var(--dust); }
+/* ---- the mornings (DECISIONS.md, 23 Sep 2026): each day's weigh-in and the Diary's tick for each ritual, under the
+   diary marks. The figures are the measured face; body fat wears lapis, as in the Diary's History ---- */
+.ch { --lapis: #86A9D6; }
+.ch-mhead { grid-column: 2 / 9; grid-row: 7; margin: var(--s5) var(--s2) var(--s2); }
+.ch-msep { grid-row: 8 / 11; }
+.ch-mu { grid-column: 1; justify-self: end; align-self: center; padding-right: var(--s2); font-family: var(--f-mono); font-size: 0.625rem; color: var(--ash); white-space: nowrap; }
+.ch-r8 { grid-row: 8; }
+.ch-r9 { grid-row: 9; }
+.ch-r10 { grid-row: 10; padding-top: var(--s3); position: relative; z-index: 1; }
+.ch-r10:hover, .ch-r10:focus-within { z-index: 7; }
+.ch-mkg, .ch-mfat { margin: 0; text-align: center; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.ch-mkg { padding-top: var(--s1); font-size: 0.9375rem; color: var(--parchment); }
+.ch-mfat { font-size: 0.8125rem; color: var(--lapis); }
+.ch-mnone { color: var(--ash); }
+.ch-rstack { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ch-rm { --mk: 22px; }
+.ch-rm > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ch-rm .rt-g { stroke-width: 2.2; }
+.ch-rc-disc { fill: var(--gold); }
+.ch-rc-ink { color: #1A1408; }
+.ch-rc-gold { color: var(--gold); }
+.ch-rc-edge { fill: none; stroke: var(--gold); stroke-width: 1; }
+.ch-rc-ring { fill: none; stroke: rgba(232,176,84,0.35); stroke-width: 1; }
+.ch-rc-dim { color: rgba(181,169,142,0.55); }
+/* the phone: the same, under the marks' grid, the units said once under the heading */
+.ch-fs-mhead { grid-column: 1; grid-row: 4; margin: var(--s5) 0 0; }
+.ch-fs-units { grid-column: 1; grid-row: 5; margin: var(--s1) 0 0; font-family: var(--f-read); font-size: 0.75rem; color: var(--ash); }
+.ch-fs-morn { grid-column: 1; grid-row: 6; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); justify-items: center; row-gap: var(--s2); margin-top: var(--s3); }
+.ch-fs-morn .ch-mkg { font-size: 0.6875rem; }
+.ch-fs-morn .ch-mfat { font-size: 0.6875rem; }
+.ch-fs-morn .ch-rm { --mk: 20px; }
+.ch-fs-morn > div { position: relative; z-index: 1; }
+.ch-fs-morn > div:hover, .ch-fs-morn > div:focus-within { z-index: 7; }
 /* ===== /chronicle:css ===== */
 /* ===== body:css =====
    The Diary's morning panel (DECISIONS.md, 22 Sep 2026): body readings and the morning's rituals. Installed by
@@ -20036,7 +20069,17 @@ function chFacts(wk) {
   ledger.sort((a, c) => ((a.day === null) - (c.day === null)) || (a.day - c.day) || (a.ts - c.ts));
   const close = (b.close && b.close[wk]) || {};
   const prevWk = weekKeyOf(addDays(mon, -7)), prev = (b.close && b.close[prevWk]) || null;
-  return { wk, mon, days, mornings, shorts, habits, notesN, crossed, open, questsDone, steps, mins, hours, prog, ledger, close, prevWk, prev };
+  /* the mornings (DECISIONS.md, 23 Sep 2026): each day's last weigh-in and how far each of the rituals got, from the
+     Diary's records (.body/body.js); the section stands only for a week that holds a weigh-in or a tick, so an empty
+     week, or a board that never kept its mornings, draws no table of dashes */
+  const rits = typeof rtFill === "function" && Array.isArray(b.rituals) ? b.rituals : [];
+  const weighs = typeof bdRows === "function" ? bdRows() : [];
+  days.forEach(x => {
+    x.w = weighs.filter(r => dySame(bdDayOf(r.at), x.d)).pop() || null;
+    x.rt = rits.map(r => rtFill(r, rtGet(b, wk, x.i)));
+  });
+  const morn = days.some(x => x.w || x.rt.some(f => f > 0));
+  return { wk, mon, days, mornings, rits, morn, shorts, habits, notesN, crossed, open, questsDone, steps, mins, hours, prog, ledger, close, prevWk, prev };
 }
 
 /* Four brass emblems share the mood medallions' material. Standalone SVG artwork stays
@@ -20066,6 +20109,32 @@ function chMarksHTML(e, day) {
   return '<div class="ch-marks">' + ["page", "book", "one", "thanks"].map(k => chMark(k, on(k), chMarkValue(k, e), day)).join("") + "</div>";
 }
 const chDayShort = d => d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3);
+
+/* a ritual's mark on one morning: its glyph in the Diary's tick circle. Done, a gold disc with the glyph in the plate's
+   dark; part done, the gold rising from the foot through the glyph as far as the checklist got; not done, a dim ring.
+   The popover names the ritual and the day, as the diary marks' do */
+let chRcN = 0;
+function chRitMark(r, f, day) {
+  const st = f >= 1 ? "Done" : f > 0 ? (r.kind === "list" && r.steps.length ? Math.round(f * r.steps.length) + " of " + r.steps.length : "Part done") : "Not done";
+  const head = day + " · " + r.name, g = (RT_ICO[r.icon] || RT_ICO.star).replace('class="rt-g"', 'class="rt-g" x="6" y="6" width="12" height="12"');
+  let s;
+  if (f >= 1) s = '<circle class="ch-rc-disc" cx="12" cy="12" r="11"/><g class="ch-rc-ink">' + g + "</g>";
+  else if (f <= 0) s = '<circle class="ch-rc-ring" cx="12" cy="12" r="10.5"/><g class="ch-rc-dim">' + g + "</g>";
+  else {
+    const id = "chrc" + (chRcN++), y = (1 + (1 - f) * 22).toFixed(1);
+    s = '<defs><clipPath id="' + id + 'b"><rect x="0" y="' + y + '" width="24" height="24"/></clipPath><clipPath id="' + id + 't"><rect x="0" y="0" width="24" height="' + y + '"/></clipPath></defs>' +
+      '<circle class="ch-rc-edge" cx="12" cy="12" r="10.5"/><g clip-path="url(#' + id + 'b)"><circle class="ch-rc-disc" cx="12" cy="12" r="11"/><g class="ch-rc-ink">' + g + "</g></g>" +
+      '<g class="ch-rc-gold" clip-path="url(#' + id + 't)">' + g + "</g>";
+  }
+  return '<span class="ch-mk ch-rm' + (f > 0 ? " is-on" : "") + '" tabindex="0" role="img" aria-label="' + esc(head + ": " + st) + '">' +
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + s + "</svg>" +
+    '<span class="ch-tip" role="tooltip"><b>' + esc(head) + "</b>" + esc(st) + "</span></span>";
+}
+/* a day's figure: the weigh-in's weight or body fat, a dash where the day had none, nothing for a day to come */
+const chFig = (x, k, day, unit) => x.fut ? "" : x.w && x.w[k] !== undefined
+  ? '<span class="sr-only">' + day + ", " + (k === "kg" ? "weight" : "body fat") + " </span>" + bd1(x.w[k]) + '<span class="sr-only"> ' + unit + "</span>"
+  : '<span class="ch-mnone" aria-label="' + day + ': no weigh-in">–</span>';
+const chRitStack = (F, x) => x.fut ? "" : '<div class="ch-rstack">' + F.rits.map((r, k) => chRitMark(r, x.rt[k], DOW_LONG[x.i])).join("") + "</div>";
 
 /* the head is the week plate's rim (DECISIONS.md, 22 Sep, the owner's pick of three): the week and the way to the
    weeks either side, cut into the plate's top edge in the Chronicle's notch drawn wide enough to hold them.
@@ -20144,6 +20213,14 @@ function chGridHTML(F) {
   F.days.forEach(x => { const m = x.e && x.e.mood; h += '<p class="ch-dcell ch-r4 ch-mword' + (m ? " is-set m" + m : "") + '"' + col(x.i) + ">" + (m ? DY_MOODS[m - 1] : "") + "</p>"; });
   F.days.forEach(x => { h += '<p class="ch-dcell ch-r5 ch-feel"' + col(x.i) + ">" + chFeelings(x) + "</p>"; });
   F.days.forEach(x => { h += '<div class="ch-dcell ch-r6"' + col(x.i) + ">" + chMarksHTML(x.e, DOW_LONG[x.i]) + "</div>"; });
+  if (F.morn) {
+    h += '<h3 class="ch-sh ch-mhead">The mornings</h3>';
+    for (let i = 1; i < 7; i++) h += '<span class="ch-sep ch-msep" aria-hidden="true" style="grid-column:' + (i + 2) + '"></span>';
+    h += '<span class="ch-mu ch-r8" aria-hidden="true">kg</span><span class="ch-mu ch-r9" aria-hidden="true">% fat</span>';
+    F.days.forEach(x => { h += '<p class="ch-dcell ch-r8 ch-mkg"' + col(x.i) + ">" + chFig(x, "kg", DOW_LONG[x.i], "kg") + "</p>"; });
+    F.days.forEach(x => { h += '<p class="ch-dcell ch-r9 ch-mfat"' + col(x.i) + ">" + chFig(x, "fat", DOW_LONG[x.i], "% body fat") + "</p>"; });
+    if (F.rits.length) F.days.forEach(x => { h += '<div class="ch-dcell ch-r10"' + col(x.i) + ">" + chRitStack(F, x) + "</div>"; });
+  }
   return h + "</div>";
 }
 
@@ -20194,7 +20271,10 @@ function chFstripHTML(F) {
     /* each day's four marks stand in its own column, under its letter; the popover names the field */
     '<div class="ch-fs-marks">' + F.days.map(x => '<div class="ch-fs-mday">' +
       ["page", "book", "one", "thanks"].map(k => chMark(k, !!(x.e && x.e[k]), chMarkValue(k, x.e), DOW_LONG[x.i])).join("") + "</div>").join("") +
-    "</div></div>";
+    "</div>" + (F.morn ? '<h3 class="ch-sh ch-fs-mhead">The mornings</h3><p class="ch-fs-units">Weight in kg, then body fat in %</p><div class="ch-fs-morn">' +
+      F.days.map(x => '<p class="ch-mkg">' + chFig(x, "kg", DOW_LONG[x.i], "kg") + "</p>").join("") +
+      F.days.map(x => '<p class="ch-mfat">' + chFig(x, "fat", DOW_LONG[x.i], "% body fat") + "</p>").join("") +
+      (F.rits.length ? F.days.map(x => "<div>" + chRitStack(F, x) + "</div>").join("") : "") + "</div>" : "") + "</div>";
 }
 
 /* the week's record (DECISIONS.md, option A): the ledger of done things, the habit grid with the Journal's own
@@ -20250,6 +20330,7 @@ function renderChronicle() {
   const thisMon = mondayOf(dayNow());
   if (!chWeek) chWeek = thisMon;
   const wk = weekKeyOf(chWeek), F = chFacts(wk), isThis = weekKeyOf(thisMon) === wk;
+  chRcN = 0;
   if (chFront == null || chFront < 0 || chFront > 6) chFront = isThis ? dyDow(dayNow()) : 0;
   el.innerHTML = '<div class="ch">' +
     '<section class="ch-plate ch-week" aria-label="The seven days">' + chSprigs(["tl", "tr"]) + chHeadHTML(F, isThis, chWeek < thisMon) +
