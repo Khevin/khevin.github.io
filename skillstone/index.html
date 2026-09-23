@@ -5070,11 +5070,14 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .bd .bd-head .bd-vs { text-align: right; }
 }
 /* the sections: a small-caps heading on its rule */
-.bd-sec { display: grid; gap: var(--s2); min-width: 0; }
+.bd-sec { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); min-width: 0; }
 .bd-h { margin: 0; display: flex; align-items: center; gap: var(--s3); font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--gold); }
 .bd-h::after { content: ""; flex: 1 1 0; height: 1px; background: rgba(232,176,84,0.18); }
 /* the drawings, drawn at the width they are given; their room is kept before they are drawn */
+/* a drawing's box takes its width from its column, never from the drawing in it: an SVG drawn at a wider width (a
+   laptop window narrowed to a phone) would otherwise hold the box open, and the width it is redrawn at would never change */
+.bd-comp, .bd-trend, .bd-r dd.bd-vbar { contain: inline-size; min-width: 0; overflow: hidden; }
 .bd-comp { min-height: 53px; }
 .bd-trend { min-height: 180px; touch-action: pan-y pinch-zoom; cursor: crosshair; border-radius: var(--r-sm); -webkit-user-select: none; user-select: none; }
 .bd-trend.is-few { min-height: 0; cursor: default; }
