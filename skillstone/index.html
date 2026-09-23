@@ -5034,14 +5034,20 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-now { min-height: 44px; margin-block: -14px; padding: 0 var(--s1); background: none; border: 0; color: var(--gold); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 @media (hover: hover) { .bd-now:hover { color: var(--gold-2); } }
 
-/* the figure: one gold hairline for the body, the readings in the plate's faces, leaders at half strength */
-.bd-fig { display: block; width: 100%; max-width: 360px; height: auto; margin: var(--s2) auto 0; overflow: visible; }
-.bd-body { fill: rgba(232,176,84,0.04); stroke: var(--gold); stroke-width: 1.25; stroke-linejoin: round; }
-.bd-lead-l { fill: none; stroke: rgba(232,176,84,0.5); stroke-width: 1; }
-.bd-dot { fill: var(--gold); }
-.bd-sl { font-family: var(--f-display); font-weight: 700; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--ash); }
-.bd-sv { font-family: var(--f-mono); font-size: 15px; fill: var(--parchment); font-variant-numeric: tabular-nums; }
-.bd-su { font-size: 10px; fill: var(--ash); }
+/* The figure is illustrative; the readings never point at an invented measurement site.
+   HTML labels retain their font size instead of shrinking with an SVG viewBox. */
+.bd-fig { display: block; width: 100%; max-width: 380px; margin: var(--s2) auto 0; }
+.bd-figure-grid { display: grid; grid-template-columns: minmax(0, 1fr) clamp(72px, 32%, 104px) minmax(0, 1fr); align-items: center; gap: 8px; }
+.bd-silhouette { display: block; width: 100%; height: auto; }
+.bd-body { fill: rgba(232,176,84,0.045); stroke: var(--gold); stroke-width: 1.25; stroke-linejoin: round; }
+.bd-body-detail { fill: none; stroke: var(--gold); stroke-width: .8; stroke-linecap: round; opacity: .32; }
+.bd-readings { display: grid; align-content: space-evenly; align-self: stretch; gap: 12px; margin: 0; padding: 24px 0 12px; min-width: 0; }
+.bd-readings-r { text-align: right; }
+.bd-reading dt { font-family: var(--f-display); font-weight: 600; font-size: .75rem; line-height: 1.45; letter-spacing: .025em; color: var(--dust); }
+.bd-reading dd { margin: 4px 0 0; font-family: var(--f-mono); font-size: 1rem; line-height: 1.3; color: var(--parchment); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bd-reading-unit, .bd-rating { font-family: var(--f-ui); font-size: .6875rem; font-weight: 400; letter-spacing: 0; color: var(--dust); }
+.bd-rating { display: block; }
+.bd-figure-note { margin: 12px 0 0; text-align: center; font-family: var(--f-ui); font-size: .6875rem; line-height: 1.5; color: var(--ash); text-wrap: balance; }
 
 /* ---- the rituals ---- */
 .rt-t-s { display: none; }
@@ -20387,13 +20393,14 @@ function bdTrendSVG(rows) {
     '<polyline points="' + pts + '" fill="none" vector-effect="non-scaling-stroke"/></svg>';
 }
 
-/* ---- the figure: a silhouette in the crest hand, one gold hairline, the readings placed where they live ----
-   Half the outline is placed by hand (x from the midline), mirrored, and smoothed through its points; the
-   head is its own circle. Muscle sits at the arm, visceral fat at the belly, body fat at the hip, water in
-   the thigh, bone at the shin. */
-const BD_HALF = [[5,33],[7,40],[16,45],[26,48],[31,54],[33,66],[35,84],[37,100],[38,116],[38,130],[39,141],[36,149],[32,146],
-  [31,134],[29,118],[27,100],[25,84],[22,68],[21,86],[18,104],[21,122],[23,138],[22,160],[19,184],[17,204],[16,222],[13,242],
-  [16,252],[11,256],[6,253],[6,240],[7,222],[7,204],[6,184],[3,164],[0,150]];
+/* ---- the figure: an illustrative silhouette, never a map of measurement sites ----
+   Labels are HTML so their type stays readable when the column narrows. The outline is fixed:
+   changing a scale reading must not pretend to change a measured body shape. */
+const BD_HALF = [[6,33],[7,40],[17,45],[30,49],[35,55],[38,69],[40,87],[42,103],
+  [45,122],[48,140],[47,149],[43,152],[40,148],[39,138],[36,122],[33,105],[30,87],[27,72],
+  [25,88],[21,107],[22,120],[26,137],[26,151],[23,170],[20,189],[19,202],[20,216],
+  [17,235],[16,246],[20,252],[19,256],[10,256],[8,253],[9,243],[9,226],[8,210],
+  [8,193],[6,173],[3,153],[0,148]];
 function bdSmooth(p) {
   /* closed Catmull-Rom through the points, as cubic Béziers */
   const n = p.length; let d = "M" + p[0][0].toFixed(1) + " " + p[0][1].toFixed(1);
@@ -20404,24 +20411,22 @@ function bdSmooth(p) {
   }
   return d + "Z";
 }
-const BD_CX = 160;
+const BD_CX = 52;
 const BD_FIG_D = bdSmooth(BD_HALF.map(([x, y]) => [BD_CX + x, y]).concat(BD_HALF.slice(0, -1).reverse().map(([x, y]) => [BD_CX - x, y])));
-/* where each reading points: [key, anchor x, anchor y, side, label y]; every leader reaches its spot without
-   crossing an arm — the arm itself, and below the hands (y > 156) for the rest */
-const BD_SPOTS = [["mus", BD_CX - 34, 90, "l", 76], ["water", BD_CX - 15, 190, "l", 150], ["bone", BD_CX - 13, 228, "l", 224],
-  ["visc", BD_CX + 9, 144, "r", 160], ["fat", BD_CX + 21, 180, "r", 206]];
 function bdFigureSVG(x) {
-  const spots = BD_SPOTS.map(([k, ax, ay, side, ly]) => {
-    const f = BD_F[k], v = x ? x[k] : undefined, tx = side === "l" ? 14 : 306, ex = side === "l" ? 96 : 224, anchor = side === "l" ? "start" : "end";
-    return '<g class="bd-spot"><path class="bd-lead-l" d="M' + ex + " " + (ly + 4) + "L" + (ax + (side === "l" ? -4 : 4)) + " " + ay + '" vector-effect="non-scaling-stroke"/>' +
-      '<circle class="bd-dot" cx="' + ax + '" cy="' + ay + '" r="2.5"/>' +
-      '<text class="bd-sl" x="' + tx + '" y="' + (ly - 8) + '" text-anchor="' + anchor + '">' + f.l + "</text>" +
-      '<text class="bd-sv" x="' + tx + '" y="' + (ly + 9) + '" text-anchor="' + anchor + '">' + bdFmt(f, v) + (v !== undefined && f.u ? '<tspan class="bd-su"> ' + f.u + "</tspan>" : "") + "</text></g>";
-  }).join("");
-  const said = x ? BD_SPOTS.map(([k]) => BD_F[k].l + " " + bdFmt(BD_F[k], x[k]) + (x[k] !== undefined && BD_F[k].u ? " " + BD_F[k].u : "")).join(", ") : "";
-  return '<svg class="bd-fig" viewBox="0 0 320 268" role="img" aria-label="' + esc(said) + '">' +
-    '<circle class="bd-body" cx="' + BD_CX + '" cy="18" r="13" vector-effect="non-scaling-stroke"/>' +
-    '<path class="bd-body" d="' + BD_FIG_D + '" vector-effect="non-scaling-stroke"/>' + spots + "</svg>";
+  const reading = k => {
+    const f = BD_F[k], v = x ? x[k] : undefined, present = v !== undefined && v !== null;
+    return '<div class="bd-reading"><dt>' + f.l + (k === "visc" ? '<span class="bd-rating">Rating</span>' : "") +
+      '</dt><dd>' + bdFmt(f, v) + (present && f.u ? '<span class="bd-reading-unit"> ' + f.u + '</span>' : "") + '</dd></div>';
+  };
+  return '<figure class="bd-fig" aria-label="Body composition readings"><div class="bd-figure-grid">' +
+    '<dl class="bd-readings">' + ["mus", "water", "bone"].map(reading).join("") + '</dl>' +
+    '<svg class="bd-silhouette" viewBox="0 0 104 268" aria-hidden="true" focusable="false">' +
+    '<ellipse class="bd-body" cx="' + BD_CX + '" cy="18" rx="10.5" ry="13.5" vector-effect="non-scaling-stroke"/>' +
+    '<path class="bd-body" d="' + BD_FIG_D + '" vector-effect="non-scaling-stroke"/>' +
+    '<path class="bd-body-detail" d="M39 55Q46 55 50 59M54 59Q58 55 65 55M39 133Q45 136 48 142M56 142Q59 136 65 133" vector-effect="non-scaling-stroke"/></svg>' +
+    '<dl class="bd-readings bd-readings-r">' + ["fat", "visc"].map(reading).join("") + '</dl></div>' +
+    '<figcaption class="bd-figure-note">Scale estimates · figure is illustrative</figcaption></figure>';
 }
 
 /* ---- the rituals: the owner's four by default, to rename, reorder, add to and remove. A ritual is one tick (check),
@@ -20700,8 +20705,8 @@ function bdPlateHTML() {
       '<p class="bd-kgl"><span>Weight</span>' + (prev ? '<span class="bd-prev">Previous: ' + bdFmt(BD_F.kg, prev.kg) + " kg</span>" : "") + "</p></div>" +
       /* the phone and the stack draw the trend and the figure; the laptop's column keeps the list */
       bdTrendSVG(rows) + bdFigureSVG(last) +
-      '<dl class="bd-core">' + ["fat", "mus", "water", "visc"].map(k => { const f = BD_F[k];
-        return "<div><dt>" + f.l + "</dt><dd>" + bdFmt(f, last[k]) + (last[k] !== undefined && f.u ? '<span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>"; }).join("") + "</dl>";
+      '<dl class="bd-core">' + ["fat", "mus", "water", "bone", "visc"].map(k => { const f = BD_F[k];
+        return "<div><dt>" + f.l + (k === "visc" ? " (rating)" : "") + "</dt><dd>" + bdFmt(f, last[k]) + (last[k] !== undefined && f.u ? '<span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>"; }).join("") + "</dl>";
   }
   const edit = last && dySame(bdDayOf(last.at), sel);
   h += '<div class="bd-acts">' + (last ? '<button type="button" class="bd-link" data-bd="all">View all readings' + RT_ICO.arrow + "</button>" : "") +
@@ -20814,7 +20819,7 @@ function bdAllHTML() {
     '<div class="bd-nav"><button type="button" class="btn btn-ghost btn-sm" data-bd="older"' + (i > 0 ? "" : " disabled") + ">‹ Earlier</button>" +
     '<button type="button" class="btn btn-ghost btn-sm" data-bd="newer"' + (i < rows.length - 1 ? "" : " disabled") + ">Later ›</button></div>" +
     '<div class="bd-allfig">' + bdFigureSVG(x) + "</div>" + WI_RULE +
-    '<dl class="bd-grid">' + BD_FIELDS.map(f => '<div class="' + (f.core ? "is-core" : "") + '"><dt>' + f.l + "</dt><dd>" + bdFmt(f, x[f.k]) +
+    '<dl class="bd-grid">' + BD_FIELDS.map(f => '<div class="' + (f.core ? "is-core" : "") + '"><dt>' + f.l + (f.k === "visc" ? " (rating)" : "") + "</dt><dd>" + bdFmt(f, x[f.k]) +
       (x[f.k] !== undefined && f.u ? ' <span class="bd-u">' + f.u + "</span>" : "") + "</dd></div>").join("") + "</dl></div>" +
     wiEnd('<button type="button" class="btn btn-ghost btn-sm" data-bd="add">Add a weigh-in</button><span class="wi-sp"></span>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-bd="edit" data-id="' + esc(x.id) + '">Edit this weigh-in</button>' +
