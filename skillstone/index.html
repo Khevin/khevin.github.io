@@ -4992,7 +4992,13 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 
 /* ---- the body readings ---- */
 .dy-bodyc, .dy-ritc { padding: 36px 28px 24px; }
-.bd { flex: 1 1 auto; width: 100%; display: flex; flex-direction: column; gap: var(--s4); container: bd / inline-size; }
+.bd { flex: 1 1 auto; width: 100%; display: flex; flex-direction: column; container: bd / inline-size; }
+/* the plate's groups are blocks between rules, the rituals' rows' rules: the head, what the weight is made of, its
+   history, visceral fat. Inside a block only its name is set in small caps */
+.bd-blk { padding: var(--s3) 0; border-top: 1px solid rgba(232,176,84,0.18); }
+.bd-blk.bd-last { border-bottom: 1px solid rgba(232,176,84,0.18); }
+.bd-blk .bd-h::after { content: none; }
+.bd-cap { margin-bottom: var(--s3); }
 /* the weigh-in's age, coloured as it grows stale: parchment after 10 days, gold after 30, amber after 90, cinnabar
    after a year. Amber and cinnabar are new to the palette, 7.3:1 and 5.0:1 on the plate */
 .dy2, .bd-dlg { --amber: #EC8B3F; --cinnabar: #E5574A; --lapis: #86A9D6; }
@@ -5008,7 +5014,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-cap2 { font-family: var(--f-read); font-size: 0.8125rem; color: var(--ash); }
 .bd-cap2 .bd-now { font-family: var(--f-ui); font-size: 0.875rem; }
 /* the head: the figure, then the weight and the body fat in the measured face, each with its change under it */
-.bd-head { display: grid; grid-template-columns: auto auto 1px auto; grid-template-areas: "emb kg div fat" "emb dkg div dfat" "vs vs vs vs";
+.bd-head { display: grid; grid-template-columns: auto auto 1px auto; grid-template-areas: "emb kg div fat" "emb dkg div dfat" ". vs vs vs";
   justify-content: center; align-items: end; column-gap: var(--s3); }
 .bd-emb { grid-area: emb; align-self: center; width: 18px; height: 44px; margin-right: 2px; fill: rgba(232,176,84,0.045); stroke: var(--gold); stroke-width: 1; stroke-linejoin: round; }
 .bd-v { margin: 0; display: flex; align-items: baseline; gap: 5px; font-family: var(--f-mono); color: var(--parchment); font-variant-numeric: tabular-nums; }
@@ -5020,7 +5026,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-d.kg { grid-area: dkg; }
 .bd-d.fat { grid-area: dfat; }
 .bd-div { grid-area: div; align-self: stretch; margin: 4px 0; background: rgba(232,176,84,0.22); }
-.bd-vs { grid-area: vs; min-height: 1.4em; margin: 2px 0 0; text-align: center; font-family: var(--f-read); font-size: 0.75rem; color: var(--ash); }
+.bd-vs { grid-area: vs; min-height: 1.4em; margin: 0; text-align: center; font-family: var(--f-read); font-size: 0.75rem; color: var(--ash); }
 /* a column too narrow for the two side by side (the laptop below about 1280, the 320 phone): the weight above the
    body fat, each change beside its number */
 @container bd (max-width: 262px) {
@@ -5036,7 +5042,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   text-transform: uppercase; color: var(--gold); }
 .bd-h::after { content: ""; flex: 1 1 0; height: 1px; background: rgba(232,176,84,0.18); }
 /* the drawings, drawn at the width they are given; their room is kept before they are drawn */
-.bd-comp { min-height: 78px; }
+.bd-comp { min-height: 53px; }
 .bd-trend { min-height: 180px; touch-action: pan-y pinch-zoom; cursor: crosshair; border-radius: var(--r-sm); -webkit-user-select: none; user-select: none; }
 .bd-trend.is-few { min-height: 0; cursor: default; }
 .bd-trend:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
@@ -5044,9 +5050,9 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-svg { display: block; overflow: visible; }
 .bd-svg text, .bd-svg tspan { fill: currentColor; }
 .bd-bar { fill: var(--gold); }
-.bd-cn, .bd-cl { font-family: var(--f-display); font-weight: 700; font-size: 9px; letter-spacing: 1px; }
-.bd-cn { color: var(--gold); }
-.bd-cl { color: var(--dust); }
+/* data labels in the UI face: the bar's part names in dust, the chart's series names in their colours */
+.bd-cn, .bd-sl { font-family: var(--f-ui); font-size: 12px; }
+.bd-svg .bd-cn { color: var(--dust); }
 .bd-cp { font-family: var(--f-mono); font-size: 12px; color: var(--parchment); }
 .bd-tk { font-family: var(--f-mono); font-size: 10px; color: var(--ash); }
 .bd-gl { stroke: rgba(232,176,84,0.16); stroke-width: 1; }
@@ -5066,14 +5072,15 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .bd-vhi { fill: rgba(229,87,74,0.14); }
 .bd-vm { fill: var(--parchment); }
 /* visceral fat, in a line */
+/* visceral fat, a row as a ritual is: its name in the read face, the rating in the measured one, the band after it */
 .bd-visc { margin: 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px var(--s3); }
 .bd-vl, .bd-vv { white-space: nowrap; }
-.bd-vl { font-family: var(--f-display); font-weight: 700; font-size: 0.625rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
-.bd-vv { font-family: var(--f-read); font-size: 0.875rem; color: var(--parchment); }
-.bd-vv b { font-family: var(--f-mono); font-weight: 400; }
+.bd-vl { font-family: var(--f-read); font-size: 1rem; color: var(--parchment); }
+.bd-vv { font-family: var(--f-read); font-size: 0.8125rem; color: var(--dust); }
+.bd-vv b { font-family: var(--f-mono); font-size: 0.9375rem; font-weight: 400; color: var(--parchment); }
 .bd-vv.is-hi b, .bd-r .is-hi { color: var(--cinnabar); }
 .bd-empty { margin: var(--s4) 0; text-align: center; color: var(--ash); font-size: 0.9375rem; }
-.bd-acts { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin-top: var(--s1); }
+.bd-acts { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin-top: var(--s4); }
 /* All readings, and under it what is behind it */
 .bd-link { display: inline-grid; justify-items: center; align-content: center; gap: 1px; min-height: 44px; padding: 2px var(--s1); background: none; border: 0; color: var(--gold);
   font-family: var(--f-ui); font-size: 0.9375rem; cursor: pointer; }
@@ -5120,6 +5127,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 .rt-row.is-done .rt-circle { background: var(--gold); border-color: var(--gold); }
 .rt-row.is-done .rt-state { color: var(--parchment); }
 .rt-time { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); }
+.rt-tick .rt-time { margin-left: auto; }
 @media (hover: hover) { .rt-tick:hover .rt-circle { border-color: var(--gold); } .rt-tick:hover .rt-state { color: var(--parchment); } }
 .rt-empty { margin: var(--s4) 0; text-align: center; font-family: var(--f-read); font-size: 0.9375rem; color: var(--ash); }
 .rt-tick:focus-visible, .bd-link:focus-visible, .bd-edit:focus-visible, .bd-now:focus-visible, .rt-cust:focus-visible {
@@ -5188,10 +5196,13 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   .dy-bodyc .bd-head { justify-content: start; }
   .dy-bodyc .bd-vs { text-align: left; }
   .dy-bodyc .bd-acts { align-items: stretch; }
-  .dy-bodyc .bd-link { align-self: flex-start; justify-items: start; }
+  .dy-bodyc .bd-link { align-self: flex-start; justify-items: start; padding-left: 0; }   /* the words on the column's edge; the target stays 44px tall */
   .dy-bodyc .bd-edit { max-width: none; }
   .dy-bodyc .bd-sync { text-align: left; }
   .dy-ritc .rt-t { margin-bottom: 2px; }
+  /* the rituals' head is as tall as the body's two-line caption, so the two columns' first rules are one line across the
+     panel: 44px of caption against the count, and the 2px the rituals' title keeps under it */
+  .dy-ritc .rt-head { min-height: 44px; margin-bottom: 2px; align-content: flex-start; }
 }
 /* below the laptop the frame and its title go: each half is a plate of its own, as every card of the stack is */
 @media (max-width: 999px) {
@@ -20558,15 +20569,14 @@ function bdCompSVG(x, W) {
   let at = 0, bars = "", labs = "";
   parts.forEach(([n, kg], i) => {
     const w = kg / x.kg * room, pct = kg / x.kg * 100, up = i === 0 || i === 3, p = (i ? String(Math.round(pct)) : bd1(pct)) + "%";
-    bars += '<rect class="bd-bar" x="' + at.toFixed(1) + '" y="30" width="' + Math.max(0.5, w).toFixed(1) + '" height="14" opacity="' + op[i] + '"/>';
+    bars += '<rect class="bd-bar" x="' + at.toFixed(1) + '" y="19" width="' + Math.max(0.5, w).toFixed(1) + '" height="14" opacity="' + op[i] + '"/>';
     /* fat and the minerals above, at the two ends; water and protein below, from where each starts */
-    const end = i === 3 || (i === 2 && at + 63 > W), lx = end ? W : i ? at + 5 : 0, an = end ? ' text-anchor="end"' : "";
-    labs += '<text class="bd-cn" x="' + lx.toFixed(1) + '" y="' + (up ? 24 : 58) + '"' + an + ">" + n.toUpperCase() + "</text>" +
-      '<text class="bd-cp" x="' + lx.toFixed(1) + '" y="' + (up ? 11 : 73) + '"' + an + ">" + p + "</text>";
+    const end = i === 3 || (i === 2 && at + 5 + (n.length + p.length) * 6.6 + 4 > W), lx = end ? W : i ? at + 5 : 0, an = end ? ' text-anchor="end"' : "";
+    labs += '<text x="' + lx.toFixed(1) + '" y="' + (up ? 12 : 48) + '"' + an + '><tspan class="bd-cn">' + n + '</tspan> <tspan class="bd-cp">' + p + "</tspan></text>";
     said.push(n.toLowerCase() + " " + p.replace("%", " %"));
     at += w + 1;
   });
-  return '<svg class="bd-svg" width="' + W + '" height="78" viewBox="0 0 ' + W + ' 78" role="img" aria-label="Of ' + bd1(x.kg) + " kg: " + said.join(", ") + '">' + bars + labs + "</svg>";
+  return '<svg class="bd-svg" width="' + W + '" height="53" viewBox="0 0 ' + W + ' 53" role="img" aria-label="Of ' + bd1(x.kg) + " kg: " + said.join(", ") + '">' + bars + labs + "</svg>";
 }
 const BD_WIN = 90 * 86400000, BD_WEEK = 7 * 86400000;
 /* the chart's two scales, matched (the owner's pick on the canvas, 23 Sep 2026): a kilogram on the left is as tall as a
@@ -20627,7 +20637,7 @@ function bdTrendDraw(el, W) {
   const a = bdSeries(s.win, "kg", X, Yk), b = hasFat ? bdSeries(s.win, "fat", X, Yf) : { dots: "", line: "" }, last = s.win[s.win.length - 1];
   const yr = new Date(s.end).getFullYear() === new Date().getFullYear() ? "" : " " + new Date(s.end).getFullYear();
   el.innerHTML = '<svg class="bd-svg" width="' + W + '" height="' + (ax + 4) + '" viewBox="0 0 ' + W + " " + (ax + 4) + '" aria-hidden="true" focusable="false">' +
-    '<text class="bd-cl kg" x="0" y="9">WEIGHT · KG</text>' + (hasFat ? '<text class="bd-cl fat" x="' + W + '" y="9" text-anchor="end">BODY FAT · %</text>' : "") +
+    '<text class="bd-sl kg" x="0" y="10">Weight (kg)</text>' + (hasFat ? '<text class="bd-sl fat" x="' + W + '" y="10" text-anchor="end">Body fat (%)</text>' : "") +
     (ok ? '<text class="bd-tk fat bd-band" x="' + W + '" y="26" text-anchor="end">healthy ' + ok.lo + "–" + ok.hi + " % · " + ok.who + "</text>" : "") +
     g + a.dots + b.dots + a.line + b.line +
     '<text class="bd-tk" x="' + GL + '" y="' + ax + '">' + bdDm(s.start) + '</text><text class="bd-tk" x="' + X(s.start + BD_WIN / 2).toFixed(1) + '" y="' + ax + '" text-anchor="middle">' + bdDm(s.start + BD_WIN / 2) + "</text>" +
@@ -21041,10 +21051,10 @@ function bdPlateHTML() {
   const x = s.latest && bdShown("plate");
   let h = '<h2 class="dy-ct bd-t">Body readings</h2><div class="bd">';
   if (!x) h += '<p class="bd-empty">No weigh-ins yet.</p>';
-  else h += '<div class="bd-cap" data-slot="cap">' + bdCapHTML(x, s.latest) + '</div><div class="bd-head" data-slot="head">' + bdHeadHTML(x, s.rows) + "</div>" +
-    '<section class="bd-sec"><h3 class="bd-h">What it’s made of</h3><div class="bd-comp" data-draw="comp" data-id="' + esc(x.id) + '"></div></section>' +
-    '<section class="bd-sec"><h3 class="bd-h">How it’s moving · 90 days</h3>' + bdTrendBox("plate") + "</section>" +
-    '<div data-slot="visc">' + bdViscHTML(x) + "</div>";
+  else h += '<div class="bd-cap" data-slot="cap">' + bdCapHTML(x, s.latest) + '</div><div class="bd-blk bd-head" data-slot="head">' + bdHeadHTML(x, s.rows) + "</div>" +
+    '<section class="bd-blk bd-sec"><h3 class="bd-h">What it’s made of</h3><div class="bd-comp" data-draw="comp" data-id="' + esc(x.id) + '"></div></section>' +
+    '<section class="bd-blk bd-sec"><h3 class="bd-h">History</h3>' + bdTrendBox("plate") + "</section>" +
+    '<div class="bd-blk bd-last" data-slot="visc">' + bdViscHTML(x) + "</div>";
   const edit = s.latest && dySame(bdDayOf(s.latest.at), rtSel().sel);
   h += '<div class="bd-acts">' + (x ? '<button type="button" class="bd-link" data-bd="all" data-slot="more">' + bdMoreHTML(x) + "</button>" : "") +
     '<button type="button" class="bd-edit" data-bd="' + (edit ? "edit" : "add") + '"' + (edit ? ' data-id="' + esc(s.latest.id) + '"' : "") + ">" + RT_ICO.pencil +
@@ -21192,7 +21202,7 @@ function bdAllHTML() {
     '<div class="bd-nav"><button type="button" class="btn btn-ghost btn-sm" data-bd="older"' + (i > 0 ? "" : " disabled") + ">‹ Earlier</button>" +
     '<button type="button" class="btn btn-ghost btn-sm" data-bd="newer"' + (i < s.rows.length - 1 ? "" : " disabled") + ">Later ›</button></div>" +
     '<div class="bd-head bd-allh">' + bdHeadHTML(x, s.rows) + "</div>" +
-    '<section class="bd-sec"><h3 class="bd-h">How it’s moving · 90 days</h3>' + bdTrendBox("dlg") + "</section>" +
+    '<section class="bd-sec"><h3 class="bd-h">History</h3>' + bdTrendBox("dlg") + "</section>" +
     '<div class="bd-allv">' + bdAllBody(x) + "</div></div>" +
     wiEnd('<button type="button" class="btn btn-ghost btn-sm" data-bd="add">Add a weigh-in</button><span class="wi-sp"></span>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-bd="edit" data-id="' + esc(x.id) + '">Edit this weigh-in</button>' +
