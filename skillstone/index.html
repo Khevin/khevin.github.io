@@ -20075,15 +20075,17 @@ function chFacts(wk) {
   const close = (b.close && b.close[wk]) || {};
   const prevWk = weekKeyOf(addDays(mon, -7)), prev = (b.close && b.close[prevWk]) || null;
   /* the mornings (DECISIONS.md, 23 Sep 2026): each day's last weigh-in and how far each of the rituals got, from the
-     Diary's records (.body/body.js); the section stands only for a week that holds a weigh-in or a tick, so an empty
-     week, or a board that never kept its mornings, draws no table of dashes */
-  const rits = typeof rtFill === "function" && Array.isArray(b.rituals) ? b.rituals : [];
+     Diary's records (.body/body.js). The rituals' rows stand for this week, so a morning not yet tended shows what is
+     still to do, and for every week since the first morning kept; a week from before the rituals were ever used has
+     none to show. The figures stand with the rows, or alone in a week that holds a weigh-in */
+  const thisWk = weekKeyOf(mondayOf(dayNow())), firstWk = Object.keys(b.morning || {}).sort()[0] || thisWk;
+  const rits = typeof rtFill === "function" && Array.isArray(b.rituals) && (wk >= thisWk || wk >= firstWk) ? b.rituals : [];
   const weighs = typeof bdRows === "function" ? bdRows() : [];
   days.forEach(x => {
     x.w = weighs.filter(r => dySame(bdDayOf(r.at), x.d)).pop() || null;
     x.rt = rits.map(r => rtFill(r, rtGet(b, wk, x.i)));
   });
-  const morn = days.some(x => x.w || x.rt.some(f => f > 0));
+  const morn = rits.length > 0 || days.some(x => x.w);
   return { wk, mon, days, mornings, rits, morn, shorts, habits, notesN, crossed, open, questsDone, steps, mins, hours, prog, ledger, close, prevWk, prev };
 }
 
