@@ -7552,9 +7552,13 @@ function polishV11(s) {
   return s;
 }
 
+/* The board exactly as it was stored, before this build's migrations touched it. A var without an
+   initialiser, because load() runs at module top: a declaration that assigned would reset it. */
+var bootRaw;
 function load() {
   try {
     const raw = localStorage.getItem(STORE);
+    bootRaw = raw;
     if (raw) {
       const s = JSON.parse(raw);
       // a board written by a NEWER build is never clobbered - load it as-is
@@ -8835,7 +8839,13 @@ async function cloudPull() {
   /* ...and for longer than the toast lasts. Replacing the board is the one move here that can
      lose work, so the board being replaced is kept in a slot of its own; Account & sync
      offers it back until the next adoption overwrites it. */
-  try { localStorage.setItem(REPLACED_KEY, JSON.stringify({ ts: Date.now(), board: state })); } catch (e) {}
+  /* One slot, so a second adoption used to overwrite the first — and the board a second pull
+     replaces is usually the poor one the first pull brought in. The slot keeps the richer board
+     for two weeks unless the one being replaced saw later activity. */
+  const kept = readReplaced();
+  if (!(kept && Date.now() - kept.ts < 14 * 864e5 && boardLatest(kept.board) > boardLatest(state))) {
+    try { localStorage.setItem(REPLACED_KEY, JSON.stringify({ ts: Date.now(), board: state })); } catch (e) {}
+  }
   state = sanitize(up);
   runPolish(state);
   try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
@@ -8929,6 +8939,36 @@ document.addEventListener("visibilitychange", () => { if (document.hidden) cloud
 window.addEventListener("pagehide", () => cloudFlush({ keepalive: true }));
 /* came back to the tab: has the other machine written since we last looked?
    A queued local write outranks it - those edits are newer by definition. */
+/* When the board last saw real activity: a diary morning, a practice session, a journal event —
+   leaving out system notes, and on this device anything created since this page loaded, because a
+   migration stamps its events with the time it runs and a week-old board would look like today's. */
+function boardLatest(b, before) {
+  let t = 0; const lim = before || Infinity;
+  const up = v => { v = Number(v); if (isFinite(v) && v > t && v < lim) t = v; };
+  (b && Array.isArray(b.journal) ? b.journal : []).forEach(e => { if (e && e.kind !== "sys") up(e.ts); });
+  (b && Array.isArray(b.sessions) ? b.sessions : []).forEach(x => up(x && x.ts));
+  const d = b && b.book && b.book.diary;
+  if (d && typeof d === "object") Object.values(d).forEach(w => w && typeof w === "object" && Object.values(w).forEach(x => up(x && x.at)));
+  return t;
+}
+const PAGE_T0 = Math.floor(performance.timeOrigin || Date.now());
+/* Before a board that only LOOKS ahead is sent, the row is read in full. If the row saw real
+   activity after anything this device holds, this device is the stale one: the row is pulled and
+   this board goes to the replaced slot, offered back in Settings. Otherwise it is sent, against the
+   row as it actually stands. Returns "push" or "pull". */
+async function cloudSendOrYield() {
+  const row = await cloudGet("data,updated_at");
+  if (!row) { cloudSeen = null; cloudDirty = true; await cloudPush(); return "push"; }
+  if (boardLatest(row.data) > boardLatest(state, PAGE_T0)) {
+    await cloudPull();
+    showToast("This device\u2019s board was older than the cloud\u2019s, so the cloud\u2019s was loaded. This device\u2019s copy is kept in Settings \u2192 Account & sync.", true);
+    cloudSet("ok", "");
+    return "pull";
+  }
+  cloudSeen = row.updated_at; cloudMark({ seen: cloudSeen }); cloudDirty = true;
+  await cloudPush();
+  return "push";
+}
 async function cloudCheckFresh() {
   if (!cloud || document.hidden || cloudState === "busy") return;
   if (cloud.user && !auth) { cloudFlush(); return; }   /* says why it cannot; touches nothing */
@@ -8938,11 +8978,7 @@ async function cloudCheckFresh() {
     /* Work here that the cloud has not been told about outranks the row, whatever its stamp
        says: it is what the owner is looking at. Write against what is actually there and send
        it. Only a board that matches the last sync may be replaced by the cloud's copy. */
-    if (cloudAhead()) {
-      cloudSeen = row.updated_at;
-      cloudMark({ seen: cloudSeen });
-      cloudDirty = true; cloudFlush(); return;
-    }
+    if (cloudAhead()) { await cloudSendOrYield(); return; }
     if (row.updated_at === cloudSeen) return;
     await cloudPull();
     showToast("Reloaded \u2014 the cloud board changed elsewhere.", true);
@@ -9087,10 +9123,9 @@ async function authConnect() {
     if (row && same && same.stamp !== boardStamp()) {
       /* signing back in after the session lapsed: the edits made meanwhile outrank the row,
          as they do on refocus. Pulling here replaced them with the older copy. */
-      cloudSeen = row.updated_at; cloudDirty = true;
-      await cloudPush();
+      const went = await cloudSendOrYield();
       if (cloudState === "error") throw new Error($("#cloudNote").textContent || "upload failed");
-      showToast("Signed in \u2014 this device\u2019s newer edits were sent to the cloud.");
+      if (went === "push") showToast("Signed in \u2014 this device\u2019s newer edits were sent to the cloud.");
     }
     else if (row) { await cloudPull(); showToast("Signed in \u2014 your board is here. Undo, or restore this device\u2019s board from Settings.", true); }
     else { cloudSeen = null; await cloudPush();
@@ -21676,6 +21711,17 @@ renderCloud();
 authBoot().then(() => { if (cloud) cloudCheckFresh(); });
 watchGridWidth();
 save();
+/* A MIGRATION IS NOT AN EDIT. "This device has unsent work" was read as "the board's fingerprint
+   differs from the one taken at the last sync" — and every build that adds a field changes the
+   fingerprint of every board on its first open. On 24 Sep 2026 that made the work PC, unopened
+   since the 17th, treat its week-old board as newer and push it over three weeks of writing.
+   The stored text is what was fingerprinted, so it is compared instead: if it still matches the
+   last sync, nothing was edited here, and the migrated board takes the stamp. The boot save above
+   marked the board dirty for the same wrong reason; that is cleared too. */
+if (cloud && typeof cloud.stamp === "string" && typeof bootRaw === "string" && stampOf(bootRaw) === cloud.stamp) {
+  cloudMark({ stamp: boardStamp() });
+  cloudDirty = false; clearTimeout(cloudTimer); cloudTimer = 0;
+}
 if (rescuedFrom) showToast(`Board carried forward from ${rescuedFrom}. Nothing was deleted.`);
 else if (newerThanBuild) showToast("This board was saved by a newer Skillstone — loaded as-is, nothing overwritten.", false, true);
 else if (loadFailed) showToast("Could not read your saved board — starting fresh. Your earlier saves are still in storage.", false, true);
