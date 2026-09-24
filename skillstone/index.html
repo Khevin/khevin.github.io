@@ -256,7 +256,7 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 
 /* ---------- shell ---------- */
 /* +10%: the board column was tight against its own scrollbar */
-.wrap { max-width: 1280px; margin: 0 auto; padding: var(--s5) var(--s5) var(--s7); }
+.wrap { max-width: 1280px; margin: 0 auto; padding: var(--s5) var(--s5) env(safe-area-inset-bottom, 0px); }   /* the colophon is the page's last line; nothing under it but the phone's safe area */
 
 /* the colophon: one short line under everything — the two policies and the way back to the
    portfolio. Deliberately small; it is the last thing on the page, not a section of it. */
@@ -320,8 +320,6 @@ svg.g { display: inline-block; vertical-align: -2px; flex: none; }
 @media (hover: hover) { .sk-sub:hover { color: var(--parchment); } }
 .sk-sub:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
 .sk-rule { flex: 1; height: 1px; background: var(--mortar); align-self: center; min-width: var(--s4); }
-/* the Diary's head: the Skills' own row, with less under it, since the Diary's plate keeps its own room above the cards */
-.dy-head { padding-bottom: var(--s1); }
 .sk-meta { white-space: nowrap; }
 .sk-m .tw { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--ash); letter-spacing: 0.06em; }
 .sk-m b { font-family: var(--f-display); font-weight: 700; font-size: 1.0625rem; color: var(--gold); font-variant-numeric: tabular-nums; }
@@ -1423,6 +1421,8 @@ button.d-plaque {
   transition: color var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out);
 }
 @media (hover: hover) { .tab:hover { color: var(--parchment); } }
+/* seven tabs since Spells came back (24 Sep 2026): on the laptop each gives 2px a side, so the plaque and the gear keep one row */
+@media (min-width: 1000px) { .tab { padding-inline: 6px; } }
 .tab { position: relative; }
 .tab[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
 /* his notch: a triangle rising out of the rule into the label */
@@ -3939,7 +3939,7 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
 
 /* responsive */
 @media (max-width: 960px) {
-  .wrap { padding: var(--s4) var(--s4) var(--s7); }
+  .wrap { padding: var(--s4) var(--s4) env(safe-area-inset-bottom, 0px); }
   /* minmax(0,1fr) not 1fr: a bare 1fr track floors at min-content, which is what
      was pushing the phone layout wider than the viewport (present since v12) */
   .app { grid-template-columns: minmax(0, 1fr); }
@@ -4129,7 +4129,7 @@ tr.j3-hrow.is-dragging .j3-grip { color: var(--gold); }
 /* ================= diary — the plate ================= */
 /* four framed cards on the dark field: the day, the logbook, the mood, the three lines */
 .dy2 { --f-read: 'Lora', Georgia, serif; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) minmax(0, 6fr); grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--s5); padding: var(--s5) var(--s5) var(--s6); height: calc(100dvh - 184px); min-height: 720px; }   /* 150 of masthead, 34 of the Diary's head */
+  gap: var(--s5); padding: var(--s5) var(--s5) var(--s6); height: calc(100dvh - 150px); min-height: 720px; }
 .dy-card { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column;
   background: radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%); background-image: var(--paper-grain), radial-gradient(ellipse at 50% 30%, #1D1813 0%, #17130F 70%);
   border: 1px solid rgba(232,176,84,0.55); border-radius: 12px; padding: 48px 36px 32px; overflow: visible; }   /* the sun and the moon ride the edge; each card clips its own body instead */
@@ -5227,7 +5227,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
 /* ---- the laptop: the bento keeps the screen it had, and the panel follows below the fold on the page's own columns:
    the body readings under the day, the rituals under the logbook, the rule between them in the gap between those */
 @media (min-width: 1000px) {
-  .dy2 { --dy-bento: max(720px, calc(100dvh - 184px)); height: auto; min-height: 0;   /* 150 of masthead, 34 of the Diary's head */
+  .dy2 { --dy-bento: max(720px, calc(100dvh - 150px)); height: auto; min-height: 0;
     grid-template-rows: calc((var(--dy-bento) - 80px) * 2 / 3) calc((var(--dy-bento) - 80px) / 3) auto auto auto; }
   .dy-mornf { grid-column: 1 / -1; grid-row: 3 / 6; position: relative; margin-top: var(--s5);
     border: 1px solid rgba(232,176,84,0.55); border-radius: 12px;
@@ -5545,8 +5545,10 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     </div>
 
     <nav class="tabs" role="tablist" aria-label="Sections">
-      <button type="button" class="tab" role="tab" id="tabDiary" data-view="diarytab"
+      <button type="button" class="tab" role="tab" id="tabDiary" data-view="diary"
         aria-selected="false" aria-controls="viewDiary" tabindex="-1">Diary</button>
+      <button type="button" class="tab" role="tab" id="tabChronicle" data-view="chronicle"
+        aria-selected="false" aria-controls="viewChronicle" tabindex="-1">Chronicle</button>
       <button type="button" class="tab" role="tab" id="tabJournal" data-view="journal"
         aria-selected="true" aria-controls="viewJournal">Journal</button>
       <button type="button" class="tab" role="tab" id="tabCamp" data-view="camp"
@@ -5594,6 +5596,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
   <div id="viewJournal" role="tabpanel" aria-labelledby="tabJournal" hidden></div>
   <div id="viewCamp" role="tabpanel" aria-labelledby="tabCamp" hidden></div>
   <div id="viewTarot" role="tabpanel" aria-label="Tarot" hidden></div>
+  <div id="viewChronicle" role="tabpanel" aria-labelledby="tabChronicle" hidden></div>
   <div id="viewInv" role="tabpanel" aria-labelledby="tabInv" hidden>
     <div class="iv-hall">
       <section class="iv-panel" aria-label="Inventory">
@@ -5612,26 +5615,13 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     </div>
   </div>
   <div id="viewAstro" role="tabpanel" aria-label="Astrology" hidden></div>
+  <div id="viewDiary" role="tabpanel" aria-labelledby="tabDiary" hidden></div>
   <div id="viewSpells" role="tabpanel" aria-labelledby="tabSpells" hidden>
     <section class="tab-blank">
       <img src="assets/quests/spare-lotus-moon.png" alt="" width="256" height="256" loading="lazy">
       <p>Not built yet</p>
     </section>
   </div>
-  <!-- the Diary's two pages, the day and the week, under one head in the Skills' grammar (24 Sep 2026). The panels
-       between here and it are hidden whenever it shows, so it always stands on top of the page it names -->
-  <div class="sk-head dy-head" id="dyHead" hidden>
-    <span class="j3-week">Diary</span>
-    <div class="sk-subs" role="tablist" aria-label="Which page of the Diary">
-      <button type="button" class="sk-sub" role="tab" id="dySubDaily" data-view="diary"
-        aria-selected="true" aria-controls="viewDiary">Daily</button>
-      <button type="button" class="sk-sub" role="tab" id="dySubChron" data-view="chronicle"
-        aria-selected="false" aria-controls="viewChronicle" tabindex="-1">Chronicle</button>
-    </div>
-    <span class="sk-rule" aria-hidden="true"></span>
-  </div>
-  <div id="viewChronicle" role="tabpanel" aria-labelledby="dySubChron" hidden></div>
-  <div id="viewDiary" role="tabpanel" aria-labelledby="dySubDaily" hidden></div>
 
 <footer class="foot" aria-label="Colophon">
   <a href="privacy.html">Privacy</a><span class="dot" aria-hidden="true">·</span>
@@ -9811,10 +9801,7 @@ const VIEWS = { journal: "viewJournal", skills: "viewSkills", camp: "viewCamp", 
    Astrology hangs off the sun sign on the hero card; the tarot hangs off the day's card in
    the diary, which is how a reading is actually come by — because it is the morning, not
    because you went looking for a page. */
-/* the Chronicle is the Diary's second page (24 Sep 2026): both light the Diary's tab, and the head above them says which */
-const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", diary: "tabDiary", chronicle: "tabDiary", inv: "tabInv", spells: "tabSpells" };
-const DY_SUBS = { diary: "dySubDaily", chronicle: "dySubChron" };
-let dyLast = "diary";   /* the Diary's page last open: the tab returns to it, as the Skills tab returns to its half */
+const VIEW_TAB = { journal: "tabJournal", skills: "tabSkills", camp: "tabCamp", diary: "tabDiary", chronicle: "tabChronicle", inv: "tabInv", spells: "tabSpells" };
 /* which half of the Skills sheet is open. It outlives the session the way the view does,
    because coming back to the tab you left is worth more than a fixed starting point. */
 /* Each half names the groups it shows and how they are scored: a ladder half climbs 0-10 by
@@ -9890,20 +9877,14 @@ function setView(v) {
   /* the library was a tab of its own until it became a shelf of the inventory; a view saved
      under the old name still lands on the shelf it meant */
   if (v === "tomes") { invSub = "tomes"; v = "inv"; }
-  /* Spells gave its slot to the Chronicle on 22 Sep 2026 and took it back, last, when the Chronicle became the Diary's
-     second page on 24 Sep; the Diary's tab opens the page of it last open */
-  if (v === "diarytab") v = dyLast;
+  /* Spells gave its slot to the Chronicle on 22 Sep 2026 and came back, last on the plaque, on 24 Sep: a view saved on
+     it lands on its own page again */
   view = VIEWS[v] ? v : "journal";
-  if (DY_SUBS[view]) dyLast = view;
   Object.keys(VIEWS).forEach(k => {
     const p = $("#" + VIEWS[k]); if (p) p.hidden = k !== view;
+    const t = $("#" + VIEW_TAB[k]);
+    if (t) { t.setAttribute("aria-selected", String(k === view)); t.tabIndex = k === view ? 0 : -1; }
   });
-  Object.values(VIEW_TAB).filter((t, i, a) => a.indexOf(t) === i).forEach(id => {
-    const t = $("#" + id), on = id === VIEW_TAB[view];
-    if (t) { t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; }
-  });
-  const dh = $("#dyHead"); if (dh) dh.hidden = !DY_SUBS[view];
-  Object.keys(DY_SUBS).forEach(k => { const t = $("#" + DY_SUBS[k]); if (t) { t.setAttribute("aria-selected", String(k === view)); t.tabIndex = k === view ? 0 : -1; } });
   try { localStorage.setItem("skillstone-view", view); } catch (e) {}
   tabsReveal();
   if (view === "journal") renderJ3();
@@ -19929,7 +19910,7 @@ function bindKeys() {
 }
 
 /* ---------- delegation ---------- */
-/* a row of sub-tabs (the Skills' halves, the Diary's pages) is one stop for Tab and walks with the arrow keys */
+/* a row of sub-tabs (the Skills' halves) is one stop for Tab and walks with the arrow keys, Home and End */
 document.addEventListener("keydown", e => {
   const t = e.target.closest && e.target.closest('.sk-subs [role="tab"]'); if (!t) return;
   const row = t.parentElement, all = [...row.querySelectorAll('[role="tab"]')], i = all.indexOf(t);
