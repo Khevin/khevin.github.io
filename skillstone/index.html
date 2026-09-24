@@ -3224,6 +3224,24 @@ li.is-done .qg { color: var(--verdant); }
 .bk-p { font-size: 0.875rem; line-height: var(--lh); color: var(--dust); }
 .bk-p:empty { display: none; }
 .dlg-sm form { max-width: 420px; }
+/* the two boards side by side: counts in the mono face, what only one side holds in gold beneath it */
+.sync-cmp { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.sync-cmp th, .sync-cmp td { padding: var(--s2); text-align: left; vertical-align: top; border-bottom: 1px solid var(--mortar); }
+.sync-cmp thead th { font: 500 0.625rem var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+.sync-cmp tbody th { font-weight: 400; color: var(--dust); }
+.sync-cmp td { font-family: var(--f-mono); font-variant-numeric: tabular-nums; color: var(--parchment); }
+.sync-cmp tbody th { width: 42%; }
+.sync-cmp td .only { display: block; font: 0.8125rem/1.3 var(--f-ui); color: var(--gold); white-space: nowrap; }
+.sync-cmp .sync-when th, .sync-cmp .sync-when td { border-bottom: 0; color: var(--ash); }
+.sync-more summary { cursor: pointer; font-size: 0.875rem; color: var(--dust); padding: var(--s1) 0; }
+.sync-more[open] summary { margin-bottom: var(--s2); }
+/* a consequential choice: the two answers stacked full width, the one that keeps more first,
+   "Decide later" last and quiet */
+.sync-dlg .bk-foot { flex-direction: column; align-items: stretch; }
+.sync-dlg .bk-foot .btn { width: 100%; justify-content: center; order: 2; }
+.sync-dlg .bk-foot .btn-primary { order: 1; }
+.sync-dlg .bk-foot [data-sync="later"] { order: 3; }
+@media (pointer: coarse) { .sync-dlg .bk-foot .btn, .sync-more summary { min-height: 44px; } }
 /* the one button in the app that destroys something says so in its own colour */
 .btn-danger { border-color: rgba(200,84,58,0.5); color: var(--ember); }
 @media (hover: hover) { .btn-danger:hover { border-color: var(--ember); } }
@@ -5680,6 +5698,7 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
     <button type="button" class="btn btn-ghost btn-sm" data-action="export">Download board</button>
     <button type="button" class="btn btn-ghost btn-sm" data-action="import">Restore from file</button>
     <button type="button" class="btn btn-ghost btn-sm" data-action="replaced" id="replacedBtn" hidden></button>
+    <button type="button" class="btn btn-primary btn-sm" data-action="sync-choose" id="syncChooseBtn" hidden>Choose which board to keep</button>
   </div>
   <input type="file" id="impFile" accept="application/json,.json" hidden>
   <p class="cloud-note" id="impNote"></p>
@@ -5739,6 +5758,19 @@ body.is-writing .hero, body.is-writing .tabs, body.is-writing .crests, body.is-w
       <button type="button" class="btn btn-ghost btn-sm" data-action="birth-manual">Not in the list</button>
       <button type="button" class="btn btn-ghost btn-sm" data-action="birth-cancel">Cancel</button>
       <button type="submit" class="btn btn-primary btn-sm">Draw the chart</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="syncDlg" class="bk-dlg sync-dlg" aria-labelledby="syncTitle" aria-describedby="syncWhy">
+  <form method="dialog" data-form="sync-choose">
+    <div class="bk-top"><p class="bk-h" id="syncTitle">Which board should Skillstone keep?</p><button type="button" class="bk-x" data-dlg-close aria-label="Decide later"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <p class="bk-p" id="syncWhy">This device and the cloud hold different entries. The board you keep goes to every device. The other is saved in Settings, under Account &amp; sync, where you can restore it.</p>
+    <table class="sync-cmp"><thead><tr><th scope="col">Entries</th><th scope="col">This device</th><th scope="col">Cloud</th></tr></thead><tbody id="syncRows"></tbody></table>
+    <div id="syncMore"></div>
+    <div class="bk-foot">
+      <button type="button" class="btn btn-ghost btn-sm" data-sync="later">Decide later</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-sync="cloud">Keep the cloud’s board</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-sync="device">Keep this device’s board</button>
     </div>
   </form>
 </dialog>
@@ -8783,13 +8815,14 @@ function restoreReplaced() {
 }
 function renderCloud(msg) {
   renderReplaced();
+  { const b = $("#syncChooseBtn"); if (b) b.hidden = !cloudHold; }
   /* No tooltip on the gear. It covered the turn — you cannot watch a thing spin through a
      box that appears the moment you point at it — and it printed the board id, the secret
      half of the pairing, to anyone reading over a shoulder or watching a screen share. The
      state is on the panel beside the word Cloud, which is where you would look for it. */
   const st = $("#cloudState");
   if (st) {
-    st.textContent = cloudState === "off"   ? "off"
+    st.textContent = cloudHold ? "paused" : cloudState === "off"   ? "off"
                    : cloudState === "busy"  ? "saving\u2026"
                    : cloudState === "error" ? "error"
                    : cloudStamp;
@@ -8829,12 +8862,134 @@ async function cloudGet(cols) {
   const rows = JSON.parse(txt || "[]");
   return rows[0] || null;
 }
-async function cloudPull() {
+/* WHAT EACH BOARD HOLDS. Every kind of entry the owner writes, by an identity that survives a
+   sync: item ids where the app gives them, week and day where it keys by those. Journal events
+   are left out on purpose — migrations write them, with different times on each device, so they
+   say nothing about what the owner wrote. askAt is how many of that kind may be lost before
+   Skillstone stops to ask: one diary morning or week reflection, two journal entries or notes;
+   the rest count only toward a total of five. */
+const ENTRY_KINDS = [
+  ["diary", "Diary mornings", 1], ["close", "Week reflections", 1], ["journal", "Journal entries", 2], ["notes", "Notes", 2],
+  ["bucket", "Bucket list", 0], ["habits", "Habit marks", 0], ["tarot", "Tarot readings", 0], ["sessions", "Practice sessions", 0],
+  ["quests", "Quests completed", 0], ["games", "Games", 0], ["clothes", "Clothes", 0], ["books", "Books added", 0]
+];
+function boardEntries(b) {
+  const bk = (b && b.book) || {}, S = {}; ENTRY_KINDS.forEach(([k]) => { S[k] = new Set(); });
+  const obj = o => o && typeof o === "object";
+  const cells = (o, f) => obj(o) && Object.entries(o).forEach(([w, d]) => obj(d) && Object.entries(d).forEach(([k, v]) => f(w, k, v)));
+  const list = o => Array.isArray(o) ? o : obj(o) ? Object.values(o) : [];
+  cells(bk.diary, (w, d, v) => { if (v) S.diary.add(w + ":" + d); });
+  cells(bk.days, (w, d, v) => list(v).forEach(x => { if (x) S.journal.add(x.id || w + ":" + d + ":" + x.text); }));
+  list(bk.notes).forEach(l => list(l).forEach(x => { if (x) S.notes.add(x.id || x.text); }));
+  Object.keys(obj(bk.close) ? bk.close : {}).forEach(w => S.close.add(w));
+  list(bk.bucket).forEach(x => { if (x) S.bucket.add(x.id || x.text); });
+  cells(bk.checks, (w, h, marks) => obj(marks) && Object.entries(marks).forEach(([d, m]) => { if (m && m !== "none") S.habits.add(w + ":" + h + ":" + d); }));
+  Object.keys((b && b.tarot && obj(b.tarot.days)) ? b.tarot.days : {}).forEach(d => S.tarot.add(d));
+  list(b && b.sessions).forEach(x => { if (x) S.sessions.add(x.ts + ":" + x.sid); });
+  Object.keys((b && b.quests && obj(b.quests.done)) ? b.quests.done : {}).forEach(q => S.quests.add(q));
+  list(b && b.games && b.games.items).forEach(x => { if (x && x.id) S.games.add(x.id); });
+  list(b && b.wardrobe && b.wardrobe.items).forEach(x => { if (x && x.id) S.clothes.add(x.id); });
+  list(b && b.shelf).forEach(x => { if (x && x.id) S.books.add(x.id); });
+  return S;
+}
+/* this device against the cloud, kind by kind: how many each holds, and how many only it holds */
+function boardDiff(device, cloudBoard) {
+  const a = boardEntries(device), b = boardEntries(cloudBoard);
+  return ENTRY_KINDS.map(([k, label, askAt]) => {
+    let onlyDev = 0, onlyCloud = 0;
+    a[k].forEach(x => { if (!b[k].has(x)) onlyDev++; });
+    b[k].forEach(x => { if (!a[k].has(x)) onlyCloud++; });
+    return { k, label, askAt, dev: a[k].size, cloud: b[k].size, onlyDev, onlyCloud };
+  });
+}
+/* would replacing this side lose enough of what only it holds to be worth a question? */
+function lossIsSerious(rows, side) {
+  const only = r => side === "device" ? r.onlyDev : r.onlyCloud;
+  return rows.some(r => r.askAt && only(r) >= r.askAt) || rows.reduce((n, r) => n + only(r), 0) >= 5;
+}
+let cloudAsking = false, cloudHold = false;
+/* The question. Resolves "device", "cloud" or "later"; Escape and the × are "later". The side
+   that would lose more of the owner's writing is offered as the primary button. */
+function cloudChoose(rows, devLatest, cloudLatest) {
+  return new Promise(resolve => {
+    const dlg = $("#syncDlg"); if (!dlg) { resolve("later"); return; }
+    cloudAsking = true;
+    const day = ms => ms ? new Date(ms).toLocaleDateString(undefined, { day: "numeric", month: "short" }) : "\u2014";
+    const cell = (n, only) => n.toLocaleString() + (only ? '<span class="only">' + only.toLocaleString() + " only here</span>" : "");
+    /* the owner's writing gets a row each; everything else is one row, broken down on request */
+    const differs = r => r.dev !== r.cloud || r.onlyDev || r.onlyCloud;
+    const tr = r => '<tr><th scope="row">' + esc(r.label) + "</th><td>" + cell(r.dev, r.onlyDev) + "</td><td>" + cell(r.cloud, r.onlyCloud) + "</td></tr>";
+    const main = rows.filter(r => r.askAt && differs(r)), rest = rows.filter(r => !r.askAt && differs(r));
+    const sum = k => rest.reduce((n, r) => n + r[k], 0);
+    $("#syncRows").innerHTML = main.map(tr).join("") +
+      (rest.length ? tr({ label: "Other entries", dev: sum("dev"), cloud: sum("cloud"), onlyDev: sum("onlyDev"), onlyCloud: sum("onlyCloud") }) : "") +
+      '<tr class="sync-when"><th scope="row">Last written</th><td>' + day(devLatest) + "</td><td>" + day(cloudLatest) + "</td></tr>";
+    $("#syncMore").innerHTML = rest.length ? '<details class="sync-more"><summary>What “other entries” holds</summary>' +
+      '<table class="sync-cmp"><thead><tr><th scope="col">Entries</th><th scope="col">This device</th><th scope="col">Cloud</th></tr></thead><tbody>' +
+      rest.map(tr).join("") + "</tbody></table></details>" : "";
+    const weight = side => rows.reduce((n, r) => n + (side === "device" ? r.onlyDev : r.onlyCloud) * (r.askAt === 1 ? 3 : r.askAt === 2 ? 2 : 1), 0);
+    const rec = weight("device") >= weight("cloud") ? "device" : "cloud";
+    dlg.querySelectorAll("[data-sync]").forEach(b => { if (b.dataset.sync !== "later") b.className = "btn btn-sm " + (b.dataset.sync === rec ? "btn-primary" : "btn-ghost"); });
+    let done = false;
+    const finish = v => { if (done) return; done = true; cloudAsking = false;
+      dlg.removeEventListener("click", onClick); dlg.removeEventListener("close", onClose); if (dlg.open) dlg.close(); resolve(v); };
+    const onClick = e => { const b = e.target.closest && e.target.closest("[data-sync]"); if (b) { e.preventDefault(); finish(b.dataset.sync); } };
+    const onClose = () => finish("later");
+    dlg.addEventListener("click", onClick); dlg.addEventListener("close", onClose);
+    dlg.showModal();
+    /* focus the recommended answer without scrolling to it: the question and the counts come first */
+    const f = dlg.querySelector('[data-sync="' + rec + '"]'); if (f) f.focus({ preventScroll: true });
+    const form = dlg.querySelector("form"); if (form) form.scrollTop = 0;
+  });
+}
+/* "Decide later": nothing is sent or taken until the owner chooses, from Settings or on the next load */
+function cloudHoldOn() {
+  cloudHold = true; renderCloud();
+  cloudNote("Sync is paused: this device and the cloud hold different entries. Choose which board to keep.", true);
+  showToast("Sync paused until you choose which board to keep \u2014 Settings, Account & sync.", false, true);
+}
+/* The board not chosen is set aside in the replaced slot, which a poorer board does not evict for
+   two weeks unless the owner chose it. If the browser has no room for it, it is downloaded instead
+   — a choice that replaces one board must never make the other unrecoverable. Returns true when kept. */
+function keepReplaced(board, chosen) {
+  const kept = readReplaced();
+  if (!chosen && kept && Date.now() - kept.ts < 14 * 864e5 && boardLatest(kept.board) > boardLatest(board)) return true;
+  try { localStorage.setItem(REPLACED_KEY, JSON.stringify({ ts: Date.now(), board })); renderReplaced(); return true; }
+  catch (e) {
+    try {
+      const d = new Date(), name = "skillstone-set-aside-" + d.toISOString().slice(0, 10) + ".json";
+      const url = URL.createObjectURL(new Blob([JSON.stringify(board, null, 2)], { type: "application/json" }));
+      const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast("The board set aside did not fit in this browser, so it was downloaded as " + name + ".", false, true);
+    } catch (_) {}
+    return false;
+  }
+}
+/* the owner chose this device's board over the cloud's: the cloud's is set aside, then replaced */
+async function cloudKeepDevice(row, cloudBoard) {
+  keepReplaced(cloudBoard, true);
+  cloudSeen = row.updated_at; cloudMark({ seen: cloudSeen }); cloudDirty = true;
+  await cloudPush();
+  if (cloudState !== "error") showToast("Kept this device\u2019s board. The cloud\u2019s copy is saved in Settings, under Account & sync.", true);
+}
+async function cloudPull(opts) {
   const row = await cloudGet();
   if (!row) { cloudSeen = null; cloudMark({ seen: null }); return false; }
-  cloudSeen = row.updated_at;
   const up = upgrade(row.data);
   if (!up) throw new Error("that row does not hold a Skillstone board");
+  /* The question the 24 Sep overwrite asked for: taking the row would drop entries only this
+     device holds, so the owner decides. Compared on a sanitised copy, so both boards are read
+     in this build's shape. Returns false when the row was not adopted. */
+  if (!(opts && opts.chosen)) {
+    const d = boardDiff(state, sanitize(structuredClone(up)));
+    if (lossIsSerious(d, "device")) {
+      const pick = await cloudChoose(d, boardLatest(state, PAGE_T0), boardLatest(up));
+      if (pick === "later") { cloudHoldOn(); return false; }
+      if (pick === "device") { await cloudKeepDevice(row, up); return false; }
+    }
+  }
+  cloudSeen = row.updated_at;
   takeSnapshot();                       /* every adoption is undoable */
   /* ...and for longer than the toast lasts. Replacing the board is the one move here that can
      lose work, so the board being replaced is kept in a slot of its own; Account & sync
@@ -8842,10 +8997,7 @@ async function cloudPull() {
   /* One slot, so a second adoption used to overwrite the first — and the board a second pull
      replaces is usually the poor one the first pull brought in. The slot keeps the richer board
      for two weeks unless the one being replaced saw later activity. */
-  const kept = readReplaced();
-  if (!(kept && Date.now() - kept.ts < 14 * 864e5 && boardLatest(kept.board) > boardLatest(state))) {
-    try { localStorage.setItem(REPLACED_KEY, JSON.stringify({ ts: Date.now(), board: state })); } catch (e) {}
-  }
+  keepReplaced(state);
   state = sanitize(up);
   runPolish(state);
   try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
@@ -8872,8 +9024,7 @@ async function cloudPush(opts) {
         headers: cloudHdr({ Prefer: "return=representation" }),
         body: '{"id":' + JSON.stringify(cloud.board) + ',"data":' + text + "}" });
       if (res.status === 409) {         /* the other machine created it first */
-        await cloudPull();
-        showToast("That board already existed in the cloud \u2014 loaded it instead.", true);
+        if (await cloudPull()) showToast("That board already existed in the cloud \u2014 loaded it instead.", true);
         cloudSet("ok", ""); return;
       }
     } else {
@@ -8886,8 +9037,7 @@ async function cloudPush(opts) {
     if (!res.ok) { const err = new Error("HTTP " + res.status + " \u2014 " + txt.slice(0, 160)); err.status = res.status; throw err; }
     const rows = JSON.parse(txt || "[]");
     if (!rows.length) {                 /* the guard bit: the row moved under us */
-      await cloudPull();
-      showToast("The cloud board changed on the other machine \u2014 reloaded it.", true);
+      if (await cloudPull()) showToast("The cloud board changed on the other machine \u2014 reloaded it.", true);
       cloudSet("ok", ""); return;
     }
     cloudSeen = rows[0].updated_at;
@@ -8922,7 +9072,7 @@ function cloudQueue() {
   cloudTimer = setTimeout(() => { cloudTimer = 0; cloudFlush(); }, CLOUD_SOON);
 }
 function cloudFlush(opts) {
-  if (!cloud || cloudState === "busy") return;
+  if (!cloud || cloudState === "busy" || cloudAsking || cloudHold) return;
   /* a signed-in board whose session has lapsed cannot write its row. It waits and says so —
      once, loudly — rather than fail in a loop or slip into local-only without a word */
   if (cloud.user && !auth) {
@@ -8960,17 +9110,26 @@ async function cloudSendOrYield() {
   const row = await cloudGet("data,updated_at");
   if (!row) { cloudSeen = null; cloudDirty = true; await cloudPush(); return "push"; }
   if (boardLatest(row.data) > boardLatest(state, PAGE_T0)) {
-    await cloudPull();
-    showToast("This device\u2019s board was older than the cloud\u2019s, so the cloud\u2019s was loaded. This device\u2019s copy is kept in Settings \u2192 Account & sync.", true);
+    if (await cloudPull()) showToast("This device\u2019s board was older than the cloud\u2019s, so the cloud\u2019s was loaded. This device\u2019s copy is kept in Settings \u2192 Account & sync.", true);
     cloudSet("ok", "");
     return "pull";
+  }
+  const rb = upgrade(row.data);
+  if (rb) {
+    const d = boardDiff(state, sanitize(structuredClone(rb)));
+    if (lossIsSerious(d, "cloud")) {
+      const pick = await cloudChoose(d, boardLatest(state, PAGE_T0), boardLatest(rb));
+      if (pick === "later") { cloudHoldOn(); return "held"; }
+      if (pick === "cloud") { await cloudPull({ chosen: true }); return "pull"; }
+      await cloudKeepDevice(row, rb); return "push";
+    }
   }
   cloudSeen = row.updated_at; cloudMark({ seen: cloudSeen }); cloudDirty = true;
   await cloudPush();
   return "push";
 }
 async function cloudCheckFresh() {
-  if (!cloud || document.hidden || cloudState === "busy") return;
+  if (!cloud || document.hidden || cloudState === "busy" || cloudAsking || cloudHold) return;
   if (cloud.user && !auth) { cloudFlush(); return; }   /* says why it cannot; touches nothing */
   try {
     const row = await cloudGet("updated_at");
@@ -8980,8 +9139,7 @@ async function cloudCheckFresh() {
        it. Only a board that matches the last sync may be replaced by the cloud's copy. */
     if (cloudAhead()) { await cloudSendOrYield(); return; }
     if (row.updated_at === cloudSeen) return;
-    await cloudPull();
-    showToast("Reloaded \u2014 the cloud board changed elsewhere.", true);
+    if (await cloudPull()) showToast("Reloaded \u2014 the cloud board changed elsewhere.", true);
     cloudSet("ok", "");
   } catch (e) { cloudState = "error"; renderCloud(); cloudFail(String(e.message || e), e.status); }
 }
@@ -9011,8 +9169,7 @@ async function cloudConnect() {
   try {
     const row = await cloudGet("updated_at");
     if (row) {
-      await cloudPull();
-      showToast("Adopted the cloud board. Undo if you meant to keep this one.", true);
+      if (await cloudPull()) showToast("Adopted the cloud board. Undo if you meant to keep this one.", true);
     } else {
       cloudSeen = null;
       await cloudPush();
@@ -9127,7 +9284,7 @@ async function authConnect() {
       if (cloudState === "error") throw new Error($("#cloudNote").textContent || "upload failed");
       if (went === "push") showToast("Signed in \u2014 this device\u2019s newer edits were sent to the cloud.");
     }
-    else if (row) { await cloudPull(); showToast("Signed in \u2014 your board is here. Undo, or restore this device\u2019s board from Settings.", true); }
+    else if (row) { if (await cloudPull()) showToast("Signed in \u2014 your board is here. Undo, or restore this device\u2019s board from Settings.", true); }
     else { cloudSeen = null; await cloudPush();
       if (cloudState === "error") throw new Error($("#cloudNote").textContent || "upload failed");
       showToast("Signed in \u2014 this board is now yours in the cloud."); }
@@ -19825,6 +19982,7 @@ document.addEventListener("click", e => {
     case "export":      exportBoard(); break;
     case "import":      { const f = $("#impFile"); if (f) f.click(); break; }
     case "replaced":    restoreReplaced(); break;
+    case "sync-choose": cloudHold = false; renderCloud(); settingsClose(); cloudCheckFresh(); break;
     case "auth-google": authStart(); break;
     case "auth-out":    authSignOut(); break;
     case "cloud-code":  cloudCode(); break;
