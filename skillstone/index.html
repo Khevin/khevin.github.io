@@ -21020,8 +21020,8 @@ function bdDraw(root) {
 }
 
 /* ---- the scrub (Bret Victor's: the reading follows the hand). The laptop's pointer previews a weigh-in as it
-   passes and a click keeps it; the phone's finger keeps one with a tap, or scrubs with a sideways drag past 10 px
-   while an upright one still scrolls the page; the keyboard walks it as a slider. Everything on the plate follows,
+   passes and a click keeps it; on the plate a finger is the Diary's step swipe, and only the dialog's chart takes a tap
+   or a sideways drag past 10 px; the keyboard walks it as a slider. Everything on the plate follows,
    and the chart itself is never replaced under the hand ---- */
 let bdPick = null, bdHov = null, bdDlgHov = null, bdDlgEnd = 0;
 /* the plate's weigh-ins: up to the end of the morning on show, the charts over the 90 days before the last of them */
@@ -21075,6 +21075,9 @@ function bdTrendWire(el) {
   };
   el.addEventListener("pointerdown", ev => {
     if (!el._bd || ev.button !== 0 || !ev.isPrimary) return;
+    /* a finger on the plate's chart is the Diary's step swipe, not a scrub (the owner, 24 Sep 2026): on the phone the
+       plate's chart answers the mouse and the keyboard only; the dialog's, with nothing to swipe to, keeps the finger */
+    if (ev.pointerType !== "mouse" && el._bd.scope === "plate") return;
     ev.stopPropagation();                                                   /* the Diary's step swipe is not this */
     p = { id: ev.pointerId, x0: ev.clientX, y0: ev.clientY, on: ev.pointerType === "mouse" };
     try { el.setPointerCapture(ev.pointerId); } catch (e) {}
