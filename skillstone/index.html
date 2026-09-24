@@ -8981,12 +8981,14 @@ async function cloudPull(opts) {
   /* The question the 24 Sep overwrite asked for: taking the row would drop entries only this
      device holds, so the owner decides. Compared on a sanitised copy, so both boards are read
      in this build's shape. Returns false when the row was not adopted. */
-  if (!(opts && opts.chosen)) {
+  let chosen = !!(opts && opts.chosen);
+  if (!chosen) {
     const d = boardDiff(state, sanitize(structuredClone(up)));
     if (lossIsSerious(d, "device")) {
       const pick = await cloudChoose(d, boardLatest(state, PAGE_T0), boardLatest(up));
       if (pick === "later") { cloudHoldOn(); return false; }
       if (pick === "device") { await cloudKeepDevice(row, up); return false; }
+      chosen = true;                    /* the owner chose the cloud's board: it is taken as it is, nothing folded in */
     }
   }
   cloudSeen = row.updated_at;
@@ -9002,8 +9004,13 @@ async function cloudPull(opts) {
   runPolish(state);
   try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
   renderGrid(); renderDetail(false);
+  /* the board just replaced lends what the row should not take from it: a later ritual list, unseen mornings'
+     ticks. When it lends anything, the merged board is sent back so every device converges on it. */
+  const merged = !chosen && !!snapshot && typeof rtMergeFrom === "function" && rtMergeFrom(state, snapshot);
+  if (merged) { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} if (view === "diary") renderDiary(); }
   cloudDirty = false;                   /* the local board IS the cloud row now */
   cloudMark({ seen: cloudSeen, stamp: boardStamp() });
+  if (merged) cloudQueue();
   return true;
 }
 async function cloudPush(opts) {
@@ -9115,6 +9122,10 @@ async function cloudSendOrYield() {
     return "pull";
   }
   const rb = upgrade(row.data);
+  if (rb && typeof rtMergeFrom === "function" && rtMergeFrom(state, sanitize(structuredClone(rb)))) {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
+    if (view === "diary") renderDiary();
+  }
   if (rb) {
     const d = boardDiff(state, sanitize(structuredClone(rb)));
     if (lossIsSerious(d, "cloud")) {
@@ -9712,6 +9723,8 @@ function normaliseBook(b) {
   b.bodyProfile = bdSanProfile(b.bodyProfile);
   /* rituals = the morning's list; morning[weekKey][dow] = { done, ml, at, hab }: what one morning did (.body/body.js) */
   b.rituals   = rtSanList(rtMigrate(b), b.habits);
+  /* ritualsAt = when the list was last customised; kept only once there is one, so an untouched board's shape does not change */
+  if (Number(b.ritualsAt) > 0) b.ritualsAt = Math.round(Number(b.ritualsAt)); else delete b.ritualsAt;
   b.morning   = rtSanMorning(b.morning);
   /* diary[weekKey][dow] = { page, three: [a, b, c], at } — the morning. The first shape was
      one string per day; it becomes { page } here, on every load, losing nothing. */
@@ -21180,6 +21193,36 @@ function rtSanList(list, habits) {
     return o;
   }).slice(0, 20);
 }
+/* THE RITUAL LIST IS A SETTING, NOT AN ENTRY. The whole board syncs as one row, so a device holding the default
+   list and a newer diary morning used to undo a customisation made elsewhere, silently (24 Sep 2026: "I've edited
+   them many times"). Each list now carries when it was customised; the later one wins whichever board it rides on.
+   A list customised before that time was kept counts as customised at an unknown time — newer than an untouched
+   default list, older than any stamped one. */
+const rtSig = l => JSON.stringify((Array.isArray(l) ? l : []).map(r => r && [r.id, r.name, r.note, r.icon, r.kind, r.amount, r.unit,
+  (r.steps || []).map(s => [s.id, s.name, s.note])]));
+function rtAt(b) {
+  const k = b && b.book; if (!k) return 0;
+  if (Number(k.ritualsAt) > 0) return Number(k.ritualsAt);
+  return Array.isArray(k.rituals) && rtSig(k.rituals) !== rtSig(rtSanList(structuredClone(RT_DEFAULT), [])) ? 1 : 0;
+}
+/* Folds into target what it should take from other: the later-customised list, and every morning's ticks the
+   target has no record of that day for — a day ticked on one device is not lost to a board that never saw that
+   day. A day both boards recorded stays the target's. Returns true when the target changed. */
+function rtMergeFrom(target, other) {
+  const tb = target && target.book, ob = other && other.book; if (!tb || !ob) return false;
+  let changed = false;
+  if (rtAt(other) > rtAt(target) && Array.isArray(ob.rituals)) {
+    tb.rituals = rtSanList(structuredClone(ob.rituals), tb.habits || []);
+    if (Number(ob.ritualsAt) > 0) tb.ritualsAt = Number(ob.ritualsAt); else delete tb.ritualsAt;
+    changed = true;
+  }
+  const om = ob.morning && typeof ob.morning === "object" ? ob.morning : {};
+  if (!tb.morning || typeof tb.morning !== "object") tb.morning = {};
+  Object.keys(om).forEach(wk => { const w = om[wk]; if (!w || typeof w !== "object") return;
+    Object.keys(w).forEach(d => { if (tb.morning[wk] && tb.morning[wk][d]) return;
+      const e = rtSanDay(w[d]); if (e) { (tb.morning[wk] = tb.morning[wk] || {})[d] = e; changed = true; } }); });
+  return changed;
+}
 function rtSanDay(v) {
   if (!v || typeof v !== "object") return null;
   const e = {};
@@ -21716,6 +21759,7 @@ function rtCustomSave(form) {
   if (!form.reportValidity()) return;
   const b = book();
   b.rituals = rtSanList(rtDraft.map(r => ({ ...r, name: r.name.trim(), steps: r.steps.map(s => ({ ...s, name: s.name.trim(), note: String(s.note || "").trim() })) })), b.habits);
+  b.ritualsAt = Date.now();             /* the list is a setting: the one customised last wins a sync */
   rtDraft = null;
   save();
   bdDlg().close();
